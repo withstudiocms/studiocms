@@ -117,8 +117,7 @@ export class SDKCore_UPDATE extends Effect.Service<SDKCore_UPDATE>()(
 							.get()
 					).pipe(
 						Effect.catchTags({
-							'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
-								_clearLibSQLError('UPDATE.pageContent', cause),
+							LibSQLClientError: (cause) => _clearLibSQLError('UPDATE.pageContent', cause),
 						})
 					)
 				),
@@ -139,8 +138,7 @@ export class SDKCore_UPDATE extends Effect.Service<SDKCore_UPDATE>()(
 							.get()
 					).pipe(
 						Effect.catchTags({
-							'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
-								_clearLibSQLError('UPDATE.tags', cause),
+							LibSQLClientError: (cause) => _clearLibSQLError('UPDATE.tags', cause),
 						})
 					)
 				),
@@ -161,8 +159,7 @@ export class SDKCore_UPDATE extends Effect.Service<SDKCore_UPDATE>()(
 							.get()
 					).pipe(
 						Effect.catchTags({
-							'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
-								_clearLibSQLError('UPDATE.categories', cause),
+							LibSQLClientError: (cause) => _clearLibSQLError('UPDATE.categories', cause),
 						})
 					)
 				),
@@ -183,8 +180,7 @@ export class SDKCore_UPDATE extends Effect.Service<SDKCore_UPDATE>()(
 							.get()
 					).pipe(
 						Effect.catchTags({
-							'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
-								_clearLibSQLError('UPDATE.permissions', cause),
+							LibSQLClientError: (cause) => _clearLibSQLError('UPDATE.permissions', cause),
 						})
 					)
 				),
@@ -202,8 +198,7 @@ export class SDKCore_UPDATE extends Effect.Service<SDKCore_UPDATE>()(
 					}
 				}).pipe(
 					Effect.catchTags({
-						'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
-							_clearLibSQLError('UPDATE.folderTree', cause),
+						LibSQLClientError: (cause) => _clearLibSQLError('UPDATE.folderTree', cause),
 					})
 				),
 				/**
@@ -220,8 +215,7 @@ export class SDKCore_UPDATE extends Effect.Service<SDKCore_UPDATE>()(
 					}
 				}).pipe(
 					Effect.catchTags({
-						'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
-							_clearLibSQLError('UPDATE.folderList', cause),
+						LibSQLClientError: (cause) => _clearLibSQLError('UPDATE.folderList', cause),
 					})
 				),
 				/**
@@ -247,8 +241,7 @@ export class SDKCore_UPDATE extends Effect.Service<SDKCore_UPDATE>()(
 						return updated;
 					}).pipe(
 						Effect.catchTags({
-							'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
-								_clearLibSQLError('UPDATE.folder', cause),
+							LibSQLClientError: (cause) => _clearLibSQLError('UPDATE.folder', cause),
 						})
 					),
 				/**
@@ -294,12 +287,7 @@ export class SDKCore_UPDATE extends Effect.Service<SDKCore_UPDATE>()(
 						siteConfig.set(SiteConfigMapID, returnConfig);
 
 						return returnConfig;
-					}).pipe(
-						Effect.catchTags({
-							'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
-								_clearLibSQLError('UPDATE.siteConfig', cause),
-						})
-					),
+					}),
 				page: {
 					/**
 					 * Updates a page by its ID, including content and data, and refreshes caches.
@@ -347,8 +335,7 @@ export class SDKCore_UPDATE extends Effect.Service<SDKCore_UPDATE>()(
 							return returnData;
 						}).pipe(
 							Effect.catchTags({
-								'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
-									_clearLibSQLError('UPDATE.page.byId', cause),
+								LibSQLClientError: (cause) => _clearLibSQLError('UPDATE.page.byId', cause),
 								UnknownException: (cause) => _ClearUnknownError('UPDATE.page.byId', cause),
 							})
 						);
@@ -414,8 +401,7 @@ export class SDKCore_UPDATE extends Effect.Service<SDKCore_UPDATE>()(
 							return returnData;
 						}).pipe(
 							Effect.catchTags({
-								'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
-									_clearLibSQLError('UPDATE.page.byId', cause),
+								LibSQLClientError: (cause) => _clearLibSQLError('UPDATE.page.byId', cause),
 								UnknownException: (cause) => _ClearUnknownError('UPDATE.page.byId', cause),
 							})
 						);

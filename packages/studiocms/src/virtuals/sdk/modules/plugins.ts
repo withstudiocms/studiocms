@@ -1,6 +1,6 @@
 import { eq, like } from 'astro:db';
 import { Effect, genLogger, pipe, Schema } from '../../../effect.js';
-import { AstroDB, type LibSQLDatabaseError } from '../effect/db.js';
+import { AstroDB, type LibSQLClientError } from '../effect/db.js';
 import {
 	noUndefinedEntries,
 	parseData,
@@ -626,20 +626,16 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 			): {
 				getEntries: (
 					filter?: (data: PluginDataEntry<R>[]) => PluginDataEntry<R>[]
-				) => Effect.Effect<PluginDataEntry<R>[], LibSQLDatabaseError | Error, never>;
+				) => Effect.Effect<PluginDataEntry<R>[], LibSQLClientError | Error, never>;
 				getEntry: (id: string) => {
 					generatedId: () => Effect.Effect<string, never, never>;
 					select: () => Effect.Effect<
 						PluginDataEntry<R> | undefined,
-						LibSQLDatabaseError | Error,
+						LibSQLClientError | Error,
 						never
 					>;
-					insert: (
-						data: R
-					) => Effect.Effect<PluginDataEntry<R>, LibSQLDatabaseError | Error, never>;
-					update: (
-						data: R
-					) => Effect.Effect<PluginDataEntry<R>, LibSQLDatabaseError | Error, never>;
+					insert: (data: R) => Effect.Effect<PluginDataEntry<R>, LibSQLClientError | Error, never>;
+					update: (data: R) => Effect.Effect<PluginDataEntry<R>, LibSQLClientError | Error, never>;
 				};
 			};
 
@@ -661,11 +657,11 @@ export class SDKCore_PLUGINS extends Effect.Service<SDKCore_PLUGINS>()(
 				generatedId: () => Effect.Effect<string, never, never>;
 				select: () => Effect.Effect<
 					PluginDataEntry<R> | undefined,
-					LibSQLDatabaseError | Error,
+					LibSQLClientError | Error,
 					never
 				>;
-				insert: (data: R) => Effect.Effect<PluginDataEntry<R>, LibSQLDatabaseError | Error, never>;
-				update: (data: R) => Effect.Effect<PluginDataEntry<R>, LibSQLDatabaseError | Error, never>;
+				insert: (data: R) => Effect.Effect<PluginDataEntry<R>, LibSQLClientError | Error, never>;
+				update: (data: R) => Effect.Effect<PluginDataEntry<R>, LibSQLClientError | Error, never>;
 			};
 
 			/**

@@ -48,8 +48,7 @@ export class SDKCore_REST_API extends Effect.Service<SDKCore_REST_API>()(
 					get: dbService.makeQuery((ex, userId: string) =>
 						ex((db) => db.select().from(tsAPIKeys).where(eq(tsAPIKeys.userId, userId))).pipe(
 							Effect.catchTags({
-								'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
-									_clearLibSQLError('REST_API.tokens.get', cause),
+								LibSQLClientError: (cause) => _clearLibSQLError('REST_API.tokens.get', cause),
 							})
 						)
 					),
@@ -80,8 +79,7 @@ export class SDKCore_REST_API extends Effect.Service<SDKCore_REST_API>()(
 							);
 						}).pipe(
 							Effect.catchTags({
-								'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
-									_clearLibSQLError('REST_API.tokens.new', cause),
+								LibSQLClientError: (cause) => _clearLibSQLError('REST_API.tokens.new', cause),
 							})
 						),
 
@@ -101,8 +99,7 @@ export class SDKCore_REST_API extends Effect.Service<SDKCore_REST_API>()(
 							)
 							.pipe(
 								Effect.catchTags({
-									'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
-										_clearLibSQLError('REST_API.tokens.delete', cause),
+									LibSQLClientError: (cause) => _clearLibSQLError('REST_API.tokens.delete', cause),
 								})
 							),
 
@@ -133,8 +130,7 @@ export class SDKCore_REST_API extends Effect.Service<SDKCore_REST_API>()(
 							};
 						}).pipe(
 							Effect.catchTags({
-								'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
-									_clearLibSQLError('REST_API.tokens.verify', cause),
+								LibSQLClientError: (cause) => _clearLibSQLError('REST_API.tokens.verify', cause),
 							})
 						),
 				},

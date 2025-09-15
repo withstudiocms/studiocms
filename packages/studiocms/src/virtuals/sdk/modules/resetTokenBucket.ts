@@ -73,7 +73,7 @@ export class SDKCore_ResetTokenBucket extends Effect.Service<SDKCore_ResetTokenB
 						);
 					}).pipe(
 						Effect.catchTags({
-							'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+							LibSQLClientError: (cause) =>
 								Effect.fail(
 									new SDKCoreError({
 										type: 'LibSQLDatabaseError',
@@ -95,7 +95,7 @@ export class SDKCore_ResetTokenBucket extends Effect.Service<SDKCore_ResetTokenB
 						)
 						.pipe(
 							Effect.catchTags({
-								'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+								LibSQLClientError: (cause) =>
 									Effect.fail(
 										new SDKCoreError({
 											type: 'LibSQLDatabaseError',
@@ -126,7 +126,7 @@ export class SDKCore_ResetTokenBucket extends Effect.Service<SDKCore_ResetTokenB
 						return !!resetToken.find((t) => t.token === token);
 					}).pipe(
 						Effect.catchTags({
-							'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+							LibSQLClientError: (cause) =>
 								Effect.fail(
 									new SDKCoreError({
 										type: 'LibSQLDatabaseError',

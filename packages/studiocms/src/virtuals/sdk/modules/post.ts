@@ -172,8 +172,7 @@ export class SDKCore_POST extends Effect.Service<SDKCore_POST>()(
 							} as addDatabaseEntryInsertPage;
 						}).pipe(
 							Effect.catchTags({
-								'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
-									_clearLibSQLError('POST.databaseEntry.pages', cause),
+								LibSQLClientError: (cause) => _clearLibSQLError('POST.databaseEntry.pages', cause),
 							})
 						),
 					/**
@@ -196,7 +195,7 @@ export class SDKCore_POST extends Effect.Service<SDKCore_POST>()(
 								.returning({ id: tsPageContent.id })
 						).pipe(
 							Effect.catchTags({
-								'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+								LibSQLClientError: (cause) =>
 									_clearLibSQLError('POST.databaseEntry.pageContent', cause),
 							})
 						)
@@ -226,8 +225,7 @@ export class SDKCore_POST extends Effect.Service<SDKCore_POST>()(
 							);
 						}).pipe(
 							Effect.catchTags({
-								'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
-									_clearLibSQLError('POST.databaseEntry.tags', cause),
+								LibSQLClientError: (cause) => _clearLibSQLError('POST.databaseEntry.tags', cause),
 							})
 						),
 					/**
@@ -255,8 +253,7 @@ export class SDKCore_POST extends Effect.Service<SDKCore_POST>()(
 							);
 						}).pipe(
 							Effect.catchTags({
-								'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
-									_clearLibSQLError('POST.databaseEntry.tags', cause),
+								LibSQLClientError: (cause) => _clearLibSQLError('POST.databaseEntry.tags', cause),
 							})
 						),
 					/**
@@ -291,7 +288,7 @@ export class SDKCore_POST extends Effect.Service<SDKCore_POST>()(
 							);
 						}).pipe(
 							Effect.catchTags({
-								'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+								LibSQLClientError: (cause) =>
 									_clearLibSQLError('POST.databaseEntry.permissions', cause),
 							})
 						),
@@ -318,7 +315,7 @@ export class SDKCore_POST extends Effect.Service<SDKCore_POST>()(
 								.returning()
 						).pipe(
 							Effect.catchTags({
-								'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+								LibSQLClientError: (cause) =>
 									_clearLibSQLError('POST.databaseEntry.diffTracking', cause),
 							})
 						)
@@ -343,8 +340,7 @@ export class SDKCore_POST extends Effect.Service<SDKCore_POST>()(
 								.get()
 						).pipe(
 							Effect.catchTags({
-								'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
-									_clearLibSQLError('POST.databaseEntry.folder', cause),
+								LibSQLClientError: (cause) => _clearLibSQLError('POST.databaseEntry.folder', cause),
 							})
 						)
 					),
@@ -377,8 +373,7 @@ export class SDKCore_POST extends Effect.Service<SDKCore_POST>()(
 							);
 						}).pipe(
 							Effect.catchTags({
-								'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
-									_clearLibSQLError('POST.databaseEntries.tags', cause),
+								LibSQLClientError: (cause) => _clearLibSQLError('POST.databaseEntries.tags', cause),
 							})
 						),
 					/**
@@ -412,7 +407,7 @@ export class SDKCore_POST extends Effect.Service<SDKCore_POST>()(
 							);
 						}).pipe(
 							Effect.catchTags({
-								'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+								LibSQLClientError: (cause) =>
 									_clearLibSQLError('POST.databaseEntries.categories', cause),
 							})
 						),
@@ -461,7 +456,7 @@ export class SDKCore_POST extends Effect.Service<SDKCore_POST>()(
 							);
 						}).pipe(
 							Effect.catchTags({
-								'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
+								LibSQLClientError: (cause) =>
 									_clearLibSQLError('POST.databaseEntries.permissions', cause),
 							})
 						),

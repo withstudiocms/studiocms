@@ -224,8 +224,7 @@ export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 					return pages as CombinedPageData[];
 				}).pipe(
 					Effect.catchTags({
-						'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
-							_clearLibSQLError('GET.packagePages', cause),
+						LibSQLClientError: (cause) => _clearLibSQLError('GET.packagePages', cause),
 					})
 				);
 			}
@@ -300,8 +299,7 @@ export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 				}).pipe(
 					Effect.catchTags({
 						UnknownException: (cause: unknown) => _clearLibSQLError('GET.page.byId', cause),
-						'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
-							_clearLibSQLError('GET.page.byId', cause),
+						LibSQLClientError: (cause) => _clearLibSQLError('GET.page.byId', cause),
 					})
 				);
 			}
@@ -376,8 +374,7 @@ export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 				}).pipe(
 					Effect.catchTags({
 						UnknownException: (cause) => _clearLibSQLError('GET.page.bySlug', cause),
-						'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
-							_clearLibSQLError('GET.page.bySlug', cause),
+						LibSQLClientError: (cause) => _clearLibSQLError('GET.page.bySlug', cause),
 					})
 				);
 			}
@@ -522,8 +519,7 @@ export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 				}).pipe(
 					Effect.catchTags({
 						UnknownException: (cause) => _clearLibSQLError('GET.pages', cause),
-						'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
-							_clearLibSQLError('GET.pages', cause),
+						LibSQLClientError: (cause) => _clearLibSQLError('GET.pages', cause),
 					})
 				);
 			}
@@ -706,8 +702,7 @@ export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 				}).pipe(
 					Effect.catchTags({
 						UnknownException: (cause) => _clearLibSQLError('GET.pages', cause),
-						'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
-							_clearLibSQLError('GET.pages', cause),
+						LibSQLClientError: (cause) => _clearLibSQLError('GET.pages', cause),
 					})
 				);
 			}
@@ -732,8 +727,7 @@ export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 					return yield* verifyRank(existingUsers, currentPermittedUsers, rank);
 				}).pipe(
 					Effect.catchTags({
-						'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
-							_clearLibSQLError(`GET.permissionsLists.${rank}s`, cause),
+						LibSQLClientError: (cause) => _clearLibSQLError(`GET.permissionsLists.${rank}s`, cause),
 					})
 				);
 
@@ -792,8 +786,7 @@ export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 							];
 						}).pipe(
 							Effect.catchTags({
-								'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
-									_clearLibSQLError('GET.permissionsLists.all', cause),
+								LibSQLClientError: (cause) => _clearLibSQLError('GET.permissionsLists.all', cause),
 							})
 						),
 					/**
@@ -851,8 +844,7 @@ export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 							return combinedUserData;
 						}).pipe(
 							Effect.catchTags({
-								'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
-									_clearLibSQLError('GET.users.all', cause),
+								LibSQLClientError: (cause) => _clearLibSQLError('GET.users.all', cause),
 							})
 						),
 					/**
@@ -872,8 +864,7 @@ export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 							return yield* collectUserData(user);
 						}).pipe(
 							Effect.catchTags({
-								'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
-									_clearLibSQLError('GET.users.byId', cause),
+								LibSQLClientError: (cause) => _clearLibSQLError('GET.users.byId', cause),
 							})
 						),
 					/**
@@ -893,8 +884,7 @@ export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 							return yield* collectUserData(user);
 						}).pipe(
 							Effect.catchTags({
-								'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
-									_clearLibSQLError('GET.users.byId', cause),
+								LibSQLClientError: (cause) => _clearLibSQLError('GET.users.byId', cause),
 							})
 						),
 					/**
@@ -914,8 +904,7 @@ export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 							return yield* collectUserData(user);
 						}).pipe(
 							Effect.catchTags({
-								'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
-									_clearLibSQLError('GET.users.byId', cause),
+								LibSQLClientError: (cause) => _clearLibSQLError('GET.users.byId', cause),
 							})
 						),
 				},
@@ -932,8 +921,7 @@ export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 						db.select().from(tsPageFolderStructure).where(eq(tsPageFolderStructure.id, id)).get()
 					).pipe(
 						Effect.catchTags({
-							'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
-								_clearLibSQLError('GET.folder', cause),
+							LibSQLClientError: (cause) => _clearLibSQLError('GET.folder', cause),
 						})
 					)
 				),
@@ -995,8 +983,7 @@ export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 					}).pipe(
 						Effect.catchTags({
 							UnknownException: (cause) => _clearLibSQLError('GET.siteConfig', cause),
-							'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
-								_clearLibSQLError('GET.siteConfig', cause),
+							LibSQLClientError: (cause) => _clearLibSQLError('GET.siteConfig', cause),
 						})
 					),
 
@@ -1033,8 +1020,7 @@ export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 					}).pipe(
 						Effect.catchTags({
 							UnknownException: (cause) => _clearLibSQLError('GET.folderTree', cause),
-							'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
-								_clearLibSQLError('GET.folderTree', cause),
+							LibSQLClientError: (cause) => _clearLibSQLError('GET.folderTree', cause),
 						})
 					),
 
@@ -1113,8 +1099,7 @@ export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 					}).pipe(
 						Effect.catchTags({
 							UnknownException: (cause) => _clearLibSQLError('GET.pageFolderTree', cause),
-							'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
-								_clearLibSQLError('GET.pageFolderTree', cause),
+							LibSQLClientError: (cause) => _clearLibSQLError('GET.pageFolderTree', cause),
 						})
 					),
 
@@ -1151,8 +1136,7 @@ export class SDKCore_GET extends Effect.Service<SDKCore_GET>()(
 					}).pipe(
 						Effect.catchTags({
 							UnknownException: (cause) => _clearLibSQLError('GET.folderList', cause),
-							'studiocms/sdk/effect/db/LibSQLDatabaseError': (cause) =>
-								_clearLibSQLError('GET.folderList', cause),
+							LibSQLClientError: (cause) => _clearLibSQLError('GET.folderList', cause),
 						})
 					),
 				/**
