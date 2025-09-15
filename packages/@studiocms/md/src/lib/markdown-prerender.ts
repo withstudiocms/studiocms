@@ -32,17 +32,8 @@ const parseStudioCMSMDOpts = (): StudioCMSMarkdownProcessorOptions['studiocms'] 
 	};
 };
 
-const createStudioCMSMDOpts: StudioCMSMarkdownProcessorOptions = {
-	...shared.astroMDRemark,
-	studiocms: parseStudioCMSMDOpts(),
-};
-
-const [astroMD, studioCMSMD] = await Promise.all([
-	// Initialize markdown processor (Astro)
-	createAstroMD(shared.astroMDRemark),
-	// Initialize markdown processor (StudioCMS)
-	createStudioCMSMD(createStudioCMSMDOpts),
-]);
+let astroMDPromise: Promise<Awaited<ReturnType<typeof createAstroMD>>> | undefined;
+let studioCMSMDPromise: Promise<Awaited<ReturnType<typeof createStudioCMSMD>>> | undefined;
 
 /**
  * Creates a pre-render function for processing markdown content based on the configured renderer flavor.
@@ -54,22 +45,20 @@ const [astroMD, studioCMSMD] = await Promise.all([
  * - Otherwise, it defaults to using the `studioCMSMD.render` method.
  */
 export function preRender(): (content: string) => Promise<string> {
-	// Define pre-render function
-	let render: (content: string) => Promise<string>;
-
-	// Determine which markdown processor to use (default to StudioCMS)
-	switch (rendererConfig.flavor) {
-		case 'astro':
-			render = async (content: string) => {
-				return (await astroMD.render(content)).code;
-			};
-			break;
-		default:
-			render = async (content: string) => {
-				return (await studioCMSMD.render(content)).code;
-			};
-			break;
-	}
-
-	return render;
+	return async (content: string) => {
+		if (rendererConfig.flavor === 'astro') {
+			if (!astroMDPromise) astroMDPromise = createAstroMD(shared.astroMDRemark);
+			const astroMD = await astroMDPromise;
+			return (await astroMD.render(content)).code;
+		}
+		if (!studioCMSMDPromise) {
+			// Recompute options at first use to reflect shared state
+			studioCMSMDPromise = createStudioCMSMD({
+				...shared.astroMDRemark,
+				studiocms: parseStudioCMSMDOpts(),
+			});
+		}
+		const studioCMSMD = await studioCMSMDPromise;
+		return (await studioCMSMD.render(content)).code;
+	};
 }

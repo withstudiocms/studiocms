@@ -34,10 +34,8 @@ export function internalMarkdownIntegration(
 	let resolvedCalloutTheme: string | undefined;
 
 	// Resolve the callout theme based on the user's configuration
-	if (resolvedOptions?.flavor === 'studiocms' && resolvedOptions.callouts !== false) {
-		resolvedCalloutTheme = resolve(
-			`./styles/md-remark-callouts/${resolvedOptions.callouts || 'obsidian'}.css`
-		);
+	if (resolvedOptions?.flavor === 'studiocms' && typeof resolvedOptions.callouts === 'string') {
+		resolvedCalloutTheme = resolve(`./styles/md-remark-callouts/${resolvedOptions.callouts}.css`);
 	} else {
 		resolvedCalloutTheme = undefined;
 	}

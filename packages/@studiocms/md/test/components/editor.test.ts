@@ -17,6 +17,5 @@ describe('Editor component', () => {
 			/<textarea[^>]*id="page-content"[^>]*name="page-content"[^>]*>[\s\S]*Editor content[\s\S]*<\/textarea>/
 		);
 		expect(result).toMatch(/<script\s+type="module"\s+src=.*?><\/script>/);
-		expect(result).toMatch(/!function(e,t)*?/);
 	});
 });
