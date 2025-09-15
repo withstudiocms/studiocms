@@ -1,6 +1,10 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { studiocmsMD } from '../src/index.js';
-import { cleanupGlobalThis, createMockAstroMarkdownOptions, createMockMarkdownOptions } from './test-utils.js';
+import {
+	cleanupGlobalThis,
+	createMockAstroMarkdownOptions,
+	createMockMarkdownOptions,
+} from './test-utils.js';
 
 // Mock the dependencies
 vi.mock('astro-integration-kit', () => ({
@@ -103,8 +107,8 @@ describe('studiocmsMD', () => {
 
 		it('should handle StudioCMS flavor with different callout themes', () => {
 			const themes = ['github', 'obsidian', 'vitepress'] as const;
-			
-			themes.forEach(theme => {
+
+			themes.forEach((theme) => {
 				const options = createMockMarkdownOptions({
 					flavor: 'studiocms',
 					callouts: theme,
@@ -193,17 +197,14 @@ describe('studiocmsMD', () => {
 				injectScript: mockInjectScript,
 			});
 
-			expect(mockAddVirtualImports).toHaveBeenCalledWith(
-				expect.any(Object),
-				{
-					name: '@studiocms/md',
-					imports: {
-						'studiocms:md/config': expect.stringContaining('"flavor":"studiocms"'),
-						'studiocms:md/pre-render': expect.stringContaining('markdown-prerender'),
-						'studiocms:md/styles': expect.stringContaining('md-remark-headings.css'),
-					},
-				}
-			);
+			expect(mockAddVirtualImports).toHaveBeenCalledWith(expect.any(Object), {
+				name: '@studiocms/md',
+				imports: {
+					'studiocms:md/config': expect.stringContaining('"flavor":"studiocms"'),
+					'studiocms:md/pre-render': expect.stringContaining('markdown-prerender'),
+					'studiocms:md/styles': expect.stringContaining('md-remark-headings.css'),
+				},
+			});
 
 			expect(mockInjectScript).toHaveBeenCalledWith('page-ssr', 'import "studiocms:md/styles";');
 		});
@@ -233,17 +234,14 @@ describe('studiocmsMD', () => {
 				injectScript: mockInjectScript,
 			});
 
-			expect(mockAddVirtualImports).toHaveBeenCalledWith(
-				expect.any(Object),
-				{
-					name: '@studiocms/md',
-					imports: {
-						'studiocms:md/config': expect.stringContaining('"flavor":"astro"'),
-						'studiocms:md/pre-render': expect.stringContaining('markdown-prerender'),
-						'studiocms:md/styles': expect.stringContaining('md-remark-headings.css'),
-					},
-				}
-			);
+			expect(mockAddVirtualImports).toHaveBeenCalledWith(expect.any(Object), {
+				name: '@studiocms/md',
+				imports: {
+					'studiocms:md/config': expect.stringContaining('"flavor":"astro"'),
+					'studiocms:md/pre-render': expect.stringContaining('markdown-prerender'),
+					'studiocms:md/styles': expect.stringContaining('md-remark-headings.css'),
+				},
+			});
 
 			// Should not inject script for Astro flavor
 			expect(mockInjectScript).not.toHaveBeenCalled();
@@ -276,7 +274,7 @@ describe('studiocmsMD', () => {
 
 			const callArgs = mockAddVirtualImports.mock.calls[0];
 			const imports = callArgs[1].imports;
-			
+
 			// Should not include callout theme import when callouts is false
 			expect(imports['studiocms:md/styles']).not.toContain('md-remark-callouts');
 		});
