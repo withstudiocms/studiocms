@@ -152,7 +152,20 @@ const config: KnipConfig = {
 		...bundleTestPackages.reduce(
 			(acc, pkg) => {
 				acc[`bundle-tests/${pkg}`] = {
-					...baseAstroWorkspaceConfig,
+					ignoreDependencies: ['sharp'],
+					astro: {
+						entry: [
+							'studiocms.config.{js,cjs,mjs,ts,mts}',
+							'astro.config.{js,cjs,mjs,ts,mts}',
+							'src/content/config.ts',
+							'src/content.config.ts',
+							'src/components/**/*.{astro,js,ts}',
+							'src/pages/**/*.{astro,mdx,js,ts}',
+							'src/content/**/*.mdx',
+							'src/middleware.{js,ts}',
+							'src/actions/index.{js,ts}',
+						],
+					},
 				};
 				return acc;
 			},
