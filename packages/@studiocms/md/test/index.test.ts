@@ -141,6 +141,7 @@ describe('studiocmsMD', () => {
 
 			const hook = plugin.hooks['studiocms:astro:config'];
 			if (!hook) throw new Error('Hook not found');
+			// @ts-expect-error -- ignore
 			hook({ addIntegrations: mockAddIntegrations });
 
 			expect(mockAddIntegrations).toHaveBeenCalledWith({
@@ -177,6 +178,7 @@ describe('studiocmsMD', () => {
 			const mockInjectScript = vi.fn();
 			const mockAddIntegrations = vi.fn();
 
+			// @ts-expect-error -- ignore
 			const plugin: ReturnType<typeof studiocmsMD> = studiocmsMD({
 				flavor: 'studiocms',
 				callouts: 'github',
@@ -184,6 +186,7 @@ describe('studiocmsMD', () => {
 
 			const hook = plugin.hooks['studiocms:astro:config'];
 			if (!hook) throw new Error('Hook not found');
+			// @ts-expect-error -- ignore
 			hook({ addIntegrations: mockAddIntegrations });
 
 			// Get the integration that was added
@@ -221,6 +224,7 @@ describe('studiocmsMD', () => {
 
 			const hook = plugin.hooks['studiocms:astro:config'];
 			if (!hook) throw new Error('Hook not found');
+			// @ts-expect-error -- ignore
 			hook({ addIntegrations: mockAddIntegrations });
 
 			// Get the integration that was added
@@ -252,6 +256,7 @@ describe('studiocmsMD', () => {
 			const mockAddVirtualImports = vi.mocked(addVirtualImports);
 			const mockAddIntegrations = vi.fn();
 
+			// @ts-expect-error -- ignore
 			const plugin: ReturnType<typeof studiocmsMD> = studiocmsMD({
 				flavor: 'studiocms',
 				callouts: false,
@@ -259,6 +264,7 @@ describe('studiocmsMD', () => {
 
 			const hook = plugin.hooks['studiocms:astro:config'];
 			if (!hook) throw new Error('Hook not found');
+			// @ts-expect-error -- ignore
 			hook({ addIntegrations: mockAddIntegrations });
 
 			// Get the integration that was added
@@ -276,6 +282,7 @@ describe('studiocmsMD', () => {
 			const imports = callArgs[1].imports;
 
 			// Should not include callout theme import when callouts is false
+			// @ts-expect-error -- ignore
 			expect(imports['studiocms:md/styles']).not.toContain('md-remark-callouts');
 		});
 
@@ -293,6 +300,7 @@ describe('studiocmsMD', () => {
 
 			const hook = plugin.hooks['studiocms:astro:config'];
 			if (!hook) throw new Error('Hook not found');
+			// @ts-expect-error -- ignore
 			hook({ addIntegrations: mockAddIntegrations });
 
 			// Get the integration that was added
@@ -330,6 +338,7 @@ describe('studiocmsMD', () => {
 				},
 			};
 
+			// @ts-expect-error -- ignore
 			expect(() => studiocmsMD(validOptions)).not.toThrow();
 		});
 
@@ -342,6 +351,7 @@ describe('studiocmsMD', () => {
 				},
 			};
 
+			// @ts-expect-error -- ignore
 			expect(() => studiocmsMD(validOptions)).not.toThrow();
 		});
 
