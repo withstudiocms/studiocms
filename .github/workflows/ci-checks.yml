@@ -22,7 +22,7 @@ jobs:
       pull-requests: write
     env:
       NODE_OPTIONS: "--max_old_space_size=4096"
-    name: Run Knip Linter
+    name: Run Knip Linter and Report
     if: github.event.pull_request.head.repo.full_name == github.repository
     steps:
       - name: Checkout Repo
