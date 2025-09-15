@@ -5,6 +5,7 @@
   "compilerOptions": {
     "outDir": "./dist",
     "emitDeclarationOnly": true,
-    "rootDir": "./src"
+    "rootDir": "./src",
+    "jsx": "preserve"
   }
 }
