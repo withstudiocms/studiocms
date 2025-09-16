@@ -3,8 +3,6 @@ import Markdoc from '@markdoc/markdoc';
 import type { MarkDocRenderer } from '../types.js';
 import { shared } from './shared.js';
 
-const { argParse, transformConfig, type } = shared.markDocConfig;
-
 const renderHTML: MarkDocRenderer = {
 	name: 'html',
 	render: async (content: RenderableTreeNode) => {
@@ -20,6 +18,8 @@ const renderReactStatic: MarkDocRenderer = {
 };
 
 export async function renderMarkDoc(content: string): Promise<string> {
+	const { argParse, transformConfig, type } = shared.markDocConfig;
+	
 	// Parse the Markdoc to AST
 	const ast = Markdoc.parse(content, argParse);
 	// Transform to MarkDoc
