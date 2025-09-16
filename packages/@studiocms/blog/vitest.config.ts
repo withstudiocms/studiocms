@@ -15,9 +15,11 @@ const testIntegration: AstroIntegration = {
 					'studiocms:component-registry/runtime':
 						// Test-only identity renderer: mirrors API shape but skips sanitization on purpose.
 						'export const createRenderer = (result, sanitize, preRenderer) => (content) => content;',
-
+					'studiocms:version': `export default '0.0.0-test';`,
 					'studiocms:lib': `
 						export const pathWithBase = (path) => path;
+						export * from 'studiocms/lib/head';
+						export * from 'studiocms/lib/headDefaults';
 					`,
 				},
 			});

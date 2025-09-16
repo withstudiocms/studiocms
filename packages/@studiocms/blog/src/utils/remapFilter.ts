@@ -10,7 +10,9 @@ export function getBlogRoute(slug: string) {
 	if (blogRouteFullPath) {
 		return blogRouteFullPath.replace('[...slug]', slug);
 	}
+	/* v8 ignore start */
 	return '#';
+	/* v8 ignore stop */
 }
 
 export type SiteMapTemplate = {
