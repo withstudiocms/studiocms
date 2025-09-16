@@ -12,8 +12,8 @@ export function getBlogRoute(slug: string) {
 	}
 	/* v8 ignore start */
 	return '#';
-	/* v8 ignore stop */
 }
+/* v8 ignore stop */
 
 export type SiteMapTemplate = {
 	location: string;
