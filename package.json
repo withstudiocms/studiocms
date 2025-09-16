@@ -34,6 +34,7 @@
 
     "test": "vitest run",
     "test:ui": "vitest --ui",
+    "test:ui:coverage": "vitest --ui --coverage",
     "test:watch": "vitest",
     "ci:test": "vitest run --coverage",
 
