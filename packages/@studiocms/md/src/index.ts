@@ -6,10 +6,74 @@
 /// <reference types="./virtual.d.ts" preserve="true" />
 /// <reference types="studiocms/v/types" />
 
+import type { AstroIntegration } from 'astro';
 import { addVirtualImports, createResolver } from 'astro-integration-kit';
 import { definePlugin, type StudioCMSPlugin } from 'studiocms/plugins';
 import { shared } from './lib/shared.js';
 import { MarkdownSchema, type MarkdownSchemaOptions } from './types.js';
+
+export function internalMarkdownIntegration(
+	packageIdentifier: string,
+	options?: MarkdownSchemaOptions
+): AstroIntegration {
+	// Resolve the path to the current file
+	const { resolve } = createResolver(import.meta.url);
+	// Resolve the path to the internal renderer
+	const internalRenderer = resolve('./lib/markdown-prerender.js');
+
+	// Resolve the options and set defaults if not provided
+	const parseResult = MarkdownSchema.safeParse(options);
+	/* v8 ignore start */
+	if (!parseResult.success) {
+		throw new Error(`Invalid markdown options: ${parseResult.error.message}`);
+	}
+	/* v8 ignore stop */
+	const resolvedOptions = parseResult.data;
+
+	// Define the resolved Callout Theme
+	let resolvedCalloutTheme: string | undefined;
+
+	// Resolve the callout theme based on the user's configuration
+	if (resolvedOptions?.flavor === 'studiocms' && typeof resolvedOptions.callouts === 'string') {
+		resolvedCalloutTheme = resolve(`./styles/md-remark-callouts/${resolvedOptions.callouts}.css`);
+	} else {
+		resolvedCalloutTheme = undefined;
+	}
+	return {
+		name: packageIdentifier,
+		hooks: {
+			'astro:config:setup': (params) => {
+				// Add the virtual imports for the MDX renderer
+				addVirtualImports(params, {
+					name: packageIdentifier,
+					imports: {
+						'studiocms:md/config': `
+										export const config = ${JSON.stringify(resolvedOptions)};
+										export default config;
+									`,
+						'studiocms:md/pre-render': `
+										export { preRender } from '${internalRenderer}';
+									`,
+						'studiocms:md/styles': `
+										import '${resolve('./styles/md-remark-headings.css')}';
+										${resolvedCalloutTheme ? `import '${resolvedCalloutTheme}';` : ''}
+									`,
+					},
+				});
+
+				if (resolvedOptions?.flavor === 'studiocms') {
+					// Inject the StudioCMS-specific styles for the markdown renderer
+					params.injectScript('page-ssr', `import "studiocms:md/styles";`);
+				}
+			},
+			'astro:config:done': ({ config }) => {
+				// Store the resolved options in the shared context for the renderer
+				shared.mdConfig = resolvedOptions;
+				shared.astroMDRemark = config.markdown;
+			},
+		},
+	};
+}
 
 /**
  * Creates a StudioCMS plugin for Markdown page types.
@@ -39,6 +103,13 @@ export function studiocmsMD(options?: MarkdownSchemaOptions): StudioCMSPlugin {
 	// Define the package identifier
 	const packageIdentifier = '@studiocms/md';
 
+	// Resolve the options and set defaults if not provided
+	const parseResult = MarkdownSchema.safeParse(options);
+	if (!parseResult.success) {
+		throw new Error(`Invalid markdown options: ${parseResult.error.message}`);
+	}
+	const resolvedOptions = parseResult.data;
+
 	/**
 	 * Defines the configuration for the Markdown page type in StudioCMS.
 	 *
@@ -54,28 +125,6 @@ export function studiocmsMD(options?: MarkdownSchemaOptions): StudioCMSPlugin {
 		pageContentComponent: resolve('./components/markdown-editor.astro'),
 	};
 
-	// Resolve the path to the internal renderer
-	const internalRenderer = resolve('./lib/markdown-prerender.js');
-
-	// Resolve the options and set defaults if not provided
-	const parseResult = MarkdownSchema.safeParse(options);
-	if (!parseResult.success) {
-		throw new Error(`Invalid markdown options: ${parseResult.error.message}`);
-	}
-	const resolvedOptions = parseResult.data;
-
-	// Define the resolved Callout Theme
-	let resolvedCalloutTheme: string | undefined;
-
-	// Resolve the callout theme based on the user's configuration
-	if (resolvedOptions?.flavor === 'studiocms' && resolvedOptions.callouts !== false) {
-		resolvedCalloutTheme = resolve(
-			`./styles/md-remark-callouts/${resolvedOptions.callouts || 'obsidian'}.css`
-		);
-	} else {
-		resolvedCalloutTheme = undefined;
-	}
-
 	// Return the plugin configuration
 	return definePlugin({
 		identifier: packageIdentifier,
@@ -83,40 +132,7 @@ export function studiocmsMD(options?: MarkdownSchemaOptions): StudioCMSPlugin {
 		studiocmsMinimumVersion: '0.1.0-beta.21',
 		hooks: {
 			'studiocms:astro:config': ({ addIntegrations }) => {
-				addIntegrations({
-					name: packageIdentifier,
-					hooks: {
-						'astro:config:setup': (params) => {
-							// Add the virtual imports for the MDX renderer
-							addVirtualImports(params, {
-								name: packageIdentifier,
-								imports: {
-									'studiocms:md/config': `
-										export const config = ${JSON.stringify(resolvedOptions)};
-										export default config;
-									`,
-									'studiocms:md/pre-render': `
-										export { preRender } from '${internalRenderer}';
-									`,
-									'studiocms:md/styles': `
-										import '${resolve('./styles/md-remark-headings.css')}';
-										${resolvedCalloutTheme ? `import '${resolvedCalloutTheme}';` : ''}
-									`,
-								},
-							});
-
-							if (resolvedOptions?.flavor === 'studiocms') {
-								// Inject the StudioCMS-specific styles for the markdown renderer
-								params.injectScript('page-ssr', `import "studiocms:md/styles";`);
-							}
-						},
-						'astro:config:done': ({ config }) => {
-							// Store the resolved options in the shared context for the renderer
-							shared.mdConfig = resolvedOptions;
-							shared.astroMDRemark = config.markdown;
-						},
-					},
-				});
+				addIntegrations(internalMarkdownIntegration(packageIdentifier, resolvedOptions));
 			},
 			'studiocms:config:setup': ({ setRendering }) => {
 				setRendering({

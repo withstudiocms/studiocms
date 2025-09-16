@@ -47,6 +47,8 @@ export default defineConfig({
 				'**/**/test/fixtures/**',
 				'**/**/test/test-utils.ts',
 				'**/**/runtime.ts',
+				// This is a minified Script used by @studiocms/md that is being injected using an Astro Component
+				'**/**/components/TinyMDE.astro',
 			],
 		},
 	},
