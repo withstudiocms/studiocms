@@ -102,7 +102,7 @@ And some **bold** text.`;
 
 		test('Editor with very long content', async () => {
 			const container = await AstroContainer.create();
-			const longContent = '# Title\n\n' + 'A'.repeat(10000);
+			const longContent = `# Title\n\n${'A'.repeat(10000)}`;
 			const props: TestEditorProps = {
 				content: longContent,
 			};

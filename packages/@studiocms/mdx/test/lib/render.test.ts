@@ -1,19 +1,13 @@
+import type { JSXElementConstructor, ReactElement } from 'react';
 import type { PluggableList } from 'unified';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { renderMDX } from '../../src/lib/render.js';
 import { createMockMDXContent } from '../test-utils.js';
 
 interface MockReactElement {
-	type: any;
-	props: Record<string, any>;
+	type: unknown;
+	props: Record<string, unknown>;
 	key: string | null;
-}
-
-interface MockEvaluateOptions {
-	remarkPlugins: PluggableList;
-	rehypePlugins: PluggableList;
-	recmaPlugins: PluggableList;
-	remarkRehypeOptions: Record<string, any>;
 }
 
 // Mock the dependencies
@@ -22,7 +16,7 @@ vi.mock('@mdx-js/mdx', () => ({
 }));
 
 vi.mock('react', () => ({
-	createElement: vi.fn((component: any, props: Record<string, any> = {}, ...children: any[]): MockReactElement => ({
+	createElement: vi.fn((component: unknown, props: Record<string, unknown> = {}, ...children: unknown[]): MockReactElement => ({
 		type: component,
 		props: { ...props, children },
 		key: null,
@@ -89,7 +83,7 @@ describe('renderMDX', () => {
 			type: mockComponent,
 			props: {},
 			key: null,
-		} as MockReactElement);
+		} as unknown as ReactElement<Record<string, never>, string | JSXElementConstructor<unknown>>);
 
 		vi.mocked(renderToString).mockReturnValue('<h1>Hello World</h1>');
 
@@ -128,7 +122,7 @@ describe('renderMDX', () => {
 			type: mockComponent,
 			props: {},
 			key: null,
-		} as MockReactElement);
+		} as unknown as ReactElement<Record<string, never>, string | JSXElementConstructor<unknown>>);
 
 		vi.mocked(renderToString).mockReturnValue('<div><h1>Hello World</h1><button>Click me!</button></div>');
 
@@ -159,7 +153,7 @@ describe('renderMDX', () => {
 			type: mockComponent,
 			props: {},
 			key: null,
-		} as MockReactElement);
+		} as unknown as ReactElement<Record<string, never>, string | JSXElementConstructor<unknown>>);
 
 		vi.mocked(renderToString).mockReturnValue('');
 
@@ -184,7 +178,7 @@ describe('renderMDX', () => {
 			type: mockComponent,
 			props: {},
 			key: null,
-		} as MockReactElement);
+		} as unknown as ReactElement<Record<string, never>, string | JSXElementConstructor<unknown>>);
 
 		vi.mocked(renderToString).mockReturnValue('test');
 
@@ -212,7 +206,7 @@ describe('renderMDX', () => {
 			type: mockComponent,
 			props: {},
 			key: null,
-		} as MockReactElement);
+		} as unknown as ReactElement<Record<string, never>, string | JSXElementConstructor<unknown>>);
 
 		vi.mocked(renderToString).mockReturnValue('test');
 
@@ -250,7 +244,7 @@ describe('renderMDX', () => {
 			type: mockComponent,
 			props: {},
 			key: null,
-		} as MockReactElement);
+		} as unknown as ReactElement<Record<string, never>, string | JSXElementConstructor<unknown>>);
 
 		vi.mocked(renderToString).mockImplementation(() => {
 			throw new Error('Render failed');
@@ -284,7 +278,7 @@ describe('renderMDX', () => {
 				type: mockComponent,
 				props: {},
 				key: null,
-			} as any);
+			} as unknown as ReactElement<Record<string, never>, string | JSXElementConstructor<unknown>>);
 
 			vi.mocked(renderToString).mockReturnValue('test');
 
@@ -313,7 +307,7 @@ describe('renderMDX', () => {
 				type: mockComponent,
 				props: {},
 				key: null,
-			} as any);
+			} as unknown as ReactElement<Record<string, never>, string | JSXElementConstructor<unknown>>);
 
 			vi.mocked(renderToString).mockReturnValue('test');
 
@@ -355,7 +349,7 @@ import { Component } from 'react';
 				type: mockComponent,
 				props: {},
 				key: null,
-			} as any);
+			} as unknown as ReactElement<Record<string, never>, string | JSXElementConstructor<unknown>>);
 
 			vi.mocked(renderToString).mockReturnValue('test');
 
@@ -387,7 +381,7 @@ Special chars: <>&"'`;
 				type: mockComponent,
 				props: {},
 				key: null,
-			} as any);
+			} as unknown as ReactElement<Record<string, never>, string | JSXElementConstructor<unknown>>);
 
 			vi.mocked(renderToString).mockReturnValue('test');
 
@@ -426,7 +420,7 @@ Special chars: <>&"'`;
 				type: mockComponent,
 				props: {},
 				key: null,
-			} as any);
+			} as unknown as ReactElement<Record<string, never>, string | JSXElementConstructor<unknown>>);
 
 			vi.mocked(renderToString).mockReturnValue('test');
 
@@ -459,7 +453,7 @@ Special chars: <>&"'`;
 				type: mockComponent,
 				props: {},
 				key: null,
-			} as any);
+			} as unknown as ReactElement<Record<string, never>, string | JSXElementConstructor<unknown>>);
 
 			vi.mocked(renderToString).mockReturnValue('test');
 
@@ -503,7 +497,7 @@ Special chars: <>&"'`;
 				type: mockComponent,
 				props: { className: 'test-class', id: 'test-id' },
 				key: 'test-key',
-			} as any);
+			} as unknown as ReactElement<Record<string, never>, string | JSXElementConstructor<unknown>>);
 
 			vi.mocked(renderToString).mockReturnValue('<div class="test-class" id="test-id">test</div>');
 

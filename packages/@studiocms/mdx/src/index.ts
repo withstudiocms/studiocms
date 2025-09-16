@@ -6,10 +6,62 @@
 /// <reference types="./virtual.d.ts" preserve="true" />
 /// <reference types="studiocms/v/types" />
 
+import type { AstroIntegration } from 'astro';
 import { addVirtualImports, createResolver } from 'astro-integration-kit';
 import { definePlugin, type StudioCMSPlugin } from 'studiocms/plugins';
 import { shared } from './lib/shared.js';
 import type { MDXPluginOptions } from './types.js';
+
+/**
+ * Creates an internal Astro integration for MDX functionality.
+ * This is used by the StudioCMS plugin and can be used directly in tests.
+ *
+ * @param {string} packageIdentifier - The package identifier for the integration.
+ * @param {MDXPluginOptions} [options] - Optional configuration options for the MDX plugin.
+ * @returns {AstroIntegration} The configured Astro integration.
+ */
+export function internalMDXIntegration(
+	packageIdentifier: string,
+	options?: MDXPluginOptions
+): AstroIntegration {
+	// Resolve the path to the current file
+	const { resolve } = createResolver(import.meta.url);
+
+	// Resolve the path to the internal renderer
+	const internalRenderer = resolve('./lib/render.js');
+
+	// Resolve the options and set defaults if not provided
+	const resolvedOptions = {
+		remarkPlugins: options?.remarkPlugins || [],
+		rehypePlugins: options?.rehypePlugins || [],
+		recmaPlugins: options?.recmaPlugins || [],
+		remarkRehypeOptions: options?.remarkRehypeOptions || {},
+	};
+
+	return {
+		name: packageIdentifier,
+		hooks: {
+			'astro:config:setup': (params) => {
+				// Add the virtual imports for the MDX renderer
+				addVirtualImports(params, {
+					name: packageIdentifier,
+					imports: {
+						'studiocms:mdx/renderer': `
+							import { renderMDX as _render } from '${internalRenderer}';
+		
+							export const renderMDX = _render;
+							export default renderMDX;
+						`,
+					},
+				});
+			},
+			'astro:config:done': () => {
+				// Store the resolved options in the shared context for the renderer
+				shared.mdxConfig = resolvedOptions;
+			},
+		},
+	};
+}
 
 /**
  * Creates and configures the StudioCMS MDX plugin.
@@ -60,29 +112,7 @@ export function studiocmsMDX(options?: MDXPluginOptions): StudioCMSPlugin {
 		requires: ['@studiocms/md'],
 		hooks: {
 			'studiocms:astro:config': ({ addIntegrations }) => {
-				addIntegrations({
-					name: packageIdentifier,
-					hooks: {
-						'astro:config:setup': (params) => {
-							// Add the virtual imports for the MDX renderer
-							addVirtualImports(params, {
-								name: packageIdentifier,
-								imports: {
-									'studiocms:mdx/renderer': `
-										import { renderMDX as _render } from '${internalRenderer}';
-		
-										export const renderMDX = _render;
-										export default renderMDX;
-									`,
-								},
-							});
-						},
-						'astro:config:done': () => {
-							// Store the resolved options in the shared context for the renderer
-							shared.mdxConfig = resolvedOptions;
-						},
-					},
-				});
+				addIntegrations(internalMDXIntegration(packageIdentifier, resolvedOptions));
 			},
 			'studiocms:config:setup': ({ setRendering }) => {
 				setRendering({

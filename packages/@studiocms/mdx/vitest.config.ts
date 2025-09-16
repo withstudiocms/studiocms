@@ -2,7 +2,7 @@ import type { AstroIntegration } from 'astro';
 import { getViteConfig } from 'astro/config';
 import { addVirtualImports } from 'astro-integration-kit';
 import { defineProject } from 'vitest/config';
-import { studiocmsMDX } from './src/index.js';
+import { internalMDXIntegration } from './src/index.js';
 
 const testIntegration: AstroIntegration = {
 	name: 'test-integration',
@@ -29,7 +29,7 @@ export default defineProject(
 			},
 		},
 		{
-			integrations: [testIntegration, studiocmsMDX()],
+			integrations: [testIntegration, internalMDXIntegration('@studiocms/mdx')],
 		}
 	)
 );

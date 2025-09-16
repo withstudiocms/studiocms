@@ -1,19 +1,14 @@
-import type { StudioCMSPlugin } from 'studiocms/types';
+import type { PluggableList } from 'unified';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { studiocmsMDX } from '../src/index.js';
 import { createMockMDXOptions } from './test-utils.js';
 
 interface MockAddIntegrationsParams {
-	addIntegrations: (integration: any) => void;
+	addIntegrations: (integration: unknown) => void;
 }
 
 interface MockSetRenderingParams {
-	setRendering: (rendering: any) => void;
-}
-
-interface MockAstroConfigSetupParams {
-	addVirtualImports: (params: any, imports: any) => void;
-	injectScript?: (target: string, script: string) => void;
+	setRendering: (rendering: unknown) => void;
 }
 
 // Mock the dependencies
@@ -50,8 +45,8 @@ describe('studiocmsMDX', () => {
 
 		it('should create a plugin with custom options', () => {
 			const options = createMockMDXOptions({
-				remarkPlugins: [['remark-gfm', {}] as any],
-				rehypePlugins: [['rehype-highlight', {}] as any],
+				remarkPlugins: [[vi.fn(), {}]],
+				rehypePlugins: [[vi.fn(), {}]],
 				recmaPlugins: [],
 				remarkRehypeOptions: { allowDangerousHtml: true },
 			});
@@ -96,7 +91,7 @@ describe('studiocmsMDX', () => {
 		});
 
 		it('should call studiocms:astro:config hook with addIntegrations', async () => {
-			const plugin: StudioCMSPlugin = studiocmsMDX();
+			const plugin: ReturnType<typeof studiocmsMDX> = studiocmsMDX();
 			const mockAddIntegrations = vi.fn();
 
 			const hook = plugin.hooks['studiocms:astro:config'];
@@ -114,7 +109,7 @@ describe('studiocmsMDX', () => {
 		});
 
 		it('should call studiocms:config:setup hook with setRendering', () => {
-			const plugin: StudioCMSPlugin = studiocmsMDX();
+			const plugin: ReturnType<typeof studiocmsMDX> = studiocmsMDX();
 			const mockSetRendering = vi.fn();
 
 			const hook = plugin.hooks['studiocms:config:setup'];
@@ -230,9 +225,9 @@ describe('studiocmsMDX', () => {
 	describe('Edge cases', () => {
 		it('should handle plugin options with mixed types', () => {
 			const mixedOptions = createMockMDXOptions({
-				remarkPlugins: [['plugin1', {}] as any, ['plugin2', { option: 'value' }] as any],
-				rehypePlugins: [['rehype1', {}] as any],
-				recmaPlugins: [['recma1', {}] as any],
+				remarkPlugins: [[vi.fn(), {}], [vi.fn(), { option: 'value' }]],
+				rehypePlugins: [[vi.fn(), {}]],
+				recmaPlugins: [[vi.fn(), {}]],
 				remarkRehypeOptions: { allowDangerousHtml: true, footnoteLabel: 'Notes' },
 			});
 
@@ -258,7 +253,7 @@ describe('studiocmsMDX', () => {
 				remarkRehypeOptions: {
 					allowDangerousHtml: true,
 					handlers: {
-						custom: () => {}
+						paragraph: () => undefined
 					}
 				},
 			});
@@ -271,19 +266,16 @@ describe('studiocmsMDX', () => {
 
 		it('should handle plugin with maximum configuration', () => {
 			const maxOptions = createMockMDXOptions({
-				remarkPlugins: Array(10).fill(['plugin', {}] as any),
-				rehypePlugins: Array(10).fill(['rehype', {}] as any),
-				recmaPlugins: Array(10).fill(['recma', {}] as any),
+				remarkPlugins: Array(10).fill([vi.fn(), {}]),
+				rehypePlugins: Array(10).fill([vi.fn(), {}]),
+				recmaPlugins: Array(10).fill([vi.fn(), {}]),
 				remarkRehypeOptions: {
 					allowDangerousHtml: true,
 					footnoteLabel: 'Notes',
 					footnoteLabelTagName: 'h2',
-					footnoteLabelId: 'footnote-label',
 					footnoteBackLabel: 'Back to content',
-					footnoteBackLabelId: 'footnote-back-label',
 					clobberPrefix: 'user-content-',
 					handlers: {},
-					transform: () => {},
 				},
 			});
 
@@ -309,10 +301,10 @@ describe('studiocmsMDX', () => {
 
 		it('should handle plugin creation with undefined nested properties', () => {
 			const optionsWithUndefined = createMockMDXOptions({
-				remarkPlugins: undefined as any,
-				rehypePlugins: undefined as any,
-				recmaPlugins: undefined as any,
-				remarkRehypeOptions: undefined as any,
+				remarkPlugins: undefined as unknown as PluggableList,
+				rehypePlugins: undefined as unknown as PluggableList,
+				recmaPlugins: undefined as unknown as PluggableList,
+				remarkRehypeOptions: undefined as unknown as Record<string, unknown>,
 			});
 
 			const plugin = studiocmsMDX(optionsWithUndefined);
@@ -323,10 +315,10 @@ describe('studiocmsMDX', () => {
 
 		it('should handle plugin creation with null nested properties', () => {
 			const optionsWithNull = createMockMDXOptions({
-				remarkPlugins: null as any,
-				rehypePlugins: null as any,
-				recmaPlugins: null as any,
-				remarkRehypeOptions: null as any,
+				remarkPlugins: null as unknown as PluggableList,
+				rehypePlugins: null as unknown as PluggableList,
+				recmaPlugins: null as unknown as PluggableList,
+				remarkRehypeOptions: null as unknown as Record<string, unknown>,
 			});
 
 			const plugin = studiocmsMDX(optionsWithNull);
