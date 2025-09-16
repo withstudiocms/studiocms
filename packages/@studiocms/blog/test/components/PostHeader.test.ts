@@ -17,7 +17,7 @@ describe('PostHeader component', () => {
 		expect(result).toMatch(/<h1 class="title".*?>Test Post<\/h1>/);
 		expect(result).toMatch(/<p class="description".*?>This is a test post description\.<\/p>/);
 		expect(result).toMatch(
-			/<p class="date".*?>Published: <time datetime="2023-01-01T00:00:00.000Z".*?>December 31, 2022<\/time><\/p>/
+			/<p class="date".*?>Published: <time datetime="2023-01-01T00:00:00.000Z".*?>January 1, 2023<\/time><\/p>/
 		);
 	});
 });
