@@ -3,15 +3,7 @@ import { pathWithBase } from 'studiocms:lib';
 import { SDKCore } from 'studiocms:sdk';
 import rss, { type RSSFeedItem } from '@astrojs/rss';
 import { createJsonResponse, Effect, withEffectAPI } from 'studiocms/effect';
-
-const blogRouteFullPath = `${blogConfig.route}/[...slug]`;
-
-function getBlogRoute(slug: string) {
-	if (blogRouteFullPath) {
-		return blogRouteFullPath.replace('[...slug]', slug);
-	}
-	return '#';
-}
+import { getBlogRoute } from '../utils/remapFilter.js';
 
 export const GET = withEffectAPI(
 	Effect.fn(function* ({ site: _site, locals }) {

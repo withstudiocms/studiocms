@@ -1,21 +1,20 @@
 import blogConfig from 'studiocms:blog/config';
 import { pathWithBase } from 'studiocms:lib';
-import type { PageDataCacheObject } from 'studiocms:sdk/types';
 import type { APIContext } from 'astro';
 import { dual } from 'studiocms/effect';
+import type { PageDataCacheObject } from 'studiocms/sdk/types';
 
 const blogRouteFullPath = `${blogConfig.route}/[...slug]`;
 
 export function getBlogRoute(slug: string) {
-	if (blogRouteFullPath) {
-		return blogRouteFullPath.replace('[...slug]', slug);
-	}
-	return '#';
+	return blogRouteFullPath.replace('[...slug]', slug);
 }
 
 export type SiteMapTemplate = {
 	location: string;
 }[];
+
+export type { APIContext, PageDataCacheObject };
 
 export const remapFilterSitemap = dual<
 	(

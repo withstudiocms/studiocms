@@ -29,7 +29,7 @@ export default defineProject(
 			},
 		},
 		{
-			integrations: [testIntegration, internalMarkdownIntegration('@studiocms/md')],
+			integrations: [testIntegration, internalMarkdownIntegration()],
 		}
 	)
 );

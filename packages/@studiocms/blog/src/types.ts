@@ -5,7 +5,7 @@ import { HeadConfigSchema } from 'studiocms/lib/head';
 export type HeadUserConfig = z.input<ReturnType<typeof HeadConfigSchema>>;
 export type HeadConfig = z.output<ReturnType<typeof HeadConfigSchema>>;
 
-const faviconTypeMap = {
+export const faviconTypeMap = {
 	'.ico': 'image/x-icon',
 	'.gif': 'image/gif',
 	'.jpeg': 'image/jpeg',
@@ -14,7 +14,7 @@ const faviconTypeMap = {
 	'.svg': 'image/svg+xml',
 };
 
-function isFaviconExt(ext: string): ext is keyof typeof faviconTypeMap {
+export function isFaviconExt(ext: string): ext is keyof typeof faviconTypeMap {
 	return ext in faviconTypeMap;
 }
 
