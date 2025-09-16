@@ -47,13 +47,15 @@
   "scripts": {
     "build": "buildkit build 'src/**/*.{ts,astro,css,json,png,d.ts}'",
     "dev": "buildkit dev 'src/**/*.{ts,astro,css,json,png,d.ts}'",
-    "typecheck": "tspc -p tsconfig.tspc.json"
+    "typecheck": "tspc -p tsconfig.tspc.json",
+    "test": "vitest"
   },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
-    }
+    },
+    "./routes/*": "./dist/routes/*"
   },
   "type": "module",
   "dependencies": {

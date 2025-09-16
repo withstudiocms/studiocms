@@ -12,10 +12,9 @@ import { definePlugin, type StudioCMSPlugin } from 'studiocms/plugins';
 import { shared } from './lib/shared.js';
 import { MarkdownSchema, type MarkdownSchemaOptions } from './types.js';
 
-export function internalMarkdownIntegration(
-	packageIdentifier: string,
-	options?: MarkdownSchemaOptions
-): AstroIntegration {
+const packageIdentifier = '@studiocms/md';
+
+export function internalMarkdownIntegration(options?: MarkdownSchemaOptions): AstroIntegration {
 	// Resolve the path to the current file
 	const { resolve } = createResolver(import.meta.url);
 	// Resolve the path to the internal renderer
@@ -100,9 +99,6 @@ export function studiocmsMD(options?: MarkdownSchemaOptions): StudioCMSPlugin {
 	// Resolve the path to the current file
 	const { resolve } = createResolver(import.meta.url);
 
-	// Define the package identifier
-	const packageIdentifier = '@studiocms/md';
-
 	// Resolve the options and set defaults if not provided
 	const parseResult = MarkdownSchema.safeParse(options);
 	if (!parseResult.success) {
@@ -132,7 +128,7 @@ export function studiocmsMD(options?: MarkdownSchemaOptions): StudioCMSPlugin {
 		studiocmsMinimumVersion: '0.1.0-beta.21',
 		hooks: {
 			'studiocms:astro:config': ({ addIntegrations }) => {
-				addIntegrations(internalMarkdownIntegration(packageIdentifier, resolvedOptions));
+				addIntegrations(internalMarkdownIntegration(resolvedOptions));
 			},
 			'studiocms:config:setup': ({ setRendering }) => {
 				setRendering({
