@@ -49,6 +49,9 @@ export default defineConfig({
 				'**/**/runtime.ts',
 				// This is a minified Script used by @studiocms/md that is being injected using an Astro Component
 				'**/**/components/TinyMDE.astro',
+				// Exclude files from runtime only paths
+				'**/routes/**',
+				'**/runtime/**',
 			],
 		},
 	},
