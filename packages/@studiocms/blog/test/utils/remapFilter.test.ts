@@ -22,22 +22,6 @@ describe('getBlogRoute', () => {
 		expect(result).toBe('/blog/');
 	});
 
-	it('returns "#" if blogRouteFullPath is falsy', () => {
-		// Temporarily override blogRouteFullPath to falsy
-		const _original = remapFilterUtils.getBlogRoute;
-		// Simulate blogRouteFullPath being falsy by mocking the function
-		const getBlogRoute = (slug: string) => {
-			// Simulate blogRouteFullPath falsy
-			const blogRouteFullPath: string = '';
-			if (blogRouteFullPath) {
-				return blogRouteFullPath.replace('[...slug]', slug);
-			}
-			return '#';
-		};
-		expect(getBlogRoute('anything')).toBe('#');
-		// Restore original if needed
-	});
-
 	it('correctly replaces slug with special characters', () => {
 		const slug = 'foo/bar/baz';
 		const result = remapFilterUtils.getBlogRoute(slug);

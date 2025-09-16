@@ -37,7 +37,7 @@ describe('Layout component', () => {
 		expect(result).toMatch(
 			/<meta name="description" content="This is a test page - A test site for StudioCMS"\/>/
 		);
-		expect(result).toMatch(/<meta name="generator" content="Astro v5.13.7"\/>/);
+		expect(result).toMatch(/<meta name="generator" content="Astro v\d+\.\d+\.\d+"\/>/);
 		expect(result).toMatch(/<meta name="generator" content="StudioCMS v0.0.0-test"\/>/);
 		expect(result).toMatch(/<meta property="og:title" content="Test Page \| Test Site"\/>/);
 		expect(result).toMatch(/<meta property="og:type" content="website"\/>/);

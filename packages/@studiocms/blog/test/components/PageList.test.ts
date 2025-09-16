@@ -2,7 +2,7 @@
 import { experimental_AstroContainer as AstroContainer } from 'astro/container';
 import type { CombinedPageData } from 'studiocms/sdk/types';
 import { describe, expect, test } from 'vitest';
-import PageList from '../../dist/components/PageList.astro';
+import PageList from '../../src/components/PageList.astro';
 
 describe('PageList component', () => {
 	test('PageList renders correctly with no blog posts', async () => {

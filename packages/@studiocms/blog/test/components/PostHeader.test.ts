@@ -1,7 +1,7 @@
 /// <reference types="astro/client" />
 import { experimental_AstroContainer as AstroContainer } from 'astro/container';
 import { describe, expect, test } from 'vitest';
-import PostHeader from '../../dist/components/PostHeader.astro';
+import PostHeader from '../../src/components/PostHeader.astro';
 
 describe('PostHeader component', () => {
 	test('PostHeader renders correctly', async () => {

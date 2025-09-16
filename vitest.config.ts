@@ -52,6 +52,7 @@ export default defineConfig({
 				// Exclude files from runtime only paths
 				'**/routes/**',
 				'**/runtime/**',
+				'**/dist/**',
 			],
 		},
 	},
