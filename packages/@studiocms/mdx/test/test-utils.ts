@@ -16,4 +16,5 @@ export const createMockMDXOptions = (
 /**
  * Mock MDX content for testing
  */
-export const createMockMDXContent = (content = '# Hello World\n\nThis is a test MDX content.') => content;
+export const createMockMDXContent = (content = '# Hello World\n\nThis is a test MDX content.') =>
+	content;

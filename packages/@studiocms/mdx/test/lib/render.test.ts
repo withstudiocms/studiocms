@@ -16,11 +16,17 @@ vi.mock('@mdx-js/mdx', () => ({
 }));
 
 vi.mock('react', () => ({
-	createElement: vi.fn((component: unknown, props: Record<string, unknown> = {}, ...children: unknown[]): MockReactElement => ({
-		type: component,
-		props: { ...props, children },
-		key: null,
-	})),
+	createElement: vi.fn(
+		(
+			component: unknown,
+			props: Record<string, unknown> = {},
+			...children: unknown[]
+		): MockReactElement => ({
+			type: component,
+			props: { ...props, children },
+			key: null,
+		})
+	),
 }));
 
 vi.mock('react-dom/server', () => ({
@@ -89,12 +95,15 @@ describe('renderMDX', () => {
 
 		const result = await renderMDX(mockContent);
 
-		expect(evaluate).toHaveBeenCalledWith(mockContent, expect.objectContaining({
-			remarkPlugins: expect.any(Array),
-			rehypePlugins: expect.any(Array),
-			recmaPlugins: expect.any(Array),
-			remarkRehypeOptions: expect.any(Object),
-		}));
+		expect(evaluate).toHaveBeenCalledWith(
+			mockContent,
+			expect.objectContaining({
+				remarkPlugins: expect.any(Array),
+				rehypePlugins: expect.any(Array),
+				recmaPlugins: expect.any(Array),
+				remarkRehypeOptions: expect.any(Object),
+			})
+		);
 
 		expect(createElement).toHaveBeenCalledWith(mockComponent);
 		expect(renderToString).toHaveBeenCalled();
@@ -124,16 +133,21 @@ describe('renderMDX', () => {
 			key: null,
 		} as unknown as ReactElement<Record<string, never>, string | JSXElementConstructor<unknown>>);
 
-		vi.mocked(renderToString).mockReturnValue('<div><h1>Hello World</h1><button>Click me!</button></div>');
+		vi.mocked(renderToString).mockReturnValue(
+			'<div><h1>Hello World</h1><button>Click me!</button></div>'
+		);
 
 		const result = await renderMDX(mdxContent);
 
-		expect(evaluate).toHaveBeenCalledWith(mdxContent, expect.objectContaining({
-			remarkPlugins: expect.any(Array),
-			rehypePlugins: expect.any(Array),
-			recmaPlugins: expect.any(Array),
-			remarkRehypeOptions: expect.any(Object),
-		}));
+		expect(evaluate).toHaveBeenCalledWith(
+			mdxContent,
+			expect.objectContaining({
+				remarkPlugins: expect.any(Array),
+				rehypePlugins: expect.any(Array),
+				recmaPlugins: expect.any(Array),
+				remarkRehypeOptions: expect.any(Object),
+			})
+		);
 
 		expect(result).toBe('<div><h1>Hello World</h1><button>Click me!</button></div>');
 	});

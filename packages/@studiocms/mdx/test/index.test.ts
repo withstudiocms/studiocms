@@ -225,7 +225,10 @@ describe('studiocmsMDX', () => {
 	describe('Edge cases', () => {
 		it('should handle plugin options with mixed types', () => {
 			const mixedOptions = createMockMDXOptions({
-				remarkPlugins: [[vi.fn(), {}], [vi.fn(), { option: 'value' }]],
+				remarkPlugins: [
+					[vi.fn(), {}],
+					[vi.fn(), { option: 'value' }],
+				],
 				rehypePlugins: [[vi.fn(), {}]],
 				recmaPlugins: [[vi.fn(), {}]],
 				remarkRehypeOptions: { allowDangerousHtml: true, footnoteLabel: 'Notes' },
@@ -240,21 +243,24 @@ describe('studiocmsMDX', () => {
 		it('should handle deeply nested plugin configurations', () => {
 			const nestedOptions = createMockMDXOptions({
 				remarkPlugins: [
-					['remark-plugin', {
-						options: {
-							nested: {
-								deep: {
-									value: 'test'
-								}
-							}
-						}
-					}] as any
+					[
+						'remark-plugin',
+						{
+							options: {
+								nested: {
+									deep: {
+										value: 'test',
+									},
+								},
+							},
+						},
+					] as any,
 				],
 				remarkRehypeOptions: {
 					allowDangerousHtml: true,
 					handlers: {
-						paragraph: () => undefined
-					}
+						paragraph: () => undefined,
+					},
 				},
 			});
 
