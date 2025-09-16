@@ -166,7 +166,7 @@ Line 4`;
 	test('Editor renders with no props', async () => {
 		const container = await AstroContainer.create();
 		const result = await container.renderToString(Editor);
-		
+
 		expect(result).toContain('<div class="editor-container"');
 		expect(result).toMatch(
 			/<textarea[^>]*id="page-content"[^>]*name="page-content"[^>]*>[\s\S]*<\/textarea>/
@@ -179,7 +179,7 @@ Line 4`;
 		const validProps: { content: string } = {
 			content: 'Test content',
 		};
-		
+
 		expect(validProps.content).toBeDefined();
 		expect(typeof validProps.content).toBe('string');
 	});
@@ -194,7 +194,7 @@ Line 4`;
 			'Content with\ttabs',
 			'Content with spaces    ',
 		];
-		
+
 		for (const testCase of testCases) {
 			const container = await AstroContainer.create();
 			const result = await container.renderToString(Editor, {
@@ -202,7 +202,7 @@ Line 4`;
 					content: testCase,
 				},
 			});
-			
+
 			expect(result).toContain('<div class="editor-container"');
 			expect(result).toMatch(
 				/<textarea[^>]*id="page-content"[^>]*name="page-content"[^>]*>[\s\S]*<\/textarea>/

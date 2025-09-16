@@ -56,9 +56,9 @@ describe('MarkDoc Render Library', () => {
 	test('renderMarkDoc with HTML renderer', async () => {
 		const { shared } = await import('../../src/lib/shared.js');
 		const { renderMarkDoc } = await import('../../src/lib/render.js');
-		
+
 		shared.markDocConfig.type = 'html';
-		
+
 		const content = '# Test Title';
 		const result = await renderMarkDoc(content);
 
@@ -75,9 +75,9 @@ describe('MarkDoc Render Library', () => {
 	test('renderMarkDoc with react-static renderer', async () => {
 		const { shared } = await import('../../src/lib/shared.js');
 		const { renderMarkDoc } = await import('../../src/lib/render.js');
-		
+
 		shared.markDocConfig.type = 'react-static';
-		
+
 		const content = '# Test Title';
 		const result = await renderMarkDoc(content);
 
@@ -94,7 +94,7 @@ describe('MarkDoc Render Library', () => {
 	test('renderMarkDoc with custom renderer', async () => {
 		const { shared } = await import('../../src/lib/shared.js');
 		const { renderMarkDoc } = await import('../../src/lib/render.js');
-		
+
 		const customRenderer = {
 			name: 'custom',
 			render: vi.fn().mockResolvedValue('<h1>Custom Render</h1>'),
@@ -116,9 +116,9 @@ describe('MarkDoc Render Library', () => {
 	test('renderMarkDoc throws error when no renderer type is specified', async () => {
 		const { shared } = await import('../../src/lib/shared.js');
 		const { renderMarkDoc } = await import('../../src/lib/render.js');
-		
+
 		shared.markDocConfig.type = undefined as unknown as 'html';
-		
+
 		const content = '# Test Title';
 
 		await expect(renderMarkDoc(content)).rejects.toThrow(
@@ -134,7 +134,7 @@ describe('MarkDoc Render Library', () => {
 	test('renderMarkDoc handles custom renderer errors', async () => {
 		const { shared } = await import('../../src/lib/shared.js');
 		const { renderMarkDoc } = await import('../../src/lib/render.js');
-		
+
 		const failingRenderer = {
 			name: 'failing',
 			render: vi.fn().mockRejectedValue(new Error('Render failed')),
@@ -158,10 +158,10 @@ describe('MarkDoc Render Library', () => {
 	test('renderMarkDoc with argParse configuration', async () => {
 		const { shared } = await import('../../src/lib/shared.js');
 		const { renderMarkDoc } = await import('../../src/lib/render.js');
-		
+
 		const argParse = {};
 		shared.markDocConfig.argParse = argParse;
-		
+
 		const content = '# Test Title';
 		const result = await renderMarkDoc(content);
 
@@ -178,7 +178,7 @@ describe('MarkDoc Render Library', () => {
 	test('renderMarkDoc with transformConfig configuration', async () => {
 		const { shared } = await import('../../src/lib/shared.js');
 		const { renderMarkDoc } = await import('../../src/lib/render.js');
-		
+
 		const transformConfig = {
 			nodes: {
 				heading: {
@@ -190,7 +190,7 @@ describe('MarkDoc Render Library', () => {
 			},
 		};
 		shared.markDocConfig.transformConfig = transformConfig;
-		
+
 		const content = '# Test Title';
 		const result = await renderMarkDoc(content);
 
@@ -210,9 +210,9 @@ describe('MarkDoc Render Library', () => {
 	test('renderMarkDoc handles complex content', async () => {
 		const { shared } = await import('../../src/lib/shared.js');
 		const { renderMarkDoc } = await import('../../src/lib/render.js');
-		
+
 		shared.markDocConfig.type = 'html';
-		
+
 		const complexContent = `# Main Title
 
 ## Subtitle
@@ -231,9 +231,9 @@ This is a callout.
 	test('renderMarkDoc handles empty content', async () => {
 		const { shared } = await import('../../src/lib/shared.js');
 		const { renderMarkDoc } = await import('../../src/lib/render.js');
-		
+
 		shared.markDocConfig.type = 'html';
-		
+
 		const result = await renderMarkDoc('');
 
 		expect(result).toBe('<h1>Test Title</h1>');
@@ -242,9 +242,9 @@ This is a callout.
 	test('renderMarkDoc handles whitespace content', async () => {
 		const { shared } = await import('../../src/lib/shared.js');
 		const { renderMarkDoc } = await import('../../src/lib/render.js');
-		
+
 		shared.markDocConfig.type = 'html';
-		
+
 		const result = await renderMarkDoc('   \n\t   ');
 
 		expect(result).toBe('<h1>Test Title</h1>');
@@ -253,9 +253,9 @@ This is a callout.
 	test('renderMarkDoc handles malformed content gracefully', async () => {
 		const { shared } = await import('../../src/lib/shared.js');
 		const { renderMarkDoc } = await import('../../src/lib/render.js');
-		
+
 		shared.markDocConfig.type = 'html';
-		
+
 		const malformedContent = `# Title
 
 {% callout type="info"
@@ -272,7 +272,7 @@ This is also malformed.`;
 	test('renderMarkDoc with all configuration options', async () => {
 		const { shared } = await import('../../src/lib/shared.js');
 		const { renderMarkDoc } = await import('../../src/lib/render.js');
-		
+
 		const argParse = {};
 		const transformConfig = {
 			nodes: {
@@ -300,11 +300,11 @@ This is also malformed.`;
 	test('renderMarkDoc handles async renderer', async () => {
 		const { shared } = await import('../../src/lib/shared.js');
 		const { renderMarkDoc } = await import('../../src/lib/render.js');
-		
+
 		const asyncRenderer = {
 			name: 'async',
 			render: vi.fn().mockImplementation(async () => {
-				await new Promise(resolve => setTimeout(resolve, 10));
+				await new Promise((resolve) => setTimeout(resolve, 10));
 				return '<h1>Async Render</h1>';
 			}),
 		};

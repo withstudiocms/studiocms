@@ -205,7 +205,7 @@ describe('StudioCMS MarkDoc Plugin', () => {
 
 	test('plugin exports default function', async () => {
 		const { default: defaultExport } = await import('../src/index');
-		
+
 		expect(defaultExport).toBe(studiocmsMarkDoc);
 	});
 });

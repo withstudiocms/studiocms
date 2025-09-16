@@ -17,9 +17,9 @@ describe('ReactWrapper.astro', () => {
 		const props = {
 			content: React.createElement('div', null, 'Test React content'),
 		};
-		
+
 		const result = mockReactWrapper(props);
-		
+
 		expect(result).toContain('markdoc-react-renderer');
 		expect(mockMarkDocReactRenderer).toHaveBeenCalledWith({
 			children: props.content,
@@ -30,9 +30,9 @@ describe('ReactWrapper.astro', () => {
 		const props = {
 			content: 'Simple string content',
 		};
-		
+
 		const result = mockReactWrapper(props);
-		
+
 		expect(result).toContain('markdoc-react-renderer');
 		expect(mockMarkDocReactRenderer).toHaveBeenCalledWith({
 			children: props.content,
@@ -43,9 +43,9 @@ describe('ReactWrapper.astro', () => {
 		const props = {
 			content: null,
 		};
-		
+
 		const result = mockReactWrapper(props);
-		
+
 		expect(result).toContain('markdoc-react-renderer');
 		expect(mockMarkDocReactRenderer).toHaveBeenCalledWith({
 			children: null,
@@ -56,9 +56,9 @@ describe('ReactWrapper.astro', () => {
 		const props = {
 			content: undefined,
 		};
-		
+
 		const result = mockReactWrapper(props);
-		
+
 		expect(result).toContain('markdoc-react-renderer');
 		expect(mockMarkDocReactRenderer).toHaveBeenCalledWith({
 			children: undefined,
@@ -66,23 +66,29 @@ describe('ReactWrapper.astro', () => {
 	});
 
 	test('renders with complex React element', async () => {
-		const complexContent = React.createElement('div', { className: 'markdoc-content' },
+		const complexContent = React.createElement(
+			'div',
+			{ className: 'markdoc-content' },
 			React.createElement('h1', null, 'Main Title'),
-			React.createElement('div', null,
+			React.createElement(
+				'div',
+				null,
 				React.createElement('p', null, 'Paragraph content'),
-				React.createElement('ul', null,
+				React.createElement(
+					'ul',
+					null,
 					React.createElement('li', null, 'List item 1'),
 					React.createElement('li', null, 'List item 2')
 				)
 			)
 		);
-		
+
 		const props = {
 			content: complexContent,
 		};
-		
+
 		const result = mockReactWrapper(props);
-		
+
 		expect(result).toContain('markdoc-react-renderer');
 		expect(mockMarkDocReactRenderer).toHaveBeenCalledWith({
 			children: complexContent,
@@ -90,17 +96,19 @@ describe('ReactWrapper.astro', () => {
 	});
 
 	test('renders with React fragment', async () => {
-		const fragmentContent = React.createElement(React.Fragment, null,
+		const fragmentContent = React.createElement(
+			React.Fragment,
+			null,
 			React.createElement('h1', null, 'Title'),
 			React.createElement('p', null, 'Content')
 		);
-		
+
 		const props = {
 			content: fragmentContent,
 		};
-		
+
 		const result = mockReactWrapper(props);
-		
+
 		expect(result).toContain('markdoc-react-renderer');
 		expect(mockMarkDocReactRenderer).toHaveBeenCalledWith({
 			children: fragmentContent,
@@ -113,13 +121,13 @@ describe('ReactWrapper.astro', () => {
 			React.createElement('p', { key: 'para' }, 'Array paragraph'),
 			React.createElement('div', { key: 'div' }, 'Array div'),
 		];
-		
+
 		const props = {
 			content: arrayContent,
 		};
-		
+
 		const result = mockReactWrapper(props);
-		
+
 		expect(result).toContain('markdoc-react-renderer');
 		expect(mockMarkDocReactRenderer).toHaveBeenCalledWith({
 			children: arrayContent,
@@ -134,13 +142,13 @@ describe('ReactWrapper.astro', () => {
 			null,
 			React.createElement('div', { key: 'div' }, 'Mixed div'),
 		];
-		
+
 		const props = {
 			content: mixedContent,
 		};
-		
+
 		const result = mockReactWrapper(props);
-		
+
 		expect(result).toContain('markdoc-react-renderer');
 		expect(mockMarkDocReactRenderer).toHaveBeenCalledWith({
 			children: mixedContent,
@@ -151,9 +159,9 @@ describe('ReactWrapper.astro', () => {
 		const props = {
 			content: '',
 		};
-		
+
 		const result = mockReactWrapper(props);
-		
+
 		expect(result).toContain('markdoc-react-renderer');
 		expect(mockMarkDocReactRenderer).toHaveBeenCalledWith({
 			children: '',
@@ -161,20 +169,22 @@ describe('ReactWrapper.astro', () => {
 	});
 
 	test('renders with React component', async () => {
-		const CustomComponent = ({ children }: { children: React.ReactNode }) => 
+		const CustomComponent = ({ children }: { children: React.ReactNode }) =>
 			React.createElement('div', { className: 'custom' }, children);
-		
-		const componentContent = React.createElement(CustomComponent, null,
+
+		const componentContent = React.createElement(
+			CustomComponent,
+			null,
 			React.createElement('h1', null, 'Component Title'),
 			React.createElement('p', null, 'Component content')
 		);
-		
+
 		const props = {
 			content: componentContent,
 		};
-		
+
 		const result = mockReactWrapper(props);
-		
+
 		expect(result).toContain('markdoc-react-renderer');
 		expect(mockMarkDocReactRenderer).toHaveBeenCalledWith({
 			children: componentContent,
@@ -182,26 +192,36 @@ describe('ReactWrapper.astro', () => {
 	});
 
 	test('renders with deeply nested content', async () => {
-		const nestedContent = React.createElement('div', null,
-			React.createElement('div', null,
-				React.createElement('div', null,
+		const nestedContent = React.createElement(
+			'div',
+			null,
+			React.createElement(
+				'div',
+				null,
+				React.createElement(
+					'div',
+					null,
 					React.createElement('h1', null, 'Deeply Nested Title'),
-					React.createElement('div', null,
+					React.createElement(
+						'div',
+						null,
 						React.createElement('p', null, 'Deeply nested paragraph'),
-						React.createElement('div', null,
+						React.createElement(
+							'div',
+							null,
 							React.createElement('span', null, 'Deeply nested span')
 						)
 					)
 				)
 			)
 		);
-		
+
 		const props = {
 			content: nestedContent,
 		};
-		
+
 		const result = mockReactWrapper(props);
-		
+
 		expect(result).toContain('markdoc-react-renderer');
 		expect(mockMarkDocReactRenderer).toHaveBeenCalledWith({
 			children: nestedContent,
@@ -213,7 +233,7 @@ describe('ReactWrapper.astro', () => {
 		const validProps: { content: React.ReactNode } = {
 			content: React.createElement('div', null, 'Test'),
 		};
-		
+
 		expect(validProps.content).toBeDefined();
 		expect(typeof validProps.content).toBe('object');
 	});
@@ -229,11 +249,11 @@ describe('ReactWrapper.astro', () => {
 			React.createElement('div', null, true),
 			React.createElement('div', null, false),
 		];
-		
+
 		testCases.forEach((testCase) => {
 			const props = { content: testCase };
 			const result = mockReactWrapper(props);
-			
+
 			expect(result).toContain('markdoc-react-renderer');
 			expect(mockMarkDocReactRenderer).toHaveBeenCalledWith({
 				children: testCase,

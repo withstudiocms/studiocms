@@ -21,7 +21,9 @@ vi.mock('astro/container', () => ({
 		create: vi.fn().mockResolvedValue({
 			addServerRenderer: vi.fn(),
 			addClientRenderer: vi.fn(),
-			renderToString: vi.fn().mockResolvedValue('<div class="markdoc-content">Rendered content</div>'),
+			renderToString: vi
+				.fn()
+				.mockResolvedValue('<div class="markdoc-content">Rendered content</div>'),
 		}),
 	},
 }));
@@ -45,7 +47,7 @@ describe('renderReact', () => {
 
 	test('creates a MarkDoc renderer with correct name', () => {
 		const renderer = renderReact();
-		
+
 		expect(renderer).toBeDefined();
 		expect(renderer.name).toBe('react');
 		expect(typeof renderer.render).toBe('function');
@@ -56,9 +58,9 @@ describe('renderReact', () => {
 			Button: 'button',
 			Card: 'div',
 		};
-		
+
 		const renderer = renderReact(components);
-		
+
 		expect(renderer).toBeDefined();
 		expect(renderer.name).toBe('react');
 		expect(typeof renderer.render).toBe('function');
@@ -68,31 +70,33 @@ describe('renderReact', () => {
 		const { experimental_AstroContainer } = await import('astro/container');
 		const { default: Markdoc } = await import('@markdoc/markdoc');
 		const React = await import('react');
-		
+
 		const renderer = renderReact();
 		const mockContent = { type: 'document', children: [] };
-		
+
 		const result = await renderer.render(mockContent);
-		
+
 		expect(result).toBe('<div class="markdoc-content">Rendered content</div>');
 		expect(experimental_AstroContainer.create).toHaveBeenCalled();
-		expect(Markdoc.renderers.react).toHaveBeenCalledWith(mockContent, React, { components: undefined });
+		expect(Markdoc.renderers.react).toHaveBeenCalledWith(mockContent, React, {
+			components: undefined,
+		});
 	});
 
 	test('renders content with custom components', async () => {
 		const { default: Markdoc } = await import('@markdoc/markdoc');
 		const React = await import('react');
-		
+
 		const components: markdocReactComponents = {
 			Button: 'button',
 			Card: 'div',
 		};
-		
+
 		const renderer = renderReact(components);
 		const mockContent = { type: 'document', children: [] };
-		
+
 		const result = await renderer.render(mockContent);
-		
+
 		expect(result).toBe('<div class="markdoc-content">Rendered content</div>');
 		expect(Markdoc.renderers.react).toHaveBeenCalledWith(mockContent, React, { components });
 	});
@@ -100,19 +104,19 @@ describe('renderReact', () => {
 	test('handles container creation and configuration', async () => {
 		const { default: reactRenderer } = await import('@astrojs/react/server.js');
 		const { experimental_AstroContainer } = await import('astro/container');
-		
+
 		const renderer = renderReact();
 		const mockContent = { type: 'document', children: [] };
-		
+
 		await renderer.render(mockContent);
-		
+
 		const mockContainer = await experimental_AstroContainer.create();
-		
+
 		expect(mockContainer.addServerRenderer).toHaveBeenCalledWith({
 			name: '@astrojs/react',
 			renderer: reactRenderer,
 		});
-		
+
 		expect(mockContainer.addClientRenderer).toHaveBeenCalledWith({
 			name: '@astrojs/react',
 			entrypoint: '@astrojs/react/client.js',
@@ -123,12 +127,12 @@ describe('renderReact', () => {
 		const { default: Markdoc } = await import('@markdoc/markdoc');
 		const React = await import('react');
 		const { experimental_AstroContainer } = await import('astro/container');
-		
+
 		const renderer = renderReact();
 		const mockContent = { type: 'document', children: [{ type: 'heading', level: 1 }] };
-		
+
 		await renderer.render(mockContent);
-		
+
 		const mockContainer = await experimental_AstroContainer.create();
 		expect(mockContainer.renderToString).toHaveBeenCalledWith('ReactWrapper', {
 			props: {
@@ -140,24 +144,26 @@ describe('renderReact', () => {
 	test('handles undefined components', async () => {
 		const { default: Markdoc } = await import('@markdoc/markdoc');
 		const React = await import('react');
-		
+
 		const renderer = renderReact(undefined);
 		const mockContent = { type: 'document', children: [] };
-		
+
 		await renderer.render(mockContent);
-		
-		expect(Markdoc.renderers.react).toHaveBeenCalledWith(mockContent, React, { components: undefined });
+
+		expect(Markdoc.renderers.react).toHaveBeenCalledWith(mockContent, React, {
+			components: undefined,
+		});
 	});
 
 	test('handles empty components object', async () => {
 		const { default: Markdoc } = await import('@markdoc/markdoc');
 		const React = await import('react');
-		
+
 		const renderer = renderReact({});
 		const mockContent = { type: 'document', children: [] };
-		
+
 		await renderer.render(mockContent);
-		
+
 		expect(Markdoc.renderers.react).toHaveBeenCalledWith(mockContent, React, { components: {} });
 	});
 
@@ -168,12 +174,15 @@ describe('renderReact', () => {
 			children: [
 				{ type: 'heading', level: 1, children: [{ type: 'text', content: 'Title' }] },
 				{ type: 'paragraph', children: [{ type: 'text', content: 'Content' }] },
-				{ type: 'list', children: [{ type: 'listItem', children: [{ type: 'text', content: 'Item' }] }] },
+				{
+					type: 'list',
+					children: [{ type: 'listItem', children: [{ type: 'text', content: 'Item' }] }],
+				},
 			],
 		};
-		
+
 		const result = await renderer.render(complexContent as any);
-		
+
 		expect(result).toBe('<div class="markdoc-content">Rendered content</div>');
 	});
 
@@ -183,21 +192,21 @@ describe('renderReact', () => {
 			addServerRenderer: vi.fn(),
 			addClientRenderer: vi.fn(),
 			renderToString: vi.fn().mockImplementation(async () => {
-				await new Promise(resolve => setTimeout(resolve, 10));
+				await new Promise((resolve) => setTimeout(resolve, 10));
 				return '<div class="markdoc-content">Async rendered content</div>';
 			}),
 			renderToResponse: vi.fn(),
 			insertPageRoute: vi.fn(),
 		} as unknown as Awaited<ReturnType<typeof experimental_AstroContainer.create>>;
-		
+
 		const { experimental_AstroContainer } = await import('astro/container');
 		vi.mocked(experimental_AstroContainer.create).mockResolvedValueOnce(asyncMockContainer);
-		
+
 		const renderer = renderReact();
 		const mockContent = { type: 'document', children: [] };
-		
+
 		const result = await renderer.render(mockContent);
-		
+
 		expect(result).toBe('<div class="markdoc-content">Async rendered content</div>');
 		expect(asyncMockContainer.renderToString).toHaveBeenCalled();
 	});
