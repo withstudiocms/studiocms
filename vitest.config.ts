@@ -33,8 +33,11 @@ export default defineConfig({
 		},
 		coverage: {
 			provider: 'v8',
-			reporter: ['text', 'json'],
+			reporter: ['text', 'json', 'html'],
 			exclude: [
+				'archive/**',
+				'audit/**',
+				'bundle-tests/**',
 				'scripts/**',
 				'playground/**',
 				'archive/**',
