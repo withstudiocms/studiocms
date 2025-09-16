@@ -21,6 +21,14 @@ const testIntegration: AstroIntegration = {
 						export * from 'studiocms/lib/head';
 						export * from 'studiocms/lib/headDefaults';
 					`,
+					'studiocms:config': `
+						export const dashboardConfig = { dashboardRouteOverride: undefined };
+					`,
+					'studiocms:plugin-helpers': `
+						export function frontendNavigation(basePkg) {
+							return [{ text: 'Home', href: '/', }, { text: 'Blog', href: '/blog' }];
+						}
+					`,
 				},
 			});
 		},
