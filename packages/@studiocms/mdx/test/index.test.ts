@@ -1,10 +1,7 @@
 import type { StudioCMSPlugin } from 'studiocms/types';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { studiocmsMDX } from '../src/index.js';
-import {
-	cleanupGlobalState,
-	createMockMDXOptions,
-} from './test-utils.js';
+import { createMockMDXOptions } from './test-utils.js';
 
 interface MockAddIntegrationsParams {
 	addIntegrations: (integration: any) => void;
@@ -34,7 +31,6 @@ vi.mock('studiocms/plugins', () => ({
 describe('studiocmsMDX', () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
-		cleanupGlobalState();
 	});
 
 	afterEach(() => {
