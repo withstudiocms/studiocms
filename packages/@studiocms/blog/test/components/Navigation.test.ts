@@ -13,5 +13,9 @@ describe('Navigation component', () => {
 
 		expect(result).toMatch(/<div class="navigation".*?>/);
 		expect(result).toMatch(/<a href="\/".*?>Test Site<\/a>/);
+
+		expect(result).toMatch(/<div class="mini-nav".*?>/);
+		expect(result).toMatch(/<a class="links" href="\/".*?>Home<\/a>/);
+		expect(result).toMatch(/<a class="links" href="\/blog".*?>Blog<\/a>/);
 	});
 });
