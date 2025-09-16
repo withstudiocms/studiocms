@@ -1,9 +1,80 @@
+import type { AstroIntegration } from 'astro';
 import { addVirtualImports, createResolver } from 'astro-integration-kit';
 import { pathWithBase } from 'studiocms/lib/pathGenerators';
 import { definePlugin, type StudioCMSPlugin } from 'studiocms/plugins';
 import { FrontEndConfigSchema, type StudioCMSBlogOptions } from './types.js';
 
 const packageIdentifier = '@studiocms/blog';
+
+export function internalBlogIntegration(options?: StudioCMSBlogOptions): AstroIntegration {
+	// Resolve the options and set defaults
+	const resolvedOptions = FrontEndConfigSchema.parse(options);
+
+	const {
+		blog: { title, enableRSS, route: orgRoute },
+		injectRoutes,
+		...frontendConfig
+	} = resolvedOptions;
+
+	const route = pathWithBase(orgRoute);
+
+	const resEntrypoint = (path: string) => `@studiocms/blog/routes/${path}`;
+
+	return {
+		name: packageIdentifier,
+		hooks: {
+			'astro:config:setup': async (params) => {
+				const { injectRoute } = params;
+
+				if (injectRoutes) {
+					injectRoute({
+						entrypoint: resEntrypoint('[...slug].astro'),
+						pattern: pathWithBase('[...slug]'),
+						prerender: false,
+					});
+
+					injectRoute({
+						entrypoint: resEntrypoint('blog/index.astro'),
+						pattern: `${route}`,
+						prerender: false,
+					});
+
+					injectRoute({
+						entrypoint: resEntrypoint('blog/[...slug].astro'),
+						pattern: `${route}/[...slug]`,
+						prerender: false,
+					});
+
+					if (enableRSS) {
+						injectRoute({
+							entrypoint: resEntrypoint('rss.xml.js'),
+							pattern: pathWithBase('rss.xml'),
+							prerender: false,
+						});
+					}
+				}
+
+				addVirtualImports(params, {
+					name: packageIdentifier,
+					imports: {
+						'studiocms:blog/config': `
+							const config = {
+								title: ${JSON.stringify(title)},
+								enableRSS: ${enableRSS},
+								route: ${JSON.stringify(route)}
+							}
+							export default config;
+						`,
+						'studiocms:blog/frontend-config': `
+							const config = ${JSON.stringify(frontendConfig)};
+							export default config;
+						`,
+					},
+				});
+			},
+		},
+	};
+}
 
 /**
  * Creates and configures the StudioCMS Blog plugin.
@@ -41,10 +112,8 @@ export function studioCMSBlogPlugin(options?: StudioCMSBlogOptions): StudioCMSPl
 	const resolvedOptions = FrontEndConfigSchema.parse(options);
 
 	const {
-		blog: { title, enableRSS, route: orgRoute },
+		blog: { title, route: orgRoute },
 		sitemap,
-		injectRoutes,
-		...frontendConfig
 	} = resolvedOptions;
 
 	const route = pathWithBase(orgRoute);
@@ -63,60 +132,7 @@ export function studioCMSBlogPlugin(options?: StudioCMSBlogOptions): StudioCMSPl
 		requires: ['@studiocms/md'],
 		hooks: {
 			'studiocms:astro:config': ({ addIntegrations }) => {
-				addIntegrations({
-					name: packageIdentifier,
-					hooks: {
-						'astro:config:setup': async (params) => {
-							const { injectRoute } = params;
-
-							if (injectRoutes) {
-								injectRoute({
-									entrypoint: resolve('./routes/[...slug].astro'),
-									pattern: pathWithBase('[...slug]'),
-									prerender: false,
-								});
-
-								injectRoute({
-									entrypoint: resolve('./routes/blog/index.astro'),
-									pattern: `${route}`,
-									prerender: false,
-								});
-
-								injectRoute({
-									entrypoint: resolve('./routes/blog/[...slug].astro'),
-									pattern: `${route}/[...slug]`,
-									prerender: false,
-								});
-
-								if (enableRSS) {
-									injectRoute({
-										entrypoint: resolve('./routes/rss.xml.js'),
-										pattern: pathWithBase('rss.xml'),
-										prerender: false,
-									});
-								}
-							}
-
-							addVirtualImports(params, {
-								name: packageIdentifier,
-								imports: {
-									'studiocms:blog/config': `
-										const config = {
-											title: ${JSON.stringify(title)},
-											enableRSS: ${enableRSS},
-											route: ${JSON.stringify(route)}
-										}
-										export default config;
-									`,
-									'studiocms:blog/frontend-config': `
-										const config = ${JSON.stringify(frontendConfig)};
-										export default config;
-									`,
-								},
-							});
-						},
-					},
-				});
+				addIntegrations(internalBlogIntegration(resolvedOptions));
 			},
 			'studiocms:config:setup': ({ setFrontend, setRendering, setSitemap }) => {
 				setFrontend({
