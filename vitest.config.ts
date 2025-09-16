@@ -35,6 +35,9 @@ export default defineConfig({
 			provider: 'v8',
 			reporter: ['text', 'json'],
 			exclude: [
+				'archive/**',
+				'audit/**',
+				'bundle-tests/**',
 				'scripts/**',
 				'playground/**',
 				'archive/**',
