@@ -73,8 +73,7 @@
   "devDependencies": {
     "@types/node": "catalog:",
     "@types/react": "catalog:react",
-    "@types/react-dom": "catalog:react",
-    "vitest": "catalog:vitest"
+    "@types/react-dom": "catalog:react"
   },
   "peerDependencies": {
     "@astrojs/react": "catalog:react",
