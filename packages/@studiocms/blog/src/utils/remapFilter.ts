@@ -17,6 +17,8 @@ export type SiteMapTemplate = {
 	location: string;
 }[];
 
+export type { APIContext, PageDataCacheObject };
+
 export const remapFilterSitemap = dual<
 	(
 		filter: string,

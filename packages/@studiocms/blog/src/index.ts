@@ -23,6 +23,8 @@ export function internalBlogIntegration(options?: StudioCMSBlogOptions): AstroIn
 	return {
 		name: packageIdentifier,
 		hooks: {
+			/* v8 ignore start */
+			/* this is tested indirectly via the plugin tests */
 			'astro:config:setup': async (params) => {
 				const { injectRoute } = params;
 
@@ -72,6 +74,7 @@ export function internalBlogIntegration(options?: StudioCMSBlogOptions): AstroIn
 					},
 				});
 			},
+			/* v8 ignore stop */
 		},
 	};
 }
