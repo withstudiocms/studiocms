@@ -1,5 +1,6 @@
 import type { SSRResult } from 'astro';
 import type { z } from 'astro/zod';
+import sanitizeHtml from 'sanitize-html';
 import type { StudioCMSSanitizeOptionsSchema } from 'studiocms/schemas';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import {
@@ -25,9 +26,15 @@ vi.mock('studiocms:component-registry/runtime', () => ({
 
 			// Mock sanitization logic - only if sanitize is truthy
 			if (sanitize && typeof content === 'string') {
-				// Basic mock sanitization - remove script tags
-				content = content.replace(/<script[^>]*>.*?<\/script>/gi, '');
-				content = content.replace(/onerror\s*=\s*["'][^"']*["']/gi, '');
+				// Improved mock sanitization - remove script tags and event attributes using sanitize-html
+				content = sanitizeHtml(content, {
+					allowedTags: sanitizeHtml.defaults.allowedTags.filter(tag => tag !== 'script'),
+					allowedAttributes: {
+						'*': ['class'],
+						'a': ['href'],
+					},
+					allowedSchemes: ['http', 'https', 'mailto'],
+				});
 			}
 			return content;
 		};
@@ -186,7 +193,15 @@ describe('WYSIWYG Render Component', () => {
 		);
 		const renderedContent = await render(malformedHTMLContent);
 
-		expect(renderedContent).toBe(malformedHTMLContent);
+		// sanitize-html handles malformed HTML - it may fix some tags but preserve the structure
+		expect(renderedContent).toContain('<div class="unclosed">');
+		expect(renderedContent).toContain('Unclosed heading');
+		expect(renderedContent).toContain('Paragraph without closing tag');
+		expect(renderedContent).toContain('Link without closing tag');
+		expect(renderedContent).toContain('https://example.com');
+		// The content should be processed without throwing errors
+		expect(renderedContent).toBeDefined();
+		expect(typeof renderedContent).toBe('string');
 	});
 
 	test('uses sanitize options from shared context', async () => {

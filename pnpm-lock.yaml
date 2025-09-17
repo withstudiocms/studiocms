@@ -617,6 +617,9 @@ importers:
       grapesjs:
         specifier: ^0.22.12
         version: 0.22.12
+      sanitize-html:
+        specifier: ^2.17.0
+        version: 2.17.0
       studiocms:
         specifier: workspace:*
         version: link:../../studiocms
