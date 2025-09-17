@@ -42,6 +42,7 @@
   "scripts": {
     "build": "buildkit build 'src/**/*.{ts,astro,css,js}'",
     "dev": "buildkit dev 'src/**/*.{ts,astro,css,js}'",
+    "test": "vitest",
     "typecheck": "tspc -p tsconfig.tspc.json"
   },
   "exports": {
