@@ -82,6 +82,11 @@ describe('i18n/server', () => {
 			const Astro = createAstroGlobal('/_server-islands', 'http://localhost/es/dashboard');
 			expect(getCurrentURLPath(Astro)).toBe('/dashboard');
 		});
+
+		it('handles /_server-islands with referer and default lang', () => {
+			const Astro = createAstroGlobal('/_server-islands', 'http://localhost/en/dashboard');
+			expect(getCurrentURLPath(Astro)).toBe('/dashboard');
+		});
 	});
 
 	describe('switchLanguage', () => {
