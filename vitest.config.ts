@@ -65,6 +65,7 @@ export default defineConfig({
 				'**/virtuals/plugins/**',
 				'**/virtuals/notifier/index.ts',
 				'**/virtuals/mailer/index.ts',
+				'**/virtuals/i18n/v-files.ts',
 			],
 		},
 	},

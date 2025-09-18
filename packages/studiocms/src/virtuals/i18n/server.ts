@@ -134,13 +134,13 @@ export function getCurrentURLPath(Astro: AstroGlobal): string {
 	if (Astro.url.pathname.includes('/_server-islands')) {
 		const path = new URL(Astro.request.headers.get('referer') || '');
 		const currentLang = getLangFromUrl(path);
-		return currentLang === defaultLang
+		return currentLang === defaultLang && showDefaultLang
 			? path.pathname
 			: path.pathname.replace(`/${currentLang}/`, '/');
 	}
 	const path = Astro.url;
 	const currentLang = getLangFromUrl(path);
-	return currentLang === defaultLang
+	return currentLang === defaultLang && showDefaultLang
 		? path.pathname
 		: path.pathname.replace(`/${currentLang}/`, '/');
 }
