@@ -20,9 +20,11 @@ export const TimeStringSchema = z
 		// Extract the numeric value and unit from the input string
 		const match = value.match(/^(\d+)([mh])$/);
 
+		/* v8 ignore start */
 		if (!match) {
 			throw new Error("Invalid time format. Use values like '5m', '1h', etc.");
 		}
+		/* v8 ignore stop */
 
 		const val = Number.parseInt(match[1] as string, 10);
 		const unit = match[2] as TimeUnit;
