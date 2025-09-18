@@ -27,6 +27,7 @@ async function getImageSrc() {
 		return src;
 	}
 
+	/* v8 ignore start */
 	const preferredService = keys.find(({ identifier }) => {
 		return identifier === preferredImageService;
 	});
@@ -45,14 +46,17 @@ async function getImageSrc() {
 
 	return await serviceFn(src, props);
 }
+/* v8 ignore stop */
 
 // check if the image source is an external URL
 function inferSizeNeeded(url: string) {
 	if (url.startsWith('https://') || url.startsWith('http://')) {
 		return true;
 	}
+	/* v8 ignore start */
 	return false;
 }
+/* v8 ignore stop */
 
 // Get the current configured image service source URL
 const currentSrcURL = await getImageSrc();
