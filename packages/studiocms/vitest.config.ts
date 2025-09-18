@@ -58,6 +58,7 @@ const testIntegration: AstroIntegration = {
 					// NOT A REAL KEY, this is the same key used by the CLI when no user-key is provided
 					'virtual:studiocms/sdk/env': `export const cmsEncryptionKey = '+URKVIiIM1kmG6g9Znb10g==';`,
 					'studiocms:auth/scripts/three': `export const hello = 'world';`,
+					'studiocms:auth/utils/validImages': `export * from '${resolve('./src/virtuals/auth/validImages/index.js')}';`,
 				},
 			});
 		},
