@@ -1,11 +1,11 @@
 import { z } from 'astro/zod';
 import { defaultCacheLifeTime } from '../../consts.js';
 
-const TimeUnitSchema = z.union([z.literal('m'), z.literal('h')]);
+export const TimeUnitSchema = z.union([z.literal('m'), z.literal('h')]);
 
 type TimeUnit = z.infer<typeof TimeUnitSchema>;
 
-const TimeStringSchema = z
+export const TimeStringSchema = z
 	.string()
 	.regex(/^\d+(m|h)$/, {
 		message: "Invalid time string format. Must be a number followed by 'm' or 'h'.",
@@ -35,7 +35,7 @@ export type TimeString = typeof TimeStringSchema._input;
 /**
  * Schema for cache configuration.
  */
-const CacheConfigSchema = z.object({
+export const CacheConfigSchema = z.object({
 	/**
 	 * Cache Lifetime
 	 *
@@ -54,7 +54,7 @@ const CacheConfigSchema = z.object({
  * - `enabled` (boolean): Indicates if the cache is enabled.
  *   - @default true
  */
-const ProcessedCacheConfigSchema = z.object({
+export const ProcessedCacheConfigSchema = z.object({
 	/**
 	 * Cache Enabled
 	 *
@@ -102,7 +102,7 @@ export type ProcessedCacheConfig = z.infer<typeof ProcessedCacheConfigSchema>;
  * - If a boolean value is provided, it is transformed into an object with `enabled` and `lifetime` properties.
  * - If a cache configuration object is provided, it is transformed to ensure `enabled` is always `true`.
  */
-const SDKCacheSchema = z
+export const SDKCacheSchema = z
 	.union([z.boolean(), CacheConfigSchema])
 	.optional()
 	.default(true)
@@ -119,7 +119,7 @@ const SDKCacheSchema = z
 /**
  * Schema for processing SDK configuration.
  */
-const ProcessedSDKSchema = z.object({
+export const ProcessedSDKSchema = z.object({
 	/**
 	 * Cache Configuration
 	 *
