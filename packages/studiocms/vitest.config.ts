@@ -25,6 +25,7 @@ const testIntegration: AstroIntegration = {
 						export const availableTranslations = ${JSON.stringify(availableTranslations)};
 					`,
 					'studiocms:config': buildVirtualConfig(testConfig),
+					'studiocms:plugins/imageService': `export const imageServiceKeys = ${JSON.stringify([])}`,
 				},
 			});
 		},
