@@ -1,8 +1,10 @@
+import studiocmsUi from '@studiocms/ui';
 import { convertToSafeString, rendererComponentFilter } from '@withstudiocms/internal_helpers';
 import type { AstroIntegration } from 'astro';
 import { getViteConfig } from 'astro/config';
 import { addVirtualImports, createResolver } from 'astro-integration-kit';
 import { defineProject } from 'vitest/config';
+import { getUiOpts } from './src/consts';
 import { type StudioCMSOptions, StudioCMSOptionsSchema } from './src/schemas';
 import { availableTranslationFileKeys, availableTranslations } from './src/virtuals/i18n/v-files';
 import { buildVirtualConfig } from './src/virtuals/utils';
@@ -70,7 +72,7 @@ export default defineProject(
 			},
 		},
 		{
-			integrations: [testIntegration],
+			integrations: [testIntegration, studiocmsUi(getUiOpts())],
 		}
 	)
 );

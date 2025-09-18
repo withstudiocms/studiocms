@@ -5,9 +5,11 @@ interface Props {
 	code: string;
 	ins?: string;
 	del?: string;
+
+	__test_mode?: boolean;
 }
 
-const { code, del, ins } = Astro.props;
+const { code, del, ins, __test_mode = false } = Astro.props;
 
 const escapeHtml = (s: string) =>
 	s
@@ -32,7 +34,7 @@ if (ins) {
 	props['data-lines-inserted'] = ins;
 }
 
-const id = Math.random().toString(36).substring(2, 9);
+const id = __test_mode ? 'test-id' : Math.random().toString(36).substring(2, 9);
 ---
 
 <pre
