@@ -61,6 +61,7 @@ export default defineConfig({
 				'**/dist/**',
 				'**/studiocms/studiocms-cli.mjs',
 				'**/db/config.ts',
+				'**/virtuals/stubs/**',
 			],
 		},
 	},

@@ -1,3 +1,5 @@
+/* v8 ignore start */
+// Tested in the internal_helpers package
 import { createURLGenFactory } from '@withstudiocms/internal_helpers/urlGenFactory';
 
 const urlGenFactory = createURLGenFactory('dashboard');
@@ -13,3 +15,4 @@ const urlGenFactory = createURLGenFactory('dashboard');
  * @returns
  */
 export default urlGenFactory;
+/* v8 ignore stop */
