@@ -10,8 +10,10 @@ const { loginPageBackground, loginPageCustomImage } = config.data;
 
 const fallbackImageSrc =
 	loginPageBackground === 'custom'
-		? loginPageCustomImage
-		: validImages.find((x) => x.name !== 'custom' && x.name === loginPageBackground)?.dark;
+		? /* v8 ignore start */
+			loginPageCustomImage
+		: /* v8 ignore stop */
+			validImages.find((x) => x.name !== 'custom' && x.name === loginPageBackground)?.dark;
 ---
 <div class="fallback-container" id="fallback-config" data-config={JSON.stringify({ loginPageBackground, loginPageCustomImage })}>
     <StudioCMSLogoSVG

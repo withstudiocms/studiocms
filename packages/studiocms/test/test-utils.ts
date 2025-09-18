@@ -2,19 +2,19 @@ import { StudioCMSRoutes } from '../src/virtuals/lib/routeMap';
 
 export function cleanAstroAttributes(str: string, mockPath: string) {
 	const regex1 = /\s*data-astro-[a-zA-Z0-9-]*(?:="[^"]*")?/g;
-	const regex1_replacement = '';
+	const replacer1 = '';
 	const regex2 = /src="[^"?]*(\?[^"]*)"/g;
-	const regex2_replacement = (_: string, p1: string) => `src="${mockPath}${p1}"`;
+	const replacer2 = (_: string, p1: string) => `src="${mockPath}${p1}"`;
 	const regex3 = /(<meta name="generator" content="Astro v)[0-9]+\.[0-9]+\.[0-9]+(")/g;
-	const regex3_replacement = '$10.0.0-test$2';
+	const replacer3 = '$10.0.0-test$2';
 	const regex4 = /(<img[^>]*href=)[^&"]*(&[^>]*>|"[^>]*>)/g;
-	const regex4_replacement = '$1%2Fmock%2Fpath%2Fimage.webp$2';
+	const replacer4 = '$1%2Fmock%2Fpath%2Fimage.webp$2';
 
 	return str
-		.replace(regex1, regex1_replacement)
-		.replace(regex2, regex2_replacement)
-		.replace(regex3, regex3_replacement)
-		.replace(regex4, regex4_replacement);
+		.replace(regex1, replacer1)
+		.replace(regex2, replacer2)
+		.replace(regex3, replacer3)
+		.replace(regex4, replacer4);
 }
 
 export const makeRendererProps = (content: string | null) => ({
