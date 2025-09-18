@@ -1,15 +1,16 @@
 import { Effect, Exit } from 'effect';
-import { describe, expect, it } from 'vitest';
+import { beforeAll, describe, expect, it } from 'vitest';
 import { SDKCore_Generators } from '../../../../src/virtuals/sdk/effect/generators';
 import { SDKCoreError, StudioCMS_SDK_Error } from '../../../../src/virtuals/sdk/errors';
 
-describe('SDKCore_Generators', async () => {
-	const generators = await Effect.runPromise(
-		Effect.gen(function* () {
-			const mod = yield* SDKCore_Generators;
-			return mod;
-		}).pipe(Effect.provide(SDKCore_Generators.Default))
-	);
+describe('SDKCore_Generators', () => {
+	let generators: SDKCore_Generators;
+
+	beforeAll(async () => {
+		generators = await Effect.runPromise(
+			SDKCore_Generators.pipe(Effect.provide(SDKCore_Generators.Default))
+		);
+	});
 
 	it('generateRandomIDNumber returns a number of correct length', async () => {
 		const length = 6;

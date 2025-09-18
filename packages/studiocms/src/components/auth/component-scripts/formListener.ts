@@ -25,7 +25,11 @@ export async function formListener(
 	form: HTMLFormElement,
 	type: 'login' | 'register',
 	toast: (props: ToastProps) => void = uiToast,
-	reload: () => void = window.location.reload
+	reload: () => void = () => {
+		if (typeof window !== 'undefined') {
+			window.location.reload();
+		}
+	}
 ) {
 	event.preventDefault();
 

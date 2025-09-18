@@ -1,14 +1,18 @@
 import { Effect, Exit } from 'effect';
-import { describe, expect, it } from 'vitest';
+import { beforeAll, describe, expect, it } from 'vitest';
 import { SDKCore_Parsers } from '../../../../src/virtuals/sdk/effect/parsers';
 import { SDKCoreError, StudioCMS_SDK_Error } from '../../../../src/virtuals/sdk/errors';
 
 const runEffect = async <A, E>(eff: Effect.Effect<A, E, never>) => await Effect.runPromiseExit(eff);
 
-describe('SDKCore_Parsers', async () => {
-	const parsers = await Effect.runPromise(
-		SDKCore_Parsers.pipe(Effect.provide(SDKCore_Parsers.Default))
-	);
+describe('SDKCore_Parsers', () => {
+	let parsers: SDKCore_Parsers;
+
+	beforeAll(async () => {
+		parsers = await Effect.runPromise(
+			SDKCore_Parsers.pipe(Effect.provide(SDKCore_Parsers.Default))
+		);
+	});
 
 	describe('parseIdNumberArray', () => {
 		it('parses valid array of numbers', async () => {
