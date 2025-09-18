@@ -26,6 +26,7 @@ const htmlCode = code
 
 const props: Record<string, string> = {};
 
+/* v8 ignore start */
 if (del) {
 	props['data-lines-deleted'] = del;
 }
@@ -33,6 +34,7 @@ if (del) {
 if (ins) {
 	props['data-lines-inserted'] = ins;
 }
+/* v8 ignore stop */
 
 const id = __test_mode ? 'test-id' : Math.random().toString(36).substring(2, 9);
 ---

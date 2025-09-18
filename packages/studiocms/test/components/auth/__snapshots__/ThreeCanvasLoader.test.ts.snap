@@ -1,0 +1,3 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`ThreeCanvasLoader component > render component 1`] = `"<div style="display: none;" id="auth-pages-config" data-config_background="studiocms-curves"></div> <script type="module" src="/mock/path/ThreeCanvasLoader.astro?astro&type=script&index=0&lang.ts"></script>"`;
