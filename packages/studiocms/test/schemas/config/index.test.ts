@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/suspicious/noExplicitAny: allowed in tests */
 import { describe, expect, it } from 'vitest';
 import { StudioCMSOptionsSchema } from '../../../src/schemas/config/index';
 
