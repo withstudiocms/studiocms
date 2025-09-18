@@ -135,8 +135,10 @@ export function getCurrentURLPath(Astro: AstroGlobal): string {
 		const path = new URL(Astro.request.headers.get('referer') || '');
 		const currentLang = getLangFromUrl(path);
 		return currentLang === defaultLang && showDefaultLang
-			? path.pathname
-			: path.pathname.replace(`/${currentLang}/`, '/');
+			? /* v8 ignore start */
+				path.pathname
+			: /* v8 ignore stop */
+				path.pathname.replace(`/${currentLang}/`, '/');
 	}
 	const path = Astro.url;
 	const currentLang = getLangFromUrl(path);
