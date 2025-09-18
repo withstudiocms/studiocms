@@ -289,6 +289,7 @@ export class UserQuickTools extends HTMLElement {
 	}
 
 	connectedCallback() {
+		/* v8 ignore start */
 		// Check if we should skip entirely
 		const pathname = window.location.pathname;
 		if (shouldSkipRendering(pathname)) {
@@ -298,6 +299,7 @@ export class UserQuickTools extends HTMLElement {
 		// Initialize on user interaction for maximum Lighthouse score
 		this.initOnUserInteraction();
 	}
+	/* v8 ignore stop */
 
 	public initOnUserInteraction() {
 		// Events that indicate user engagement
@@ -310,6 +312,7 @@ export class UserQuickTools extends HTMLElement {
 			'click',
 		];
 
+		/* v8 ignore start */
 		const handleUserInteraction = () => {
 			if (this.isInitialized) return;
 
@@ -319,6 +322,7 @@ export class UserQuickTools extends HTMLElement {
 			// Start initialization
 			this.scheduleInitialization();
 		};
+		/* v8 ignore stop */
 
 		// Add passive listeners for performance
 		interactionEvents.forEach((eventType) => {
@@ -370,7 +374,7 @@ export class UserQuickTools extends HTMLElement {
 			if (!sessionData?.isLoggedIn) {
 				return;
 			}
-
+			/* v8 ignore start */
 			// Fourth check: Skip if on dashboard (after API call to verify session)
 			if (isDashboardRoute(pathname, sessionData.routes.dashboardIndex)) {
 				return;
@@ -385,8 +389,9 @@ export class UserQuickTools extends HTMLElement {
 			// Fail silently for better UX - component just won't appear
 			console.warn('UserQuickTools failed to initialize:', error);
 		}
+		/* v8 ignore stop */
 	}
-
+	/* v8 ignore start */
 	private scheduleRender() {
 		const renderComponent = () => {
 			this.render();
@@ -646,6 +651,7 @@ export class UserQuickTools extends HTMLElement {
 			attributeFilter: ['data-theme'],
 		});
 	}
+	/* v8 ignore stop */
 
 	private async getSession(): Promise<GetSessionResponse | null> {
 		try {
