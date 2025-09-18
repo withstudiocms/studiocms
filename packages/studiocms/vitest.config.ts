@@ -37,6 +37,10 @@ const testIntegration: AstroIntegration = {
 			addVirtualImports(params, {
 				name: 'test-integration',
 				imports: {
+					'studiocms:logger': `
+						export const logger = console;
+						export default logger;
+					`,
 					'studiocms:version': `export default '0.0.0-test';`,
 					'studiocms:i18n/virtual': `
 						export const availableTranslationFileKeys = ${JSON.stringify(availableTranslationFileKeys)};

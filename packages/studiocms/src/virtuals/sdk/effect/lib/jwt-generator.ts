@@ -13,7 +13,7 @@ import logger from 'studiocms:logger';
  * @param input - The string to encode.
  * @returns The Base64URL-encoded string.
  */
-function base64UrlEncode(input: string): string {
+export function base64UrlEncode(input: string): string {
 	return Buffer.from(input)
 		.toString('base64') // convert to base64
 		.replace(/\+/g, '-') // replace '+' with '-'
@@ -30,7 +30,7 @@ function base64UrlEncode(input: string): string {
  * @param input - The Base64URL-encoded string to decode.
  * @returns The decoded string.
  */
-function base64UrlDecode(input: string): string {
+export function base64UrlDecode(input: string): string {
 	let newInput = input.replace(/-/g, '+').replace(/_/g, '/');
 	while (newInput.length % 4 !== 0) {
 		newInput += '=';
