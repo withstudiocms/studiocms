@@ -51,3 +51,10 @@ packages:
   - "packages/*"
   - "bundle-tests/*"
   - "playground"
+
+minimumReleaseAge: 4320
+
+minimumReleaseAgeExclude:
+  - studiocms
+  - '@studiocms/*'
+  - '@withstudiocms/*'
