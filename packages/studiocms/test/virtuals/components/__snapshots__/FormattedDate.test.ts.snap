@@ -1,0 +1,3 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`FormattedDate component > render component 1`] = `"<time datetime="2020-01-01T09:00:00.000Z">Jan 1, 2020</time>"`;

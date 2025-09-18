@@ -2,7 +2,15 @@ import type { AstroIntegration } from 'astro';
 import { getViteConfig } from 'astro/config';
 import { addVirtualImports } from 'astro-integration-kit';
 import { defineProject } from 'vitest/config';
+import { type StudioCMSOptions, StudioCMSOptionsSchema } from './src/schemas';
 import { availableTranslationFileKeys, availableTranslations } from './src/virtuals/i18n/v-files';
+import { buildVirtualConfig } from './src/virtuals/utils';
+
+const CMSConfig: StudioCMSOptions = {
+	dbStartPage: false,
+};
+
+const testConfig = StudioCMSOptionsSchema.parse(CMSConfig);
 
 const testIntegration: AstroIntegration = {
 	name: 'test-integration',
@@ -16,8 +24,7 @@ const testIntegration: AstroIntegration = {
 						export const availableTranslationFileKeys = ${JSON.stringify(availableTranslationFileKeys)};
 						export const availableTranslations = ${JSON.stringify(availableTranslations)};
 					`,
-					'studiocms:config':
-						'export const dashboardConfig = { dashboardRouteOverride: undefined };',
+					'studiocms:config': buildVirtualConfig(testConfig),
 				},
 			});
 		},
