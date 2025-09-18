@@ -1,0 +1,5 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Renderer component > render component 1`] = `"<div>This is a test content from the defaultContent field.</div>"`;
+
+exports[`Renderer component > render component with no content 1`] = `"<h1>Error: No content found</h1>"`;

@@ -1,16 +1,34 @@
+import { convertToSafeString, rendererComponentFilter } from '@withstudiocms/internal_helpers';
 import type { AstroIntegration } from 'astro';
 import { getViteConfig } from 'astro/config';
-import { addVirtualImports } from 'astro-integration-kit';
+import { addVirtualImports, createResolver } from 'astro-integration-kit';
 import { defineProject } from 'vitest/config';
 import { type StudioCMSOptions, StudioCMSOptionsSchema } from './src/schemas';
 import { availableTranslationFileKeys, availableTranslations } from './src/virtuals/i18n/v-files';
 import { buildVirtualConfig } from './src/virtuals/utils';
+
+const { resolve } = createResolver(import.meta.url);
 
 const CMSConfig: StudioCMSOptions = {
 	dbStartPage: false,
 };
 
 const testConfig = StudioCMSOptionsSchema.parse(CMSConfig);
+
+const pluginRenderers: {
+	pageType: string;
+	safePageType: string;
+	content: string;
+}[] = [
+	{
+		pageType: 'mock/render',
+		safePageType: convertToSafeString('mock/render'),
+		content: rendererComponentFilter(
+			resolve('./test/fixtures/renderer.astro'),
+			convertToSafeString('mock/render')
+		),
+	},
+];
 
 const testIntegration: AstroIntegration = {
 	name: 'test-integration',
@@ -26,6 +44,11 @@ const testIntegration: AstroIntegration = {
 					`,
 					'studiocms:config': buildVirtualConfig(testConfig),
 					'studiocms:plugins/imageService': `export const imageServiceKeys = ${JSON.stringify([])}`,
+					'virtual:studiocms/plugins/renderers': `${pluginRenderers ? pluginRenderers.map(({ content }) => content).join('\n') : ''}`,
+					'studiocms:plugins/renderers': `export const pluginRenderers = ${JSON.stringify(pluginRenderers.map(({ pageType, safePageType }) => ({ pageType, safePageType })) || [])};`,
+					'studiocms:component-registry/runtime':
+						// Test-only identity renderer: mirrors API shape but skips sanitization on purpose.
+						'export const createRenderer = (result, sanitize, preRenderer) => (content) => content;',
 				},
 			});
 		},

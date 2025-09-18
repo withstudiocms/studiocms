@@ -13,6 +13,19 @@ export function cleanAstroAttributes(str: string, mockPath: string) {
 		})
 		.replace(regex3, regex3_replacement);
 }
+
+export const makeRendererProps = (content: string | null) => ({
+	data: {
+		package: 'mock/render',
+		defaultContent: {
+			contentLang: 'default',
+			contentId: 'mocked',
+			id: 'mocked',
+			content,
+		},
+	},
+});
+
 export const MockAstroLocals = () => {
 	const date = new Date();
 	return {
