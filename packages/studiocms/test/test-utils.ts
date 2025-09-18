@@ -4,7 +4,7 @@ export function cleanAstroAttributes(str: string, mockPath: string) {
 	const regex1 = /\s*data-astro-[a-zA-Z0-9-]*(?:="[^"]*")?/g;
 	const regex1_replacement = '';
 	const regex2 = /src="[^"?]*(\?[^"]*)"/g;
-	const regex2_replacement = (_: string, p1: string) => `src="${mockPath}${p1}`;
+	const regex2_replacement = (_: string, p1: string) => `src="${mockPath}${p1}"`;
 	const regex3 = /(<meta name="generator" content="Astro v)[0-9]+\.[0-9]+\.[0-9]+(")/g;
 	const regex3_replacement = '$10.0.0-test$2';
 	const regex4 = /(<img[^>]*href=)[^&"]*(&[^>]*>|"[^>]*>)/g;
