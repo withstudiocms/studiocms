@@ -60,6 +60,7 @@ export default defineConfig({
 				'**/runtime/**',
 				'**/dist/**',
 				'**/studiocms/studiocms-cli.mjs',
+				'**/db/config.ts',
 			],
 		},
 	},

@@ -1,7 +1,7 @@
 import { dual, Effect, List, Logger, LogLevel, pipe, type Utils } from '@withstudiocms/effect';
 import chalk from 'chalk';
 
-function stripNameFromLabel(label: string): string {
+export function stripNameFromLabel(label: string): string {
 	const prefix = 'studiocms/';
 	return label.startsWith(prefix) ? label.slice(prefix.length) : label;
 }
@@ -10,7 +10,7 @@ function stripNameFromLabel(label: string): string {
  * A cache that stores instances of `AstroIntegrationLogger` associated with their string keys.
  * This is used to avoid creating multiple logger instances for the same key.
  */
-const loggerCache = new Map<string, S48Logger>();
+export const loggerCache = new Map<string, S48Logger>();
 
 export type LoggerLevel = 'debug' | 'info' | 'warn' | 'error' | 'silent'; // same as Pino
 
@@ -107,7 +107,7 @@ const _logger = new S48Logger({ level: 'info' }, 'studiocms:runtime');
  *          - Any other log level defaults to logging messages as debug.
  * @internal
  */
-const makeLogger = (label: string) =>
+export const makeLogger = (label: string) =>
 	Logger.make(({ logLevel, message: _message, spans }) => {
 		const logger =
 			loggerCache.get(label) ?? _logger.fork(`studiocms:runtime/${stripNameFromLabel(label)}`);
@@ -243,39 +243,6 @@ export function genLogger(label: string) {
 				: never
 	> => pipeLogger(label)(Effect.gen(f));
 }
-
-/**
- * A utility function that logs an error message when an `Effect.fail()` is executed.
- *
- * This function is curried and can be used in two forms:
- * 1. By providing a `message` first, which returns a function that takes an `Effect` and logs the error message.
- * 2. By providing both the `Effect` and the `message` directly.
- *
- * @template A - The type of the success value of the `Effect`.
- * @template E - The type of the error value of the `Effect`.
- * @template R - The type of the environment required by the `Effect`.
- *
- * @param message - The error message to log. Can be a single value or an array of values.
- * @param self - The `Effect` to which the error logging will be applied.
- *
- * @returns A new `Effect` that logs the provided error message when executed.
- */
-export const errorTap = dual<
-	(
-		// biome-ignore lint/suspicious/noExplicitAny: this is a valid use case for explicit any.
-		message: any | ReadonlyArray<any>
-	) => <A, E, R>(self: Effect.Effect<A, E, R>) => Effect.Effect<A, E, R>,
-	<A, E, R>(
-		self: Effect.Effect<A, E, R>,
-		// biome-ignore lint/suspicious/noExplicitAny: this is a valid use case for explicit any.
-		message: any | ReadonlyArray<any>
-	) => Effect.Effect<A, E, R>
->(2, (self, message) =>
-	pipe(
-		self,
-		Effect.tapError(() => Effect.logError(...(Array.isArray(message) ? message : [message])))
-	)
-);
 
 // // Testing Examples
 
