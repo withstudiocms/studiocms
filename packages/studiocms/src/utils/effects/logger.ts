@@ -55,7 +55,9 @@ export const getEventPrefix = (level: LoggerLevel, label?: string) => {
 		return chalk.blue(prefix.join(' '));
 	}
 	if (prefix.length === 1) {
+		/* v8 ignore start */
 		return chalk.dim(prefix[0]);
+		/* v8 ignore stop */
 	}
 	return `${chalk.dim(prefix[0])} ${chalk.blue(prefix.splice(1).join(' '))}`;
 };
@@ -118,6 +120,7 @@ export const makeLogger = (label: string) =>
 		const spanPart = list.length ? ` :: ${list.join(' › ')}` : '';
 		const message = `${String(_message)}${spanPart}`;
 
+		/* v8 ignore start */
 		switch (logLevel) {
 			case LogLevel.Trace:
 			case LogLevel.Debug: {
@@ -142,6 +145,7 @@ export const makeLogger = (label: string) =>
 				logger.info(message);
 			}
 		}
+		/* v8 ignore stop */
 	});
 
 const sysLogLevel = process.env.STUDIOCMS_LOGLEVEL as
