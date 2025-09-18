@@ -56,6 +56,7 @@ export default defineConfig({
 				'**/routes/**',
 				'**/runtime/**',
 				'**/dist/**',
+				'**/studiocms/studiocms-cli.mjs',
 			],
 		},
 	},

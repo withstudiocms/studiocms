@@ -53,7 +53,8 @@
 	"scripts": {
 		"build": "buildkit build 'src/**/*.{ts,astro,css,json,png,webp,woff2,stub.js,d.ts}'",
 		"dev": "buildkit dev 'src/**/*.{ts,astro,css,json,png,webp,woff2,stub.js,d.ts}'",
-		"typecheck": "tspc -p tsconfig.tspc.json"
+		"typecheck": "tspc -p tsconfig.tspc.json",
+		"test": "vitest"
 	},
 	"bin": {
 		"studiocms": "./studiocms-cli.mjs"
