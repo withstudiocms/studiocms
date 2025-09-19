@@ -30,10 +30,12 @@ export class SDKCore_Generators extends Effect.Service<SDKCore_Generators>()(
 				Effect.try({
 					try: () => Math.floor(Math.random() * 10 ** length),
 					catch: (error) =>
+						/* v8 ignore start */
 						new SDKCoreError({
 							type: 'UNKNOWN',
 							cause: new StudioCMS_SDK_Error(`generateRandomIDNumber Error: ${error}`),
 						}),
+					/* v8 ignore stop */
 				});
 
 			/**
@@ -57,10 +59,12 @@ export class SDKCore_Generators extends Effect.Service<SDKCore_Generators>()(
 						return password;
 					},
 					catch: (error) =>
+						/* v8 ignore start */
 						new SDKCoreError({
 							type: 'UNKNOWN',
 							cause: new StudioCMS_SDK_Error(`generateRandomPassword Error: ${error}`),
 						}),
+					/* v8 ignore stop */
 				});
 
 			/**
@@ -76,10 +80,12 @@ export class SDKCore_Generators extends Effect.Service<SDKCore_Generators>()(
 				Effect.try({
 					try: () => generateJwt(cmsEncryptionKey, { userId }, noExpire),
 					catch: (error) =>
+						/* v8 ignore start */
 						new SDKCoreError({
 							type: 'UNKNOWN',
 							cause: new StudioCMS_SDK_Error(`generateToken Error: ${error}`),
 						}),
+					/* v8 ignore stop */
 				});
 
 			/**

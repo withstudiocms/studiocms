@@ -79,9 +79,11 @@ export const format = formatter($locale);
  */
 export const $i18n = createI18n($locale, {
 	baseLocale: defaultLang,
+	/* v8 ignore start */
 	get: async (code: UiTranslationKey) => {
 		return localeMap[code] ?? localeMap[defaultLang];
 	},
+	/* v8 ignore stop */
 });
 
 /**

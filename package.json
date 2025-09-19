@@ -68,6 +68,7 @@
     "studiocms": "workspace:*",
     "typescript": "catalog:",
 		"ts-patch": "^3.3.0",
-    "vitest": "^3.2.4"
+    "vitest": "^3.2.4",
+    "jsdom": "27.0.0"
   }
 }

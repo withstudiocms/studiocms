@@ -16,6 +16,9 @@ const projectsWithTests: { scope?: string; names: string[] }[] = [
 		scope: 'studiocms',
 		names: ['devapps', 'html', 'cloudinary-image-service', 'md', 'mdx', 'blog', 'markdoc'],
 	},
+	{
+		names: ['studiocms'],
+	},
 ];
 
 const projects = projectsWithTests.flatMap(({ scope, names }) =>
@@ -56,6 +59,17 @@ export default defineConfig({
 				'**/routes/**',
 				'**/runtime/**',
 				'**/dist/**',
+				'**/studiocms/studiocms-cli.mjs',
+				'**/db/config.ts',
+				'**/virtuals/stubs/**',
+				'**/virtuals/plugins/**',
+				'**/virtuals/notifier/index.ts',
+				'**/virtuals/mailer/index.ts',
+				'**/virtuals/i18n/v-files.ts',
+				'**/virtuals/auth/scripts/**',
+				'**/virtuals/auth/core.ts',
+				'**/virtuals/auth/index.ts',
+				'**/virtuals/auth/verify-email.ts',
 			],
 		},
 	},

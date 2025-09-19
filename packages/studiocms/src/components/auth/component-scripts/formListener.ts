@@ -2,7 +2,8 @@
  * This tool is used by Auth Login pages
  */
 
-import { toast } from 'studiocms:ui/components/toaster';
+import { toast as uiToast } from 'studiocms:ui/components/toaster';
+import type { ToastProps } from '@studiocms/ui/types';
 
 /**
  * Handles form submission events for login and registration forms.
@@ -22,10 +23,17 @@ import { toast } from 'studiocms:ui/components/toaster';
 export async function formListener(
 	event: SubmitEvent,
 	form: HTMLFormElement,
-	type: 'login' | 'register'
+	type: 'login' | 'register',
+	toast: (props: ToastProps) => void = uiToast,
+	reload: () => void = () => {
+		if (typeof window !== 'undefined') {
+			window.location.reload();
+		}
+	}
 ) {
 	event.preventDefault();
 
+	/* v8 ignore start */
 	if (type === 'register') {
 		const password = form.querySelector('input[name="password"]') as HTMLInputElement;
 		const confirmPassword = form.querySelector(
@@ -43,6 +51,7 @@ export async function formListener(
 			return;
 		}
 	}
+	/* v8 ignore stop */
 
 	const response = await fetch(form.action, {
 		method: form.method,
@@ -54,7 +63,7 @@ export async function formListener(
 			type: 'success',
 			description: 'Redirecting...',
 		});
-		window.location.reload();
+		reload();
 	} else {
 		const {
 			error: { title, description },

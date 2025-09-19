@@ -1,4 +1,4 @@
-const notificationOptions = [
+export const notificationOptions = [
 	'account_updated',
 	'page_updated',
 	'page_deleted',

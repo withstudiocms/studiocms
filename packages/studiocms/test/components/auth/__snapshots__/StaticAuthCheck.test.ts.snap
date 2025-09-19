@@ -1,0 +1,21 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`StaticAuthCheck component > render component no props 1`] = `
+"<div id="login-check" style="display: none;" data-is_logged_in="false" data-redirect_route="/dashboard"></div> <script>
+  const loginCheck = document.getElementById('login-check');
+
+  if (loginCheck.dataset.is_logged_in === 'true') {
+    window.location.href = loginCheck.dataset.redirect_route;
+  }
+</script>"
+`;
+
+exports[`StaticAuthCheck component > render component with props 1`] = `
+"<div id="login-check" style="display: none;" data-is_logged_in="true" data-redirect_route="/dashboard"></div> <script>
+  const loginCheck = document.getElementById('login-check');
+
+  if (loginCheck.dataset.is_logged_in === 'true') {
+    window.location.href = loginCheck.dataset.redirect_route;
+  }
+</script>"
+`;
