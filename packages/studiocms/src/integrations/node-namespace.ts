@@ -2,6 +2,17 @@ import { builtinModules as builtins } from 'node:module';
 import type { AstroIntegration } from 'astro';
 import { addVitePlugin, hasVitePlugin } from 'astro-integration-kit';
 
+export const resolveBuiltIns = (id: string) => {
+	if (!id || id[0] === '.' || id[0] === '/') return;
+	// Support already-namespaced ids and builtin subpaths (e.g., 'fs/promises').
+	const plain = id.startsWith('node:') ? id.slice(5) : id;
+	if (builtins.includes(plain)) {
+		const namespaced = id.startsWith('node:') ? id : `node:${id}`;
+		return { id: namespaced, external: true };
+	}
+	return;
+};
+
 /**
  * Creates an Astro integration that injects a Vite plugin to automatically
  * resolve Node.js built-in modules using the `node:` protocol namespace.
@@ -20,24 +31,17 @@ export function nodeNamespaceBuiltinsAstro(): AstroIntegration {
 		name: 'vite-namespace-builtins',
 		hooks: {
 			'astro:config:setup': (params) => {
+				/* v8 ignore start */
 				if (!hasVitePlugin(params, { plugin: 'namespace-builtins' })) {
 					addVitePlugin(params, {
 						plugin: {
 							name: 'namespace-builtins',
 							enforce: 'pre',
-							resolveId(id: string) {
-								if (!id || id[0] === '.' || id[0] === '/') return;
-								// Support already-namespaced ids and builtin subpaths (e.g., 'fs/promises').
-								const plain = id.startsWith('node:') ? id.slice(5) : id;
-								if (builtins.includes(plain)) {
-									const namespaced = id.startsWith('node:') ? id : `node:${id}`;
-									return { id: namespaced, external: true };
-								}
-								return;
-							},
+							resolveId: resolveBuiltIns,
 						},
 					});
 				}
+				/* v8 ignore stop */
 			},
 		},
 	};
