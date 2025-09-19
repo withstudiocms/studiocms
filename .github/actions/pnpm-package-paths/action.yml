@@ -11,6 +11,7 @@ runs:
   steps:
     - name: Get pnpm packages
       id: pnpm-packages
+      shell: bash
       run: |
         echo "packages-output=$(pnpm list --recursive --depth -1 --json | jq -c 'map(select(.private == false))')" >> $GITHUB_OUTPUT
 

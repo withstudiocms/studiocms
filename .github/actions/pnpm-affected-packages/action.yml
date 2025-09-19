@@ -11,12 +11,14 @@ runs:
   steps:
     - name: Get changeset status
       id: changeset-status
+      shell: bash
       run: |
         pnpm changeset status --output changes.json
         echo "changes-output=$(cat changes.json | jq -c .)" >> $GITHUB_OUTPUT
     
     - name: Get pnpm packages
       id: pnpm-packages
+      shell: bash
       run: |
         echo "packages-output=$(pnpm list --recursive --depth -1 --json | jq -c 'map(select(.private == false))')" >> $GITHUB_OUTPUT
 
