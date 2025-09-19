@@ -3,7 +3,7 @@
   "private": true,
   "packageManager": "pnpm@10.15.0",
   "engines": {
-    "node": "22.8.0"
+    "node": "22.19.0"
   },
   "scripts": {
     "build": "pnpm build:studiocms && pnpm --filter node-playground build",
