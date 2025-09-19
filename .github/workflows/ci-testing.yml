@@ -48,8 +48,6 @@ jobs:
   codecov:
     name: Run Tests & Code Coverage
     runs-on: ubuntu-latest
-    needs: 
-      - typecheck
     env:
       NODE_OPTIONS: "--max_old_space_size=4096"
     steps:
@@ -89,8 +87,6 @@ jobs:
   run-bundle-tests:
     name: Run Bundle Analysis
     runs-on: ubuntu-latest
-    needs: 
-      - codecov
     env:
       NODE_OPTIONS: "--max_old_space_size=4096"
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
