@@ -10,13 +10,10 @@
     "ignoreUnknown": true,
     "includes": [
       "**",
-      "!**/.astro/**",
       "!**/package.json",
-      "!**/dist/**",
       "!**/*.min.js",
       "!**/*.min.css",
       "!**/dashboard-code.css",
-      "!**/translation-statistics/**",
       "!**/i18n/translations/**/*.json"
     ]
   },
@@ -47,7 +44,9 @@
     "rules": {
       "recommended": true,
       "suspicious": {
-        "noExplicitAny": "warn"
+        "noExplicitAny": "warn",
+        "noTsIgnore": "warn",
+        "useIterableCallbackReturn": "info"
       },
       "performance": {
         "noDynamicNamespaceImportAccess": "off"

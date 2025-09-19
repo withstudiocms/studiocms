@@ -13,6 +13,25 @@ concurrency:
 permissions: {}
 
 jobs:
+  biome:
+    name: Run Biome Linter and Report
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          persist-credentials: false
+
+      - name: Install Tools & Dependencies
+        uses: withstudiocms/automations/.github/actions/install@885437ef4376e64fc295161092b8a165bc5efd39 # main
+
+      - name: Run Biome Linter
+        run: pnpm ci:lint
+
   knip:
     runs-on: ubuntu-latest
     permissions:
