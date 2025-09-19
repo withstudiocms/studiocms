@@ -3,7 +3,7 @@ description: 'Get paths of all non-private pnpm packages with changes in the mon
 
 outputs:
   affected-packages: 
-    description: 'A JSON object mapping package names to their paths.'
+    description: 'A JSON array of affected package paths (relative to repo root).'
     value: ${{ steps.compute-affected-packages.outputs.affected-packages }}
 
 runs:
