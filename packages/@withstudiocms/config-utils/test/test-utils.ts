@@ -38,7 +38,7 @@ export class MockFunction<T extends Record<K, (...args: any[]) => void>, K exten
 		this.object = object;
 		this.property = property;
 		this.original = object[property];
-		// @ts-ignore
+		// @ts-expect-error
 		object[property] = (...args: Parameters<T[K]>) => {
 			this.calls.push(args);
 		};

@@ -273,7 +273,7 @@ const plugin = (editor: Editor) => {
 			};
 
 			if (hideHeader) {
-				// @ts-ignore
+				// @ts-expect-error
 				config.includeUI.theme['header.display'] = 'none';
 			}
 
@@ -328,7 +328,7 @@ const plugin = (editor: Editor) => {
 				am.FileUploader().uploadFile(
 					{
 						dataTransfer: {
-							// @ts-ignore
+							// @ts-expect-error
 							files: [file],
 						},
 					},

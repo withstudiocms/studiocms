@@ -154,15 +154,15 @@ const richTextEditor: Plugin<RichTextEditorOptions> = (editor, opts = {}) => {
 					style: 'padding: 0 4px 2px;',
 					title: 'Font Name',
 				},
-				// @ts-ignore
+				// @ts-expect-error
 				result: (rte, action) => rte.exec('fontName', action.btn?.firstChild?.value),
 				// Callback on any input change (mousedown, keydown, etc..)
-				// @ts-ignore
+				// @ts-expect-error
 				update: (rte, action) => {
 					const value = rte.doc.queryCommandValue(action.name);
 					if (value !== 'false') {
 						// value is a string
-						// @ts-ignore
+						// @ts-expect-error
 						if (action.btn?.firstChild) action.btn.firstChild.value = value;
 					}
 				},
@@ -185,15 +185,15 @@ const richTextEditor: Plugin<RichTextEditorOptions> = (editor, opts = {}) => {
 					style: 'padding: 0 4px 2px;',
 					title: 'Font Size',
 				},
-				// @ts-ignore
+				// @ts-expect-error
 				result: (rte, action) => rte.exec('fontSize', action.btn?.firstChild?.value),
 				// Callback on any input change (mousedown, keydown, etc..)
-				// @ts-ignore
+				// @ts-expect-error
 				update: (rte, action) => {
 					const value = rte.doc.queryCommandValue(action.name);
 					if (value !== 'false') {
 						// value is a string
-						// @ts-ignore
+						// @ts-expect-error
 						action.btn.firstChild.value = value;
 					}
 				},
@@ -204,7 +204,7 @@ const richTextEditor: Plugin<RichTextEditorOptions> = (editor, opts = {}) => {
 			rte.add('fontColor', {
 				icon: `${icons?.fontColor || '<b style="pointer-events:none;border-bottom:2px solid">A</b>'}
           <div id="foreColor-picker-${
-						// @ts-ignore
+						// @ts-expect-error
 						editor.Config.container?.replace('#', '')
 					}"
               class="${
@@ -217,7 +217,7 @@ const richTextEditor: Plugin<RichTextEditorOptions> = (editor, opts = {}) => {
 				},
 				result: (rte) => {
 					const pikerEle = `#foreColor-picker-${
-						// @ts-ignore
+						// @ts-expect-error
 						editor.Config.container?.replace('#', '')
 					}`;
 					if (!pk1[pikerEle])
@@ -244,7 +244,7 @@ const richTextEditor: Plugin<RichTextEditorOptions> = (editor, opts = {}) => {
 					icons?.hiliteColor || '<b style="pointer-events:none;" class="rte-hilite-btn">A</b>'
 				}
           <div id="hilite-picker-${
-						// @ts-ignore
+						// @ts-expect-error
 						editor.Config.container?.replace('#', '')
 					}"
             class="${options.darkColorPicker ? 'rte-color-picker dark' : 'rte-color-picker light'}">
@@ -255,7 +255,7 @@ const richTextEditor: Plugin<RichTextEditorOptions> = (editor, opts = {}) => {
 				},
 				result: (rte) => {
 					const pikerEle = `#hilite-picker-${
-						// @ts-ignore
+						// @ts-expect-error
 						editor.Config.container?.replace('#', '')
 					}`;
 					if (!pk2[pikerEle])

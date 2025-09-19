@@ -60,8 +60,7 @@
   "editor.fontSize": 14.2,
   "editor.fontWeight": "400",
   "editor.codeActionsOnSave": {
-    "quickfix.biome": "explicit",
-    "source.organizeImports.biome": "explicit"
+    "source.fixAll.biome": "explicit"
   },
   "editor.defaultFormatter": "biomejs.biome",
   "editor.gotoLocation.multipleDefinitions": "goto",

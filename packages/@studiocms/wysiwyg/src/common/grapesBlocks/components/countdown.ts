@@ -122,7 +122,7 @@ export default (editor: Editor, opts: RequiredCountdownOptions) => {
 						changeProp: true,
 					},
 				],
-				// @ts-ignore
+				// @ts-expect-error
 				components: `
               <span data-js="countdown" class="${countdownPfx}-cont">
                 <div class="${countdownPfx}-block">
