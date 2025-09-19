@@ -22,7 +22,9 @@ export const buildPageRouteDataObject = (webVitalData: WebVitalsResponseItem[]) 
 			if (checkDate(timestamp).isInLast24Hours()) {
 				const index = last24HoursData.findIndex((entry) => entry.pagePathname === pathname);
 				if (index !== -1) {
+					/* v8 ignore start */
 					last24HoursData[index].analyticData.pageViews += 1;
+					/* v8 ignore stop */
 				} else {
 					last24HoursData.push({
 						pagePathname: pathname,

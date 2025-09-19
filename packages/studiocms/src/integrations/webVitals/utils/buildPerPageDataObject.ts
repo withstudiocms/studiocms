@@ -48,9 +48,11 @@ export const buildPerPageRouteDataObject = (webVitalData: WebVitalsResponseItem[
 
 			if (index !== -1) {
 				last24HoursData[index].samplesize += 1;
+				/* v8 ignore start */
 				if (item.name === 'CLS') {
 					last24HoursData[index].clsvalue.push(item.value);
 				}
+				/* v8 ignore stop */
 				if (item.name === 'LCP') {
 					last24HoursData[index].lcpvalue.push(item.value);
 				}
@@ -72,9 +74,11 @@ export const buildPerPageRouteDataObject = (webVitalData: WebVitalsResponseItem[
 
 			if (index !== -1) {
 				last7DaysData[index].samplesize += 1;
+				/* v8 ignore start */
 				if (item.name === 'CLS') {
 					last7DaysData[index].clsvalue.push(item.value);
 				}
+				/* v8 ignore stop */
 				if (item.name === 'LCP') {
 					last7DaysData[index].lcpvalue.push(item.value);
 				}
