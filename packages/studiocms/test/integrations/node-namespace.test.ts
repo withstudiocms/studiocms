@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/suspicious/noExplicitAny: allowed in tests */
 import type { AstroIntegration } from 'astro';
 import { describe, expect, expectTypeOf, it } from 'vitest';
 import { nodeNamespaceBuiltinsAstro, resolveBuiltIns } from '../../src/integrations/node-namespace';
