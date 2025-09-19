@@ -72,7 +72,7 @@ export default defineConfig({
 				'**/virtuals/auth/verify-email.ts',
 				'**/webVitals/dashboard-grid-items/**',
 				'**/webVitals/pages/**',
-				'**/src/handlers/**',
+				'**/studiocms/src/handlers/**',
 			],
 		},
 	},
