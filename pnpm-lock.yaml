@@ -108,8 +108,8 @@ catalogs:
       specifier: ^1.2.0
       version: 1.2.0
     '@studiocms/ui':
-      specifier: ^1.0.0-beta.0
-      version: 1.0.0-beta.0
+      specifier: ^1.0.0-beta.1
+      version: 1.0.0-beta.1
     '@studiocms/web-vitals':
       specifier: ^4.5.2
       version: 4.5.2
@@ -604,7 +604,7 @@ importers:
     dependencies:
       '@studiocms/ui':
         specifier: catalog:studiocms
-        version: 1.0.0-beta.0(astro@5.13.7(@types/node@22.16.3)(jiti@2.5.1)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0))(vite@6.3.6(@types/node@22.16.3)(jiti@2.5.1)(tsx@4.20.3)(yaml@2.8.0))
+        version: 1.0.0-beta.1(astro@5.13.7(@types/node@22.16.3)(jiti@2.5.1)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0))(vite@6.3.6(@types/node@22.16.3)(jiti@2.5.1)(tsx@4.20.3)(yaml@2.8.0))
       '@withstudiocms/component-registry':
         specifier: workspace:*
         version: link:../../@withstudiocms/component-registry
@@ -845,7 +845,7 @@ importers:
         version: 1.1.0(nanostores@1.0.1)
       '@studiocms/ui':
         specifier: catalog:studiocms
-        version: 1.0.0-beta.0(astro@5.13.7(@types/node@22.16.3)(jiti@2.5.1)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0))(vite@6.3.6(@types/node@22.16.3)(jiti@2.5.1)(tsx@4.20.3)(yaml@2.8.0))
+        version: 1.0.0-beta.1(astro@5.13.7(@types/node@22.16.3)(jiti@2.5.1)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0))(vite@6.3.6(@types/node@22.16.3)(jiti@2.5.1)(tsx@4.20.3)(yaml@2.8.0))
       '@studiocms/web-vitals':
         specifier: catalog:min
         version: 4.5.2(@astrojs/db@0.17.2(@opentelemetry/api@1.9.0)(@types/pg@8.6.1))
@@ -2703,8 +2703,8 @@ packages:
   '@studiocms/markdown-remark-processor@1.2.0':
     resolution: {integrity: sha512-3qOupRze2HKO2VdcrN0c5j9ZYoM8hlhFjrs4m5pg4w5Do5I1MTuDDTXmfRnZ+CwDrXyUaYr+DK1Csb7zMYjzyA==}
 
-  '@studiocms/ui@1.0.0-beta.0':
-    resolution: {integrity: sha512-QGCb+Zk1Q2FA0PmmeWGE+bVCNXijVtNDbMzKUXDsS7mOxAw33fG0GYgCvsduUqTU3dW70tBe8QvQza6w8RirHw==}
+  '@studiocms/ui@1.0.0-beta.1':
+    resolution: {integrity: sha512-CYRIW+jGCiVGwWr/cwlO8rhdpYFQ650AwKe3lh/0BvOu/l9ORe68iG1aZ/0HXJ799qK0jt5ktqSQEKjFYUHv6A==}
     peerDependencies:
       astro: ^4.5 || ^5.0.0-beta.0
       vite: ^5.0.0 || ^6.0.0
@@ -8257,7 +8257,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@studiocms/ui@1.0.0-beta.0(astro@5.13.7(@types/node@22.16.3)(jiti@2.5.1)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0))(vite@6.3.6(@types/node@22.16.3)(jiti@2.5.1)(tsx@4.20.3)(yaml@2.8.0))':
+  '@studiocms/ui@1.0.0-beta.1(astro@5.13.7(@types/node@22.16.3)(jiti@2.5.1)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0))(vite@6.3.6(@types/node@22.16.3)(jiti@2.5.1)(tsx@4.20.3)(yaml@2.8.0))':
     dependencies:
       '@iconify-json/heroicons': 1.2.2
       '@iconify/types': 2.0.0

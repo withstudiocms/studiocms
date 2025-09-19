@@ -40,7 +40,7 @@ catalogs:
     "react-dom": ^19.1.1
   studiocms:
     "@studiocms/markdown-remark-processor": ^1.2.0
-    "@studiocms/ui": ^1.0.0-beta.0
+    "@studiocms/ui": ^1.0.0-beta.1
     "@studiocms/web-vitals": ^4.5.2
     "@withstudiocms/cli-kit": ^0.1.0
 
