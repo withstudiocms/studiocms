@@ -78,6 +78,7 @@ const testIntegration: AstroIntegration = {
 						},
 					])};`,
 					'virtual:studiocms/sitemaps': `export const sitemaps = ['./sitemap-blog.xml', './sitemap-shop.xml'];`,
+					'studiocms:components': `export { default as Generator } from '${resolve('./test/fixtures/Generator.astro')}';`,
 				},
 			});
 		},
