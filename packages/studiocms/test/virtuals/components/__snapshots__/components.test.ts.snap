@@ -1,0 +1,11 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Virtual Components Container tests > CustomImage component > render component 1`] = `"<img src="https://seccdn.libravatar.org/static/img/mm/80.png" data-image-component="true" loading="lazy" alt="Test Image" decoding="async" fetchpriority="auto" width="80" height="80">"`;
+
+exports[`Virtual Components Container tests > FormattedDate component > render component 1`] = `"<time datetime="2020-01-01T00:00:00.000Z">Wed, 01 Jan 2020 00:00:00 GMT</time>"`;
+
+exports[`Virtual Components Container tests > Generator component > render component 1`] = `"<meta name="generator" content="Astro v0.0.0-test"><meta name="generator" content="StudioCMS v0.0.0-test"><meta name="generator" content="StudioCMS UI v0.0.0-test">"`;
+
+exports[`Virtual Components Container tests > Renderer component > render component with content 1`] = `"<div>This is a test content from the defaultContent field.</div>"`;
+
+exports[`Virtual Components Container tests > Renderer component > render component with no content 1`] = `"<h1>Error: No content found</h1>"`;
