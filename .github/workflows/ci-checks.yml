@@ -13,6 +13,21 @@ concurrency:
 permissions: {}
 
 jobs:
+  biome:
+    name: Run Biome Linter and Report
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      - uses: mongolyy/reviewdog-action-biome@bf7dffa9b14e8904941a18a28782b74fc40104f0 # v1.11.1
+        with:
+          github_token: ${{ secrets.STUDIOCMS_SERVICE_TOKEN }}
+          reporter: github-pr-review
+
   knip:
     runs-on: ubuntu-latest
     permissions:
