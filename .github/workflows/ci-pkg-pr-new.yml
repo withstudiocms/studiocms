@@ -43,41 +43,19 @@ jobs:
           # Changeset needs access to the main branch to find pending changesets
           fetch-depth: 0
 
-      - name: Setup PNPM
-        uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
+      - name: Install Tools & Dependencies
+        uses: withstudiocms/automations/.github/actions/install@885437ef4376e64fc295161092b8a165bc5efd39 # main
 
-      - name: Setup Node
-        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
-        with:
-          node-version-file: '.node-version'
-          cache: "pnpm"
+      - name: Run Build
+        run: pnpm ci:build
 
-      - name: Install dependencies
-        run: pnpm install
-
-      - name: Run Prepublish
-        run: pnpm ci:prepublish
-
-      - name: Get pnpm packages
-        id: pnpm-packages
-        run: |
-          echo "packages-output=$(pnpm list --recursive --depth -1 --json | jq -c 'map(select(.private == false))')" >> $GITHUB_OUTPUT
-
-      - name: Compute packages paths
-        id: compute-packages-paths
-        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
-        env:
-          PACKAGES: ${{ steps.pnpm-packages.outputs.packages-output }}
-        with:
-          script: |
-              const { relative } = require('node:path');
-              const packages = JSON.parse(process.env.PACKAGES);
-              const packagesMap = Object.fromEntries(packages.map(p => [p.name, relative(process.cwd(), p.path)]));
-              core.setOutput('packages-paths', JSON.stringify(packagesMap));
+      - name: Get Packages
+        id: get-packages
+        uses: ./.github/actions/pnpm-package-paths
 
       - name: Publish packages
         env:
-          PACKAGES_PATHS: ${{ steps.compute-packages-paths.outputs.packages-paths }}
+          PACKAGES_PATHS: ${{ steps.get-packages.outputs.packages-paths }}
         run: |
           packages=$(echo "$PACKAGES_PATHS" | jq -r '.[]' 2>/dev/null | tr '\n' ' ' || echo "")
           if [ -n "$packages" ]; then
@@ -106,41 +84,19 @@ jobs:
           # Changeset needs access to the main branch to find pending changesets
           fetch-depth: 0
 
-      - name: Setup PNPM
-        uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
+      - name: Install Tools & Dependencies
+        uses: withstudiocms/automations/.github/actions/install@885437ef4376e64fc295161092b8a165bc5efd39 # main
 
-      - name: Setup Node
-        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
-        with:
-          node-version-file: '.node-version'
-          cache: "pnpm"
+      - name: Run Build
+        run: pnpm ci:build
 
-      - name: Install dependencies
-        run: pnpm install
-
-      - name: Run Prepublish
-        run: pnpm ci:prepublish
-
-      - name: Get pnpm packages
-        id: pnpm-packages
-        run: |
-          echo "packages-output=$(pnpm list --recursive --depth -1 --json | jq -c 'map(select(.private == false))')" >> $GITHUB_OUTPUT
-
-      - name: Compute packages paths
-        id: compute-packages-paths
-        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
-        env:
-          PACKAGES: ${{ steps.pnpm-packages.outputs.packages-output }}
-        with:
-          script: |
-              const { relative } = require('node:path');
-              const packages = JSON.parse(process.env.PACKAGES);
-              const packagesMap = Object.fromEntries(packages.map(p => [p.name, relative(process.cwd(), p.path)]));
-              core.setOutput('packages-paths', JSON.stringify(packagesMap));
+      - name: Get Packages
+        id: get-packages
+        uses: ./.github/actions/pnpm-package-paths
 
       - name: Publish packages
         env:
-          PACKAGES_PATHS: ${{ steps.compute-packages-paths.outputs.packages-paths }}
+          PACKAGES_PATHS: ${{ steps.get-packages.outputs.packages-paths }}
         run: |
           packages=$(echo "$PACKAGES_PATHS" | jq -r '.[]' 2>/dev/null | tr '\n' ' ' || echo "")
           if [ -n "$packages" ]; then
@@ -169,58 +125,19 @@ jobs:
           # Changeset needs access to the main branch to find pending changesets
           fetch-depth: 0
 
-      - name: Setup PNPM
-        uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
+      - name: Install Tools & Dependencies
+        uses: withstudiocms/automations/.github/actions/install@885437ef4376e64fc295161092b8a165bc5efd39 # main
 
-      - name: Setup Node
-        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
-        with:
-          node-version-file: '.node-version'
-          cache: "pnpm"
+      - name: Run Build
+        run: pnpm ci:build
 
-      - name: Install dependencies
-        run: pnpm install
-
-      - name: Run Prepublish
-        run: pnpm ci:prepublish
-
-      - name: Get changeset status
-        id: changeset-status
-        run: |
-          pnpm changeset status --output changes.json
-          echo "changes-output=$(cat changes.json | jq -c .)" >> $GITHUB_OUTPUT
-
-      - name: Get pnpm packages
-        id: pnpm-packages
-        run: |
-          echo "packages-output=$(pnpm list --recursive --depth -1 --json | jq -c 'map(select(.private == false))')" >> $GITHUB_OUTPUT
-
-      - name: Compute affected packages
-        id: compute-affected-packages
-        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
-        env:
-          CHANGES: ${{ steps.changeset-status.outputs.changes-output }}
-          PACKAGES: ${{ steps.pnpm-packages.outputs.packages-output }}
-        with:
-          script: |
-              const { relative } = require('node:path');
-              const changes = JSON.parse(process.env.CHANGES);
-              const packages = JSON.parse(process.env.PACKAGES);
-              const packagesMap = Object.fromEntries(packages.map(p => [p.name, relative(process.cwd(), p.path)]));
-
-              const affectedPackages = [
-                ...new Set(
-                  changes.releases
-                    .filter(r => r.type !== 'none' && r.oldVersion !== r.newVersion)
-                    .flatMap(r => packagesMap[r.name])
-                    .filter(Boolean) // drop undefined
-                ),
-              ];
-              core.setOutput('affected-packages', JSON.stringify(affectedPackages));
+      - name: Get Packages
+        id: get-packages
+        uses: ./.github/actions/pnpm-affected-packages
 
       - name: Publish packages
         env:
-          AFFECTED_PACKAGES: ${{ steps.compute-affected-packages.outputs.affected-packages }}
+          AFFECTED_PACKAGES: ${{ steps.get-packages.outputs.affected-packages }}
         run: |
           packages=$(echo "$AFFECTED_PACKAGES" | jq -r '.[]' 2>/dev/null | tr '\n' ' ' || echo "")
           if [ -n "$packages" ]; then
