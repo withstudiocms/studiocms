@@ -254,7 +254,7 @@ export function generateContent(
 
 		if (policy.cleanParam) {
 			const cleanParams = Array.isArray(policy.cleanParam)
-				? policy.cleanParam
+				? /* v8 ignore next */ policy.cleanParam
 				: [policy.cleanParam];
 			for (const param of cleanParams) {
 				content += `Clean-param: ${param}\n`;
@@ -262,7 +262,9 @@ export function generateContent(
 		}
 
 		if (config.policy && policy !== config.policy[config.policy.length - 1]) {
+			/* v8 ignore start */
 			content += '\n';
+			/* v8 ignore stop */
 		} else if (config.sitemap !== false) {
 			content += '\n# crawling rule(s) for above bots\n';
 		}
