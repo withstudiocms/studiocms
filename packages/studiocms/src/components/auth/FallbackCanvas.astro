@@ -1,22 +1,19 @@
 ---
 import { Image } from 'astro:assets';
 import { validImages } from 'studiocms:auth/utils/validImages';
-import type { SiteConfigCacheObject } from 'studiocms:sdk/types';
 import StudioCMSLogoSVG from './StudioCMSLogoSVG.astro';
 
-interface Props {
-	config: SiteConfigCacheObject;
-}
-
 // Get the site config
-const { config } = Astro.props as Props;
+const config = Astro.locals.StudioCMS.siteConfig;
 
 const { loginPageBackground, loginPageCustomImage } = config.data;
 
 const fallbackImageSrc =
 	loginPageBackground === 'custom'
-		? loginPageCustomImage
-		: validImages.find((x) => x.name !== 'custom' && x.name === loginPageBackground)?.dark;
+		? /* v8 ignore start */
+			loginPageCustomImage
+		: /* v8 ignore stop */
+			validImages.find((x) => x.name !== 'custom' && x.name === loginPageBackground)?.dark;
 ---
 <div class="fallback-container" id="fallback-config" data-config={JSON.stringify({ loginPageBackground, loginPageCustomImage })}>
     <StudioCMSLogoSVG

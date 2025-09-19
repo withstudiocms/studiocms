@@ -24,8 +24,7 @@ const passwordReset = (link: string | URL) => `<!doctype html>
               <div
                 style="color:#474849;font-size:14px;font-weight:normal;text-align:left;padding:8px 24px 16px 24px"
               >
-                Click the button below, or copy-paste the link to reset your
-                password!
+                Click the button below, or copy-paste the link to reset your password!
                 <br />
                 <br />
                 If you didn't request a password reset, you can ignore this email and
@@ -36,8 +35,7 @@ const passwordReset = (link: string | URL) => `<!doctype html>
                   href="${link}"
                   style="color:#FFFFFF;font-size:14px;font-weight:bold;background-color:#0068FF;display:inline-block;padding:12px 20px;text-decoration:none"
                   target="_blank"
-                  ><span>Reset Password</span
-                  ></a
+                  ><span>Reset Password</span></a
                 >
               </div>
               <div

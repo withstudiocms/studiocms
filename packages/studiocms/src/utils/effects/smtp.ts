@@ -1,3 +1,7 @@
+/* v8 ignore start */
+// Runtime utilities for sending emails using SMTP with Effect
+// SMTP implementation is already tested in @withstudiocms/effect
+// We import and create a custom SMTPMailer service here for StudioCMS specific use cases
 import { db, eq } from 'astro:db';
 import {
 	type Mail,
@@ -153,3 +157,5 @@ export class SMTPMailer extends Effect.Service<SMTPMailer>()(
 		}),
 	}
 ) {}
+
+/* v8 ignore stop */

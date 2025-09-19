@@ -1,6 +1,6 @@
 import { notification, passwordReset, userInvite, verifyEmail } from './templates/index.js';
 
-const templates = {
+export const templates = {
 	verifyEmail,
 	notification,
 	passwordReset,

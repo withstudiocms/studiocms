@@ -1,13 +1,6 @@
 ---
-import type { SiteConfigCacheObject } from 'studiocms:sdk/types';
-
-interface Props {
-	config: SiteConfigCacheObject;
-}
-
 // Get the site config
-const { config } = Astro.props as Props;
-
+const config = Astro.locals.StudioCMS.siteConfig;
 const { loginPageBackground, loginPageCustomImage } = config.data;
 ---
 <div 

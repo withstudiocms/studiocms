@@ -1,1 +1,1 @@
-export { errorTap, genLogger, pipeLogger, runtimeLogger } from './logger.js';
+export { genLogger, pipeLogger, runtimeLogger } from './logger.js';

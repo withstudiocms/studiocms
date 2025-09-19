@@ -1,3 +1,5 @@
+/* v8 ignore start */
+// Requires remote connection... with Effect
 import { Effect, HTTPClient, Platform, Schema } from '../../../effect.js';
 
 /**
@@ -56,3 +58,4 @@ export class GetVersionFromNPM extends Effect.Service<GetVersionFromNPM>()(
 		dependencies: [HTTPClient.Default],
 	}
 ) {}
+/* v8 ignore stop */
