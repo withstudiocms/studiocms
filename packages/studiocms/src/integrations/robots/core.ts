@@ -224,7 +224,7 @@ export function generateContent(
 
 		if (policy.userAgent) {
 			const userAgents = Array.isArray(policy.userAgent)
-				? policy.userAgent
+				? /* v8 ignore next */ policy.userAgent
 				: [policy.userAgent || '*'];
 			for (const userAgent of userAgents) {
 				// skipped
