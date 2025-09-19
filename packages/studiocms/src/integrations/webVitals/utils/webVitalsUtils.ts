@@ -84,8 +84,10 @@ export const progressBarClsTrackColor = (clsData: number) => {
 	if (clsData > 0.25) {
 		return 'red';
 	}
+	/* v8 ignore start */
 	return 'red';
 };
+/* v8 ignore stop */
 
 // Calculate CLS text color based on the average CLS value
 // Return the color as a string (green, yellow, red)
@@ -276,12 +278,12 @@ export const progressBarInpTrackColor = (inpData: number) => {
 		return 'yellow';
 	}
 	if (inpData > 100) {
-		/* v8 ignore start */
 		return 'red';
 	}
-	/* v8 ignore stop */
+	/* v8 ignore start */
 	return 'red';
 };
+/* v8 ignore stop */
 
 // Calculate INP text color based on the average INP value
 // Return the color as a string (green, yellow, red)
