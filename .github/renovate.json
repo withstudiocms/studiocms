@@ -9,95 +9,54 @@
     "helpers:pinGitHubActionDigestsToSemver"
   ],
   "dependencyDashboard": true,
-  "postUpdateOptions": [
-    "pnpmDedupe"
-  ],
-  "ignorePaths": [
-    "**/node_modules/**",
-    "**/bower_components/**"
-  ],
-  "labels": [
-    "dependencies"
-  ],
+  "postUpdateOptions": ["pnpmDedupe"],
+  "ignorePaths": ["**/node_modules/**", "**/bower_components/**"],
+  "labels": ["dependencies"],
   "additionalBranchPrefix": "{{parentDir}}-",
-  "gitIgnoredAuthors": [
-    "no-reply@studiocms.dev"
-  ],
+  "gitIgnoredAuthors": ["no-reply@studiocms.dev"],
   "prHourlyLimit": 3,
   "rangeStrategy": "bump",
   "updatePinnedDependencies": false,
-  "dependencyDashboardLabels": [
-    "TRACKER"
-  ],
+  "dependencyDashboardLabels": ["TRACKER"],
   "packageRules": [
     {
-      "matchDepTypes": [
-        "packageManager",
-        "engines"
-      ],
+      "matchDepTypes": ["packageManager", "engines"],
       "enabled": false
     },
     {
-      "matchDepTypes": [
-        "pnpm.catalog.min"
-      ],
+      "matchDepTypes": ["pnpm.catalog.min"],
       "enabled": false
     },
     {
-      "matchFileNames": [
-        ".node-version"
-      ],
+      "matchFileNames": [".node-version"],
       "enabled": false
     },
     {
       "groupName": "pnpm Workspace Dependencies",
-      "matchManagers": [
-        "npm"
-      ],
-      "matchFileNames": [
-        "pnpm-workspace.yaml"
-      ]
+      "matchManagers": ["npm"],
+      "matchFileNames": ["pnpm-workspace.yaml"]
     },
     {
       "groupName": "github-actions",
-      "matchManagers": [
-        "github-actions"
-      ],
+      "matchManagers": ["github-actions"],
       "updatePinnedDependencies": true,
       "pinDigests": true,
-      "labels": [
-        "github-actions"
-      ]
+      "labels": ["github-actions"]
     },
     {
       "groupName": "Effect Dependencies",
-      "matchManagers": [
-        "npm"
-      ],
-      "matchPackageNames": [
-        "effect",
-        "@effect/**",
-        "!@effect/language-service",
-        "!@effect/vitest"
-      ],
-      "labels": [
-        "effect-deps"
-      ]
+      "matchManagers": ["npm"],
+      "matchPackageNames": ["effect", "@effect/**", "!@effect/language-service", "!@effect/vitest"],
+      "labels": ["effect-deps"]
     },
     {
       "groupName": "studiocms Dependencies",
-      "matchManagers": [
-        "npm"
-      ],
-      "matchFileNames": [
-        "packages/studiocms/**"
-      ]
+      "matchManagers": ["npm"],
+      "matchFileNames": ["packages/studiocms/**"]
     },
     {
       "groupName": "@studiocms Plugin Dependencies",
-      "matchManagers": [
-        "npm"
-      ],
+      "matchManagers": ["npm"],
       "matchFileNames": [
         "packages/@studiocms/auth0/**",
         "packages/@studiocms/blog/**",
@@ -114,33 +73,19 @@
     },
     {
       "groupName": "@studiocms Integration Dependencies",
-      "matchManagers": [
-        "npm"
-      ],
-      "matchFileNames": [
-        "packages/@studiocms/devapps/**"
-      ]
+      "matchManagers": ["npm"],
+      "matchFileNames": ["packages/@studiocms/devapps/**"]
     },
     {
       "groupName": "@withstudiocms Dependencies",
-      "matchManagers": [
-        "npm"
-      ],
-      "matchFileNames": [
-        "packages/@withstudiocms/**"
-      ]
+      "matchManagers": ["npm"],
+      "matchFileNames": ["packages/@withstudiocms/**"]
     },
     {
       "groupName": "Internal scopes (no release-age gate)",
-      "matchManagers": [
-        "npm"
-      ],
+      "matchManagers": ["npm"],
       "minimumReleaseAge": "0 days",
-      "matchPackageNames": [
-        "/^studiocms$/",
-        "/^@studiocms//",
-        "/^@withstudiocms//"
-      ]
+      "matchPackageNames": ["/^studiocms$/", "/^@studiocms//", "/^@withstudiocms//"]
     }
   ],
   "ignoreDeps": [
