@@ -1,3 +1,11 @@
+/* v8 ignore start */
+/*
+
+  This file is ignored by v8 coverage as it contains imports from 'astro:db' and 'studiocms:sdk' which
+  are not available outside of the Astro runtime with the `@astrojs/db` package installed.
+
+*/
+
 import { SDKCoreJs } from 'studiocms:sdk';
 import { EmptyReturn, tsMetric, WEB_VITALS_METRIC_TABLE } from './consts.js';
 import type {
@@ -81,3 +89,4 @@ export async function getWebVitals(): Promise<GetWebVitalsData> {
 		return EmptyReturn;
 	}
 }
+/* v8 ignore stop */

@@ -100,10 +100,10 @@ export function processWebVitalsRouteSummary(
 /**
  * Scoring Function: Computes a weighted score for core web vitals
  */
-const weighting = { LCP: 0.4, CLS: 0.3, INP: 0.3 };
-const scoring = { good: 1, 'needs-improvement': 0.5, poor: 0 };
+export const weighting = { LCP: 0.4, CLS: 0.3, INP: 0.3 };
+export const scoring = { good: 1, 'needs-improvement': 0.5, poor: 0 };
 
-const simpleScore = (
+export const simpleScore = (
 	lcpRating: WebVitalsRating,
 	clsRating: WebVitalsRating,
 	inpRating: WebVitalsRating

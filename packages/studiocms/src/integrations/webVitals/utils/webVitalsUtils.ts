@@ -164,7 +164,7 @@ export const progressBarLcpColor = (lcpData: number) => {
 	if (msToSeconds(lcpData) <= 2.5) {
 		return 'green';
 	}
-	if (msToSeconds(lcpData) > 2.5 && lcpData <= 4) {
+	if (msToSeconds(lcpData) > 2.5 && msToSeconds(lcpData) <= 4) {
 		return 'yellow';
 	}
 	return 'red';
@@ -190,7 +190,7 @@ export const lcpTextColor = (lcpData: number) => {
 	if (msToSeconds(lcpData) <= 2.5) {
 		return 'green';
 	}
-	if (msToSeconds(lcpData) > 2.5 && lcpData <= 4) {
+	if (msToSeconds(lcpData) > 2.5 && msToSeconds(lcpData) <= 4) {
 		return 'yellow';
 	}
 	return 'red';

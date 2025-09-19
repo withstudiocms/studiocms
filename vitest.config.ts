@@ -70,6 +70,8 @@ export default defineConfig({
 				'**/virtuals/auth/core.ts',
 				'**/virtuals/auth/index.ts',
 				'**/virtuals/auth/verify-email.ts',
+				'**/webVitals/dashboard-grid-items/**',
+				'**/webVitals/pages/**',
 			],
 		},
 	},
