@@ -30,8 +30,8 @@ export function nodeNamespaceBuiltinsAstro(): AstroIntegration {
 	return {
 		name: 'vite-namespace-builtins',
 		hooks: {
+			/* v8 ignore start */
 			'astro:config:setup': (params) => {
-				/* v8 ignore start */
 				if (!hasVitePlugin(params, { plugin: 'namespace-builtins' })) {
 					addVitePlugin(params, {
 						plugin: {
@@ -41,8 +41,8 @@ export function nodeNamespaceBuiltinsAstro(): AstroIntegration {
 						},
 					});
 				}
-				/* v8 ignore stop */
 			},
+			/* v8 ignore stop */
 		},
 	};
 }
