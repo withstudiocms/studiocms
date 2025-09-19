@@ -5,7 +5,7 @@ import type {
 	ProcessedCacheConfig,
 	ProcessedSDKConfig,
 } from '../../../schemas/config/sdk.js';
-import type { StudioCMSSiteConfig } from '../modules/config.js';
+import type { StudioCMSSiteConfig } from '../modules/config-types.js';
 import type { PageContentReturnId, PageDataReturnId, PageDataStripped } from './tableDefs.js';
 import type {
 	CombinedInsertContent,
