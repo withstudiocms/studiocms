@@ -1,0 +1,6 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`OAuthButtonStack component > render component 1`] = `
+"<div class="sui-divider-container"> <hr class="sui-divider-line"> <div class="sui-divider-content" style="background-color: var(--background-base); padding: .25rem .5rem;"> <t-comp-oauth key="or-login-with">or log in using</t-comp-oauth> </div> </div>
+    <div class="button-stack"><a tabindex="0" as="a" href="/studiocms_api/auth/github" class="sui-button full lg default solid">   github.png <span>GitHub</span>   </a> </div><script type="module" src="/mock/path/OAuthButtonStack.astro?astro&type=script&index=0&lang.ts"></script>"
+`;

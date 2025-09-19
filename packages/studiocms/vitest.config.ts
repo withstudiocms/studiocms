@@ -1,11 +1,12 @@
+import { icons as flatColorIcons } from '@iconify-json/flat-color-icons';
+import { icons as simpleIcons } from '@iconify-json/simple-icons';
 import studiocmsUi from '@studiocms/ui';
 import { convertToSafeString, rendererComponentFilter } from '@withstudiocms/internal_helpers';
 import type { AstroIntegration } from 'astro';
 import { getViteConfig } from 'astro/config';
 import { addVirtualImports, createResolver } from 'astro-integration-kit';
 import { defineProject } from 'vitest/config';
-import { getUiOpts } from './src/consts';
-import { type StudioCMSOptions, StudioCMSOptionsSchema } from './src/schemas';
+import { type StudioCMSOptions, StudioCMSOptionsSchema } from './src/schemas/config/index.js';
 import { availableTranslationFileKeys, availableTranslations } from './src/virtuals/i18n/v-files';
 import { buildVirtualConfig } from './src/virtuals/utils';
 
@@ -44,6 +45,8 @@ const testIntegration: AstroIntegration = {
 						export default logger;
 					`,
 					'studiocms:version': `export default '0.0.0-test';`,
+					'studiocms:i18n': `export * from '${resolve('./src/virtuals/i18n/server.ts')}';`,
+					'studiocms:i18n/client': `export * from '${resolve('./src/virtuals/i18n/client.ts')}';`,
 					'studiocms:i18n/virtual': `
 						export const availableTranslationFileKeys = ${JSON.stringify(availableTranslationFileKeys)};
 						export const availableTranslations = ${JSON.stringify(availableTranslations)};
@@ -58,7 +61,22 @@ const testIntegration: AstroIntegration = {
 					// NOT A REAL KEY, this is the same key used by the CLI when no user-key is provided
 					'virtual:studiocms/sdk/env': `export const cmsEncryptionKey = '+URKVIiIM1kmG6g9Znb10g==';`,
 					'studiocms:auth/scripts/three': `export const hello = 'world';`,
-					'studiocms:auth/utils/validImages': `export * from '${resolve('./src/virtuals/auth/validImages/index.js')}';`,
+					'studiocms:auth/utils/validImages': `export * from '${resolve('./src/virtuals/auth/validImages/index.ts')}';`,
+					'studiocms:lib': `export * from '${resolve('./src/virtuals/lib/routeMap.ts')}';`,
+					'studiocms:plugins/auth/providers': `export const oAuthButtons = ${JSON.stringify([
+						{
+							enabled: true,
+							safeName: 'github',
+							label: 'GitHub',
+							image: 'github.png',
+						},
+						{
+							enabled: false,
+							safeName: 'discord',
+							label: 'Discord',
+							image: 'discord.png',
+						},
+					])};`,
 				},
 			});
 		},
@@ -74,7 +92,16 @@ export default defineProject(
 			},
 		},
 		{
-			integrations: [testIntegration, studiocmsUi(getUiOpts())],
+			integrations: [
+				testIntegration,
+				studiocmsUi({
+					noInjectCSS: true,
+					icons: {
+						flatcoloricons: flatColorIcons,
+						simpleicons: simpleIcons,
+					},
+				}),
+			],
 		}
 	)
 );
