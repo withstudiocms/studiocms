@@ -80,6 +80,12 @@
       "groupName": "@withstudiocms Dependencies",
       "matchManagers": ["npm"],
       "matchFileNames": ["packages/@withstudiocms/**"]
+    },
+    {
+      "groupName": "Internal scopes (no release-age gate)",
+      "matchManagers": ["npm"],
+      "matchPackagePatterns": ["^studiocms$", "^@studiocms/", "^@withstudiocms/"],
+      "minimumReleaseAge": "0 days"
     }
   ],
   "ignoreDeps": [
