@@ -21,7 +21,7 @@ catalogs:
     vite: ^6.3.4
   effect:
     "@effect/cli": ^0.69.2
-    "@effect/platform": ^0.90.9
+    "@effect/platform": ^0.90.10
     "@effect/platform-node": ^0.96.1
     effect: ^3.17.13
   min:
