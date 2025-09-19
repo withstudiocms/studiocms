@@ -1,11 +1,12 @@
 /// <reference types="astro/client" />
 import { experimental_AstroContainer as AstroContainer } from 'astro/container';
 import { beforeAll, describe, expect, test } from 'vitest';
-import CustomImage from '../../../src/virtuals/components/CustomImage.astro';
-import FormattedDate from '../../../src/virtuals/components/FormattedDate.astro';
-import Generator from '../../../src/virtuals/components/Generator.astro';
-import Renderer from '../../../src/virtuals/components/Renderer.astro';
-import { cleanAstroAttributes, MockAstroLocals, makeRendererProps } from '../../test-utils';
+import CustomImage from '../src/virtuals/components/CustomImage.astro';
+import FormattedDate from '../src/virtuals/components/FormattedDate.astro';
+import Generator from '../src/virtuals/components/Generator.astro';
+import Renderer from '../src/virtuals/components/Renderer.astro';
+import LanguageSelector from '../src/virtuals/i18n/LanguageSelector.astro';
+import { cleanAstroAttributes, MockAstroLocals, makeRendererProps } from './test-utils';
 
 describe('Virtual Components Container tests', () => {
 	let container: AstroContainer;
@@ -58,6 +59,14 @@ describe('Virtual Components Container tests', () => {
 				props: makeRendererProps(null),
 			});
 			const cleanResult = cleanAstroAttributes(result, '/mock/path/Renderer.astro');
+			expect(cleanResult).toMatchSnapshot();
+		});
+	});
+
+	describe('i18n Language Selector component', () => {
+		test('render component', async () => {
+			const result = await container.renderToString(LanguageSelector);
+			const cleanResult = cleanAstroAttributes(result, '/mock/path/LanguageSelector.astro');
 			expect(cleanResult).toMatchSnapshot();
 		});
 	});

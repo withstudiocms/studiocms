@@ -1,20 +1,20 @@
 /// <reference types="astro/client" />
 import { experimental_AstroContainer as AstroContainer } from 'astro/container';
 import { beforeAll, describe, expect, test } from 'vitest';
-import FallbackCanvas from '../../src/components/auth/FallbackCanvas.astro';
-import OAuthButton from '../../src/components/auth/OAuthButton.astro';
-import OAuthButtonStack from '../../src/components/auth/OAuthButtonStack.astro';
-import StaticAuthCheck from '../../src/components/auth/StaticAuthCheck.astro';
-import StudioCMSLogoSVG from '../../src/components/auth/StudioCMSLogoSVG.astro';
-import ThreeCanvasLoader from '../../src/components/auth/ThreeCanvasLoader.astro';
-import PageHeader from '../../src/components/first-time-setup/PageHeader.astro';
-import Code from '../../src/components/shared/Code.astro';
-import Favicons from '../../src/components/shared/head/Favicons.astro';
-import Global from '../../src/components/shared/head/Global.astro';
-import TitleTags from '../../src/components/shared/head/TitleTags.astro';
-import SSRUser from '../../src/components/shared/SSRUser.astro';
-import ThemeManager from '../../src/components/shared/ThemeManager.astro';
-import { cleanAstroAttributes, MockAstroLocals } from '../test-utils';
+import FallbackCanvas from '../src/components/auth/FallbackCanvas.astro';
+import OAuthButton from '../src/components/auth/OAuthButton.astro';
+import OAuthButtonStack from '../src/components/auth/OAuthButtonStack.astro';
+import StaticAuthCheck from '../src/components/auth/StaticAuthCheck.astro';
+import StudioCMSLogoSVG from '../src/components/auth/StudioCMSLogoSVG.astro';
+import ThreeCanvasLoader from '../src/components/auth/ThreeCanvasLoader.astro';
+import PageHeader from '../src/components/first-time-setup/PageHeader.astro';
+import Code from '../src/components/shared/Code.astro';
+import Favicons from '../src/components/shared/head/Favicons.astro';
+import Global from '../src/components/shared/head/Global.astro';
+import TitleTags from '../src/components/shared/head/TitleTags.astro';
+import SSRUser from '../src/components/shared/SSRUser.astro';
+import ThemeManager from '../src/components/shared/ThemeManager.astro';
+import { cleanAstroAttributes, MockAstroLocals } from './test-utils';
 
 describe('Components Container tests', () => {
 	let container: AstroContainer;

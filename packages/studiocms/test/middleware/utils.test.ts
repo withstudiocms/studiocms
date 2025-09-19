@@ -44,9 +44,6 @@ describe('getUserPermissions', () => {
 		for (const [permissionLevel, expected] of levels) {
 			const userData = { permissionLevel } as any;
 			const result = await Effect.runPromise(getUserPermissions(userData));
-
-			console.log({ result, expected, permissionLevel });
-
 			expect(result).toMatchObject(expected);
 		}
 	});

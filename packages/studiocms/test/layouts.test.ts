@@ -1,9 +1,9 @@
 /// <reference types="astro/client" />
 import { experimental_AstroContainer as AstroContainer } from 'astro/container';
 import { beforeAll, describe, expect, test } from 'vitest';
-import AuthLayout from '../../src/layouts/AuthLayout.astro';
-import FirstTimeSetupLayout from '../../src/layouts/FirstTimeSetupLayout.astro';
-import { cleanAstroAttributes, MockAstroLocals } from '../test-utils';
+import AuthLayout from '../src/layouts/AuthLayout.astro';
+import FirstTimeSetupLayout from '../src/layouts/FirstTimeSetupLayout.astro';
+import { cleanAstroAttributes, MockAstroLocals } from './test-utils';
 
 describe('Layout Container tests', () => {
 	let container: AstroContainer;
