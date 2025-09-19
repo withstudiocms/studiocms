@@ -18,7 +18,7 @@ import type { APIContext, APIRoute } from 'astro';
  * //     <sitemap><loc>https://example.com/sitemap2.xml</loc></sitemap>
  * // </sitemapindex>
  */
-const template = (entries: { location: string }[]) => `<?xml version="1.0" encoding="UTF-8"?>
+export const template = (entries: { location: string }[]) => `<?xml version="1.0" encoding="UTF-8"?>
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     ${entries.map((entry) => `<sitemap><loc>${entry.location}</loc></sitemap>`).join('')}
 </sitemapindex>`;

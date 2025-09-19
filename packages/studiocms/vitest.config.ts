@@ -77,6 +77,7 @@ const testIntegration: AstroIntegration = {
 							image: 'discord.png',
 						},
 					])};`,
+					'virtual:studiocms/sitemaps': `export const sitemaps = ['./sitemap-blog.xml', './sitemap-shop.xml'];`,
 				},
 			});
 		},

@@ -28,7 +28,7 @@ interface DynamicSitemapOptions {
  * @param str - The input string to be converted.
  * @returns The converted safe string.
  */
-function safeString(str: string) {
+export function safeString(str: string) {
 	return convertToSafeString(str).replace(/^_+/, '').replace(/_+$/, '').replace('studiocms_', '');
 }
 
@@ -59,6 +59,7 @@ export function dynamicSitemap(options: DynamicSitemapOptions): AstroIntegration
 	return {
 		name: 'studiocms/dynamic-sitemap',
 		hooks: {
+			/* v8 ignore start */
 			'astro:config:setup': (params) => {
 				const { injectRoute } = params;
 
@@ -95,6 +96,7 @@ export function dynamicSitemap(options: DynamicSitemapOptions): AstroIntegration
 					});
 				}
 			},
+			/* v8 ignore stop */
 		},
 	};
 }
