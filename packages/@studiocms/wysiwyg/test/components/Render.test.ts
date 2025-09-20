@@ -1,5 +1,6 @@
 /// <reference types="astro/client" />
 import { experimental_AstroContainer as AstroContainer } from 'astro/container';
+import sanitizeHtml from 'sanitize-html';
 import { describe, expect, test, vi } from 'vitest';
 import Render from '../../src/components/Render.astro';
 
@@ -19,9 +20,15 @@ vi.mock('studiocms:component-registry/runtime', () => ({
 
 			// Mock sanitization logic - only if sanitize is truthy
 			if (sanitize && typeof content === 'string') {
-				// Simple mock sanitization - remove script tags
-				content = content.replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '');
-				content = content.replace(/on\w+="[^"]*"/gi, '');
+				// Use proper HTML sanitization library for comprehensive security
+				content = sanitizeHtml(content, {
+					allowedTags: ['div', 'h1', 'h2', 'h3', 'p', 'strong', 'em', 'a', 'ul', 'li', 'pre', 'code', 'header', 'main', 'section', 'article'],
+					allowedAttributes: {
+						'*': ['class'],
+						a: ['href'],
+					},
+					disallowedTagsMode: 'discard',
+				});
 			}
 			return content;
 		};
