@@ -1,36 +1,25 @@
 /// <reference types="astro/client" />
-import { experimental_AstroContainer as AstroContainer } from 'astro/container';
-import { beforeAll, describe, expect, test } from 'vitest';
+import { describe, expect } from 'vitest';
 import AuthLayout from '../src/layouts/AuthLayout.astro';
 import FirstTimeSetupLayout from '../src/layouts/FirstTimeSetupLayout.astro';
-import { cleanAstroAttributes, MockAstroLocals } from './test-utils';
+import { test } from './fixtures/AstroContainer';
 
 describe('Layout Container tests', () => {
-	let container: AstroContainer;
-
-	beforeAll(async () => {
-		container = await AstroContainer.create();
-	});
-
 	describe('FirstTimeSetupLayout Container', () => {
-		test('render component', async () => {
-			const result = await container.renderToString(FirstTimeSetupLayout, {
-				locals: MockAstroLocals(),
+		test('render component', async ({ renderComponent }) => {
+			const result = await renderComponent(FirstTimeSetupLayout, 'FirstTimeSetupLayout', {
 				props: { title: 'Test Title', description: 'Test Description' },
 			});
-			const cleanResult = cleanAstroAttributes(result, '/mock/path/FirstTimeSetupLayout.astro');
-			expect(cleanResult).toMatchSnapshot();
+			expect(result).toMatchSnapshot();
 		});
 	});
 
 	describe('AuthLayout Container', () => {
-		test('render component', async () => {
-			const result = await container.renderToString(AuthLayout, {
-				locals: MockAstroLocals(),
+		test('render component', async ({ renderComponent }) => {
+			const result = await renderComponent(AuthLayout, 'AuthLayout', {
 				props: { title: 'Test Title', description: 'Test Description', lang: 'en' },
 			});
-			const cleanResult = cleanAstroAttributes(result, '/mock/path/AuthLayout.astro');
-			expect(cleanResult).toMatchSnapshot();
+			expect(result).toMatchSnapshot();
 		});
 	});
 });
