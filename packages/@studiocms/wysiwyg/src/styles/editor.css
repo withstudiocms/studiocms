@@ -17,7 +17,7 @@
 }
 
 .save-indicator.dirty .dirty-indicator {
-	display: block !important;
+	display: block;
 }
 
 .scms-grapesjs-container {

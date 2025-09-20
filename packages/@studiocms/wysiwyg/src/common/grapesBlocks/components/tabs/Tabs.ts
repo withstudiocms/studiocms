@@ -56,7 +56,7 @@ export default (editor: Editor, config: TabsOptions): void => {
 
 		const upTabIdx = (item: HTMLElement, val: string): void => {
 			if (!_isEditor) {
-				(item as HTMLElement).tabIndex = Number.parseInt(val);
+				(item as HTMLElement).tabIndex = Number.parseInt(val, 10);
 			}
 		};
 
