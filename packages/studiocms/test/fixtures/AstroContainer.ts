@@ -43,7 +43,7 @@ export interface ContainerTestOptions {
  *
  * @example
  * ```typescript
- * await test('render component', async ({ renderComponent }) => {
+ * test('render component', async ({ renderComponent }) => {
  *   const result = await renderComponent(MyComponent, 'MyComponent', { props: { title: 'Test' } });
  *   expect(result).toMatchSnapshot();
  * });
