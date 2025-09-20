@@ -36,3 +36,15 @@ export const FolderListMapID: string = '__StudioCMS_Folder_List';
  * This constant is used to reference the StudioCMS package throughout the SDK.
  */
 export const StudioCMSPkgId: string = 'studiocms';
+
+/**
+ * The current version of the configuration schema used by the SDK.
+ *
+ * This constant should be updated whenever breaking changes are made to the configuration format.
+ *
+ * @remarks
+ * Used to ensure compatibility between different versions of configuration files and the SDK.
+ *
+ * @public
+ */
+export const CURRENT_CONFIG_VERSION = '1.0.0';

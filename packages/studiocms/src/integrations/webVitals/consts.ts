@@ -1,3 +1,10 @@
+/* v8 ignore start */
+/*
+
+  This file is ignored by v8 coverage as it contains imports from 'astro:db' which
+  are not available outside of the Astro runtime with the `@astrojs/db` package installed.
+
+*/
 import { column, defineTable } from 'astro:db';
 import { asDrizzleTable } from '@astrojs/db/utils';
 import type { WebVitalsMetricType } from './schemas.js';
@@ -58,3 +65,4 @@ export const EmptyReturn: GetWebVitalsData = {
 	sevenDays: { summary: {}, routeSummary: [] },
 	thirtyDays: { summary: {}, routeSummary: [] },
 };
+/* v8 ignore stop */

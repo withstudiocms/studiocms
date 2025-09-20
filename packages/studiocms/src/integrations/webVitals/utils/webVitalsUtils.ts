@@ -84,8 +84,10 @@ export const progressBarClsTrackColor = (clsData: number) => {
 	if (clsData > 0.25) {
 		return 'red';
 	}
+	/* v8 ignore start */
 	return 'red';
 };
+/* v8 ignore stop */
 
 // Calculate CLS text color based on the average CLS value
 // Return the color as a string (green, yellow, red)
@@ -164,7 +166,7 @@ export const progressBarLcpColor = (lcpData: number) => {
 	if (msToSeconds(lcpData) <= 2.5) {
 		return 'green';
 	}
-	if (msToSeconds(lcpData) > 2.5 && lcpData <= 4) {
+	if (msToSeconds(lcpData) > 2.5 && msToSeconds(lcpData) <= 4) {
 		return 'yellow';
 	}
 	return 'red';
@@ -180,8 +182,10 @@ export const progressBarLcpTrackColor = (lcpData: number) => {
 	if (msToSeconds(lcpData) > 2.5) {
 		return 'red';
 	}
+	/* v8 ignore start */
 	return 'red';
 };
+/* v8 ignore stop */
 
 // Calculate LCP text color based on the average LCP value
 // Return the color as a string (green, yellow, red)
@@ -190,7 +194,7 @@ export const lcpTextColor = (lcpData: number) => {
 	if (msToSeconds(lcpData) <= 2.5) {
 		return 'green';
 	}
-	if (msToSeconds(lcpData) > 2.5 && lcpData <= 4) {
+	if (msToSeconds(lcpData) > 2.5 && msToSeconds(lcpData) <= 4) {
 		return 'yellow';
 	}
 	return 'red';
@@ -276,8 +280,10 @@ export const progressBarInpTrackColor = (inpData: number) => {
 	if (inpData > 100) {
 		return 'red';
 	}
+	/* v8 ignore start */
 	return 'red';
 };
+/* v8 ignore stop */
 
 // Calculate INP text color based on the average INP value
 // Return the color as a string (green, yellow, red)

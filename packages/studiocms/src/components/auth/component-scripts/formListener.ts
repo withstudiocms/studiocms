@@ -25,11 +25,13 @@ export async function formListener(
 	form: HTMLFormElement,
 	type: 'login' | 'register',
 	toast: (props: ToastProps) => void = uiToast,
+	/* v8 ignore start */
 	reload: () => void = () => {
 		if (typeof window !== 'undefined') {
 			window.location.reload();
 		}
 	}
+	/* v8 ignore stop */
 ) {
 	event.preventDefault();
 

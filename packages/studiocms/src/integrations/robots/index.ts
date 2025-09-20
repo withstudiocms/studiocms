@@ -23,6 +23,7 @@ export default function createRobotsIntegration(options: RobotsConfig): AstroInt
 	return {
 		name: 'studiocms/robotstxt',
 		hooks: {
+			/* v8 ignore start */
 			'astro:config:setup': ({ config: cfg }) => {
 				astroConfig = cfg;
 			},
@@ -41,6 +42,7 @@ export default function createRobotsIntegration(options: RobotsConfig): AstroInt
 				const destDir = fileURLToPath(dir);
 				printInfo(fileSize, executionTime, logger, destDir);
 			},
+			/* v8 ignore stop */
 		},
 	};
 }

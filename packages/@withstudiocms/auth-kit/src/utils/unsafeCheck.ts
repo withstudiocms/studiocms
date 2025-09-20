@@ -1,8 +1,9 @@
+/** biome-ignore-all lint/suspicious/noTsIgnore: Working with auto-generated modules */
 import { Effect } from '@withstudiocms/effect';
 import { useUnsafeCheckError } from '../errors.js';
-// @ts-expect-error - This is an Auto-generated module
+// @ts-ignore - This is an Auto-generated module
 import { isReservedPassword } from './lists/passwords.js';
-// @ts-expect-error - This is an Auto-generated module
+// @ts-ignore - This is an Auto-generated module
 import { isReservedUsername } from './lists/usernames.js';
 
 /**

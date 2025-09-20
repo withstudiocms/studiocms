@@ -38,7 +38,6 @@ export default defineConfig({
 			provider: 'v8',
 			reporter: ['text', 'json', 'html'],
 			exclude: [
-				'archive/**',
 				'audit/**',
 				'bundle-tests/**',
 				'scripts/**',
@@ -70,6 +69,9 @@ export default defineConfig({
 				'**/virtuals/auth/core.ts',
 				'**/virtuals/auth/index.ts',
 				'**/virtuals/auth/verify-email.ts',
+				'**/webVitals/dashboard-grid-items/**',
+				'**/webVitals/pages/**',
+				'**/studiocms/src/handlers/**',
 			],
 		},
 	},
