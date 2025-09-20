@@ -1,5 +1,13 @@
 # @withstudiocms/buildkit
 
+## 0.1.0-beta.5
+
+### Patch Changes
+
+- [#790](https://github.com/withstudiocms/studiocms/pull/790) [`de90dab`](https://github.com/withstudiocms/studiocms/commit/de90dabe82efbeb34c62345a3f0de3f7333c89d6) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Improve tests and remove old test scripts (migrated to Vitest)
+
+- [#788](https://github.com/withstudiocms/studiocms/pull/788) [`9d3784c`](https://github.com/withstudiocms/studiocms/commit/9d3784c1de98a4bc7bb913742c3977e16c87cc1b) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Convert tests to vitest, and change src dir to lib since this package is not built but raw js
+
 ## 0.1.0-beta.4
 
 ### Patch Changes
