@@ -8,22 +8,6 @@ import { test as baseTest } from 'vitest';
 import { cleanAstroAttributes, MockAstroLocals } from '../test-utils';
 
 /**
- * Options for testing an Astro container.
- *
- * @property containerOptions - Optional configuration options for the Astro container.
- * @property renderComponent - A function to render an Astro component by name, with optional render options (excluding 'locals').
- *   Returns a promise that resolves to the rendered HTML string.
- */
-export interface ContainerTestOptions {
-	containerOptions?: AstroContainerOptions;
-	renderComponent: (
-		component: AstroComponentFactory,
-		name: string,
-		opts?: Omit<ContainerRenderOptions, 'locals'>
-	) => Promise<string>;
-}
-
-/**
  * Extends the base test with custom options for container-based component rendering.
  *
  * @remarks
@@ -49,7 +33,14 @@ export interface ContainerTestOptions {
  * });
  * ```
  */
-export const test = baseTest.extend<ContainerTestOptions>({
+export const test = baseTest.extend<{
+	containerOptions?: AstroContainerOptions;
+	renderComponent: (
+		component: AstroComponentFactory,
+		name: string,
+		opts?: Omit<ContainerRenderOptions, 'locals'>
+	) => Promise<string>;
+}>({
 	renderComponent: async ({ containerOptions }, use) => {
 		const container = await AstroContainer.create(containerOptions);
 		const render = async (
