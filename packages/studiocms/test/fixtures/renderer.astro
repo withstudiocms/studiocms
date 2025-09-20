@@ -2,7 +2,7 @@
 // @ts-expect-error - This import works when running in the Astro environment
 import { createRenderer } from 'studiocms:component-registry/runtime';
 import type { SSRResult } from 'astro';
-import type { PluginPageTypeRendererProps } from 'studiocms/types';
+import type { PluginPageTypeRendererProps } from '../../src/types';
 
 // @ts-expect-error - $$result is a global variable injected by Astro during compilation and not a editor-known variable
 const ssrResult: SSRResult = $$result;

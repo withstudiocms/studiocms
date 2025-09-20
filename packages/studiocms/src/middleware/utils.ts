@@ -1,10 +1,28 @@
-import { User } from 'studiocms:auth/lib';
-import type { UserSessionData } from 'studiocms:auth/lib/types';
-import type { SiteConfigCacheObject } from 'studiocms:sdk/types';
 import { UserPermissionLevel } from '@withstudiocms/auth-kit/types';
+import { getLevel } from '@withstudiocms/auth-kit/utils/user';
 import type { APIContext } from 'astro';
 import { deepmerge, Effect, genLogger } from '../effect.js';
-import { CURRENT_CONFIG_VERSION } from '../virtuals/sdk/modules/config.js';
+import type { UserSessionData } from '../virtuals/auth/types.js';
+import { CURRENT_CONFIG_VERSION } from '../virtuals/sdk/consts.js';
+import type { SiteConfigCacheObject } from '../virtuals/sdk/types/index.js';
+
+export const getUserPermissionLevel = Effect.fn(
+	'@withstudiocms/AuthKit/modules/user.getUserPermissionLevel'
+)(function* (userData: UserSessionData) {
+	const level = yield* getLevel(userData);
+	switch (level) {
+		case 'owner':
+			return UserPermissionLevel.owner;
+		case 'admin':
+			return UserPermissionLevel.admin;
+		case 'editor':
+			return UserPermissionLevel.editor;
+		case 'visitor':
+			return UserPermissionLevel.visitor;
+		default:
+			return UserPermissionLevel.unknown;
+	}
+});
 
 /**
  * Retrieves the user's permission levels based on their session data.
@@ -18,7 +36,6 @@ import { CURRENT_CONFIG_VERSION } from '../virtuals/sdk/modules/config.js';
  */
 export const getUserPermissions = (userData: UserSessionData) =>
 	genLogger('studiocms/middleware/utils/getUserPermissions')(function* () {
-		const { getUserPermissionLevel } = yield* User;
 		const userPermissionLevel = yield* getUserPermissionLevel(userData);
 
 		return {

@@ -1,3 +1,0 @@
-// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
-
-exports[`OAuthButton component > render component 1`] = `"<a tabindex="0" as="a" href="/test/endpoint" class="sui-button full lg default solid">   <img src="/fake/image.jpg"> <span>test auth</span>   </a> "`;

@@ -1,3 +1,15 @@
+/* v8 ignore start */
+
+/*
+
+  This file is excluded from v8 coverage reports because it is not
+  feasible to test the middleware in a unit test environment.
+
+  The middleware relies on the full application context and
+  interactions that are better suited for integration or end-to-end testing.
+
+*/
+
 import crypto from 'node:crypto';
 import { User, VerifyEmail } from 'studiocms:auth/lib';
 import { dashboardConfig } from 'studiocms:config';
@@ -168,3 +180,4 @@ export const onRequest = defineMiddlewareRouter([
 		}),
 	},
 ]);
+/* v8 ignore stop */

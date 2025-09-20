@@ -1,0 +1,13 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Virtual Components Container tests > CustomImage component > render component 1`] = `"<img src="https://seccdn.libravatar.org/static/img/mm/80.png" data-image-component="true" loading="lazy" alt="Test Image" decoding="async" fetchpriority="auto" width="80" height="80">"`;
+
+exports[`Virtual Components Container tests > FormattedDate component > render component 1`] = `"<time datetime="2020-01-01T00:00:00.000Z">Wed, 01 Jan 2020 00:00:00 GMT</time>"`;
+
+exports[`Virtual Components Container tests > Generator component > render component 1`] = `"<meta name="generator" content="Astro v0.0.0-test"><meta name="generator" content="StudioCMS v0.0.0-test"><meta name="generator" content="StudioCMS UI v0.0.0-test">"`;
+
+exports[`Virtual Components Container tests > Renderer component > render component with content 1`] = `"<div>This is a test content from the defaultContent field.</div>"`;
+
+exports[`Virtual Components Container tests > Renderer component > render component with no content 1`] = `"<h1>Error: No content found</h1>"`;
+
+exports[`Virtual Components Container tests > i18n Language Selector component > render component 1`] = `"<button id="language-selector" class="language-selector mr-2"> <svg xmlns="http://www.w3.org/2000/svg" class="w-full h-[80%]" width="1.5rem" height="1.5rem" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M4 5h7M9 3v2c0 4.418-2.239 8-5 8"></path><path d="M5 9c0 2.144 2.952 3.908 6.7 4m.3 7l4-9l4 9m-.9-2h-6.2"></path></g></svg> </button> <menu id="language-sector-menu" type="context" class="bg-neutral rounded-md p-2"> <span class="btn btn-primary" id="language-selector-option" data-key="de">Deutsch (de)</span><span class="btn btn-primary" id="language-selector-option" data-key="en">English (en)</span><span class="btn btn-primary" id="language-selector-option" data-key="es">Español (es)</span><span class="btn btn-primary" id="language-selector-option" data-key="fr">Français (fr)</span><span class="btn btn-primary" id="language-selector-option" data-key="zh">简体中文（zh)</span> <div class="flex flex-row-reverse"> <button id="language-sector-menu-cancel" class="btn btn-sm btn-circle btn-outline text-neutral-content" type="button"> <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path> </svg> </button> </div> </menu>  <script type="module" src="/mock/path/LanguageSelector.astro?astro&type=script&index=0&lang.ts"></script>"`;

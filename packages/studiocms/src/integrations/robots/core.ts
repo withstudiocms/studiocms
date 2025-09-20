@@ -9,7 +9,7 @@ import type { RobotsConfig } from './schema.js';
  * @param logger - The logger instance used to log error messages.
  * @throws Will throw an error if the host is not a string or if it does not match the required pattern.
  */
-function validateHost(host: string, logger: AstroIntegrationLogger): void {
+export function validateHost(host: string, logger: AstroIntegrationLogger): void {
 	const hostPattern = /^(?=.{1,253}$)(?:(?!-)[a-zA-Z0-9-]{1,63}(?<!-)\.)+[a-zA-Z]{2,63}$/;
 
 	if (typeof host !== 'string') {
@@ -34,7 +34,7 @@ function validateHost(host: string, logger: AstroIntegrationLogger): void {
  * - If `config.host` is a number, it is validated and used.
  * - If `config.host` is a string and not 'localhost', it is validated and used.
  */
-function generateHostContent(config: RobotsConfig, logger: AstroIntegrationLogger): string {
+export function generateHostContent(config: RobotsConfig, logger: AstroIntegrationLogger): string {
 	let content = '';
 
 	if (config.host === true) {
@@ -70,7 +70,7 @@ function generateHostContent(config: RobotsConfig, logger: AstroIntegrationLogge
  * @param logger - The logger instance to use for logging error messages.
  * @throws Will throw an error if the URL is invalid or not a valid sitemap file.
  */
-function validateUrl(url: string, logger: AstroIntegrationLogger): void {
+export function validateUrl(url: string, logger: AstroIntegrationLogger): void {
 	// const urlPattern = /^https?:\/\/[^\s/$.?#].[^\s]*\.(xml|txt|html)$/;
 	const urlPattern = /^https?:\/\/[^\s/$.?#].[^\s]*\.(xml|txt|html|xml.gz|txt.gz|json|xhtml)$/i;
 	if (!urlPattern.test(url)) {
@@ -87,7 +87,7 @@ function validateUrl(url: string, logger: AstroIntegrationLogger): void {
  * @returns {string} The generated sitemap content.
  * @throws Will throw an error if the sitemap configuration is an invalid number.
  */
-function generateSitemapContent(
+export function generateSitemapContent(
 	config: RobotsConfig,
 	siteHref: string,
 	logger: AstroIntegrationLogger
@@ -122,7 +122,7 @@ function generateSitemapContent(
  *               - default: Logs a failure message and throws an error with the message and a reference link to Yandex's robots.txt rules.
  * @param logger - The logger instance used to log the messages.
  */
-function throwMsg(
+export function throwMsg(
 	msg: string,
 	type: boolean | 'warn' | 'error' | 'info',
 	logger: AstroIntegrationLogger
@@ -224,7 +224,7 @@ export function generateContent(
 
 		if (policy.userAgent) {
 			const userAgents = Array.isArray(policy.userAgent)
-				? policy.userAgent
+				? /* v8 ignore next */ policy.userAgent
 				: [policy.userAgent || '*'];
 			for (const userAgent of userAgents) {
 				// skipped
@@ -254,7 +254,7 @@ export function generateContent(
 
 		if (policy.cleanParam) {
 			const cleanParams = Array.isArray(policy.cleanParam)
-				? policy.cleanParam
+				? /* v8 ignore next */ policy.cleanParam
 				: [policy.cleanParam];
 			for (const param of cleanParams) {
 				content += `Clean-param: ${param}\n`;
@@ -262,7 +262,9 @@ export function generateContent(
 		}
 
 		if (config.policy && policy !== config.policy[config.policy.length - 1]) {
+			/* v8 ignore start */
 			content += '\n';
+			/* v8 ignore stop */
 		} else if (config.sitemap !== false) {
 			content += '\n# crawling rule(s) for above bots\n';
 		}

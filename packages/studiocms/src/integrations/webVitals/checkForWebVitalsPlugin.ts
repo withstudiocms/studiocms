@@ -1,3 +1,10 @@
+/* v8 ignore start */
+/*
+
+  This file is ignored by v8 coverage as it contains a utility function only usable from
+  with the Astro integration hook context.
+
+*/
 import { integrationLogger } from '@withstudiocms/internal_helpers/astro-integration';
 import {
 	addVirtualImports,
@@ -117,3 +124,4 @@ export const checkForWebVitals = defineUtility('astro:config:setup')(
 		return null;
 	}
 );
+/* v8 ignore stop */
