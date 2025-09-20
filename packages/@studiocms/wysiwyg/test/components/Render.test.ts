@@ -1,14 +1,7 @@
-import type { SSRResult } from 'astro';
-import type { z } from 'astro/zod';
-import sanitizeHtml from 'sanitize-html';
-import type { StudioCMSSanitizeOptionsSchema } from 'studiocms/schemas';
-import { beforeEach, describe, expect, test, vi } from 'vitest';
-import {
-	complexWYSIWYGContent,
-	malformedHTMLContent,
-	sampleWYSIWYGContent,
-	scriptInjectionContent,
-} from '../test-utils';
+/// <reference types="astro/client" />
+import { experimental_AstroContainer as AstroContainer } from 'astro/container';
+import { describe, expect, test, vi } from 'vitest';
+import Render from '../../src/components/Render.astro';
 
 // Mock the component registry renderer
 vi.mock('studiocms:component-registry/runtime', () => ({
@@ -26,15 +19,9 @@ vi.mock('studiocms:component-registry/runtime', () => ({
 
 			// Mock sanitization logic - only if sanitize is truthy
 			if (sanitize && typeof content === 'string') {
-				// Improved mock sanitization - remove script tags and event attributes using sanitize-html
-				content = sanitizeHtml(content, {
-					allowedTags: sanitizeHtml.defaults.allowedTags.filter(tag => tag !== 'script'),
-					allowedAttributes: {
-						'*': ['class'],
-						'a': ['href'],
-					},
-					allowedSchemes: ['http', 'https', 'mailto'],
-				});
+				// Simple mock sanitization - remove script tags
+				content = content.replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '');
+				content = content.replace(/on\w+="[^"]*"/gi, '');
 			}
 			return content;
 		};
@@ -42,12 +29,12 @@ vi.mock('studiocms:component-registry/runtime', () => ({
 }));
 
 // Mock the prerender function
-vi.mock('../../src/lib/prerender.js', () => ({
+vi.mock('../../src/lib/prerender', () => ({
 	preRenderer: vi.fn((content: string) => content),
 }));
 
 // Mock the shared module
-vi.mock('../../src/lib/shared.js', () => ({
+vi.mock('../../src/lib/shared', () => ({
 	shared: {
 		sanitize: {
 			allowElements: ['div', 'h1', 'h2', 'h3', 'p', 'strong', 'em', 'a', 'ul', 'li', 'pre', 'code'],
@@ -59,215 +46,146 @@ vi.mock('../../src/lib/shared.js', () => ({
 	},
 }));
 
+// Mock the global $$result variable
+(globalThis as any).$$result = {};
+
 describe('WYSIWYG Render Component', () => {
-	beforeEach(() => {
-		vi.clearAllMocks();
+	test('renders basic content', async () => {
+		const container = await AstroContainer.create();
+		const result = await container.renderToString(Render, {
+			props: {
+				data: {
+					defaultContent: {
+						content: '<p>Hello World</p>',
+					},
+				},
+			},
+		});
+
+		expect(result).toContain('<p>Hello World</p>');
 	});
 
-	test('renders content correctly', async () => {
-		const { createRenderer } = await import('studiocms:component-registry/runtime');
-		const { preRenderer } = await import('../../src/lib/prerender.js');
+	test('renders complex HTML content', async () => {
+		const complexContent = `
+			<div class="article">
+				<h1>Main Title</h1>
+				<p>This is a <strong>bold</strong> and <em>italic</em> text.</p>
+				<ul>
+					<li>Item 1</li>
+					<li>Item 2</li>
+				</ul>
+			</div>
+		`;
 
-		const mockSSRResult = {} as unknown;
-		const mockSanitize = {};
+		const container = await AstroContainer.create();
+		const result = await container.renderToString(Render, {
+			props: {
+				data: {
+					defaultContent: {
+						content: complexContent,
+					},
+				},
+			},
+		});
 
-		const render = await createRenderer(
-			mockSSRResult as unknown as SSRResult,
-			mockSanitize,
-			preRenderer
-		);
-		const renderedContent = await render(sampleWYSIWYGContent);
-
-		expect(renderedContent).toBe(sampleWYSIWYGContent);
+		expect(result).toContain('<h1>Main Title</h1>');
+		expect(result).toContain('<strong>bold</strong>');
+		expect(result).toContain('<em>italic</em>');
+		expect(result).toContain('<div class="article">');
 	});
 
 	test('handles empty content', async () => {
-		const { createRenderer } = await import('studiocms:component-registry/runtime');
-		const { preRenderer } = await import('../../src/lib/prerender.js');
+		const container = await AstroContainer.create();
+		const result = await container.renderToString(Render, {
+			props: {
+				data: {
+					defaultContent: {
+						content: '',
+					},
+				},
+			},
+		});
 
-		const mockSSRResult = {} as unknown;
-		const mockSanitize = {};
-
-		const render = await createRenderer(
-			mockSSRResult as unknown as SSRResult,
-			mockSanitize,
-			preRenderer
-		);
-		const renderedContent = await render('');
-
-		expect(renderedContent).toBe('');
+		expect(result).toContain('<h1>Error: No content found</h1>');
 	});
 
 	test('handles null content', async () => {
-		const { createRenderer } = await import('studiocms:component-registry/runtime');
-		const { preRenderer } = await import('../../src/lib/prerender.js');
+		const container = await AstroContainer.create();
+		const result = await container.renderToString(Render, {
+			props: {
+				data: {
+					defaultContent: {
+						content: null,
+					},
+				},
+			},
+		});
 
-		const mockSSRResult = {} as unknown;
-		const mockSanitize = {};
-
-		const render = await createRenderer(
-			mockSSRResult as unknown as SSRResult,
-			mockSanitize,
-			preRenderer
-		);
-		const renderedContent = await render('');
-
-		// Verify how null is handled - might return empty string or throw
-		expect(renderedContent).toBeDefined();
+		expect(result).toContain('<h1>Error: No content found</h1>');
 	});
 
 	test('handles undefined content', async () => {
-		const { createRenderer } = await import('studiocms:component-registry/runtime');
-		const { preRenderer } = await import('../../src/lib/prerender.js');
+		const container = await AstroContainer.create();
+		const result = await container.renderToString(Render, {
+			props: {
+				data: {
+					defaultContent: undefined,
+				},
+			},
+		});
 
-		const mockSSRResult = {} as unknown;
-		const mockSanitize = {};
-
-		const render = await createRenderer(
-			mockSSRResult as unknown as SSRResult,
-			mockSanitize,
-			preRenderer
-		);
-		const renderedContent = await render('');
-
-		// Verify how undefined is handled - might return empty string or throw
-		expect(renderedContent).toBeDefined();
-	});
-
-	test('renders complex content', async () => {
-		const { createRenderer } = await import('studiocms:component-registry/runtime');
-		const { preRenderer } = await import('../../src/lib/prerender.js');
-
-		const mockSSRResult = {} as unknown;
-		const mockSanitize = {};
-
-		const render = await createRenderer(
-			mockSSRResult as unknown as SSRResult,
-			mockSanitize,
-			preRenderer
-		);
-		const renderedContent = await render(complexWYSIWYGContent);
-
-		expect(renderedContent).toBe(complexWYSIWYGContent);
-		expect(renderedContent).toContain('<h1>Main Title</h1>');
-		expect(renderedContent).toContain('<strong>bold</strong>');
-		expect(renderedContent).toContain('<em>italic</em>');
+		expect(result).toContain('<h1>Error: No content found</h1>');
 	});
 
 	test('sanitizes malicious content', async () => {
-		const { createRenderer } = await import('studiocms:component-registry/runtime');
-		const { preRenderer } = await import('../../src/lib/prerender.js');
+		const maliciousContent = `
+			<h1>Safe Content</h1>
+			<script>alert('XSS')</script>
+			<p onclick="alert('XSS')">This should be sanitized</p>
+		`;
 
-		const mockSSRResult = {} as unknown;
-		const mockSanitize = {
-			allowElements: ['div', 'h1', 'p'],
-			allowAttributes: { '*': ['class'] },
-			blockElements: ['script'],
-		};
+		const container = await AstroContainer.create();
+		const result = await container.renderToString(Render, {
+			props: {
+				data: {
+					defaultContent: {
+						content: maliciousContent,
+					},
+				},
+			},
+		});
 
-		const render = await createRenderer(
-			mockSSRResult as unknown as SSRResult,
-			mockSanitize as z.infer<typeof StudioCMSSanitizeOptionsSchema>,
-			preRenderer
-		);
-		const renderedContent = await render(scriptInjectionContent);
-
-		// Should remove script tags and onerror attributes
-		expect(renderedContent).not.toContain('<script>');
-		expect(renderedContent).not.toContain('onerror');
-		expect(renderedContent).toContain('<h1>Safe Content</h1>');
-		expect(renderedContent).toContain('<p>This should be sanitized</p>');
+		expect(result).toContain('<h1>Safe Content</h1>');
+		expect(result).toContain('This should be sanitized');
+		expect(result).not.toContain('<script>');
+		expect(result).not.toContain('onclick=');
 	});
 
 	test('handles malformed HTML gracefully', async () => {
-		const { createRenderer } = await import('studiocms:component-registry/runtime');
-		const { preRenderer } = await import('../../src/lib/prerender.js');
+		const malformedContent = `
+			<div class="unclosed">
+				<h1>Unclosed heading
+				<p>Paragraph without closing tag
+				<a href="https://example.com">Link without closing tag
+		`;
 
-		const mockSSRResult = {} as unknown;
-		const mockSanitize = {};
-
-		const render = await createRenderer(
-			mockSSRResult as unknown as SSRResult,
-			mockSanitize,
-			preRenderer
-		);
-		const renderedContent = await render(malformedHTMLContent);
-
-		// sanitize-html handles malformed HTML - it may fix some tags but preserve the structure
-		expect(renderedContent).toContain('<div class="unclosed">');
-		expect(renderedContent).toContain('Unclosed heading');
-		expect(renderedContent).toContain('Paragraph without closing tag');
-		expect(renderedContent).toContain('Link without closing tag');
-		expect(renderedContent).toContain('https://example.com');
-		// The content should be processed without throwing errors
-		expect(renderedContent).toBeDefined();
-		expect(typeof renderedContent).toBe('string');
-	});
-
-	test('uses sanitize options from shared context', async () => {
-		const { shared } = await import('../../src/lib/shared.js');
-
-		expect(shared).toBeDefined();
-		expect(shared?.sanitize).toBeDefined();
-		expect(shared?.sanitize?.allowElements).toContain('div');
-		expect(shared?.sanitize?.allowElements).toContain('h1');
-		expect(shared?.sanitize?.allowAttributes).toBeDefined();
-	});
-
-	test('calls preRenderer function', async () => {
-		const { preRenderer } = await import('../../src/lib/prerender.js');
-		const { createRenderer } = await import('studiocms:component-registry/runtime');
-
-		const mockSSRResult = {} as unknown;
-		const mockSanitize = {};
-
-		const render = await createRenderer(
-			mockSSRResult as unknown as SSRResult,
-			mockSanitize,
-			preRenderer
-		);
-		render(sampleWYSIWYGContent);
-
-		// The preRenderer is called internally by the mock createRenderer
-		expect(preRenderer).toHaveBeenCalled();
-	});
-
-	test('handles renderer creation errors', async () => {
-		const { createRenderer } = await import('studiocms:component-registry/runtime');
-		const { preRenderer } = await import('../../src/lib/prerender.js');
-
-		// Mock createRenderer to throw an error
-		vi.mocked(createRenderer).mockRejectedValueOnce(new Error('Renderer creation failed'));
-
-		const mockSSRResult = {} as SSRResult;
-		const mockSanitize = {} as z.infer<typeof StudioCMSSanitizeOptionsSchema>;
-
-		await expect(createRenderer(mockSSRResult, mockSanitize, preRenderer)).rejects.toThrow(
-			'Renderer creation failed'
-		);
-	});
-
-	test('handles content rendering errors', async () => {
-		const { createRenderer } = await import('studiocms:component-registry/runtime');
-		const { preRenderer } = await import('../../src/lib/prerender.js');
-
-		// Mock createRenderer to return a function that throws an error
-		vi.mocked(createRenderer).mockImplementationOnce(() => {
-			return Promise.resolve(() => {
-				throw new Error('Rendering failed');
-			});
+		const container = await AstroContainer.create();
+		const result = await container.renderToString(Render, {
+			props: {
+				data: {
+					defaultContent: {
+						content: malformedContent,
+					},
+				},
+			},
 		});
 
-		const mockSSRResult = {} as unknown;
-		const mockSanitize = {};
-
-		const render = await createRenderer(
-			mockSSRResult as unknown as SSRResult,
-			mockSanitize,
-			preRenderer
-		);
-
-		expect(() => render(sampleWYSIWYGContent)).toThrow('Rendering failed');
+		expect(result).toContain('<div class="unclosed">');
+		expect(result).toContain('Unclosed heading');
+		expect(result).toContain('Paragraph without closing tag');
+		expect(result).toContain('https://example.com');
+		expect(result).toBeDefined();
+		expect(typeof result).toBe('string');
 	});
 
 	test('preserves content structure', async () => {
@@ -290,23 +208,63 @@ describe('WYSIWYG Render Component', () => {
 			</div>
 		`;
 
+		const container = await AstroContainer.create();
+		const result = await container.renderToString(Render, {
+			props: {
+				data: {
+					defaultContent: {
+						content: structuredContent,
+					},
+				},
+			},
+		});
+
+		expect(result).toContain('<div class="article">');
+		expect(result).toContain('<header>');
+		expect(result).toContain('<main>');
+		expect(result).toContain('<section>');
+		expect(result).toContain('<h1>Article Title</h1>');
+		expect(result).toContain('<h2>Introduction</h2>');
+		expect(result).toContain('<h2>Conclusion</h2>');
+	});
+
+	test('calls createRenderer with correct parameters', async () => {
 		const { createRenderer } = await import('studiocms:component-registry/runtime');
-		const { preRenderer } = await import('../../src/lib/prerender.js');
+		const { preRenderer } = await import('../../src/lib/prerender');
+		const { shared } = await import('../../src/lib/shared');
 
-		const mockSSRResult = {} as unknown;
-		const mockSanitize = {};
+		const container = await AstroContainer.create();
+		await container.renderToString(Render, {
+			props: {
+				data: {
+					defaultContent: {
+						content: '<p>Test</p>',
+					},
+				},
+			},
+		});
 
-		const render = await createRenderer(
-			mockSSRResult as unknown as SSRResult,
-			mockSanitize,
+		expect(createRenderer).toHaveBeenCalledWith(
+			expect.any(Object), // $$result
+			shared?.sanitize,
 			preRenderer
 		);
-		const renderedContent = await render(structuredContent);
+	});
 
-		expect(renderedContent).toBe(structuredContent);
-		expect(renderedContent).toContain('<div class="article">');
-		expect(renderedContent).toContain('<header>');
-		expect(renderedContent).toContain('<main>');
-		expect(renderedContent).toContain('<section>');
+	test('calls preRenderer function', async () => {
+		const { preRenderer } = await import('../../src/lib/prerender');
+
+		const container = await AstroContainer.create();
+		await container.renderToString(Render, {
+			props: {
+				data: {
+					defaultContent: {
+						content: '<p>Test</p>',
+					},
+				},
+			},
+		});
+
+		expect(preRenderer).toHaveBeenCalled();
 	});
 });

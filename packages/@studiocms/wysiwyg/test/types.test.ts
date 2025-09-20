@@ -181,15 +181,15 @@ describe('WYSIWYG Types and Schema', () => {
 		test('type inference works correctly', () => {
 			const options: WYSIWYGSchemaOptions = {
 				sanitize: {
-					allowedTags: ['div', 'p'],
-					allowedAttributes: {
+					allowElements: ['div', 'p'],
+					allowAttributes: {
 						'*': ['class'],
 					},
 				},
 			};
 
-			expect(options.sanitize?.allowedTags).toEqual(['div', 'p']);
-			expect(options.sanitize?.allowedAttributes).toEqual({
+			expect(options.sanitize?.allowElements).toEqual(['div', 'p']);
+			expect(options.sanitize?.allowAttributes).toEqual({
 				'*': ['class'],
 			});
 		});

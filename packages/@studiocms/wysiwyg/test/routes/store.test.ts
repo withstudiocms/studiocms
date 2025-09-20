@@ -73,7 +73,7 @@ describe('WYSIWYG Store Route', () => {
 	});
 
 	test('exports required functions', async () => {
-		const storeModule = await import('../../src/routes/store.js');
+		const storeModule = await import('../../src/routes/store');
 
 		expect(storeModule).toBeDefined();
 		expect(storeModule.POST).toBeDefined();
@@ -83,7 +83,7 @@ describe('WYSIWYG Store Route', () => {
 	});
 
 	test('handles POST requests', async () => {
-		const storeModule = await import('../../src/routes/store.js');
+		const storeModule = await import('../../src/routes/store');
 
 		// Mock a POST request context
 		const mockContext = {
@@ -123,7 +123,7 @@ describe('WYSIWYG Store Route', () => {
 	});
 
 	test('handles OPTIONS requests', async () => {
-		const storeModule = await import('../../src/routes/store.js');
+		const storeModule = await import('../../src/routes/store');
 
 		// Mock an OPTIONS request context
 		const mockContext = {
@@ -147,7 +147,7 @@ describe('WYSIWYG Store Route', () => {
 	});
 
 	test('validates CSRF token', async () => {
-		const storeModule = await import('../../src/routes/store.js');
+		const storeModule = await import('../../src/routes/store');
 
 		// Test with invalid CSRF token
 		const invalidContext = {
@@ -173,7 +173,7 @@ describe('WYSIWYG Store Route', () => {
 	});
 
 	test('handles database operations', async () => {
-		const storeModule = await import('../../src/routes/store.js');
+		const storeModule = await import('../../src/routes/store');
 		const context = {
 			request: new Request('http://localhost:4321/studiocms_api/wysiwyg/store', {
 				method: 'POST',
@@ -193,7 +193,7 @@ describe('WYSIWYG Store Route', () => {
 	});
 
 	test('handles success responses', async () => {
-		const storeModule = await import('../../src/routes/store.js');
+		const storeModule = await import('../../src/routes/store');
 
 		const context = {
 			request: new Request('http://localhost:4321/studiocms_api/wysiwyg/store', {

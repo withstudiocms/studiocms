@@ -29,7 +29,7 @@ describe('WYSIWYG Grapes CSS Route', () => {
 	});
 
 	test('serves CSS content with correct headers', async () => {
-		const { ALL } = await import('../../src/routes/grapes.css.js');
+		const { ALL } = await import('../../src/routes/grapes.css');
 
 		const response = await ALL();
 
@@ -40,7 +40,7 @@ describe('WYSIWYG Grapes CSS Route', () => {
 	});
 
 	test('returns CSS content', async () => {
-		const { ALL } = await import('../../src/routes/grapes.css.js');
+		const { ALL } = await import('../../src/routes/grapes.css');
 
 		const response = await ALL();
 		const cssContent = await response.text();
@@ -52,7 +52,7 @@ describe('WYSIWYG Grapes CSS Route', () => {
 	});
 
 	test('handles HEAD request', async () => {
-		const { ALL } = await import('../../src/routes/grapes.css.js');
+		const { ALL } = await import('../../src/routes/grapes.css');
 
 		// Mock HEAD request by checking if the function handles it
 		const response = await ALL();
@@ -62,7 +62,7 @@ describe('WYSIWYG Grapes CSS Route', () => {
 	});
 
 	test('handles OPTIONS request', async () => {
-		const { ALL } = await import('../../src/routes/grapes.css.js');
+		const { ALL } = await import('../../src/routes/grapes.css');
 
 		// Mock OPTIONS request by checking if the function handles it
 		const response = await ALL();
@@ -72,7 +72,7 @@ describe('WYSIWYG Grapes CSS Route', () => {
 	});
 
 	test('CSS content is valid', async () => {
-		const { ALL } = await import('../../src/routes/grapes.css.js');
+		const { ALL } = await import('../../src/routes/grapes.css');
 
 		const response = await ALL();
 		const cssContent = await response.text();
@@ -85,7 +85,7 @@ describe('WYSIWYG Grapes CSS Route', () => {
 	});
 
 	test('response has correct status', async () => {
-		const { ALL } = await import('../../src/routes/grapes.css.js');
+		const { ALL } = await import('../../src/routes/grapes.css');
 
 		const response = await ALL();
 
@@ -93,7 +93,7 @@ describe('WYSIWYG Grapes CSS Route', () => {
 	});
 
 	test('handles multiple requests', async () => {
-		const { ALL } = await import('../../src/routes/grapes.css.js');
+		const { ALL } = await import('../../src/routes/grapes.css');
 
 		const response1 = await ALL();
 		const response2 = await ALL();
@@ -108,7 +108,7 @@ describe('WYSIWYG Grapes CSS Route', () => {
 	});
 
 	test('CSS contains expected GrapesJS classes', async () => {
-		const { ALL } = await import('../../src/routes/grapes.css.js');
+		const { ALL } = await import('../../src/routes/grapes.css');
 
 		const response = await ALL();
 		const cssContent = await response.text();
@@ -127,7 +127,7 @@ describe('WYSIWYG Grapes CSS Route', () => {
 	});
 
 	test('response headers are immutable', async () => {
-		const { ALL } = await import('../../src/routes/grapes.css.js');
+		const { ALL } = await import('../../src/routes/grapes.css');
 
 		const response = await ALL();
 		const headers = response.headers;
@@ -148,7 +148,7 @@ describe('WYSIWYG Grapes CSS Route', () => {
 	});
 
 	test('handles concurrent requests', async () => {
-		const { ALL } = await import('../../src/routes/grapes.css.js');
+		const { ALL } = await import('../../src/routes/grapes.css');
 
 		const promises = Array.from({ length: 5 }, () => ALL());
 		const responses = await Promise.all(promises);

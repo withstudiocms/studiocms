@@ -58,7 +58,8 @@
       "types": "./dist/types.d.ts",
       "default": "./dist/types.js"
     },
-    "./components/*": "./dist/components/*"
+    "./components/*": "./dist/components/*",
+    "./routes/*": "./dist/routes/*"
   },
   "type": "module",
   "dependencies": {

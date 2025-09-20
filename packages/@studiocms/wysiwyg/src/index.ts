@@ -31,6 +31,9 @@ export function internalWysiwygIntegration(
 	// Validate and parse the provided options using the WYSIWYG schema
 	const resolvedOptions = WYSIWYGSchema.parse(options);
 
+	// Helper function to create route entrypoints
+	const resEntrypoint = (path: string) => `@studiocms/wysiwyg/routes/${path}`;
+
 	// Define the routes for the plugin
 	const routes = [
 		{
@@ -39,12 +42,12 @@ export function internalWysiwygIntegration(
 			prerender: false,
 		},
 		{
-			entrypoint: resolve('./routes/grapes.css.ts'),
+			entrypoint: resEntrypoint('grapes.css.js'),
 			pattern: GRAPES_CSS_PATH,
 			prerender: false,
 		},
 		{
-			entrypoint: resolve('./routes/store.ts'),
+			entrypoint: resEntrypoint('store.js'),
 			pattern: STORE_ENDPOINT_PATH,
 			prerender: false,
 		},
@@ -97,6 +100,9 @@ function wysiwyg(opts?: WYSIWYGSchemaOptions): StudioCMSPlugin {
 	// Define the package identifier
 	const packageIdentifier = '@studiocms/wysiwyg';
 
+	// Helper function to create route entrypoints
+	const resEntrypoint = (path: string) => `@studiocms/wysiwyg/routes/${path}`;
+
 	// Define the routes for the plugin
 	const routes = [
 		{
@@ -105,12 +111,12 @@ function wysiwyg(opts?: WYSIWYGSchemaOptions): StudioCMSPlugin {
 			prerender: false,
 		},
 		{
-			entrypoint: resolve('./routes/grapes.css.ts'),
+			entrypoint: resEntrypoint('grapes.css.js'),
 			pattern: GRAPES_CSS_PATH,
 			prerender: false,
 		},
 		{
-			entrypoint: resolve('./routes/store.ts'),
+			entrypoint: resEntrypoint('store.js'),
 			pattern: STORE_ENDPOINT_PATH,
 			prerender: false,
 		},

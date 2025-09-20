@@ -129,8 +129,8 @@ export const scriptInjectionContent = `<div>
 </div>`;
 
 export const mockSanitizeOptions = {
-	allowedTags: ['div', 'h1', 'h2', 'h3', 'p', 'strong', 'em', 'a', 'ul', 'li', 'pre', 'code'],
-	allowedAttributes: {
+	allowElements: ['div', 'h1', 'h2', 'h3', 'p', 'strong', 'em', 'a', 'ul', 'li', 'pre', 'code'],
+	allowAttributes: {
 		'*': ['class'],
 		a: ['href'],
 		img: ['src', 'alt'],

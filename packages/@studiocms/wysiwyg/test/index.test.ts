@@ -271,8 +271,8 @@ describe('StudioCMS WYSIWYG Plugin', () => {
 
 		// Check entrypoints are resolved correctly
 		expect(routeCalls[0][0].entrypoint).toContain('partial.astro');
-		expect(routeCalls[1][0].entrypoint).toContain('grapes.css.ts');
-		expect(routeCalls[2][0].entrypoint).toContain('store.ts');
+		expect(routeCalls[1][0].entrypoint).toContain('grapes.css.js');
+		expect(routeCalls[2][0].entrypoint).toContain('store.js');
 
 		// Check prerender is false for all routes
 		expect(routeCalls[0][0].prerender).toBe(false);
