@@ -43,7 +43,10 @@ export interface ContainerTestOptions {
  *
  * @example
  * ```typescript
- * await test.renderComponent(MyComponent, 'MyComponent', { props: { foo: 'bar' } });
+ * await test('render component', async ({ renderComponent }) => {
+ *   const result = await renderComponent(MyComponent, 'MyComponent', { props: { title: 'Test' } });
+ *   expect(result).toMatchSnapshot();
+ * });
  * ```
  */
 export const test = baseTest.extend<ContainerTestOptions>({
