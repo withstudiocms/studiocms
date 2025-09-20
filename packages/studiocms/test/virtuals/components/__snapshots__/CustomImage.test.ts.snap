@@ -1,0 +1,3 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`CustomImage component > render component 1`] = `"<img src="https://seccdn.libravatar.org/static/img/mm/80.png" data-image-component="true" loading="lazy" alt="Test Image" decoding="async" fetchpriority="auto" width="80" height="80">"`;

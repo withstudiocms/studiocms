@@ -7,12 +7,13 @@ const {
 
 interface Props {
 	date: Date;
+	__test_mode?: boolean;
 }
 
-const { date } = Astro.props;
+const { date, __test_mode = false } = Astro.props;
 
 const datetime = date.toISOString();
-const formattedDate = date.toLocaleDateString(locales, options);
+const formattedDate = __test_mode ? date.toUTCString() : date.toLocaleDateString(locales, options);
 ---
 
 <time {datetime}>{formattedDate}</time>

@@ -36,7 +36,7 @@ jobs:
           token: ${{ secrets.STUDIOCMS_SERVICE_TOKEN }}
 
       - name: Install Tools & Dependencies
-        uses: withstudiocms/automations/.github/actions/install@78e87c84a960d27f3832db1e6af755abc31fb09b # main
+        uses: withstudiocms/automations/.github/actions/install@885437ef4376e64fc295161092b8a165bc5efd39 # main
 
       - name: Format code
         run: pnpm run lint:fix
@@ -73,7 +73,7 @@ jobs:
   mergebot:
     name: Merge Bot
     if: ${{ github.repository_owner == 'withstudiocms' && github.event_name != 'workflow_dispatch' && github.event.commits[0].message != '[ci] lint' }}
-    uses: withstudiocms/automations/.github/workflows/mergebot.yml@main
+    uses: withstudiocms/automations/.github/workflows/mergebot.yml@885437ef4376e64fc295161092b8a165bc5efd39 # main
     secrets:
       DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_MERGEBOT }}
 
@@ -91,37 +91,17 @@ jobs:
           persist-credentials: false
 
       - name: Install Tools & Dependencies
-        uses: withstudiocms/automations/.github/actions/install@78e87c84a960d27f3832db1e6af755abc31fb09b # main
+        uses: withstudiocms/automations/.github/actions/install@885437ef4376e64fc295161092b8a165bc5efd39 # main
 
-      - name: Run Prepublish
-        run: pnpm ci:prepublish
+      - name: Run Build
+        run: pnpm ci:build
 
-      - name: Create Release Pull Request or Publish to npm
-        id: changesets
-        uses: changesets/action@e0145edc7d9d8679003495b11f87bd8ef63c0cba # v1.5.3
-        with:
-            setupGitUser: true
-            commit: "👷 [ci]: Version Packages"
-            title: "👷 [ci]: Ready for Release"
-            version: pnpm ci:version
-            publish: pnpm ci:publish
-        env:
-          GITHUB_TOKEN: ${{ secrets.STUDIOCMS_SERVICE_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Add Label to CI PR
-        if: ${{ steps.changesets.outputs.hasChangesets == 'true' }}
-        run: gh pr edit "$PR_URL" --add-label "ci"
-        env:
-          PR_URL: ${{ steps.changesets.outputs.pull_request_url }}
-          GITHUB_TOKEN: ${{ secrets.STUDIOCMS_SERVICE_TOKEN }}
-
-      - name: Release Bot
-        if: ${{ steps.changesets.outputs.published == 'true' }}
-        uses: withstudiocms/automations/.github/actions/releasebot@78e87c84a960d27f3832db1e6af755abc31fb09b # main
+      - name: Run Publishing
+        uses: withstudiocms/automations/.github/actions/changeset-release@885437ef4376e64fc295161092b8a165bc5efd39
         with:
           repository: withstudiocms/studiocms
           CWD: ${{ github.workspace }}
-          PublishedPackages: ${{ steps.changesets.outputs.publishedPackages }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          SERVICE_TOKEN: ${{ secrets.STUDIOCMS_SERVICE_TOKEN }}
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_RELEASE }}
           RoleMentionId: '1309310416362537020'

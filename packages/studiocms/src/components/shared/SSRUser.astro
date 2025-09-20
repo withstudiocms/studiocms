@@ -43,6 +43,7 @@ const {
 	timeoutDelay = 3000,
 } = Astro.props;
 
+/* v8 ignore start */
 async function getObjectData(src: string): Promise<{ data: string; type: string } | undefined> {
 	try {
 		const data = src;
@@ -122,6 +123,7 @@ async function getObjectData(src: string): Promise<{ data: string; type: string 
 		return undefined;
 	}
 }
+/* v8 ignore stop */
 
 const validAvatar = avatar ? await getObjectData(avatar) : undefined;
 ---

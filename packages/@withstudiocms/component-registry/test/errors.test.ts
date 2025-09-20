@@ -35,7 +35,7 @@ describe('prefixError', () => {
 	it('should preserve stack and cause if possible', () => {
 		const err = new Error('fail');
 		err.stack = 'stacktrace';
-		// @ts-ignore
+		// @ts-expect-error
 		err.cause = new Error('cause');
 		const result = prefixError(err, 'PFX');
 		expect(result.stack).toBe('stacktrace');

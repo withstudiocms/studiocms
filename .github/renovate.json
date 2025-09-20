@@ -1,48 +1,7 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:recommended",
-    "schedule:weekly",
-    "group:allNonMajor",
-    ":disablePeerDependencies",
-    "customManagers:biomeVersions",
-    "helpers:pinGitHubActionDigestsToSemver"
-  ],
-  "dependencyDashboard": true,
-  "postUpdateOptions": ["pnpmDedupe"],
-  "ignorePaths": ["**/node_modules/**", "**/bower_components/**"],
-  "labels": ["dependencies"],
-  "additionalBranchPrefix": "{{parentDir}}-",
-  "gitIgnoredAuthors": ["no-reply@studiocms.dev"],
-  "prHourlyLimit": 3,
-  "rangeStrategy": "bump",
-  "updatePinnedDependencies": false,
-  "dependencyDashboardLabels": ["TRACKER"],
+  "extends": ["github>withstudiocms/renovate-config"],
   "packageRules": [
-    {
-      "matchDepTypes": ["packageManager", "engines"],
-      "enabled": false
-    },
-    {
-      "matchDepTypes": ["pnpm.catalog.min"],
-      "enabled": false
-    },
-    {
-      "matchFileNames": [".node-version"],
-      "enabled": false
-    },
-    {
-      "groupName": "pnpm Workspace Dependencies",
-      "matchManagers": ["npm"],
-      "matchFileNames": ["pnpm-workspace.yaml"]
-    },
-    {
-      "groupName": "github-actions",
-      "matchManagers": ["github-actions"],
-      "updatePinnedDependencies": true,
-      "pinDigests": true,
-      "labels": ["github-actions"]
-    },
     {
       "groupName": "Effect Dependencies",
       "matchManagers": ["npm"],

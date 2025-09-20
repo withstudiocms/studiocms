@@ -14,19 +14,23 @@ if (!data) return;
 
 const renderer = pluginRenderers.find((r) => r.pageType === data.package);
 
+/* v8 ignore start */
 if (!renderer) {
 	console.warn(
 		`Renderer for page type "${data.package}" not found. Ensure the plugin is correctly registered and the renderer exists.`
 	);
 	return;
 }
+/* v8 ignore stop */
 
 const RendererModule: AstroComponent = renderers[renderer.safePageType as keyof typeof renderers];
 
+/* v8 ignore start */
 if (!RendererModule) {
 	console.error(`Renderer module for page type "${data.package}" not found in renderers.`);
 	return;
 }
+/* v8 ignore stop */
 ---
 
 <RendererModule {data} />

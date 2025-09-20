@@ -1,3 +1,5 @@
+/* v8 ignore start */
+// This is already tested via @withstudiocms/effect
 import { db as client } from 'astro:db';
 import { drizzleDBClientLive } from '@withstudiocms/effect/drizzle';
 import { Effect } from '../../../effect.js';
@@ -35,3 +37,4 @@ export class AstroDB extends Effect.Service<AstroDB>()('studiocms/sdk/effect/db/
 		};
 	}),
 }) {}
+/* v8 ignore stop */

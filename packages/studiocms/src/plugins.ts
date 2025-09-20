@@ -1,7 +1,9 @@
 /// <reference types="./global.d.ts" preserve="true" />
 /// <reference types="./virtual.d.ts" preserve="true" />
 
-import {
+/* v8 ignore start */
+// These are re-exported from ./schemas/index.ts
+export {
 	type AvailableDashboardPages,
 	type DashboardPage,
 	definePlugin,
@@ -10,13 +12,4 @@ import {
 	type SettingsField,
 	type StudioCMSPlugin,
 } from './schemas/index.js';
-
-export {
-	type SettingsField,
-	type SafePluginListType,
-	type StudioCMSPlugin,
-	type AvailableDashboardPages,
-	type FinalDashboardPage,
-	type DashboardPage,
-	definePlugin,
-};
+/* v8 ignore stop */

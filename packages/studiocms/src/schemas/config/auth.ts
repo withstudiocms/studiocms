@@ -1,6 +1,6 @@
 import { z } from 'astro/zod';
 
-const localUsernameAndPasswordConfig = z
+export const localUsernameAndPasswordConfig = z
 	.object({
 		/**
 		 * Allow User Registration - Allows users to register an account

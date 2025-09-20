@@ -20,16 +20,17 @@ const providerIcons: Record<string, AvailableIcons> = {
 	discord: 'simpleicons:discord',
 	google: 'flatcoloricons:google',
 	auth0: 'simpleicons:auth0',
+	generic: 'heroicons:identification',
 };
 
 // Map the provider data to the current images
 const Providers = providerData
 	.map((provider) => {
 		if (!provider.enabled) return undefined;
-		const icon = providerIcons[provider.label.toLowerCase()];
+		let icon = providerIcons[provider.label.toLowerCase()];
 		if (!icon) {
 			console.warn(`No icon found for provider: ${provider.label}`);
-			return undefined;
+			icon = providerIcons.generic;
 		}
 
 		return {

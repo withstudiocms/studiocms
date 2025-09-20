@@ -1,0 +1,28 @@
+name: pnpm Package Paths
+description: 'Get paths of all non-private pnpm packages in the monorepo.'
+
+outputs:
+  packages-paths: 
+    description: 'A JSON object mapping package names to their paths.'
+    value: ${{ steps.compute-packages-paths.outputs.packages-paths }}
+
+runs:
+  using: composite
+  steps:
+    - name: Get pnpm packages
+      id: pnpm-packages
+      shell: bash
+      run: |
+        echo "packages-output=$(pnpm list --recursive --depth -1 --json | jq -c 'map(select(.private == false))')" >> $GITHUB_OUTPUT
+
+    - name: Compute packages paths
+      id: compute-packages-paths
+      uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
+      env:
+        PACKAGES: ${{ steps.pnpm-packages.outputs.packages-output }}
+      with:
+        script: |
+          const { relative } = require('node:path');
+          const packages = JSON.parse(process.env.PACKAGES);
+          const packagesMap = Object.fromEntries(packages.map(p => [p.name, relative(process.cwd(), p.path)]));
+          core.setOutput('packages-paths', JSON.stringify(packagesMap));

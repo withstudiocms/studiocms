@@ -93,7 +93,7 @@ export class TryToInstallPlugins extends Effect.Service<TryToInstallPlugins>()(
 							yield* spin.stop('Error installing dependencies');
 							yield* Console.debug(`[add]: Error installing dependencies ${response}`);
 							// NOTE: `err.stdout` can be an empty string, so log the full error instead for a more helpful log
-							// @ts-ignore
+							// @ts-expect-error
 							yield* Console.error(`\n${response.stdout || response.message}\n`);
 							yield* Console.error(
 								`\n${chalk.yellow('You may want to try:')}\n- Checking your network connection\n- Running the package manager command manually\n- Ensuring you have permissions to install packages\n`

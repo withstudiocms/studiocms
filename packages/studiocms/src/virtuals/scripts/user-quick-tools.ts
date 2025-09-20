@@ -1,4 +1,4 @@
-interface UserData {
+export interface UserData {
 	id: string;
 	name: string;
 	email: string | null;
@@ -6,16 +6,16 @@ interface UserData {
 	username: string;
 }
 
-interface Routes {
+export interface Routes {
 	logout: string;
 	userProfile: string;
 	contentManagement: string;
 	dashboardIndex: string;
 }
 
-type PermissionLevel = 'editor' | 'visitor' | 'admin' | 'owner' | 'unknown';
+export type PermissionLevel = 'editor' | 'visitor' | 'admin' | 'owner' | 'unknown';
 
-interface MenuItem {
+export interface MenuItem {
 	name: string;
 	svg: string;
 	href: string;
@@ -23,7 +23,7 @@ interface MenuItem {
 	cssClass: string;
 }
 
-interface GetSessionResponse {
+export interface GetSessionResponse {
 	isLoggedIn: boolean;
 	user: UserData;
 	permissionLevel: PermissionLevel;
@@ -31,7 +31,7 @@ interface GetSessionResponse {
 }
 
 // Optimized permission checking with Set for O(1) lookup
-const PERMISSION_HIERARCHY: Record<PermissionLevel, Set<PermissionLevel>> = {
+export const PERMISSION_HIERARCHY: Record<PermissionLevel, Set<PermissionLevel>> = {
 	owner: new Set(['owner']),
 	admin: new Set(['owner', 'admin']),
 	editor: new Set(['owner', 'admin', 'editor']),
@@ -39,12 +39,12 @@ const PERMISSION_HIERARCHY: Record<PermissionLevel, Set<PermissionLevel>> = {
 	unknown: new Set(['owner', 'admin', 'editor', 'visitor', 'unknown']),
 };
 
-const KNOWN_API_ROUTES = ['/studiocms_api/', '/_studiocms-devapps/', '/_web-vitals'];
-const DEFAULT_AVATAR =
+export const KNOWN_API_ROUTES = ['/studiocms_api/', '/_studiocms-devapps/', '/_web-vitals'];
+export const DEFAULT_AVATAR =
 	'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAADSklEQVR4AdSWS2xMYRTHjQXRRupRKVWrJhrxSCRigTQpYUHq0VYsarwi8RgJ0rCwFJEQEQ1psZFQXWgGRZB6NdFalkSFFRutV1UJNhLj9+dcOubeud8dC2lzfvd/7vedc77TO999DB/2n/+GZgOpVCoOSegx5K/N5WJGugIsNhHusNBZqIJiQ/455tqgiDFni9QAVZthIVyBBTAWJsBKeAOL4Tw4m3MD/GebqVoBV2Ox2ArohAHog1bGZ0MfLCJ2A+pkzg1QrRpkB3X4G5p4xdhOkOknkYYSpYE5Vu2pqZ/ctUFdDXOzS5QGvlkplxyXmJ/lnAOJfgSyMh0C0AbVVJcOLkRp4JQV3GeaJmy8SQzUg6xRBxecG2CTaaffpGgli12DeVAAhaDb8CFzhXCZ2Ouokzk3YNU2ordhGXTCALyDS6AH0C10CzhbpAb4z16DHjZxVtCivWgPJCHO3BJ4i+9skRrwqrJIE1TBZCiBGmjy5qNoTg1EWSAsNlIDbLZi2AEt0A2fDPkX8BOguyFs3d/zTg1QNB+OkPUcjkMNTIfRhvzV+CfgBbGHYBR+qIU2QCG97dqpVAcjoRuOgpqYggr5GnvCuWL2ou3kjkOzWtYGKFBAdgfoPfAR1S02iw1XB0l4achXgzOJ2QaKnYt2WA1cfwtsgETNtZA2FXR/l7LYaUhx7muag5NMloI+XKahzdSKob6mRXwnGEyA7nm949dQ+D3nTmax2hN6SC0lSVcOyTTfBuhYl36/hddS8IP5zmI56y3hADW1Ye30j/g2wLQ21Ri0i0JtaE5G7g0SH8N40PsCSbegBiot7J7pv4hXw6uZViuogRkWpdvP3JzFq6E7JKNIUAP63FbwJn67KsjTSRSUA/o2XGd5Xk07/SVBDei7/zshq0Bvun6KtcIeqIUKKAM9IfNQ+RrTnGL07dBvufrtVesM5xnm2wCbZyuRer9vR+/DCFgOh0FvPX18PsP/DF9AvsY0pxjFKke5up2LqLmLuAzzbUBRJOh7vxEt57wEVKABvQgPQO+Fr6iQrzHNKWY343pNl5PfAHqWMJRpgQ0MDqVAL9RDAqphPujJmI8K+RrTnGKOMa6PlcFlfH2nBnwzHQfDwn4AAAD//6qWhy8AAAAGSURBVAMAJXQ0UKI3Vu0AAAAASUVORK5CYII=';
 
 // Enhanced CSS with click protection and visual feedback
-const COMPONENT_STYLES = `
+export const COMPONENT_STYLES = `
 :host {
     --border: hsl(240 5% 17%);
     --background-base: hsl(0 0% 6%);
@@ -218,7 +218,7 @@ const COMPONENT_STYLES = `
 /**
  * Optimized permission verification with Set-based lookup
  */
-function verifyUserPermissionLevel(
+export function verifyUserPermissionLevel(
 	userLevel: PermissionLevel,
 	requiredLevel: PermissionLevel
 ): boolean {
@@ -228,18 +228,18 @@ function verifyUserPermissionLevel(
 /**
  * Check if current path should skip rendering completely (no API calls)
  */
-function shouldSkipRendering(pathname: string): boolean {
+export function shouldSkipRendering(pathname: string): boolean {
 	return KNOWN_API_ROUTES.some((route) => pathname.includes(route));
 }
 
 /**
  * Check if current path is dashboard (skip after API call)
  */
-function isDashboardRoute(pathname: string, dashboardRoute: string): boolean {
+export function isDashboardRoute(pathname: string, dashboardRoute: string): boolean {
 	return pathname.includes(dashboardRoute);
 }
 
-class UserQuickTools extends HTMLElement {
+export class UserQuickTools extends HTMLElement {
 	private sessionData: GetSessionResponse | null = null;
 	private isMenuOpen = false;
 	private menuItemsReady = false;
@@ -289,6 +289,7 @@ class UserQuickTools extends HTMLElement {
 	}
 
 	connectedCallback() {
+		/* v8 ignore start */
 		// Check if we should skip entirely
 		const pathname = window.location.pathname;
 		if (shouldSkipRendering(pathname)) {
@@ -298,6 +299,7 @@ class UserQuickTools extends HTMLElement {
 		// Initialize on user interaction for maximum Lighthouse score
 		this.initOnUserInteraction();
 	}
+	/* v8 ignore stop */
 
 	public initOnUserInteraction() {
 		// Events that indicate user engagement
@@ -310,6 +312,7 @@ class UserQuickTools extends HTMLElement {
 			'click',
 		];
 
+		/* v8 ignore start */
 		const handleUserInteraction = () => {
 			if (this.isInitialized) return;
 
@@ -319,6 +322,7 @@ class UserQuickTools extends HTMLElement {
 			// Start initialization
 			this.scheduleInitialization();
 		};
+		/* v8 ignore stop */
 
 		// Add passive listeners for performance
 		interactionEvents.forEach((eventType) => {
@@ -349,13 +353,17 @@ class UserQuickTools extends HTMLElement {
 
 			// Start async initialization without blocking
 			this.initializeAsync(pathname).catch((error) => {
+				/* v8 ignore start */
 				console.error('UserQuickTools initialization failed:', error);
+				/* v8 ignore stop */
 			});
 		};
 
 		// Use requestIdleCallback if available, otherwise setTimeout
 		if ('requestIdleCallback' in window) {
+			/* v8 ignore start */
 			requestIdleCallback(initializeComponent, { timeout: 1000 });
+			/* v8 ignore stop */
 		} else {
 			setTimeout(initializeComponent, 0);
 		}
@@ -370,7 +378,7 @@ class UserQuickTools extends HTMLElement {
 			if (!sessionData?.isLoggedIn) {
 				return;
 			}
-
+			/* v8 ignore start */
 			// Fourth check: Skip if on dashboard (after API call to verify session)
 			if (isDashboardRoute(pathname, sessionData.routes.dashboardIndex)) {
 				return;
@@ -385,8 +393,9 @@ class UserQuickTools extends HTMLElement {
 			// Fail silently for better UX - component just won't appear
 			console.warn('UserQuickTools failed to initialize:', error);
 		}
+		/* v8 ignore stop */
 	}
-
+	/* v8 ignore start */
 	private scheduleRender() {
 		const renderComponent = () => {
 			this.render();
@@ -646,6 +655,7 @@ class UserQuickTools extends HTMLElement {
 			attributeFilter: ['data-theme'],
 		});
 	}
+	/* v8 ignore stop */
 
 	private async getSession(): Promise<GetSessionResponse | null> {
 		try {
@@ -660,12 +670,16 @@ class UserQuickTools extends HTMLElement {
 				signal: controller.signal,
 			});
 
+			/* v8 ignore start */
 			clearTimeout(timeoutId);
 			return response.ok ? await response.json() : null;
+			/* v8 ignore stop */
 		} catch (error) {
 			// Network errors should not block page rendering
 			if (error instanceof Error && error.name === 'AbortError') {
+				/* v8 ignore start */
 				console.warn('Session verification timed out');
+				/* v8 ignore stop */
 			} else {
 				console.warn('Session verification failed:', error);
 			}
@@ -673,6 +687,7 @@ class UserQuickTools extends HTMLElement {
 		}
 	}
 
+	/* v8 ignore start */
 	private capitalizeFirst(str: string): string {
 		return str.charAt(0).toUpperCase() + str.slice(1);
 	}
@@ -694,10 +709,11 @@ class UserQuickTools extends HTMLElement {
 		this.menuItemsReady = false;
 		this.lastMenuToggleTime = 0;
 	}
+	/* v8 ignore stop */
 }
 
 // Optional: Add configuration for different initialization strategies
-interface UserQuickToolsConfig {
+export interface UserQuickToolsConfig {
 	strategy: 'immediate' | 'idle' | 'interaction';
 	timeout?: number;
 	clickProtectionDuration?: number;
@@ -705,7 +721,7 @@ interface UserQuickToolsConfig {
 }
 
 // Enhanced custom element with configuration support
-class ConfigurableUserQuickTools extends UserQuickTools {
+export class ConfigurableUserQuickTools extends UserQuickTools {
 	private config: UserQuickToolsConfig;
 
 	constructor() {
@@ -737,9 +753,12 @@ class ConfigurableUserQuickTools extends UserQuickTools {
 
 		switch (this.config.strategy) {
 			case 'immediate':
+				/* v8 ignore start */
 				this.scheduleInitialization();
 				break;
+			/* v8 ignore stop */
 			case 'idle':
+				/* v8 ignore start */
 				if ('requestIdleCallback' in window) {
 					requestIdleCallback(() => this.scheduleInitialization(), {
 						timeout: this.config.timeout,
@@ -748,13 +767,16 @@ class ConfigurableUserQuickTools extends UserQuickTools {
 					setTimeout(() => this.scheduleInitialization(), 0);
 				}
 				break;
+			/* v8 ignore stop */
 			case 'interaction':
 				this.initOnUserInteraction();
 				break;
 			default:
+				/* v8 ignore start */
 				console.warn(`Unknown initialization strategy: ${this.config.strategy}`);
 				this.initOnUserInteraction();
 				break;
+			/* v8 ignore stop */
 		}
 	}
 }
@@ -765,7 +787,7 @@ if ('customElements' in window && !customElements.get('user-quick-tools')) {
 }
 
 // Improved DOM ready detection with non-blocking approach
-function initializeWhenReady() {
+export function initializeWhenReady() {
 	const createElement = () => {
 		if (!document.querySelector('user-quick-tools')) {
 			// Development version: Use the basic user quick tools component
@@ -787,10 +809,12 @@ function initializeWhenReady() {
 	};
 
 	if (document.readyState === 'loading') {
+		/* v8 ignore start */
 		document.addEventListener('DOMContentLoaded', () => {
 			// Use setTimeout to avoid blocking DOMContentLoaded handlers
 			setTimeout(createElement, 0);
 		});
+		/* v8 ignore stop */
 	} else {
 		// DOM is already ready - schedule for next tick
 		setTimeout(createElement, 0);

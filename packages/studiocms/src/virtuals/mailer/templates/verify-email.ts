@@ -32,8 +32,7 @@ const verifyEmail = (link: string | URL) => `<!doctype html>
                   href="${link}"
                   style="color:#FFFFFF;font-size:14px;font-weight:bold;background-color:#0068FF;display:inline-block;padding:12px 20px;text-decoration:none"
                   target="_blank"
-                  ><span>Verify Email</span
-                  ></a
+                  ><span>Verify Email</span></a
                 >
               </div>
               <div

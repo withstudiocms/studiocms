@@ -179,9 +179,6 @@ const config: KnipConfig = {
 		'packages/@studiocms/*/test/fixtures/*': {
 			ignore: ['**/*'],
 		},
-		'packages/@studiocms/*/tests/fixtures/*': {
-			ignore: ['**/*'],
-		},
 		playground: {
 			ignoreDependencies: ['sharp'],
 			astro: {

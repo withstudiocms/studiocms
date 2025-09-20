@@ -269,10 +269,12 @@ export const StudioCMSDefaultRobotsConfig = ({
 		try {
 			const url = new URL(config.site);
 			host = url.hostname;
+			/* v8 ignore start */
 		} catch {
 			// Fallback to regex approach
 			host = config.site.replace(/^https?:\/\/|:\d+$/g, '') || false;
 		}
+		/* v8 ignore stop */
 	}
 
 	// Return the robots.txt configuration object.

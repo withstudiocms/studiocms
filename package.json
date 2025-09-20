@@ -1,53 +1,54 @@
 {
   "name": "root",
   "private": true,
-  "packageManager": "pnpm@10.15.0",
+  "packageManager": "pnpm@10.17.0",
   "engines": {
-    "node": "22.8.0"
+    "node": "22.19.0"
   },
   "scripts": {
-    "build": "pnpm build:studiocms && pnpm --filter node-playground build",
-    "build:studiocms": "pnpm --filter studiocms --filter @studiocms/* --filter @withstudiocms/* build",
-    "playground:dev": "pnpm --filter node-playground dev",
-    "playground:push": "pnpm --filter node-playground db:push",
-    "playground:preview": "pnpm --filter node-playground preview",
-    "build:studiocms:main": "pnpm --filter studiocms build",
-    "test:built": "pnpm build:studiocms && pnpm playground:dev",
-    "test-build:studiocms": "pnpm --filter studiocms build",
-    "dev:studiocms": "pnpm --stream --filter studiocms --filter @studiocms/* --filter @withstudiocms/* -r --parallel dev",
-    "dev": "pnpm --stream --filter studiocms --filter @studiocms/* --filter @withstudiocms/* --filter node-playground -r --parallel dev",
-    "cli:test": "pnpm --filter node-playground studiocms",
     "changeset": "changeset",
     "knip": "knip",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
-    "ci:prepublish": "pnpm build:studiocms",
-    "ci:lint": "biome ci --formatter-enabled=true --organize-imports-enabled=true  --reporter=github",
-    "ci:install": "pnpm install --frozen-lockfile",
-    "ci:version": "pnpm changeset version",
-    "ci:publish": "pnpm changeset publish",
-    "ci:snapshot": "pnpx pkg-pr-new publish --pnpm './packages/*'",
-    
-    "ci:typecheck:studiocms": "pnpm --filter @withstudiocms/* build && pnpm --filter studiocms typecheck",
-    "ci:typecheck:studiocms-packages": "pnpm --filter studiocms --filter @withstudiocms/* build && pnpm --filter @studiocms/* typecheck",
-    "ci:typecheck:withstudiocms": "pnpm --filter @withstudiocms/* build && pnpm --filter @withstudiocms/* typecheck",
+    "postinstall": "ts-patch install",
+    "clean:node": "node ./scripts/clean-node-modules.mjs",
 
     "test": "vitest run",
     "test:ui": "vitest --ui",
     "test:ui:coverage": "vitest --ui --coverage",
     "test:watch": "vitest",
+
+    "build": "pnpm build:packages",
+    "build:studiocms": "pnpm build:packages",
+    "build:packages": "pnpm --filter studiocms --filter @studiocms/* --filter @withstudiocms/* build",
+
+    "playground:dev": "pnpm dev",
+    "playground:push": "pnpm --filter node-playground db:push",
+    "playground:preview": "pnpm --filter node-playground preview",
+    "playground:build": "pnpm --filter node-playground build",
+    "playground:cli": "pnpm --filter node-playground studiocms",
+    
+    "dev": "pnpm --stream --filter studiocms --filter @studiocms/* --filter @withstudiocms/* --filter node-playground -r --parallel dev",
+
+    "ci:lint": "biome ci --reporter=github",
+    "ci:install": "pnpm install --frozen-lockfile",
+    "ci:version": "pnpm changeset version",
+    "ci:publish": "pnpm changeset publish",
+    "ci:snapshot": "pnpx pkg-pr-new publish --pnpm './packages/*'",
     "ci:test": "vitest run --coverage",
+    "ci:build": "pnpm build:packages",
+
+    "ci:typecheck:studiocms": "pnpm --filter studiocms typecheck",
+    "ci:typecheck:studiocms-packages": "pnpm --filter @studiocms/* typecheck",
+    "ci:typecheck:withstudiocms": "pnpm --filter @withstudiocms/* typecheck",
 
     "bundle-test:blog": "pnpm --filter @bundletests/studiocms-blog build",
     "bundle-test:headless": "pnpm --filter @bundletests/studiocms-headless build",
-    "bundle-test:all": "pnpm --filter @bundletests/* build",
-
-    "clean:node": "node ./scripts/clean-node-modules.mjs",
-    "postinstall": "ts-patch install"
+    "bundle-test:all": "pnpm --filter @bundletests/* build"
   },
   "devDependencies": {
     "@actions/core": "^1.11.1",
-    "@biomejs/biome": "2.1.2",
+    "@biomejs/biome": "^2.2.4",
     "@changesets/changelog-github": "^0.5.1",
     "@changesets/cli": "^2.29.7",
     "@changesets/config": "^3.1.1",
@@ -66,6 +67,7 @@
     "studiocms": "workspace:*",
     "typescript": "catalog:",
 		"ts-patch": "^3.3.0",
-    "vitest": "^3.2.4"
+    "vitest": "^3.2.4",
+    "jsdom": "^27.0.0"
   }
 }

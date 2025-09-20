@@ -25,6 +25,9 @@ const projectsWithTests: { scope?: string; names: string[] }[] = [
 			'wysiwyg',
 		],
 	},
+	{
+		names: ['studiocms'],
+	},
 ];
 
 const projects = projectsWithTests.flatMap(({ scope, names }) =>
@@ -65,6 +68,17 @@ export default defineConfig({
 				'**/routes/**',
 				'**/runtime/**',
 				'**/dist/**',
+				'**/studiocms/studiocms-cli.mjs',
+				'**/db/config.ts',
+				'**/virtuals/stubs/**',
+				'**/virtuals/plugins/**',
+				'**/virtuals/notifier/index.ts',
+				'**/virtuals/mailer/index.ts',
+				'**/virtuals/i18n/v-files.ts',
+				'**/virtuals/auth/scripts/**',
+				'**/virtuals/auth/core.ts',
+				'**/virtuals/auth/index.ts',
+				'**/virtuals/auth/verify-email.ts',
 			],
 		},
 	},
