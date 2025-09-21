@@ -201,7 +201,7 @@ describe('StudioCMS WYSIWYG Plugin', () => {
 		expect(routeCalls[2][0].pattern).toBe('/studiocms_api/wysiwyg_editor/store');
 	});
 
-	test('plugin stores sanitize options in shared context', () => {
+	test('plugin stores sanitize options in shared context', async () => {
 		const options: WYSIWYGSchemaOptions = {
 			sanitize: {
 				allowElements: ['div', 'h1', 'p'],
@@ -210,27 +210,21 @@ describe('StudioCMS WYSIWYG Plugin', () => {
 				},
 			},
 		};
-
-		const plugin = wysiwyg(options);
+		vi.resetModules();
+		vi.doMock('../src/lib/shared', () => ({ shared: { sanitize: {} } }));
+		const { default: freshWysiwyg } = await import('../src/index');
+		const plugin = freshWysiwyg(options);
 		const addIntegrations = vi.fn();
-
 		const astroConfigHook = plugin.hooks['studiocms:astro:config'];
 		if (!astroConfigHook) throw new Error('Hook not found');
 		astroConfigHook({ addIntegrations, logger: createMockLogger() as any });
-
 		const integrationConfig = addIntegrations.mock.calls[0][0];
 		const configDoneHook = integrationConfig.hooks['astro:config:done'];
-
-		// Mock shared object
-		const mockShared = { sanitize: {} };
-		vi.doMock('../src/lib/shared', () => ({
-			shared: mockShared,
-		}));
-
+		const { shared } = await import('../src/lib/shared');
 		configDoneHook();
-
-		// The shared config should be set (though we can't directly test it due to mocking)
-		expect(configDoneHook).toBeDefined();
+		expect(shared.sanitize).toEqual(options.sanitize);
+		vi.unmock('../src/lib/shared');
+		vi.resetModules();
 	});
 
 	test('plugin handles empty options object', () => {
@@ -243,7 +237,8 @@ describe('StudioCMS WYSIWYG Plugin', () => {
 	test('plugin exports default function', async () => {
 		const { default: defaultExport } = await import('../src/index');
 
-		expect(defaultExport).toBe(wysiwyg);
+		expect(typeof defaultExport).toBe('function');
+		expect(defaultExport.name).toBe('wysiwyg');
 	});
 
 	test('plugin validates schema options', () => {
