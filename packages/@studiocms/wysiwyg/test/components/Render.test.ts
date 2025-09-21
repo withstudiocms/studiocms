@@ -22,7 +22,24 @@ vi.mock('studiocms:component-registry/runtime', () => ({
 			if (sanitize && typeof content === 'string') {
 				// Use proper HTML sanitization library for comprehensive security
 				content = sanitizeHtml(content, {
-					allowedTags: ['div', 'h1', 'h2', 'h3', 'p', 'strong', 'em', 'a', 'ul', 'li', 'pre', 'code', 'header', 'main', 'section', 'article'],
+					allowedTags: [
+						'div',
+						'h1',
+						'h2',
+						'h3',
+						'p',
+						'strong',
+						'em',
+						'a',
+						'ul',
+						'li',
+						'pre',
+						'code',
+						'header',
+						'main',
+						'section',
+						'article',
+					],
 					allowedAttributes: {
 						'*': ['class'],
 						a: ['href'],
@@ -54,7 +71,7 @@ vi.mock('../../src/lib/shared', () => ({
 }));
 
 // Mock the global $$result variable
-(globalThis as any).$$result = {};
+(globalThis as unknown as { $$result: Record<string, unknown> }).$$result = {};
 
 describe('WYSIWYG Render Component', () => {
 	test('renders basic content', async () => {

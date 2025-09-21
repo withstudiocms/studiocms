@@ -8,6 +8,9 @@ interface MockLogger {
 	error: ReturnType<typeof vi.fn>;
 	warn: ReturnType<typeof vi.fn>;
 	debug: ReturnType<typeof vi.fn>;
+	options: { dest: unknown; level: string };
+	label: string;
+	fork: ReturnType<typeof vi.fn>;
 }
 
 const createMockLogger = (): MockLogger => ({
@@ -15,6 +18,9 @@ const createMockLogger = (): MockLogger => ({
 	error: vi.fn(),
 	warn: vi.fn(),
 	debug: vi.fn(),
+	options: { dest: vi.fn(), level: 'info' },
+	label: 'test',
+	fork: vi.fn(),
 });
 
 // Mock astro-integration-kit
@@ -85,7 +91,7 @@ describe('StudioCMS WYSIWYG Plugin', () => {
 
 		const astroConfigHook = plugin.hooks['studiocms:astro:config'];
 		if (!astroConfigHook) throw new Error('Hook not found');
-		astroConfigHook({ addIntegrations, logger: createMockLogger() });
+		astroConfigHook({ addIntegrations, logger: createMockLogger() as any });
 
 		expect(addIntegrations).toHaveBeenCalledWith({
 			name: '@studiocms/wysiwyg',
@@ -104,7 +110,7 @@ describe('StudioCMS WYSIWYG Plugin', () => {
 		if (!configSetupHook) throw new Error('Hook not found');
 		configSetupHook({
 			setRendering,
-			logger: createMockLogger(),
+			logger: createMockLogger() as any,
 			setSitemap: vi.fn(),
 			setDashboard: vi.fn(),
 			setFrontend: vi.fn(),
@@ -152,7 +158,7 @@ describe('StudioCMS WYSIWYG Plugin', () => {
 		if (!configSetupHook) throw new Error('Hook not found');
 		configSetupHook({
 			setRendering,
-			logger: createMockLogger(),
+			logger: createMockLogger() as any,
 			setSitemap: vi.fn(),
 			setDashboard: vi.fn(),
 			setFrontend: vi.fn(),
@@ -172,7 +178,7 @@ describe('StudioCMS WYSIWYG Plugin', () => {
 
 		const hook = plugin.hooks['studiocms:astro:config'];
 		if (!hook) throw new Error('Hook not found');
-		hook({ addIntegrations: mockAddIntegrations, logger: createMockLogger() });
+		hook({ addIntegrations: mockAddIntegrations, logger: createMockLogger() as any });
 
 		// Get the integration that was added
 		const integrationArg = mockAddIntegrations.mock.calls[0][0];
@@ -210,7 +216,7 @@ describe('StudioCMS WYSIWYG Plugin', () => {
 
 		const astroConfigHook = plugin.hooks['studiocms:astro:config'];
 		if (!astroConfigHook) throw new Error('Hook not found');
-		astroConfigHook({ addIntegrations, logger: createMockLogger() });
+		astroConfigHook({ addIntegrations, logger: createMockLogger() as any });
 
 		const integrationConfig = addIntegrations.mock.calls[0][0];
 		const configDoneHook = integrationConfig.hooks['astro:config:done'];
@@ -257,7 +263,7 @@ describe('StudioCMS WYSIWYG Plugin', () => {
 		const addIntegrations = vi.fn();
 
 		const astroConfigHook = plugin.hooks['studiocms:astro:config'];
-		astroConfigHook?.({ addIntegrations, logger: createMockLogger() });
+		astroConfigHook?.({ addIntegrations, logger: createMockLogger() as any });
 
 		const integrationConfig = addIntegrations.mock.calls[0][0];
 		const setupHook = integrationConfig.hooks['astro:config:setup'];

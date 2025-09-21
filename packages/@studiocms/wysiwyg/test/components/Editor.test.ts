@@ -119,11 +119,11 @@ describe('WYSIWYG Editor Component', () => {
 
 		// Check that component registry data is included
 		expect(result).toContain('data-component-registry=');
-		
+
 		// Extract and verify the registry data (HTML-encoded)
 		const registryMatch = result.match(/data-component-registry="([^"]*)"/);
 		expect(registryMatch).toBeTruthy();
-		
+
 		if (registryMatch) {
 			// Decode HTML entities before parsing JSON
 			const decodedRegistry = registryMatch[1]
