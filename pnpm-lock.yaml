@@ -140,8 +140,8 @@ importers:
         specifier: ^0.4.0
         version: 0.4.0
       '@crowdin/crowdin-api-client':
-        specifier: ^1.47.1
-        version: 1.47.1
+        specifier: ^1.48.0
+        version: 1.48.0
       '@effect/language-service':
         specifier: ^0.40.0
         version: 0.40.0
@@ -1438,8 +1438,8 @@ packages:
     peerDependencies:
       commander: ~13.1.0
 
-  '@crowdin/crowdin-api-client@1.47.1':
-    resolution: {integrity: sha512-BbYbPYCgfb0UwjVApF0RAzt1LqbhZmUheH2V43z5/YewlAROh9BRGfc3GpuTbIZXrclQnJ9cbIMcMR9kKwDf4Q==}
+  '@crowdin/crowdin-api-client@1.48.0':
+    resolution: {integrity: sha512-e/SYzJ5RTv/rp2ECxSf7GjInt1E0aq8YY2Ljkp2mVkA43HCuE//VbQUVrBOkYAEsbupcHyqJrPuZwN95ZGPj4g==}
     engines: {node: '>=12.9.0'}
 
   '@csstools/color-helpers@5.1.0':
@@ -7040,7 +7040,7 @@ snapshots:
     dependencies:
       commander: 13.1.0
 
-  '@crowdin/crowdin-api-client@1.47.1':
+  '@crowdin/crowdin-api-client@1.48.0':
     dependencies:
       axios: 1.11.0
     transitivePeerDependencies:
