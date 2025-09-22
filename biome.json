@@ -82,7 +82,7 @@
       }
     },
     {
-      "includes": ["**/*.css"],
+      "includes": ["packages/@studiocms/wysiwyg/**/*.css"],
       "linter": {
         "rules": {
           "complexity": {
