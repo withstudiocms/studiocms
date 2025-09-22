@@ -59,9 +59,7 @@
       "default": "./dist/types.js"
     },
     "./components/*": "./dist/components/*",
-    "./routes/partial.astro": "./src/routes/partial.astro",
-    "./routes/grapes.css": "./dist/routes/grapes.css.js",
-    "./routes/store": "./dist/routes/store.js"
+    "./routes/*": "./dist/routes/*"
   },
   "type": "module",
   "dependencies": {
