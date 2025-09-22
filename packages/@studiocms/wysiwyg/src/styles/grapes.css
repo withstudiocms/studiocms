@@ -26,12 +26,12 @@
 	}
 
 	.gjs-selected {
-		outline: 2px solid hsl(259 73% 67%);
+		outline: 2px solid hsl(259 73% 67%) !important;
 		outline-offset: -2px;
 	}
 
 	.gjs-selected-parent {
-		outline: 2px solid hsl(48 100% 61%);
+		outline: 2px solid hsl(48 100% 61%) !important;
 	}
 
 	.gjs-no-select {
@@ -74,7 +74,7 @@
 
 	.gjs-is__grabbing,
 	.gjs-is__grabbing * {
-		cursor: grabbing;
+		cursor: grabbing !important;
 	}
 
 	/* biome-ignore lint/style/noDescendingSpecificity: Copied from GrapesJS Official CSS */

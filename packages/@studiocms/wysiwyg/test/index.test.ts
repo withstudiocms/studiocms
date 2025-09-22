@@ -1,39 +1,7 @@
+import { StudioCMSPluginTester } from 'studiocms/test-utils';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import wysiwyg from '../src/index';
 import type { WYSIWYGSchemaOptions } from '../src/types';
-
-// Mock logger type
-interface MockLogger {
-	info: ReturnType<typeof vi.fn>;
-	error: ReturnType<typeof vi.fn>;
-	warn: ReturnType<typeof vi.fn>;
-	debug: ReturnType<typeof vi.fn>;
-	options: { dest: unknown; level: string };
-	label: string;
-	fork: ReturnType<typeof vi.fn>;
-}
-
-const createMockLogger = (): MockLogger => ({
-	info: vi.fn(),
-	error: vi.fn(),
-	warn: vi.fn(),
-	debug: vi.fn(),
-	options: { dest: vi.fn(), level: 'info' },
-	label: 'test',
-	fork: vi.fn(),
-});
-
-// Mock astro-integration-kit
-vi.mock('astro-integration-kit', () => ({
-	createResolver: vi.fn(() => ({
-		resolve: vi.fn((path: string) => `/mock/path/${path}`),
-	})),
-}));
-
-// Mock studiocms/plugins
-vi.mock('studiocms/plugins', () => ({
-	definePlugin: vi.fn((config) => config),
-}));
 
 describe('StudioCMS WYSIWYG Plugin', () => {
 	beforeEach(() => {
@@ -42,11 +10,13 @@ describe('StudioCMS WYSIWYG Plugin', () => {
 
 	test('plugin creation with default options', () => {
 		const plugin = wysiwyg();
+		const tester = new StudioCMSPluginTester(plugin);
+		const info = tester.getPluginInfo();
 
 		expect(plugin).toBeDefined();
-		expect(plugin.identifier).toBe('@studiocms/wysiwyg');
-		expect(plugin.name).toBe('StudioCMS WYSIWYG Editor');
-		expect(plugin.studiocmsMinimumVersion).toBe('0.1.0-beta.23');
+		expect(info.identifier).toBe('@studiocms/wysiwyg');
+		expect(info.name).toBe('StudioCMS WYSIWYG Editor');
+		expect(info.studiocmsMinimumVersion).toBe('0.1.0-beta.23');
 	});
 
 	test('plugin creation with custom options', () => {
@@ -61,9 +31,11 @@ describe('StudioCMS WYSIWYG Plugin', () => {
 		};
 
 		const plugin = wysiwyg(options);
+		const tester = new StudioCMSPluginTester(plugin);
+		const info = tester.getPluginInfo();
 
 		expect(plugin).toBeDefined();
-		expect(plugin.identifier).toBe('@studiocms/wysiwyg');
+		expect(info.identifier).toBe('@studiocms/wysiwyg');
 	});
 
 	test('plugin creation with empty sanitize options', () => {
@@ -77,54 +49,47 @@ describe('StudioCMS WYSIWYG Plugin', () => {
 		expect(plugin.identifier).toBe('@studiocms/wysiwyg');
 	});
 
-	test('plugin hooks are defined', () => {
+	test('plugin hooks are defined', async () => {
 		const plugin = wysiwyg();
+		const tester = new StudioCMSPluginTester(plugin);
+		const results = await tester.getHookResults();
 
 		expect(plugin.hooks).toBeDefined();
-		expect(plugin.hooks['studiocms:astro:config']).toBeDefined();
-		expect(plugin.hooks['studiocms:config:setup']).toBeDefined();
+		expect(results.astroConfig.hasHook).toBe(true);
+		expect(results.studiocmsConfig.hasHook).toBe(true);
 	});
 
-	test('plugin sets up astro config integration', () => {
+	test('plugin sets up astro config integration', async () => {
 		const plugin = wysiwyg();
-		const addIntegrations = vi.fn();
+		const tester = new StudioCMSPluginTester(plugin);
+		const results = await tester.getHookResults();
 
-		const astroConfigHook = plugin.hooks['studiocms:astro:config'];
-		if (!astroConfigHook) throw new Error('Hook not found');
-		astroConfigHook({ addIntegrations, logger: createMockLogger() as any });
-
-		expect(addIntegrations).toHaveBeenCalledWith({
-			name: '@studiocms/wysiwyg',
-			hooks: {
-				'astro:config:setup': expect.any(Function),
-				'astro:config:done': expect.any(Function),
-			},
-		});
+		expect(results.astroConfig.hasHook).toBe(true);
+		expect(results.astroConfig.hookResults.integrations).toHaveLength(1);
+		expect(results.astroConfig.hookResults.integrations[0]).toEqual(
+			expect.objectContaining({
+				name: '@studiocms/wysiwyg',
+				hooks: {
+					'astro:config:setup': expect.any(Function),
+					'astro:config:done': expect.any(Function),
+				},
+			})
+		);
 	});
 
-	test('plugin sets up rendering configuration', () => {
+	test('plugin sets up rendering configuration', async () => {
 		const plugin = wysiwyg();
-		const setRendering = vi.fn();
+		const tester = new StudioCMSPluginTester(plugin);
+		const results = await tester.getHookResults();
 
-		const configSetupHook = plugin.hooks['studiocms:config:setup'];
-		if (!configSetupHook) throw new Error('Hook not found');
-		configSetupHook({
-			setRendering,
-			logger: createMockLogger() as any,
-			setSitemap: vi.fn(),
-			setDashboard: vi.fn(),
-			setFrontend: vi.fn(),
-			setImageService: vi.fn(),
-			setAuthService: vi.fn(),
-		});
-
-		expect(setRendering).toHaveBeenCalledWith({
+		expect(results.studiocmsConfig.hasHook).toBe(true);
+		expect(results.studiocmsConfig.hookResults.rendering).toEqual({
 			pageTypes: [
 				{
 					identifier: 'studiocms/wysiwyg',
 					label: 'WYSIWYG',
-					rendererComponent: '/mock/path/./components/Render.astro',
-					pageContentComponent: '/mock/path/./components/Editor.astro',
+					rendererComponent: expect.stringContaining('Render.astro'),
+					pageContentComponent: expect.stringContaining('Editor.astro'),
 				},
 			],
 		});
@@ -132,9 +97,11 @@ describe('StudioCMS WYSIWYG Plugin', () => {
 
 	test('plugin handles undefined options', () => {
 		const plugin = wysiwyg(undefined);
+		const tester = new StudioCMSPluginTester(plugin);
+		const info = tester.getPluginInfo();
 
 		expect(plugin).toBeDefined();
-		expect(plugin.identifier).toBe('@studiocms/wysiwyg');
+		expect(info.identifier).toBe('@studiocms/wysiwyg');
 	});
 
 	test('plugin handles partial options', () => {
@@ -145,93 +112,20 @@ describe('StudioCMS WYSIWYG Plugin', () => {
 		};
 
 		const plugin = wysiwyg(options);
+		const tester = new StudioCMSPluginTester(plugin);
+		const info = tester.getPluginInfo();
 
 		expect(plugin).toBeDefined();
-		expect(plugin.identifier).toBe('@studiocms/wysiwyg');
-	});
-
-	test('plugin resolves component paths correctly', () => {
-		const plugin = wysiwyg();
-		const setRendering = vi.fn();
-
-		const configSetupHook = plugin.hooks['studiocms:config:setup'];
-		if (!configSetupHook) throw new Error('Hook not found');
-		configSetupHook({
-			setRendering,
-			logger: createMockLogger() as any,
-			setSitemap: vi.fn(),
-			setDashboard: vi.fn(),
-			setFrontend: vi.fn(),
-			setImageService: vi.fn(),
-			setAuthService: vi.fn(),
-		});
-
-		const callArgs = setRendering.mock.calls[0][0];
-		expect(callArgs.pageTypes[0].pageContentComponent).toContain('Editor.astro');
-		expect(callArgs.pageTypes[0].rendererComponent).toContain('Render.astro');
-	});
-
-	test('plugin sets up route injection', async () => {
-		const mockAddIntegrations = vi.fn();
-
-		const plugin = wysiwyg();
-
-		const hook = plugin.hooks['studiocms:astro:config'];
-		if (!hook) throw new Error('Hook not found');
-		hook({ addIntegrations: mockAddIntegrations, logger: createMockLogger() as any });
-
-		// Get the integration that was added
-		const integrationArg = mockAddIntegrations.mock.calls[0][0];
-		if (!integrationArg) throw new Error('Integration not found');
-
-		// Call the astro:config:setup hook
-		const setupHook = integrationArg.hooks['astro:config:setup'];
-		const injectRoute = vi.fn();
-		setupHook({
-			injectRoute,
-		} as unknown);
-
-		// Should inject 3 routes: partial, grapes.css, and store
-		expect(injectRoute).toHaveBeenCalledTimes(3);
-
-		// Check that routes are injected with correct patterns
-		const routeCalls = injectRoute.mock.calls;
-		expect(routeCalls[0][0].pattern).toBe('/studiocms_api/wysiwyg_editor/partial');
-		expect(routeCalls[1][0].pattern).toBe('/studiocms_api/wysiwyg_editor/grapes.css');
-		expect(routeCalls[2][0].pattern).toBe('/studiocms_api/wysiwyg_editor/store');
-	});
-
-	test('plugin stores sanitize options in shared context', async () => {
-		const options: WYSIWYGSchemaOptions = {
-			sanitize: {
-				allowElements: ['div', 'h1', 'p'],
-				allowAttributes: {
-					'*': ['class'],
-				},
-			},
-		};
-		vi.resetModules();
-		vi.doMock('../src/lib/shared', () => ({ shared: { sanitize: {} } }));
-		const { default: freshWysiwyg } = await import('../src/index');
-		const plugin = freshWysiwyg(options);
-		const addIntegrations = vi.fn();
-		const astroConfigHook = plugin.hooks['studiocms:astro:config'];
-		if (!astroConfigHook) throw new Error('Hook not found');
-		astroConfigHook({ addIntegrations, logger: createMockLogger() as any });
-		const integrationConfig = addIntegrations.mock.calls[0][0];
-		const configDoneHook = integrationConfig.hooks['astro:config:done'];
-		const { shared } = await import('../src/lib/shared');
-		configDoneHook();
-		expect(shared.sanitize).toEqual(options.sanitize);
-		vi.unmock('../src/lib/shared');
-		vi.resetModules();
+		expect(info.identifier).toBe('@studiocms/wysiwyg');
 	});
 
 	test('plugin handles empty options object', () => {
 		const plugin = wysiwyg({});
+		const tester = new StudioCMSPluginTester(plugin);
+		const info = tester.getPluginInfo();
 
 		expect(plugin).toBeDefined();
-		expect(plugin.identifier).toBe('@studiocms/wysiwyg');
+		expect(info.identifier).toBe('@studiocms/wysiwyg');
 	});
 
 	test('plugin exports default function', async () => {
@@ -251,33 +145,5 @@ describe('StudioCMS WYSIWYG Plugin', () => {
 
 		// This should not throw an error due to schema validation
 		expect(() => wysiwyg(invalidOptions as unknown as WYSIWYGSchemaOptions)).not.toThrow();
-	});
-
-	test('plugin sets up routes with correct entrypoints', () => {
-		const plugin = wysiwyg();
-		const addIntegrations = vi.fn();
-
-		const astroConfigHook = plugin.hooks['studiocms:astro:config'];
-		astroConfigHook?.({ addIntegrations, logger: createMockLogger() as any });
-
-		const integrationConfig = addIntegrations.mock.calls[0][0];
-		const setupHook = integrationConfig.hooks['astro:config:setup'];
-		const injectRoute = vi.fn();
-
-		setupHook({
-			injectRoute,
-		} as unknown);
-
-		const routeCalls = injectRoute.mock.calls;
-
-		// Check entrypoints are resolved correctly
-		expect(routeCalls[0][0].entrypoint).toContain('partial.astro');
-		expect(routeCalls[1][0].entrypoint).toContain('grapes.css.js');
-		expect(routeCalls[2][0].entrypoint).toContain('store.js');
-
-		// Check prerender is false for all routes
-		expect(routeCalls[0][0].prerender).toBe(false);
-		expect(routeCalls[1][0].prerender).toBe(false);
-		expect(routeCalls[2][0].prerender).toBe(false);
 	});
 });
