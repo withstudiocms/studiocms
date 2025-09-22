@@ -17,7 +17,7 @@ describe('WYSIWYG Partial Route', () => {
 
 		const renderer = await createRenderer({} as any, {}, undefined);
 		expect(typeof renderer).toBe('function');
-		
+
 		// Test that it returns content as-is (identity function)
 		const testContent = '<p>Test content</p>';
 		const result = await renderer(testContent);
@@ -28,7 +28,7 @@ describe('WYSIWYG Partial Route', () => {
 		const { createRenderer } = await import('studiocms:component-registry/runtime');
 
 		const renderer = await createRenderer({} as any, {}, undefined);
-		
+
 		// Test with different content
 		expect(await renderer('<div>HTML content</div>')).toBe('<div>HTML content</div>');
 		expect(await renderer('Plain text')).toBe('Plain text');
@@ -39,7 +39,7 @@ describe('WYSIWYG Partial Route', () => {
 		const { createRenderer } = await import('studiocms:component-registry/runtime');
 
 		const renderer = await createRenderer({} as any, {}, undefined);
-		
+
 		// Test with undefined content - cast to string for type safety
 		const result = await renderer(undefined as any);
 		expect(result).toBe(undefined);
@@ -49,7 +49,7 @@ describe('WYSIWYG Partial Route', () => {
 		const { createRenderer } = await import('studiocms:component-registry/runtime');
 
 		const renderer = await createRenderer({} as any, {}, undefined);
-		
+
 		// Test with null content - cast to string for type safety
 		const result = await renderer(null as any);
 		expect(result).toBe(null);

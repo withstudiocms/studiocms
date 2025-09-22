@@ -2,7 +2,7 @@
 
 /**
  * Cleans Astro-specific attributes from rendered HTML for consistent snapshot testing.
- * 
+ *
  * @param str - The HTML string to clean
  * @param mockPath - The mock path to use for src attributes
  * @returns Cleaned HTML string
@@ -26,7 +26,7 @@ export function cleanAstroAttributes(str: string, mockPath: string): string {
 
 /**
  * Creates mock Astro locals for testing purposes.
- * 
+ *
  * @returns Mock Astro locals object
  */
 export const MockAstroLocals = (): App.Locals => {
@@ -64,7 +64,7 @@ export const MockAstroLocals = (): App.Locals => {
 
 /**
  * Creates mock Astro locals with CSRF token for testing purposes.
- * 
+ *
  * @param csrfToken - The CSRF token to include
  * @returns Mock Astro locals object with CSRF token
  */
@@ -83,7 +83,7 @@ export const MockAstroLocalsWithCSRF = (csrfToken: string): App.Locals => {
 
 /**
  * Creates mock renderer props for testing purposes.
- * 
+ *
  * @param content - The content to include in the props
  * @returns Mock renderer props object
  */

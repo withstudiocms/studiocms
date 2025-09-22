@@ -1,7 +1,6 @@
 import { describe, expect, test } from 'vitest';
 
 describe('WYSIWYG Grapes CSS Route', () => {
-
 	test('serves CSS content with correct headers', async () => {
 		const { ALL } = await import('../../src/routes/grapes.css');
 
