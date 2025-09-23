@@ -167,7 +167,7 @@
 		"chalk": "catalog:",
 		"diff": "^8.0.2",
 		"diff2html": "^3.4.52",
-		"dompurify": "^3.2.6",
+		"dompurify": "^3.2.7",
 		"dotenv": "^17.2.2",
 		"fuse.js": "^7.1.0",
 		"jose": "^6.1.0",
