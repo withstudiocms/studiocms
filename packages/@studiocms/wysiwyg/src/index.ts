@@ -25,9 +25,6 @@ export function internalWysiwygIntegration(
 	packageIdentifier: string,
 	options?: WYSIWYGSchemaOptions
 ): AstroIntegration {
-	// Resolve the path to the current file
-	const { resolve } = createResolver(import.meta.url);
-
 	// Validate and parse the provided options using the WYSIWYG schema
 	const resolvedOptions = WYSIWYGSchema.parse(options);
 
