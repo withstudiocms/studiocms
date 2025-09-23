@@ -37,7 +37,7 @@ export function internalWysiwygIntegration(
 	// Define the routes for the plugin
 	const routes = [
 		{
-			entrypoint: resolve('./routes/partial.astro'),
+			entrypoint: resEntrypoint('partial.astro'),
 			pattern: PARTIAL_PATH,
 			prerender: false,
 		},
