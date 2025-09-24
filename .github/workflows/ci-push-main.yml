@@ -28,12 +28,19 @@ jobs:
     env:
       NODE_OPTIONS: "--max_old_space_size=4096"
     steps:
+      - name: Generate a token
+        id: bot-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.STUDIOCMS_GIT_BOT_APP_ID }}
+          private-key: ${{ secrets.STUDIOCMS_GIT_BOT_PRIVATE_KEY }}
+
       - name: Checkout Repo
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           persist-credentials: true
           ref: ${{ github.head_ref }}
-          token: ${{ secrets.STUDIOCMS_SERVICE_TOKEN }}
+          token: ${{ steps.bot-token.outputs.token }}
 
       - name: Install Tools & Dependencies
         uses: withstudiocms/automations/.github/actions/install@885437ef4376e64fc295161092b8a165bc5efd39 # main
@@ -57,6 +64,13 @@ jobs:
       contents: write
       issues: write
     steps:
+      - name: Generate a token
+        id: bot-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.STUDIOCMS_GIT_BOT_APP_ID }}
+          private-key: ${{ secrets.STUDIOCMS_GIT_BOT_PRIVATE_KEY }}
+          
       - name: Checkout Repo
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
@@ -68,7 +82,7 @@ jobs:
           excludePattern: '^(node_modules/)'
           autoAssign: false
         env:
-          GITHUB_TOKEN: ${{ secrets.STUDIOCMS_SERVICE_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.bot-token.outputs.token }}
 
   mergebot:
     name: Merge Bot
@@ -85,6 +99,13 @@ jobs:
       pull-requests: write
       id-token: write
     steps:
+      - name: Generate a token
+        id: bot-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.STUDIOCMS_GIT_BOT_APP_ID }}
+          private-key: ${{ secrets.STUDIOCMS_GIT_BOT_PRIVATE_KEY }}
+          
       - name: Checkout Repo
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
@@ -102,6 +123,6 @@ jobs:
           repository: withstudiocms/studiocms
           CWD: ${{ github.workspace }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-          SERVICE_TOKEN: ${{ secrets.STUDIOCMS_SERVICE_TOKEN }}
+          SERVICE_TOKEN: ${{ steps.bot-token.outputs.token }}
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_RELEASE }}
           RoleMentionId: '1309310416362537020'

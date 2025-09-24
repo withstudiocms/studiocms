@@ -28,11 +28,18 @@ jobs:
       contents: write
       pull-requests: write
     steps:
+      - name: Generate a token
+        id: bot-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.STUDIOCMS_GIT_BOT_APP_ID }}
+          private-key: ${{ secrets.STUDIOCMS_GIT_BOT_PRIVATE_KEY }}
+
       - name: Checkout
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           persist-credentials: false
-          token: ${{ secrets.STUDIOCMS_SERVICE_TOKEN }}
+          token: ${{ steps.bot-token.outputs.token }}
 
       - name: Crowdin pull
         uses: crowdin/github-action@0749939f635900a2521aa6aac7a3766642b2dc71 # v2.11.0
@@ -46,7 +53,7 @@ jobs:
           pull_request_body: 'Merge this PR to sync with Crowdin'
           pull_request_base_branch_name: 'main'
         env:
-          GITHUB_TOKEN: ${{ secrets.STUDIOCMS_SERVICE_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.bot-token.outputs.token }}
           CROWDIN_PROJECT_ID: ${{ secrets.CROWDIN_PROJECT_ID }}
           CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
 

@@ -12,12 +12,19 @@ jobs:
     runs-on: ubuntu-latest
     if: contains(github.event.pull_request.labels.*.name, 'translations') && github.event.pull_request.user.login == 'studiocms-no-reply'
     steps:
+      - name: Generate a token
+        id: bot-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.STUDIOCMS_GIT_BOT_APP_ID }}
+          private-key: ${{ secrets.STUDIOCMS_GIT_BOT_PRIVATE_KEY }}
+
       - name: Checkout Repo
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           persist-credentials: true
           ref: ${{ github.head_ref }}
-          token: ${{ secrets.STUDIOCMS_SERVICE_TOKEN }}
+          token: ${{ steps.bot-token.outputs.token }}
 
       - name: Install Tools & Dependencies
         uses: withstudiocms/automations/.github/actions/install@885437ef4376e64fc295161092b8a165bc5efd39 # main
