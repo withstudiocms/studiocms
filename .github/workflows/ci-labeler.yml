@@ -15,10 +15,17 @@ jobs:
     if: github.event_name == 'pull_request' && github.event.pull_request.state == 'open'
     runs-on: ubuntu-latest
     steps:
+      - name: Setup Apollo Git Bot
+        id: bot-token
+        uses: actions/create-github-app-token@67018539274d69449ef7c02e8e71183d1719ab42 # v2
+        with:
+          app-id: ${{ secrets.STUDIOCMS_GIT_BOT_APP_ID }}
+          private-key: ${{ secrets.STUDIOCMS_GIT_BOT_PRIVATE_KEY }}
+
       - name: Label PRs
         uses: actions/labeler@634933edcd8ababfe52f92936142cc22ac488b1b # v6.0.1
         with:
-          repo-token: "${{ secrets.STUDIOCMS_SERVICE_TOKEN }}"
+          repo-token: "${{ steps.bot-token.outputs.token }}"
           configuration-path: .github/labeler.yml
           sync-labels: true
 
@@ -27,9 +34,16 @@ jobs:
     if: github.event.pull_request.merged
     runs-on: ubuntu-latest
     steps:
+      - name: Setup Apollo Git Bot
+        id: bot-token
+        uses: actions/create-github-app-token@67018539274d69449ef7c02e8e71183d1719ab42 # v2
+        with:
+          app-id: ${{ secrets.STUDIOCMS_GIT_BOT_APP_ID }}
+          private-key: ${{ secrets.STUDIOCMS_GIT_BOT_PRIVATE_KEY }}
+
       - uses: mondeja/remove-labels-gh-action@b7118e4ba5dca74acf1059b3cb7660378ff9ab1a # v2
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ steps.bot-token.outputs.token }}
           labels: |
             awaiting review(s)
             in progress
@@ -41,9 +55,16 @@ jobs:
     if: github.event_name == 'pull_request' && (! github.event.pull_request.merged)
     runs-on: ubuntu-latest
     steps:
+      - name: Setup Apollo Git Bot
+        id: bot-token
+        uses: actions/create-github-app-token@67018539274d69449ef7c02e8e71183d1719ab42 # v2
+        with:
+          app-id: ${{ secrets.STUDIOCMS_GIT_BOT_APP_ID }}
+          private-key: ${{ secrets.STUDIOCMS_GIT_BOT_PRIVATE_KEY }}
+
       - uses: mondeja/remove-labels-gh-action@b7118e4ba5dca74acf1059b3cb7660378ff9ab1a # v2
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ steps.bot-token.outputs.token }}
           labels: |
             in discussion
             help wanted
@@ -53,9 +74,16 @@ jobs:
     if: github.event.issue.state == 'closed'
     runs-on: ubuntu-latest
     steps:
+      - name: Setup Apollo Git Bot
+        id: bot-token
+        uses: actions/create-github-app-token@67018539274d69449ef7c02e8e71183d1719ab42 # v2
+        with:
+          app-id: ${{ secrets.STUDIOCMS_GIT_BOT_APP_ID }}
+          private-key: ${{ secrets.STUDIOCMS_GIT_BOT_PRIVATE_KEY }}
+
       - uses: mondeja/remove-labels-gh-action@b7118e4ba5dca74acf1059b3cb7660378ff9ab1a # v2
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ steps.bot-token.outputs.token }}
           labels: |
             in discussion
             in progress

@@ -28,15 +28,22 @@ jobs:
     env:
       NODE_OPTIONS: "--max_old_space_size=4096"
     steps:
+      - name: Setup Apollo Git Bot
+        id: bot-token
+        uses: actions/create-github-app-token@67018539274d69449ef7c02e8e71183d1719ab42 # v2
+        with:
+          app-id: ${{ secrets.STUDIOCMS_GIT_BOT_APP_ID }}
+          private-key: ${{ secrets.STUDIOCMS_GIT_BOT_PRIVATE_KEY }}
+
       - name: Checkout Repo
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           persist-credentials: true
           ref: ${{ github.head_ref }}
-          token: ${{ secrets.STUDIOCMS_SERVICE_TOKEN }}
+          token: ${{ steps.bot-token.outputs.token }}
 
       - name: Install Tools & Dependencies
-        uses: withstudiocms/automations/.github/actions/install@885437ef4376e64fc295161092b8a165bc5efd39 # main
+        uses: withstudiocms/automations/.github/actions/install@9c432c2aa1717e19dfebf9ccea6ffb2760b6f6c2 # main
 
       - name: Format code
         run: pnpm run lint:fix
@@ -46,9 +53,9 @@ jobs:
         with:
           commit_message: '[ci] lint'
           branch: ${{ github.head_ref }}
-          commit_user_name: studiocms-no-reply
-          commit_user_email: no-reply@studiocms.dev
-          commit_author: StudioCMS <no-reply@studiocms.dev>
+          commit_user_name: apollo-git-bot[bot]
+          commit_user_email: 234251158+apollo-git-bot[bot]@users.noreply.github.com
+          commit_author: Apollo Git Bot <234251158+apollo-git-bot[bot]@users.noreply.github.com>
 
   todo-auto-issue:
     name: Create issues from TODOs
@@ -57,6 +64,13 @@ jobs:
       contents: write
       issues: write
     steps:
+      - name: Setup Apollo Git Bot
+        id: bot-token
+        uses: actions/create-github-app-token@67018539274d69449ef7c02e8e71183d1719ab42 # v2
+        with:
+          app-id: ${{ secrets.STUDIOCMS_GIT_BOT_APP_ID }}
+          private-key: ${{ secrets.STUDIOCMS_GIT_BOT_PRIVATE_KEY }}
+          
       - name: Checkout Repo
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
@@ -68,12 +82,12 @@ jobs:
           excludePattern: '^(node_modules/)'
           autoAssign: false
         env:
-          GITHUB_TOKEN: ${{ secrets.STUDIOCMS_SERVICE_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.bot-token.outputs.token }}
 
   mergebot:
     name: Merge Bot
     if: ${{ github.repository_owner == 'withstudiocms' && github.event_name != 'workflow_dispatch' && github.event.commits[0].message != '[ci] lint' }}
-    uses: withstudiocms/automations/.github/workflows/mergebot.yml@885437ef4376e64fc295161092b8a165bc5efd39 # main
+    uses: withstudiocms/automations/.github/workflows/mergebot.yml@9c432c2aa1717e19dfebf9ccea6ffb2760b6f6c2 # main
     secrets:
       DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_MERGEBOT }}
 
@@ -85,23 +99,31 @@ jobs:
       pull-requests: write
       id-token: write
     steps:
+      - name: Setup Apollo Git Bot
+        id: bot-token
+        uses: actions/create-github-app-token@67018539274d69449ef7c02e8e71183d1719ab42 # v2
+        with:
+          app-id: ${{ secrets.STUDIOCMS_GIT_BOT_APP_ID }}
+          private-key: ${{ secrets.STUDIOCMS_GIT_BOT_PRIVATE_KEY }}
+          
       - name: Checkout Repo
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           persist-credentials: false
 
       - name: Install Tools & Dependencies
-        uses: withstudiocms/automations/.github/actions/install@885437ef4376e64fc295161092b8a165bc5efd39 # main
+        uses: withstudiocms/automations/.github/actions/install@9c432c2aa1717e19dfebf9ccea6ffb2760b6f6c2 # main
 
       - name: Run Build
         run: pnpm ci:build
 
       - name: Run Publishing
-        uses: withstudiocms/automations/.github/actions/changeset-release@885437ef4376e64fc295161092b8a165bc5efd39
+        uses: withstudiocms/automations/.github/actions/changeset-release@9c432c2aa1717e19dfebf9ccea6ffb2760b6f6c2 # main
         with:
           repository: withstudiocms/studiocms
           CWD: ${{ github.workspace }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-          SERVICE_TOKEN: ${{ secrets.STUDIOCMS_SERVICE_TOKEN }}
+          SERVICE_TOKEN: ${{ steps.bot-token.outputs.token }}
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_RELEASE }}
           RoleMentionId: '1309310416362537020'
+          USE_GITHUB_BOT: 'true'

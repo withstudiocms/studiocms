@@ -44,7 +44,7 @@ jobs:
           fetch-depth: 0
 
       - name: Install Tools & Dependencies
-        uses: withstudiocms/automations/.github/actions/install@885437ef4376e64fc295161092b8a165bc5efd39 # main
+        uses: withstudiocms/automations/.github/actions/install@9c432c2aa1717e19dfebf9ccea6ffb2760b6f6c2 # main
 
       - name: Run Build
         run: pnpm ci:build
@@ -65,7 +65,7 @@ jobs:
           fi
 
   preview-release:
-    if: github.event_name == 'pull_request' && github.event.pull_request.user.login == 'studiocms-no-reply'
+    if: github.event_name == 'pull_request' && (github.event.pull_request.user.login == 'studiocms-no-reply' || github.event.pull_request.user.login == 'apollo-git-bot[bot]')
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -85,7 +85,7 @@ jobs:
           fetch-depth: 0
 
       - name: Install Tools & Dependencies
-        uses: withstudiocms/automations/.github/actions/install@885437ef4376e64fc295161092b8a165bc5efd39 # main
+        uses: withstudiocms/automations/.github/actions/install@9c432c2aa1717e19dfebf9ccea6ffb2760b6f6c2 # main
 
       - name: Run Build
         run: pnpm ci:build
@@ -106,7 +106,7 @@ jobs:
           fi
 
   preview-pr:
-    if: github.event_name == 'pull_request' && github.event.pull_request.user.login != 'studiocms-no-reply'
+    if: github.event_name == 'pull_request' && (github.event.pull_request.user.login == 'studiocms-no-reply' || github.event.pull_request.user.login == 'apollo-git-bot[bot]')
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -126,7 +126,7 @@ jobs:
           fetch-depth: 0
 
       - name: Install Tools & Dependencies
-        uses: withstudiocms/automations/.github/actions/install@885437ef4376e64fc295161092b8a165bc5efd39 # main
+        uses: withstudiocms/automations/.github/actions/install@9c432c2aa1717e19dfebf9ccea6ffb2760b6f6c2 # main
 
       - name: Run Build
         run: pnpm ci:build

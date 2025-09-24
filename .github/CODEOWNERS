@@ -1,7 +1,2 @@
 # root (Exalted)
 * @withstudiocms/exalted
-
-# packages (Exalted & Revered(added when they are lead of such feature))
-/packages/studiocms @withstudiocms/exalted
-/packages/studiocms_blog @withstudiocms/exalted
-/packages/studiocms_devapps @withstudiocms/exalted
