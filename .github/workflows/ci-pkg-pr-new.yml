@@ -65,7 +65,7 @@ jobs:
           fi
 
   preview-release:
-    if: github.event_name == 'pull_request' && github.event.pull_request.user.login == 'studiocms-no-reply'
+    if: github.event_name == 'pull_request' && (github.event.pull_request.user.login == 'studiocms-no-reply' || github.event.pull_request.user.login == 'apollo-git-bot[bot]')
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -106,7 +106,7 @@ jobs:
           fi
 
   preview-pr:
-    if: github.event_name == 'pull_request' && github.event.pull_request.user.login != 'studiocms-no-reply'
+    if: github.event_name == 'pull_request' && (github.event.pull_request.user.login == 'studiocms-no-reply' || github.event.pull_request.user.login == 'apollo-git-bot[bot]')
     runs-on: ubuntu-latest
     permissions:
       contents: read

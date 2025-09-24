@@ -30,7 +30,7 @@ jobs:
     steps:
       - name: Generate a token
         id: bot-token
-        uses: actions/create-github-app-token@v1
+        uses: actions/create-github-app-token@67018539274d69449ef7c02e8e71183d1719ab42 # v2
         with:
           app-id: ${{ secrets.STUDIOCMS_GIT_BOT_APP_ID }}
           private-key: ${{ secrets.STUDIOCMS_GIT_BOT_PRIVATE_KEY }}
@@ -53,9 +53,9 @@ jobs:
         with:
           commit_message: '[ci] lint'
           branch: ${{ github.head_ref }}
-          commit_user_name: studiocms-no-reply
-          commit_user_email: no-reply@studiocms.dev
-          commit_author: StudioCMS <no-reply@studiocms.dev>
+          commit_user_name: apollo-git-bot[bot]
+          commit_user_email: 234251158+apollo-git-bot[bot]@users.noreply.github.com
+          commit_author: Apollo Git Bot <234251158+apollo-git-bot[bot]@users.noreply.github.com>
 
   todo-auto-issue:
     name: Create issues from TODOs
@@ -66,7 +66,7 @@ jobs:
     steps:
       - name: Generate a token
         id: bot-token
-        uses: actions/create-github-app-token@v1
+        uses: actions/create-github-app-token@67018539274d69449ef7c02e8e71183d1719ab42 # v2
         with:
           app-id: ${{ secrets.STUDIOCMS_GIT_BOT_APP_ID }}
           private-key: ${{ secrets.STUDIOCMS_GIT_BOT_PRIVATE_KEY }}
@@ -101,7 +101,7 @@ jobs:
     steps:
       - name: Generate a token
         id: bot-token
-        uses: actions/create-github-app-token@v1
+        uses: actions/create-github-app-token@67018539274d69449ef7c02e8e71183d1719ab42 # v2
         with:
           app-id: ${{ secrets.STUDIOCMS_GIT_BOT_APP_ID }}
           private-key: ${{ secrets.STUDIOCMS_GIT_BOT_PRIVATE_KEY }}
