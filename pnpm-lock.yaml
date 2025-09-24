@@ -73,7 +73,7 @@ catalogs:
       specifier: ^0.15.10
       version: 0.15.15
     '@studiocms/web-vitals':
-      specifier: ^4.4.1
+      specifier: ^4.5.3
       version: 4.5.3
     astro:
       specifier: ^5.12.9
@@ -972,7 +972,7 @@ importers:
         version: link:../packages/@studiocms/md
       '@studiocms/web-vitals':
         specifier: catalog:studiocms
-        version: 4.5.2(@astrojs/db@0.18.0(@opentelemetry/api@1.9.0)(@types/pg@8.6.1))
+        version: 4.5.3(@astrojs/db@0.18.0(@opentelemetry/api@1.9.0)(@types/pg@8.6.1))
       '@studiocms/wysiwyg':
         specifier: workspace:*
         version: link:../packages/@studiocms/wysiwyg
@@ -8312,7 +8312,7 @@ snapshots:
       '@astrojs/db': 0.17.2(@opentelemetry/api@1.9.0)(@types/pg@8.6.1)
       web-vitals: 5.1.0
 
-  '@studiocms/web-vitals@4.5.2(@astrojs/db@0.18.0(@opentelemetry/api@1.9.0)(@types/pg@8.6.1))':
+  '@studiocms/web-vitals@4.5.3(@astrojs/db@0.18.0(@opentelemetry/api@1.9.0)(@types/pg@8.6.1))':
     dependencies:
       '@astrojs/db': 0.18.0(@opentelemetry/api@1.9.0)(@types/pg@8.6.1)
       web-vitals: 5.1.0

@@ -27,7 +27,7 @@ catalogs:
   min:
     "@astrojs/markdown-remark": ^6.3.3
     "@libsql/client": ^0.15.10
-    "@studiocms/web-vitals": ^4.4.1
+    "@studiocms/web-vitals": ^4.5.3
     astro: ^5.12.9
     drizzle-orm: ^0.42.0
     vite: ^6.3.4
