@@ -191,7 +191,7 @@
 		"typescript": "catalog:"
 	},
 	"peerDependencies": {
-		"@astrojs/db": "catalog:min",
+		"@astrojs/db": ">=0.17.2",
 		"@libsql/client": "catalog:min",
 		"@studiocms/web-vitals": "catalog:min",
 		"astro": "catalog:min",
