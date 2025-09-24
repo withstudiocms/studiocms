@@ -106,7 +106,7 @@ jobs:
           fi
 
   preview-pr:
-    if: github.event_name == 'pull_request' && (github.event.pull_request.user.login != 'studiocms-no-reply' || github.event.pull_request.user.login != 'apollo-git-bot[bot]')
+    if: github.event_name == 'pull_request' && (github.event.pull_request.user.login != 'studiocms-no-reply' && github.event.pull_request.user.login != 'apollo-git-bot[bot]')
     runs-on: ubuntu-latest
     permissions:
       contents: read
