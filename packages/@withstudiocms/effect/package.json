@@ -91,7 +91,7 @@
 		"typescript": "catalog:"
 	},
 	"peerDependencies": {
-		"@astrojs/db": "catalog:min",
+		"@astrojs/db": ">=0.17.2",
 		"@effect/cli": "catalog:effect",
 		"@effect/platform": "catalog:effect",
 		"@effect/platform-node": "catalog:effect",
