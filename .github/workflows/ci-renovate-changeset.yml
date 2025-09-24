@@ -53,7 +53,7 @@ jobs:
           token: ${{ steps.bot-token.outputs.token }}
 
       - name: Install Tools & Dependencies
-        uses: withstudiocms/automations/.github/actions/install@885437ef4376e64fc295161092b8a165bc5efd39 # main
+        uses: withstudiocms/automations/.github/actions/install@9c432c2aa1717e19dfebf9ccea6ffb2760b6f6c2 # main
         
       - name: Create Effect Changesets
         run: node .github/scripts/effect-changeset.mjs
