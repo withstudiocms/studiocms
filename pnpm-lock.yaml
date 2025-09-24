@@ -7,8 +7,8 @@ settings:
 catalogs:
   astrojs:
     '@astrojs/db':
-      specifier: ^0.17.2
-      version: 0.17.2
+      specifier: ^0.18.0
+      version: 0.18.0
     '@astrojs/node':
       specifier: ^9.4.3
       version: 9.4.3
@@ -66,9 +66,6 @@ catalogs:
       specifier: ^3.17.14
       version: 3.17.14
   min:
-    '@astrojs/db':
-      specifier: ^0.17.1
-      version: 0.17.2
     '@astrojs/markdown-remark':
       specifier: ^6.3.3
       version: 6.3.6
@@ -76,7 +73,7 @@ catalogs:
       specifier: ^0.15.10
       version: 0.15.15
     '@studiocms/web-vitals':
-      specifier: ^4.4.1
+      specifier: ^4.5.3
       version: 4.5.3
     astro:
       specifier: ^5.12.9
@@ -192,7 +189,7 @@ importers:
     dependencies:
       '@astrojs/db':
         specifier: catalog:astrojs
-        version: 0.17.2(@opentelemetry/api@1.9.0)(@types/pg@8.6.1)
+        version: 0.18.0(@opentelemetry/api@1.9.0)(@types/pg@8.6.1)
       '@astrojs/node':
         specifier: catalog:astrojs
         version: 9.4.3(astro@5.13.7(@types/node@22.16.3)(jiti@2.5.1)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0))
@@ -226,7 +223,7 @@ importers:
     dependencies:
       '@astrojs/db':
         specifier: catalog:astrojs
-        version: 0.17.2(@opentelemetry/api@1.9.0)(@types/pg@8.6.1)
+        version: 0.18.0(@opentelemetry/api@1.9.0)(@types/pg@8.6.1)
       '@astrojs/node':
         specifier: catalog:astrojs
         version: 9.4.3(astro@5.13.7(@types/node@22.16.3)(jiti@2.5.1)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0))
@@ -334,7 +331,7 @@ importers:
   packages/@studiocms/devapps:
     dependencies:
       '@astrojs/db':
-        specifier: catalog:min
+        specifier: '>=0.17.2'
         version: 0.17.2(@opentelemetry/api@1.9.0)(@types/pg@8.6.1)
       astro:
         specifier: catalog:min
@@ -743,7 +740,7 @@ importers:
   packages/@withstudiocms/effect:
     dependencies:
       '@astrojs/db':
-        specifier: catalog:min
+        specifier: '>=0.17.2'
         version: 0.17.2(@opentelemetry/api@1.9.0)(@types/pg@8.6.1)
       '@clack/prompts':
         specifier: ^0.11.0
@@ -823,7 +820,7 @@ importers:
   packages/studiocms:
     dependencies:
       '@astrojs/db':
-        specifier: catalog:min
+        specifier: '>=0.17.2'
         version: 0.17.2(@opentelemetry/api@1.9.0)(@types/pg@8.6.1)
       '@iconify-json/flat-color-icons':
         specifier: ^1.2.3
@@ -960,7 +957,7 @@ importers:
     dependencies:
       '@astrojs/db':
         specifier: catalog:astrojs
-        version: 0.17.2(@opentelemetry/api@1.9.0)(@types/pg@8.6.1)
+        version: 0.18.0(@opentelemetry/api@1.9.0)(@types/pg@8.6.1)
       '@astrojs/node':
         specifier: catalog:astrojs
         version: 9.4.3(astro@5.13.7(@types/node@22.16.3)(jiti@2.5.1)(rollup@4.45.0)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.0))
@@ -975,7 +972,7 @@ importers:
         version: link:../packages/@studiocms/md
       '@studiocms/web-vitals':
         specifier: catalog:studiocms
-        version: 4.5.3(@astrojs/db@0.17.2(@opentelemetry/api@1.9.0)(@types/pg@8.6.1))
+        version: 4.5.3(@astrojs/db@0.18.0(@opentelemetry/api@1.9.0)(@types/pg@8.6.1))
       '@studiocms/wysiwyg':
         specifier: workspace:*
         version: link:../packages/@studiocms/wysiwyg
@@ -1031,6 +1028,9 @@ packages:
 
   '@astrojs/db@0.17.2':
     resolution: {integrity: sha512-rFkw8Cj/kLwr63n1bS/sUw3hNywyvTkPZbKCdwAqd9FfbH3LdN+dH29XwmBC0NhXOxK3wA1jZBRsOOxpcVkV5w==}
+
+  '@astrojs/db@0.18.0':
+    resolution: {integrity: sha512-a91Bl2+SEUhxLF/KxGO9yD9YI6BMMvnBRzRvN7v3Vtpd15UnR9bLz5aQa4pkgzlZPTUILysCKyLl0E10Z2tzGg==}
 
   '@astrojs/internal-helpers@0.6.1':
     resolution: {integrity: sha512-l5Pqf6uZu31aG+3Lv8nl/3s4DbUzdlxTWDof4pEpto6GUJNhhCbelVi9dEyurOVyqaelwmS9oSyOWOENSfgo9A==}
@@ -6199,6 +6199,47 @@ snapshots:
       - sqlite3
       - utf-8-validate
 
+  '@astrojs/db@0.18.0(@opentelemetry/api@1.9.0)(@types/pg@8.6.1)':
+    dependencies:
+      '@libsql/client': 0.15.15
+      deep-diff: 1.0.2
+      drizzle-orm: 0.42.0(@libsql/client@0.15.15)(@opentelemetry/api@1.9.0)(@types/pg@8.6.1)
+      kleur: 4.1.5
+      nanoid: 5.1.5
+      prompts: 2.4.2
+      yargs-parser: 21.1.1
+      zod: 3.25.76
+    transitivePeerDependencies:
+      - '@aws-sdk/client-rds-data'
+      - '@cloudflare/workers-types'
+      - '@electric-sql/pglite'
+      - '@libsql/client-wasm'
+      - '@neondatabase/serverless'
+      - '@op-engineering/op-sqlite'
+      - '@opentelemetry/api'
+      - '@planetscale/database'
+      - '@prisma/client'
+      - '@tidbcloud/serverless'
+      - '@types/better-sqlite3'
+      - '@types/pg'
+      - '@types/sql.js'
+      - '@vercel/postgres'
+      - '@xata.io/client'
+      - better-sqlite3
+      - bufferutil
+      - bun-types
+      - expo-sqlite
+      - gel
+      - knex
+      - kysely
+      - mysql2
+      - pg
+      - postgres
+      - prisma
+      - sql.js
+      - sqlite3
+      - utf-8-validate
+
   '@astrojs/internal-helpers@0.6.1': {}
 
   '@astrojs/internal-helpers@0.7.2': {}
@@ -8269,6 +8310,11 @@ snapshots:
   '@studiocms/web-vitals@4.5.3(@astrojs/db@0.17.2(@opentelemetry/api@1.9.0)(@types/pg@8.6.1))':
     dependencies:
       '@astrojs/db': 0.17.2(@opentelemetry/api@1.9.0)(@types/pg@8.6.1)
+      web-vitals: 5.1.0
+
+  '@studiocms/web-vitals@4.5.3(@astrojs/db@0.18.0(@opentelemetry/api@1.9.0)(@types/pg@8.6.1))':
+    dependencies:
+      '@astrojs/db': 0.18.0(@opentelemetry/api@1.9.0)(@types/pg@8.6.1)
       web-vitals: 5.1.0
 
   '@swc/helpers@0.5.17':
