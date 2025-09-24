@@ -80,6 +80,16 @@
           }
         }
       }
+    },
+    {
+      "includes": ["packages/@studiocms/wysiwyg/**/*.css"],
+      "linter": {
+        "rules": {
+          "complexity": {
+            "noImportantStyles": "off"
+          }
+        }
+      }
     }
   ]
 }

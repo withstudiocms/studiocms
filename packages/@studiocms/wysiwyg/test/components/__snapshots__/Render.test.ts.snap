@@ -1,0 +1,40 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`WYSIWYG Render Component > handles empty content 1`] = `"<h1>Error: No content found</h1>"`;
+
+exports[`WYSIWYG Render Component > handles null content 1`] = `"<h1>Error: No content found</h1>"`;
+
+exports[`WYSIWYG Render Component > handles undefined content 1`] = `"<h1>Error: No content found</h1>"`;
+
+exports[`WYSIWYG Render Component > renders basic content 1`] = `"<p>Hello World</p>"`;
+
+exports[`WYSIWYG Render Component > renders complex HTML content 1`] = `
+"
+			<div class="article">
+				<h1>Main Title</h1>
+				<p>This is a <strong>bold</strong> and <em>italic</em> text.</p>
+				<ul>
+					<li>Item 1</li>
+					<li>Item 2</li>
+				</ul>
+			</div>
+		"
+`;
+
+exports[`WYSIWYG Render Component > renders content with links 1`] = `
+"
+			<div>
+				<h1>Links Test</h1>
+				<p>Visit <a href="https://example.com" class="external-link">Example</a> for more info.</p>
+			</div>
+		"
+`;
+
+exports[`WYSIWYG Render Component > renders content with special characters 1`] = `
+"
+			<div>
+				<h1>Special Characters: &lt; &gt; &amp; &quot; &#39;</h1>
+				<p>Math: 2 &lt; 3 &amp; 4 &gt; 1</p>
+			</div>
+		"
+`;

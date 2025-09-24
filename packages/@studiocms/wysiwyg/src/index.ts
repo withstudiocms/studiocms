@@ -6,11 +6,66 @@
 /// <reference types="studiocms/v/types" />
 /// <reference types="astro/client" />
 
+import type { AstroIntegration } from 'astro';
 import { createResolver } from 'astro-integration-kit';
 import { definePlugin, type StudioCMSPlugin } from 'studiocms/plugins';
 import { GRAPES_CSS_PATH, PARTIAL_PATH, STORE_ENDPOINT_PATH } from './consts.js';
 import { shared } from './lib/shared.js';
 import { WYSIWYGSchema, type WYSIWYGSchemaOptions } from './types.js';
+
+/**
+ * Creates an internal Astro integration for WYSIWYG rendering.
+ * This is used for testing and internal purposes.
+ *
+ * @param {string} packageIdentifier - The package identifier for the integration.
+ * @param {WYSIWYGSchemaOptions} [options] - Optional configuration options for the WYSIWYG plugin.
+ * @returns {AstroIntegration} The configured Astro integration.
+ */
+export function internalWysiwygIntegration(
+	packageIdentifier: string,
+	options?: WYSIWYGSchemaOptions
+): AstroIntegration {
+	// Validate and parse the provided options using the WYSIWYG schema
+	const resolvedOptions = WYSIWYGSchema.parse(options);
+
+	// Helper function to create route entrypoints
+	const resEntrypoint = (path: string) => `@studiocms/wysiwyg/routes/${path}`;
+
+	// Define the routes for the plugin
+	const routes = [
+		{
+			entrypoint: resEntrypoint('partial.astro'),
+			pattern: PARTIAL_PATH,
+			prerender: false,
+		},
+		{
+			entrypoint: resEntrypoint('grapes.css.js'),
+			pattern: GRAPES_CSS_PATH,
+			prerender: false,
+		},
+		{
+			entrypoint: resEntrypoint('store.js'),
+			pattern: STORE_ENDPOINT_PATH,
+			prerender: false,
+		},
+	];
+
+	return {
+		name: packageIdentifier,
+		hooks: {
+			'astro:config:setup': ({ injectRoute }) => {
+				// Register the routes for the plugin
+				for (const route of routes) {
+					injectRoute(route);
+				}
+			},
+			'astro:config:done': () => {
+				// Set shared options for the plugin
+				shared.sanitize = resolvedOptions?.sanitize;
+			},
+		},
+	};
+}
 
 /**
  * Creates and configures the StudioCMS WYSIWYG Editor plugin.
@@ -42,25 +97,6 @@ function wysiwyg(opts?: WYSIWYGSchemaOptions): StudioCMSPlugin {
 	// Define the package identifier
 	const packageIdentifier = '@studiocms/wysiwyg';
 
-	// Define the routes for the plugin
-	const routes = [
-		{
-			entrypoint: resolve('./routes/partial.astro'),
-			pattern: PARTIAL_PATH,
-			prerender: false,
-		},
-		{
-			entrypoint: resolve('./routes/grapes.css.js'),
-			pattern: GRAPES_CSS_PATH,
-			prerender: false,
-		},
-		{
-			entrypoint: resolve('./routes/store.js'),
-			pattern: STORE_ENDPOINT_PATH,
-			prerender: false,
-		},
-	];
-
 	// Return the plugin configuration
 	return definePlugin({
 		identifier: packageIdentifier,
@@ -68,23 +104,8 @@ function wysiwyg(opts?: WYSIWYGSchemaOptions): StudioCMSPlugin {
 		studiocmsMinimumVersion: '0.1.0-beta.23',
 		hooks: {
 			'studiocms:astro:config': ({ addIntegrations }) => {
-				// Add the WYSIWYG editor routes to the Astro configuration and
-				// set shared options for the plugin.
-				addIntegrations({
-					name: packageIdentifier,
-					hooks: {
-						'astro:config:setup': ({ injectRoute }) => {
-							// Register the routes for the plugin
-							for (const route of routes) {
-								injectRoute(route);
-							}
-						},
-						'astro:config:done': () => {
-							// Set shared options for the plugin
-							shared.sanitize = options?.sanitize;
-						},
-					},
-				});
+				// Add the WYSIWYG editor integration to the Astro configuration
+				addIntegrations(internalWysiwygIntegration(packageIdentifier, options));
 			},
 			'studiocms:config:setup': ({ setRendering }) => {
 				// Set the rendering configuration for the WYSIWYG editor
