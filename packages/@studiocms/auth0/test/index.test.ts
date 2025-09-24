@@ -145,7 +145,8 @@ describe('@studiocms/auth0', () => {
 
 		it('should include all required Auth0 environment variables', async () => {
 			const hookResults = await tester.getHookResults();
-			const requiredEnvVars = hookResults.studiocmsConfig.hookResults.authService.oAuthProvider?.requiredEnvVariables;
+			const requiredEnvVars =
+				hookResults.studiocmsConfig.hookResults.authService.oAuthProvider?.requiredEnvVariables;
 
 			expect(requiredEnvVars).toContain('CMS_AUTH0_CLIENT_ID');
 			expect(requiredEnvVars).toContain('CMS_AUTH0_CLIENT_SECRET');
