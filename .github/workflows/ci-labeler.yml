@@ -15,7 +15,7 @@ jobs:
     if: github.event_name == 'pull_request' && github.event.pull_request.state == 'open'
     runs-on: ubuntu-latest
     steps:
-      - name: Generate a token
+      - name: Setup Apollo Git Bot
         id: bot-token
         uses: actions/create-github-app-token@67018539274d69449ef7c02e8e71183d1719ab42 # v2
         with:
@@ -34,7 +34,7 @@ jobs:
     if: github.event.pull_request.merged
     runs-on: ubuntu-latest
     steps:
-      - name: Generate a token
+      - name: Setup Apollo Git Bot
         id: bot-token
         uses: actions/create-github-app-token@67018539274d69449ef7c02e8e71183d1719ab42 # v2
         with:
@@ -55,7 +55,7 @@ jobs:
     if: github.event_name == 'pull_request' && (! github.event.pull_request.merged)
     runs-on: ubuntu-latest
     steps:
-      - name: Generate a token
+      - name: Setup Apollo Git Bot
         id: bot-token
         uses: actions/create-github-app-token@67018539274d69449ef7c02e8e71183d1719ab42 # v2
         with:
@@ -74,7 +74,7 @@ jobs:
     if: github.event.issue.state == 'closed'
     runs-on: ubuntu-latest
     steps:
-      - name: Generate a token
+      - name: Setup Apollo Git Bot
         id: bot-token
         uses: actions/create-github-app-token@67018539274d69449ef7c02e8e71183d1719ab42 # v2
         with:

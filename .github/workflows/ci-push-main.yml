@@ -28,7 +28,7 @@ jobs:
     env:
       NODE_OPTIONS: "--max_old_space_size=4096"
     steps:
-      - name: Generate a token
+      - name: Setup Apollo Git Bot
         id: bot-token
         uses: actions/create-github-app-token@67018539274d69449ef7c02e8e71183d1719ab42 # v2
         with:
@@ -64,7 +64,7 @@ jobs:
       contents: write
       issues: write
     steps:
-      - name: Generate a token
+      - name: Setup Apollo Git Bot
         id: bot-token
         uses: actions/create-github-app-token@67018539274d69449ef7c02e8e71183d1719ab42 # v2
         with:
@@ -99,7 +99,7 @@ jobs:
       pull-requests: write
       id-token: write
     steps:
-      - name: Generate a token
+      - name: Setup Apollo Git Bot
         id: bot-token
         uses: actions/create-github-app-token@67018539274d69449ef7c02e8e71183d1719ab42 # v2
         with:
