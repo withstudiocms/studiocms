@@ -66,6 +66,83 @@ function getParentFolderValue(value?: string) {
 	return value;
 }
 
+function isValidString(value: unknown): value is string {
+	return typeof value === 'string' && value.trim() !== '';
+}
+
+function validString(field: FormDataEntryValue | null): string | undefined {
+	if (!isValidString(field)) {
+		return undefined;
+	}
+	return field.toString();
+}
+
+function validateStringField(field: FormDataEntryValue | null, fieldName: string): string {
+	if (!isValidString(field)) {
+		throw new Error(`Invalid form data, ${fieldName} is required`);
+	}
+	return field.toString();
+}
+
+function validateSlugField(field: FormDataEntryValue | null, fieldName: string): string {
+	const slug = validateStringField(field, fieldName);
+
+	/**
+	 * Regex breakdown:
+	 *
+	 * ^[a-z0-9]+        : starts with one or more lowercase letters or numbers
+	 *
+	 * (?:-[a-z0-9]+)*  : followed by zero or more groups of a hyphen and one
+	 *                    or more lowercase letters or numbers
+	 *
+	 * $                : end of the string
+	 *
+	 * This ensures the slug is lowercase and only contains letters, numbers,
+	 * and hyphens, without consecutive hyphens or leading/trailing hyphens.
+	 */
+	const slugRegex = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+
+	if (!slugRegex.test(slug)) {
+		throw new Error(
+			`Invalid form data, ${fieldName} must be lowercase and can only contain letters, numbers, and hyphens`
+		);
+	}
+
+	return slug;
+}
+
+function buildPageDataObject(
+	formData: FormData,
+	pageId?: string
+): UpdatePageData | { error: string } {
+	try {
+		// TODO Fix validation logic. Move over to JSON and Effect validation
+		const data: UpdatePageData = {
+			title: validateStringField(formData.get('page-title'), 'title'),
+			slug: validateSlugField(formData.get('page-slug'), 'slug'),
+			description: validateStringField(formData.get('page-description'), 'description'),
+			package: validateStringField(formData.get('page-type'), 'page type'),
+			showOnNav: validateStringField(formData.get('show-in-nav'), 'show in nav') === 'true',
+			heroImage: validString(formData.get('page-hero-image')),
+			parentFolder: getParentFolderValue(formData.get('parent-folder')?.toString()),
+			showAuthor: validString(formData.get('show-author')) === 'true',
+			showContributors: validString(formData.get('show-contributors')) === 'true',
+			draft: validString(formData.get('draft')) === 'true',
+		};
+
+		if (pageId) {
+			data.id = pageId;
+		}
+
+		return data;
+	} catch (error) {
+		if (error instanceof Error) {
+			return { error: error.message };
+		}
+		return { error: 'An unknown error occurred while validating form data' };
+	}
+}
+
 export const { POST, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 	{
 		POST: (ctx) =>
@@ -88,20 +165,11 @@ export const { POST, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 
 				const formData = yield* readAPIContextFormData(ctx);
 
-				const data: UpdatePageData = {
-					title: formData.get('page-title')?.toString(),
-					slug: formData.get('page-slug')?.toString(),
-					description: formData.get('page-description')?.toString(),
-					package: formData.get('page-type')?.toString(),
-					showOnNav: formData.get('show-in-nav')?.toString() === 'true',
-					heroImage: formData.get('page-hero-image')?.toString(),
-					parentFolder: getParentFolderValue(formData.get('parent-folder')?.toString()),
-					showAuthor: formData.get('show-author')?.toString() === 'true',
-					showContributors: formData.get('show-contributors')?.toString() === 'true',
-					draft: formData.get('draft')?.toString() === 'true',
-					categories: [],
-					tags: [],
-				};
+				const data = buildPageDataObject(formData);
+
+				if ('error' in data) {
+					return apiResponseLogger(400, data.error);
+				}
 
 				const content = {
 					id: crypto.randomUUID(),
@@ -134,6 +202,8 @@ export const { POST, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 						description: data.description || '',
 						authorId: userData.user?.id || null,
 						updatedAt: new Date(),
+						categories: [],
+						tags: [],
 						...data,
 					},
 					pageContent: pageContent,
@@ -170,25 +240,15 @@ export const { POST, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 
 				const formData = yield* readAPIContextFormData(ctx);
 
-				const data: Partial<tsPageDataSelect> = {
-					title: formData.get('page-title')?.toString(),
-					slug: formData.get('page-slug')?.toString(),
-					description: formData.get('page-description')?.toString(),
-					package: formData.get('page-type')?.toString(),
-					showOnNav: formData.get('show-in-nav') === 'true',
-					heroImage: formData.get('page-hero-image')?.toString(),
-					parentFolder: getParentFolderValue(formData.get('parent-folder')?.toString()),
-					showAuthor: formData.get('show-author') === 'true',
-					showContributors: formData.get('show-contributors')?.toString() === 'true',
-					categories: [],
-					tags: [],
-					id: formData.get('page-id')?.toString(),
-					draft: formData.get('draft')?.toString() === 'true',
-				};
+				const data = buildPageDataObject(formData, validString(formData.get('page-id')));
+
+				if ('error' in data) {
+					return apiResponseLogger(400, data.error);
+				}
 
 				const content = {
-					id: formData.get('page-content-id')?.toString(),
-					content: formData.get('page-content')?.toString(),
+					id: validString(formData.get('page-content-id')),
+					content: validString(formData.get('page-content')),
 				};
 
 				if (!data.id) {
@@ -291,18 +351,20 @@ export const { POST, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 
 				const { id, slug } = yield* readAPIContextJson<{ id: string; slug?: string }>(ctx);
 
-				if (!id) {
-					return apiResponseLogger(400, 'Invalid request');
-				}
-
-				if (!slug) {
-					return apiResponseLogger(400, 'Invalid request');
+				try {
+					validateStringField(id, 'id');
+					validateSlugField(slug ?? null, 'slug');
+				} catch (err) {
+					return apiResponseLogger(400, (err as Error).message);
 				}
 
 				const pageToDelete = yield* sdk.GET.page.byId(id);
 
 				if (!pageToDelete) {
 					return apiResponseLogger(404, 'Page not found');
+				}
+				if (pageToDelete.data.slug !== slug) {
+					return apiResponseLogger(400, 'Invalid request');
 				}
 
 				const apiRoute = getPageTypeEndpoints(pageToDelete.data.package, 'onDelete');
