@@ -116,7 +116,7 @@ function buildPageDataObject(
 	pageId?: string
 ): UpdatePageData | { error: string } {
 	try {
-        // TODO Fix validation logic. Move over to JSON and Effect validation
+		// TODO Fix validation logic. Move over to JSON and Effect validation
 		const data: UpdatePageData = {
 			title: validateStringField(formData.get('page-title'), 'title'),
 			slug: validateSlugField(formData.get('page-slug'), 'slug'),
