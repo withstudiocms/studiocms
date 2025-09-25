@@ -223,6 +223,9 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
     "create-page-container",
   ) as HTMLDivElement;
   const draftButton = document.getElementById("draft-button") as HTMLElement;
+  const publishButton = document.getElementById(
+    "publish-button",
+  ) as HTMLButtonElement;
 
   const { contentManagementUrl } = createContainer.dataset;
 
@@ -233,11 +236,11 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
     );
   });
 
-  async function runFormAction(e: Event, form: HTMLFormElement) {
+  async function runFormAction(e: Event, form: HTMLFormElement, isDraft: boolean) {
     e.preventDefault();
     const formData = new FormData(form);
 
-    formData.set("draft", "true");
+    formData.set("draft", isDraft ? "true" : "false");
 
     const response = await fetch(form.action, {
       method: "POST",
@@ -268,7 +271,12 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
 
   draftButton.addEventListener(
     "click",
-    async (e) => await runFormAction(e, createPageForm),
+    async (e) => await runFormAction(e, createPageForm, true),
+  );
+
+  publishButton.addEventListener(
+    "click",
+    async (e) => await runFormAction(e, createPageForm, false),
   );
 
   async function setupPageEditor() {

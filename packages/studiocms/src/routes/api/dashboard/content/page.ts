@@ -66,6 +66,40 @@ function getParentFolderValue(value?: string) {
 	return value;
 }
 
+function validateStringField(field: FormDataEntryValue | null, fieldName: string) {
+	if (field === null || field.toString().trim() === '') {
+		throw new Error(`Invalid form data, ${fieldName} is required`);
+	}
+	return field.toString();
+}
+
+function validateSlugField(field: FormDataEntryValue | null, fieldName: string) {
+	const slug = validateStringField(field, fieldName);
+
+	/**
+	 * Regex breakdown:
+	 *
+	 * ^[a-z0-9]+        : starts with one or more lowercase letters or numbers
+	 *
+	 * (?:-[a-z0-9]+)*  : followed by zero or more groups of a hyphen and one
+	 *                    or more lowercase letters or numbers
+	 *
+	 * $                : end of the string
+	 *
+	 * This ensures the slug is lowercase and only contains letters, numbers,
+	 * and hyphens, without consecutive hyphens or leading/trailing hyphens.
+	 */
+	const slugRegex = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+
+	if (!slugRegex.test(slug)) {
+		throw new Error(
+			`Invalid form data, ${fieldName} must be lowercase and can only contain letters, numbers, and hyphens`
+		);
+	}
+
+	return slug;
+}
+
 export const { POST, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 	{
 		POST: (ctx) =>
@@ -89,11 +123,11 @@ export const { POST, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 				const formData = yield* readAPIContextFormData(ctx);
 
 				const data: UpdatePageData = {
-					title: formData.get('page-title')?.toString(),
-					slug: formData.get('page-slug')?.toString(),
-					description: formData.get('page-description')?.toString(),
-					package: formData.get('page-type')?.toString(),
-					showOnNav: formData.get('show-in-nav')?.toString() === 'true',
+					title: validateStringField(formData.get('page-title'), 'title'),
+					slug: validateSlugField(formData.get('page-slug'), 'slug'),
+					description: validateStringField(formData.get('page-description'), 'description'),
+					package: validateStringField(formData.get('page-type'), 'page type'),
+					showOnNav: validateStringField(formData.get('show-in-nav'), 'show in nav') === 'true',
 					heroImage: formData.get('page-hero-image')?.toString(),
 					parentFolder: getParentFolderValue(formData.get('parent-folder')?.toString()),
 					showAuthor: formData.get('show-author')?.toString() === 'true',
@@ -170,20 +204,19 @@ export const { POST, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 
 				const formData = yield* readAPIContextFormData(ctx);
 
-				const data: Partial<tsPageDataSelect> = {
-					title: formData.get('page-title')?.toString(),
-					slug: formData.get('page-slug')?.toString(),
-					description: formData.get('page-description')?.toString(),
-					package: formData.get('page-type')?.toString(),
-					showOnNav: formData.get('show-in-nav') === 'true',
+				const data: UpdatePageData = {
+					title: validateStringField(formData.get('page-title'), 'title'),
+					slug: validateSlugField(formData.get('page-slug'), 'slug'),
+					description: validateStringField(formData.get('page-description'), 'description'),
+					package: validateStringField(formData.get('page-type'), 'page type'),
+					showOnNav: validateStringField(formData.get('show-in-nav'), 'show in nav') === 'true',
 					heroImage: formData.get('page-hero-image')?.toString(),
 					parentFolder: getParentFolderValue(formData.get('parent-folder')?.toString()),
-					showAuthor: formData.get('show-author') === 'true',
+					showAuthor: formData.get('show-author')?.toString() === 'true',
 					showContributors: formData.get('show-contributors')?.toString() === 'true',
+					draft: formData.get('draft')?.toString() === 'true',
 					categories: [],
 					tags: [],
-					id: formData.get('page-id')?.toString(),
-					draft: formData.get('draft')?.toString() === 'true',
 				};
 
 				const content = {
@@ -291,11 +324,11 @@ export const { POST, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 
 				const { id, slug } = yield* readAPIContextJson<{ id: string; slug?: string }>(ctx);
 
-				if (!id) {
+				if (!id || id.trim() === '') {
 					return apiResponseLogger(400, 'Invalid request');
 				}
 
-				if (!slug) {
+				if (!slug || slug.trim() === '') {
 					return apiResponseLogger(400, 'Invalid request');
 				}
 
