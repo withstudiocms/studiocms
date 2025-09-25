@@ -66,14 +66,25 @@ function getParentFolderValue(value?: string) {
 	return value;
 }
 
-function validateStringField(field: FormDataEntryValue | null, fieldName: string) {
-	if (field === null || field.toString().trim() === '') {
+function isValidString(value: unknown): value is string {
+	return typeof value === 'string' && value.trim() !== '';
+}
+
+function validString(field: FormDataEntryValue | null): string | undefined {
+	if (isValidString(field)) {
+		return field;
+	}
+	return undefined;
+}
+
+function validateStringField(field: FormDataEntryValue | null, fieldName: string): string {
+	if (!isValidString(field)) {
 		throw new Error(`Invalid form data, ${fieldName} is required`);
 	}
 	return field.toString();
 }
 
-function validateSlugField(field: FormDataEntryValue | null, fieldName: string) {
+function validateSlugField(field: FormDataEntryValue | null, fieldName: string): string {
 	const slug = validateStringField(field, fieldName);
 
 	/**
@@ -100,6 +111,39 @@ function validateSlugField(field: FormDataEntryValue | null, fieldName: string) 
 	return slug;
 }
 
+function buildPageDataObject(
+	formData: FormData,
+	pageId?: string
+): UpdatePageData | { error: string } {
+	try {
+		const data: UpdatePageData = {
+			title: validateStringField(formData.get('page-title'), 'title'),
+			slug: validateSlugField(formData.get('page-slug'), 'slug'),
+			description: validateStringField(formData.get('page-description'), 'description'),
+			package: validateStringField(formData.get('page-type'), 'page type'),
+			showOnNav: validateStringField(formData.get('show-in-nav'), 'show in nav') === 'true',
+			heroImage: validString(formData.get('page-hero-image')),
+			parentFolder: getParentFolderValue(formData.get('parent-folder')?.toString()),
+			showAuthor: validString(formData.get('show-author')) === 'true',
+			showContributors: validString(formData.get('show-contributors')) === 'true',
+			draft: validString(formData.get('draft')) === 'true',
+			categories: [],
+			tags: [],
+		};
+
+		if (pageId) {
+			data.id = pageId;
+		}
+
+		return data;
+	} catch (error) {
+		if (error instanceof Error) {
+			return { error: error.message };
+		}
+		return { error: 'An unknown error occurred while validating form data' };
+	}
+}
+
 export const { POST, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 	{
 		POST: (ctx) =>
@@ -122,20 +166,11 @@ export const { POST, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 
 				const formData = yield* readAPIContextFormData(ctx);
 
-				const data: UpdatePageData = {
-					title: validateStringField(formData.get('page-title'), 'title'),
-					slug: validateSlugField(formData.get('page-slug'), 'slug'),
-					description: validateStringField(formData.get('page-description'), 'description'),
-					package: validateStringField(formData.get('page-type'), 'page type'),
-					showOnNav: validateStringField(formData.get('show-in-nav'), 'show in nav') === 'true',
-					heroImage: formData.get('page-hero-image')?.toString(),
-					parentFolder: getParentFolderValue(formData.get('parent-folder')?.toString()),
-					showAuthor: formData.get('show-author')?.toString() === 'true',
-					showContributors: formData.get('show-contributors')?.toString() === 'true',
-					draft: formData.get('draft')?.toString() === 'true',
-					categories: [],
-					tags: [],
-				};
+				const data = buildPageDataObject(formData);
+
+				if ('error' in data) {
+					return apiResponseLogger(400, data.error);
+				}
 
 				const content = {
 					id: crypto.randomUUID(),
@@ -204,24 +239,15 @@ export const { POST, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 
 				const formData = yield* readAPIContextFormData(ctx);
 
-				const data: UpdatePageData = {
-					title: validateStringField(formData.get('page-title'), 'title'),
-					slug: validateSlugField(formData.get('page-slug'), 'slug'),
-					description: validateStringField(formData.get('page-description'), 'description'),
-					package: validateStringField(formData.get('page-type'), 'page type'),
-					showOnNav: validateStringField(formData.get('show-in-nav'), 'show in nav') === 'true',
-					heroImage: formData.get('page-hero-image')?.toString(),
-					parentFolder: getParentFolderValue(formData.get('parent-folder')?.toString()),
-					showAuthor: formData.get('show-author')?.toString() === 'true',
-					showContributors: formData.get('show-contributors')?.toString() === 'true',
-					draft: formData.get('draft')?.toString() === 'true',
-					categories: [],
-					tags: [],
-				};
+				const data = buildPageDataObject(formData, validString(formData.get('page-id')));
+
+				if ('error' in data) {
+					return apiResponseLogger(400, data.error);
+				}
 
 				const content = {
-					id: formData.get('page-content-id')?.toString(),
-					content: formData.get('page-content')?.toString(),
+					id: validString(formData.get('page-content-id')),
+					content: validString(formData.get('page-content')),
 				};
 
 				if (!data.id) {
