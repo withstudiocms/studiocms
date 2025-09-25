@@ -127,8 +127,6 @@ function buildPageDataObject(
 			showAuthor: validString(formData.get('show-author')) === 'true',
 			showContributors: validString(formData.get('show-contributors')) === 'true',
 			draft: validString(formData.get('draft')) === 'true',
-			categories: [],
-			tags: [],
 		};
 
 		if (pageId) {
@@ -203,6 +201,8 @@ export const { POST, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 						description: data.description || '',
 						authorId: userData.user?.id || null,
 						updatedAt: new Date(),
+						categories: [],
+						tags: [],
 						...data,
 					},
 					pageContent: pageContent,
@@ -350,18 +350,20 @@ export const { POST, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 
 				const { id, slug } = yield* readAPIContextJson<{ id: string; slug?: string }>(ctx);
 
-				if (!id || id.trim() === '') {
-					return apiResponseLogger(400, 'Invalid request');
-				}
-
-				if (!slug || slug.trim() === '') {
-					return apiResponseLogger(400, 'Invalid request');
+				try {
+					validateStringField(id, 'id');
+					validateSlugField(slug ?? null, 'slug');
+				} catch (err) {
+					return apiResponseLogger(400, (err as Error).message);
 				}
 
 				const pageToDelete = yield* sdk.GET.page.byId(id);
 
 				if (!pageToDelete) {
 					return apiResponseLogger(404, 'Page not found');
+				}
+				if (pageToDelete.data.slug !== slug) {
+					return apiResponseLogger(400, 'Invalid request');
 				}
 
 				const apiRoute = getPageTypeEndpoints(pageToDelete.data.package, 'onDelete');
