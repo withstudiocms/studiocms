@@ -71,10 +71,10 @@ function isValidString(value: unknown): value is string {
 }
 
 function validString(field: FormDataEntryValue | null): string | undefined {
-	if (isValidString(field)) {
-		return field;
+	if (!isValidString(field)) {
+		return undefined;
 	}
-	return undefined;
+	return field.toString();
 }
 
 function validateStringField(field: FormDataEntryValue | null, fieldName: string): string {
