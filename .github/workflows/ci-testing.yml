@@ -31,7 +31,7 @@ jobs:
           persist-credentials: false
   
       - name: Install Tools & Dependencies
-        uses: withstudiocms/automations/.github/actions/install@9c432c2aa1717e19dfebf9ccea6ffb2760b6f6c2 # main
+        uses: withstudiocms/automations/.github/actions/install@89b4e8b178b4f8b3e78a1b8d935ab47a31393888 # main
 
       - name: Run Build for TypeChecks
         run: pnpm ci:build
@@ -57,7 +57,7 @@ jobs:
           persist-credentials: false
   
       - name: Install Tools & Dependencies
-        uses: withstudiocms/automations/.github/actions/install@9c432c2aa1717e19dfebf9ccea6ffb2760b6f6c2 # main
+        uses: withstudiocms/automations/.github/actions/install@89b4e8b178b4f8b3e78a1b8d935ab47a31393888 # main
 
       - name: Build packages
         run: pnpm ci:build
@@ -101,7 +101,7 @@ jobs:
           persist-credentials: false
 
       - name: Install Tools & Dependencies
-        uses: withstudiocms/automations/.github/actions/install@9c432c2aa1717e19dfebf9ccea6ffb2760b6f6c2 # main
+        uses: withstudiocms/automations/.github/actions/install@89b4e8b178b4f8b3e78a1b8d935ab47a31393888 # main
 
       - name: Build packages
         run: pnpm ci:build
