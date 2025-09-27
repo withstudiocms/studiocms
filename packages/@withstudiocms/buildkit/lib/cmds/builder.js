@@ -92,7 +92,7 @@ const dtsGen = (buildTsConfig, outdir) => ({
 				const res = execFileSync(
 					'tsc',
 					['--emitDeclarationOnly', '-p', buildTsConfig, '--outDir', `./${outdir}`],
-					{ encoding: 'utf8' }
+					{ encoding: 'utf8', shell: true }
 				);
 				if (res) console.log(res);
 				console.log(chalk.dim(`[${date}] `) + chalk.green('√ Generated TypeScript declarations'));
