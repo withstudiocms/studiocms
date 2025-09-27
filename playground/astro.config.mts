@@ -4,8 +4,6 @@ import devApps from '@studiocms/devapps';
 import { defineConfig } from 'astro/config';
 import studioCMS from 'studiocms';
 
-// import { getCoolifyURL } from './hostUtils';
-
 const site = process.env.DOKPLOY_DEPLOY_URL
 	? process.env.DOKPLOY_DEPLOY_URL
 	: 'https://playground.studiocms.dev';
