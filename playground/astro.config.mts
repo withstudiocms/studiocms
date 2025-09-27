@@ -6,8 +6,8 @@ import studioCMS from 'studiocms';
 
 // import { getCoolifyURL } from './hostUtils';
 
-const site = process.env.DOKPLOY_DEPLOY_URL
-	? `https://${process.env.DOKPLOY_DEPLOY_URL}`
+const site = process.env.PR_URL
+	? `https://${process.env.PR_URL}`
 	: 'https://playground.studiocms.dev';
 
 console.log('Using site URL:', site);
