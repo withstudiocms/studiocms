@@ -20,7 +20,7 @@
 		"@astrojs/node": "catalog:astrojs",
 		"@codecov/astro-plugin": "catalog:",
 		"@studiocms/md": "workspace:*",
-    	"astro": "catalog:astrojs",
+		"astro": "catalog:astrojs",
 		"sharp": "catalog:",
 		"studiocms": "workspace:*"
 	}

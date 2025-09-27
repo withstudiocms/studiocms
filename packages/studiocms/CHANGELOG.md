@@ -1,5 +1,44 @@
 # studiocms
 
+## 0.1.0-beta.27
+
+### Patch Changes
+
+- [#807](https://github.com/withstudiocms/studiocms/pull/807) [`6833a1d`](https://github.com/withstudiocms/studiocms/commit/6833a1dd46b34914c087dc57cffc28950d038911) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Enable the "Draft" toggle on the Edit Page for all pages (including the `index` page) so the `draft` field is submitted with the form. Previously the disabled control omitted this field from the payload, preventing changes to draft status.
+
+- [#852](https://github.com/withstudiocms/studiocms/pull/852) [`ce2f95c`](https://github.com/withstudiocms/studiocms/commit/ce2f95c4c78778cdb0ce867012de05c8f1e3dc67) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - fix: Ensure slug is not an empty string, or an invalid slug.
+
+- [#804](https://github.com/withstudiocms/studiocms/pull/804) [`82cd1bf`](https://github.com/withstudiocms/studiocms/commit/82cd1bfd1a442015c266df733988f29fdaafaaf4) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update dependency @iconify-json/simple-icons to ^1.2.51
+
+- [#810](https://github.com/withstudiocms/studiocms/pull/810) [`3d4c4ea`](https://github.com/withstudiocms/studiocms/commit/3d4c4eae4b425db1f0dde5712177faa68d3c9712) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update dependency @iconify-json/simple-icons to ^1.2.52
+
+- [#841](https://github.com/withstudiocms/studiocms/pull/841) [`c661a9f`](https://github.com/withstudiocms/studiocms/commit/c661a9f7f4deb1f1ec695bbb8702c5d570dc4c20) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update dependency dompurify to ^3.2.7
+
+- [#813](https://github.com/withstudiocms/studiocms/pull/813) [`e1f531f`](https://github.com/withstudiocms/studiocms/commit/e1f531f7bd3705a988fe67205ce6bd2665d7d33d) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Create new test export for helping aid in CI testing
+
+- [#772](https://github.com/withstudiocms/studiocms/pull/772) [`ecc664c`](https://github.com/withstudiocms/studiocms/commit/ecc664cbb560f03db2078dc8d23135f9e966a7d4) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Deduplicate CLI utilities and unify avatar URL generation (Libravatar)
+
+- [#809](https://github.com/withstudiocms/studiocms/pull/809) [`15854f2`](https://github.com/withstudiocms/studiocms/commit/15854f2bf620d3ea83da5af6a1651b31e9c433f6) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Integrate new effect helper for drizzle libsql db client
+
+- [#774](https://github.com/withstudiocms/studiocms/pull/774) [`3b59fcf`](https://github.com/withstudiocms/studiocms/commit/3b59fcf7885d5c4952bd30279fa8ea2e2f0f5eaa) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Refactor CLI to utilize new Effect-ful clack module from `@withstudiocms/effect`
+
+- [#770](https://github.com/withstudiocms/studiocms/pull/770) [`67d8973`](https://github.com/withstudiocms/studiocms/commit/67d8973cd703f6d3a5c50e31d3f051ef8f938548) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Migrate CLI to new authkit package
+
+- [#781](https://github.com/withstudiocms/studiocms/pull/781) [`1848b0c`](https://github.com/withstudiocms/studiocms/commit/1848b0ce4d8bbb908a3207079fbbeeda446e3cb7) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Cleans CLI to utilize fully Effect-TS based code instead of raw JS/TS, allowing better error handling and code maintainability.
+
+- [#823](https://github.com/withstudiocms/studiocms/pull/823) [`6c65ddb`](https://github.com/withstudiocms/studiocms/commit/6c65ddb94a15997801ebee43ac90d3f380248a86) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Setup initial testing for StudioCMS
+
+- [#785](https://github.com/withstudiocms/studiocms/pull/785) [`c86f4f4`](https://github.com/withstudiocms/studiocms/commit/c86f4f4ab0873c29246582a8dbcab645057d146c) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - rename internal file to avoid confusion with tests during dev
+
+- [#789](https://github.com/withstudiocms/studiocms/pull/789) [`5713f15`](https://github.com/withstudiocms/studiocms/commit/5713f154eb15aad8d2c2c8a5a5c13611ff03dee8) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Correct parameter in CLI add command.
+
+- Updated dependencies [[`71d8948`](https://github.com/withstudiocms/studiocms/commit/71d894899a417e3a249c5f47e527223ade38b4fc), [`9d3784c`](https://github.com/withstudiocms/studiocms/commit/9d3784c1de98a4bc7bb913742c3977e16c87cc1b), [`726e07a`](https://github.com/withstudiocms/studiocms/commit/726e07a458fff9e50d4c02b80e0312f52f05e730), [`bf15ff6`](https://github.com/withstudiocms/studiocms/commit/bf15ff65a5f4ba6c2e4cd616d3c45ba0da784a1a), [`627119b`](https://github.com/withstudiocms/studiocms/commit/627119bfde88e9c2ea74a29817d91fb6afbab33d), [`3b59fcf`](https://github.com/withstudiocms/studiocms/commit/3b59fcf7885d5c4952bd30279fa8ea2e2f0f5eaa), [`3d3612d`](https://github.com/withstudiocms/studiocms/commit/3d3612d510f4827acfb4de364d39e835a693818f), [`c2c2b73`](https://github.com/withstudiocms/studiocms/commit/c2c2b73a71009769e38ea4b30ae4010f6f0fdd14), [`67d8973`](https://github.com/withstudiocms/studiocms/commit/67d8973cd703f6d3a5c50e31d3f051ef8f938548), [`47a2fed`](https://github.com/withstudiocms/studiocms/commit/47a2fedd8ed1c751def929058772ea78532e8d7d), [`c478f2d`](https://github.com/withstudiocms/studiocms/commit/c478f2dba7fb5cc923e0dbf0367fa2a050fcdc2d), [`fbb9ad1`](https://github.com/withstudiocms/studiocms/commit/fbb9ad10555f26c8e6261cd71a7650ab4aeb64f9), [`faf2a70`](https://github.com/withstudiocms/studiocms/commit/faf2a70ae57d136a9ccbbdebad70897e42c14c64), [`55885eb`](https://github.com/withstudiocms/studiocms/commit/55885eba617d8ec790e68ed0985f8530628140d8), [`0e8e280`](https://github.com/withstudiocms/studiocms/commit/0e8e280c4a2a7552d3b78b370600019e49f5a459), [`9b85861`](https://github.com/withstudiocms/studiocms/commit/9b85861b20ca9eb2aa2c434b225ff85399bb04f0)]:
+  - @withstudiocms/auth-kit@0.1.0-beta.2
+  - @withstudiocms/component-registry@0.1.0-beta.3
+  - @withstudiocms/internal_helpers@0.1.0-beta.2
+  - @withstudiocms/config-utils@0.1.0-beta.4
+  - @withstudiocms/effect@0.1.0-beta.3
+
 ## 0.1.0-beta.26
 
 ### Patch Changes
