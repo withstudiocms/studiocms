@@ -43,7 +43,7 @@ jobs:
           token: ${{ steps.bot-token.outputs.token }}
 
       - name: Install Tools & Dependencies
-        uses: withstudiocms/automations/.github/actions/install@89b4e8b178b4f8b3e78a1b8d935ab47a31393888 # main
+        uses: withstudiocms/automations/.github/actions/install@729a20ff5e68dd95330fb1914b801960ad4b5e7b # main
 
       - name: Format code
         run: pnpm run lint:fix
@@ -87,7 +87,7 @@ jobs:
   mergebot:
     name: Merge Bot
     if: ${{ github.repository_owner == 'withstudiocms' && github.event_name != 'workflow_dispatch' && github.event.commits[0].message != '[ci] lint' }}
-    uses: withstudiocms/automations/.github/workflows/mergebot.yml@89b4e8b178b4f8b3e78a1b8d935ab47a31393888 # main
+    uses: withstudiocms/automations/.github/workflows/mergebot.yml@729a20ff5e68dd95330fb1914b801960ad4b5e7b # main
     secrets:
       DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_MERGEBOT }}
 
@@ -112,13 +112,13 @@ jobs:
           persist-credentials: false
 
       - name: Install Tools & Dependencies
-        uses: withstudiocms/automations/.github/actions/install@89b4e8b178b4f8b3e78a1b8d935ab47a31393888 # main
+        uses: withstudiocms/automations/.github/actions/install@729a20ff5e68dd95330fb1914b801960ad4b5e7b # main
 
       - name: Run Build
         run: pnpm ci:build
 
       - name: Run Publishing
-        uses: withstudiocms/automations/.github/actions/changeset-release@89b4e8b178b4f8b3e78a1b8d935ab47a31393888 # main
+        uses: withstudiocms/automations/.github/actions/changeset-release@729a20ff5e68dd95330fb1914b801960ad4b5e7b # main
         with:
           repository: withstudiocms/studiocms
           CWD: ${{ github.workspace }}
