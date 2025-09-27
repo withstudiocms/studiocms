@@ -1,5 +1,15 @@
 # @studiocms/wysiwyg
 
+## 0.1.0-beta.27
+
+### Patch Changes
+
+- [#830](https://github.com/withstudiocms/studiocms/pull/830) [`6d9cbcf`](https://github.com/withstudiocms/studiocms/commit/6d9cbcf9b9878d633488af2b360896fc68601f76) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update dependency grapesjs to ^0.22.13
+
+- Updated dependencies [[`9d3784c`](https://github.com/withstudiocms/studiocms/commit/9d3784c1de98a4bc7bb913742c3977e16c87cc1b), [`6833a1d`](https://github.com/withstudiocms/studiocms/commit/6833a1dd46b34914c087dc57cffc28950d038911), [`ce2f95c`](https://github.com/withstudiocms/studiocms/commit/ce2f95c4c78778cdb0ce867012de05c8f1e3dc67), [`627119b`](https://github.com/withstudiocms/studiocms/commit/627119bfde88e9c2ea74a29817d91fb6afbab33d), [`82cd1bf`](https://github.com/withstudiocms/studiocms/commit/82cd1bfd1a442015c266df733988f29fdaafaaf4), [`3d4c4ea`](https://github.com/withstudiocms/studiocms/commit/3d4c4eae4b425db1f0dde5712177faa68d3c9712), [`c661a9f`](https://github.com/withstudiocms/studiocms/commit/c661a9f7f4deb1f1ec695bbb8702c5d570dc4c20), [`e1f531f`](https://github.com/withstudiocms/studiocms/commit/e1f531f7bd3705a988fe67205ce6bd2665d7d33d), [`ecc664c`](https://github.com/withstudiocms/studiocms/commit/ecc664cbb560f03db2078dc8d23135f9e966a7d4), [`15854f2`](https://github.com/withstudiocms/studiocms/commit/15854f2bf620d3ea83da5af6a1651b31e9c433f6), [`3b59fcf`](https://github.com/withstudiocms/studiocms/commit/3b59fcf7885d5c4952bd30279fa8ea2e2f0f5eaa), [`67d8973`](https://github.com/withstudiocms/studiocms/commit/67d8973cd703f6d3a5c50e31d3f051ef8f938548), [`1848b0c`](https://github.com/withstudiocms/studiocms/commit/1848b0ce4d8bbb908a3207079fbbeeda446e3cb7), [`6c65ddb`](https://github.com/withstudiocms/studiocms/commit/6c65ddb94a15997801ebee43ac90d3f380248a86), [`c86f4f4`](https://github.com/withstudiocms/studiocms/commit/c86f4f4ab0873c29246582a8dbcab645057d146c), [`5713f15`](https://github.com/withstudiocms/studiocms/commit/5713f154eb15aad8d2c2c8a5a5c13611ff03dee8), [`55885eb`](https://github.com/withstudiocms/studiocms/commit/55885eba617d8ec790e68ed0985f8530628140d8)]:
+  - @withstudiocms/component-registry@0.1.0-beta.3
+  - studiocms@0.1.0-beta.27
+
 ## 0.1.0-beta.26
 
 ### Patch Changes

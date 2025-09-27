@@ -1,5 +1,29 @@
 # @withstudiocms/effect
 
+## 0.1.0-beta.3
+
+### Patch Changes
+
+- [#788](https://github.com/withstudiocms/studiocms/pull/788) [`9d3784c`](https://github.com/withstudiocms/studiocms/commit/9d3784c1de98a4bc7bb913742c3977e16c87cc1b) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Convert tests to vitest
+
+- [#799](https://github.com/withstudiocms/studiocms/pull/799) [`bf15ff6`](https://github.com/withstudiocms/studiocms/commit/bf15ff65a5f4ba6c2e4cd616d3c45ba0da784a1a) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Add new Drizzle helper for AstroDB and Drizzle libsql connections
+
+- [#774](https://github.com/withstudiocms/studiocms/pull/774) [`3b59fcf`](https://github.com/withstudiocms/studiocms/commit/3b59fcf7885d5c4952bd30279fa8ea2e2f0f5eaa) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - fix clack spinner Effect
+
+- [#776](https://github.com/withstudiocms/studiocms/pull/776) [`3d3612d`](https://github.com/withstudiocms/studiocms/commit/3d3612d510f4827acfb4de364d39e835a693818f) Thanks [@renovate](https://github.com/apps/renovate)! - chore(deps): Updated Effect dependencies (PR: #776)
+
+- [#786](https://github.com/withstudiocms/studiocms/pull/786) [`c2c2b73`](https://github.com/withstudiocms/studiocms/commit/c2c2b73a71009769e38ea4b30ae4010f6f0fdd14) Thanks [@renovate](https://github.com/apps/renovate)! - chore(deps): Updated Effect dependencies (PR: #786)
+
+- [#840](https://github.com/withstudiocms/studiocms/pull/840) [`47a2fed`](https://github.com/withstudiocms/studiocms/commit/47a2fedd8ed1c751def929058772ea78532e8d7d) Thanks [@renovate](https://github.com/apps/renovate)! - chore(deps): Updated Effect dependencies (PR: #840)
+
+- [#771](https://github.com/withstudiocms/studiocms/pull/771) [`fbb9ad1`](https://github.com/withstudiocms/studiocms/commit/fbb9ad10555f26c8e6261cd71a7650ab4aeb64f9) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Introduce new clack export with Effectful clack exports
+
+- [#793](https://github.com/withstudiocms/studiocms/pull/793) [`faf2a70`](https://github.com/withstudiocms/studiocms/commit/faf2a70ae57d136a9ccbbdebad70897e42c14c64) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Enhance tests
+
+- [#802](https://github.com/withstudiocms/studiocms/pull/802) [`0e8e280`](https://github.com/withstudiocms/studiocms/commit/0e8e280c4a2a7552d3b78b370600019e49f5a459) Thanks [@renovate](https://github.com/apps/renovate)! - chore(deps): Updated Effect dependencies (PR: #802)
+
+- [#844](https://github.com/withstudiocms/studiocms/pull/844) [`9b85861`](https://github.com/withstudiocms/studiocms/commit/9b85861b20ca9eb2aa2c434b225ff85399bb04f0) Thanks [@renovate](https://github.com/apps/renovate)! - chore(deps): Updated Effect dependencies (PR: #844)
+
 ## 0.1.0-beta.2
 
 ### Patch Changes

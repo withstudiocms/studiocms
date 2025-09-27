@@ -21,7 +21,7 @@
 		"@codecov/astro-plugin": "catalog:",
 		"@studiocms/blog": "workspace:*",
 		"@studiocms/md": "workspace:*",
-    	"astro": "catalog:astrojs",
+		"astro": "catalog:astrojs",
 		"sharp": "catalog:",
 		"studiocms": "workspace:*"
 	}
