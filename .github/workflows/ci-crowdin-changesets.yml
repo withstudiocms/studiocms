@@ -27,7 +27,7 @@ jobs:
           token: ${{ steps.bot-token.outputs.token }}
 
       - name: Install Tools & Dependencies
-        uses: withstudiocms/automations/.github/actions/install@89b4e8b178b4f8b3e78a1b8d935ab47a31393888 # main
+        uses: withstudiocms/automations/.github/actions/install@729a20ff5e68dd95330fb1914b801960ad4b5e7b # main
 
       - name: Create Translation Changesets
         run: node .github/scripts/translation-changeset.mjs

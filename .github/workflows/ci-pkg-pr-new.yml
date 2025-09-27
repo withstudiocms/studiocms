@@ -44,7 +44,7 @@ jobs:
           fetch-depth: 0
 
       - name: Install Tools & Dependencies
-        uses: withstudiocms/automations/.github/actions/install@89b4e8b178b4f8b3e78a1b8d935ab47a31393888 # main
+        uses: withstudiocms/automations/.github/actions/install@729a20ff5e68dd95330fb1914b801960ad4b5e7b # main
 
       - name: Run Build
         run: pnpm ci:build
@@ -85,7 +85,7 @@ jobs:
           fetch-depth: 0
 
       - name: Install Tools & Dependencies
-        uses: withstudiocms/automations/.github/actions/install@89b4e8b178b4f8b3e78a1b8d935ab47a31393888 # main
+        uses: withstudiocms/automations/.github/actions/install@729a20ff5e68dd95330fb1914b801960ad4b5e7b # main
 
       - name: Run Build
         run: pnpm ci:build
@@ -126,7 +126,7 @@ jobs:
           fetch-depth: 0
 
       - name: Install Tools & Dependencies
-        uses: withstudiocms/automations/.github/actions/install@89b4e8b178b4f8b3e78a1b8d935ab47a31393888 # main
+        uses: withstudiocms/automations/.github/actions/install@729a20ff5e68dd95330fb1914b801960ad4b5e7b # main
 
       - name: Run Build
         run: pnpm ci:build
