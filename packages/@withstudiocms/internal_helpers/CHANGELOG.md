@@ -1,5 +1,13 @@
 # @withstudiocms/internal_helpers
 
+## 0.1.0-beta.2
+
+### Patch Changes
+
+- [#788](https://github.com/withstudiocms/studiocms/pull/788) [`9d3784c`](https://github.com/withstudiocms/studiocms/commit/9d3784c1de98a4bc7bb913742c3977e16c87cc1b) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Convert tests to vitest
+
+- [#796](https://github.com/withstudiocms/studiocms/pull/796) [`726e07a`](https://github.com/withstudiocms/studiocms/commit/726e07a458fff9e50d4c02b80e0312f52f05e730) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Improve tests for @withstudiocms/internal_helpers
+
 ## 0.1.0-beta.1
 
 ### Patch Changes

@@ -1,6 +1,6 @@
 {
 	"name": "@withstudiocms/component-registry",
-	"version": "0.1.0-beta.2",
+	"version": "0.1.0-beta.3",
 	"description": "Component Registry Utilities for Astro",
 	"license": "MIT",
 	"author": {
