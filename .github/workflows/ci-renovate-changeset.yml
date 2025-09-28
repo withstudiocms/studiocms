@@ -7,7 +7,7 @@ on:
 permissions: {}
 
 jobs:
-  renovate:
+  ci-renovate:
     name: Update Renovate PR
     if: contains(github.event.pull_request.labels.*.name, 'dependencies')
     permissions:
@@ -16,7 +16,7 @@ jobs:
     secrets: inherit
     uses: withstudiocms/automations/.github/workflows/renovate-changeset.yml@729a20ff5e68dd95330fb1914b801960ad4b5e7b # main
 
-  renovate-effect:
+  ci-renovate-effect:
     name: Update Renovate Effect PR
     runs-on: ubuntu-latest
     if: contains(github.event.pull_request.labels.*.name, 'effect-deps')

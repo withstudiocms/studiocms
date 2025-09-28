@@ -38,7 +38,7 @@ jobs:
     with:
       pre-knip-cmd: "pnpm ci:build"
 
-  zizmor:
+  security-zizmor:
     name: Run Zizmor Actions Security Analysis
     runs-on: ubuntu-latest
     permissions:

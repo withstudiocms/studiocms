@@ -24,7 +24,7 @@ env:
 
 jobs:
   preview-main:
-    name: Main Snapshot Preview
+    name: Continuous Deployment Snapshot
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     permissions:
       contents: read
@@ -36,8 +36,8 @@ jobs:
     with:
       build-cmd: "pnpm ci:build"
 
-  preview-release:
-    name: Preview Release Snapshot
+  preview-changeset-release:
+    name: Pre-Release Snapshot
     if: github.event_name == 'pull_request' && (github.event.pull_request.user.login == 'studiocms-no-reply' || github.event.pull_request.user.login == 'apollo-git-bot[bot]')
     permissions:
       contents: read
