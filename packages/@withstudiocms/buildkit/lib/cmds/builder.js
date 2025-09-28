@@ -139,7 +139,7 @@ export default async function builder(cmd, args) {
 	const testReport = args.includes('--test-report');
 	const forceCJS = args.includes('--force-cjs');
 	const buildTsConfig =
-		args.find((arg) => arg.startsWith('--tsconfig='))?.split('=')[1] || undefined;
+		args.find((arg) => arg.startsWith('--tsconfig='))?.split('=')[1] || 'tsconfig.json';
 	const outdir = args.find((arg) => arg.startsWith('--outdir='))?.split('=')[1] || 'dist';
 
 	const { type = 'module', dependencies = {} } = await readPackageJSON('./package.json');
