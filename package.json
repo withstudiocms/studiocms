@@ -18,7 +18,11 @@
     "test:ui:coverage": "vitest --ui --coverage",
     "test:watch": "vitest",
 
-    "build": "pnpm build:packages",
+    "build:withstudiocms": "pnpm --filter @withstudiocms/* build",
+    "build:studiocms-core": "pnpm --filter studiocms build",
+    "build:studiocms-packages": "pnpm --filter @studiocms/* build",
+
+    "build": "pnpm build:withstudiocms && pnpm build:studiocms-core && pnpm build:studiocms-packages",
     "build:studiocms": "pnpm build:packages",
     "build:packages": "pnpm --filter studiocms --filter @studiocms/* --filter @withstudiocms/* build",
 
@@ -36,7 +40,7 @@
     "ci:publish": "pnpm changeset publish",
     "ci:snapshot": "pnpx pkg-pr-new publish --pnpm './packages/*'",
     "ci:test": "vitest run --coverage",
-    "ci:build": "pnpm build:packages",
+    "ci:build": "pnpm build",
 
     "ci:typecheck:studiocms": "pnpm --filter studiocms typecheck",
     "ci:typecheck:studiocms-packages": "pnpm --filter @studiocms/* typecheck",
