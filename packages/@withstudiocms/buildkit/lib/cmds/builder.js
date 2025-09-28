@@ -224,10 +224,6 @@ export default async function builder(cmd, args) {
 			 */
 			const dtsPluginOpts = { tsconfig: buildTsConfig };
 
-			if (bundle) {
-				dtsPluginOpts.experimentalBundling = bundle;
-			}
-
 			await esbuild.build({
 				...config,
 				bundle,

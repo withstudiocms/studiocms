@@ -1,7 +1,7 @@
 import type { AstroIntegration } from 'astro';
 import { envField } from 'astro/config';
 import { createResolver } from 'astro-integration-kit';
-import { definePlugin } from 'studiocms/plugins';
+import { definePlugin, type StudioCMSPlugin } from 'studiocms/plugins';
 import { readJson } from './utils/readJson.js';
 
 const { resolve } = createResolver(import.meta.url);
@@ -39,7 +39,7 @@ const CloudinaryENVIntegration = (): AstroIntegration => ({
  *
  * This plugin is used to generate Cloudinary URLs for images using `@cloudinary/url-gen` for StudioCMS.
  */
-function cloudinaryImageService() {
+function cloudinaryImageService(): StudioCMSPlugin {
 	return definePlugin({
 		name: `Cloudinary JS Image Service (${identifier})`,
 		identifier: name,
