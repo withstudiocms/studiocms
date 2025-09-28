@@ -13,59 +13,30 @@ concurrency:
 permissions: {}
 
 jobs:
-  biome:
+  lint-biome:
     name: Run Biome Linter and Report
-    runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
     permissions:
       contents: read
       pull-requests: write
-    steps:
-      - name: Checkout Repo
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-        with:
-          persist-credentials: false
+    uses: withstudiocms/automations/.github/workflows/run-pnpm.yml@729a20ff5e68dd95330fb1914b801960ad4b5e7b # main
+    secrets: inherit
+    with:
+      commands: > 
+        ["ci:lint"]
 
-      - name: Install Tools & Dependencies
-        uses: withstudiocms/automations/.github/actions/install@729a20ff5e68dd95330fb1914b801960ad4b5e7b # main
-
-      - name: Run Biome Linter
-        run: pnpm ci:lint
-
-  knip:
-    runs-on: ubuntu-latest
+  lint-knip:
+    name: Run Knip Linter and Report
+    if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
     permissions:
       contents: read
-      checks: write
       issues: write
+      checks: write
       pull-requests: write
-    env:
-      NODE_OPTIONS: "--max_old_space_size=4096"
-    name: Run Knip Linter and Report
-    if: github.event.pull_request.head.repo.full_name == github.repository
-    steps:
-      - name: Setup Apollo Git Bot
-        id: bot-token
-        uses: actions/create-github-app-token@67018539274d69449ef7c02e8e71183d1719ab42 # v2.1.4
-        with:
-          app-id: ${{ secrets.STUDIOCMS_GIT_BOT_APP_ID }}
-          private-key: ${{ secrets.STUDIOCMS_GIT_BOT_PRIVATE_KEY }}
-
-      - name: Checkout Repo
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-        with:
-          persist-credentials: false
-          ref: ${{ github.head_ref }}
-          token: ${{ steps.bot-token.outputs.token }}
-
-      - name: Install Tools & Dependencies
-        uses: withstudiocms/automations/.github/actions/install@729a20ff5e68dd95330fb1914b801960ad4b5e7b # main
-
-      - name: Build StudioCMS Packages
-        run: pnpm ci:build
-
-      - name: Run Knip Linter and Report
-        uses: codex-/knip-reporter@398e656c485dd1649f06631a4cd2e602c6ccc4f1 # v2.6.0
+    uses: withstudiocms/automations/.github/workflows/knip.yml@729a20ff5e68dd95330fb1914b801960ad4b5e7b # main
+    secrets: inherit
+    with:
+      pre-knip-cmd: "pnpm ci:build"
 
   zizmor:
     name: Run Zizmor Actions Security Analysis
