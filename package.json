@@ -6,6 +6,9 @@
     "node": "22.19.0"
   },
   "scripts": {
+    "__start": "Start Script for Dokploy",
+    "start": "node ./playground/dist/server/entry.mjs",
+
     "changeset": "changeset",
     "knip": "knip",
     "lint": "biome check .",
