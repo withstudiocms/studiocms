@@ -24,9 +24,24 @@ body:
       description: Which package is the bug report for?
       options:
         - studiocms
+        - "@studiocms/auth0"
         - "@studiocms/blog"
+        - "@studiocms/cloudinary-image-service"
         - "@studiocms/devapps"
-        - "@studiocms/ui"
+        - "@studiocms/discord"
+        - "@studiocms/github"
+        - "@studiocms/google"
+        - "@studiocms/html"
+        - "@studiocms/markdoc"
+        - "@studiocms/md"
+        - "@studiocms/mdx"
+        - "@studiocms/wysiwyg"
+        - "@withstudiocms/auth-kit"
+        - "@withstudiocms/buildkit"
+        - "@withstudiocms/component-registry"
+        - "@withstudiocms/config-utils"
+        - "@withstudiocms/effect"
+        - "@withstudiocms/internal_helpers"
       default: 0
     validations:
       required: true
@@ -35,7 +50,7 @@ body:
     attributes:
       label: Version
       description: What version are you running?
-      placeholder: 0.1.0-beta.7
+      placeholder: 0.1.0-beta.0
     validations:
       required: true
   - type: dropdown

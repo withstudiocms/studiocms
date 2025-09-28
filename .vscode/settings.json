@@ -124,6 +124,7 @@
     "highlightable",
     "htmlmixed",
     "iconify",
+    "Ilshidur",
     "inox",
     "jdtjenkins",
     "johndoe",
@@ -145,6 +146,7 @@
     "mgmt",
     "Mngmt",
     "Monaspace",
+    "mondeja",
     "mrmime",
     "myplugin",
     "mystudiocms",
@@ -179,6 +181,7 @@
     "signup",
     "simpleicons",
     "sitemapindex",
+    "stefanzweifel",
     "strikethrough",
     "studiocms",
     "studiocmsenv",
@@ -207,7 +210,9 @@
     "withstudiocms",
     "WPAPI",
     "yocto",
-    "yourname"
+    "yourname",
+    "zizmor",
+    "zizmorcore"
   ],
   "[typescript]": {
     "editor.defaultFormatter": "biomejs.biome"

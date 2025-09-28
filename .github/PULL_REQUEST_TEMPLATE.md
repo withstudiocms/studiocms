@@ -3,7 +3,19 @@
 #### Description
 
 - Closes # <!-- If applicable add an issue number to this PR so it can be closed otherwise feel free to remove this. -->
-- What does this PR change? Give us a brief description.
+- What does this PR change?
+- Be short and concise. Bullet points can help!
+- Before/after screenshots can help as well.
+- Don't forget a changeset! Run `pnpm changeset`.
+
+## Testing
+
+<!-- How was this change tested? -->
+<!-- DON'T DELETE THIS SECTION! If no tests added, explain why. -->
+
+## Docs
+
+<!-- Could this affect a user’s behavior? We probably need to update docs! -->
 
 <!--
 Here’s what will happen next:
