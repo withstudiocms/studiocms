@@ -1,7 +1,7 @@
-import { execFileSync } from 'node:child_process';
 import fs from 'node:fs/promises';
 import chalk from 'chalk';
 import esbuild from 'esbuild';
+import { dtsPlugin } from 'esbuild-plugin-d.ts';
 import { glob } from 'tinyglobby';
 
 /** @type {import('esbuild').BuildOptions} */
@@ -28,6 +28,7 @@ const defaultConfig = {
 		'.ttf': 'copy',
 		'.eot': 'copy',
 		'.otf': 'copy',
+		'.stub': 'copy',
 	},
 };
 
@@ -74,39 +75,6 @@ const copyPlugins = [copyStubJsPlugin, copyDTSPlugin];
 const dt = new Intl.DateTimeFormat('en-us', {
 	hour: '2-digit',
 	minute: '2-digit',
-});
-
-/** * Plugin to generate TypeScript declarations using the TypeScript compiler.
- * @param {string} buildTsConfig - The path to the TypeScript configuration file.
- * @param {string} outdir - The output directory for the generated declarations.
- * @returns {import('esbuild').Plugin} The esbuild plugin for generating TypeScript declarations.
- */
-const dtsGen = (buildTsConfig, outdir) => ({
-	name: 'TypeScriptDeclarationsPlugin',
-	setup(build) {
-		build.onEnd((result) => {
-			if (result.errors.length > 0) return;
-			const date = dt.format(new Date());
-			console.log(`${chalk.dim(`[${date}]`)} Generating TypeScript declarations...`);
-			try {
-				const res = execFileSync(
-					'tsc',
-					['--emitDeclarationOnly', '-p', buildTsConfig, '--outDir', `./${outdir}`],
-					{ encoding: 'utf8', shell: true }
-				);
-				if (res) console.log(res);
-				console.log(chalk.dim(`[${date}] `) + chalk.green('√ Generated TypeScript declarations'));
-			} catch (error) {
-				const msg =
-					(error && (error.message || String(error))) +
-					'\n\n' +
-					// stdout/stderr may be Buffer or string depending on exec options
-					(typeof error?.stdout === 'string' ? error.stdout : (error?.stdout?.toString?.() ?? '')) +
-					(typeof error?.stderr === 'string' ? error.stderr : (error?.stderr?.toString?.() ?? ''));
-				console.error(chalk.dim(`[${date}] `) + chalk.red(msg));
-			}
-		});
-	},
 });
 
 /** * Clean the output directory by removing all files except those specified in the skip array.
@@ -171,7 +139,7 @@ export default async function builder(cmd, args) {
 	const testReport = args.includes('--test-report');
 	const forceCJS = args.includes('--force-cjs');
 	const buildTsConfig =
-		args.find((arg) => arg.startsWith('--tsconfig='))?.split('=')[1] || 'tsconfig.json';
+		args.find((arg) => arg.startsWith('--tsconfig='))?.split('=')[1] || undefined;
 	const outdir = args.find((arg) => arg.startsWith('--outdir='))?.split('=')[1] || 'dist';
 
 	const { type = 'module', dependencies = {} } = await readPackageJSON('./package.json');
@@ -250,6 +218,16 @@ export default async function builder(cmd, args) {
 			console.log(
 				`${chalk.dim(`[${date}]`)} Building...${bundle ? '(Bundling)' : ''} ${chalk.dim(`(${entryPoints.length} files found)`)}`
 			);
+
+			/**
+			 * @type {import('esbuild-plugin-d.ts').DTSPluginOpts} DTS Plugin Options
+			 */
+			const dtsPluginOpts = { tsconfig: buildTsConfig };
+
+			if (bundle) {
+				dtsPluginOpts.experimentalBundling = bundle;
+			}
+
 			await esbuild.build({
 				...config,
 				bundle,
@@ -258,7 +236,7 @@ export default async function builder(cmd, args) {
 				outdir,
 				outExtension: forceCJS ? { '.js': '.cjs' } : {},
 				format,
-				plugins: [dtsGen(buildTsConfig, outdir), ...copyPlugins],
+				plugins: [dtsPlugin(dtsPluginOpts), ...copyPlugins],
 			});
 
 			if (testReport) {
