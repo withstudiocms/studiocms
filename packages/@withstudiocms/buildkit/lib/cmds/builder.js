@@ -42,10 +42,12 @@ const copyStubJsPlugin = {
 	setup(build) {
 		// Match both entry points and imported modules
 		const filter = /\.stub\.(?:js|mjs|cjs)$/;
+		/* v8 ignore start */
 		build.onLoad({ filter }, async (args) => {
 			const contents = await fs.readFile(args.path);
 			return { contents, loader: 'copy' };
 		});
+		/* v8 ignore stop */
 	},
 };
 
@@ -59,10 +61,12 @@ const copyDTSPlugin = {
 	setup(build) {
 		// Match both entry points and imported modules
 		const filter = /\.d\.ts$/;
+		/* v8 ignore start */
 		build.onLoad({ filter }, async (args) => {
 			const contents = await fs.readFile(args.path);
 			return { contents, loader: 'copy' };
 		});
+		/* v8 ignore stop */
 	},
 };
 
@@ -97,6 +101,7 @@ const dtsGen = (buildTsConfig, outdir) => ({
 				);
 				if (res) console.log(res);
 				console.log(chalk.dim(`[${date}] `) + chalk.green('√ Generated TypeScript declarations'));
+				/* v8 ignore start */
 			} catch (error) {
 				const msg =
 					(error && (error.message || String(error))) +
@@ -106,6 +111,7 @@ const dtsGen = (buildTsConfig, outdir) => ({
 					(typeof error?.stderr === 'string' ? error.stderr : (error?.stderr?.toString?.() ?? ''));
 				console.error(chalk.dim(`[${date}] `) + chalk.red(msg));
 			}
+			/* v8 ignore stop */
 		});
 	},
 });
@@ -132,12 +138,14 @@ async function readPackageJSON(path) {
 		const content = await fs.readFile(path, { encoding: 'utf8' });
 		try {
 			return JSON.parse(content);
+			/* v8 ignore start */
 		} catch (parseError) {
 			throw new Error(`Invalid JSON in ${path}: ${parseError.message}`);
 		}
 	} catch (readError) {
 		throw new Error(`Failed to read ${path}: ${readError.message}`);
 	}
+	/* v8 ignore stop */
 }
 
 /**
@@ -199,6 +207,7 @@ export default async function builder(cmd, args) {
 				setup(build) {
 					build.onEnd(async (result) => {
 						const date = dt.format(new Date());
+						/* v8 ignore start */
 						if (result?.errors.length) {
 							const formatted = await esbuild.formatMessages(result.errors, {
 								kind: 'error',
@@ -217,6 +226,7 @@ export default async function builder(cmd, args) {
 									chalk.yellow(`! updated with warnings:\n${formattedWarns.join('\n')}`)
 							);
 						}
+						/* v8 ignore stop */
 						console.info(chalk.dim(`[${date}] `) + chalk.green('√ updated'));
 					});
 				},
@@ -236,9 +246,11 @@ export default async function builder(cmd, args) {
 			);
 			await builder.watch();
 
+			/* v8 ignore start */
 			process.on('beforeExit', () => {
 				builder.stop?.();
 			});
+			/* v8 ignore stop */
 			break;
 		}
 		case 'build': {
