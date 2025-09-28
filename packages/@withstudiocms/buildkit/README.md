@@ -62,6 +62,7 @@ The following file extensions will be copied from their src to their respective 
 - `.webp`
 - `.avif`
 - `.svg`
+- `.stub`
 
 For other content types and how to use them see [The esBuild Docs](https://esbuild.github.io/content-types/)
 
