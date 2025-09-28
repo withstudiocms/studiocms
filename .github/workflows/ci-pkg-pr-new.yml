@@ -24,125 +24,40 @@ env:
 
 jobs:
   preview-main:
+    name: Main Snapshot Preview
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
     permissions:
       contents: read
       id-token: write
       issues: write
       pull-requests: write
-    name: Main Snapshot Preview
-    timeout-minutes: 15
-    steps:
-      - name: Disable git crlf
-        run: git config --global core.autocrlf false
-
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-        with:
-          persist-credentials: false
-          # Changeset needs access to the main branch to find pending changesets
-          fetch-depth: 0
-
-      - name: Install Tools & Dependencies
-        uses: withstudiocms/automations/.github/actions/install@729a20ff5e68dd95330fb1914b801960ad4b5e7b # main
-
-      - name: Run Build
-        run: pnpm ci:build
-
-      - name: Get Packages
-        id: get-packages
-        uses: ./.github/actions/pnpm-package-paths
-
-      - name: Publish packages
-        env:
-          PACKAGES_PATHS: ${{ steps.get-packages.outputs.packages-paths }}
-        run: |
-          packages=$(echo "$PACKAGES_PATHS" | jq -r '.[]' 2>/dev/null | tr '\n' ' ' || echo "")
-          if [ -n "$packages" ]; then
-            pnpm dlx pkg-pr-new publish --pnpm --no-template $packages
-          else
-            echo "No affected packages to publish"
-          fi
+    secrets: inherit
+    uses: withstudiocms/automations/.github/workflows/preview.yml@729a20ff5e68dd95330fb1914b801960ad4b5e7b # main
+    with:
+      build-cmd: "pnpm ci:build"
 
   preview-release:
+    name: Preview Release Snapshot
     if: github.event_name == 'pull_request' && (github.event.pull_request.user.login == 'studiocms-no-reply' || github.event.pull_request.user.login == 'apollo-git-bot[bot]')
-    runs-on: ubuntu-latest
     permissions:
       contents: read
       id-token: write
       issues: write
       pull-requests: write
-    name: Preview Release Snapshot
-    timeout-minutes: 15
-    steps:
-      - name: Disable git crlf
-        run: git config --global core.autocrlf false
-
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-        with:
-          persist-credentials: false
-          # Changeset needs access to the main branch to find pending changesets
-          fetch-depth: 0
-
-      - name: Install Tools & Dependencies
-        uses: withstudiocms/automations/.github/actions/install@729a20ff5e68dd95330fb1914b801960ad4b5e7b # main
-
-      - name: Run Build
-        run: pnpm ci:build
-
-      - name: Get Packages
-        id: get-packages
-        uses: ./.github/actions/pnpm-package-paths
-
-      - name: Publish packages
-        env:
-          PACKAGES_PATHS: ${{ steps.get-packages.outputs.packages-paths }}
-        run: |
-          packages=$(echo "$PACKAGES_PATHS" | jq -r '.[]' 2>/dev/null | tr '\n' ' ' || echo "")
-          if [ -n "$packages" ]; then
-            pnpm dlx pkg-pr-new publish --pnpm --no-template $packages
-          else
-            echo "No affected packages to publish"
-          fi
+    secrets: inherit
+    uses: withstudiocms/automations/.github/workflows/preview.yml@729a20ff5e68dd95330fb1914b801960ad4b5e7b # main
+    with:
+      build-cmd: "pnpm ci:build"
 
   preview-pr:
+    name: PR Snapshot Preview
     if: github.event_name == 'pull_request' && (github.event.pull_request.user.login != 'studiocms-no-reply' && github.event.pull_request.user.login != 'apollo-git-bot[bot]')
-    runs-on: ubuntu-latest
     permissions:
       contents: read
       id-token: write
       issues: write
       pull-requests: write
-    name: PR Snapshot Preview
-    timeout-minutes: 15
-    steps:
-      - name: Disable git crlf
-        run: git config --global core.autocrlf false
-
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-        with:
-          persist-credentials: false
-          # Changeset needs access to the main branch to find pending changesets
-          fetch-depth: 0
-
-      - name: Install Tools & Dependencies
-        uses: withstudiocms/automations/.github/actions/install@729a20ff5e68dd95330fb1914b801960ad4b5e7b # main
-
-      - name: Run Build
-        run: pnpm ci:build
-
-      - name: Get Packages
-        id: get-packages
-        uses: ./.github/actions/pnpm-affected-packages
-
-      - name: Publish packages
-        env:
-          AFFECTED_PACKAGES: ${{ steps.get-packages.outputs.affected-packages }}
-        run: |
-          packages=$(echo "$AFFECTED_PACKAGES" | jq -r '.[]' 2>/dev/null | tr '\n' ' ' || echo "")
-          if [ -n "$packages" ]; then
-            pnpm dlx pkg-pr-new publish --pnpm --no-template $packages
-          else
-            echo "No affected packages to publish"
-          fi
-        
+    secrets: inherit
+    uses: withstudiocms/automations/.github/workflows/preview-pr.yml@729a20ff5e68dd95330fb1914b801960ad4b5e7b # main
+    with:
+      build-cmd: "pnpm ci:build"

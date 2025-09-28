@@ -2,3 +2,6 @@ rules:
   secrets-inherit:
     ignore:
       - ci-checks.yml
+      - ci-pkg-pr-new.yml
+      - ci-push-main.yml
+      - ci-renovate-changeset.yml
