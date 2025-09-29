@@ -62,7 +62,7 @@
     "@withstudiocms/buildkit": "workspace:*",
     "@inox-tools/astro-tests": "^0.8.0",
     "execa": "^9.6.0",
-    "knip": "^5.63.1",
+    "knip": "^5.64.0",
     "pkg-pr-new": "^0.0.60",
     "studiocms": "workspace:*",
     "typescript": "catalog:",
