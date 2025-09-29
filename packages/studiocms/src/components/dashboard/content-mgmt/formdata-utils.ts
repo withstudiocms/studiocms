@@ -2,8 +2,9 @@ import { z } from 'astro/zod';
 
 export const studioCMSCreatePageDataSchema = z.object({
 	title: z.string().min(1, { message: 'Title is required' }),
-	slug: z.string().refine((val) => !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(val), {
-		message: 'Slug must be lowercase and can only contain letters, numbers, and hyphens',
+	slug: z.string().refine((val) => /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(val), {
+		message:
+			'Slug must be lowercase and can only contain letters, numbers, and hyphens (no leading/trailing hyphens)',
 	}),
 	description: z.string().optional(),
 	package: z.string(),
@@ -13,8 +14,8 @@ export const studioCMSCreatePageDataSchema = z.object({
 	draft: z.coerce.boolean().optional().default(false),
 	showAuthor: z.coerce.boolean().optional().default(false),
 	showContributors: z.coerce.boolean().optional().default(false),
-	categories: z.array(z.string()).optional().default([]),
-	tags: z.array(z.string()).optional().default([]),
+	categories: z.string().or(z.array(z.string())).optional().default([]),
+	tags: z.string().or(z.array(z.string())).optional().default([]),
 });
 
 export const studioCMSEditPageDataAndContentSchema = studioCMSCreatePageDataSchema.extend({

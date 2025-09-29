@@ -465,6 +465,9 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
             studioCMSEditPageDataAndContentSchema.safeParse(formDataObject);
 
         if (!formResult.success) {
+
+            console.error("Submitted data:", formDataObject);
+
             console.error(formResult.error);
             toast({
                 title: "Error",
