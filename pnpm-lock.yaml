@@ -140,11 +140,11 @@ importers:
         specifier: ^0.4.0
         version: 0.4.0
       '@crowdin/crowdin-api-client':
-        specifier: ^1.48.2
+        specifier: ^1.48.3
         version: 1.48.3
       '@effect/language-service':
-        specifier: ^0.40.0
-        version: 0.40.1
+        specifier: ^0.41.0
+        version: 0.41.0
       '@effect/vitest':
         specifier: ^0.25.1
         version: 0.25.1(effect@3.17.14)(vitest@3.2.4)
@@ -1516,8 +1516,8 @@ packages:
       lmdb:
         optional: true
 
-  '@effect/language-service@0.40.1':
-    resolution: {integrity: sha512-q93kL2cBcyC6GUufqajZ2iN48d9MbLAlmPAxJQ0kdZEqeu+hUs+GuqPwWA/mNVmhhJutBnv5mg5YJlvcee69eg==}
+  '@effect/language-service@0.41.0':
+    resolution: {integrity: sha512-t2JZvcsKQ0NKBBVFAx8exitZkZQB0Dedd48/frgUc7j7Jn513QfTOg6IOBwBFS8fO2sVrJZDlcZDMaNnbh3liw==}
     hasBin: true
 
   '@effect/platform-node-shared@0.49.2':
@@ -7105,7 +7105,7 @@ snapshots:
       effect: 3.17.14
       uuid: 11.1.0
 
-  '@effect/language-service@0.40.1': {}
+  '@effect/language-service@0.41.0': {}
 
   '@effect/platform-node-shared@0.49.2(@effect/cluster@0.48.16(@effect/platform@0.90.10(effect@3.17.14))(@effect/rpc@0.69.5(@effect/platform@0.90.10(effect@3.17.14))(effect@3.17.14))(@effect/sql@0.44.2(@effect/experimental@0.54.6(@effect/platform@0.90.10(effect@3.17.14))(effect@3.17.14))(@effect/platform@0.90.10(effect@3.17.14))(effect@3.17.14))(@effect/workflow@0.9.6(@effect/platform@0.90.10(effect@3.17.14))(@effect/rpc@0.69.5(@effect/platform@0.90.10(effect@3.17.14))(effect@3.17.14))(effect@3.17.14))(effect@3.17.14))(@effect/platform@0.90.10(effect@3.17.14))(@effect/rpc@0.69.5(@effect/platform@0.90.10(effect@3.17.14))(effect@3.17.14))(@effect/sql@0.44.2(@effect/experimental@0.54.6(@effect/platform@0.90.10(effect@3.17.14))(effect@3.17.14))(@effect/platform@0.90.10(effect@3.17.14))(effect@3.17.14))(effect@3.17.14)':
     dependencies:
