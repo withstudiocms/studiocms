@@ -186,6 +186,7 @@ const StudioCMSDynamicConfigSettings = defineTable({
 });
 
 // TODO: Remove deprecated tables in future release
+// StudioCMSSiteConfig, StudioCMSMailerConfig, StudioCMSNotificationSettings
 
 /**
  * @deprecated
@@ -300,6 +301,7 @@ export const tsDynamicConfigSettings = asDrizzleTable(
 );
 
 // TODO: Remove deprecated tables in future release
+// StudioCMSSiteConfig, StudioCMSMailerConfig, StudioCMSNotificationSettings
 
 /**
  * @deprecated
