@@ -26,149 +26,153 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
 ---
 
 <PageTypeHandler pluginFields={pluginFields}>
-	<div
-		id="create-page-container"
-		data-content-management-url={Astro.locals.StudioCMS.routeMap.mainLinks
-			.contentManagement}
-	>
-		<form
-			id="page-create-form"
-			action={Astro.locals.StudioCMS.routeMap.endpointLinks.content.page}
-		>
-    <Tabs variant={"starlight"}>
-      <TabItem
-        label={t("tab-label-basic-info")}
-        icon={"heroicons:information-circle-20-solid"}
-        color={"primary"}
-      >
-        <div class="tab-section">
-          <div class="form-row">
-            <Input label={t("input-page-title")} name="page-title" isRequired />
-            <Input label={t("input-page-slug")} name="page-slug" isRequired />
-          </div>
+  <div
+    id="create-page-container"
+    data-content-management-url={Astro.locals.StudioCMS.routeMap.mainLinks
+      .contentManagement}
+  >
+    <form
+      id="page-create-form"
+      action={Astro.locals.StudioCMS.routeMap.endpointLinks.content.page}
+    >
+      <Tabs variant={"starlight"}>
+        <TabItem
+          label={t("tab-label-basic-info")}
+          icon={"heroicons:information-circle-20-solid"}
+          color={"primary"}
+        >
+          <div class="tab-section">
+            <div class="form-row">
+              <Input
+                label={t("input-page-title")}
+                name="page-title"
+                isRequired
+              />
+              <Input label={t("input-page-slug")} name="page-slug" isRequired />
+            </div>
 
-          <div class="form-row">
-            <Input
-              label={t("input-page-description")}
-              name="page-description"
-              isRequired
-            />
-            <Input
-              label={t("input-page-hero-image")}
-              name="page-hero-image"
-              placeholder="https://..."
-            />
-          </div>
+            <div class="form-row">
+              <Input
+                label={t("input-page-description")}
+                name="page-description"
+                isRequired
+              />
+              <Input
+                label={t("input-page-hero-image")}
+                name="page-hero-image"
+                placeholder="https://..."
+              />
+            </div>
 
-          <div class="form-row">
-            <Select
-              label={t("select-page-type")}
-              name="page-type"
-              isRequired
-              fullWidth
-              defaultValue="studiocms/markdown"
-              options={pageTypeOptions}
-            />
-            <Select
-              label={t("select-page-show-in-nav")}
-              name="show-in-nav"
-              isRequired
-              defaultValue="false"
-              fullWidth
-              options={trueFalse}
-            />
-          </div>
+            <div class="form-row">
+              <Select
+                label={t("select-page-type")}
+                name="page-type"
+                isRequired
+                fullWidth
+                defaultValue="studiocms/markdown"
+                options={pageTypeOptions}
+              />
+              <Select
+                label={t("select-page-show-in-nav")}
+                name="show-in-nav"
+                isRequired
+                defaultValue="false"
+                fullWidth
+                options={trueFalse}
+              />
+            </div>
 
-          <div class="form-row">
-            <Select
-              label={t("select-page-parent-folder")}
-              name="parent-folder"
-              fullWidth
-              options={parentFolderOptions}
-              defaultValue="null"
-            />
-            <Select
-              label={t("select-page-draft")}
-              name="draft"
-              fullWidth
-              options={trueFalse}
-              disabled
-              placeholder="Use submission buttons above"
-            />
-          </div>
+            <div class="form-row">
+              <Select
+                label={t("select-page-parent-folder")}
+                name="parent-folder"
+                fullWidth
+                options={parentFolderOptions}
+                defaultValue="null"
+              />
+              <Select
+                label={t("select-page-draft")}
+                name="draft"
+                fullWidth
+                options={trueFalse}
+                disabled
+                placeholder="Use submission buttons above"
+              />
+            </div>
 
-          <div class="form-row">
-            <Select
-              label={t("select-page-categories")}
-              name="categories"
-              placeholder="Work in Progress"
-              fullWidth
-              options={categoriesOptions}
-              disabled
-            />
-            <Select
-              label={t("select-page-tags")}
-              name="tags"
-              placeholder="Work in Progress"
-              fullWidth
-              options={tagsOptions}
-              disabled
-            />
-          </div>
+            <div class="form-row">
+              <Select
+                label={t("select-page-categories")}
+                name="categories"
+                placeholder="Work in Progress"
+                fullWidth
+                options={categoriesOptions}
+                disabled
+              />
+              <Select
+                label={t("select-page-tags")}
+                name="tags"
+                placeholder="Work in Progress"
+                fullWidth
+                options={tagsOptions}
+                disabled
+              />
+            </div>
 
-          <div class="form-row">
-            <Select
-              label={t("select-page-show-author")}
-              name="show-author"
-              defaultValue="false"
-              fullWidth
-              options={trueFalse}
-            />
-            <Select
-              label={t("select-page-show-contributors")}
-              name="show-contributors"
-              defaultValue="false"
-              fullWidth
-              options={trueFalse}
-            />
-          </div>
+            <div class="form-row">
+              <Select
+                label={t("select-page-show-author")}
+                name="show-author"
+                defaultValue="false"
+                fullWidth
+                options={trueFalse}
+              />
+              <Select
+                label={t("select-page-show-contributors")}
+                name="show-contributors"
+                defaultValue="false"
+                fullWidth
+                options={trueFalse}
+              />
+            </div>
 
-          <div id="custom-page-type-fields" style="display: none;">
-            <Card fullWidth>
-              <div slot="header">
-                <span>
-                  <t-content-create-page key="custom-page-type-fields-header"
+            <div id="custom-page-type-fields" style="display: none;">
+              <Card fullWidth>
+                <div slot="header">
+                  <span>
+                    <t-content-create-page key="custom-page-type-fields-header"
+                      >{
+                        t("custom-page-type-fields-header")
+                      }</t-content-create-page
+                    >
+                  </span>
+                </div>
+                <div>
+                  <t-content-create-page key="custom-page-types-description-new"
                     >{
-                      t("custom-page-type-fields-header")
+                      t("custom-page-types-description-new")
                     }</t-content-create-page
                   >
-                </span>
-              </div>
-              <div>
-                <t-content-create-page key="custom-page-types-description-new"
-                  >{
-                    t("custom-page-types-description-new")
-                  }</t-content-create-page
-                >
-              </div>
-            </Card>
+                </div>
+              </Card>
+            </div>
           </div>
-        </div>
-      </TabItem>
-      <TabItem
-        label={t("tab-label-content")}
-        icon={"heroicons:document-text-20-solid"}
-        color={"success"}
-      >
-        <div class="tab-section">
-          <div class="page-content-editor">
-            <div id="page-content-editor-placeholder"></div>
+        </TabItem>
+        <TabItem
+          label={t("tab-label-content")}
+          icon={"heroicons:document-text-20-solid"}
+          color={"success"}
+        >
+          <div class="tab-section">
+            <div class="page-content-editor">
+              <div id="page-content-editor-placeholder"></div>
+            </div>
           </div>
-        </div>
-      </TabItem>
-		</Tabs>
-		</form>
-	</div>
+        </TabItem>
+      </Tabs>
+    </form>
+  </div>
 </PageTypeHandler>
 
 <script>
@@ -211,10 +215,14 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
   }
 </script>
 
-
-
 <script>
+  import type { tsPageDataInsert } from "studiocms:sdk/types";
   import { toast } from "studiocms:ui/components/toaster";
+  import {
+    formDataToRecord,
+    studioCMSCreatePageDataSchema,
+  } from "./formdata-utils.js";
+
   // get the elements
   const createPageForm = document.getElementById(
     "page-create-form",
@@ -236,15 +244,52 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
     );
   });
 
-  async function runFormAction(e: Event, form: HTMLFormElement, isDraft: boolean) {
+  const formDataKeysToPageDataKeys: Record<string, keyof tsPageDataInsert> = {
+    "page-title": "title",
+    "page-slug": "slug",
+    "page-description": "description",
+    "page-hero-image": "heroImage",
+    "page-type": "package",
+    "show-in-nav": "showOnNav",
+    "parent-folder": "parentFolder",
+    draft: "draft",
+    categories: "categories",
+    tags: "tags",
+    "show-author": "showAuthor",
+    "show-contributors": "showContributors",
+  };
+
+  async function runFormAction(
+    e: Event,
+    form: HTMLFormElement,
+    isDraft: boolean,
+  ) {
     e.preventDefault();
     const formData = new FormData(form);
 
     formData.set("draft", isDraft ? "true" : "false");
 
+    const formDataObject = formDataToRecord(
+      formData,
+      formDataKeysToPageDataKeys,
+    );
+
+    const formResult = studioCMSCreatePageDataSchema.safeParse(formDataObject);
+
+    if (!formResult.success) {
+      console.error(formResult.error);
+      toast({
+        title: "Error",
+        description:
+          "There was an error with the form data. Please check the console for details.",
+        type: "danger",
+      });
+      return;
+    }
+
     const response = await fetch(form.action, {
       method: "POST",
-      body: formData,
+      body: formResult.data ? JSON.stringify(formResult.data) : undefined,
     });
 
     const res = await response.json();
