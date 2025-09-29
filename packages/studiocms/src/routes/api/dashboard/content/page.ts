@@ -157,11 +157,16 @@ export const { POST, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 					}
 				>(ctx);
 
-				const data: UpdatePageData = { ...combinedData };
+				const {
+					contentId,
+					content: incomingContent,
+					pluginFields: _pluginFields,
+					...data
+				} = combinedData;
 
 				const content = {
-					id: combinedData.contentId,
-					content: combinedData.content,
+					id: contentId,
+					content: incomingContent,
 				};
 
 				if (!data.id) {
