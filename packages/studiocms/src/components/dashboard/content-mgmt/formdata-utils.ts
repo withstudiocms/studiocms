@@ -1,5 +1,18 @@
 import { z } from 'astro/zod';
 
+function ensureStringArray(val: string | string[] | undefined): string[] {
+	if (!val) return [];
+	if (typeof val === 'string' && val.trim() === '') return [];
+	if (Array.isArray(val)) return val;
+	try {
+		const parsed = JSON.parse(val);
+		if (Array.isArray(parsed)) return parsed;
+		return [];
+	} catch {
+		return [];
+	}
+}
+
 export const studioCMSCreatePageDataSchema = z.object({
 	title: z.string().min(1, { message: 'Title is required' }),
 	slug: z.string().refine((val) => /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(val), {
@@ -14,8 +27,13 @@ export const studioCMSCreatePageDataSchema = z.object({
 	draft: z.coerce.boolean().optional().default(false),
 	showAuthor: z.coerce.boolean().optional().default(false),
 	showContributors: z.coerce.boolean().optional().default(false),
-	categories: z.string().or(z.array(z.string())).optional().default([]),
-	tags: z.string().or(z.array(z.string())).optional().default([]),
+	categories: z
+		.string()
+		.or(z.array(z.string()))
+		.optional()
+		.transform(ensureStringArray)
+		.default([]),
+	tags: z.string().or(z.array(z.string())).optional().transform(ensureStringArray).default([]),
 });
 
 export const studioCMSEditPageDataAndContentSchema = studioCMSCreatePageDataSchema.extend({
