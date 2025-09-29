@@ -429,8 +429,28 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
         "edit-page-container",
     ) as HTMLDivElement;
 
+    const knownFormDataKeys = [
+        "page-title",
+        "page-slug",
+        "page-description",
+        "page-hero-image",
+        "page-type",
+        "show-in-nav",
+        "parent-folder",
+        "draft",
+        "categories",
+        "tags",
+        "show-author",
+        "show-contributors",
+        "page-content-id",
+        "page-content",
+        "page-id",
+    ] as const;
+
+    type KnownFormDataKeys = (typeof knownFormDataKeys)[number];
+
     const formDataKeysToPageDataKeys: Record<
-        string,
+        KnownFormDataKeys,
         keyof tsPageDataInsert | "contentId" | "content"
     > = {
         "page-title": "title",
@@ -461,6 +481,16 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
             formDataKeysToPageDataKeys,
         );
 
+        const pluginsFormData = Object.entries(formDataObject).reduce(
+            (acc, [key, value]) => {
+                if (!(key in formDataKeysToPageDataKeys)) {
+                    acc[key] = value;
+                }
+                return acc;
+            },
+            {} as Record<string, FormDataEntryValue>,
+        );
+
         const formResult =
             studioCMSEditPageDataAndContentSchema.safeParse(formDataObject);
 
@@ -480,7 +510,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
 
         const response = await fetch(editPageForm.action, {
             method: "PATCH",
-            body: formResult.data ? JSON.stringify(formResult.data) : undefined,
+            body: formResult.data ? JSON.stringify({ ...formResult.data, pluginFields: pluginsFormData }) : undefined,
         });
 
         const res = await response.json();

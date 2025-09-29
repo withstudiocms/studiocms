@@ -150,7 +150,11 @@ export const { POST, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 				}
 
 				const combinedData = yield* readAPIContextJson<
-					UpdatePageData & { contentId: string; content: string }
+					UpdatePageData & {
+						contentId: string;
+						content: string;
+						pluginFields: Record<string, FormDataEntryValue | null>;
+					}
 				>(ctx);
 
 				const data: UpdatePageData = { ...combinedData };
