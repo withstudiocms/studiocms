@@ -85,209 +85,428 @@ const pluginFields = pluginList
 
 const t = useTranslations(lang, '@studiocms/dashboard:content-page');
 ---
+
 <PageTypeHandler pluginFields={pluginFields ? [pluginFields] : []}>
-	<PageEditorSwapper editorKeys={editorKeys}>
-		<div id="edit-page-container" data-content-management-url={Astro.locals.StudioCMS.routeMap.mainLinks.contentManagement}>
-			<form id="edit-page-form" action={Astro.locals.StudioCMS.routeMap.endpointLinks.content.page}>
+    <PageEditorSwapper editorKeys={editorKeys}>
+        <div
+            id="edit-page-container"
+            data-content-management-url={Astro.locals.StudioCMS.routeMap
+                .mainLinks.contentManagement}
+        >
+            <form
+                id="edit-page-form"
+                action={Astro.locals.StudioCMS.routeMap.endpointLinks.content
+                    .page}
+            >
+                <Tabs variant={"starlight"}>
+                    <TabItem
+                        label={t("tab-label-basic-info")}
+                        icon={"heroicons:information-circle-20-solid"}
+                        color={"primary"}
+                    >
+                        <div class="tab-section">
+                            <div class="form-row">
+                                <Input
+                                    label={t("input-page-title")}
+                                    name="page-title"
+                                    isRequired
+                                    defaultValue={pageData.title}
+                                />
+                                <Input
+                                    label={t("input-page-slug")}
+                                    name="page-slug"
+                                    disabled
+                                    isRequired
+                                    defaultValue={pageData.slug}
+                                />
 
-        <Tabs variant={'starlight'}>
-          <TabItem label={t('tab-label-basic-info')} icon={'heroicons:information-circle-20-solid'} color={'primary'}>
-            <div class="tab-section">
-                <div class="form-row">
-                    <Input label={t('input-page-title')} name='page-title' isRequired defaultValue={pageData.title} />
-                    <Input label={t('input-page-slug')} name='page-slug' disabled isRequired defaultValue={pageData.slug} />
-        
-                    <input type="hidden" name="page-slug" value={pageData.slug} />
-                    <input type="hidden" name="page-id" value={pageData.id} />
-                </div>
-        
-                <div class="form-row">
-                    <Input label={t('input-page-description')} name='page-description' isRequired defaultValue={pageData.description}/>
-                    <Input label={t('input-page-hero-image')} name='page-hero-image' placeholder='https://...' defaultValue={pageData.heroImage} />
-                </div>
-        
-                <div class="form-row">
-                    <Select 
-                        label={t('select-page-type')} 
-                        name="page-type" 
-                        isRequired 
-                        fullWidth 
-                        defaultValue={pageData.package}
-                        options={pageTypeOptions} 
-                        />
-                    <Select 
-                        label={t('select-page-show-in-nav')} 
-                        name="show-in-nav" 
-                        isRequired 
-                        defaultValue={`${pageData.showOnNav}`}
-                        fullWidth 
-                        options={trueFalse} 
-                        />
-                </div>
-        
-                <div class="form-row">
-                    <Select label={t('select-page-parent-folder')}  name="parent-folder" fullWidth options={parentFolderOptions} defaultValue={getParentFolderValue(pageData.parentFolder)} />
-                    <Select label={t('select-page-draft')} name="draft" fullWidth options={trueFalse} defaultValue={`${pageData.draft ?? false}`} />
-                </div>
-        
-                <div class="form-row">
-                    <Select label={t('select-page-categories')} name="categories" placeholder="Work in Progress" fullWidth options={categoriesOptions} disabled />
-                    <Select label={t('select-page-tags')} name="tags" placeholder="Work in Progress" fullWidth options={tagsOptions} disabled />
-                </div>
-        
-                <div class="form-row">
-                    <Select label={t('select-page-show-author')} name="show-author" defaultValue={`${pageData.showAuthor}`} fullWidth options={trueFalse} />
-                    <Select label={t('select-page-show-contributors')} name="show-contributors" defaultValue={`${pageData.showContributors}`} fullWidth options={trueFalse} />
-                </div>
+                                <input
+                                    type="hidden"
+                                    name="page-slug"
+                                    value={pageData.slug}
+                                />
+                                <input
+                                    type="hidden"
+                                    name="page-id"
+                                    value={pageData.id}
+                                />
+                            </div>
 
-                  <div id="custom-page-type-fields" class:list={[pluginFields?.fields ? '' : 'page-types-hidden']}>
-                    <Card fullWidth>
-                      <div slot="header">
-                        <span>
-                          <t-content-edit-page key="custom-page-type-fields-header">{t('custom-page-type-fields-header')}</t-content-edit-page>
-                        </span>
-                      </div>
-                      {pluginFields?.fields && (<PluginFields fields={pluginFields.fields} /> )}
-                    </Card>
-                  </div>
-            </div>
-          </TabItem>
-          <TabItem label={t('tab-label-content')} icon={'heroicons:document-text-20-solid'} color={'success'}>
+                            <div class="form-row">
+                                <Input
+                                    label={t("input-page-description")}
+                                    name="page-description"
+                                    isRequired
+                                    defaultValue={pageData.description}
+                                />
+                                <Input
+                                    label={t("input-page-hero-image")}
+                                    name="page-hero-image"
+                                    placeholder="https://..."
+                                    defaultValue={pageData.heroImage}
+                                />
+                            </div>
 
-            <input type="hidden" name="page-content-id" value={pageData.defaultContent?.id} />
+                            <div class="form-row">
+                                <Select
+                                    label={t("select-page-type")}
+                                    name="page-type"
+                                    isRequired
+                                    fullWidth
+                                    defaultValue={pageData.package}
+                                    options={pageTypeOptions}
+                                />
+                                <Select
+                                    label={t("select-page-show-in-nav")}
+                                    name="show-in-nav"
+                                    isRequired
+                                    defaultValue={`${pageData.showOnNav}`}
+                                    fullWidth
+                                    options={trueFalse}
+                                />
+                            </div>
 
-            <div class="tab-section">
-                <div class="page-content-editor">
-                    <CurrentEditorComponent content={pageData.defaultContent?.content} id={pageData.id} />
-                    <div id="page-content-editor-placeholder" style="display: none;"></div>
-                </div>
-            </div>
-          </TabItem>
+                            <div class="form-row">
+                                <Select
+                                    label={t("select-page-parent-folder")}
+                                    name="parent-folder"
+                                    fullWidth
+                                    options={parentFolderOptions}
+                                    defaultValue={getParentFolderValue(
+                                        pageData.parentFolder,
+                                    )}
+                                />
+                                <Select
+                                    label={t("select-page-draft")}
+                                    name="draft"
+                                    fullWidth
+                                    options={trueFalse}
+                                    defaultValue={`${pageData.draft ?? false}`}
+                                />
+                            </div>
 
-          {
-            enableDiffs && (
-                <TabItem label={t('tab-label-diff')} icon={'heroicons:archive-box-20-solid'} color={'warning'}>
-                    <div class="tab-section">
-                        <div class="edit-card-list">
-                    
-                        {
-                            diffs.length > 0 ? (
-                            diffs.map((diff) => (
-                                <Card fullWidth class={'edit-card'}>
-                                <div class="card-row">
-                                    <span class="card-title">{pageData.title}</span>
-                                    <span class="card-date"><t-content-edit-page key="diff-edited-by-1">{t('diff-edited-by-1')}</t-content-edit-page>: <FormattedDate date={diff.timestamp!} /> <t-content-edit-page key="diff-edited-by-2">{t('diff-edited-by-2')}</t-content-edit-page> {user(diff.userId)}</span>
-                                </div>
-                    
-                                <div class="card-row">
-                                    <span class="card-description">{pageData.description}</span>
-                                    <Button size='sm' as='a' href={Astro.locals.StudioCMS.routeMap.mainLinks.contentManagementDiff + `?diff=${diff.id}`}>
-                                    <Icon name="heroicons:eye" width={24} height={24} class="card-icon" />
-                                    </Button>
-                                </div>
+                            <div class="form-row">
+                                <Select
+                                    label={t("select-page-categories")}
+                                    name="categories"
+                                    placeholder="Work in Progress"
+                                    fullWidth
+                                    options={categoriesOptions}
+                                    disabled
+                                />
+                                <Select
+                                    label={t("select-page-tags")}
+                                    name="tags"
+                                    placeholder="Work in Progress"
+                                    fullWidth
+                                    options={tagsOptions}
+                                    disabled
+                                />
+                            </div>
+
+                            <div class="form-row">
+                                <Select
+                                    label={t("select-page-show-author")}
+                                    name="show-author"
+                                    defaultValue={`${pageData.showAuthor}`}
+                                    fullWidth
+                                    options={trueFalse}
+                                />
+                                <Select
+                                    label={t("select-page-show-contributors")}
+                                    name="show-contributors"
+                                    defaultValue={`${pageData.showContributors}`}
+                                    fullWidth
+                                    options={trueFalse}
+                                />
+                            </div>
+
+                            <div
+                                id="custom-page-type-fields"
+                                class:list={[
+                                    pluginFields?.fields
+                                        ? ""
+                                        : "page-types-hidden",
+                                ]}
+                            >
+                                <Card fullWidth>
+                                    <div slot="header">
+                                        <span>
+                                            <t-content-edit-page
+                                                key="custom-page-type-fields-header"
+                                                >{
+                                                    t(
+                                                        "custom-page-type-fields-header",
+                                                    )
+                                                }</t-content-edit-page
+                                            >
+                                        </span>
+                                    </div>
+                                    {
+                                        pluginFields?.fields && (
+                                            <PluginFields
+                                                fields={pluginFields.fields}
+                                            />
+                                        )
+                                    }
                                 </Card>
-                            ))
-                            ) : (
-                            <Card fullWidth style="background-color: var(--background-step-1);">
-                                <Center><t-content-edit-page key="diff-no-history">{t('diff-no-history')}</t-content-edit-page></Center>
-                            </Card>
-                            )
-                        }
-                    
+                            </div>
                         </div>
-                    </div>
-                </TabItem>
-            )
-          }
+                    </TabItem>
+                    <TabItem
+                        label={t("tab-label-content")}
+                        icon={"heroicons:document-text-20-solid"}
+                        color={"success"}
+                    >
+                        <input
+                            type="hidden"
+                            name="page-content-id"
+                            value={pageData.defaultContent?.id}
+                        />
 
-        </Tabs>
+                        <div class="tab-section">
+                            <div class="page-content-editor">
+                                <CurrentEditorComponent
+                                    content={pageData.defaultContent?.content}
+                                    id={pageData.id}
+                                />
+                                <div
+                                    id="page-content-editor-placeholder"
+                                    style="display: none;"
+                                >
+                                </div>
+                            </div>
+                        </div>
+                    </TabItem>
 
-			</form>
-		</div>
-	</PageEditorSwapper>
+                    {
+                        enableDiffs && (
+                            <TabItem
+                                label={t("tab-label-diff")}
+                                icon={"heroicons:archive-box-20-solid"}
+                                color={"warning"}
+                            >
+                                <div class="tab-section">
+                                    <div class="edit-card-list">
+                                        {diffs.length > 0 ? (
+                                            diffs.map((diff) => (
+                                                <Card
+                                                    fullWidth
+                                                    class={"edit-card"}
+                                                >
+                                                    <div class="card-row">
+                                                        <span class="card-title">
+                                                            {pageData.title}
+                                                        </span>
+                                                        <span class="card-date">
+                                                            <t-content-edit-page key="diff-edited-by-1">
+                                                                {t(
+                                                                    "diff-edited-by-1",
+                                                                )}
+                                                            </t-content-edit-page>
+                                                            :{" "}
+                                                            <FormattedDate
+                                                                date={
+                                                                    diff.timestamp!
+                                                                }
+                                                            />{" "}
+                                                            <t-content-edit-page key="diff-edited-by-2">
+                                                                {t(
+                                                                    "diff-edited-by-2",
+                                                                )}
+                                                            </t-content-edit-page>{" "}
+                                                            {user(diff.userId)}
+                                                        </span>
+                                                    </div>
+
+                                                    <div class="card-row">
+                                                        <span class="card-description">
+                                                            {
+                                                                pageData.description
+                                                            }
+                                                        </span>
+                                                        <Button
+                                                            size="sm"
+                                                            as="a"
+                                                            href={
+                                                                Astro.locals
+                                                                    .StudioCMS
+                                                                    .routeMap
+                                                                    .mainLinks
+                                                                    .contentManagementDiff +
+                                                                `?diff=${diff.id}`
+                                                            }
+                                                        >
+                                                            <Icon
+                                                                name="heroicons:eye"
+                                                                width={24}
+                                                                height={24}
+                                                                class="card-icon"
+                                                            />
+                                                        </Button>
+                                                    </div>
+                                                </Card>
+                                            ))
+                                        ) : (
+                                            <Card
+                                                fullWidth
+                                                style="background-color: var(--background-step-1);"
+                                            >
+                                                <Center>
+                                                    <t-content-edit-page key="diff-no-history">
+                                                        {t("diff-no-history")}
+                                                    </t-content-edit-page>
+                                                </Center>
+                                            </Card>
+                                        )}
+                                    </div>
+                                </div>
+                            </TabItem>
+                        )
+                    }
+                </Tabs>
+            </form>
+        </div>
+    </PageEditorSwapper>
 </PageTypeHandler>
 
 <script>
-    import { 
+    import {
         $i18n,
         baseTranslation,
         makeTranslation,
         updateElmLabel,
-        updateSelectElmLabel
-    } from 'studiocms:i18n/client';
+        updateSelectElmLabel,
+    } from "studiocms:i18n/client";
 
-    const currentPage = '@studiocms/dashboard:content-page';
+    const currentPage = "@studiocms/dashboard:content-page";
 
     const i18n = $i18n(currentPage, baseTranslation[currentPage]);
-      
-    i18n.subscribe(comp => {
-        updateElmLabel('page-title', comp['input-page-title']);
-        updateElmLabel('page-slug', comp['input-page-slug']);
-        updateElmLabel('page-description', comp['input-page-description']);
-        updateElmLabel('page-hero-image', comp['input-page-hero-image']);
 
-        updateSelectElmLabel('page-type', comp['select-page-type']);
-        updateSelectElmLabel('show-in-nav', comp['select-page-show-in-nav']);
-        updateSelectElmLabel('parent-folder', comp['select-page-parent-folder']);
-        updateSelectElmLabel('draft', comp['select-page-draft']);
-        updateSelectElmLabel('categories', comp['select-page-categories']);
-        updateSelectElmLabel('tags', comp['select-page-tags']);
-        updateSelectElmLabel('show-author', comp['select-page-show-author']);
-        updateSelectElmLabel('show-contributors', comp['select-page-show-contributors']);
+    i18n.subscribe((comp) => {
+        updateElmLabel("page-title", comp["input-page-title"]);
+        updateElmLabel("page-slug", comp["input-page-slug"]);
+        updateElmLabel("page-description", comp["input-page-description"]);
+        updateElmLabel("page-hero-image", comp["input-page-hero-image"]);
+
+        updateSelectElmLabel("page-type", comp["select-page-type"]);
+        updateSelectElmLabel("show-in-nav", comp["select-page-show-in-nav"]);
+        updateSelectElmLabel(
+            "parent-folder",
+            comp["select-page-parent-folder"],
+        );
+        updateSelectElmLabel("draft", comp["select-page-draft"]);
+        updateSelectElmLabel("categories", comp["select-page-categories"]);
+        updateSelectElmLabel("tags", comp["select-page-tags"]);
+        updateSelectElmLabel("show-author", comp["select-page-show-author"]);
+        updateSelectElmLabel(
+            "show-contributors",
+            comp["select-page-show-contributors"],
+        );
     });
-    
-    if (!customElements.get('t-content-edit-page')) {
-        customElements.define('t-content-edit-page', makeTranslation(currentPage, i18n));
+
+    if (!customElements.get("t-content-edit-page")) {
+        customElements.define(
+            "t-content-edit-page",
+            makeTranslation(currentPage, i18n),
+        );
     }
 </script>
 
-
 <script>
-import { toast } from "studiocms:ui/components/toaster";
+    import type { tsPageDataInsert } from "studiocms:sdk/types";
+    import { toast } from "studiocms:ui/components/toaster";
+    import {
+        formDataToRecord,
+        studioCMSEditPageDataAndContentSchema,
+    } from "./formdata-utils.js";
 
-// get the elements
-const editPageForm = document.getElementById('edit-page-form') as HTMLFormElement;
-    const createContainer = document.getElementById('edit-page-container') as HTMLDivElement;
+    // get the elements
+    const editPageForm = document.getElementById(
+        "edit-page-form",
+    ) as HTMLFormElement;
+    const createContainer = document.getElementById(
+        "edit-page-container",
+    ) as HTMLDivElement;
+
+    const formDataKeysToPageDataKeys: Record<
+        string,
+        keyof tsPageDataInsert | "contentId" | "content"
+    > = {
+        "page-title": "title",
+        "page-slug": "slug",
+        "page-description": "description",
+        "page-hero-image": "heroImage",
+        "page-type": "package",
+        "show-in-nav": "showOnNav",
+        "parent-folder": "parentFolder",
+        draft: "draft",
+        categories: "categories",
+        tags: "tags",
+        "show-author": "showAuthor",
+        "show-contributors": "showContributors",
+        "page-content-id": "contentId",
+        "page-content": "content",
+        "page-id": "id",
+    };
 
     const { contentManagementUrl } = createContainer.dataset;
 
-editPageForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const formData = new FormData(editPageForm);
+    editPageForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const formData = new FormData(editPageForm);
 
-    const response = await fetch(editPageForm.action, {
-        method: 'PATCH',
-        body: formData,
+        const formDataObject = formDataToRecord(
+            formData,
+            formDataKeysToPageDataKeys,
+        );
+
+        const formResult =
+            studioCMSEditPageDataAndContentSchema.safeParse(formDataObject);
+
+        if (!formResult.success) {
+            console.error(formResult.error);
+            toast({
+                title: "Error",
+                description:
+                    "There was an error with the form data. Please check the console for details.",
+                type: "danger",
+            });
+            return;
+        }
+
+        const response = await fetch(editPageForm.action, {
+            method: "PATCH",
+            body: formResult.data ? JSON.stringify(formResult.data) : undefined,
+        });
+
+        const res = await response.json();
+
+        if (response.status !== 200) {
+            toast({
+                title: "Error",
+                description: res.error,
+                type: "danger",
+            });
+            return;
+        }
+
+        if (response.status === 200) {
+            toast({
+                title: "Success",
+                description: res.message,
+                type: "success",
+            });
+            if (contentManagementUrl)
+                window.location.href = contentManagementUrl;
+            return;
+        }
     });
-
-    const res = await response.json();
-
-    if (response.status !== 200) {
-        toast({
-            title: 'Error',
-            description: res.error,
-            type: 'danger'
-        })
-        return;
-    }
-
-    if (response.status === 200) {
-        toast({
-            title: 'Success',
-            description: res.message,
-            type: 'success'
-        })
-        if (contentManagementUrl) window.location.href = contentManagementUrl;
-        return;
-    }
-});
-
 </script>
-
 
 <style>
     .page-types-hidden {
-      display: none;
+        display: none;
     }
 
     #edit-page-container {
@@ -299,8 +518,8 @@ editPageForm.addEventListener('submit', async (e) => {
     #edit-page-form {
         display: flex;
         flex-direction: column;
-        gap: .75rem;
-        padding-top: .5rem;
+        gap: 0.75rem;
+        padding-top: 0.5rem;
     }
 
     .tab-section {
@@ -312,7 +531,7 @@ editPageForm.addEventListener('submit', async (e) => {
     .form-row {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: .75rem;
+        gap: 0.75rem;
     }
 
     @media screen and (max-width: 768px) {
@@ -342,42 +561,41 @@ editPageForm.addEventListener('submit', async (e) => {
         }
     }
 
-.edit-card-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.875rem;
-}
-
-.edit-card {
-  display: flex;
-  flex-direction: column;
-  background-color: var(--background-step-2);
-  
-  & .card-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    & .card-title {
-      font-weight: 600;
-      font-size: 1.25rem;
+    .edit-card-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.875rem;
     }
 
-    & .card-date {
-      color: var(--text-muted);
-      font-size: .8rem;
-    }
+    .edit-card {
+        display: flex;
+        flex-direction: column;
+        background-color: var(--background-step-2);
 
-    & .card-description {
-      font-size: 1rem;
-      color: var(--text-muted);
-      line-clamp: 1;
-    }
+        & .card-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
 
-    & .card-icon {
-      color: var(--text-muted);
-    }
-  }
-}
+            & .card-title {
+                font-weight: 600;
+                font-size: 1.25rem;
+            }
 
+            & .card-date {
+                color: var(--text-muted);
+                font-size: 0.8rem;
+            }
+
+            & .card-description {
+                font-size: 1rem;
+                color: var(--text-muted);
+                line-clamp: 1;
+            }
+
+            & .card-icon {
+                color: var(--text-muted);
+            }
+        }
+    }
 </style>
