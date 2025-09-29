@@ -503,8 +503,8 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
 
         const pluginsFormData = Object.entries(formDataObject).reduce(
             (acc, [key, value]) => {
-                // if the key is not in the knownFormDataKeys, it's a plugin field
-                if (!knownFormDataKeys.includes(key as KnownFormDataKeys) || !knownDataKeys.includes(key as KnownDataKeys)) {
+                // if the key is not in the knownFormDataKeys or knownDataKeys, it's a plugin field
+                if (!knownFormDataKeys.includes(key as KnownFormDataKeys) && !knownDataKeys.includes(key as KnownDataKeys)) {
                     acc[key] = value;
                     delete formDataObject[key];
                 }
