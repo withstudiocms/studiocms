@@ -449,6 +449,26 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
 
     type KnownFormDataKeys = (typeof knownFormDataKeys)[number];
 
+    const knownDataKeys = [
+        "title",
+        "slug",
+        "description",
+        "heroImage",
+        "package",
+        "showOnNav",
+        "parentFolder",
+        "draft",
+        "categories",
+        "tags",
+        "showAuthor",
+        "showContributors",
+        "contentId",
+        "content",
+        "id",
+    ] as const;
+
+    type KnownDataKeys = (typeof knownDataKeys)[number];
+
     const formDataKeysToPageDataKeys: Record<
         KnownFormDataKeys,
         keyof tsPageDataInsert | "contentId" | "content"
@@ -483,8 +503,10 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
 
         const pluginsFormData = Object.entries(formDataObject).reduce(
             (acc, [key, value]) => {
-                if (!(key in formDataKeysToPageDataKeys)) {
+                // if the key is not in the knownFormDataKeys, it's a plugin field
+                if (!knownFormDataKeys.includes(key as KnownFormDataKeys) || !knownDataKeys.includes(key as KnownDataKeys)) {
                     acc[key] = value;
+                    delete formDataObject[key];
                 }
                 return acc;
             },

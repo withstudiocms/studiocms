@@ -53,7 +53,11 @@ export const studioCMSCreatePageDataSchema = z.object({
 	package: z.string(),
 	showOnNav: z.coerce.boolean().optional().default(false),
 	heroImage: z.string().optional(),
-	parentFolder: z.string().or(z.null()).optional().default(null),
+	parentFolder: z
+		.union([z.string(), z.null()])
+		.transform((value) => (value === 'null' || value === null ? null : value))
+		.optional()
+		.default(null),
 	draft: z.coerce.boolean().optional().default(false),
 	showAuthor: z.coerce.boolean().optional().default(false),
 	showContributors: z.coerce.boolean().optional().default(false),
