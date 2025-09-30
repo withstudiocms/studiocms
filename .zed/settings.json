@@ -1,4 +1,8 @@
 {
+  "auto_install_extensions": {
+    "cspell": true,
+    "biome": true
+  },
   "languages": {
     "JavaScript": {
       "formatter": { "language_server": { "name": "biome" } },
