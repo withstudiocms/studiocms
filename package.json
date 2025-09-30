@@ -66,8 +66,8 @@
     "pkg-pr-new": "^0.0.60",
     "studiocms": "workspace:*",
     "typescript": "catalog:",
-		"ts-patch": "^3.3.0",
-		"vite": "catalog:astrojs",
+    "ts-patch": "^3.3.0",
+    "vite": "catalog:astrojs",
     "vitest": "^3.2.4",
     "jsdom": "^27.0.0"
   }
