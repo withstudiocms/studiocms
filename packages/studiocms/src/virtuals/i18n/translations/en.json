@@ -39,7 +39,10 @@
     },
     "@studiocms/auth:logout": {
       "title": "Logout Page",
-      "description": "Logout Page"
+      "description": "Logout Page",
+      "header": "Logging out...",
+      "sub-header": "Please wait while we log you out. Or press the button below to cancel.",
+      "cancel-button-label": "Cancel"
     },
     "@studiocms/auth:oauth-stack": {
       "or-login-with": "or log in using"
