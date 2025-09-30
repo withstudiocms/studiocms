@@ -152,7 +152,7 @@ const filteredPluginList = pluginList.filter((plugin) => !!plugin.settingsPage);
     options={[
       { label: t("user-dropdown:settings"), icon: "heroicons:user", value: Astro.locals.StudioCMS.routeMap.mainLinks.userProfile },
       { label: t("user-dropdown:view-site"), icon: "heroicons:globe-alt", value: Astro.locals.StudioCMS.routeMap.mainLinks.baseSiteURL },
-      { label: t("user-dropdown:logout"), icon: "heroicons:arrow-left-start-on-rectangle", color: 'danger', value: Astro.locals.StudioCMS.routeMap.authLinks.logoutURL },
+      { label: t("user-dropdown:logout"), icon: "heroicons:arrow-left-start-on-rectangle", color: 'danger', value: Astro.locals.StudioCMS.routeMap.authLinks.logoutAPI },
     ]}
     offset={8}
     >
@@ -169,7 +169,7 @@ const filteredPluginList = pluginList.filter((plugin) => !!plugin.settingsPage);
 <div style="display: none;" id="dropdown-user-options"
   data-settings={Astro.locals.StudioCMS.routeMap.mainLinks.userProfile}
   data-view-site={Astro.locals.StudioCMS.routeMap.mainLinks.baseSiteURL}
-  data-logout={Astro.locals.StudioCMS.routeMap.authLinks.logoutURL}
+  data-logout={Astro.locals.StudioCMS.routeMap.authLinks.logoutAPI}
 ></div>
 
 <script>
@@ -251,10 +251,25 @@ const filteredPluginList = pluginList.filter((plugin) => !!plugin.settingsPage);
   import { DropdownHelper } from "studiocms:ui/components/dropdown";
   import { ThemeHelper } from '@studiocms/ui/utils/ThemeHelper.js';
 
+  function sendPostRequest(url: string) {
+    return fetch(url, {
+      method: 'POST',
+    });
+  }
+
   function setup() {
     const userDropdown = new DropdownHelper('sidebar-user-dropdown', true);
 
-    userDropdown.registerClickCallback((value) => {
+    const dropdownOpts = document.getElementById('dropdown-user-options') as HTMLDivElement;
+    const logoutAPIUrl = dropdownOpts.dataset.logout;
+
+    userDropdown.registerClickCallback(async (value) => {
+      // Handle logout separately to use POST request
+      if (value === logoutAPIUrl) {
+        await sendPostRequest(value);
+        window.location.reload();
+        return;
+      }
       window.location.href = value;
     });
 
