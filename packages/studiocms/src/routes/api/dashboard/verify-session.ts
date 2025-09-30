@@ -90,7 +90,7 @@ const responseBuilder = (
 			: null,
 		permissionLevel: permissionLevel,
 		routes: {
-			logout: context.locals.StudioCMS.routeMap.authLinks.logoutURL,
+			logout: context.locals.StudioCMS.routeMap.authLinks.logoutAPI,
 			userProfile: context.locals.StudioCMS.routeMap.mainLinks.userProfile,
 			contentManagement: context.locals.StudioCMS.routeMap.mainLinks.contentManagement,
 			dashboardIndex: context.locals.StudioCMS.routeMap.mainLinks.dashboardIndex,
