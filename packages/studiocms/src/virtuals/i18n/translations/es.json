@@ -39,7 +39,10 @@
     },
     "@studiocms/auth:logout": {
       "title": "Página de cierre de sesión",
-      "description": "Página de cierre de sesión"
+      "description": "Página de cierre de sesión",
+      "header": "",
+      "sub-header": "",
+      "cancel-button-label": ""
     },
     "@studiocms/auth:oauth-stack": {
       "or-login-with": "o inicia sesión utilizando"
