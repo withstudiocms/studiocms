@@ -1,7 +1,8 @@
 {
   "auto_install_extensions": {
-    "cspell": true,
-    "biome": true
+    "astro": true,
+    "biome": true,
+    "cspell": true
   },
   "languages": {
     "JavaScript": {
