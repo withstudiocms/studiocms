@@ -8,7 +8,6 @@
   "file_types": {
     "GitHub Actions": [".github/workflows/*.yml", ".github/workflows/*.yaml"]
   },
-  "formatter": { "language_server": { "name": "biome" } },
   "languages": {
     "JavaScript": {
       "formatter": { "language_server": { "name": "biome" } },
@@ -44,6 +43,9 @@
         "source.fixAll.biome": true,
         "source.organizeImports.biome": true
       }
+    },
+    "CSS": {
+      "formatter": { "language_server": { "name": "biome" } }
     }
   }
 }
