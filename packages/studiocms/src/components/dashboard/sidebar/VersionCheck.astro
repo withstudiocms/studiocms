@@ -1,19 +1,18 @@
 ---
-import type { VersionCacheObject } from "studiocms:sdk/types";
-import { Button } from "studiocms:ui/components/button";
-import currentVersion from "studiocms:version";
-import { compare } from "semver";
+import type { VersionCacheObject } from 'studiocms:sdk/types';
+import { Button } from 'studiocms:ui/components/button';
+import currentVersion from 'studiocms:version';
+import { compare } from 'semver';
 
 interface Props {
-  latestVersion: VersionCacheObject;
+	latestVersion: VersionCacheObject;
 }
 
 const { latestVersion } = Astro.props as Props;
 
 const comparison = compare(currentVersion, latestVersion.version);
 
-const status =
-  comparison === -1 ? "outdated" : comparison === 0 ? "latest" : "future";
+const status = comparison === -1 ? 'outdated' : comparison === 0 ? 'latest' : 'future';
 ---
 
 <Button
