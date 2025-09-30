@@ -4,6 +4,7 @@
     "biome": true,
     "cspell": true
   },
+  "formatter": { "language_server": { "name": "biome" } },
   "languages": {
     "JavaScript": {
       "formatter": { "language_server": { "name": "biome" } },
