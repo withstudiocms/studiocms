@@ -2,7 +2,11 @@
   "auto_install_extensions": {
     "astro": true,
     "biome": true,
-    "cspell": true
+    "cspell": true,
+    "github-actions": true
+  },
+  "file_types": {
+    "GitHub Actions": [".github/workflows/*.yml", ".github/workflows/*.yaml"]
   },
   "formatter": { "language_server": { "name": "biome" } },
   "languages": {
