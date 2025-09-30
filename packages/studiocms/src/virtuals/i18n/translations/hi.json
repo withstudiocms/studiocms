@@ -39,7 +39,10 @@
     },
     "@studiocms/auth:logout": {
       "title": "",
-      "description": ""
+      "description": "",
+      "header": "",
+      "sub-header": "",
+      "cancel-button-label": ""
     },
     "@studiocms/auth:oauth-stack": {
       "or-login-with": ""

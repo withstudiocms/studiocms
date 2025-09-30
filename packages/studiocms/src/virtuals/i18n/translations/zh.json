@@ -39,7 +39,10 @@
     },
     "@studiocms/auth:logout": {
       "title": "退出",
-      "description": "退出页面"
+      "description": "退出页面",
+      "header": "",
+      "sub-header": "",
+      "cancel-button-label": ""
     },
     "@studiocms/auth:oauth-stack": {
       "or-login-with": "或使用以下方式登录​"
