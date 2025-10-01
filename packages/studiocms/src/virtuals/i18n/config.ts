@@ -8,7 +8,13 @@
 
 import { availableTranslations, currentFlags } from 'studiocms:i18n/virtual';
 
-export { defaultLang } from './overrides.js';
+// TODO: Move this to being a Client only default
+// - Adapt server-side defaultLang with project configurable option
+//   from the StudioCMS configuration file.
+/**
+ * The default language for the StudioCMS app.
+ */
+export const defaultLang: UiTranslationKey = 'en';
 
 /**
  * Dynamically imports the base English translations for server-side internationalization.

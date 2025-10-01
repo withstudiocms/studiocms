@@ -1,4 +1,4 @@
-import type { LanguageFlagIdentifier, UiTranslationKey } from './config.js';
+import type { LanguageFlagIdentifier } from './config.js';
 
 /**
  * Use this map to set custom keys that are not 2 character flags from:
@@ -8,8 +8,3 @@ export const translationFlagKeyOverrides: Record<string, LanguageFlagIdentifier>
 	en: 'lang-en-us',
 	es: 'lang-es-mx',
 } as const;
-
-/**
- * The default language for the StudioCMS app.
- */
-export const defaultLang: UiTranslationKey = 'en';
