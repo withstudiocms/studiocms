@@ -55,7 +55,7 @@ const description = propDescription ?? config.data.description;
     { requiredPermission !== 'none' && (
       <LoginChecker {requiredPermission} {currentUser} />
     ) }
-    <SidebarModals />
+    <SidebarModals {lang} />
     { sidebar === 'single' && (
       <SingleSidebar {currentUser} />
     ) }

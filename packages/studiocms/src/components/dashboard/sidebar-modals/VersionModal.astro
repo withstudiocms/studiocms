@@ -1,6 +1,7 @@
 ---
 import 'studiocms:ui/prose';
 import changelog from 'studiocms:changelog';
+import { type UiLanguageKeys, useTranslations } from 'studiocms:i18n';
 import type { VersionCacheObject } from 'studiocms:sdk/types';
 import { Modal } from 'studiocms:ui/components/modal';
 import currentVersion from 'studiocms:version';
@@ -10,14 +11,21 @@ import { dateWithTimeAndZone } from '../component-scripts/dateWithTimeAndZone.js
 import { timeAgo } from '../component-scripts/timeAgo.js';
 import VersionCheckChangelog from '../sidebar/VersionCheckChangelog.astro';
 
+interface Props {
+	lang: UiLanguageKeys;
+}
+
+const { lang } = Astro.props;
+
+const t = useTranslations(lang, '@studiocms/dashboard:versionCheckModal');
+
 const latestVersion = Astro.locals.StudioCMS.latestVersion;
 const lastChecked = new Date(Astro.locals.StudioCMS.latestVersion.lastCacheUpdate);
 ---
-<!-- The modals in this file are needed inside of the sidebar but cannot be positioned there due to issues with positioning. -->
 <Modal id="version-modal" size="lg">
 
     <h2 slot="header" class="inline-title">
-        <span>Version Information</span>
+      <span><t-vcm key="header-title">{t('header-title')}</t-vcm></span>
         <button data-link={Astro.locals.StudioCMS.routeMap.sdk.updateLatestVersionCache}
             id="version-modal-reload"
             class="reload-button"
@@ -30,17 +38,17 @@ const lastChecked = new Date(Astro.locals.StudioCMS.latestVersion.lastCacheUpdat
     <div>
         <div class="version-modal-top-row">
             <div class="version-modal-col">
-                <span class="version-modal-col-title">Current Version</span>
+                <span class="version-modal-col-title"><t-vcm key="current-version">{t('current-version')}</t-vcm></span>
                 <code class="version-modal-col-value">v{currentVersion}</code>
             </div>
 
             <div class="version-modal-col">
-                <span class="version-modal-col-title">Latest Version</span>
+                <span class="version-modal-col-title"><t-vcm key="latest-version">{t('latest-version')}</t-vcm></span>
                 <code id="latest-version" class="version-modal-col-value">v{latestVersion.version}</code>
             </div>
 
             <div class="version-modal-col">
-                <span class="version-modal-col-title">Last Update Check</span>
+                <span class="version-modal-col-title"><t-vcm key="last-check">{t('last-check')}</t-vcm></span>
                 <span class="version-modal-col-value">
                     <time id="version-modal-last-checked-date" datetime={lastChecked.toISOString()}>{dateWithTimeAndZone(lastChecked)}</time>
                     <span id="latest-update-check" class="latest-update-check">({timeAgo(lastChecked)})</span>
@@ -51,31 +59,43 @@ const lastChecked = new Date(Astro.locals.StudioCMS.latestVersion.lastCacheUpdat
         <div class="version-modal-release-notes">
             <div class="prose"><Fragment set:html={parseMarkdown(changelog)} /></div>
             <span class="release-notes-read-more">
-                <VersionCheckChangelog changelog={studioCMSSocials.changelog} link={Astro.locals.StudioCMS.routeMap.sdk.changelog}><span class="read-more-text">Full Changelog</span></VersionCheckChangelog>
+                <VersionCheckChangelog changelog={studioCMSSocials.changelog} link={Astro.locals.StudioCMS.routeMap.sdk.changelog}><span class="read-more-text"><t-vcm key="full-changelog">{t('full-changelog')}</t-vcm></span></VersionCheckChangelog>
             </span>
         </div>
 
         <div class="version-modal-links">
-            <span class="version-modal-row-title">View on</span>
+            <span class="version-modal-row-title"><t-vcm key="view-on">{t('view-on')}</t-vcm></span>
             <a href={studioCMSSocials.releases}
                 target="_blank"
                 rel="noopener noreferrer"
                 class="version-link"
-                title="View Releases on GitHub"
-                aria-label="View Releases on GitHub"
+                title="GitHub"
+                aria-label="GitHub"
                 ><span class="brand--github"></span>
             </a>
             <a href={studioCMSSocials.npm}
                 target="_blank"
                 rel="noopener noreferrer"
                 class="version-link"
-                title="View on NPM"
-                aria-label="View on NPM"
+                title="NPM"
+                aria-label="NPM"
                 ><span class="brand--npm"></span>
             </a>
         </div>
     </div>
 </Modal>
+
+<script>
+  import { $i18n, baseTranslation, makeTranslation} from "studiocms:i18n/client";
+
+  const currentPage = "@studiocms/dashboard:versionCheckModal";
+
+  const i18n = $i18n(currentPage, baseTranslation[currentPage]);
+
+  if (!customElements.get('t-vcm')) {
+    customElements.define('t-vcm', makeTranslation(currentPage, i18n))
+  }
+</script>
 
 <style is:global>
 

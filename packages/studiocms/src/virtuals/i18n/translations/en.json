@@ -294,6 +294,14 @@
       "sub-description": "Your email address has not been verified. Please check your email for a verification link.",
       "resend-button": "Resend Verification Email",
       "back-button": "Go home"
+    },
+    "@studiocms/dashboard:versionCheckModal": {
+      "header-title": "Version Information",
+      "current-version": "Current Version",
+      "latest-version": "Latest Version",
+      "last-check": "Last Update Check",
+      "full-changelog": "Full Changelog",
+      "view-on": "View on"
     }
   }
 }
