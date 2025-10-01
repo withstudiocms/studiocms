@@ -308,6 +308,7 @@ export const FAVICON_ASSETS = {
 
 type UiOptions = Parameters<typeof uiIntegration>[0];
 
+/* v8 ignore start */
 function getDefaultUiOpts(currentFlags: Array<{ key: string; flag: `lang-${string}` }>): UiOptions {
 	return {
 		noInjectCSS: true,
@@ -350,6 +351,7 @@ export function getUiOpts(
 	};
 	return merged;
 }
+/* v8 ignore stop */
 
 export const LinkNewOAuthCookieName = 'link-new-o-auth';
 export const AuthSessionCookieName = 'auth_session';

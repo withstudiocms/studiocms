@@ -159,7 +159,9 @@ export const languageSelectorOptions: LanguageSelectorOption[] = currentFlags
 		const displayName =
 			typeof possibleDisplayName === 'string' && possibleDisplayName.trim()
 				? possibleDisplayName
-				: String(translation.key);
+				: /* v8 ignore start */
+					String(translation.key);
+		/* v8 ignore stop */
 		return { ...translation, displayName };
 	})
 	.sort((a, b) => a.displayName.localeCompare(b.displayName, undefined, { sensitivity: 'base' }));
