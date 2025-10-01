@@ -163,10 +163,9 @@ export const showDefaultLang: boolean = false;
  */
 export const languageSelectorOptions: LanguageSelectorOption[] = currentFlags
 	.map((translation) => {
-		const { key, flag } = translation;
-		const displayName = serverUiTranslations[key]?.displayName;
-		const value = typeof displayName === 'string' && displayName.trim() ? displayName : String(key);
-
-		return { key, value, flag };
+		const displayName = serverUiTranslations[translation.key]?.displayName;
+		const value =
+			typeof displayName === 'string' && displayName.trim() ? displayName : String(translation.key);
+		return { ...translation, value };
 	})
 	.sort((a, b) => a.value.localeCompare(b.value, undefined, { sensitivity: 'base' }));
