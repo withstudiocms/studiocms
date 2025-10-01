@@ -10,7 +10,7 @@ export interface Props extends GridItem {
 	lang: UiLanguageKeys;
 }
 
-const { span, variant, body, header, name, pluginId } = Astro.props;
+const { span, variant, body, header, name } = Astro.props;
 
 // @ts-expect-error - `$$result` is a global variable injected by Astro's compiler during rendering
 const components = createComponentProxy($$result, body?.components);
@@ -21,14 +21,13 @@ if (body?.html) {
 	html = await transformHTML(body.html, components, body.sanitizeOpts);
 }
 
-const itemSafeId = name.split('/').pop();
+const [pluginId, componentSafeId] = name.split('/');
 
-if (!itemSafeId) return;
-const realId = convertUnderscoresToHyphens(itemSafeId);
+const componentId = convertUnderscoresToHyphens(componentSafeId);
 
 const genericTranslationProps = {
 	plugin: pluginId,
-	component: realId,
+	component: componentId,
 };
 ---
 <Card
@@ -41,7 +40,7 @@ const genericTranslationProps = {
         <div slot="header">
             <span class="grid-item-title">
                 {header.icon && <Icon name={header.icon} width={24} height={24}/>}
-                <span>{header.title}</span>
+                <span><p-translations {...genericTranslationProps} key="title">{header.title}</p-translations></span>
             </span>
         </div>
     )}

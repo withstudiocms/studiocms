@@ -32,6 +32,7 @@ import type {
 import type { PluginTranslationCollection } from '../schemas/plugins/i18n.js';
 import type { GridItemInput } from '../schemas/plugins/shared.js';
 import type { Route } from '../types.js';
+import en from './plugin-i18n/en.js';
 
 // Resolver Function
 const { resolve } = createResolver(import.meta.url);
@@ -64,8 +65,10 @@ export const defaultPlugin: StudioCMSPlugin = {
 	hooks: {
 		'studiocms:config:setup': ({ setDashboard }) => {
 			setDashboard({
-				// TODO: Implement translations
-				translations: {},
+				// TODO: Implement translations properly
+				translations: {
+					en,
+				},
 				dashboardGridItems: [
 					{
 						name: 'overview',
@@ -614,7 +617,7 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 
 						setDashboard({ dashboardGridItems, dashboardPages, settingsPage, translations }) {
 							if (translations) {
-								pluginsTranslations[safeData.identifier] = translations;
+								pluginsTranslations[convertToSafeString(safeData.identifier)] = translations;
 							}
 
 							if (dashboardGridItems) {
@@ -622,7 +625,6 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 									...dashboardGridItems.map((item) => ({
 										...item,
 										name: `${convertToSafeString(safeData.identifier)}/${convertToSafeString(item.name)}`,
-										pluginId: safeData.identifier,
 									}))
 								);
 							}
