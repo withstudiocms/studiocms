@@ -2,7 +2,7 @@
  * This module handles the internationalization (i18n) config for the StudioCMS application for both the Client and Server sides.
  */
 
-import { availableTranslations } from 'studiocms:i18n/virtual';
+import { availableTranslations, currentFlags } from 'studiocms:i18n/virtual';
 
 /**
  * Dynamically imports the base English translations for server-side internationalization.
@@ -95,15 +95,19 @@ export type ServerUiTranslations = Record<UiTranslationKey, StudioCMSTranslation
  */
 export type ClientUiTranslations = Record<UiTranslationKey, ComponentsJSON>;
 
+export type LanguageFlagIdentifier = `lang-${string}`;
+
 /**
  * Represents an option for selecting a language in the UI.
  *
  * @property key - The translation key associated with the language option.
  * @property value - The display value for the language option.
+ * @property flag - The flag associated with the language option.
  */
 export interface LanguageSelectorOption {
 	readonly key: UiTranslationKey;
 	readonly value: string;
+	readonly flag: LanguageFlagIdentifier;
 }
 
 /**
@@ -153,18 +157,16 @@ export const defaultLang: UiTranslationKey = 'en';
 export const showDefaultLang: boolean = false;
 
 /**
- * Generates an array of language selector options from the available server UI translations.
- * Each option contains a `key` representing the language code and a `value` representing the display name of the language.
+ * Generates an array of language selector options from available translations and flags
  *
- * @remarks
- * This is typically used to populate language selection dropdowns in the UI.
- *
- * @returns An array of objects, each with `key` and `value` properties for language selection.
+ * @returns An array of objects, each with `key`, `value`, and `flag` properties for language selection.
  */
-export const languageSelectorOptions: LanguageSelectorOption[] = Object.keys(serverUiTranslations)
-	.map((key) => {
+export const languageSelectorOptions: LanguageSelectorOption[] = currentFlags
+	.map((translation) => {
+		const { key, flag } = translation;
 		const displayName = serverUiTranslations[key]?.displayName;
 		const value = typeof displayName === 'string' && displayName.trim() ? displayName : String(key);
-		return { key: key as UiTranslationKey, value };
+
+		return { key, value, flag };
 	})
 	.sort((a, b) => a.value.localeCompare(b.value, undefined, { sensitivity: 'base' }));

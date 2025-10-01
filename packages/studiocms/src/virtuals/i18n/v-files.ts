@@ -13,7 +13,11 @@ import { posix } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { readJson } from '@withstudiocms/internal_helpers/utils';
 import { glob } from 'tinyglobby';
-import type { ServerUiTranslations, StudioCMSTranslationRecord } from './config.js';
+import type {
+	LanguageFlagIdentifier,
+	ServerUiTranslations,
+	StudioCMSTranslationRecord,
+} from './config.js';
 
 /**
  * The directory containing translation files.
@@ -131,7 +135,7 @@ const availableTranslationsKeys = ['en', ...Object.keys(availableTranslations)];
  * Use this map to set custom keys that are not 2 character flags from:
  * https://icon-sets.iconify.design/circle-flags/?icon-filter=lang-&keyword=flag
  */
-export const translationFlagKeyOverrides: Record<string, `lang-${string}`> = {
+export const translationFlagKeyOverrides: Record<string, LanguageFlagIdentifier> = {
 	en: 'lang-en-us',
 	es: 'lang-es-mx',
 } as const;
@@ -146,8 +150,8 @@ export const translationFlagKeyOverrides: Record<string, `lang-${string}`> = {
  * // If availableTranslationsKeys = ['en', 'fr']
  * // langFlags = [{ key: 'en', flag: 'lang-en-us' }, { key: 'fr', flag: 'lang-fr' }]
  */
-export const currentFlags: Array<{ key: string; flag: `lang-${string}` }> =
+export const currentFlags: Array<{ key: string; flag: LanguageFlagIdentifier }> =
 	availableTranslationsKeys.map((key) => {
-		const flagKey = translationFlagKeyOverrides[key] || `lang-${key}`;
+		const flagKey: LanguageFlagIdentifier = translationFlagKeyOverrides[key] || `lang-${key}`;
 		return { key, flag: flagKey };
 	});
