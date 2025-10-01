@@ -1,46 +1,38 @@
-import { z } from 'astro/zod';
+import { $locale, $localeSettings, defaultLang } from 'studiocms:i18n/client';
+import pluginTranslations from 'studiocms:i18n/plugin-translations';
+import { createI18n } from '@nanostores/i18n';
 
-export const componentTranslationsSchema = z.record(z.string());
-export const translationsSchema = z.record(componentTranslationsSchema);
-export const pluginTranslationsSchema = z.record(translationsSchema);
-export const pluginTranslationCollectionSchema = z.record(pluginTranslationsSchema);
+export class PluginTranslations extends HTMLElement {
+	currentLang: string | undefined;
 
-export type ComponentTranslations = z.infer<typeof componentTranslationsSchema>;
-export type Translations = z.infer<typeof translationsSchema>;
-export type PluginTranslations = z.infer<typeof pluginTranslationsSchema>;
-export type PluginTranslationCollection = z.infer<typeof pluginTranslationCollectionSchema>;
+	constructor() {
+		super();
 
-// const examplePlugin1: PluginTranslations = {
-// 	en: {
-// 		comp1: {
-// 			title: 'Component Title',
-// 			description: 'Component Description',
-// 		},
-// 	},
-// 	fr: {
-// 		comp1: {
-// 			title: 'Titre du composant',
-// 			description: 'Description du composant',
-// 		},
-// 	},
-// };
+		$localeSettings.subscribe((val) => {
+			this.currentLang = val;
+		});
+	}
 
-// const examplePlugin2: PluginTranslations = {
-// 	en: {
-// 		comp2: {
-// 			title: 'Component Title',
-// 			description: 'Component Description',
-// 		},
-// 	},
-// 	fr: {
-// 		comp2: {
-// 			title: 'Titre du composant',
-// 			description: 'Description du composant',
-// 		},
-// 	},
-// };
+	connectedCallback() {
+		const pluginId = this.getAttribute('plugin');
+		const componentId = this.getAttribute('component');
+		const key = this.getAttribute('key');
 
-// const _examplePluginCollection: PluginTranslationCollection = {
-// 	plugin1: examplePlugin1,
-// 	plugin2: examplePlugin2,
-// };
+		if (!pluginId || !componentId || !key) {
+			console.error('Missing required attributes');
+			return;
+		}
+
+		const translations = pluginTranslations[pluginId];
+		const base = translations[defaultLang];
+
+		const i18n = createI18n($locale, {
+			baseLocale: defaultLang,
+			get: async (code) => translations[code] ?? translations[defaultLang],
+		})(componentId, base[componentId]);
+
+		i18n.subscribe((comp) => {
+			this.innerHTML = comp[key];
+		});
+	}
+}

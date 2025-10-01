@@ -673,6 +673,8 @@ export interface GridItemUsable {
 	 */
 	name: string;
 
+	pluginId: string;
+
 	/**
 	 * The span of the grid item, which can be 1, 2, or 3.
 	 */

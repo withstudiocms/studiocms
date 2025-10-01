@@ -157,6 +157,19 @@ declare module 'studiocms:i18n/client' {
 	export const updateToggleElmLabel: typeof import('./virtuals/i18n/client').updateToggleElmLabel;
 }
 
+declare module 'studiocms:i18n/plugin-translations' {
+	const pluginTranslations: import('./schemas/plugins/i18n').PluginTranslationCollection;
+	export default pluginTranslations;
+}
+
+declare module 'studiocms:i18n/plugins' {
+	export declare class PluginTranslations extends HTMLElement {
+		currentLang: string | undefined;
+		constructor();
+		connectedCallback(): void;
+	}
+}
+
 declare module 'studiocms:imageHandler/components' {
 	export const CustomImage: typeof import('./virtuals/components/CustomImage.astro').default;
 }

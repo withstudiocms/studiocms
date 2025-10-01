@@ -29,6 +29,7 @@ import type {
 	SafePluginListType,
 	StudioCMSPlugin,
 } from '../schemas/index.js';
+import type { PluginTranslationCollection } from '../schemas/plugins/i18n.js';
 import type { GridItemInput } from '../schemas/plugins/shared.js';
 import type { Route } from '../types.js';
 
@@ -63,6 +64,8 @@ export const defaultPlugin: StudioCMSPlugin = {
 	hooks: {
 		'studiocms:config:setup': ({ setDashboard }) => {
 			setDashboard({
+				// TODO: Implement translations
+				translations: {},
 				dashboardGridItems: [
 					{
 						name: 'overview',
@@ -320,6 +323,8 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 
 		// Define the Virtual Imports mapping
 		const VirtualImports: Imports = [];
+
+		const pluginsTranslations: PluginTranslationCollection = {};
 
 		/////
 
@@ -607,12 +612,17 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 					await hooks['studiocms:config:setup']({
 						logger: pluginLogger(safeData.identifier, logger),
 
-						setDashboard({ dashboardGridItems, dashboardPages, settingsPage }) {
+						setDashboard({ dashboardGridItems, dashboardPages, settingsPage, translations }) {
+							if (translations) {
+								pluginsTranslations[safeData.identifier] = translations;
+							}
+
 							if (dashboardGridItems) {
 								availableDashboardGridItems.push(
 									...dashboardGridItems.map((item) => ({
 										...item,
 										name: `${convertToSafeString(safeData.identifier)}/${convertToSafeString(item.name)}`,
+										pluginId: safeData.identifier,
 									}))
 								);
 							}
@@ -831,12 +841,12 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 					id: 'studiocms:components/dashboard-grid-items',
 					content: `
 						import * as components from 'studiocms:components/dashboard-grid-components';
-						
+
 						const currentComponents = ${JSON.stringify(availableDashboardGridItems)};
-						
+
 						const dashboardGridItems = currentComponents.map((item) => {
 							const gridItem = { ...item };
-						
+
 							if (gridItem.body?.components) {
 								gridItem.body.components = Object.entries(gridItem.body.components).reduce(
 									(acc, [key, value]) => ({
@@ -846,10 +856,10 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 									{}
 								);
 							}
-						
+
 							return gridItem;
 						});
-						
+
 						export default dashboardGridItems;
 					`,
 				},
@@ -916,11 +926,11 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 					content: `
 						import { convertToSafeString } from '${resolve('../utils/safeString.js')}';
 						import * as components from 'studiocms:plugins/dashboard-pages/components/user';
-						
+
 						const currentComponents = ${JSON.stringify(availableDashboardPages.user || [])};
-						
+
 						const dashboardPages = currentComponents.map((item) => {
-							const page = { 
+							const page = {
 								...item,
 								components: {
 									PageBodyComponent: components[convertToSafeString(item.title + 'pageBodyComponent')],
@@ -928,10 +938,10 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 									InnerSidebarComponent: item.sidebar === 'double' ? components[convertToSafeString(item.title + 'innerSidebarComponent')] || null : null,
 								},
 							};
-						
+
 							return page;
 						});
-						
+
 						export default dashboardPages;
 					`,
 				},
@@ -940,11 +950,11 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 					content: `
 						import { convertToSafeString } from '${resolve('../utils/safeString.js')}';
 						import * as components from 'studiocms:plugins/dashboard-pages/components/admin';
-						
+
 						const currentComponents = ${JSON.stringify(availableDashboardPages.admin || [])};
-						
+
 						const dashboardPages = currentComponents.map((item) => {
-							const page = { 
+							const page = {
 								...item,
 								components: {
 									PageBodyComponent: components[convertToSafeString(item.title + 'pageBodyComponent')],
@@ -952,10 +962,10 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 									InnerSidebarComponent: item.sidebar === 'double' ? components[convertToSafeString(item.title + 'innerSidebarComponent')] || null : null,
 								},
 							};
-						
+
 							return page;
 						});
-						
+
 						export default dashboardPages;
 					`,
 				},
@@ -963,7 +973,7 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 					id: 'virtual:studiocms/plugins/endpoints',
 					content: `
 						${pluginEndpoints.map(({ apiEndpoint }) => apiEndpoint).join('\n')}
-					
+
 						${pluginSettingsEndpoints.map(({ apiEndpoint }) => apiEndpoint).join('\n')}
 					`,
 				},
@@ -971,23 +981,23 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 					id: 'studiocms:plugins/endpoints',
 					content: `
 						import * as endpoints from 'virtual:studiocms/plugins/endpoints';
-					
+
 						const pluginEndpoints = ${JSON.stringify(
 							pluginEndpoints.map(({ identifier, safeIdentifier }) => ({
 								identifier,
 								safeIdentifier,
 							})) || []
 						)};
-					
+
 						const pluginSettingsEndpoints = ${JSON.stringify(pluginSettingsEndpoints.map(({ identifier, safeIdentifier }) => ({ identifier, safeIdentifier })) || [])};
-					
+
 						export const apiEndpoints = pluginEndpoints.map(({ identifier, safeIdentifier }) => ({
 							identifier,
 							onCreate: endpoints[safeIdentifier + '_onCreate'] || null,
 							onEdit: endpoints[safeIdentifier + '_onEdit'] || null,
 							onDelete: endpoints[safeIdentifier + '_onDelete'] || null,
 						}));
-					
+
 						export const settingsEndpoints = pluginSettingsEndpoints.map(({ identifier, safeIdentifier }) => ({
 							identifier,
 							onSave: endpoints[safeIdentifier + '_onSave'] || null,
@@ -1068,6 +1078,7 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 			safePluginList,
 			messages,
 			oAuthProvidersConfigured,
+			pluginsTranslations,
 		};
 	}
 );

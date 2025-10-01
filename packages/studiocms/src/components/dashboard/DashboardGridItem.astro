@@ -9,7 +9,7 @@ export interface Props extends GridItem {
 	lang: UiLanguageKeys;
 }
 
-const { span, variant, body, header, name } = Astro.props;
+const { span, variant, body, header, name, pluginId } = Astro.props;
 
 // @ts-expect-error - `$$result` is a global variable injected by Astro's compiler during rendering
 const components = createComponentProxy($$result, body?.components);
