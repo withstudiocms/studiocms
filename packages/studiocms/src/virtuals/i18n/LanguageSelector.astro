@@ -2,20 +2,17 @@
 import { Button } from 'studiocms:ui/components/button';
 import { Dropdown } from 'studiocms:ui/components/dropdown';
 import { Icon } from 'studiocms:ui/components/icon';
+import type { AvailableIcons } from 'studiocms:ui/icons';
 import type { ComponentProps } from 'astro/types';
 import { languageSelectorOptions } from './config.js';
-
-type DropdownProps = ComponentProps<typeof Dropdown>;
-
-const languageOptions = languageSelectorOptions.map((option) => ({
-	label: option.value,
-	value: option.key,
-	icon: `lang-flags:${option.flag}`,
-})) as DropdownProps['options'];
 ---
 <Dropdown
   id='language-selector'
-  options={languageOptions}
+  options={languageSelectorOptions.map(({ flag, key, displayName }) => ({
+  	label: displayName,
+  	value: key,
+  	icon: `lang-flags:${flag}` as AvailableIcons,
+  }))}
   align='start'
 >
   <Button variant='outlined' size='sm'>

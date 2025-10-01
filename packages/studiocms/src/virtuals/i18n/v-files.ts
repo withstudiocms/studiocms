@@ -18,6 +18,7 @@ import type {
 	ServerUiTranslations,
 	StudioCMSTranslationRecord,
 } from './config.js';
+import { translationFlagKeyOverrides } from './overrides.js';
 
 /**
  * The directory containing translation files.
@@ -130,15 +131,6 @@ export const availableTranslations: ServerUiTranslations = (() => {
  * english translation key for usage generating the language flags
  */
 const availableTranslationsKeys = ['en', ...Object.keys(availableTranslations)];
-
-/**
- * Use this map to set custom keys that are not 2 character flags from:
- * https://icon-sets.iconify.design/circle-flags/?icon-filter=lang-&keyword=flag
- */
-export const translationFlagKeyOverrides: Record<string, LanguageFlagIdentifier> = {
-	en: 'lang-en-us',
-	es: 'lang-es-mx',
-} as const;
 
 /**
  * An array of language flags derived from `availableTranslationsKeys`.

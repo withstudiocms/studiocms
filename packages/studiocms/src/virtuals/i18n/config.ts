@@ -4,6 +4,8 @@
 
 import { availableTranslations, currentFlags } from 'studiocms:i18n/virtual';
 
+export { defaultLang, showDefaultLang } from './overrides.js';
+
 /**
  * Dynamically imports the base English translations for server-side internationalization.
  *
@@ -106,7 +108,7 @@ export type LanguageFlagIdentifier = `lang-${string}`;
  */
 export interface LanguageSelectorOption {
 	readonly key: UiTranslationKey;
-	readonly value: string;
+	readonly displayName: string;
 	readonly flag: LanguageFlagIdentifier;
 }
 
@@ -147,25 +149,17 @@ export const clientUiTranslations: ClientUiTranslations = Object.entries(
 }, {} as ClientUiTranslations);
 
 /**
- * The default language for the StudioCMS app.
- */
-export const defaultLang: UiTranslationKey = 'en';
-
-/**
- * Whether to show the default language in the url path.
- */
-export const showDefaultLang: boolean = false;
-
-/**
  * Generates an array of language selector options from available translations and flags
  *
  * @returns An array of objects, each with `key`, `value`, and `flag` properties for language selection.
  */
 export const languageSelectorOptions: LanguageSelectorOption[] = currentFlags
 	.map((translation) => {
-		const displayName = serverUiTranslations[translation.key]?.displayName;
-		const value =
-			typeof displayName === 'string' && displayName.trim() ? displayName : String(translation.key);
-		return { ...translation, value };
+		const possibleDisplayName = serverUiTranslations[translation.key]?.displayName;
+		const displayName =
+			typeof possibleDisplayName === 'string' && possibleDisplayName.trim()
+				? possibleDisplayName
+				: String(translation.key);
+		return { ...translation, displayName };
 	})
-	.sort((a, b) => a.value.localeCompare(b.value, undefined, { sensitivity: 'base' }));
+	.sort((a, b) => a.displayName.localeCompare(b.displayName, undefined, { sensitivity: 'base' }));
