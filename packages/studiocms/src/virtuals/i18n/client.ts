@@ -3,6 +3,10 @@
  *
  * It provides utilities for loading and managing translation files, as well as functions for
  * retrieving translated strings based on the current language context.
+ *
+ * If you are interested in contributing to the translation effort, please visit our Crowdin project:
+ * https://crowdin.com/project/studiocms or submit a pull request to the `translations` folder:
+ * `packages/studiocms/src/virtuals/i18n/translations/` on https://github.com/withstudiocms/studiocms
  */
 
 import {

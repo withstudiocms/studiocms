@@ -65,7 +65,6 @@ export const defaultPlugin: StudioCMSPlugin = {
 	hooks: {
 		'studiocms:config:setup': ({ setDashboard }) => {
 			setDashboard({
-				// TODO: Implement translations properly
 				translations: {
 					en,
 				},

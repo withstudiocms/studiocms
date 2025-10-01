@@ -13,8 +13,3 @@ export const translationFlagKeyOverrides: Record<string, LanguageFlagIdentifier>
  * The default language for the StudioCMS app.
  */
 export const defaultLang: UiTranslationKey = 'en';
-
-/**
- * Whether to show the default language in the url path.
- */
-export const showDefaultLang: boolean = false;

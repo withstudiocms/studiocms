@@ -1,10 +1,14 @@
 /**
  * This module handles the internationalization (i18n) config for the StudioCMS application for both the Client and Server sides.
+ *
+ * If you are interested in contributing to the translation effort, please visit our Crowdin project:
+ * https://crowdin.com/project/studiocms or submit a pull request to the `translations` folder:
+ * `packages/studiocms/src/virtuals/i18n/translations/` on https://github.com/withstudiocms/studiocms
  */
 
 import { availableTranslations, currentFlags } from 'studiocms:i18n/virtual';
 
-export { defaultLang, showDefaultLang } from './overrides.js';
+export { defaultLang } from './overrides.js';
 
 /**
  * Dynamically imports the base English translations for server-side internationalization.

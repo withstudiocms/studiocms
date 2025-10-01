@@ -7,6 +7,10 @@
  * Note: The exported function is imported and used by the main index of the integration,
  * to generate the list of available translation keys and inject them into a server/client
  * friendly Vite virtual module.
+ *
+ * If you are interested in contributing to the translation effort, please visit our Crowdin project:
+ * https://crowdin.com/project/studiocms or submit a pull request to the `translations` folder:
+ * `packages/studiocms/src/virtuals/i18n/translations/` on https://github.com/withstudiocms/studiocms
  */
 
 import { posix } from 'node:path';

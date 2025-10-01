@@ -4,6 +4,16 @@ import { Dropdown } from 'studiocms:ui/components/dropdown';
 import { Icon } from 'studiocms:ui/components/icon';
 import type { AvailableIcons } from 'studiocms:ui/icons';
 import { languageSelectorOptions } from './config.js';
+
+/**
+ * This Astro component handles the language selection functionality for the StudioCMS application on the client side.
+ *
+ * It provides a dropdown menu for selecting the preferred language, and updates the application's language settings accordingly.
+ *
+ * If you are interested in contributing to the translation effort, please visit our Crowdin project:
+ * https://crowdin.com/project/studiocms or submit a pull request to the `translations` folder:
+ * `packages/studiocms/src/virtuals/i18n/translations/` on https://github.com/withstudiocms/studiocms
+ */
 ---
 <Dropdown
   id='language-selector'
