@@ -32,7 +32,13 @@ export class PluginTranslations extends HTMLElement {
 		})(componentId, base[componentId]);
 
 		i18n.subscribe((comp) => {
-			this.innerHTML = comp[key];
+			const translation = comp[key];
+
+			if (typeof translation === 'string' && translation.trim() === '') {
+				return;
+			}
+
+			this.textContent = translation;
 		});
 	}
 }

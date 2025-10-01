@@ -1,4 +1,5 @@
 ---
+import { convertUnderscoresToHyphens } from 'studiocms:component-registry/runtime';
 import type { UiLanguageKeys } from 'studiocms:i18n';
 import { Card } from 'studiocms:ui/components/card';
 import { Icon } from 'studiocms:ui/components/icon';
@@ -19,6 +20,16 @@ let html: string | undefined;
 if (body?.html) {
 	html = await transformHTML(body.html, components, body.sanitizeOpts);
 }
+
+const itemSafeId = name.split('/').pop();
+
+if (!itemSafeId) return;
+const realId = convertUnderscoresToHyphens(itemSafeId);
+
+const genericTranslationProps = {
+	plugin: pluginId,
+	component: realId,
+};
 ---
 <Card
     fullWidth
