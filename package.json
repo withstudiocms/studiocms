@@ -27,7 +27,7 @@
     "playground:preview": "pnpm --filter node-playground preview",
     "playground:build": "pnpm --filter node-playground build",
     "playground:cli": "pnpm --filter node-playground studiocms",
-    
+
     "dev": "pnpm --stream --filter studiocms --filter @studiocms/* --filter @withstudiocms/* --filter node-playground -r --parallel dev",
 
     "ci:lint": "biome ci --reporter=github",
@@ -66,7 +66,8 @@
     "pkg-pr-new": "^0.0.60",
     "studiocms": "workspace:*",
     "typescript": "catalog:",
-		"ts-patch": "^3.3.0",
+    "ts-patch": "^3.3.0",
+    "vite": "catalog:astrojs",
     "vitest": "^3.2.4",
     "jsdom": "^27.0.0"
   }
