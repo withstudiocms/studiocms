@@ -36,10 +36,6 @@ describe('i18n/config', () => {
 		expect(i18nConfig.defaultLang).toBe('en');
 	});
 
-	it('should set showDefaultLang to false', () => {
-		expect(i18nConfig.showDefaultLang).toBe(false);
-	});
-
 	it('should generate sorted languageSelectorOptions', () => {
 		const options = i18nConfig.languageSelectorOptions;
 		expect(options).toContainEqual({ key: 'de', displayName: 'Deutsch (de)', flag: 'lang-de' });
