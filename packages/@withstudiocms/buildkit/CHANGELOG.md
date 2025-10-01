@@ -1,5 +1,11 @@
 # @withstudiocms/buildkit
 
+## 0.1.0-beta.6
+
+### Patch Changes
+
+- [#859](https://github.com/withstudiocms/studiocms/pull/859) [`8b8352c`](https://github.com/withstudiocms/studiocms/commit/8b8352c3c7f4c35714651de8f46c5e480bc5698d) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Adds support for `.stub` file copy
+
 ## 0.1.0-beta.5
 
 ### Patch Changes

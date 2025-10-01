@@ -1,5 +1,23 @@
 # studiocms
 
+## 0.1.0-beta.28
+
+### Patch Changes
+
+- [#875](https://github.com/withstudiocms/studiocms/pull/875) [`74f9bf8`](https://github.com/withstudiocms/studiocms/commit/74f9bf8cb039d09e9e4589772734eb3a3012178c) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Updates to `@studiocms/ui@1.0.0-beta.2`
+
+- [#862](https://github.com/withstudiocms/studiocms/pull/862) [`dc8ca3a`](https://github.com/withstudiocms/studiocms/commit/dc8ca3abfb92944b78d342414e63c3dabe7e77e6) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update dependency @iconify-json/simple-icons to ^1.2.53
+
+- [#871](https://github.com/withstudiocms/studiocms/pull/871) [`872ba2e`](https://github.com/withstudiocms/studiocms/commit/872ba2e286248a79fa46df1c3f5ca354e36e0494) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Updates quick user tools, Logout page, and buttons to utilize POST requests.
+
+- [#866](https://github.com/withstudiocms/studiocms/pull/866) [`64b1515`](https://github.com/withstudiocms/studiocms/commit/64b15158ecc93177fac222f9cabe38b5387d5df5) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Deprecates the legacy StudioCMSSiteConfig, StudioCMSMailerConfig, and StudioCMSNotificationSettings tables to be fully removed in a future release.
+
+  Note: Users will need to run `astro db push --remote` to ensure their DB schemas are up-to-date.
+
+- [#868](https://github.com/withstudiocms/studiocms/pull/868) [`503a25a`](https://github.com/withstudiocms/studiocms/commit/503a25a5da1c07afeb3d965b73ea5bb99a673ba4) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Improve page creation and edit data processing
+
+- [#874](https://github.com/withstudiocms/studiocms/pull/874) [`0326476`](https://github.com/withstudiocms/studiocms/commit/03264767111f8b4dbdef18eafe25fa2f28c3ceb5) Thanks [@apollo-git-bot](https://github.com/apps/apollo-git-bot)! - Translation Updated (PR: #874)
+
 ## 0.1.0-beta.27
 
 ### Patch Changes
