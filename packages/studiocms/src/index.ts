@@ -47,7 +47,11 @@ import {
 	type StudioCMSOptions,
 	StudioCMSOptionsSchema,
 } from './schemas/index.js';
-import { availableTranslationFileKeys, availableTranslations } from './virtuals/i18n/v-files.js';
+import {
+	availableTranslationFileKeys,
+	availableTranslations,
+	currentFlags,
+} from './virtuals/i18n/v-files.js';
 import { VirtualModuleBuilder } from './virtuals/utils.js';
 
 // Resolver Function
@@ -239,7 +243,7 @@ export const studiocms = defineIntegration({
 					// Inject Integrations into Astro project
 					addIntegrationArray(params, [
 						{ integration: nodeNamespaceBuiltinsAstro() },
-						{ integration: studiocmsUi(getUiOpts()) },
+						{ integration: studiocmsUi(getUiOpts(currentFlags)) },
 						...pluginIntegrations,
 					]);
 
@@ -311,6 +315,7 @@ export const studiocms = defineIntegration({
 							'studiocms:i18n/virtual': `
 								export const availableTranslationFileKeys = ${JSON.stringify(availableTranslationFileKeys)};
 								export const availableTranslations = ${JSON.stringify(availableTranslations)};
+								export const currentFlags = ${JSON.stringify(currentFlags)};
 							`,
 							'studiocms:i18n': dynamicWithAstroVirtual({
 								dynamicExports: ['./virtuals/i18n/server.js'],

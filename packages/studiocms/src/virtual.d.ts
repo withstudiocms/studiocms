@@ -121,8 +121,9 @@ declare module 'virtual:studiocms/components/Editors' {
 }
 
 declare module 'studiocms:i18n/virtual' {
-	export const availableTranslationFileKeys: string[];
+	export const availableTranslationFileKeys: typeof import('./virtuals/i18n/v-files').availableTranslationFileKeys;
 	export const availableTranslations: typeof import('./virtuals/i18n/v-files').availableTranslations;
+	export const currentFlags: typeof import('./virtuals/i18n/v-files').currentFlags;
 }
 
 declare module 'studiocms:i18n' {
