@@ -3,7 +3,6 @@ import { Button } from 'studiocms:ui/components/button';
 import { Dropdown } from 'studiocms:ui/components/dropdown';
 import { Icon } from 'studiocms:ui/components/icon';
 import type { AvailableIcons } from 'studiocms:ui/icons';
-import type { ComponentProps } from 'astro/types';
 import { languageSelectorOptions } from './config.js';
 ---
 <Dropdown
@@ -30,15 +29,13 @@ import { languageSelectorOptions } from './config.js';
     $localeSettings.set(value);
   });
 
-  $localeSettings.subscribe((val => {
-    const value = val || defaultLang;
+  $localeSettings.subscribe(((lang) => {
+    const currentLang = lang || defaultLang;
     const dropdown = document.getElementById('language-selector-dropdown') as HTMLUListElement;
-
-    const languageOptions = dropdown.querySelectorAll('li');
-    languageOptions.forEach((option) => {
+    dropdown.querySelectorAll('li').forEach((option) => {
       option.classList.remove('active-language-selector-option');
     });
-    const activeOption = dropdown.querySelector(`[data-value="${value}"]`);
+    const activeOption = dropdown.querySelector(`[data-value="${currentLang}"]`);
     if (activeOption) {
       activeOption.classList.add('active-language-selector-option');
     }
