@@ -1,3 +1,4 @@
+import { icons as circleFlags } from '@iconify-json/circle-flags';
 import { icons as flatColorIcons } from '@iconify-json/flat-color-icons';
 import { icons as simpleIcons } from '@iconify-json/simple-icons';
 import studiocmsUi from '@studiocms/ui';
@@ -7,7 +8,11 @@ import { getViteConfig } from 'astro/config';
 import { addVirtualImports, createResolver } from 'astro-integration-kit';
 import { defineProject } from 'vitest/config';
 import { type StudioCMSOptions, StudioCMSOptionsSchema } from './src/schemas/config/index.js';
-import { availableTranslationFileKeys, availableTranslations } from './src/virtuals/i18n/v-files';
+import {
+	availableTranslationFileKeys,
+	availableTranslations,
+	currentFlags,
+} from './src/virtuals/i18n/v-files';
 import { buildVirtualConfig } from './src/virtuals/utils';
 
 const { resolve } = createResolver(import.meta.url);
@@ -50,6 +55,7 @@ const testIntegration: AstroIntegration = {
 					'studiocms:i18n/virtual': `
 						export const availableTranslationFileKeys = ${JSON.stringify(availableTranslationFileKeys)};
 						export const availableTranslations = ${JSON.stringify(availableTranslations)};
+						export const currentFlags = ${JSON.stringify(currentFlags)};
 					`,
 					'studiocms:config': buildVirtualConfig(testConfig),
 					'studiocms:plugins/imageService': `export const imageServiceKeys = ${JSON.stringify([])}`,
@@ -101,6 +107,7 @@ export default defineProject(
 					icons: {
 						flatcoloricons: flatColorIcons,
 						simpleicons: simpleIcons,
+						'lang-flags': circleFlags,
 					},
 				}),
 			],

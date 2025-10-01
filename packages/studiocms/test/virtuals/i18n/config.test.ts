@@ -42,9 +42,10 @@ describe('i18n/config', () => {
 
 	it('should generate sorted languageSelectorOptions', () => {
 		const options = i18nConfig.languageSelectorOptions;
-		expect(options).toContainEqual({ key: 'en', value: 'English (en)' });
-		expect(options).toContainEqual({ key: 'fr', value: 'Français (fr)' });
+		expect(options).toContainEqual({ key: 'de', displayName: 'Deutsch (de)', flag: 'lang-de' });
+		expect(options).toContainEqual({ key: 'en', displayName: 'English (en)', flag: 'lang-en-us' });
+		expect(options).toContainEqual({ key: 'fr', displayName: 'Français (fr)', flag: 'lang-fr' });
 		// Should be sorted alphabetically by value
-		expect(options[0].value < options[1].value).toBe(true);
+		expect(options[0].displayName < options[1].displayName).toBe(true);
 	});
 });
