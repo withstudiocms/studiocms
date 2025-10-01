@@ -17,6 +17,7 @@ on:
     paths:
       - "packages/studiocms/src/virtuals/i18n/translations/**"
       - "packages/studiocms/src/handlers/plugin-i18n/**"
+      - "packages/studiocms/src/integrations/webVitals/i18n/**"
     branches:
       - main
 

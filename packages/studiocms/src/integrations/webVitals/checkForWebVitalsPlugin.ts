@@ -13,6 +13,7 @@ import {
 	hasIntegration,
 } from 'astro-integration-kit';
 import type { StudioCMSPlugin } from '../../plugins.js';
+import en from './i18n/en.js';
 
 export const webVitalsNameList = ['@studiocms/web-vitals'];
 
@@ -77,6 +78,9 @@ export const checkForWebVitals = defineUtility('astro:config:setup')(
 			hooks: {
 				'studiocms:config:setup': ({ setDashboard }) => {
 					setDashboard({
+						translations: {
+							en,
+						},
 						dashboardGridItems: [
 							{
 								name: 'core-web-vitals',
