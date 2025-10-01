@@ -24,10 +24,9 @@ const sidebar = getSidebarLinks(lang);
 
 interface Props {
 	currentUser: UserSessionData | null;
-	latestVersion: VersionCacheObject;
 }
 
-const { currentUser: userData, latestVersion } = Astro.props as Props;
+const { currentUser: userData } = Astro.props as Props;
 
 const { isEditor, isAdmin, isOwner } = Astro.locals.StudioCMS.security?.userPermissionLevel ?? {
 	isVisitor: false,
@@ -48,7 +47,7 @@ const filteredPluginList = pluginList.filter((plugin) => !!plugin.settingsPage);
     <div class="sidebar-subtitle">
       <Group>
         <LanguageSelector />
-        { versionCheck && <VersionCheck {latestVersion} /> }
+        <VersionCheck {versionCheck} />
         <Button size='sm' variant="outlined" color={'default'} id={'studiocms-theme-toggle'}>
           <div id="dark-content">
             <Icon name='heroicons:moon-16-solid' width={16} height={16} slot="dark" />

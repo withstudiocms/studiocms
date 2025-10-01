@@ -54,13 +54,16 @@ const description = propDescription ?? config.data.description;
     <Toaster />
     { requiredPermission !== 'none' && (
       <LoginChecker {requiredPermission} {currentUser} />
-     ) }
-     <SidebarModals {latestVersion} />
-    { sidebar === 'single' && <SingleSidebar {currentUser} {latestVersion} /> }
-    { sidebar === 'double' && <DoubleSidebar {currentUser} {latestVersion} >
+    ) }
+    <SidebarModals />
+    { sidebar === 'single' && (
+      <SingleSidebar {currentUser} />
+    ) }
+    { sidebar === 'double' && (
+      <DoubleSidebar {currentUser} >
         <slot name="double-sidebar" />
-      </DoubleSidebar> }
-
+      </DoubleSidebar>
+    ) }
     <main>
       <div class="container">
 
@@ -80,11 +83,11 @@ const description = propDescription ?? config.data.description;
       }
     </style>
     <script>
-    import { PluginTranslations } from 'studiocms:i18n/plugins';
+      import { PluginTranslations } from 'studiocms:i18n/plugins';
 
-    if (!customElements.get('p-translations')) {
-      customElements.define('p-translations', PluginTranslations);
-    }
+      if (!customElements.get('p-translations')) {
+        customElements.define('p-translations', PluginTranslations);
+      }
     </script>
   </body>
 </html>

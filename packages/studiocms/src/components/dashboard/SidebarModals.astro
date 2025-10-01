@@ -2,12 +2,6 @@
 import type { VersionCacheObject } from 'studiocms:sdk/types';
 import UserManagementModals from './sidebar-modals/UserManagementModals.astro';
 import VersionModal from './sidebar-modals/VersionModal.astro';
-
-interface Props {
-	latestVersion: VersionCacheObject;
-}
-
-const { latestVersion } = Astro.props as Props;
 ---
-<VersionModal {latestVersion} />
+<VersionModal />
 <UserManagementModals />
