@@ -4,7 +4,7 @@ import { beforeAll, describe, expect, it } from 'vitest';
 import { Effect } from '../src/effect.js';
 import { SMTPService, SMTPTransportConfig, TransportConfig } from '../src/smtp.js';
 
-describe('SMTP Service', () => {
+describe('SMTP Service', { timeout: 10000 }, () => {
 	let testAccount: Awaited<ReturnType<typeof nodemailer.createTestAccount>>;
 	let testConfig: TransportConfig;
 	let testLayer: Layer<SMTPTransportConfig, never, never>;
@@ -135,7 +135,7 @@ describe('SMTP Service', () => {
 	});
 
 	describe('Mail sending', () => {
-		it('should send email successfully', { timeout: 10000 }, async () => {
+		it('should send email successfully', async () => {
 			const mailOptions = {
 				from: testAccount.user,
 				to: 'recipient@example.com',
@@ -305,7 +305,7 @@ describe('SMTP Service', () => {
 	});
 
 	describe('Integration tests', () => {
-		it('should perform end-to-end mail sending workflow', { timeout: 10000 }, async () => {
+		it('should perform end-to-end mail sending workflow', async () => {
 			const program = Effect.gen(function* () {
 				const service = yield* SMTPService;
 
