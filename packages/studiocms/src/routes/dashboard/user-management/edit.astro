@@ -66,7 +66,7 @@ if (isOwner) allowedRanks.unshift({ label: 'Owner', value: 'owner' });
 
 if (isAdmin) allowedRanks.unshift({ label: 'Administrator', value: 'admin' });
 ---
-<Layout 
+<Layout
   title={t('title')}
   description={t('description')}
   requiredPermission='admin'
@@ -117,7 +117,7 @@ if (isAdmin) allowedRanks.unshift({ label: 'Administrator', value: 'admin' });
             <span><t-users-edit key="delete-modal-desc-1">{t('delete-modal-desc-1')}</t-users-edit> <code>{user?.username}</code> <t-users-edit key="delete-modal-desc-2">{t('delete-modal-desc-2')}</t-users-edit></span>
 
             <Input name="confirm-user-username" placeholder={`${user?.username.slice(0, user?.username.length-2)}...`} isRequired />
-          
+
             <span style="color: var(--danger-base)"><t-users-edit key="delete-modal-warning">{t('delete-modal-warning')}</t-users-edit></span>
           </div>
         </Center>
@@ -139,11 +139,11 @@ if (isAdmin) allowedRanks.unshift({ label: 'Administrator', value: 'admin' });
           <td>{user?.email}{emailVerificationEnabled && <>{user?.emailVerified ? ' 🟢' : ' 🔴'}</>}</td>
         </tr>
         <tr>
-          <td><t-users-edit key="user-info-username">{t('user-info-username')}</t-users-edit></td> 
-          <td>{user?.username}</td> 
+          <td><t-users-edit key="user-info-username">{t('user-info-username')}</t-users-edit></td>
+          <td>{user?.username}</td>
         </tr>
-        {user?.url && <tr> 
-          <td><t-users-edit key="user-info-website">{t('user-info-website')}</t-users-edit></td> <td>{user?.url}</td> 
+        {user?.url && <tr>
+          <td><t-users-edit key="user-info-website">{t('user-info-website')}</t-users-edit></td> <td>{user?.url}</td>
         </tr> }
         <tr>
           <td><t-users-edit key="user-info-created-at">{t('user-info-created-at')}</t-users-edit></td>
@@ -181,20 +181,20 @@ if (isAdmin) allowedRanks.unshift({ label: 'Administrator', value: 'admin' });
 
       <input type="hidden" name="user-id" value={user?.id}>
 
-      <Select 
-        name="rank"  
-        isRequired 
-        fullWidth 
+      <Select
+        name="rank"
+        isRequired
+        fullWidth
         defaultValue={user?.permissionsData?.rank || 'visitor'}
         options={allowedRanks}
         />
 
       <div class="text-h3"><t-users-edit key="email-verification-status">{t('email-verification-status')}</t-users-edit></div>
 
-      <Select 
-        name="email-verified"  
-        isRequired 
-        fullWidth 
+      <Select
+        name="email-verified"
+        isRequired
+        fullWidth
         defaultValue={`${user?.emailVerified}`}
         disabled={emailVerificationEnabled ? false : true}
         options={[
@@ -205,7 +205,7 @@ if (isAdmin) allowedRanks.unshift({ label: 'Administrator', value: 'admin' });
 
     </form>
 
-    { shouldShowOAuth && ( 
+    { shouldShowOAuth && (
       <SocialSignin oAuthData={user?.oAuthData} {lang} />
     )}
 
@@ -244,11 +244,11 @@ if (isAdmin) allowedRanks.unshift({ label: 'Administrator', value: 'admin' });
       </div>
     )}
 
-    { config.data.enableDiffs && ( 
+    { config.data.enableDiffs && (
       <div class="text-h3"><t-users-edit key="last-edit-pages-header">{t('last-edit-pages-header')}</t-users-edit></div>
-  
+
       <div class="edit-card-list">
-  
+
         {
           diffs.length > 0 ? (
             diffs.map((diff) => (
@@ -257,7 +257,7 @@ if (isAdmin) allowedRanks.unshift({ label: 'Administrator', value: 'admin' });
                   <span class="card-title">{pages.find((page) => page.data.id === diff.pageId)?.data.title}</span>
                   <span class="card-date"><t-users-edit key="last-edit-pages-edited">{t('last-edit-pages-edited')}</t-users-edit>: <FormattedDate date={diff.timestamp!} /></span>
                 </div>
-  
+
                 <div class="card-row">
                   <span class="card-description">{pages.find((page) => page.data.id === diff.pageId)?.data.description}</span>
                   <Button size='sm' as='a' href={Astro.locals.StudioCMS.routeMap.mainLinks.contentManagementDiff + `?diff=${diff.id}`}>
@@ -272,7 +272,7 @@ if (isAdmin) allowedRanks.unshift({ label: 'Administrator', value: 'admin' });
             </Card>
           )
         }
-  
+
       </div>
     )}
 
@@ -280,35 +280,46 @@ if (isAdmin) allowedRanks.unshift({ label: 'Administrator', value: 'admin' });
 
   <div style="display: none;" id="reset-link-selector" data-link={Astro.locals.StudioCMS.routeMap.endpointLinks.createResetLink} data-userid={user?.id} data-dashboard={Astro.locals.StudioCMS.routeMap.mainLinks.dashboardIndex} data-reseturl={Astro.locals.StudioCMS.routeMap.mainLinks.passwordReset}></div>
 
-  <div 
+  <div
       id="token-api-links" style="display: none;"
       data-token_api={Astro.locals.StudioCMS.routeMap.endpointLinks.apiTokens}
   ></div>
 
   <script>
-      import { 
+      import {
           $i18n,
           $localeSettings,
           baseTranslation,
           defaultLang,
           documentUpdater,
           makeTranslation,
+          updateSelectOptions
       } from 'studiocms:i18n/client';
-  
+
       const currentPage = '@studiocms/dashboard:user-mngmt-edit';
-  
+
       let lang = defaultLang;
-  
+
       const i18n = $i18n(currentPage, baseTranslation[currentPage]);
-  
+
       $localeSettings.subscribe((locale) => {
           lang = locale || defaultLang;
       });
-      
+
       i18n.subscribe(comp => {
-        documentUpdater(comp, lang)
+        documentUpdater(comp, lang);
+        updateSelectOptions('rank', {
+          owner: comp['owner'],
+          admin: comp['admin'],
+          editor: comp['editor'],
+          visitor: comp['visitor']
+        });
+        updateSelectOptions('email-verified', {
+          verified: comp['email-verified'],
+          unverified: comp['email-unverified']
+        });
       });
-      
+
       if (!customElements.get('t-users-edit')) {
           customElements.define('t-users-edit', makeTranslation(currentPage, i18n));
       }
@@ -319,7 +330,7 @@ if (isAdmin) allowedRanks.unshift({ label: 'Administrator', value: 'admin' });
     import { ModalHelper } from 'studiocms:ui/components/modal';
 
     const resetLinkModal = new ModalHelper('password-reset-link-modal');
-    
+
     const deleteButtons = document.querySelectorAll('[data-token]') as NodeListOf<HTMLButtonElement>;
 
     const tokenAPILinks = document.getElementById('token-api-links') as HTMLDivElement;
@@ -376,16 +387,16 @@ if (isAdmin) allowedRanks.unshift({ label: 'Administrator', value: 'admin' });
 
       resetLinkModal.show();
     })
-    
+
     userDeleteModal.registerConfirmCallback(async (formData) => {
       if (!formData) {
-        console.error('No form data provided') 
+        console.error('No form data provided')
         return
       };
 
       const data = {
-        userId: formData.get('user-id')?.toString(), 
-        username: formData.get('user-username')?.toString(), 
+        userId: formData.get('user-id')?.toString(),
+        username: formData.get('user-username')?.toString(),
         usernameConfirm: formData.get('confirm-user-username')?.toString()
       }
 
@@ -615,7 +626,7 @@ if (isAdmin) allowedRanks.unshift({ label: 'Administrator', value: 'admin' });
     display: flex;
     flex-direction: column;
     background-color: var(--background-step-2);
-    
+
     & .card-row {
       display: flex;
       justify-content: space-between;

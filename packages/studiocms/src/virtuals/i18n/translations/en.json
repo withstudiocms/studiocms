@@ -210,7 +210,14 @@
       "api-tokens-no-tokens": "No API tokens found.",
       "last-edit-pages-header": "Last Edited Pages",
       "last-edit-pages-edited": "Edited",
-      "last-edit-pages-no-edits": "No history found."
+      "last-edit-pages-no-edits": "No history found.",
+      "owner": "Owner",
+      "admin": "Administrator",
+      "editor": "Editor",
+      "visitor": "Visitor",
+      "unknown": "Unknown",
+      "email-verified": "Verified",
+      "email-unverified": "Not Verified"
     },
     "@studiocms/dashboard:plugin-settings": {
       "title": "Plugin Settings",
