@@ -168,6 +168,7 @@ declare module 'studiocms:i18n/plugins' {
 		constructor();
 		connectedCallback(): void;
 	}
+	export const $pluginI18n: typeof import('./virtuals/i18n/plugin').$pluginI18n;
 }
 
 declare module 'studiocms:imageHandler/components' {

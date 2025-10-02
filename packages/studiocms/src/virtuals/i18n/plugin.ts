@@ -13,6 +13,16 @@ import { $locale, $localeSettings, defaultLang } from 'studiocms:i18n/client';
 import pluginTranslations from 'studiocms:i18n/plugin-translations';
 import { createI18n } from '@nanostores/i18n';
 
+export function $pluginI18n(pluginId: string, componentId: string) {
+	const translations = pluginTranslations[pluginId];
+	const base = translations[defaultLang];
+	const i18n = createI18n($locale, {
+		baseLocale: defaultLang,
+		get: async (code) => translations[code] ?? translations[defaultLang],
+	});
+	return i18n(componentId, base[componentId]);
+}
+
 export class PluginTranslations extends HTMLElement {
 	currentLang: string | undefined;
 
@@ -34,13 +44,7 @@ export class PluginTranslations extends HTMLElement {
 			return;
 		}
 
-		const translations = pluginTranslations[pluginId];
-		const base = translations[defaultLang];
-
-		const i18n = createI18n($locale, {
-			baseLocale: defaultLang,
-			get: async (code) => translations[code] ?? translations[defaultLang],
-		})(componentId, base[componentId]);
+		const i18n = $pluginI18n(pluginId, componentId);
 
 		i18n.subscribe((comp) => {
 			const translation = comp[key];

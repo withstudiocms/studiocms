@@ -74,13 +74,13 @@ const t = useTranslations(lang, '@studiocms/dashboard:configuration');
         </div>
 
         <div class="form-row">
-            <Select label={t('select-page-diff-tracking')} name="diff-enabled" defaultValue={`${data.enableDiffs}`} options={[{ label: 'Enabled', value: 'true' }, { label: 'Disabled', value: 'false' }]} fullWidth />
+            <Select label={t('select-page-diff-tracking')} name="diff-enabled" defaultValue={`${data.enableDiffs}`} options={[{ label: 'True', value: 'true' }, { label: 'False', value: 'false' }]} fullWidth />
             <Input label={t('input-diff-tracking-limit')} name="diff-per-page" placeholder="10" value={data.diffPerPage} />
         </div>
 
         <div class="form-row">
-            <Select label={t('select-smtp-mailer')} name="enable-mailer" defaultValue={`${data.enableMailer}`} options={[{ label: 'Enabled', value: 'true' }, { label: 'Disabled', value: 'false' }]} fullWidth />
-            <Select label={t('select-hide-default-index')} name="hide-default-index" defaultValue={`${data.hideDefaultIndex}`} options={[{ label: 'Enabled', value: 'true' }, { label: 'Disabled', value: 'false' }]} fullWidth />
+            <Select label={t('select-smtp-mailer')} name="enable-mailer" defaultValue={`${data.enableMailer}`} options={[{ label: 'True', value: 'true' }, { label: 'False', value: 'false' }]} fullWidth />
+            <Select label={t('select-hide-default-index')} name="hide-default-index" defaultValue={`${data.hideDefaultIndex}`} options={[{ label: 'True', value: 'true' }, { label: 'False', value: 'false' }]} fullWidth />
         </div>
 
         <Divider />
@@ -111,8 +111,10 @@ const t = useTranslations(lang, '@studiocms/dashboard:configuration');
     </div>
 </form>
 
+<div id="grid-items-data-list" data-items={JSON.stringify(gridItemOptions.map(({ name }) => name))} style="display: none;"></div>
+
 <script>
-    import { 
+    import {
         $i18n,
         $localeSettings,
         baseTranslation,
@@ -121,6 +123,22 @@ const t = useTranslations(lang, '@studiocms/dashboard:configuration');
         updateElmLabel,
         updateSelectElmLabel,
     } from 'studiocms:i18n/client';
+    import { $pluginI18n } from 'studiocms:i18n/plugins';
+
+    const gridItemsDataElm = document.getElementById('grid-items-data-list') as HTMLDivElement;
+    const gridItemsData = gridItemsDataElm.dataset.items as string;
+
+    const gridItems: `${string}/${string}`[] = JSON.parse(gridItemsData);
+
+    const gridItemsList = gridItems.map((item) => {
+      const [id, component] = item.split('/');
+      return {
+        id,
+        // component name should replace underscores with hyphens
+        component: component.replace(/_/g, '-'),
+        selector: `label-${item}`
+      };
+    });
 
     const currentPage = '@studiocms/dashboard:configuration';
 
@@ -128,10 +146,27 @@ const t = useTranslations(lang, '@studiocms/dashboard:configuration');
 
     const i18n = $i18n(currentPage, baseTranslation[currentPage]);
 
+    const pluginI18n = (pluginId: string, component: string) => $pluginI18n(pluginId, component);
+
+    function registerGridItemSubscriptions(subscriptions: { id: string, component: string, selector: string }[]) {
+      for (const subscription of subscriptions) {
+        const sub = pluginI18n(subscription.id, subscription.component);
+
+        sub.subscribe(comp => {
+          const elm = document.getElementById(subscription.selector);
+          if (elm) {
+            elm.textContent = comp['title'];
+          }
+        })
+      }
+    }
+
+    registerGridItemSubscriptions(gridItemsList);
+
     $localeSettings.subscribe((locale) => {
         lang = locale || defaultLang;
     });
-    
+
     i18n.subscribe(comp => {
         updateElmLabel('site-title', comp['input-site-title']);
         updateElmLabel('site-description', comp['input-site-description']);
@@ -144,7 +179,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:configuration');
         updateSelectElmLabel('enable-mailer', comp['select-smtp-mailer']);
         updateSelectElmLabel('hide-default-index', comp['select-hide-default-index'])
     });
-    
+
     if (!customElements.get('t-config-form')) {
         customElements.define('t-config-form', makeTranslation(currentPage, i18n));
     }
