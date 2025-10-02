@@ -196,6 +196,20 @@ export const updateSelectElmLabel = (el: string, translation: string) => {
 	label.textContent = translation;
 };
 
+export const updateTrueFalseSelectOptions = (el: string, t: { true: string; false: string }) => {
+	const UlList = document.querySelector(`ul[id="${el}-dropdown"]`) as HTMLUListElement;
+	console.log('Found', UlList);
+
+	if (UlList) {
+		const trueOption = UlList.querySelector(`li[value="true"]`) as HTMLLIElement;
+		const falseOption = UlList.querySelector(`li[value="false"]`) as HTMLLIElement;
+		if (trueOption && falseOption) {
+			trueOption.textContent = t.true;
+			falseOption.textContent = t.false;
+		}
+	}
+};
+
 export function updateTabLabel(id: string, label: string) {
 	const tab = document.querySelector(`button[data-tab-child="${id}"]`) as HTMLButtonElement;
 	const tabSpan = tab.querySelector('span') as HTMLSpanElement;

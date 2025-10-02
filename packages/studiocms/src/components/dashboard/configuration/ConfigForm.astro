@@ -122,6 +122,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:configuration');
         makeTranslation,
         updateElmLabel,
         updateSelectElmLabel,
+updateTrueFalseSelectOptions,
     } from 'studiocms:i18n/client';
     import { $pluginI18n } from 'studiocms:i18n/plugins';
 
@@ -178,6 +179,12 @@ const t = useTranslations(lang, '@studiocms/dashboard:configuration');
         updateSelectElmLabel('diff-enabled', comp['select-page-diff-tracking']);
         updateSelectElmLabel('enable-mailer', comp['select-smtp-mailer']);
         updateSelectElmLabel('hide-default-index', comp['select-hide-default-index'])
+
+        const trueFalseOptions = { true: comp['true-label'], false: comp['false-label'] };
+
+        updateTrueFalseSelectOptions('diff-enabled', trueFalseOptions);
+        updateTrueFalseSelectOptions('enable-mailer', trueFalseOptions);
+        updateTrueFalseSelectOptions('hide-default-index', trueFalseOptions);
     });
 
     if (!customElements.get('t-config-form')) {

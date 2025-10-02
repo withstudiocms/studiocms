@@ -457,6 +457,7 @@ const notificationSettingKeys = Object.keys(notificationSettings.data).filter(
     updateElmPlaceholder,
     updateSelectElmLabel,
     updateToggleElmLabel,
+    updateTrueFalseSelectOptions,
   } from "studiocms:i18n/client";
 
   const currentPage = "@studiocms/dashboard:smtp";
@@ -499,6 +500,11 @@ const notificationSettingKeys = Object.keys(notificationSettings.data).filter(
       "tls_rejectUnauthorized",
       comp["smtp-tls-reject-unauthorized"],
     );
+
+    const trueFalseOptions = { true: comp['true-label'], false: comp['false-label'] };
+
+    updateTrueFalseSelectOptions('secure', trueFalseOptions);
+    updateTrueFalseSelectOptions('tls_rejectUnauthorized', trueFalseOptions);
 
     document
       .querySelector("#notification-settings-form")

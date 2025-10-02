@@ -129,7 +129,9 @@
       "select-page-diff-tracking": "Page Diff Tracking",
       "select-login-page-bg": "Login Page Background Image",
       "select-smtp-mailer": "SMTP Mailer",
-      "select-hide-default-index": "Hide Index Page from dashboard"
+      "select-hide-default-index": "Hide Index Page from dashboard",
+      "true-label": "True",
+      "false-label": "False"
     },
     "@studiocms/dashboard:smtp": {
       "title": "SMTP Configuration",
@@ -162,7 +164,9 @@
       "requireAdminVerification": "Require Admins to have their email verified",
       "requireEditorVerification": "Require Editors to have their email verified",
       "oAuthBypassVerification": "Skip Email Verification for OAuth Users",
-      "save-email-settings": "Save"
+      "save-email-settings": "Save",
+      "true-label": "True",
+      "false-label": "False"
     },
     "@studiocms/dashboard:user-mngmt-sidebar": {
       "input-placeholder-search": "Search...",
@@ -280,7 +284,9 @@
       "custom-page-types-description-new": "You have changed your pageType. Please save your changes and refresh the page to see the new fields.",
       "diff-edited-by-1": "Edited",
       "diff-edited-by-2": "by",
-      "diff-no-history": "No history found."
+      "diff-no-history": "No history found.",
+      "true-label": "True",
+      "false-label": "False"
     },
     "@studiocms/dashboard:404": {
       "title": "Error 404",

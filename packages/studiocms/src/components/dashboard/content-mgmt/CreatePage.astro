@@ -185,6 +185,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
     updateElmLabel,
     updateSelectElmLabel,
     updateTabLabel,
+updateTrueFalseSelectOptions,
   } from "studiocms:i18n/client";
 
   const currentPage = "@studiocms/dashboard:content-page";
@@ -211,6 +212,13 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
 
     updateTabLabel('tab-label-basic-info', comp['tab-label-basic-info']);
     updateTabLabel('tab-label-content', comp['tab-label-content']);
+
+    const trueFalseOptions = { true: comp['true-label'], false: comp['false-label'] };
+
+    updateTrueFalseSelectOptions('show-author', trueFalseOptions);
+    updateTrueFalseSelectOptions('show-contributors', trueFalseOptions);
+    updateTrueFalseSelectOptions('draft', trueFalseOptions);
+    updateTrueFalseSelectOptions('show-in-nav', trueFalseOptions);
   });
 
   if (!customElements.get("t-content-create-page")) {
