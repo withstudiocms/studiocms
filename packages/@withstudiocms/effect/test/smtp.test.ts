@@ -135,7 +135,7 @@ describe('SMTP Service', () => {
 	});
 
 	describe('Mail sending', () => {
-		it('should send email successfully', async () => {
+		it('should send email successfully', { timeout: 10000 }, async () => {
 			const mailOptions = {
 				from: testAccount.user,
 				to: 'recipient@example.com',
@@ -305,7 +305,7 @@ describe('SMTP Service', () => {
 	});
 
 	describe('Integration tests', () => {
-		it('should perform end-to-end mail sending workflow', async () => {
+		it('should perform end-to-end mail sending workflow', { timeout: 10000 }, async () => {
 			const program = Effect.gen(function* () {
 				const service = yield* SMTPService;
 
