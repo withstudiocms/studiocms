@@ -451,6 +451,9 @@ declare module 'studiocms:auth/utils/validImages' {
 }
 
 declare module 'studiocms:auth/utils/getLabelForPermissionLevel' {
+	/**
+	 * @deprecated Use Translation system under the `@studiocms/dashboard:user-component` entry
+	 */
 	export const getLabelForPermissionLevel: typeof import('./virtuals/auth/getLabelForPermissionLevel.js').getLabelForPermissionLevel;
 }
 

@@ -302,6 +302,13 @@
       "last-check": "Last Update Check",
       "full-changelog": "Full Changelog",
       "view-on": "View on"
+    },
+    "@studiocms/dashboard:user-component": {
+      "admin": "Administrator",
+      "editor": "Editor",
+      "owner": "Owner",
+      "visitor": "Visitor",
+      "unknown": "Unknown"
     }
   }
 }

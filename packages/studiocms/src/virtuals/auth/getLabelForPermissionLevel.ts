@@ -1,3 +1,6 @@
+/**
+ * @deprecated Use Translation system under the `@studiocms/dashboard:user-component` entry
+ */
 const getLabelForPermissionLevel = (
 	permissionLevel: 'admin' | 'editor' | 'owner' | 'visitor' | string
 ) => {
