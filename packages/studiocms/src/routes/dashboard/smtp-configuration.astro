@@ -502,7 +502,7 @@ const notificationSettingKeys = Object.keys(notificationSettings.data).filter(
 
     document
       .querySelector("#notification-settings-form")
-      ?.querySelectorAll("sui-toggle-label")
+      ?.querySelectorAll(".sui-toggle-label")
       .forEach((toggle) => {
         updateToggleElmLabel(
           toggle.getAttribute("for") as string,

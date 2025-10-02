@@ -196,6 +196,14 @@ export const updateSelectElmLabel = (el: string, translation: string) => {
 	label.textContent = translation;
 };
 
+export function updateTabLabel(id: string, label: string) {
+	const tab = document.querySelector(`button[data-tab-child="${id}"]`) as HTMLButtonElement;
+	const tabSpan = tab.querySelector('span') as HTMLSpanElement;
+	if (tab && tabSpan) {
+		tabSpan.textContent = label;
+	}
+}
+
 /**
  * Updates the label text for a toggle element with a given translation.
  *

@@ -155,6 +155,7 @@ declare module 'studiocms:i18n/client' {
 	export const updateSelectElmLabel: typeof import('./virtuals/i18n/client').updateSelectElmLabel;
 	export const updateElmPlaceholder: typeof import('./virtuals/i18n/client').updateElmPlaceholder;
 	export const updateToggleElmLabel: typeof import('./virtuals/i18n/client').updateToggleElmLabel;
+	export const updateTabLabel: typeof import('./virtuals/i18n/client').updateTabLabel;
 }
 
 declare module 'studiocms:i18n/plugin-translations' {

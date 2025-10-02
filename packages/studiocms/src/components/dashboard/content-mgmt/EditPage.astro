@@ -100,6 +100,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
             >
                 <Tabs variant={"starlight"}>
                     <TabItem
+                        id="tab-label-basic-info"
                         label={t("tab-label-basic-info")}
                         icon={"heroicons:information-circle-20-solid"}
                         color={"primary"}
@@ -254,6 +255,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
                         </div>
                     </TabItem>
                     <TabItem
+                        id="tab-label-content"
                         label={t("tab-label-content")}
                         icon={"heroicons:document-text-20-solid"}
                         color={"success"}
@@ -282,6 +284,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
                     {
                         enableDiffs && (
                             <TabItem
+                                id="tab-label-diff"
                                 label={t("tab-label-diff")}
                                 icon={"heroicons:archive-box-20-solid"}
                                 color={"warning"}
@@ -377,6 +380,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
         makeTranslation,
         updateElmLabel,
         updateSelectElmLabel,
+        updateTabLabel,
     } from "studiocms:i18n/client";
 
     const currentPage = "@studiocms/dashboard:content-page";
@@ -403,6 +407,10 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
             "show-contributors",
             comp["select-page-show-contributors"],
         );
+
+        updateTabLabel('tab-label-basic-info', comp['tab-label-basic-info']);
+        updateTabLabel('tab-label-content', comp['tab-label-content']);
+        updateTabLabel('tab-label-diff', comp['tab-label-diff'])
     });
 
     if (!customElements.get("t-content-edit-page")) {
