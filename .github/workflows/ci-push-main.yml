@@ -2,12 +2,6 @@ name: CI - Push to Main
 
 on:
   workflow_dispatch:
-    inputs:
-      importAll:
-        default: false
-        required: false
-        type: boolean
-        description: Enable, if you want to import all TODOs. Runs on checked out branch! Only use if you're sure what you are doing. (requires run_todo_bot to be true)
   push:
     branches:
       - main
@@ -17,113 +11,39 @@ concurrency: ${{ github.workflow }}-${{ github.ref }}
 permissions: {}
 
 jobs:
-  format:
-    name: Format Code
-    runs-on: ubuntu-latest
+  ci-format:
+    name: Format
     permissions:
       contents: write
       id-token: write
       issues: write
       pull-requests: write
-    env:
-      NODE_OPTIONS: "--max_old_space_size=4096"
-    steps:
-      - name: Setup Apollo Git Bot
-        id: bot-token
-        uses: actions/create-github-app-token@67018539274d69449ef7c02e8e71183d1719ab42 # v2.1.4
-        with:
-          app-id: ${{ secrets.STUDIOCMS_GIT_BOT_APP_ID }}
-          private-key: ${{ secrets.STUDIOCMS_GIT_BOT_PRIVATE_KEY }}
+    secrets: inherit
+    uses: withstudiocms/automations/.github/workflows/format.yml@729a20ff5e68dd95330fb1914b801960ad4b5e7b # main
 
-      - name: Checkout Repo
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-        with:
-          persist-credentials: true
-          ref: ${{ github.head_ref }}
-          token: ${{ steps.bot-token.outputs.token }}
-
-      - name: Install Tools & Dependencies
-        uses: withstudiocms/automations/.github/actions/install@89b4e8b178b4f8b3e78a1b8d935ab47a31393888 # main
-
-      - name: Format code
-        run: pnpm run lint:fix
-
-      - name: Commit changes
-        uses: stefanzweifel/git-auto-commit-action@778341af668090896ca464160c2def5d1d1a3eb0 # v6.0.1
-        with:
-          commit_message: '[ci] lint'
-          branch: ${{ github.head_ref }}
-          commit_user_name: apollo-git-bot[bot]
-          commit_user_email: 234251158+apollo-git-bot[bot]@users.noreply.github.com
-          commit_author: Apollo Git Bot <234251158+apollo-git-bot[bot]@users.noreply.github.com>
-
-  todo-auto-issue:
-    name: Create issues from TODOs
-    runs-on: ubuntu-latest
+  ci-todo:
+    name: TODOs
     permissions:
       contents: write
       issues: write
-    steps:
-      - name: Setup Apollo Git Bot
-        id: bot-token
-        uses: actions/create-github-app-token@67018539274d69449ef7c02e8e71183d1719ab42 # v2.1.4
-        with:
-          app-id: ${{ secrets.STUDIOCMS_GIT_BOT_APP_ID }}
-          private-key: ${{ secrets.STUDIOCMS_GIT_BOT_PRIVATE_KEY }}
-          
-      - name: Checkout Repo
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-        with:
-          persist-credentials: false
-  
-      - name: Run Todo Issue Bot
-        uses: juulsn/todo-issue@15060dad73c1571dc9d6fbe6a3e64f2aad27ae74 # April 22nd, 2025
-        with:
-          excludePattern: '^(node_modules/)'
-          autoAssign: false
-        env:
-          GITHUB_TOKEN: ${{ steps.bot-token.outputs.token }}
+    secrets: inherit
+    uses: withstudiocms/automations/.github/workflows/todo.yml@729a20ff5e68dd95330fb1914b801960ad4b5e7b # main
 
-  mergebot:
-    name: Merge Bot
+  ci-release:
+    name: Release
+    permissions:
+      contents: write
+      pull-requests: write
+      id-token: write
+    secrets: inherit
+    uses: withstudiocms/automations/.github/workflows/release.yml@729a20ff5e68dd95330fb1914b801960ad4b5e7b # main
+    with:
+      build-cmd: "pnpm ci:build"
+      RoleMentionId: '1309310416362537020'
+
+  ci-mergebot:
+    name: CI - Merge Bot
     if: ${{ github.repository_owner == 'withstudiocms' && github.event_name != 'workflow_dispatch' && github.event.commits[0].message != '[ci] lint' }}
-    uses: withstudiocms/automations/.github/workflows/mergebot.yml@89b4e8b178b4f8b3e78a1b8d935ab47a31393888 # main
+    uses: withstudiocms/automations/.github/workflows/mergebot.yml@729a20ff5e68dd95330fb1914b801960ad4b5e7b # main
     secrets:
       DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_MERGEBOT }}
-
-  changeset-release:
-    name: Changeset Release
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pull-requests: write
-      id-token: write
-    steps:
-      - name: Setup Apollo Git Bot
-        id: bot-token
-        uses: actions/create-github-app-token@67018539274d69449ef7c02e8e71183d1719ab42 # v2.1.4
-        with:
-          app-id: ${{ secrets.STUDIOCMS_GIT_BOT_APP_ID }}
-          private-key: ${{ secrets.STUDIOCMS_GIT_BOT_PRIVATE_KEY }}
-          
-      - name: Checkout Repo
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-        with:
-          persist-credentials: false
-
-      - name: Install Tools & Dependencies
-        uses: withstudiocms/automations/.github/actions/install@89b4e8b178b4f8b3e78a1b8d935ab47a31393888 # main
-
-      - name: Run Build
-        run: pnpm ci:build
-
-      - name: Run Publishing
-        uses: withstudiocms/automations/.github/actions/changeset-release@89b4e8b178b4f8b3e78a1b8d935ab47a31393888 # main
-        with:
-          repository: withstudiocms/studiocms
-          CWD: ${{ github.workspace }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-          SERVICE_TOKEN: ${{ steps.bot-token.outputs.token }}
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_RELEASE }}
-          RoleMentionId: '1309310416362537020'
-          USE_GITHUB_BOT: 'true'

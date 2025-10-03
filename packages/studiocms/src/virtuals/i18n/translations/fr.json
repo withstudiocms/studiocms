@@ -39,7 +39,10 @@
     },
     "@studiocms/auth:logout": {
       "title": "Page de déconnexion",
-      "description": "Page de déconnexion"
+      "description": "Page de déconnexion",
+      "header": "Déconnexion en cours...",
+      "sub-header": "Veuillez patienter pendant que nous vous déconnectons. Ou appuyez sur le bouton ci-dessous pour annuler.",
+      "cancel-button-label": "Annuler"
     },
     "@studiocms/auth:oauth-stack": {
       "or-login-with": "ou connectez-vous avec"

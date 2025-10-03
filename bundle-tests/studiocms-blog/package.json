@@ -23,6 +23,7 @@
 		"@studiocms/md": "workspace:*",
 		"astro": "catalog:astrojs",
 		"sharp": "catalog:",
-		"studiocms": "workspace:*"
+		"studiocms": "workspace:*",
+		"vite": "catalog:astrojs"
 	}
 }

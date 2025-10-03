@@ -17,7 +17,7 @@ catalogs:
     "@astrojs/rss": ^4.0.12
     "@astrojs/check": ^0.9.4
     "@astrojs/node": ^9.4.4
-    astro: ^5.13.10
+    astro: ^5.14.1
     vite: ^6.3.4
   effect:
     "@effect/cli": ^0.69.2
@@ -32,14 +32,14 @@ catalogs:
     drizzle-orm: ^0.42.0
     vite: ^6.3.4
   react:
-    "@astrojs/react": ^4.3.1
-    "@types/react": ^19.1.13
+    "@astrojs/react": ^4.4.0
+    "@types/react": ^19.1.14
     "@types/react-dom": ^19.1.9
     react: ^19.1.1
     "react-dom": ^19.1.1
   studiocms:
     "@studiocms/markdown-remark-processor": ^1.2.0
-    "@studiocms/ui": ^1.0.0-beta.1
+    "@studiocms/ui": ^1.0.0-beta.2
     "@studiocms/web-vitals": ^4.5.3
     "@withstudiocms/cli-kit": ^0.1.0
 
@@ -55,5 +55,5 @@ minimumReleaseAge: 4320
 
 minimumReleaseAgeExclude:
   - studiocms
-  - '@studiocms/*'
-  - '@withstudiocms/*'
+  - "@studiocms/*"
+  - "@withstudiocms/*"

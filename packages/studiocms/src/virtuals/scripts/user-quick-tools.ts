@@ -465,6 +465,10 @@ export class UserQuickTools extends HTMLElement {
 	}
 
 	private createMenuElement(item: MenuItem): HTMLAnchorElement {
+		// For logout, create a custom element to handle POST submission
+		if (item.name === 'Logout') {
+			return this.createLogoutElement(item);
+		}
 		const element = document.createElement('a');
 		element.className = `menu ${item.cssClass}`;
 		element.title = item.name;
@@ -499,6 +503,48 @@ export class UserQuickTools extends HTMLElement {
 		return element;
 	}
 
+	private createLogoutElement(item: MenuItem): HTMLAnchorElement {
+		const element = document.createElement('a');
+		element.className = `menu ${item.cssClass}`;
+		element.title = item.name;
+		element.href = '#'; // Prevent default navigation
+
+		// Create SVG element safely
+		const parser = new DOMParser();
+		const svgDoc = parser.parseFromString(item.svg, 'image/svg+xml');
+		const svgElement = svgDoc.documentElement;
+		if (svgElement && svgElement.nodeName === 'svg') {
+			element.appendChild(svgElement.cloneNode(true));
+		}
+
+		// Handle logout with form submission
+		element.addEventListener('click', (e) => {
+			e.preventDefault();
+
+			const timeSinceToggle = Date.now() - this.lastMenuToggleTime;
+			if (!this.menuItemsReady || timeSinceToggle < this.CLICK_PROTECTION_DURATION) {
+				element.classList.add('click-ignored');
+				setTimeout(() => element.classList.remove('click-ignored'), 300);
+				return;
+			}
+
+			this.submitLogoutForm(item.href);
+		});
+
+		return element;
+	}
+
+	private submitLogoutForm(logoutUrl: string): void {
+		// Create a hidden form for POST submission
+		const form = document.createElement('form');
+		form.method = 'POST';
+		form.action = logoutUrl;
+		form.style.display = 'none';
+
+		document.body.appendChild(form);
+		form.submit();
+	}
+
 	private async testAvatarURL(url: string) {
 		let urlObj: URL;
 		try {
@@ -513,7 +559,7 @@ export class UserQuickTools extends HTMLElement {
 			return undefined;
 		}
 		const controller = new AbortController();
-		const timeoutId = window.setTimeout(() => controller.abort(), 3000);
+		const timeoutId = window.setTimeout(() => controller.abort(), 4000);
 		try {
 			const response = await fetch(url, {
 				method: 'HEAD',
@@ -731,9 +777,12 @@ export class ConfigurableUserQuickTools extends UserQuickTools {
 			strategy:
 				(this.getAttribute('data-init-strategy') as UserQuickToolsConfig['strategy']) ||
 				'interaction',
-			timeout: Number.parseInt(this.getAttribute('data-timeout') || '1000'),
-			clickProtectionDuration: Number.parseInt(this.getAttribute('data-click-protection') || '400'),
-			menuReadyDelay: Number.parseInt(this.getAttribute('data-menu-delay') || '350'),
+			timeout: Number.parseInt(this.getAttribute('data-timeout') || '1000', 10),
+			clickProtectionDuration: Number.parseInt(
+				this.getAttribute('data-click-protection') || '400',
+				10
+			),
+			menuReadyDelay: Number.parseInt(this.getAttribute('data-menu-delay') || '350', 10),
 		};
 
 		// Override defaults with config values

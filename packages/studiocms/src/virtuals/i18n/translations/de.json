@@ -39,7 +39,10 @@
     },
     "@studiocms/auth:logout": {
       "title": "Logout-Seite",
-      "description": "Logout-Seite"
+      "description": "Logout-Seite",
+      "header": "",
+      "sub-header": "",
+      "cancel-button-label": ""
     },
     "@studiocms/auth:oauth-stack": {
       "or-login-with": "oder logge dich ein mit"

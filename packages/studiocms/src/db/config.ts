@@ -149,62 +149,6 @@ const StudioCMSPageContent = defineTable({
 	},
 });
 
-// TODO: Deprecate this table in a future release
-/**
- * StudioCMS - Site Config Table for Astro DB
- *
- * To be deprecated in favor of StudioCMSDynamicConfigSettings
- */
-const StudioCMSSiteConfig = defineTable({
-	columns: {
-		id: column.number({ primaryKey: true }),
-		title: column.text(),
-		description: column.text(),
-		defaultOgImage: column.text({ optional: true }),
-		siteIcon: column.text({ optional: true }),
-		loginPageBackground: column.text({ default: 'studiocms-curves' }),
-		loginPageCustomImage: column.text({ optional: true }),
-		enableDiffs: column.boolean({ default: false }),
-		diffPerPage: column.number({ default: 10 }),
-		gridItems: column.json({ default: [] }),
-		enableMailer: column.boolean({ default: false }),
-		hideDefaultIndex: column.boolean({ default: false }),
-	},
-});
-
-// TODO: Deprecate this table in a future release
-/**
- * To be deprecated in favor of StudioCMSDynamicConfigSettings
- */
-const StudioCMSMailerConfig = defineTable({
-	columns: {
-		id: column.text({ primaryKey: true }),
-		host: column.text(),
-		port: column.number(),
-		secure: column.boolean(),
-		proxy: column.text({ optional: true }),
-		auth_user: column.text({ optional: true }),
-		auth_pass: column.text({ optional: true }),
-		tls_rejectUnauthorized: column.boolean({ optional: true }),
-		tls_servername: column.text({ optional: true }),
-		default_sender: column.text(),
-	},
-});
-
-// TODO: Deprecate this table in a future release
-/**
- * To be deprecated in favor of StudioCMSDynamicConfigSettings
- */
-const StudioCMSNotificationSettings = defineTable({
-	columns: {
-		id: column.text({ primaryKey: true }),
-		emailVerification: column.boolean({ default: false }),
-		requireAdminVerification: column.boolean({ default: false }),
-		requireEditorVerification: column.boolean({ default: false }),
-		oAuthBypassVerification: column.boolean({ default: false }),
-	},
-});
-
 const StudioCMSEmailVerificationTokens = defineTable({
 	columns: {
 		id: column.text({ primaryKey: true }),
@@ -241,6 +185,63 @@ const StudioCMSDynamicConfigSettings = defineTable({
 	},
 });
 
+// TODO: Remove deprecated tables in future release
+// StudioCMSSiteConfig, StudioCMSMailerConfig, StudioCMSNotificationSettings
+
+/**
+ * @deprecated
+ */
+const StudioCMSSiteConfig = defineTable({
+	deprecated: true,
+	columns: {
+		id: column.number({ primaryKey: true }),
+		title: column.text(),
+		description: column.text(),
+		defaultOgImage: column.text({ optional: true }),
+		siteIcon: column.text({ optional: true }),
+		loginPageBackground: column.text({ default: 'studiocms-curves' }),
+		loginPageCustomImage: column.text({ optional: true }),
+		enableDiffs: column.boolean({ default: false }),
+		diffPerPage: column.number({ default: 10 }),
+		gridItems: column.json({ default: [] }),
+		enableMailer: column.boolean({ default: false }),
+		hideDefaultIndex: column.boolean({ default: false }),
+	},
+});
+
+/**
+ * @deprecated
+ */
+const StudioCMSMailerConfig = defineTable({
+	deprecated: true,
+	columns: {
+		id: column.text({ primaryKey: true }),
+		host: column.text(),
+		port: column.number(),
+		secure: column.boolean(),
+		proxy: column.text({ optional: true }),
+		auth_user: column.text({ optional: true }),
+		auth_pass: column.text({ optional: true }),
+		tls_rejectUnauthorized: column.boolean({ optional: true }),
+		tls_servername: column.text({ optional: true }),
+		default_sender: column.text(),
+	},
+});
+
+/**
+ * @deprecated
+ */
+const StudioCMSNotificationSettings = defineTable({
+	deprecated: true,
+	columns: {
+		id: column.text({ primaryKey: true }),
+		emailVerification: column.boolean({ default: false }),
+		requireAdminVerification: column.boolean({ default: false }),
+		requireEditorVerification: column.boolean({ default: false }),
+		oAuthBypassVerification: column.boolean({ default: false }),
+	},
+});
+
 // Export the Database Configuration for StudioCMS
 export default defineDb({
 	tables: {
@@ -250,18 +251,19 @@ export default defineDb({
 		StudioCMSPageDataTags,
 		StudioCMSPermissions,
 		StudioCMSSessionTable,
-		StudioCMSSiteConfig,
 		StudioCMSUsers,
 		StudioCMSOAuthAccounts,
 		StudioCMSDiffTracking,
 		StudioCMSPageFolderStructure,
 		StudioCMSUserResetTokens,
 		StudioCMSAPIKeys,
-		StudioCMSMailerConfig,
-		StudioCMSNotificationSettings,
 		StudioCMSEmailVerificationTokens,
 		StudioCMSPluginData,
 		StudioCMSDynamicConfigSettings,
+		// Deprecated Tables
+		StudioCMSSiteConfig,
+		StudioCMSMailerConfig,
+		StudioCMSNotificationSettings,
 	},
 });
 
@@ -288,15 +290,6 @@ export const tsPageDataCategories = asDrizzleTable(
 	StudioCMSPageDataCategories
 );
 export const tsPageContent = asDrizzleTable('StudioCMSPageContent', StudioCMSPageContent);
-// TODO: Deprecate this table in a future release
-export const tsSiteConfig = asDrizzleTable('StudioCMSSiteConfig', StudioCMSSiteConfig);
-// TODO: Deprecate this table in a future release
-export const tsMailerConfig = asDrizzleTable('StudioCMSMailerConfig', StudioCMSMailerConfig);
-// TODO: Deprecate this table in a future release
-export const tsNotificationSettings = asDrizzleTable(
-	'StudioCMSNotificationSettings',
-	StudioCMSNotificationSettings
-);
 export const tsEmailVerificationTokens = asDrizzleTable(
 	'StudioCMSEmailVerificationTokens',
 	StudioCMSEmailVerificationTokens
@@ -305,4 +298,23 @@ export const tsPluginData = asDrizzleTable('StudioCMSPluginData', StudioCMSPlugi
 export const tsDynamicConfigSettings = asDrizzleTable(
 	'StudioCMSDynamicConfigSettings',
 	StudioCMSDynamicConfigSettings
+);
+
+// TODO: Remove deprecated tables in future release
+// StudioCMSSiteConfig, StudioCMSMailerConfig, StudioCMSNotificationSettings
+
+/**
+ * @deprecated
+ */
+export const tsSiteConfig = asDrizzleTable('StudioCMSSiteConfig', StudioCMSSiteConfig);
+/**
+ * @deprecated
+ */
+export const tsMailerConfig = asDrizzleTable('StudioCMSMailerConfig', StudioCMSMailerConfig);
+/**
+ * @deprecated
+ */
+export const tsNotificationSettings = asDrizzleTable(
+	'StudioCMSNotificationSettings',
+	StudioCMSNotificationSettings
 );

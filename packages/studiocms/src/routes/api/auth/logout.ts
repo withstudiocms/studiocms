@@ -42,20 +42,14 @@ export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
 
 				return redirect(StudioCMSRoutes.mainLinks.baseSiteURL);
 			}),
-		OPTIONS: () => Effect.try(() => OptionsResponse({ allowedMethods: ['GET', 'POST'] })),
+		OPTIONS: () => Effect.try(() => OptionsResponse({ allowedMethods: ['POST'] })),
 		ALL: () => Effect.try(() => AllResponse()),
 	},
 	{
-		cors: { methods: ['GET', 'POST', 'OPTIONS'] },
+		cors: { methods: ['POST', 'OPTIONS'] },
 		onError: (error) => {
 			console.error('API Error:', error);
 			return createJsonResponse({ error: 'Internal Server Error' }, { status: 500 });
 		},
 	}
 );
-
-/**
- * Alias for POST method to allow GET requests to logout.
- * This is useful for clients that may not support POST requests.
- */
-export const GET = POST;

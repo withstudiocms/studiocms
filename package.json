@@ -29,7 +29,7 @@
     "playground:preview": "pnpm --filter node-playground preview",
     "playground:build": "pnpm --filter node-playground build",
     "playground:cli": "pnpm --filter node-playground studiocms",
-    
+
     "dev": "pnpm --stream --filter studiocms --filter @studiocms/* --filter @withstudiocms/* --filter node-playground -r --parallel dev",
 
     "ci:lint": "biome ci --reporter=github",
@@ -55,8 +55,8 @@
     "@changesets/cli": "^2.29.7",
     "@changesets/config": "^3.1.1",
     "@changesets/write": "^0.4.0",
-    "@crowdin/crowdin-api-client": "^1.48.2",
-		"@effect/language-service": "^0.40.0",
+    "@crowdin/crowdin-api-client": "^1.48.3",
+		"@effect/language-service": "^0.41.0",
     "@effect/vitest": "^0.25.1",
     "@types/node": "catalog:",
     "@vitest/coverage-v8": "^3.2.4",
@@ -64,11 +64,12 @@
     "@withstudiocms/buildkit": "workspace:*",
     "@inox-tools/astro-tests": "^0.8.0",
     "execa": "^9.6.0",
-    "knip": "^5.63.1",
+    "knip": "^5.64.1",
     "pkg-pr-new": "^0.0.60",
     "studiocms": "workspace:*",
     "typescript": "catalog:",
-		"ts-patch": "^3.3.0",
+    "ts-patch": "^3.3.0",
+    "vite": "catalog:astrojs",
     "vitest": "^3.2.4",
     "jsdom": "^27.0.0"
   }

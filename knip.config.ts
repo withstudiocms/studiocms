@@ -10,7 +10,7 @@ import type { KnipConfig } from 'knip';
  * @property astro.project - Glob patterns specifying project `.astro` files within the `src` directory.
  */
 const baseAstroWorkspaceConfig = {
-	entry: ['src/**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}'],
+	entry: ['src/**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx,astro}'],
 	project: ['**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}'],
 	ignore: ['**/node_modules/**', '**/dist/**', '**/scratchpad/**'],
 	astro: {
@@ -88,6 +88,48 @@ const atWithStudioCMSPackages = [
 
 const bundleTestPackages = ['studiocms-blog', 'studiocms-headless'] as const;
 
+const studiocmsVirtualIgnore = [
+	'auth0',
+	'blog',
+	'devapps',
+	'discord',
+	'google',
+	'github',
+	'html',
+	'md',
+	'mdx',
+	'wysiwyg',
+] as const;
+
+const astroVirtualIgnore = [
+	'cloudinary-image-service',
+	'auth0',
+	'discord',
+	'google',
+	'github',
+] as const;
+
+const ignoredVirtuals = (() => {
+	const entries: Record<string, { ignoreDependencies: (string | RegExp)[] }> = {};
+
+	function addOrAppend(pkg: string, ignore: string | RegExp) {
+		if (!entries[pkg]) {
+			entries[pkg] = { ignoreDependencies: [ignore] };
+		} else if (!entries[pkg].ignoreDependencies.includes(ignore)) {
+			entries[pkg].ignoreDependencies.push(ignore);
+		}
+	}
+
+	studiocmsVirtualIgnore.forEach((pkg) => {
+		addOrAppend(pkg, /studiocms:.*/);
+	});
+	astroVirtualIgnore.forEach((pkg) => {
+		addOrAppend(pkg, /astro:.*/);
+	});
+
+	return entries;
+})();
+
 /**
  * Returns additional configuration options for a given package, such as dependencies to ignore.
  *
@@ -105,11 +147,12 @@ const extras = (pkg: string) => {
 		}
 	> = {
 		markdoc: {
-			ignoreDependencies: ['react-dom', '@types/react-dom'],
+			ignoreDependencies: ['react-dom', '@types/react-dom', /studiocms:.*/],
 		},
 		'auth-kit': {
 			ignoreUnresolved: [/^\.\/lists\/[^/]*\.js$/],
 		},
+		...ignoredVirtuals,
 	};
 	const supportsExtras = Object.keys(extrasMap).includes(pkg);
 	return supportsExtras ? extrasMap[pkg] : {};
@@ -119,13 +162,13 @@ const config: KnipConfig = {
 	exclude: ['duplicates', 'optionalPeerDependencies'],
 	workspaces: {
 		'.': {
-			ignoreDependencies: ['@changesets/config', 'studiocms'],
+			ignoreDependencies: ['@changesets/config', 'studiocms', 'vite'],
 			entry: ['.github/workflows/*.yml', '.github/scripts/**/*.mjs', 'scripts/**/*.mjs'],
 			project: ['.github/scripts/**/*.mjs', 'scripts/**/*.mjs'],
 		},
 		'packages/studiocms': {
 			...baseAstroWorkspaceConfig,
-			ignoreDependencies: ['studiocms-dashboard', '@it-astro'],
+			ignoreDependencies: ['studiocms-dashboard', '@it-astro', /studiocms:.*/, /astro:.*/],
 		},
 		...atStudioCMSPackages.reduce(
 			(acc, pkg) => {

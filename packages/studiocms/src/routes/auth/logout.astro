@@ -1,27 +1,153 @@
 ---
 import { useTranslations } from 'studiocms:i18n';
+import { Button } from 'studiocms:ui/components/button';
 import AuthLayout from '../../layouts/AuthLayout.astro';
 
 const lang = Astro.locals.StudioCMS.defaultLang;
 const t = useTranslations(lang, '@studiocms/auth:logout');
 ---
-<AuthLayout 
-	title={t('title')} 
-	description={t('description')} 
-	{lang} 
-	disableScreen
-	>
 
+<AuthLayout
+	title={t("title")}
+	description={t("description")}
+	{lang}
+	disableScreen
+>
+	<div slot="header">
+		<div class="header-container">
+		<h1><t-logout key="header">{t("header")}</t-logout></h1>
+		<p><t-logout key="sub-header">{t("sub-header")}</t-logout></p>
+		</div>
+		<div class="countdown-container"><span id="countdown">5</span></div>
+	</div>
+
+	<div>
+		<Button id="cancel-logout" variant="solid" color="danger" size="lg"
+			><t-logout key="cancel-button-label"
+				>{t("cancel-button-label")}</t-logout
+			></Button
+		>
+	</div>
 </AuthLayout>
 
-<div style="display: none;" id="redirect-to-logout" data-redirect={Astro.locals.StudioCMS.routeMap.authLinks.logoutAPI}></div>
+<style>
+
+	.header-container {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		margin: 1rem 0;
+	}
+
+	.header-container > p {
+		width: 80%;
+	}
+
+	.countdown-container {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		margin: 1rem 0;
+	}
+
+	#countdown {
+		font-size: 2rem;
+		font-weight: bold;
+	}
+</style>
 
 <script>
+	import {
+		$i18n,
+		$localeSettings,
+		baseTranslation,
+		defaultLang,
+		documentUpdater,
+		makeTranslation,
+	} from "studiocms:i18n/client";
 
-	const redirectElement = document.getElementById('redirect-to-logout') as HTMLDivElement;
-	const redirect = redirectElement.getAttribute('data-redirect') as string;
+	const currentPage = "@studiocms/auth:logout";
 
-	setTimeout(() => {
-		window.location.href = redirect;
-	}, 500);
+	let lang = defaultLang;
+
+	const i18n = $i18n(currentPage, baseTranslation[currentPage]);
+
+	$localeSettings.subscribe((locale) => {
+		lang = locale || defaultLang;
+	});
+
+	i18n.subscribe((comp) => {
+		documentUpdater(comp, lang);
+	});
+
+	if (!customElements.get("t-logout")) {
+		customElements.define("t-logout", makeTranslation(currentPage, i18n));
+	}
+</script>
+
+<div
+	style="display: none;"
+	id="routes"
+	data-redirect={Astro.locals.StudioCMS.routeMap.authLinks.logoutAPI}
+	data-dashboard={Astro.locals.StudioCMS.routeMap.mainLinks.dashboardIndex}
+	data-site-index={Astro.locals.StudioCMS.routeMap.mainLinks.baseSiteURL}
+>
+</div>
+
+<script>
+	const cancelButton = document.getElementById(
+		"cancel-logout",
+	) as HTMLButtonElement;
+
+	const routeMapLinks = document.getElementById("routes") as HTMLDivElement;
+	const logoutPostURL = routeMapLinks.dataset.redirect!;
+	const dashboardURL = routeMapLinks.dataset.dashboard!;
+	const siteIndexURL = routeMapLinks.dataset.siteIndex!;
+
+	// Create an AbortController to cancel the request
+	const abortController = new AbortController();
+	let timeoutId: NodeJS.Timeout;
+
+	function sendLogoutPost() {
+		if (!logoutPostURL) return;
+		fetch(logoutPostURL, {
+			method: "POST",
+			signal: abortController.signal,
+		})
+			.then(() => {
+				window.location.href = siteIndexURL;
+			})
+			.catch((error) => {
+				// Only redirect to home if it's not an abort error
+				if (error.name !== "AbortError") {
+					window.location.href = siteIndexURL;
+				}
+			});
+	}
+
+	let secondsRemaining = 5;
+	const countdownElm = document.getElementById("countdown");
+
+	const countdownInterval = setInterval(() => {
+		secondsRemaining--;
+		if (countdownElm) countdownElm.textContent = String(secondsRemaining);
+		if (secondsRemaining <= 0) clearInterval(countdownInterval);
+	}, 1000);
+
+	// Add click handler for cancel button
+	cancelButton.addEventListener("click", () => {
+		clearInterval(countdownInterval);
+		// Clear the timeout to prevent logout from happening
+		clearTimeout(timeoutId);
+		// Abort the fetch request if it's already in progress
+		abortController.abort();
+		// Redirect to dashboard
+		window.location.href = dashboardURL;
+	});
+
+	// Wait 5 seconds before sending the logout request
+	timeoutId = setTimeout(() => {
+		sendLogoutPost();
+	}, 5000); // 5000 milliseconds = 5 seconds
 </script>
