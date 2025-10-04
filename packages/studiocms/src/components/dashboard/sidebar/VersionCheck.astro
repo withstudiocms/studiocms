@@ -58,7 +58,7 @@ const status: false | 'outdated' | 'latest' | 'future' = (() => {
       "version-modal-trigger",
     ) as HTMLButtonElement;
 
-    const versionCheck = Boolean(versionModalTrigger.dataset.versionCheck);
+    const versionCheck = versionModalTrigger.dataset.versionCheck === 'true';
 
     if (!versionCheck) {
       return;

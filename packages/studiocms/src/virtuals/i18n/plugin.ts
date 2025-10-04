@@ -11,25 +11,37 @@
 
 import { $locale, $localeSettings, defaultLang } from 'studiocms:i18n/client';
 import pluginTranslations from 'studiocms:i18n/plugin-translations';
-import { createI18n } from '@nanostores/i18n';
+import { createI18n, type Messages } from '@nanostores/i18n';
+import type { TranslationsJSON } from '../../schemas/plugins/i18n';
 
-export function $pluginI18n(pluginId: string, componentId: string) {
+export function $pluginI18n(pluginId: string, componentId: string): Messages<TranslationsJSON> {
 	const translations = pluginTranslations[pluginId];
-	const base = translations[defaultLang];
-	const i18n = createI18n($locale, {
+
+	if (!translations || !translations[defaultLang]) {
+		console.warn(`[i18n] Missing translations for plugin "${pluginId}".`);
+		return createI18n($locale, {
+			baseLocale: defaultLang,
+			get: async () => ({}),
+		})(componentId, {});
+	}
+
+	const base = translations[defaultLang] ?? {};
+	const componentBase = base[componentId] ?? {};
+	return createI18n($locale, {
 		baseLocale: defaultLang,
-		get: async (code) => translations[code] ?? translations[defaultLang],
-	});
-	return i18n(componentId, base[componentId]);
+		get: async (code) => translations[code] ?? base,
+	})(componentId, componentBase);
 }
 
 export class PluginTranslations extends HTMLElement {
 	currentLang: string | undefined;
+	unsubscribeLocale?: () => void;
+	unsubscribeTranslations?: () => void;
 
 	constructor() {
 		super();
 
-		$localeSettings.subscribe((val) => {
+		this.unsubscribeLocale = $localeSettings.subscribe((val) => {
 			this.currentLang = val;
 		});
 	}
@@ -46,7 +58,8 @@ export class PluginTranslations extends HTMLElement {
 
 		const i18n = $pluginI18n(pluginId, componentId);
 
-		i18n.subscribe((comp) => {
+		this.unsubscribeTranslations?.();
+		this.unsubscribeTranslations = i18n.subscribe((comp) => {
 			const translation = comp[key];
 
 			if (typeof translation === 'string' && translation.trim() === '') {
@@ -55,5 +68,10 @@ export class PluginTranslations extends HTMLElement {
 
 			this.textContent = translation;
 		});
+	}
+
+	disconnectedCallback() {
+		this.unsubscribeTranslations?.();
+		this.unsubscribeLocale?.();
 	}
 }

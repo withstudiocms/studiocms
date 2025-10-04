@@ -41,7 +41,8 @@ import { languageSelectorOptions } from './config.js';
 
   $localeSettings.subscribe(((lang) => {
     const currentLang = lang || defaultLang;
-    const dropdown = document.getElementById('language-selector-dropdown') as HTMLUListElement;
+    const dropdown = document.getElementById('language-selector-dropdown') as HTMLUListElement | null;
+    if (!dropdown) return;
     dropdown.querySelectorAll('li').forEach((option) => {
       option.classList.remove('active-language-selector-option');
     });

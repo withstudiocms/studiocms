@@ -197,35 +197,28 @@ export const updateSelectElmLabel = (el: string, translation: string) => {
 };
 
 export const updateTrueFalseSelectOptions = (el: string, t: { true: string; false: string }) => {
-	const UlList = document.querySelector(`ul[id="${el}-dropdown"]`) as HTMLUListElement;
-
-	if (UlList) {
-		const trueOption = UlList.querySelector(`li[value="true"]`) as HTMLLIElement;
-		const falseOption = UlList.querySelector(`li[value="false"]`) as HTMLLIElement;
-		if (trueOption && falseOption) {
-			trueOption.textContent = t.true;
-			falseOption.textContent = t.false;
-		}
-	}
+	const ul = document.querySelector<HTMLUListElement>(`#${el}-dropdown`);
+	if (!ul) return;
+	const trueOption = ul.querySelector<HTMLLIElement>('li[data-value="true"]');
+	const falseOption = ul.querySelector<HTMLLIElement>('li[data-value="false"]');
+	if (trueOption) trueOption.textContent = t.true;
+	if (falseOption) falseOption.textContent = t.false;
 };
 
 export const updateSelectOptions = (el: string, t: { [key: string]: string }) => {
-	const UlList = document.querySelector(`ul[id="${el}-dropdown"]`) as HTMLUListElement;
-
-	for (const translation in t) {
-		const option = UlList.querySelector(`li[value="${translation}"]`) as HTMLLIElement;
-		if (option) {
-			option.textContent = t[translation];
-		}
+	const ul = document.querySelector<HTMLUListElement>(`#${el}-dropdown`);
+	if (!ul) return;
+	for (const key in t) {
+		const option = ul.querySelector<HTMLLIElement>(`li[data-value="${key}"]`);
+		if (option) option.textContent = t[key];
 	}
 };
 
 export function updateTabLabel(id: string, label: string) {
-	const tab = document.querySelector(`button[data-tab-child="${id}"]`) as HTMLButtonElement;
-	const tabSpan = tab.querySelector('span') as HTMLSpanElement;
-	if (tab && tabSpan) {
-		tabSpan.textContent = label;
-	}
+	const tab = document.querySelector<HTMLButtonElement>(`button[data-tab-child="${id}"]`);
+	if (!tab) return;
+	const tabSpan = tab.querySelector<HTMLSpanElement>('span');
+	if (tabSpan) tabSpan.textContent = label;
 }
 
 /**

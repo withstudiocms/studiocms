@@ -198,8 +198,8 @@ if (isAdmin) allowedRanks.unshift({ label: 'Administrator', value: 'admin' });
         defaultValue={`${user?.emailVerified}`}
         disabled={emailVerificationEnabled ? false : true}
         options={[
-          { label: 'Verified', value: 'true' },
-          { label: 'Not Verified', value: 'false' },
+          { label: t('email-verified'), value: 'true' },
+          { label: t('email-unverified'), value: 'false' },
         ]}
         />
 
@@ -315,8 +315,8 @@ if (isAdmin) allowedRanks.unshift({ label: 'Administrator', value: 'admin' });
           visitor: comp['visitor']
         });
         updateSelectOptions('email-verified', {
-          verified: comp['email-verified'],
-          unverified: comp['email-unverified']
+          true: comp['email-verified'],
+          false: comp['email-unverified']
         });
       });
 

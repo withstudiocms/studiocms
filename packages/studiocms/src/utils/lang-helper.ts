@@ -46,8 +46,12 @@ export async function buildTranslations(translations: PluginTranslations) {
 		 * @returns The component translations.
 		 */
 		getComponent: (lang: string, comp: string) => {
-			const translation = translations[lang];
-			return translation[comp];
+			const langTranslations = translations[lang];
+			if (!langTranslations) {
+				return undefined;
+			}
+
+			return langTranslations[comp];
 		},
 		/**
 		 * Build page title.
@@ -59,8 +63,13 @@ export async function buildTranslations(translations: PluginTranslations) {
 		buildPageTitle: (comp: string, key: string) => {
 			const _translations: Record<string, string> = {};
 
-			for (const lang in translations) {
-				_translations[lang] = translations[lang][comp][key];
+			for (const lang of Object.keys(translations)) {
+				const langTranslations = translations[lang];
+				const componentTranslations = langTranslations?.[comp];
+
+				if (componentTranslations && typeof componentTranslations[key] === 'string') {
+					_translations[lang] = componentTranslations[key];
+				}
 			}
 
 			return _translations;

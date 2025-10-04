@@ -22,6 +22,7 @@ const recentlyCreatedUsers = totalUsers
                             name={user.name}
                             avatar={user.avatar ?? undefined}
                             description={new Date(user.createdAt!).toLocaleDateString(config.locale.dateLocale, config.locale.dateTimeFormat)}
+                            id={`recent-user-${user.id}`}
                             />
                         <Icon name="heroicons:eye" width={24} height={24} />
                     </div>
