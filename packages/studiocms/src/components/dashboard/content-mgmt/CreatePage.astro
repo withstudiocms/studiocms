@@ -37,6 +37,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
     >
       <Tabs variant={"starlight"}>
         <TabItem
+          id="tab-label-basic-info"
           label={t("tab-label-basic-info")}
           icon={"heroicons:information-circle-20-solid"}
           color={"primary"}
@@ -160,6 +161,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
           </div>
         </TabItem>
         <TabItem
+          id="tab-label-content"
           label={t("tab-label-content")}
           icon={"heroicons:document-text-20-solid"}
           color={"success"}
@@ -182,6 +184,8 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
     makeTranslation,
     updateElmLabel,
     updateSelectElmLabel,
+    updateTabLabel,
+updateTrueFalseSelectOptions,
   } from "studiocms:i18n/client";
 
   const currentPage = "@studiocms/dashboard:content-page";
@@ -205,6 +209,16 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
       "show-contributors",
       comp["select-page-show-contributors"],
     );
+
+    updateTabLabel('tab-label-basic-info', comp['tab-label-basic-info']);
+    updateTabLabel('tab-label-content', comp['tab-label-content']);
+
+    const trueFalseOptions = { true: comp['true-label'], false: comp['false-label'] };
+
+    updateTrueFalseSelectOptions('show-author', trueFalseOptions);
+    updateTrueFalseSelectOptions('show-contributors', trueFalseOptions);
+    updateTrueFalseSelectOptions('draft', trueFalseOptions);
+    updateTrueFalseSelectOptions('show-in-nav', trueFalseOptions);
   });
 
   if (!customElements.get("t-content-create-page")) {

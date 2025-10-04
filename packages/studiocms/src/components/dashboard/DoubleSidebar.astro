@@ -6,15 +6,14 @@ import MainSidebarContent from './MainSidebarContent.astro';
 
 interface Props {
 	currentUser: UserSessionData | null;
-	latestVersion: VersionCacheObject;
 }
 
-const { currentUser, latestVersion } = Astro.props as Props;
+const { currentUser } = Astro.props as Props;
 ---
 
 <SuiDoubleSidebar class='sidebar'>
   <div slot="outer" class="outer-sidebar-container">
-    <MainSidebarContent {currentUser} {latestVersion} />
+    <MainSidebarContent {currentUser} />
   </div>
   <div slot="inner">
     <slot />

@@ -1,8 +1,20 @@
 /**
  * This module handles the internationalization (i18n) config for the StudioCMS application for both the Client and Server sides.
+ *
+ * If you are interested in contributing to the translation effort, please visit our Crowdin project:
+ * https://crowdin.com/project/studiocms or submit a pull request to the `translations` folder:
+ * `packages/studiocms/src/virtuals/i18n/translations/` on https://github.com/withstudiocms/studiocms
  */
 
-import { availableTranslations } from 'studiocms:i18n/virtual';
+import { availableTranslations, currentFlags } from 'studiocms:i18n/virtual';
+
+// TODO: Move this to being a Client only default
+// - Adapt server-side defaultLang with project configurable option
+//   from the StudioCMS configuration file.
+/**
+ * The default language for the StudioCMS app.
+ */
+export const defaultLang: UiTranslationKey = 'en';
 
 /**
  * Dynamically imports the base English translations for server-side internationalization.
@@ -95,15 +107,19 @@ export type ServerUiTranslations = Record<UiTranslationKey, StudioCMSTranslation
  */
 export type ClientUiTranslations = Record<UiTranslationKey, ComponentsJSON>;
 
+export type LanguageFlagIdentifier = `lang-${string}`;
+
 /**
  * Represents an option for selecting a language in the UI.
  *
  * @property key - The translation key associated with the language option.
  * @property value - The display value for the language option.
+ * @property flag - The flag associated with the language option.
  */
 export interface LanguageSelectorOption {
 	readonly key: UiTranslationKey;
-	readonly value: string;
+	readonly displayName: string;
+	readonly flag: LanguageFlagIdentifier;
 }
 
 /**
@@ -143,28 +159,19 @@ export const clientUiTranslations: ClientUiTranslations = Object.entries(
 }, {} as ClientUiTranslations);
 
 /**
- * The default language for the StudioCMS app.
- */
-export const defaultLang: UiTranslationKey = 'en';
-
-/**
- * Whether to show the default language in the url path.
- */
-export const showDefaultLang: boolean = false;
-
-/**
- * Generates an array of language selector options from the available server UI translations.
- * Each option contains a `key` representing the language code and a `value` representing the display name of the language.
+ * Generates an array of language selector options from available translations and flags
  *
- * @remarks
- * This is typically used to populate language selection dropdowns in the UI.
- *
- * @returns An array of objects, each with `key` and `value` properties for language selection.
+ * @returns An array of objects, each with `key`, `value`, and `flag` properties for language selection.
  */
-export const languageSelectorOptions: LanguageSelectorOption[] = Object.keys(serverUiTranslations)
-	.map((key) => {
-		const displayName = serverUiTranslations[key]?.displayName;
-		const value = typeof displayName === 'string' && displayName.trim() ? displayName : String(key);
-		return { key: key as UiTranslationKey, value };
+export const languageSelectorOptions: LanguageSelectorOption[] = currentFlags
+	.map((translation) => {
+		const possibleDisplayName = serverUiTranslations[translation.key]?.displayName;
+		const displayName =
+			typeof possibleDisplayName === 'string' && possibleDisplayName.trim()
+				? possibleDisplayName
+				: /* v8 ignore start */
+					String(translation.key);
+		/* v8 ignore stop */
+		return { ...translation, displayName };
 	})
-	.sort((a, b) => a.value.localeCompare(b.value, undefined, { sensitivity: 'base' }));
+	.sort((a, b) => a.displayName.localeCompare(b.displayName, undefined, { sensitivity: 'base' }));

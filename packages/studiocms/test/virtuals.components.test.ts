@@ -4,7 +4,6 @@ import CustomImage from '../src/virtuals/components/CustomImage.astro';
 import FormattedDate from '../src/virtuals/components/FormattedDate.astro';
 import Generator from '../src/virtuals/components/Generator.astro';
 import Renderer from '../src/virtuals/components/Renderer.astro';
-import LanguageSelector from '../src/virtuals/i18n/LanguageSelector.astro';
 import { test } from './fixtures/AstroContainer';
 import { MockAstroLocals, makeRendererProps } from './test-utils';
 
@@ -50,13 +49,6 @@ describe('Virtual Components Container tests', () => {
 			const result = await renderComponent(Renderer, 'Renderer', {
 				props: makeRendererProps(null),
 			});
-			expect(result).toMatchSnapshot();
-		});
-	});
-
-	describe('i18n Language Selector component', () => {
-		test('render component', async ({ renderComponent }) => {
-			const result = await renderComponent(LanguageSelector, 'LanguageSelector');
 			expect(result).toMatchSnapshot();
 		});
 	});

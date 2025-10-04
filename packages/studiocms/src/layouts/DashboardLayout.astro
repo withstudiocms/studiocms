@@ -52,15 +52,18 @@ const description = propDescription ?? config.data.description;
   <BaseHead {title} {description} />
   <body>
     <Toaster />
-    { requiredPermission !== 'none' && ( 
+    { requiredPermission !== 'none' && (
       <LoginChecker {requiredPermission} {currentUser} />
-     ) }
-     <SidebarModals {latestVersion} />
-    { sidebar === 'single' && <SingleSidebar {currentUser} {latestVersion} /> }
-    { sidebar === 'double' && <DoubleSidebar {currentUser} {latestVersion} >
+    ) }
+    <SidebarModals {lang} />
+    { sidebar === 'single' && (
+      <SingleSidebar {currentUser} />
+    ) }
+    { sidebar === 'double' && (
+      <DoubleSidebar {currentUser} >
         <slot name="double-sidebar" />
-      </DoubleSidebar> }
-
+      </DoubleSidebar>
+    ) }
     <main>
       <div class="container">
 
@@ -79,5 +82,12 @@ const description = propDescription ?? config.data.description;
         margin-bottom: 1.5rem;
       }
     </style>
+    <script>
+      import { PluginTranslations } from 'studiocms:i18n/plugins';
+
+      if (!customElements.get('p-translations')) {
+        customElements.define('p-translations', PluginTranslations);
+      }
+    </script>
   </body>
 </html>

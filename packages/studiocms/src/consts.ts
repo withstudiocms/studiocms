@@ -1,3 +1,4 @@
+import { icons as circleFlags } from '@iconify-json/circle-flags';
 import { icons as flatColorIcons } from '@iconify-json/flat-color-icons';
 import { icons as simpleIcons } from '@iconify-json/simple-icons';
 import type uiIntegration from '@studiocms/ui';
@@ -307,31 +308,26 @@ export const FAVICON_ASSETS = {
 
 type UiOptions = Parameters<typeof uiIntegration>[0];
 
-/**
- * UI options configuration for StudioCMS.
- *
- * @remarks
- * This constant defines the default UI options used throughout StudioCMS.
- * It includes settings for CSS injection and icon sets.
- *
- * @property noInjectCSS - If true, StudioCMS UI will not inject its default CSS into all routes.
- * @property icons - An object containing icon sets used in the UI.
- *   - `flatcoloricons`: Contains selected icons from the Flat Color Icons set (e.g., 'google').
- *   - `simpleicons`: Contains selected icons from the Simple Icons set (e.g., 'github', 'discord', 'auth0').
- */
-export const STUDIOCMS_UI_OPTS: UiOptions = {
-	noInjectCSS: true,
-	icons: {
-		flatcoloricons: stripIconify({
-			src: flatColorIcons,
-			icons: ['google'],
-		}),
-		simpleicons: stripIconify({
-			src: simpleIcons,
-			icons: ['github', 'discord', 'auth0'],
-		}),
-	},
-};
+/* v8 ignore start */
+function getDefaultUiOpts(currentFlags: Array<{ key: string; flag: `lang-${string}` }>): UiOptions {
+	return {
+		noInjectCSS: true,
+		icons: {
+			flatcoloricons: stripIconify({
+				src: flatColorIcons,
+				icons: ['google'],
+			}),
+			simpleicons: stripIconify({
+				src: simpleIcons,
+				icons: ['github', 'discord', 'auth0'],
+			}),
+			'lang-flags': stripIconify({
+				src: circleFlags,
+				icons: currentFlags.map(({ flag }) => flag),
+			}),
+		},
+	};
+}
 
 /**
  * Merges user-provided UI options with default StudioCMS UI options.
@@ -343,8 +339,11 @@ export const STUDIOCMS_UI_OPTS: UiOptions = {
  * - If a user option is provided, it takes precedence over the default.
  * - The `icons` property is deeply merged, combining default and user-provided icons.
  */
-export function getUiOpts(userOpts?: Partial<UiOptions>): UiOptions {
-	const base = { ...STUDIOCMS_UI_OPTS };
+export function getUiOpts(
+	currentFlags: Array<{ key: string; flag: `lang-${string}` }>,
+	userOpts?: Partial<UiOptions>
+): UiOptions {
+	const base = { ...getDefaultUiOpts(currentFlags) };
 	const merged: UiOptions = {
 		...base,
 		...userOpts,
@@ -352,6 +351,7 @@ export function getUiOpts(userOpts?: Partial<UiOptions>): UiOptions {
 	};
 	return merged;
 }
+/* v8 ignore stop */
 
 export const LinkNewOAuthCookieName = 'link-new-o-auth';
 export const AuthSessionCookieName = 'auth_session';

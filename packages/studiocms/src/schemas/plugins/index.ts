@@ -1,5 +1,6 @@
 import type { AstroIntegrationLogger } from 'astro';
 import { z } from 'astro/zod';
+import { pluginTranslationsSchema } from './i18n.js';
 import {
 	astroIntegrationSchema,
 	DashboardPageSchema,
@@ -119,6 +120,36 @@ const SitemapConfigSchema = z.object({
 });
 
 const DashboardConfigSchema = z.object({
+	/**
+	 * The translations for the plugin in the following format:
+	 *
+	 * ```json
+	 * {
+	 *   "en": {
+	 *    "component1": {
+	 *      "title": "Title",
+	 *      "description": "Description"
+	 *    },
+	 *    "component2": {
+	 *      "title": "Title",
+	 *      "description": "Description"
+	 *    }
+	 *   },
+	 *   "fr": {
+	 *    "component1": {
+	 *      "title": "Titre",
+	 *      "description": "Description"
+	 *    },
+	 *    "component2": {
+	 *      "title": "Titre",
+	 *      "description": "Description"
+	 *    }
+	 *   }
+	 * }
+	 * ```
+	 */
+	translations: pluginTranslationsSchema,
+
 	/**
 	 * Allows the plugin to add custom dashboard grid items
 	 */

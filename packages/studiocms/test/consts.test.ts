@@ -14,7 +14,6 @@ import {
 	defaultCacheLifeTime,
 	FAVICON_ASSETS,
 	GhostUserDefaults,
-	getUiOpts,
 	LinkNewOAuthCookieName,
 	makeDashboardRoute,
 	Next_MailerConfigId,
@@ -25,7 +24,6 @@ import {
 	STUDIOCMS_CDN_URL,
 	STUDIOCMS_EDITOR_CSRF_COOKIE_NAME,
 	STUDIOCMS_THEME_COLOR,
-	STUDIOCMS_UI_OPTS,
 	StudioCMSDefaultRobotsConfig,
 	StudioCMSMarkdownDefaults,
 	studioCMSSocials,
@@ -142,18 +140,6 @@ describe('consts.ts', () => {
 		expect(FAVICON_ASSETS.svg).toBe(`${STUDIOCMS_CDN_URL}/favicon.svg`);
 		expect(FAVICON_ASSETS.png.light).toBe(`${STUDIOCMS_CDN_URL}/favicon-light.png`);
 		expect(FAVICON_ASSETS.png.dark).toBe(`${STUDIOCMS_CDN_URL}/favicon-dark.png`);
-	});
-
-	it('should export STUDIOCMS_UI_OPTS with correct icon keys', () => {
-		expect(STUDIOCMS_UI_OPTS?.noInjectCSS).toBe(true);
-		expect(STUDIOCMS_UI_OPTS?.icons?.flatcoloricons).toBeDefined();
-		expect(STUDIOCMS_UI_OPTS?.icons?.simpleicons).toBeDefined();
-	});
-
-	it('getUiOpts should merge user options', () => {
-		const opts = getUiOpts({ noInjectCSS: false });
-		expect(opts?.noInjectCSS).toBe(false);
-		expect(opts?.icons?.flatcoloricons).toBeDefined();
 	});
 
 	it('should export OAuth cookie names', () => {

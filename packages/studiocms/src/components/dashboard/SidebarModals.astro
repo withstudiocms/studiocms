@@ -1,13 +1,13 @@
 ---
-import type { VersionCacheObject } from 'studiocms:sdk/types';
+import type { UiLanguageKeys } from 'studiocms:i18n';
 import UserManagementModals from './sidebar-modals/UserManagementModals.astro';
 import VersionModal from './sidebar-modals/VersionModal.astro';
 
 interface Props {
-	latestVersion: VersionCacheObject;
+	lang: UiLanguageKeys;
 }
 
-const { latestVersion } = Astro.props as Props;
+const { lang } = Astro.props;
 ---
-<VersionModal {latestVersion} />
+<VersionModal {lang} />
 <UserManagementModals />

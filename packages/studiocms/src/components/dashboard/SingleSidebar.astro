@@ -6,13 +6,12 @@ import MainSidebarContent from './MainSidebarContent.astro';
 
 interface Props {
 	currentUser: UserSessionData | null;
-	latestVersion: VersionCacheObject;
 }
 
-const { currentUser, latestVersion } = Astro.props as Props;
+const { currentUser } = Astro.props as Props;
 ---
 <Sidebar class='sidebar'>
-  <MainSidebarContent {currentUser} {latestVersion} />
+  <MainSidebarContent {currentUser} />
 </Sidebar>
 
 <script>
@@ -22,7 +21,7 @@ const { currentUser, latestVersion } = Astro.props as Props;
     if (!document.getElementById('sui-sidebar')) return;
 
     const sidebar = new SingleSidebarHelper();
-    
+
     sidebar.showSidebarOnClick('nav-open');
     sidebar.hideSidebarOnClick('nav-close');
   }

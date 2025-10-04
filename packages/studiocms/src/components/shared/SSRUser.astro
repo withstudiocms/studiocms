@@ -32,6 +32,8 @@ interface Props {
 	 * The timeout delay for loading the avatar image. Defaults to 5000ms.
 	 */
 	timeoutDelay?: number;
+
+	id: string;
 }
 
 const {
@@ -41,6 +43,7 @@ const {
 	class: className,
 	loading = 'lazy',
 	timeoutDelay = 3000,
+	id,
 } = Astro.props;
 
 /* v8 ignore start */
@@ -128,7 +131,7 @@ async function getObjectData(src: string): Promise<{ data: string; type: string 
 const validAvatar = avatar ? await getObjectData(avatar) : undefined;
 ---
 
-<div class="sui-user-container" class:list={[className]}>
+<div class="sui-user-container" class:list={[className]} id={id}>
     <div class="sui-avatar-container">
         {
             validAvatar ? (

@@ -1,4 +1,11 @@
 declare module 'studiocms:ui/icons' {
+	export type Collections = {
+		heroicons: import('@studiocms/ui/types').IconifyJSON;
+		flatcoloricons: import('@studiocms/ui/types').IconifyJSON;
+		simpleicons: import('@studiocms/ui/types').IconifyJSON;
+		'lang-flags': import('@studiocms/ui/types').IconifyJSON;
+	};
+	export const collections: Collections;
 	export const availableIcons: (
 		| 'heroicons:academic-cap'
 		| 'heroicons:academic-cap-16-solid'
@@ -1292,12 +1299,13 @@ declare module 'studiocms:ui/icons' {
 		| 'simpleicons:auth0'
 		| 'simpleicons:discord'
 		| 'simpleicons:github'
+		| 'lang-flags:lang-de'
+		| 'lang-flags:lang-en-us'
+		| 'lang-flags:lang-es-mx'
+		| 'lang-flags:lang-fr'
+		| 'lang-flags:lang-zh'
 	)[];
-	export const iconCollections: ('heroicons' | 'flatcoloricons' | 'simpleicons')[];
-
-	export const heroicons: import('@studiocms/ui/types').IconifyJSON;
-	export const flatcoloricons: import('@studiocms/ui/types').IconifyJSON;
-	export const simpleicons: import('@studiocms/ui/types').IconifyJSON;
+	export const iconCollections: ('heroicons' | 'flatcoloricons' | 'simpleicons' | 'lang-flags')[];
 
 	export type AvailableIcons = (typeof availableIcons)[number];
 	export type IconCollections = (typeof iconCollections)[number];

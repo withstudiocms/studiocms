@@ -4,9 +4,9 @@ on:
   workflow_dispatch:
     inputs:
       direction:
-        description: 'Direction of translation sync'
+        description: "Direction of translation sync"
         required: true
-        default: 'download'
+        default: "download"
         type: choice
         options:
           - download
@@ -14,9 +14,11 @@ on:
   repository_dispatch:
     types: [file.translated, file.approved, file.added, file.updated]
   push:
-    paths: 
-      - 'packages/studiocms/src/virtuals/i18n/translations/**'
-    branches: 
+    paths:
+      - "packages/studiocms/src/virtuals/i18n/translations/**"
+      - "packages/studiocms/src/handlers/plugin-i18n/**"
+      - "packages/studiocms/src/integrations/webVitals/i18n/**"
+    branches:
       - main
 
 jobs:
@@ -49,9 +51,9 @@ jobs:
           download_translations: true
           localization_branch_name: l10n_main
           create_pull_request: true
-          pull_request_title: 'feat(i18n): Crowdin Translation Sync'
-          pull_request_body: 'Merge this PR to sync with Crowdin'
-          pull_request_base_branch_name: 'main'
+          pull_request_title: "feat(i18n): Crowdin Translation Sync"
+          pull_request_body: "Merge this PR to sync with Crowdin"
+          pull_request_base_branch_name: "main"
         env:
           GITHUB_TOKEN: ${{ steps.bot-token.outputs.token }}
           CROWDIN_PROJECT_ID: ${{ secrets.CROWDIN_PROJECT_ID }}

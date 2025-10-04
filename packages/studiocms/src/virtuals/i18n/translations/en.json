@@ -129,7 +129,9 @@
       "select-page-diff-tracking": "Page Diff Tracking",
       "select-login-page-bg": "Login Page Background Image",
       "select-smtp-mailer": "SMTP Mailer",
-      "select-hide-default-index": "Hide Index Page from dashboard"
+      "select-hide-default-index": "Hide Index Page from dashboard",
+      "true-label": "True",
+      "false-label": "False"
     },
     "@studiocms/dashboard:smtp": {
       "title": "SMTP Configuration",
@@ -162,7 +164,9 @@
       "requireAdminVerification": "Require Admins to have their email verified",
       "requireEditorVerification": "Require Editors to have their email verified",
       "oAuthBypassVerification": "Skip Email Verification for OAuth Users",
-      "save-email-settings": "Save"
+      "save-email-settings": "Save",
+      "true-label": "True",
+      "false-label": "False"
     },
     "@studiocms/dashboard:user-mngmt-sidebar": {
       "input-placeholder-search": "Search...",
@@ -206,7 +210,14 @@
       "api-tokens-no-tokens": "No API tokens found.",
       "last-edit-pages-header": "Last Edited Pages",
       "last-edit-pages-edited": "Edited",
-      "last-edit-pages-no-edits": "No history found."
+      "last-edit-pages-no-edits": "No history found.",
+      "owner": "Owner",
+      "admin": "Administrator",
+      "editor": "Editor",
+      "visitor": "Visitor",
+      "unknown": "Unknown",
+      "email-verified": "Verified",
+      "email-unverified": "Not Verified"
     },
     "@studiocms/dashboard:plugin-settings": {
       "title": "Plugin Settings",
@@ -280,7 +291,9 @@
       "custom-page-types-description-new": "You have changed your pageType. Please save your changes and refresh the page to see the new fields.",
       "diff-edited-by-1": "Edited",
       "diff-edited-by-2": "by",
-      "diff-no-history": "No history found."
+      "diff-no-history": "No history found.",
+      "true-label": "True",
+      "false-label": "False"
     },
     "@studiocms/dashboard:404": {
       "title": "Error 404",
@@ -294,6 +307,34 @@
       "sub-description": "Your email address has not been verified. Please check your email for a verification link.",
       "resend-button": "Resend Verification Email",
       "back-button": "Go home"
+    },
+    "@studiocms/dashboard:versionCheckModal": {
+      "header-title": "Version Information",
+      "current-version": "Current Version",
+      "latest-version": "Latest Version",
+      "last-check": "Last Update Check",
+      "full-changelog": "Full Changelog",
+      "view-on": "View on"
+    },
+    "@studiocms/dashboard:user-component": {
+      "admin": "Administrator",
+      "editor": "Editor",
+      "owner": "Owner",
+      "visitor": "Visitor",
+      "unknown": "Unknown"
+    },
+    "@studiocms/dashboard:profile-notifications": {
+      "header-title": "Notification Events",
+      "save-button": "Save",
+      "page_updated": "Editor: Page Updated",
+      "page_deleted": "Editor: Page Deleted",
+      "new_page": "Editor: New Page",
+      "folder_updated": "Editor: Folder Updated",
+      "folder_deleted": "Editor: Folder Deleted",
+      "new_folder": "Editor: New Folder",
+      "user_updated": "Admin: User Updated",
+      "user_deleted": "Admin: User Deleted",
+      "new_user": "Admin: New User"
     }
   }
 }

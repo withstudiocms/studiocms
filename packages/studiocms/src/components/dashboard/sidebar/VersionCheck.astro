@@ -5,14 +5,17 @@ import currentVersion from 'studiocms:version';
 import { compare } from 'semver';
 
 interface Props {
-	latestVersion: VersionCacheObject;
+	versionCheck: boolean;
 }
 
-const { latestVersion } = Astro.props as Props;
+const { versionCheck } = Astro.props as Props;
 
-const comparison = compare(currentVersion, latestVersion.version);
-
-const status = comparison === -1 ? 'outdated' : comparison === 0 ? 'latest' : 'future';
+const status: false | 'outdated' | 'latest' | 'future' = (() => {
+	if (!versionCheck) return false;
+	const latestVersion = Astro.locals.StudioCMS.latestVersion;
+	const comparison = compare(currentVersion, latestVersion.version);
+	return comparison === -1 ? 'outdated' : comparison === 0 ? 'latest' : 'future';
+})();
 ---
 
 <Button
@@ -22,6 +25,7 @@ const status = comparison === -1 ? 'outdated' : comparison === 0 ? 'latest' : 'f
   id="version-modal-trigger"
   title="Click for more information"
   aria-label="Click for more information"
+  data-version-check={versionCheck}
 >
   <code class="version-check">
     <span>v{currentVersion}</span>
@@ -49,6 +53,16 @@ const status = comparison === -1 ? 'outdated' : comparison === 0 ? 'latest' : 'f
     const latestVersionElem = document.getElementById(
       "latest-version",
     ) as HTMLElement;
+
+    const versionModalTrigger = document.getElementById(
+      "version-modal-trigger",
+    ) as HTMLButtonElement;
+
+    const versionCheck = versionModalTrigger.dataset.versionCheck === 'true';
+
+    if (!versionCheck) {
+      return;
+    }
 
     if (document.getElementById("version-modal-trigger")) {
       dateTimeListener("version-modal-last-checked-date");

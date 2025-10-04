@@ -12,4 +12,6 @@ export {
 	type SettingsField,
 	type StudioCMSPlugin,
 } from './schemas/index.js';
+
+export * from './utils/lang-helper.js';
 /* v8 ignore stop */
