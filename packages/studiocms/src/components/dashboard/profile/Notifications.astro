@@ -1,7 +1,8 @@
 ---
 import type { UserSessionData } from 'studiocms:auth/lib/types';
+import { useTranslations } from 'studiocms:i18n';
 import { Mailer } from 'studiocms:mailer';
-import { notificationTitleStrings, notificationTypes } from 'studiocms:notifier';
+import { notificationTypes } from 'studiocms:notifier';
 import { type SiteConfigCacheObject } from 'studiocms:sdk/types';
 import { Button } from 'studiocms:ui/components/button';
 import { Card } from 'studiocms:ui/components/card';
@@ -46,24 +47,29 @@ if (enableMailer) {
 		isNotificationsEnabled = true;
 	}
 }
+
+const lang = Astro.locals.StudioCMS.defaultLang;
+const t = useTranslations(lang, '@studiocms/dashboard:profile-notifications');
+
+type TKey = Parameters<typeof t>[0];
 ---
 <Card fullWidth as="form" id="notifications-form" class="notifications-update-form" action={Astro.locals.StudioCMS.routeMap.endpointLinks.updateUserNotifications}>
 
     <div slot="header">
-        <h2>Notifications Events</h2>
+      <h2><t-notifications key="header-title">{t('header-title')}</t-notifications></h2>
 
         <div class="form-header">
-            <Button 
-                type='submit' 
-                variant='solid' 
-                color='primary' 
+            <Button
+                type='submit'
+                variant='solid'
+                color='primary'
                 size='sm'
                 disabled={!isNotificationsEnabled}
                 >
                 <Icon slot="start-content" name="heroicons:check" width={24} height={24} />
-                Save
+                <t-notifications key="save-button">{t('save-button')}</t-notifications>
             </Button>
-
+        </div>
     </div>
 
     <div class="toggle-grid">
@@ -72,10 +78,10 @@ if (enableMailer) {
 
         {
             isUser && NotificationOptions.user.map((option) => (
-                <Toggle 
-                    name={option} 
-                    label={notificationTitleStrings[option as keyof typeof notificationTitleStrings]} 
-                    defaultChecked={userNotifications.includes(option)} 
+                <Toggle
+                    name={option}
+                    label={t(option as TKey)}
+                    defaultChecked={userNotifications.includes(option)}
                     color={'primary'}
                     disabled={!isNotificationsEnabled}
                     />
@@ -84,10 +90,10 @@ if (enableMailer) {
 
         {
             isEditor && NotificationOptions.editor.map((option) => (
-                <Toggle 
-                    name={option} 
-                    label={`Editor: ${notificationTitleStrings[option as keyof typeof notificationTitleStrings]}`} 
-                    defaultChecked={userNotifications.includes(option)} 
+                <Toggle
+                    name={option}
+                    label={t(option as TKey)}
+                    defaultChecked={userNotifications.includes(option)}
                     color={'primary'}
                     disabled={!isNotificationsEnabled}
                     />
@@ -96,10 +102,10 @@ if (enableMailer) {
 
         {
             isAdmin && NotificationOptions.admin.map((option) => (
-                <Toggle 
-                    name={option} 
-                    label={`Admin: ${notificationTitleStrings[option as keyof typeof notificationTitleStrings]}`} 
-                    defaultChecked={userNotifications.includes(option)} 
+                <Toggle
+                    name={option}
+                    label={t(option as TKey)}
+                    defaultChecked={userNotifications.includes(option)}
                     color={'primary'}
                     disabled={!isNotificationsEnabled}
                     />
@@ -109,6 +115,53 @@ if (enableMailer) {
     </div>
 
 </Card>
+
+<div
+  id="notifications-config"
+  style="display: none;"
+  data-notifications={JSON.stringify(NotificationOptions)}
+>
+</div>
+
+<script>
+    import {
+        $i18n,
+        baseTranslation,
+        makeTranslation,
+        updateElmLabel,
+        updateToggleElmLabel
+    } from 'studiocms:i18n/client';
+
+    const currentPage = '@studiocms/dashboard:profile-notifications';
+
+    const i18n = $i18n(currentPage, baseTranslation[currentPage]);
+
+    const notificationConfigElm = document.getElementById('notifications-config') as HTMLDivElement;
+
+    const notificationConfig = notificationConfigElm.dataset.notifications as string;
+
+    const notifications = JSON.parse(notificationConfig) as {
+        user: string[];
+        editor: string[];
+        admin: string[];
+    };
+
+    i18n.subscribe(comp => {
+      for (const entry of notifications.user) {
+        updateToggleElmLabel(entry, comp[entry as keyof typeof comp])
+      }
+      for (const entry of notifications.editor) {
+        updateToggleElmLabel(entry, comp[entry as keyof typeof comp])
+      }
+      for (const entry of notifications.admin) {
+        updateToggleElmLabel(entry, comp[entry as keyof typeof comp])
+      }
+    });
+
+    if (!customElements.get('t-notifications')) {
+        customElements.define('t-notifications', makeTranslation(currentPage, i18n));
+    }
+</script>
 
 <script>
     import { toast } from 'studiocms:ui/components/toaster';
@@ -181,7 +234,7 @@ if (enableMailer) {
         .toggle-grid {
             grid-template-columns: 1fr 1fr 1fr;
         }
-        
+
     }
 
     @media screen and (max-width: 480px) {

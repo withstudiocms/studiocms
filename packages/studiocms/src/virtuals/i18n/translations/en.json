@@ -322,6 +322,20 @@
       "owner": "Owner",
       "visitor": "Visitor",
       "unknown": "Unknown"
+    },
+    "@studiocms/dashboard:profile-notifications": {
+      "header-title": "Notification Events",
+      "save-button": "Save",
+      "account_updated": "Account Updated",
+     	"page_updated": "Editor: Page Updated",
+     	"page_deleted": "Editor: Page Deleted",
+     	"new_page": "Editor: New Page",
+     	"folder_updated": "Editor: Folder Updated",
+     	"folder_deleted": "Editor: Folder Deleted",
+     	"new_folder": "Editor: New Folder",
+     	"user_updated": "Admin: User Updated",
+     	"user_deleted": "Admin: User Deleted",
+     	"new_user": "Admin: New User"
     }
   }
 }

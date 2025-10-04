@@ -13,11 +13,15 @@ import {
 	hasIntegration,
 } from 'astro-integration-kit';
 import type { StudioCMSPlugin } from '../../plugins.js';
-import en from './i18n/en.js';
+import { buildTranslations, loadJsTranslations } from '../../utils/lang-helper.js';
 
 export const webVitalsNameList = ['@studiocms/web-vitals'];
 
 const { resolve } = createResolver(import.meta.url);
+
+const translations = await loadJsTranslations('./i18n', import.meta.url);
+
+const t = await buildTranslations(translations);
 
 /**
  * Checks for the presence of the Web Vitals integration and sets up the necessary configurations.
@@ -78,16 +82,14 @@ export const checkForWebVitals = defineUtility('astro:config:setup')(
 			hooks: {
 				'studiocms:config:setup': ({ setDashboard }) => {
 					setDashboard({
-						translations: {
-							en,
-						},
+						translations,
 						dashboardGridItems: [
 							{
 								name: 'core-web-vitals',
 								span: 2,
 								variant: 'default',
 								header: {
-									title: 'Core Web Vitals',
+									title: t.getComponent('en', 'core-web-vitals').title,
 									icon: 'heroicons:chart-pie',
 								},
 								body: {
@@ -101,15 +103,10 @@ export const checkForWebVitals = defineUtility('astro:config:setup')(
 						dashboardPages: {
 							admin: [
 								{
-									title: {
-										en: 'Analytics and Vitals',
-										de: '',
-										es: 'Análisis y datos vitales',
-										fr: '',
-									},
+									title: t.buildPageTitle('@page/analytics', 'title'),
 									icon: 'heroicons:chart-pie',
 									route: 'analytics',
-									description: 'View the Core Web Vitals and Analytics of your site.',
+									description: t.getComponent('en', '@page/analytics').description,
 									sidebar: 'single',
 									pageBodyComponent: resolve('./pages/analytics/body.astro'),
 									requiredPermissions: 'admin',

@@ -76,6 +76,9 @@ declare module 'studiocms:notifier' {
 	export type EditorNotification = import('./virtuals/notifier/index').EditorNotification;
 	export type AdminNotification = import('./virtuals/notifier/index').AdminNotification;
 	export const notificationTypes: typeof import('./virtuals/notifier/index').notificationTypes;
+	/**
+	 * @deprecated use Translation system instead
+	 */
 	export const notificationTitleStrings: typeof import('./virtuals/notifier/index').notificationTitleStrings;
 }
 

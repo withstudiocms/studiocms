@@ -32,7 +32,7 @@ import type {
 import type { PluginTranslationCollection } from '../schemas/plugins/i18n.js';
 import type { GridItemInput } from '../schemas/plugins/shared.js';
 import type { Route } from '../types.js';
-import en from './plugin-i18n/en.js';
+import { buildTranslations, loadJsTranslations } from '../utils/lang-helper.js';
 
 // Resolver Function
 const { resolve } = createResolver(import.meta.url);
@@ -48,6 +48,9 @@ type VirtualImport = {
 	context?: 'server' | 'client' | undefined;
 };
 type Imports = Record<string, string> | Array<VirtualImport>;
+
+const translations = await loadJsTranslations('./plugin-i18n', import.meta.url);
+const t = await buildTranslations(translations);
 
 /**
  * **Default StudioCMS Plugin**
@@ -65,16 +68,14 @@ export const defaultPlugin: StudioCMSPlugin = {
 	hooks: {
 		'studiocms:config:setup': ({ setDashboard }) => {
 			setDashboard({
-				translations: {
-					en,
-				},
+				translations,
 				dashboardGridItems: [
 					{
 						name: 'overview',
 						span: 1,
 						variant: 'default',
 						requiresPermission: 'editor',
-						header: { title: 'Overview', icon: 'heroicons:bolt' },
+						header: { title: t.getComponent('en', 'overview').title, icon: 'heroicons:bolt' },
 						body: {
 							html: '<totals></totals>',
 							components: {
@@ -87,7 +88,10 @@ export const defaultPlugin: StudioCMSPlugin = {
 						span: 2,
 						variant: 'default',
 						requiresPermission: 'editor',
-						header: { title: 'Recently Updated Pages', icon: 'heroicons:document-arrow-up' },
+						header: {
+							title: t.getComponent('en', 'recently-updated-pages').title,
+							icon: 'heroicons:document-arrow-up',
+						},
 						body: {
 							html: '<recentlyupdatedpages></recentlyupdatedpages>',
 							components: {
@@ -102,7 +106,10 @@ export const defaultPlugin: StudioCMSPlugin = {
 						span: 1,
 						variant: 'default',
 						requiresPermission: 'admin',
-						header: { title: 'Recently Signed Up Users', icon: 'heroicons:user-group' },
+						header: {
+							title: t.getComponent('en', 'recently-signed-up-users').title,
+							icon: 'heroicons:user-group',
+						},
 						body: {
 							html: '<recentlysignedupusers></recentlysignedupusers>',
 							components: {
@@ -117,7 +124,10 @@ export const defaultPlugin: StudioCMSPlugin = {
 						span: 2,
 						variant: 'default',
 						requiresPermission: 'editor',
-						header: { title: 'Recently Created Pages', icon: 'heroicons:document-plus' },
+						header: {
+							title: t.getComponent('en', 'recently-created-pages').title,
+							icon: 'heroicons:document-plus',
+						},
 						body: {
 							html: '<recentlycreatedpages></recentlycreatedpages>',
 							components: {
