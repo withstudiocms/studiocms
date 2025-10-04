@@ -7,7 +7,7 @@ export async function loadJsTranslations(path: string, base: string): Promise<Pl
 
 	const translationsDir = fileURLToPath(new URL(path, base));
 
-	const availableTranslationFiles = await glob('**/*.{ts,js}', { cwd: translationsDir });
+	const availableTranslationFiles = await glob('**/*.js', { cwd: translationsDir });
 
 	for (const file of availableTranslationFiles) {
 		const alias = file.replace(/\.ts$/, '').replace(/\.js$/, '');
