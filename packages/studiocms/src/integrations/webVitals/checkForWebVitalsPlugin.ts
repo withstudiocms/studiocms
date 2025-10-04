@@ -89,7 +89,8 @@ export const checkForWebVitals = defineUtility('astro:config:setup')(
 								span: 2,
 								variant: 'default',
 								header: {
-									title: t.getComponent('en', 'core-web-vitals').title,
+									// biome-ignore lint/style/noNonNullAssertion: this is okay
+									title: t.getComponent('en', 'core-web-vitals')!.title,
 									icon: 'heroicons:chart-pie',
 								},
 								body: {
@@ -106,7 +107,8 @@ export const checkForWebVitals = defineUtility('astro:config:setup')(
 									title: t.buildPageTitle('@page/analytics', 'title'),
 									icon: 'heroicons:chart-pie',
 									route: 'analytics',
-									description: t.getComponent('en', '@page/analytics').description,
+									// biome-ignore lint/style/noNonNullAssertion: this is okay
+									description: t.getComponent('en', '@page/analytics')!.description,
 									sidebar: 'single',
 									pageBodyComponent: resolve('./pages/analytics/body.astro'),
 									requiredPermissions: 'admin',

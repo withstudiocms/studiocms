@@ -75,7 +75,8 @@ export const defaultPlugin: StudioCMSPlugin = {
 						span: 1,
 						variant: 'default',
 						requiresPermission: 'editor',
-						header: { title: t.getComponent('en', 'overview').title, icon: 'heroicons:bolt' },
+						// biome-ignore lint/style/noNonNullAssertion: this is okay
+						header: { title: t.getComponent('en', 'overview')!.title, icon: 'heroicons:bolt' },
 						body: {
 							html: '<totals></totals>',
 							components: {
@@ -89,7 +90,8 @@ export const defaultPlugin: StudioCMSPlugin = {
 						variant: 'default',
 						requiresPermission: 'editor',
 						header: {
-							title: t.getComponent('en', 'recently-updated-pages').title,
+							// biome-ignore lint/style/noNonNullAssertion: this is okay
+							title: t.getComponent('en', 'recently-updated-pages')!.title,
 							icon: 'heroicons:document-arrow-up',
 						},
 						body: {
@@ -107,7 +109,8 @@ export const defaultPlugin: StudioCMSPlugin = {
 						variant: 'default',
 						requiresPermission: 'admin',
 						header: {
-							title: t.getComponent('en', 'recently-signed-up-users').title,
+							// biome-ignore lint/style/noNonNullAssertion: this is okay
+							title: t.getComponent('en', 'recently-signed-up-users')!.title,
 							icon: 'heroicons:user-group',
 						},
 						body: {
@@ -125,7 +128,8 @@ export const defaultPlugin: StudioCMSPlugin = {
 						variant: 'default',
 						requiresPermission: 'editor',
 						header: {
-							title: t.getComponent('en', 'recently-created-pages').title,
+							// biome-ignore lint/style/noNonNullAssertion: this is okay
+							title: t.getComponent('en', 'recently-created-pages')!.title,
 							icon: 'heroicons:document-plus',
 						},
 						body: {
