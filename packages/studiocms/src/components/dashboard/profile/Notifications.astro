@@ -128,7 +128,6 @@ type TKey = Parameters<typeof t>[0];
         $i18n,
         baseTranslation,
         makeTranslation,
-        updateElmLabel,
         updateToggleElmLabel
     } from 'studiocms:i18n/client';
 
@@ -146,14 +145,11 @@ type TKey = Parameters<typeof t>[0];
         admin: string[];
     };
 
+    const allNotifications = [...notifications.user, ...notifications.editor, ...notifications.admin];
+
     i18n.subscribe(comp => {
-      for (const entry of notifications.user) {
-        updateToggleElmLabel(entry, comp[entry as keyof typeof comp])
-      }
-      for (const entry of notifications.editor) {
-        updateToggleElmLabel(entry, comp[entry as keyof typeof comp])
-      }
-      for (const entry of notifications.admin) {
+      for (const entry of allNotifications) {
+        if (!document.getElementById(`label-${entry}`)) continue;
         updateToggleElmLabel(entry, comp[entry as keyof typeof comp])
       }
     });
