@@ -10,7 +10,7 @@ export async function loadJsTranslations(path: string, base: string): Promise<Pl
 	const availableTranslationFiles = await glob('**/*.js', { cwd: translationsDir });
 
 	for (const file of availableTranslationFiles) {
-		const alias = file.replace(/\.ts$/, '').replace(/\.js$/, '');
+		const alias = file.replace(/\.js$/, '');
 		const translation = await import(/* @vite-ignore */ `${translationsDir}/${file}`);
 		translations[alias] = translation.default;
 	}
