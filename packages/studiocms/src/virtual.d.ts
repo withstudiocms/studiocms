@@ -76,6 +76,9 @@ declare module 'studiocms:notifier' {
 	export type EditorNotification = import('./virtuals/notifier/index').EditorNotification;
 	export type AdminNotification = import('./virtuals/notifier/index').AdminNotification;
 	export const notificationTypes: typeof import('./virtuals/notifier/index').notificationTypes;
+	/**
+	 * @deprecated use Translation system instead
+	 */
 	export const notificationTitleStrings: typeof import('./virtuals/notifier/index').notificationTitleStrings;
 }
 
@@ -121,8 +124,9 @@ declare module 'virtual:studiocms/components/Editors' {
 }
 
 declare module 'studiocms:i18n/virtual' {
-	export const availableTranslationFileKeys: string[];
+	export const availableTranslationFileKeys: typeof import('./virtuals/i18n/v-files').availableTranslationFileKeys;
 	export const availableTranslations: typeof import('./virtuals/i18n/v-files').availableTranslations;
+	export const currentFlags: typeof import('./virtuals/i18n/v-files').currentFlags;
 }
 
 declare module 'studiocms:i18n' {
@@ -154,6 +158,23 @@ declare module 'studiocms:i18n/client' {
 	export const updateSelectElmLabel: typeof import('./virtuals/i18n/client').updateSelectElmLabel;
 	export const updateElmPlaceholder: typeof import('./virtuals/i18n/client').updateElmPlaceholder;
 	export const updateToggleElmLabel: typeof import('./virtuals/i18n/client').updateToggleElmLabel;
+	export const updateTabLabel: typeof import('./virtuals/i18n/client').updateTabLabel;
+	export const updateTrueFalseSelectOptions: typeof import('./virtuals/i18n/client').updateTrueFalseSelectOptions;
+	export const updateSelectOptions: typeof import('./virtuals/i18n/client').updateSelectOptions;
+}
+
+declare module 'studiocms:i18n/plugin-translations' {
+	const pluginTranslations: import('./schemas/plugins/i18n').PluginTranslationCollection;
+	export default pluginTranslations;
+}
+
+declare module 'studiocms:i18n/plugins' {
+	export declare class PluginTranslations extends HTMLElement {
+		currentLang: string | undefined;
+		constructor();
+		connectedCallback(): void;
+	}
+	export const $pluginI18n: typeof import('./virtuals/i18n/plugin').$pluginI18n;
 }
 
 declare module 'studiocms:imageHandler/components' {
@@ -437,6 +458,9 @@ declare module 'studiocms:auth/utils/validImages' {
 }
 
 declare module 'studiocms:auth/utils/getLabelForPermissionLevel' {
+	/**
+	 * @deprecated Use Translation system under the `@studiocms/dashboard:user-component` entry
+	 */
 	export const getLabelForPermissionLevel: typeof import('./virtuals/auth/getLabelForPermissionLevel.js').getLabelForPermissionLevel;
 }
 

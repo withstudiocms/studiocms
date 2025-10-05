@@ -3,6 +3,10 @@
  *
  * It provides utilities for loading and managing translation files, as well as functions for
  * retrieving translated strings based on the current language context.
+ *
+ * If you are interested in contributing to the translation effort, please visit our Crowdin project:
+ * https://crowdin.com/project/studiocms or submit a pull request to the `translations` folder:
+ * `packages/studiocms/src/virtuals/i18n/translations/` on https://github.com/withstudiocms/studiocms
  */
 
 import {
@@ -191,6 +195,31 @@ export const updateSelectElmLabel = (el: string, translation: string) => {
 	}
 	label.textContent = translation;
 };
+
+export const updateTrueFalseSelectOptions = (el: string, t: { true: string; false: string }) => {
+	const ul = document.querySelector<HTMLUListElement>(`#${el}-dropdown`);
+	if (!ul) return;
+	const trueOption = ul.querySelector<HTMLLIElement>('li[data-value="true"]');
+	const falseOption = ul.querySelector<HTMLLIElement>('li[data-value="false"]');
+	if (trueOption) trueOption.textContent = t.true;
+	if (falseOption) falseOption.textContent = t.false;
+};
+
+export const updateSelectOptions = (el: string, t: { [key: string]: string }) => {
+	const ul = document.querySelector<HTMLUListElement>(`#${el}-dropdown`);
+	if (!ul) return;
+	for (const key in t) {
+		const option = ul.querySelector<HTMLLIElement>(`li[data-value="${key}"]`);
+		if (option) option.textContent = t[key];
+	}
+};
+
+export function updateTabLabel(id: string, label: string) {
+	const tab = document.querySelector<HTMLButtonElement>(`button[data-tab-child="${id}"]`);
+	if (!tab) return;
+	const tabSpan = tab.querySelector<HTMLSpanElement>('span');
+	if (tabSpan) tabSpan.textContent = label;
+}
 
 /**
  * Updates the label text for a toggle element with a given translation.

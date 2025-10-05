@@ -1,5 +1,5 @@
 ---
-import { getLabelForPermissionLevel } from 'studiocms:auth/utils/getLabelForPermissionLevel';
+import { useTranslations } from 'studiocms:i18n';
 import { Divider } from 'studiocms:ui/components/divider';
 import { Icon } from 'studiocms:ui/components/icon';
 import type { AvailablePermissionRanks } from '@withstudiocms/auth-kit/types';
@@ -24,6 +24,9 @@ interface Props {
 
 const { user, searchQuery } = Astro.props;
 
+const lang = Astro.locals.StudioCMS.defaultLang;
+const t = useTranslations(lang, '@studiocms/dashboard:user-component');
+
 const userListItemHref = new URL(
 	Astro.locals.StudioCMS.routeMap.mainLinks.userManagementEdit,
 	Astro.url.origin
@@ -33,26 +36,44 @@ if (searchQuery) {
 	userListItemHref.searchParams.set('search', searchQuery);
 }
 const userListItemHrefString = userListItemHref.toString();
+
+const id = `user-mngmt-user-account-${user.id || 'unknown'}`;
+
+const permissionLevel = user.permissionsData?.rank ?? 'unknown';
 ---
 
-<user-list-item class="sidebar-user" href={userListItemHrefString}>
+<user-list-item class="sidebar-user" href={userListItemHrefString} data-selector-id={id} data-permission-level={permissionLevel}>
     <User
+        id={id}
         name={user.name}
         avatar={user.avatar ?? undefined}
-        description={getLabelForPermissionLevel(user.permissionsData?.rank ?? 'unknown')}
+        description={t(permissionLevel)}
     />
     <Icon name="heroicons:chevron-right" width={24} height={24} />
 </user-list-item>
 <Divider background={"background-step-1"} />
 
 <script>
+  import {
+      $i18n,
+      baseTranslation,
+  } from 'studiocms:i18n/client';
+
+  const currentPage = '@studiocms/dashboard:user-component';
+
+  const i18n = $i18n(currentPage, baseTranslation[currentPage]);
+
     class UserListItem extends HTMLElement {
         href: string;
+        permissionLevel: "admin" | "editor" | "owner" | "visitor" | "unknown";
+        selectorId: string;
 
         constructor() {
             super();
             this.attachShadow({ mode: "open" });
             this.href = this.getAttribute("href") || "#";
+            this.permissionLevel = (this.getAttribute("data-permission-level") || "unknown") as "admin" | "editor" | "owner" | "visitor" | "unknown";
+            this.selectorId = this.getAttribute("data-selector-id") || "unknown";
         }
 
         connectedCallback() {
@@ -66,6 +87,13 @@ const userListItemHrefString = userListItemHref.toString();
 
             const slot = document.createElement("slot");
             this.shadowRoot.appendChild(slot);
+
+            i18n.subscribe(comp => {
+              const userContainer = this.querySelector(`#${this.selectorId}`) as HTMLDivElement;
+              const userTextContent = userContainer.querySelector('.sui-text-content') as HTMLDivElement;
+              const userDescription = userTextContent.querySelector('.sui-description') as HTMLDivElement;
+              userDescription.textContent = comp[this.permissionLevel];
+            })
         }
 
         private setSidebarActiveState() {

@@ -47,7 +47,11 @@ import {
 	type StudioCMSOptions,
 	StudioCMSOptionsSchema,
 } from './schemas/index.js';
-import { availableTranslationFileKeys, availableTranslations } from './virtuals/i18n/v-files.js';
+import {
+	availableTranslationFileKeys,
+	availableTranslations,
+	currentFlags,
+} from './virtuals/i18n/v-files.js';
 import { VirtualModuleBuilder } from './virtuals/utils.js';
 
 // Resolver Function
@@ -208,6 +212,7 @@ export const studiocms = defineIntegration({
 						safePluginList,
 						messages: pluginMessages,
 						oAuthProvidersConfigured,
+						pluginsTranslations,
 					} = await pluginHandler(params, {
 						dashboardRoute,
 						dbStartPage,
@@ -239,7 +244,7 @@ export const studiocms = defineIntegration({
 					// Inject Integrations into Astro project
 					addIntegrationArray(params, [
 						{ integration: nodeNamespaceBuiltinsAstro() },
-						{ integration: studiocmsUi(getUiOpts()) },
+						{ integration: studiocmsUi(getUiOpts(currentFlags)) },
 						...pluginIntegrations,
 					]);
 
@@ -311,6 +316,7 @@ export const studiocms = defineIntegration({
 							'studiocms:i18n/virtual': `
 								export const availableTranslationFileKeys = ${JSON.stringify(availableTranslationFileKeys)};
 								export const availableTranslations = ${JSON.stringify(availableTranslations)};
+								export const currentFlags = ${JSON.stringify(currentFlags)};
 							`,
 							'studiocms:i18n': dynamicWithAstroVirtual({
 								dynamicExports: ['./virtuals/i18n/server.js'],
@@ -319,6 +325,11 @@ export const studiocms = defineIntegration({
 								},
 							}),
 							'studiocms:i18n/client': dynamicVirtual(['./virtuals/i18n/client.js']),
+							'studiocms:i18n/plugin-translations': `
+							  const pluginTranslations = ${JSON.stringify(pluginsTranslations)};
+								export default pluginTranslations;
+							`,
+							'studiocms:i18n/plugins': dynamicVirtual(['./virtuals/i18n/plugin.js']),
 							'studiocms:sdk': dynamicVirtual(['./virtuals/sdk/index.js']),
 							'studiocms:sdk/types': dynamicVirtual(['./virtuals/sdk/types.js']),
 						},

@@ -1,114 +1,65 @@
 ---
+import { Button } from 'studiocms:ui/components/button';
+import { Dropdown } from 'studiocms:ui/components/dropdown';
+import { Icon } from 'studiocms:ui/components/icon';
+import type { AvailableIcons } from 'studiocms:ui/icons';
 import { languageSelectorOptions } from './config.js';
 
-// TODO: Update the language selector's styles to match StudioCMS's new design
+/**
+ * This Astro component handles the language selection functionality for the StudioCMS application on the client side.
+ *
+ * It provides a dropdown menu for selecting the preferred language, and updates the application's language settings accordingly.
+ *
+ * If you are interested in contributing to the translation effort, please visit our Crowdin project:
+ * https://crowdin.com/project/studiocms or submit a pull request to the `translations` folder:
+ * `packages/studiocms/src/virtuals/i18n/translations/` on https://github.com/withstudiocms/studiocms
+ */
 ---
-
-<button
-    id="language-selector"
-    class="language-selector mr-2"
-    >
-    <svg xmlns="http://www.w3.org/2000/svg" class="w-full h-[80%]" width="1.5rem" height="1.5rem" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M4 5h7M9 3v2c0 4.418-2.239 8-5 8"/><path d="M5 9c0 2.144 2.952 3.908 6.7 4m.3 7l4-9l4 9m-.9-2h-6.2"/></g></svg>
-</button>
-
-<menu id="language-sector-menu" type="context" class="bg-neutral rounded-md p-2">
-    {
-        //Language Buttons Auto-Generated
-        languageSelectorOptions.map(({ key, value }) => (
-            <span class="btn btn-primary" id="language-selector-option" data-key={key}>{value}</span>
-        ))
-    }
-    <div class="flex flex-row-reverse">
-        <button 
-            id="language-sector-menu-cancel" 
-            class="btn btn-sm btn-circle btn-outline text-neutral-content" 
-            type="button">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-        </button>
-    </div>
-</menu>
-
-<style>
-.language-selector {
-        background-color: oklch(var(--b2));
-        border-radius: 50%;
-        border: 0.125rem solid;
-        border-color: oklch(var(--s));
-        box-shadow: 0 0 0.25rem 0.015rem rgba(0, 0, 0, 0.694);
-        width: 2.5rem;
-        height: 2.5rem;
-        cursor: pointer;
-        display: none;
-        opacity: 0;
-        z-index: 99998;
-        transition: opacity 1s ease;
-    }
-    #language-sector-menu {
-        position: absolute;
-        display: none;
-        flex-direction: column;
-        gap: 0.5rem;
-        left: -4rem;
-        top: 3rem;
-        width: max-content;
-        z-index: 99999;
-    }
-
-    #language-sector-menu-cancel {
-        border-radius: 50%;
-    }
-</style>
+<Dropdown
+  id='language-selector'
+  options={languageSelectorOptions.map(({ flag, key, displayName }) => ({
+  	label: displayName,
+  	value: key,
+  	icon: `lang-flags:${flag}` as AvailableIcons,
+  }))}
+  align='start'
+>
+  <Button variant='outlined' size='sm'>
+    <Icon name='heroicons:language' width={16} height={16} />
+  </Button>
+</Dropdown>
 
 <script>
-import { $localeSettings, type UiTranslationKey } from "studiocms:i18n/client";
+  import { DropdownHelper } from 'studiocms:ui/components/dropdown';
+  import { $localeSettings, defaultLang } from "studiocms:i18n/client";
 
-    // Get the Language Selector elements
-    const LanguageSelector = document.getElementById('language-selector') as HTMLButtonElement;
-    const LanguageSectorMenuCancel = document.getElementById('language-sector-menu-cancel') as HTMLButtonElement;
-    const LanguageSectorMenu = document.getElementById('language-sector-menu') as HTMLMenuElement;
+  const languageSelector = new DropdownHelper('language-selector');
 
-    const Selectors = document.querySelectorAll('#language-selector-option') as NodeListOf<HTMLSpanElement>;
+  languageSelector.registerClickCallback((value) => {
+    $localeSettings.set(value);
+  });
 
-    // Show the Language Selector on page load
-    setTimeout(() => {
-        LanguageSelector.style.display = 'block';
-            setTimeout(() => {
-                LanguageSelector.style.opacity = "1";
-            }, 250);
-    }, 200);
-
-    // Toggle the Language Selector
-    function toggleLanguageSelector(element: HTMLMenuElement) {
-        if (
-            !element.style.display 
-            || element.style.display === 'none'
-        ) {
-            element.style.display = 'flex';
-        } else {
-            element.style.display = 'none';
-        }
-    }
-
-    // Language Selector Event Listeners
-    LanguageSelector.addEventListener('click', () => 
-        toggleLanguageSelector(LanguageSectorMenu)
-    );
-    LanguageSelector.addEventListener('contextmenu', (e) => {
-        e.preventDefault();
-        toggleLanguageSelector(LanguageSectorMenu)
+  $localeSettings.subscribe(((lang) => {
+    const currentLang = lang || defaultLang;
+    const dropdown = document.getElementById('language-selector-dropdown') as HTMLUListElement | null;
+    if (!dropdown) return;
+    dropdown.querySelectorAll('li').forEach((option) => {
+      option.classList.remove('active-language-selector-option');
     });
-    LanguageSectorMenuCancel.addEventListener('click', () => 
-        toggleLanguageSelector(LanguageSectorMenu)
-    );
-
-    // Language Selector Options Event Listeners
-    Selectors.forEach((selector) => {
-        selector.addEventListener('click', () => {
-            const lang = selector.dataset.key as UiTranslationKey;
-
-            $localeSettings.set(lang);
-        })
-    })
+    const activeOption = dropdown.querySelector(`[data-value="${currentLang}"]`);
+    if (activeOption) {
+      activeOption.classList.add('active-language-selector-option');
+    }
+  }));
 </script>
+
+<style is:global>
+  .active-language-selector-option {
+      background-color: var(--primary-base);
+      color: var(--text-inverted);
+
+      &:hover {
+        background-color: var(--primary-hover);
+      }
+  }
+</style>

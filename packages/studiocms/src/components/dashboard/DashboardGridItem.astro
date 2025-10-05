@@ -1,4 +1,5 @@
 ---
+import { convertUnderscoresToHyphens } from 'studiocms:component-registry/runtime';
 import type { UiLanguageKeys } from 'studiocms:i18n';
 import { Card } from 'studiocms:ui/components/card';
 import { Icon } from 'studiocms:ui/components/icon';
@@ -19,6 +20,15 @@ let html: string | undefined;
 if (body?.html) {
 	html = await transformHTML(body.html, components, body.sanitizeOpts);
 }
+
+const [pluginId, componentSafeId] = name.split('/');
+
+const componentId = convertUnderscoresToHyphens(componentSafeId);
+
+const genericTranslationProps = {
+	plugin: pluginId,
+	component: componentId,
+};
 ---
 <Card
     fullWidth
@@ -30,7 +40,7 @@ if (body?.html) {
         <div slot="header">
             <span class="grid-item-title">
                 {header.icon && <Icon name={header.icon} width={24} height={24}/>}
-                <span>{header.title}</span>
+                <span><p-translations {...genericTranslationProps} key="title">{header.title}</p-translations></span>
             </span>
         </div>
     )}

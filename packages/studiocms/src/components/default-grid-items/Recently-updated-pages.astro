@@ -18,6 +18,11 @@ const recentlyUpdatedPages = totalPages
 	.filter((page) => withinLast30Days(page.updatedAt || page.publishedAt))
 	.sort((a, b) => sortByDate(a.updatedAt || a.publishedAt, b.updatedAt || b.publishedAt))
 	.slice(0, 3);
+
+const genericTranslationProps = {
+	plugin: 'studiocms',
+	component: 'recently-updated-pages',
+};
 ---
 <div class="recently-updated-page-container">
   {
@@ -26,9 +31,9 @@ const recentlyUpdatedPages = totalPages
         <Card fullWidth class={'recently-updated-page-card'} as='a' href={Astro.locals.StudioCMS.routeMap.mainLinks.contentManagementEdit + `?edit=${page.id}`}>
           <div class="card-row">
             <span class="card-title">{page.title} {page.draft && <Badge label="Draft" size="sm" variant="flat" rounding="semi" />}</span>
-            <span class="card-date">Edited: <FormattedDate date={page.updatedAt || page.publishedAt} /></span>
+            <span class="card-date"><p-translations {...genericTranslationProps} key="edited">Edited:</p-translations> <FormattedDate date={page.updatedAt || page.publishedAt} /></span>
           </div>
-            
+
           <div class="card-row">
             <span class="card-description">{page.description}</span>
           </div>
@@ -36,7 +41,7 @@ const recentlyUpdatedPages = totalPages
       ))
     ) : (
       <Card fullWidth style="background-color: var(--background-step-2);">
-        <Center><span style="color: var(--text-muted);">No recently updated pages found.</span></Center>
+        <Center><span style="color: var(--text-muted);"><p-translations {...genericTranslationProps} key="no-pages-found">No recently updated pages found.</p-translations></span></Center>
       </Card>
     )
   }
@@ -57,7 +62,7 @@ const recentlyUpdatedPages = totalPages
     text-decoration: none;
     color: initial;
     transition: all .15s ease;
-    
+
     & .card-row:not(:last-of-type) {
       margin-bottom: .5rem;
     }
