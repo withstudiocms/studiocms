@@ -37,6 +37,8 @@ const adminNotifications = {
 
 /**
  * An object containing notification titles for each notification type.
+ *
+ * @deprecated use Translation system instead
  */
 export const notificationTitleStrings: Record<UserNotificationOptions, string> = {
 	account_updated: 'Account Updated',

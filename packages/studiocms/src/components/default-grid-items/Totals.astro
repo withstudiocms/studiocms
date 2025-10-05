@@ -14,6 +14,11 @@ const totalPages = allPages.filter(({ data: page }) => allowedIdentifiers.includ
 
 // Filter out for draft pages
 const totalDraftPages = totalPages.filter(({ data: page }) => page.draft === true);
+
+const genericTranslationProps = {
+	plugin: 'studiocms',
+	component: 'overview',
+};
 ---
 
 <div class="totals-grid-item-container">
@@ -23,7 +28,7 @@ const totalDraftPages = totalPages.filter(({ data: page }) => page.draft === tru
                 <div class="totals-grid-item-content">
                     <Icon name="heroicons:document-text" height={24} width={24} />
                     <div class="totals-grid-item-text">
-                        <span class="totals-grid-item-label">Total Pages</span>
+                        <span class="totals-grid-item-label"><p-translations {...genericTranslationProps} key="total-pages">Total Pages</p-translations></span>
                         <span>{totalPages.length}</span>
                     </div>
                 </div>
@@ -36,7 +41,7 @@ const totalDraftPages = totalPages.filter(({ data: page }) => page.draft === tru
                 <div class="totals-grid-item-content">
                     <Icon name="heroicons:document" height={24} width={24} />
                     <div class="totals-grid-item-text">
-                        <span class="totals-grid-item-label">Draft Pages</span>
+                        <span class="totals-grid-item-label"><p-translations {...genericTranslationProps} key="draft-pages">Draft Pages</p-translations></span>
                         <span>{totalDraftPages.length}</span>
                     </div>
                 </div>
@@ -49,7 +54,7 @@ const totalDraftPages = totalPages.filter(({ data: page }) => page.draft === tru
                 <div class="totals-grid-item-content">
                     <Icon name="heroicons:user-group" height={24} width={24} />
                     <div class="totals-grid-item-text">
-                        <span class="totals-grid-item-label">Total Users</span>
+                        <span class="totals-grid-item-label"><p-translations {...genericTranslationProps} key="total-users">Total Users</p-translations></span>
                         <span>{totalUsers.length}</span>
                     </div>
                 </div>

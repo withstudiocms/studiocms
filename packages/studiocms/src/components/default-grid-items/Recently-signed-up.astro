@@ -18,10 +18,11 @@ const recentlyCreatedUsers = totalUsers
             <a href={`${Astro.locals.StudioCMS.routeMap.mainLinks.userManagementEdit}/?user=${user.id}`} class="recently-signed-up-user" data-astro-reload>
                 <Card class="user-card" fullWidth>
                     <div class="user-flex">
-                        <User 
+                        <User
                             name={user.name}
-                            avatar={user.avatar ?? undefined} 
-                            description={`Created at ${new Date(user.createdAt!).toLocaleDateString(config.locale.dateLocale, config.locale.dateTimeFormat)}`} 
+                            avatar={user.avatar ?? undefined}
+                            description={new Date(user.createdAt!).toLocaleDateString(config.locale.dateLocale, config.locale.dateTimeFormat)}
+                            id={`recent-user-${user.id}`}
                             />
                         <Icon name="heroicons:eye" width={24} height={24} />
                     </div>
@@ -40,7 +41,7 @@ const recentlyCreatedUsers = totalUsers
         height: 100%;
         gap: .5rem;
     }
-    
+
     .recently-signed-up-user {
         text-decoration: none;
         color: var(--text-normal);
@@ -52,7 +53,7 @@ const recentlyCreatedUsers = totalUsers
         height: 100%;
         transition: all .15s ease;
     }
-    
+
     .user-card:hover {
         background-color: var(--background-step-3);
     }
@@ -66,5 +67,5 @@ const recentlyCreatedUsers = totalUsers
     .user-card:hover {
         background-color: var(--background-step-3);
     }
-    
+
 </style>

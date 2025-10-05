@@ -4,7 +4,7 @@ import { beforeAll, describe, expect, it } from 'vitest';
 import { Effect } from '../src/effect.js';
 import { SMTPService, SMTPTransportConfig, TransportConfig } from '../src/smtp.js';
 
-describe('SMTP Service', () => {
+describe('SMTP Service', { timeout: 10000 }, () => {
 	let testAccount: Awaited<ReturnType<typeof nodemailer.createTestAccount>>;
 	let testConfig: TransportConfig;
 	let testLayer: Layer<SMTPTransportConfig, never, never>;

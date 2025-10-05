@@ -1,7 +1,7 @@
 ---
 import type { UserSessionData } from 'studiocms:auth/lib/types';
 import { dashboardConfig } from 'studiocms:config';
-import { useTranslations } from 'studiocms:i18n';
+import { LanguageSelector, useTranslations } from 'studiocms:i18n';
 import pluginList from 'studiocms:plugins';
 import type { VersionCacheObject } from 'studiocms:sdk/types';
 import { Button } from 'studiocms:ui/components/button';
@@ -24,10 +24,9 @@ const sidebar = getSidebarLinks(lang);
 
 interface Props {
 	currentUser: UserSessionData | null;
-	latestVersion: VersionCacheObject;
 }
 
-const { currentUser: userData, latestVersion } = Astro.props as Props;
+const { currentUser: userData } = Astro.props as Props;
 
 const { isEditor, isAdmin, isOwner } = Astro.locals.StudioCMS.security?.userPermissionLevel ?? {
 	isVisitor: false,
@@ -47,7 +46,8 @@ const filteredPluginList = pluginList.filter((plugin) => !!plugin.settingsPage);
     </div>
     <div class="sidebar-subtitle">
       <Group>
-        { versionCheck && <VersionCheck {latestVersion} /> }
+        <LanguageSelector />
+        <VersionCheck {versionCheck} />
         <Button size='sm' variant="outlined" color={'default'} id={'studiocms-theme-toggle'}>
           <div id="dark-content">
             <Icon name='heroicons:moon-16-solid' width={16} height={16} slot="dark" />
@@ -65,11 +65,11 @@ const filteredPluginList = pluginList.filter((plugin) => !!plugin.settingsPage);
       </Button>
     </div>
   </div>
-  
+
   <Divider background='background-step-1'>
     <t-sidebar key="category-1-header">{t("category-1-header")}</t-sidebar>
   </Divider>
-  
+
   <div class="sidebar-link-group">
     {
       sidebar.baseLinks.map(({ href, icon, title, key }) => {
@@ -82,7 +82,7 @@ const filteredPluginList = pluginList.filter((plugin) => !!plugin.settingsPage);
         }
       })
     }
-  
+
     { isEditor && sidebar.editorLinks.map(({ href, icon, title, key }) => {
       if (title) {
         return <SidebarLink {icon} {href}>{title}</SidebarLink>
@@ -92,7 +92,7 @@ const filteredPluginList = pluginList.filter((plugin) => !!plugin.settingsPage);
         return <SidebarLink {icon} {href}><t-sidebar key={key}>{t(key)}</t-sidebar></SidebarLink>
       }
     })}
-  
+
   </div>
 
   {isAdmin && (
@@ -127,14 +127,14 @@ const filteredPluginList = pluginList.filter((plugin) => !!plugin.settingsPage);
       <t-sidebar key="category-3-header">{t('category-3-header')}</t-sidebar>
     </Divider>
     <div class="sidebar-link-group">
-      { filteredPluginList.length > 0 
+      { filteredPluginList.length > 0
         ? filteredPluginList.map(({ identifier, name }) => (
-          <SidebarPluginLink 
+          <SidebarPluginLink
             identifier={identifier}
             name={name}
           />
-        )) 
-        : ( 
+        ))
+        : (
           <span class="empty-placeholder-span">
             <t-sidebar key="category-3-empty-placeholder">
               {t('category-3-empty-placeholder')}
@@ -144,10 +144,10 @@ const filteredPluginList = pluginList.filter((plugin) => !!plugin.settingsPage);
     </div>
   )}
 
-</div>  
+</div>
 
 <div>
-  <Dropdown 
+  <Dropdown
     id='sidebar-user-dropdown'
     options={[
       { label: t("user-dropdown:settings"), icon: "heroicons:user", value: Astro.locals.StudioCMS.routeMap.mainLinks.userProfile },
@@ -160,7 +160,7 @@ const filteredPluginList = pluginList.filter((plugin) => !!plugin.settingsPage);
     <div class="user-dropdown-trigger-container">
       <UserAccount currentUser={userData} />
     </div>
-    
+
   </Dropdown>
 
   <Footer />
@@ -173,7 +173,7 @@ const filteredPluginList = pluginList.filter((plugin) => !!plugin.settingsPage);
 ></div>
 
 <script>
-    import { 
+    import {
         $i18n,
         baseTranslation,
         makeTranslation,
@@ -192,10 +192,10 @@ const filteredPluginList = pluginList.filter((plugin) => !!plugin.settingsPage);
 
       const DropdownOptions = DropdownElm.querySelectorAll('.sui-dropdown-option') as NodeListOf<HTMLLIElement>;
 
-      const Options: { 
-        settings: HTMLSpanElement | null; 
-        viewSite: HTMLSpanElement | null; 
-        logout: HTMLSpanElement | null; 
+      const Options: {
+        settings: HTMLSpanElement | null;
+        viewSite: HTMLSpanElement | null;
+        logout: HTMLSpanElement | null;
       } = {
         settings: null,
         viewSite: null,
@@ -225,7 +225,7 @@ const filteredPluginList = pluginList.filter((plugin) => !!plugin.settingsPage);
     const currentPage = '@studiocms/dashboard:sidebar';
 
     const i18n = $i18n(currentPage, baseTranslation[currentPage]);
-    
+
     i18n.subscribe(comp => {
         const DropdownUserOptions = getDropdownUserOptionsElms();
 
@@ -275,14 +275,14 @@ const filteredPluginList = pluginList.filter((plugin) => !!plugin.settingsPage);
 
     const themeToggle = document.getElementById('studiocms-theme-toggle');
     const themeHelper = new ThemeHelper();
-    
+
     themeHelper.registerToggle(themeToggle);
 
     themeHelper.onThemeChange((newTheme) => {
       localStorage.setItem('studiocms-theme-preference', newTheme);
     });
   }
-  
+
   document.addEventListener('astro:page-load', setup);
   setup();
 </script>
