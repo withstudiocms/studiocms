@@ -6,7 +6,7 @@ import { SDKCore_PLUGINS } from './plugins.js';
 
 const cacheId = '__last_updated_at';
 
- const cacheTTL = 30 * 60 * 1000;    // 30 minutes
+const cacheTTL = 30 * 60 * 1000; // 30 minutes
 
 /**
  * SDKCore_MIDDLEWARES provides middleware initialization logic for the StudioCMS SDK core.
@@ -111,6 +111,7 @@ export class SDKCore_MIDDLEWARES extends Effect.Service<SDKCore_MIDDLEWARES>()(
 						// If there are no caches to update, we log and return
 						if (todos.length === 0 && !cacheIsFresh) {
 							isVerbose && logger.info('All caches are already populated.');
+							cacheStore.set(cacheId, new Date());
 							return;
 						}
 
