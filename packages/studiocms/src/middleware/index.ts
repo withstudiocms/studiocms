@@ -27,6 +27,8 @@ import { getUserPermissions, makeFallbackSiteConfig, SetLocal, setLocals } from 
 // This allows for flexibility in the dashboard route without hardcoding it
 const dashboardRoute = dashboardConfig.dashboardRouteOverride || 'dashboard';
 
+const cacheStore = new Map<string, Date>();
+
 /**
  * Main middleware sequence for StudioCMS.
  *
@@ -53,7 +55,7 @@ export const onRequest = defineMiddlewareRouter([
 			} = yield* SDKCore;
 
 			if (!['/studiocms_api/dashboard/verify-session'].includes(context.url.pathname)) {
-				yield* verifyCache();
+				yield* verifyCache(cacheStore);
 			}
 
 			const [latestVersion, siteConfig] = yield* Effect.all([
