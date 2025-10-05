@@ -39,12 +39,7 @@ async function load() {
 
 	let Editor: EditorComponentItem | undefined;
 
-	Editor = pageTypeComponents.find((ed) => {
-		if (ed.identifier === jsonData?.editor) {
-			return ed;
-		}
-		return undefined;
-	});
+	Editor = pageTypeComponents.find((ed) => ed.identifier === jsonData?.editor);
 
 	if (!Editor) {
 		const MarkdownEditor = pageTypeComponents.find(
