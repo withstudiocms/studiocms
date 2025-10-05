@@ -6,17 +6,14 @@
 	color: var(--callout-color-light);
 }
 
-/* biome-ignore lint/style/noDescendingSpecificity: This is a valid use case for descending specificity. */
 .callout {
 	border-left-color: var(--callout-color-dark);
 }
 
-/* biome-ignore lint/style/noDescendingSpecificity: This is a valid use case for descending specificity. */
 .callout-title {
 	color: var(--callout-color-dark);
 }
 
-/* biome-ignore lint/style/noDescendingSpecificity: This is a valid use case for descending specificity. */
 .callout {
 	width: 100%;
 	padding: 0.5rem 1rem;
@@ -25,7 +22,6 @@
 	margin-bottom: 1rem;
 }
 
-/* biome-ignore lint/style/noDescendingSpecificity: This is a valid use case for descending specificity. */
 .callout-title {
 	display: flex;
 	align-items: flex-start;
@@ -71,7 +67,6 @@
 	transform: none;
 }
 
-/* biome-ignore lint/style/noDescendingSpecificity: This is a valid use case for descending specificity. */
 .callout-fold {
 	margin-left: -2px;
 }

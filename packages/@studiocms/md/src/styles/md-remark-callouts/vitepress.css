@@ -2,12 +2,10 @@
 	background-color: rgb(from var(--callout-color-light) r g b / 0.14);
 }
 
-/* biome-ignore lint/style/noDescendingSpecificity: This is a valid use case for descending specificity. */
 .callout {
 	background-color: rgb(from var(--callout-color-dark) r g b / 0.16);
 }
 
-/* biome-ignore lint/style/noDescendingSpecificity: This is a valid use case for descending specificity. */
 .callout {
 	width: 100%;
 	padding: 16px 16px 8px;
@@ -66,9 +64,7 @@
 	content: "\200B";
 }
 
-/* biome-ignore lint/style/noDescendingSpecificity: This is a valid use case for descending specificity. */
 .callout-icon svg,
-/* biome-ignore lint/style/noDescendingSpecificity: This is a valid use case for descending specificity. */
 .callout-fold svg {
 	width: 16px;
 	height: 16px;

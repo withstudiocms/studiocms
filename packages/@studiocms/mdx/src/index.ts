@@ -48,7 +48,7 @@ export function internalMDXIntegration(
 					imports: {
 						'studiocms:mdx/renderer': `
 							import { renderMDX as _render } from '${internalRenderer}';
-		
+
 							export const renderMDX = _render;
 							export default renderMDX;
 						`,
@@ -92,9 +92,6 @@ export function studiocmsMDX(options?: MDXPluginOptions): StudioCMSPlugin {
 	const renderer = resolve('./components/MDXRenderer.astro');
 
 	const editor = resolve('./components/editor.astro');
-
-	// Resolve the path to the internal renderer
-	const internalRenderer = resolve('./lib/render.js');
 
 	// Resolve the options and set defaults if not provided
 	const resolvedOptions = {

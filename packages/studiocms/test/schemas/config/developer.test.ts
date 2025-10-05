@@ -27,7 +27,6 @@ describe('developerConfigSchema', () => {
 	});
 
 	it('should fail if demoMode is a string', () => {
-		// biome-ignore lint/suspicious/noExplicitAny: allowed in tests
 		expect(() => developerConfigSchema.parse({ demoMode: 'invalid' as any })).toThrow();
 	});
 

@@ -9,7 +9,6 @@ vi.mock('../utils/jsonUtils.js', () => ({
 const mockLogger = {
 	error: vi.fn(),
 	warn: vi.fn(),
-	// biome-ignore lint/suspicious/noExplicitAny: allowed in tests
 } as any;
 
 const mockFs = {
@@ -18,7 +17,6 @@ const mockFs = {
 };
 
 const mockFetch = vi.fn();
-// biome-ignore lint/suspicious/noExplicitAny: allowed in tests
 (globalThis as any).fetch = mockFetch;
 
 const FAKE_URL = new URL('file:///tmp/fake-cache.json');

@@ -8,7 +8,6 @@ import {
 } from '../../src/astro-integration/index.js';
 
 function createMockLogger() {
-	// biome-ignore lint/suspicious/noExplicitAny: this is fine
 	const logger: Record<string, any> = {
 		info: vi.fn(),
 		warn: vi.fn(),

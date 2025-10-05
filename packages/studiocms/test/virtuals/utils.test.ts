@@ -37,7 +37,6 @@ describe('buildNamedMultiExportVirtual', () => {
 describe('buildVirtualConfig', () => {
 	it('should inject options into config stub', () => {
 		const options = { site: 'https://example.com', plugins: [] };
-		// biome-ignore lint/suspicious/noExplicitAny: allowed for tests
 		const result = utils.buildVirtualConfig(options as any);
 		expect(result).toBe('export default {"site":"https://example.com","plugins":[]};');
 	});
