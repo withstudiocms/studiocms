@@ -6,7 +6,7 @@ import { SDKCore_PLUGINS } from './plugins.js';
 
 const cacheId = '__last_updated_at';
 
-const cacheTTL = 30 * 60 * 60 * 1000; // 30 minutes
+ const cacheTTL = 30 * 60 * 1000;    // 30 minutes
 
 /**
  * SDKCore_MIDDLEWARES provides middleware initialization logic for the StudioCMS SDK core.
