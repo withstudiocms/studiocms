@@ -4,6 +4,10 @@ import { CacheContext, isCacheEnabled } from '../utils.js';
 import { SDKCore_GET } from './get.js';
 import { SDKCore_PLUGINS } from './plugins.js';
 
+const cacheId = '__last_updated_at';
+
+const cacheTTL = 30 * 60 * 1000; // 30 minutes
+
 /**
  * SDKCore_MIDDLEWARES provides middleware initialization logic for the StudioCMS SDK core.
  *
@@ -57,7 +61,7 @@ export class SDKCore_MIDDLEWARES extends Effect.Service<SDKCore_MIDDLEWARES>()(
 			const logger = _logger.fork('studiocms:middleware/cacheVerification');
 
 			const middlewares = {
-				verifyCache: () =>
+				verifyCache: (cacheStore: Map<string, Date>) =>
 					genLogger('studiocms/sdk/SDKCore/modules/middlewares/verifyCache')(function* () {
 						// Check if cache is enabled before proceeding
 						const cacheStatus = yield* isCacheEnabled.pipe(
@@ -74,18 +78,40 @@ export class SDKCore_MIDDLEWARES extends Effect.Service<SDKCore_MIDDLEWARES>()(
 						// biome-ignore lint/suspicious/noExplicitAny: Allow any for todos type
 						const todos: Effect.Effect<any, unknown, never>[] = [];
 
-						Caches.forEach(({ cache, updater }, name) => {
-							if (cache.size === 0) {
-								isVerbose && logger.info(`Cache "${name}" is empty, updating...`);
-								todos.push(updater());
+						function createTodoList(message: string) {
+							isVerbose && logger.info(message);
+							Caches.forEach(({ cache, updater }, name) => {
+								if (cache.size === 0) {
+									isVerbose && logger.info(`Cache "${name}" is empty, updating...`);
+									todos.push(updater());
+								} else {
+									isVerbose && logger.info(`Cache "${name}" is already populated.`);
+								}
+							});
+						}
+
+						const lastCacheUpdate = cacheStore.get(cacheId);
+
+						let cacheIsFresh = false;
+
+						if (lastCacheUpdate) {
+							isVerbose && logger.info(`Last cache update was at ${lastCacheUpdate.toISOString()}`);
+							// check if cache is stale
+							if (Date.now() - lastCacheUpdate.getTime() > cacheTTL) {
+								createTodoList('Cache is stale, updating...');
 							} else {
-								isVerbose && logger.info(`Cache "${name}" is already populated.`);
+								isVerbose && logger.info('Cache is fresh.');
+								cacheIsFresh = true;
+								return;
 							}
-						});
+						} else {
+							createTodoList('No cache found, updating...');
+						}
 
 						// If there are no caches to update, we log and return
 						if (todos.length === 0) {
 							isVerbose && logger.info('All caches are already populated.');
+							cacheStore.set(cacheId, new Date());
 							return;
 						}
 
@@ -94,6 +120,7 @@ export class SDKCore_MIDDLEWARES extends Effect.Service<SDKCore_MIDDLEWARES>()(
 						const start = Date.now();
 						yield* Effect.all(todos);
 						isVerbose && logger.info(`Cache verification completed in ${Date.now() - start}ms.`);
+						cacheStore.set(cacheId, new Date());
 					}),
 			};
 
