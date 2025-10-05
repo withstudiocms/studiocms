@@ -9,7 +9,6 @@ import {
 } from '../../../src/virtuals/i18n/server';
 
 // Mock AstroGlobal
-// biome-ignore lint/suspicious/noExplicitAny: Mocking Astro Global
 function createAstroGlobal(pathname: string, referer?: string): any {
 	return {
 		url: new URL(`http://localhost${pathname}`),

@@ -92,8 +92,6 @@ export class SDKCore_MIDDLEWARES extends Effect.Service<SDKCore_MIDDLEWARES>()(
 
 						const lastCacheUpdate = cacheStore.get(cacheId);
 
-						let cacheIsFresh = false;
-
 						if (lastCacheUpdate) {
 							isVerbose && logger.info(`Last cache update was at ${lastCacheUpdate.toISOString()}`);
 							// check if cache is stale
@@ -101,7 +99,6 @@ export class SDKCore_MIDDLEWARES extends Effect.Service<SDKCore_MIDDLEWARES>()(
 								createTodoList('Cache is stale, updating...');
 							} else {
 								isVerbose && logger.info('Cache is fresh.');
-								cacheIsFresh = true;
 								return;
 							}
 						} else {

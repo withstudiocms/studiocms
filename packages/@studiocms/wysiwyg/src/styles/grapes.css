@@ -77,7 +77,6 @@
 		cursor: grabbing !important;
 	}
 
-	/* biome-ignore lint/style/noDescendingSpecificity: Copied from GrapesJS Official CSS */
 	* {
 		box-sizing: border-box;
 	}

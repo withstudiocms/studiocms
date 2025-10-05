@@ -226,7 +226,6 @@ ul li a {
 	display: block;
 }
 
-/* biome-ignore lint/style/noDescendingSpecificity: ignored for now */
 .title {
 	margin: 0;
 	color: rgb(var(--black));

@@ -122,8 +122,7 @@ export function makePasswordModConfig({
 	// Scrypt parameters
 	const clamp = (v: number, min: number, max: number) =>
 		Number.isSafeInteger(v) ? Math.min(max, Math.max(min, v)) : min;
-	const env = (k: string) =>
-		typeof process !== 'undefined' && process.env ? process.env[k] : undefined;
+	const env = (k: string) => process?.env?.[k];
 	const parsedN = Number.parseInt(env('SCRYPT_N') ?? '', 10);
 	const parsedR = Number.parseInt(env('SCRYPT_R') ?? '', 10);
 	const parsedP = Number.parseInt(env('SCRYPT_P') ?? '', 10);

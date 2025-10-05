@@ -57,7 +57,8 @@ export const MockAstroLocals = (): App.Locals => {
 			},
 			SCMSGenerator: 'StudioCMS v0.0.0-test',
 			SCMSUiGenerator: 'StudioCMS UI v0.0.0-test',
-			routeMap: {} as any, // Mock route map - biome-ignore lint/suspicious/noExplicitAny: Mock for testing
+			// biome-ignore lint/suspicious/noExplicitAny: Mock for testing
+			routeMap: {} as any,
 		},
 	};
 };

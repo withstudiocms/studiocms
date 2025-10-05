@@ -46,10 +46,13 @@
       "suspicious": {
         "noExplicitAny": "warn",
         "noTsIgnore": "warn",
-        "useIterableCallbackReturn": "info"
+        "useIterableCallbackReturn": "off"
       },
       "performance": {
         "noDynamicNamespaceImportAccess": "off"
+      },
+      "correctness": {
+        "useParseIntRadix": "error"
       },
       "style": {
         "noParameterAssign": "off",
@@ -61,7 +64,11 @@
         "noUnusedTemplateLiteral": "error",
         "useNumberNamespace": "error",
         "noInferrableTypes": "error",
-        "noUselessElse": "error"
+        "noUselessElse": "error",
+        "noDescendingSpecificity": "off"
+      },
+      "complexity": {
+        "noImportantStyles": "off"
       }
     }
   },
@@ -82,11 +89,21 @@
       }
     },
     {
-      "includes": ["packages/@studiocms/wysiwyg/**/*.css"],
+      "includes": ["**/*.test.{ts,js}"],
       "linter": {
         "rules": {
+          "style": {
+            "useTemplate": "off"
+          },
+          "correctness": {
+            "noUnusedVariables": "off",
+            "noUnusedImports": "off"
+          },
+          "suspicious": {
+            "noExplicitAny": "off"
+          },
           "complexity": {
-            "noImportantStyles": "off"
+            "useLiteralKeys": "off"
           }
         }
       }
