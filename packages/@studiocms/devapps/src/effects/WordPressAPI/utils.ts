@@ -155,7 +155,7 @@ export class WordPressAPIUtils extends Effect.Service<WordPressAPIUtils>()('Word
 				results.push(...data);
 
 				// Check for pagination
-				const totalPages = Number.parseInt(res.headers.get('X-WP-TotalPages') || '1');
+				const totalPages = Number.parseInt(res.headers.get('X-WP-TotalPages') || '1', 10);
 				yield* Console.log('Fetched page', page, 'of', totalPages);
 
 				// If pagination, Recurse through the pages.
@@ -246,7 +246,7 @@ export class WordPressAPIUtils extends Effect.Service<WordPressAPIUtils>()('Word
 			// Check content length
 			const contentLength = response.headers.get('content-length');
 			const maxSize = 100 * 1024 * 1024; // 100MB limit
-			if (contentLength && Number.parseInt(contentLength) > maxSize) {
+			if (contentLength && Number.parseInt(contentLength, 10) > maxSize) {
 				yield* Console.error('File too large:', contentLength);
 				return false;
 			}

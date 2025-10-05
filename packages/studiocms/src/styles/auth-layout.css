@@ -85,7 +85,6 @@ main {
 	margin-top: 0.5rem;
 }
 
-/* biome-ignore lint/style/noDescendingSpecificity: this is fine */
 .button {
 	align-items: center;
 	justify-content: center;

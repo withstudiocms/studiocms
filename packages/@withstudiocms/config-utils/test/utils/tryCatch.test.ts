@@ -133,7 +133,6 @@ describe('tryCatch', () => {
 			expect(result).toBeNull();
 			expect(error).toBeInstanceOf(CustomError);
 			expect(error?.message).toBe('Custom error message');
-			// biome-ignore lint/suspicious/noExplicitAny: this is fine
 			expect((error as any).code).toBe('CUSTOM_CODE');
 		});
 

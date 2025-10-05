@@ -38,7 +38,9 @@ describe('getEnabledNotificationCheckboxes', () => {
 
 	it('should return an empty array if no options are enabled', () => {
 		const formData = new FormData();
-		notificationOptions.forEach((option) => formData.set(option, 'off'));
+		notificationOptions.forEach((option) => {
+			formData.set(option, 'off');
+		});
 		expect(getEnabledNotificationCheckboxes(formData)).toEqual([]);
 	});
 

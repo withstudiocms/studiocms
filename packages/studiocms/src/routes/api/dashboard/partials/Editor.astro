@@ -43,6 +43,7 @@ async function load() {
 		if (ed.identifier === jsonData?.editor) {
 			return ed;
 		}
+		return undefined;
 	});
 
 	if (!Editor) {

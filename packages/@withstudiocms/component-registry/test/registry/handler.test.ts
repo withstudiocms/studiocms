@@ -34,7 +34,6 @@ describe('resolver', () => {
 		);
 		expect(result._tag).toBe('Failure');
 
-		// biome-ignore lint/suspicious/noExplicitAny: allow any for testing
 		const resultData = result.toJSON() as any;
 
 		console.log(resultData);

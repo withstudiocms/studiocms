@@ -35,7 +35,6 @@ describe('makeTranslation', () => {
 	it('updates text content when translation changes', () => {
 		const key = Object.keys(baseTranslation)[0] as keyof typeof baseTranslation;
 		const messages = {
-			// biome-ignore lint/suspicious/noExplicitAny: allowed for tests
 			subscribe: (fn: (comp: any) => void) => fn({ [key]: 'Translated Text' }),
 		};
 		// @ts-expect-error mocking messages

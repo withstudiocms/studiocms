@@ -39,7 +39,6 @@ describe('formListener', () => {
 	});
 
 	it('shows error toast if response is not ok', async () => {
-		// biome-ignore lint/suspicious/noExplicitAny: allowed in tests
 		(global.fetch as any).mockResolvedValueOnce({
 			ok: false,
 			json: async () => ({
