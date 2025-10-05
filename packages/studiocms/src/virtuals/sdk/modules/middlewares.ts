@@ -109,7 +109,7 @@ export class SDKCore_MIDDLEWARES extends Effect.Service<SDKCore_MIDDLEWARES>()(
 						}
 
 						// If there are no caches to update, we log and return
-						if (todos.length === 0 && !cacheIsFresh) {
+						if (todos.length === 0) {
 							isVerbose && logger.info('All caches are already populated.');
 							cacheStore.set(cacheId, new Date());
 							return;
