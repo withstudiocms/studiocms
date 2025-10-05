@@ -29,8 +29,8 @@ export const pageTypeOptions = pluginsList.flatMap(({ pageTypes }) => {
 });
 
 export const trueFalse = [
-	{ label: 'Yes', value: 'true' },
-	{ label: 'No', value: 'false' },
+	{ label: 'True', value: 'true' },
+	{ label: 'False', value: 'false' },
 ];
 
 export const categoriesOptions = [{ label: 'None', value: 'null' }];

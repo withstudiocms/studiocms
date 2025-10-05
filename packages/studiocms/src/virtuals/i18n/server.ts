@@ -3,17 +3,19 @@
  *
  * It provides utilities for loading and managing translation files, as well as functions for
  * retrieving translated strings based on the current language context.
+ *
+ * If you are interested in contributing to the translation effort, please visit our Crowdin project:
+ * https://crowdin.com/project/studiocms or submit a pull request to the `translations` folder:
+ * `packages/studiocms/src/virtuals/i18n/translations/` on https://github.com/withstudiocms/studiocms
  */
 
 import type { AstroGlobal } from 'astro';
-import { defaultLang, serverUiTranslations, showDefaultLang } from './config.js';
+import { defaultLang, serverUiTranslations } from './config.js';
 
+// TODO: Move this to being a Client only default
+// - Adapt server-side defaultLang with project configurable option
+//   from the StudioCMS configuration file.
 export { defaultLang };
-
-// If you still want to help translate our library while we
-// prepare to implement i18n, feel free to add the new translations on
-// https://crowdin.com/project/studiocms or PR them into the `translations` folder:
-// `packages/studiocms/src/virtuals/i18n/translations/` on https://github.com/withstudiocms/studiocms
 
 /**
  * The UI translations available in the StudioCMS app.
@@ -87,6 +89,16 @@ export function useTranslations<L extends UiLanguageKeys, T extends UiComponentK
 		return typeof fb === 'string' ? fb : String(key);
 	};
 }
+
+/**
+ * Whether to show the default language in the url path.
+ *
+ * **DO NOT CHANGE THIS VALUE**
+ *
+ * StudioCMS is designed to use Client side translations
+ * and changing this will cause issues with the application.
+ */
+const showDefaultLang: boolean = false;
 
 /**
  * Returns a function that translates a given path based on the provided language.

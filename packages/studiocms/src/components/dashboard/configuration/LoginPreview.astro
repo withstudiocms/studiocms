@@ -92,29 +92,16 @@ const t = useTranslations(lang, '@studiocms/dashboard:configuration');
 </Card>
 
 <script>
-    import { 
+    import {
         $i18n,
-        $localeSettings,
         baseTranslation,
-        defaultLang,
         makeTranslation,
-        updateSelectElmLabel,
     } from 'studiocms:i18n/client';
 
     const currentPage = '@studiocms/dashboard:configuration';
 
-    let lang = defaultLang;
-
     const i18n = $i18n(currentPage, baseTranslation[currentPage]);
 
-    $localeSettings.subscribe((locale) => {
-        lang = locale || defaultLang;
-    });
-    
-    i18n.subscribe(comp => {
-        updateSelectElmLabel('login-page-preview', comp['login-page-preview']);
-    });
-    
     if (!customElements.get('t-config-form')) {
         customElements.define('t-config-form', makeTranslation(currentPage, i18n));
     }
@@ -152,7 +139,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:configuration');
             this.cacheRefs();
             this.render();
         }
- 
+
         cacheRefs() {
             this.lightImageHolder = this.querySelector(".light-image-holder") as HTMLImageElement;
             this.darkImageHolder = this.querySelector(".dark-image-holder") as HTMLImageElement;

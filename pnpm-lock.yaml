@@ -834,6 +834,9 @@ importers:
       '@astrojs/db':
         specifier: '>=0.17.2'
         version: 0.18.0
+      '@iconify-json/circle-flags':
+        specifier: ^1.2.8
+        version: 1.2.8
       '@iconify-json/flat-color-icons':
         specifier: ^1.2.3
         version: 1.2.3
@@ -1757,6 +1760,9 @@ packages:
   '@fastify/busboy@2.1.1':
     resolution: {integrity: sha512-vBZP4NlzfOlerQTnba4aqZoMhE/a9HY7HRqoOPaETQcSQuWEIyZMHGfVu6w9wGtGK5fED5qRs2DteVCjOH60sA==}
     engines: {node: '>=14'}
+
+  '@iconify-json/circle-flags@1.2.8':
+    resolution: {integrity: sha512-Wt4K8+fJM3ZLYA59P8HEund4bQLvJzuL+v74qFtF0tgqS9hu0p3NoqO788soQdsLbINs26cQBCmWCKm6q2u9UQ==}
 
   '@iconify-json/flat-color-icons@1.2.3':
     resolution: {integrity: sha512-KcmJ7CY0TKFv5GuBjiS4/v++jEcNXna1jfY+yq014tnw/MN/jMI2oYpoMHGuIpYtUqDu7eove+WySnOYO8nS3w==}
@@ -7233,6 +7239,10 @@ snapshots:
     optional: true
 
   '@fastify/busboy@2.1.1': {}
+
+  '@iconify-json/circle-flags@1.2.8':
+    dependencies:
+      '@iconify/types': 2.0.0
 
   '@iconify-json/flat-color-icons@1.2.3':
     dependencies:
