@@ -248,8 +248,7 @@ line 3`;
 			const input = `
     line 2
     line 3`;
-			const expected = `
-line 2
+			const expected = `line 2
 line 3`;
 			const result = dedent(input);
 			expect(result).toBe(expected);
