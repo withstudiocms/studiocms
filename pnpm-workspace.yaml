@@ -7,7 +7,7 @@ catalog:
   esbuild: ^0.25.8
   sharp: ^0.34.3
   tinyglobby: ^0.2.15
-  typescript: ^5.9.2
+  typescript: ^5.9.3
   "@types/mdast": ^4.0.4
   "@codecov/astro-plugin": ^1.9.1
 
@@ -33,10 +33,10 @@ catalogs:
     vite: ^6.3.4
   react:
     "@astrojs/react": ^4.4.0
-    "@types/react": ^19.1.14
-    "@types/react-dom": ^19.1.9
-    react: ^19.1.1
-    "react-dom": ^19.1.1
+    "@types/react": ^19.2.0
+    "@types/react-dom": ^19.2.0
+    react: ^19.2.0
+    "react-dom": ^19.2.0
   studiocms:
     "@studiocms/markdown-remark-processor": ^1.2.0
     "@studiocms/ui": ^1.0.0-beta.2
