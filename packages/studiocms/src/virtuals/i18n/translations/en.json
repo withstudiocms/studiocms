@@ -326,6 +326,7 @@
     "@studiocms/dashboard:profile-notifications": {
       "header-title": "Notification Events",
       "save-button": "Save",
+      "account_updated": "Account Updated",
       "page_updated": "Editor: Page Updated",
       "page_deleted": "Editor: Page Deleted",
       "new_page": "Editor: New Page",

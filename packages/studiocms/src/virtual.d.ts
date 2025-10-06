@@ -30,9 +30,9 @@ declare module 'studiocms:plugins/dashboard-pages/admin' {
 declare module 'studiocms:plugins/endpoints' {
 	export const apiEndpoints: {
 		identifier: string;
-		onCreate: import('astro').APIRoute | null;
-		onEdit: import('astro').APIRoute | null;
-		onDelete: import('astro').APIRoute | null;
+		onCreate: import('./plugins').PluginAPIRoute<'onCreate'> | null;
+		onEdit: import('./plugins').PluginAPIRoute<'onEdit'> | null;
+		onDelete: import('./plugins').PluginAPIRoute<'onDelete'> | null;
 	}[];
 
 	export const settingsEndpoints: {
