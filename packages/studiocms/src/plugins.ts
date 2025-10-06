@@ -20,6 +20,8 @@ export * from './utils/lang-helper.js';
 
 /* v8 ignore stop */
 
+type EndpointSelector = 'onCreate' | 'onEdit' | 'onDelete';
+
 interface StudioCMSAPIContextBase {
 	pageData: PageDataCacheObject;
 	AstroCtx: APIContext;
@@ -33,13 +35,13 @@ interface StudioCMSOnEditAPIContext extends StudioCMSAPIContextBase {
 
 interface StudioCMSOnDeleteAPIContext extends StudioCMSAPIContextBase {}
 
-type EndpointSelector = 'onCreate' | 'onEdit' | 'onDelete';
+type StudioCMSAPIContextOptionMap = {
+	onCreate: StudioCMSOnCreateAPIContext;
+	onEdit: StudioCMSOnEditAPIContext;
+	onDelete: StudioCMSOnDeleteAPIContext;
+};
 
-type StudioCMSPluginAPIContext<T extends EndpointSelector = EndpointSelector> = T extends 'onCreate'
-	? StudioCMSOnCreateAPIContext
-	: T extends 'onEdit'
-		? StudioCMSOnEditAPIContext
-		: StudioCMSOnDeleteAPIContext;
+type StudioCMSPluginAPIContext<T extends EndpointSelector> = StudioCMSAPIContextOptionMap[T];
 
 /**
  * Plugin API route handler type.
