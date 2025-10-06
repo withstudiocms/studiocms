@@ -564,9 +564,9 @@ export const PageTypesSchema = z
 			 * }
 			 *
 			 * // api/pageTypeApi.ts
-			 * import { APIRoute } from 'astro';
+			 * import { PluginAPIRoute } from 'studiocms/plugins';
 			 *
-			 * export const onCreate: APIRoute = async (context) => {
+			 * export const onCreate: PluginAPIRoute<'onCreate'> = async ({ AstroCtx, pageData }) => {
 			 *   // Custom logic here
 			 *   return new Response();
 			 * }
