@@ -23,7 +23,7 @@ RUN pnpm build:packages
 RUN pnpm playground:build
 
 # Runtime
-FROM node:22.19 AS runtime
+FROM node:22.19 AS dokploy
 WORKDIR /app
 COPY --from=builder /app .
 
