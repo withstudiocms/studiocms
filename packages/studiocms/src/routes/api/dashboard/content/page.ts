@@ -8,7 +8,6 @@ import type {
 	tsPageContentSelect,
 	tsPageDataSelect,
 } from 'studiocms:sdk/types';
-import type { APIRoute } from 'astro';
 import {
 	AllResponse,
 	createEffectAPIRoutes,
@@ -18,11 +17,12 @@ import {
 	OptionsResponse,
 	readAPIContextJson,
 } from '../../../../effect.js';
+import type { PluginAPIRoute } from '../../../../plugins.js';
 
 type ApiEndpoints = {
-	onCreate?: APIRoute | null;
-	onEdit?: APIRoute | null;
-	onDelete?: APIRoute | null;
+	onCreate?: PluginAPIRoute<'onCreate'> | null;
+	onEdit?: PluginAPIRoute<'onEdit'> | null;
+	onDelete?: PluginAPIRoute<'onDelete'> | null;
 };
 
 type PageTypeOutput = {
@@ -52,7 +52,7 @@ const pageTypeOptions = plugins.flatMap(({ pageTypes }) => {
 	return pageTypeOutput;
 });
 
-function getPageTypeEndpoints(pkg: string, type: 'onCreate' | 'onEdit' | 'onDelete') {
+function getPageTypeEndpoints<T extends 'onCreate' | 'onEdit' | 'onDelete'>(pkg: string, type: T) {
 	const currentPageType = pageTypeOptions.find((pageType) => pageType.identifier === pkg);
 
 	if (!currentPageType) return undefined;
@@ -104,7 +104,7 @@ export const { POST, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 					content: content.content || '',
 				};
 
-				yield* sdk.POST.page({
+				const newData = yield* sdk.POST.page({
 					pageData: {
 						id: dataId,
 						// biome-ignore lint/style/noNonNullAssertion: this is a valid use case for non-null assertion
@@ -120,8 +120,12 @@ export const { POST, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 					pageContent: pageContent,
 				});
 
+				if (!newData) {
+					return apiResponseLogger(500, 'Failed to create page');
+				}
+
 				if (apiRoute) {
-					yield* Effect.tryPromise(() => Promise.resolve().then(() => apiRoute(ctx)));
+					yield* Effect.tryPromise(() => apiRoute({ AstroCtx: ctx, pageData: newData }));
 				}
 
 				yield* Effect.all([
@@ -157,12 +161,7 @@ export const { POST, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 					}
 				>(ctx);
 
-				const {
-					contentId,
-					content: incomingContent,
-					pluginFields: _pluginFields,
-					...data
-				} = combinedData;
+				const { contentId, content: incomingContent, pluginFields, ...data } = combinedData;
 
 				const content = {
 					id: contentId,
@@ -210,10 +209,14 @@ export const { POST, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 				// biome-ignore lint/style/noNonNullAssertion: this is a valid use case for non-null assertion
 				const apiRoute = getPageTypeEndpoints(data.package!, 'onEdit');
 
-				yield* sdk.UPDATE.page.byId(data.id, {
+				const updatedPage = yield* sdk.UPDATE.page.byId(data.id, {
 					pageData: data as tsPageDataSelect,
 					pageContent: content as tsPageContentSelect,
 				});
+
+				if (!updatedPage) {
+					return apiResponseLogger(500, 'Failed to update page');
+				}
 
 				const updatedMetaData = (yield* sdk.GET.databaseTable.pageData()).find(
 					(metaData) => metaData.id === data.id
@@ -239,7 +242,9 @@ export const { POST, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 				}
 
 				if (apiRoute) {
-					yield* Effect.tryPromise(() => Promise.resolve().then(() => apiRoute(ctx)));
+					yield* Effect.tryPromise(() =>
+						apiRoute({ AstroCtx: ctx, pageData: updatedPage, pluginFields })
+					);
 				}
 
 				yield* Effect.all([
@@ -283,7 +288,7 @@ export const { POST, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 				yield* sdk.DELETE.page(id);
 
 				if (apiRoute) {
-					yield* Effect.tryPromise(() => Promise.resolve().then(() => apiRoute(ctx)));
+					yield* Effect.tryPromise(() => apiRoute({ AstroCtx: ctx, pageData: pageToDelete }));
 				}
 
 				yield* Effect.all([
