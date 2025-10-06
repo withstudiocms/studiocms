@@ -125,9 +125,7 @@ export const { POST, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 				}
 
 				if (apiRoute) {
-					yield* Effect.tryPromise(() =>
-						Promise.resolve().then(() => apiRoute({ AstroCtx: ctx, pageData: newData }))
-					);
+					yield* Effect.tryPromise(() => apiRoute({ AstroCtx: ctx, pageData: newData }));
 				}
 
 				yield* Effect.all([
@@ -245,9 +243,7 @@ export const { POST, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 
 				if (apiRoute) {
 					yield* Effect.tryPromise(() =>
-						Promise.resolve().then(() =>
-							apiRoute({ AstroCtx: ctx, pageData: updatedPage, pluginFields })
-						)
+						apiRoute({ AstroCtx: ctx, pageData: updatedPage, pluginFields })
 					);
 				}
 
@@ -292,9 +288,7 @@ export const { POST, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 				yield* sdk.DELETE.page(id);
 
 				if (apiRoute) {
-					yield* Effect.tryPromise(() =>
-						Promise.resolve().then(() => apiRoute({ AstroCtx: ctx, pageData: pageToDelete }))
-					);
+					yield* Effect.tryPromise(() => apiRoute({ AstroCtx: ctx, pageData: pageToDelete }));
 				}
 
 				yield* Effect.all([
