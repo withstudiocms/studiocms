@@ -73,10 +73,12 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
             </div>
 
             <div class="form-row">
-              <Input
-                label={t("input-page-hero-image")}
-                name="page-hero-image"
-                placeholder="https://..."
+              <Select
+                label={t("select-page-parent-folder")}
+                name="parent-folder"
+                fullWidth
+                options={parentFolderOptions}
+                defaultValue="null"
               />
               <Select
                 label={t("select-page-draft")}
@@ -90,13 +92,6 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
 
             <div class="form-row">
               <Select
-                label={t("select-page-parent-folder")}
-                name="parent-folder"
-                fullWidth
-                options={parentFolderOptions}
-                defaultValue="null"
-              />
-              <Select
                 label={t("select-page-categories")}
                 name="categories"
                 placeholder="Work in Progress"
@@ -104,18 +99,28 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
                 options={categoriesOptions}
                 disabled
               />
+              <Select
+                label={t("select-page-tags")}
+                name="tags"
+                placeholder="Work in Progress"
+                fullWidth
+                options={tagsOptions}
+                disabled
+              />
             </div>
 
             <div class="form-row">
               <div class="form-row-item">
-                <Select
-                  label={t("select-page-tags")}
-                  name="tags"
-                  placeholder="Work in Progress"
-                  fullWidth
-                  options={tagsOptions}
-                  disabled
+                <Input
+                  label={t("input-page-hero-image")}
+                  name="page-hero-image"
+                  placeholder="https://..."
                 />
+                <span class="form-row-item__description"
+                  ><t-content-create-page key="requires-supported-frontend"
+                    >{t("requires-supported-frontend")}</t-content-create-page
+                  ></span
+                >
               </div>
               <div class="form-row-item">
                 <Select
