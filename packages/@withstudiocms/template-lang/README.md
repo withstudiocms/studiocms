@@ -1,5 +1,7 @@
 # @withstudiocms/template-lang
 
+[![codecov](https://codecov.io/github/withstudiocms/studiocms/graph/badge.svg?token=RN8LT1O5E2&component=withstudiocms_template_lang)](https://codecov.io/github/withstudiocms/studiocms)
+
 A simple TypeScript ESM template language for HTML emails, similar to Handlebars but focused on simplicity and database data integration.
 
 ## Features
