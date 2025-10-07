@@ -84,6 +84,7 @@ const atWithStudioCMSPackages = [
 	'effect',
 	'component-registry',
 	'internal_helpers',
+	'template-lang',
 ] as const;
 
 const bundleTestPackages = ['studiocms-blog', 'studiocms-headless'] as const;
