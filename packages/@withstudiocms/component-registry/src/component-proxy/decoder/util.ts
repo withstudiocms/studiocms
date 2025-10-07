@@ -462,14 +462,12 @@ export class EntityDecoder {
  */
 function getDecoder(decodeTree: Uint16Array) {
 	let returnValue = '';
-	// biome-ignore lint/suspicious/noAssignInExpressions: this is a valid use case for assignment in expressions.
 	const decoder = new EntityDecoder(decodeTree, (data) => (returnValue += fromCodePoint(data)));
 
 	return function decodeWithTrie(input: string, decodeMode: DecodingMode): string {
 		let lastIndex = 0;
 		let offset = 0;
 
-		// biome-ignore lint/suspicious/noAssignInExpressions: this is a valid use case for assignment in expressions.
 		while ((offset = input.indexOf('&', offset)) >= 0) {
 			returnValue += input.slice(lastIndex, offset);
 

@@ -19,7 +19,6 @@ export const shared: {
 	// @ts-expect-error
 	globalThis[symbol] ||
 	// @ts-expect-error
-	// biome-ignore lint/suspicious/noAssignInExpressions: This is a valid use case for assignment in expressions.
 	(globalThis[symbol] = {
 		mdConfig: undefined,
 		astroMDRemark: undefined,
