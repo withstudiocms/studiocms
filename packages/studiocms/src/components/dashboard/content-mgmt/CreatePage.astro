@@ -49,7 +49,11 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
                 name="page-title"
                 isRequired
               />
-              <Input label={t("input-page-slug")} name="page-slug" isRequired />
+              <Input
+                label={t("input-page-slug")}
+                name="page-slug"
+                isRequired
+              />
             </div>
 
             <div class="form-row">
@@ -58,14 +62,6 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
                 name="page-description"
                 isRequired
               />
-              <Input
-                label={t("input-page-hero-image")}
-                name="page-hero-image"
-                placeholder="https://..."
-              />
-            </div>
-
-            <div class="form-row">
               <Select
                 label={t("select-page-type")}
                 name="page-type"
@@ -73,14 +69,6 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
                 fullWidth
                 defaultValue="studiocms/markdown"
                 options={pageTypeOptions}
-              />
-              <Select
-                label={t("select-page-show-in-nav")}
-                name="show-in-nav"
-                isRequired
-                defaultValue="false"
-                fullWidth
-                options={trueFalse}
               />
             </div>
 
@@ -122,20 +110,63 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
             </div>
 
             <div class="form-row">
-              <Select
-                label={t("select-page-show-author")}
-                name="show-author"
-                defaultValue="false"
-                fullWidth
-                options={trueFalse}
-              />
-              <Select
-                label={t("select-page-show-contributors")}
-                name="show-contributors"
-                defaultValue="false"
-                fullWidth
-                options={trueFalse}
-              />
+              <div class="form-row-item">
+                <Input
+                  label={t("input-page-hero-image")}
+                  name="page-hero-image"
+                  placeholder="https://..."
+                />
+                <span class="form-row-item__description"
+                  ><t-content-create-page key="requires-supported-frontend"
+                    >{t("requires-supported-frontend")}</t-content-create-page
+                  ></span
+                >
+              </div>
+              <div class="form-row-item">
+                <Select
+                  label={t("select-page-show-author")}
+                  name="show-author"
+                  defaultValue="false"
+                  fullWidth
+                  options={trueFalse}
+                />
+                <span class="form-row-item__description"
+                  ><t-content-create-page key="requires-supported-frontend"
+                    >{t("requires-supported-frontend")}</t-content-create-page
+                  ></span
+                >
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-row-item">
+                <Select
+                  label={t("select-page-show-in-nav")}
+                  name="show-in-nav"
+                  defaultValue="false"
+                  fullWidth
+                  options={trueFalse}
+                />
+                <span class="form-row-item__description"
+                  ><t-content-create-page key="requires-supported-frontend"
+                    >{t("requires-supported-frontend")}</t-content-create-page
+                  ></span
+                >
+              </div>
+              <div class="form-row-item">
+                <Select
+                  label={t("select-page-show-contributors")}
+                  name="show-contributors"
+                  defaultValue="false"
+                  fullWidth
+                  options={trueFalse}
+                />
+                <span class="form-row-item__description"
+                  ><t-content-create-page key="requires-supported-frontend"
+                    >{t("requires-supported-frontend")}</t-content-create-page
+                  ></span
+                >
+              </div>
             </div>
 
             <div id="custom-page-type-fields" style="display: none;">
@@ -185,7 +216,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
     updateElmLabel,
     updateSelectElmLabel,
     updateTabLabel,
-updateTrueFalseSelectOptions,
+    updateTrueFalseSelectOptions,
   } from "studiocms:i18n/client";
 
   const currentPage = "@studiocms/dashboard:content-page";
@@ -210,15 +241,18 @@ updateTrueFalseSelectOptions,
       comp["select-page-show-contributors"],
     );
 
-    updateTabLabel('tab-label-basic-info', comp['tab-label-basic-info']);
-    updateTabLabel('tab-label-content', comp['tab-label-content']);
+    updateTabLabel("tab-label-basic-info", comp["tab-label-basic-info"]);
+    updateTabLabel("tab-label-content", comp["tab-label-content"]);
 
-    const trueFalseOptions = { true: comp['true-label'], false: comp['false-label'] };
+    const trueFalseOptions = {
+      true: comp["true-label"],
+      false: comp["false-label"],
+    };
 
-    updateTrueFalseSelectOptions('show-author', trueFalseOptions);
-    updateTrueFalseSelectOptions('show-contributors', trueFalseOptions);
-    updateTrueFalseSelectOptions('draft', trueFalseOptions);
-    updateTrueFalseSelectOptions('show-in-nav', trueFalseOptions);
+    updateTrueFalseSelectOptions("show-author", trueFalseOptions);
+    updateTrueFalseSelectOptions("show-contributors", trueFalseOptions);
+    updateTrueFalseSelectOptions("draft", trueFalseOptions);
+    updateTrueFalseSelectOptions("show-in-nav", trueFalseOptions);
   });
 
   if (!customElements.get("t-content-create-page")) {
@@ -373,6 +407,21 @@ updateTrueFalseSelectOptions,
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 0.75rem;
+
+    .form-row-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+
+      .form-row-item__description {
+        color: var(--text-muted);
+        padding-left: 0.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+        font-size: 0.875rem;
+      }
+    }
   }
 
   @media screen and (max-width: 768px) {
