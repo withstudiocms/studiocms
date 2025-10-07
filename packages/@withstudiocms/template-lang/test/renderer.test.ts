@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { TemplateRenderer } from '../src/renderer.js';
+import { TemplateRenderer } from '../src/renderer';
 
 describe('TemplateRenderer', () => {
 	describe('Basic rendering', () => {
