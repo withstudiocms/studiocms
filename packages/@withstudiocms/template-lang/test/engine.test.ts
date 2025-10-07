@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { TemplateEngine } from '../src/engine';
+import { TemplateEngine } from '../src/index';
 
 describe('TemplateEngine', () => {
 	const engine = new TemplateEngine();

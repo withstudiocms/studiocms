@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { TemplateParser } from '../src/parser';
+import { TemplateParser } from '../src/index';
 
 describe('TemplateParser', () => {
 	describe('parse', () => {
