@@ -10,6 +10,7 @@ const projectsWithTests: { scope?: string; names: string[] }[] = [
 			'config-utils',
 			'effect',
 			'internal_helpers',
+			'template-lang',
 		],
 	},
 	{

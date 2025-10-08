@@ -53,6 +53,7 @@ To see how to get started with StudioCMS, check out the [StudioCMS Docs](https:/
 | [@withstudiocms/config-utils](./packages/@withstudiocms/config-utils/) | [![codecov](https://codecov.io/github/withstudiocms/studiocms/graph/badge.svg?token=RN8LT1O5E2&component=withstudiocms_config_utils)](https://codecov.io/github/withstudiocms/studiocms) |
 | [@withstudiocms/effect](./packages/@withstudiocms/effect/) | [![codecov](https://codecov.io/github/withstudiocms/studiocms/graph/badge.svg?token=RN8LT1O5E2&component=withstudiocms_effect)](https://codecov.io/github/withstudiocms/studiocms) |
 | [@withstudiocms/internal_helpers](./packages/@withstudiocms/internal_helpers/) | [![codecov](https://codecov.io/github/withstudiocms/studiocms/graph/badge.svg?token=RN8LT1O5E2&component=withstudiocms_internal_helpers)](https://codecov.io/github/withstudiocms/studiocms) |
+| [@withstudiocms/template-lang](./packages/@withstudiocms/template-lang/) | [![codecov](https://codecov.io/github/withstudiocms/studiocms/graph/badge.svg?token=RN8LT1O5E2&component=withstudiocms_template_lang)](https://codecov.io/github/withstudiocms/studiocms) |
 
 ## Getting Started with our Development Playground
 

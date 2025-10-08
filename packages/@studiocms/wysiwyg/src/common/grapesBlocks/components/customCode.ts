@@ -16,7 +16,6 @@ export default (editor: Editor, opts: RequiredCustomCodeOptions) => {
 			onRender() {
 				const { model, el } = this;
 				const isCC = model.closestType(typeCustomCode);
-				// biome-ignore lint/suspicious/noAssignInExpressions: This is the type that was already used in the original code
 				isCC && (el.innerHTML = '');
 			},
 		},
