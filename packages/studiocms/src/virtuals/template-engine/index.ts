@@ -78,6 +78,8 @@ export const templateEngine = Effect.gen(function* () {
 	} as const;
 });
 
+export default templateEngine;
+
 // Examples of context data:
 
 // Password reset email

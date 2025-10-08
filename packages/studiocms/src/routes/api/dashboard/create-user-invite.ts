@@ -1,9 +1,9 @@
 import { User } from 'studiocms:auth/lib';
 import { apiResponseLogger } from 'studiocms:logger';
 import { Mailer } from 'studiocms:mailer';
-import getTemplate from 'studiocms:mailer/templates';
 import { Notifications } from 'studiocms:notifier';
 import { SDKCore } from 'studiocms:sdk';
+import templateEngine from 'studiocms:template-engine';
 import type { AvailablePermissionRanks } from '@withstudiocms/auth-kit/types';
 import type { APIContext } from 'astro';
 import { z } from 'astro/zod';
@@ -180,12 +180,19 @@ export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
 						);
 					}
 
-					const htmlTemplate = getTemplate('userInvite');
+					const engine = yield* templateEngine;
+					const siteConfigFull = ctx.locals.StudioCMS.siteConfig.data;
+					const { title: siteTitle, description, siteIcon } = siteConfigFull;
+
+					const userInviteTemplate = yield* engine.render('userInvite', {
+						site: { title: siteTitle, description, icon: siteIcon ?? undefined },
+						data: { link: resetLink.toString() },
+					});
 
 					const mailResponse = yield* mailer.sendMail({
 						to: checkEmail.data,
 						subject: `You have been invited to join ${siteConfig.title}!`,
-						html: htmlTemplate({ title: siteConfig.title, link: resetLink }),
+						html: userInviteTemplate,
 					});
 
 					if (!mailResponse) {

@@ -3,9 +3,9 @@ import { developerConfig } from 'studiocms:config';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import { apiResponseLogger } from 'studiocms:logger';
 import { Mailer } from 'studiocms:mailer';
-import getTemplate from 'studiocms:mailer/templates';
 import { Notifications } from 'studiocms:notifier';
 import { SDKCore } from 'studiocms:sdk';
+import templateEngine from 'studiocms:template-engine';
 import {
 	AllResponse,
 	appendSearchParamsToUrl,
@@ -119,13 +119,21 @@ export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
 				}
 
 				// Get the HTML template for the password reset email
-				const htmlTemplate = getTemplate('passwordReset');
+				// const htmlTemplate = getTemplate('passwordReset');
+				const engine = yield* templateEngine;
+				const siteConfigFull = ctx.locals.StudioCMS.siteConfig.data;
+				const { title: siteTitle, description, siteIcon } = siteConfigFull;
+
+				const passwordResetTemplate = yield* engine.render('passwordReset', {
+					site: { title: siteTitle, description, icon: siteIcon ?? undefined },
+					data: { link: resetLink.toString() },
+				});
 
 				// Send the password reset email to the user
 				const mailRes = yield* sendMail({
 					to: user.email,
 					subject: 'Password Reset',
-					html: htmlTemplate(resetLink),
+					html: passwordResetTemplate,
 				});
 
 				// If the email could not be sent, return an error

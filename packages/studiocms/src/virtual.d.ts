@@ -64,8 +64,19 @@ declare module 'studiocms:mailer' {
 }
 
 declare module 'studiocms:mailer/templates' {
+	/**
+	 * @deprecated Use the `templateEngine` virtual instead.
+	 */
 	export const getTemplate: typeof import('./virtuals/mailer/template').getTemplate;
+	/**
+	 * @deprecated Use the `templateEngine` virtual instead.
+	 */
 	export default getTemplate;
+}
+
+declare module 'studiocms:template-engine' {
+	export const templateEngine: typeof import('./virtuals/template-engine/index').templateEngine;
+	export default templateEngine;
 }
 
 declare module 'studiocms:notifier' {
