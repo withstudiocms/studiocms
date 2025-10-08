@@ -46,7 +46,8 @@
       "suspicious": {
         "noExplicitAny": "warn",
         "noTsIgnore": "warn",
-        "useIterableCallbackReturn": "off"
+        "useIterableCallbackReturn": "off",
+        "noAssignInExpressions": "off"
       },
       "performance": {
         "noDynamicNamespaceImportAccess": "off"
@@ -68,7 +69,8 @@
         "noDescendingSpecificity": "off"
       },
       "complexity": {
-        "noImportantStyles": "off"
+        "noImportantStyles": "off",
+        "noStaticOnlyClass": "off"
       }
     }
   },

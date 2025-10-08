@@ -293,7 +293,8 @@
       "diff-edited-by-2": "by",
       "diff-no-history": "No history found.",
       "true-label": "True",
-      "false-label": "False"
+      "false-label": "False",
+      "requires-supported-frontend": "Requires Supported Frontend"
     },
     "@studiocms/dashboard:404": {
       "title": "Error 404",

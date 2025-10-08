@@ -150,3 +150,7 @@ component_management:
       name: "@withstudiocms/internal_helpers"
       paths:
         - packages/@withstudiocms/internal_helpers/**
+    - component_id: withstudiocms_template_lang
+      name: "@withstudiocms/template-lang"
+      paths:
+        - packages/@withstudiocms/template-lang/**

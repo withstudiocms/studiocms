@@ -7,6 +7,7 @@ import { Card } from 'studiocms:ui/components/card';
 import { Icon } from 'studiocms:ui/components/icon';
 import { Input } from 'studiocms:ui/components/input';
 import { Select } from 'studiocms:ui/components/select';
+import { TabItem, Tabs } from 'studiocms:ui/components/tabs';
 import { Toggle } from 'studiocms:ui/components/toggle';
 import PageHeader from '../../components/dashboard/PageHeader.astro';
 import { Effect, genLogger, runEffect } from '../../effect.js';
@@ -58,218 +59,223 @@ const notificationSettingKeys = Object.keys(notificationSettings.data).filter(
 >
   <div slot="header">
     <PageHeader title={t("header")}>
-      <Button
-        variant="solid"
-        color="primary"
-        size="sm"
-        type="submit"
-        form="smtp-config-form"
-      >
-        <Icon
-          slot="start-content"
-          name="heroicons:check-20-solid"
-          width={20}
-          height={20}
-        />
-        <t-smtp key="save-button">{t("save-button")}</t-smtp>
-      </Button>
     </PageHeader>
   </div>
 
-  <div class="smtp-content">
-    <Card fullWidth>
-      <div slot="header">
-        <h2><t-smtp key="smtp-settings">{t("smtp-settings")}</t-smtp></h2>
-      </div>
+  <Tabs variant='starlight'>
+    <TabItem
+      label={t("smtp-settings")}
+      id="tab-smtp-settings"
+      icon='heroicons:inbox-20-solid'
+    >
+      <div class="smtp-content">
+        <Card fullWidth>
+          <form
+            id="smtp-config-form"
+            action={Astro.locals.StudioCMS.routeMap.endpointLinks.mailer.config}
+          >
+            <div class="form-content">
+              {
+                createConfig && (
+                  <input type="hidden" name="create-new-config" value="true" />
+                )
+              }
 
-      <form
-        id="smtp-config-form"
-        action={Astro.locals.StudioCMS.routeMap.endpointLinks.mailer.config}
-      >
-        <div class="form-content">
-          {
-            createConfig && (
-              <input type="hidden" name="create-new-config" value="true" />
-            )
-          }
+              <div class="form-row">
+                <Input
+                  type="text"
+                  name="host"
+                  label={t("smtp-host")}
+                  placeholder={t("smtp-host-placeholder")}
+                  defaultValue={mailerConfig?.host}
+                  isRequired
+                />
+                <Input
+                  type="number"
+                  name="port"
+                  label={t("smtp-port")}
+                  placeholder={t("smtp-port-placeholder")}
+                  defaultValue={`${mailerConfig?.port}`}
+                  isRequired
+                />
+              </div>
 
-          <div class="form-row">
-            <Input
-              type="text"
-              name="host"
-              label={t("smtp-host")}
-              placeholder={t("smtp-host-placeholder")}
-              defaultValue={mailerConfig?.host}
-              isRequired
-            />
-            <Input
-              type="number"
-              name="port"
-              label={t("smtp-port")}
-              placeholder={t("smtp-port-placeholder")}
-              defaultValue={`${mailerConfig?.port}`}
-              isRequired
-            />
-          </div>
+              <div class="form-row">
+                <Select
+                  label={t("smtp-secure")}
+                  name="secure"
+                  options={[
+                    { label: "True", value: "true" },
+                    { label: "False", value: "false" },
+                  ]}
+                  defaultValue={`${mailerConfig?.secure || false}`}
+                  isRequired
+                  fullWidth
+                />
 
-          <div class="form-row">
-            <Select
-              label={t("smtp-secure")}
-              name="secure"
-              options={[
-                { label: "True", value: "true" },
-                { label: "False", value: "false" },
-              ]}
-              defaultValue={`${mailerConfig?.secure || false}`}
-              isRequired
-              fullWidth
-            />
+                <Input
+                  type="text"
+                  name="proxy"
+                  label={t("smtp-proxy")}
+                  placeholder={t("smtp-proxy-placeholder")}
+                  defaultValue={mailerConfig?.proxy || undefined}
+                />
+              </div>
 
-            <Input
-              type="text"
-              name="proxy"
-              label={t("smtp-proxy")}
-              placeholder={t("smtp-proxy-placeholder")}
-              defaultValue={mailerConfig?.proxy || undefined}
-            />
-          </div>
+              <div class="form-row">
+                <Select
+                  label={t("smtp-tls-reject-unauthorized")}
+                  name="tls_rejectUnauthorized"
+                  options={[
+                    { label: "True", value: "true" },
+                    { label: "False", value: "false" },
+                  ]}
+                  defaultValue={`${mailerConfig?.tls_rejectUnauthorized || false}`}
+                  fullWidth
+                />
+                <Input
+                  type="text"
+                  name="tls_servername"
+                  label={t("smtp-tls-servername")}
+                  placeholder={t("smtp-tls-servername-placeholder")}
+                  defaultValue={mailerConfig?.tls_servername || undefined}
+                />
+              </div>
 
-          <div class="form-row">
-            <Select
-              label={t("smtp-tls-reject-unauthorized")}
-              name="tls_rejectUnauthorized"
-              options={[
-                { label: "True", value: "true" },
-                { label: "False", value: "false" },
-              ]}
-              defaultValue={`${mailerConfig?.tls_rejectUnauthorized || false}`}
-              fullWidth
-            />
-            <Input
-              type="text"
-              name="tls_servername"
-              label={t("smtp-tls-servername")}
-              placeholder={t("smtp-tls-servername-placeholder")}
-              defaultValue={mailerConfig?.tls_servername || undefined}
-            />
-          </div>
+              <div class="form-row">
+                <Input
+                  type="text"
+                  name="auth_user"
+                  label={t("smtp-user")}
+                  placeholder={t("smtp-user-placeholder")}
+                  defaultValue={mailerConfig?.auth_user || undefined}
+                  isRequired
+                />
+                <Input
+                  type="password"
+                  name="auth_pass"
+                  label={t("smtp-password")}
+                  placeholder={t("smtp-password-placeholder")}
+                  isRequired
+                />
+              </div>
 
-          <div class="form-row">
-            <Input
-              type="text"
-              name="auth_user"
-              label={t("smtp-user")}
-              placeholder={t("smtp-user-placeholder")}
-              defaultValue={mailerConfig?.auth_user || undefined}
-              isRequired
-            />
-            <Input
-              type="password"
-              name="auth_pass"
-              label={t("smtp-password")}
-              placeholder={t("smtp-password-placeholder")}
-              isRequired
-            />
-          </div>
-
-          <Input
-            type="text"
-            name="default_sender"
-            label={t("smtp-default-sender")}
-            placeholder={t("smtp-default-sender-placeholder")}
-            defaultValue={mailerConfig?.default_sender || undefined}
-            isRequired
-          />
-        </div>
-      </form>
-    </Card>
-
-    <Card fullWidth>
-      <div slot="header">
-        <h2><t-smtp key="test-smtp">{t("test-smtp")}</t-smtp></h2>
-      </div>
-
-      <form
-        id="test-smtp-form"
-        action={Astro.locals.StudioCMS.routeMap.endpointLinks.mailer.testEmail}
-      >
-        <div class="form-content">
-          <Input
-            type="text"
-            name="test_email"
-            label={t("test-email")}
-            placeholder={t("test-email-placeholder")}
-            isRequired
-            disabled={!enableMailer}
-          />
-        </div>
-      </form>
-
-      <div slot="footer">
-        <Button
-          variant="solid"
-          color="primary"
-          size="sm"
-          type="submit"
-          form="test-smtp-form"
-          disabled={!enableMailer}
-        >
-          <Icon
-            slot="start-content"
-            name="heroicons:inbox-20-solid"
-            width={20}
-            height={20}
-          />
-          <t-smtp key="send-test-email">{t("send-test-email")}</t-smtp>
-        </Button>
-      </div>
-    </Card>
-
-    <Card fullWidth>
-      <div slot="header">
-        <h2>
-          <t-smtp key="site-email-settings">{t("site-email-settings")}</t-smtp>
-        </h2>
-      </div>
-
-      <form
-        id="notification-settings-form"
-        action={Astro.locals.StudioCMS.routeMap.endpointLinks
-          .emailNotificationSettingsSite}
-      >
-        <div class="form-content">
-          {
-            notificationSettingKeys.map((key) => (
-              <Toggle
-                name={key}
-                label={t(key)}
-                defaultChecked={notificationSettings.data[key] === true}
-                color="primary"
+              <Input
+                type="text"
+                name="default_sender"
+                label={t("smtp-default-sender")}
+                placeholder={t("smtp-default-sender-placeholder")}
+                defaultValue={mailerConfig?.default_sender || undefined}
+                isRequired
               />
-            ))
-          }
-        </div>
-      </form>
+            </div>
+          </form>
+          <div slot="footer">
+            <Button
+              variant="solid"
+              color="primary"
+              size="sm"
+              type="submit"
+              form="smtp-config-form"
+            >
+              <Icon
+                slot="start-content"
+                name="heroicons:check-20-solid"
+                width={20}
+                height={20}
+              />
+              <t-smtp key="save-button">{t("save-button")}</t-smtp>
+            </Button>
+          </div>
+        </Card>
 
-      <div slot="footer">
-        <Button
-          variant="solid"
-          color="primary"
-          size="sm"
-          type="submit"
-          form="notification-settings-form"
-        >
-          <Icon
-            slot="start-content"
-            name="heroicons:check-20-solid"
-            width={20}
-            height={20}
-          />
-          <t-smtp key="save-email-settings">{t("save-email-settings")}</t-smtp>
-        </Button>
+        <Card fullWidth>
+          <div slot="header">
+            <h2><t-smtp key="test-smtp">{t("test-smtp")}</t-smtp></h2>
+          </div>
+
+          <form
+            id="test-smtp-form"
+            action={Astro.locals.StudioCMS.routeMap.endpointLinks.mailer.testEmail}
+          >
+            <div class="form-content">
+              <Input
+                type="text"
+                name="test_email"
+                label={t("test-email")}
+                placeholder={t("test-email-placeholder")}
+                isRequired
+                disabled={!enableMailer}
+              />
+            </div>
+          </form>
+
+          <div slot="footer">
+            <Button
+              variant="solid"
+              color="primary"
+              size="sm"
+              type="submit"
+              form="test-smtp-form"
+              disabled={!enableMailer}
+            >
+              <Icon
+                slot="start-content"
+                name="heroicons:inbox-20-solid"
+                width={20}
+                height={20}
+              />
+              <t-smtp key="send-test-email">{t("send-test-email")}</t-smtp>
+            </Button>
+          </div>
+        </Card>
       </div>
-    </Card>
-  </div>
+    </TabItem>
+    <TabItem
+      label={t("site-email-settings")}
+      id="tab-site-email-settings"
+      icon='heroicons:envelope-20-solid'
+    >
+      <Card fullWidth>
+        <form
+          id="notification-settings-form"
+          action={Astro.locals.StudioCMS.routeMap.endpointLinks
+            .emailNotificationSettingsSite}
+        >
+          <div class="form-content">
+            {
+              notificationSettingKeys.map((key) => (
+                <Toggle
+                  name={key}
+                  label={t(key)}
+                  defaultChecked={notificationSettings.data[key] === true}
+                  color="primary"
+                />
+              ))
+            }
+          </div>
+        </form>
+
+        <div slot="footer">
+          <Button
+            variant="solid"
+            color="primary"
+            size="sm"
+            type="submit"
+            form="notification-settings-form"
+          >
+            <Icon
+              slot="start-content"
+              name="heroicons:check-20-solid"
+              width={20}
+              height={20}
+            />
+            <t-smtp key="save-email-settings">{t("save-email-settings")}</t-smtp>
+          </Button>
+        </div>
+      </Card>
+    </TabItem>
+  </Tabs>
 </Layout>
 
 <script>
@@ -458,6 +464,7 @@ const notificationSettingKeys = Object.keys(notificationSettings.data).filter(
     updateSelectElmLabel,
     updateToggleElmLabel,
     updateTrueFalseSelectOptions,
+    updateTabLabel
   } from "studiocms:i18n/client";
 
   const currentPage = "@studiocms/dashboard:smtp";
@@ -500,6 +507,9 @@ const notificationSettingKeys = Object.keys(notificationSettings.data).filter(
       "tls_rejectUnauthorized",
       comp["smtp-tls-reject-unauthorized"],
     );
+
+    updateTabLabel("tab-smtp-settings", comp["smtp-settings"]);
+    updateTabLabel("tab-site-email-settings", comp["site-email-settings"]);
 
     const trueFalseOptions = { true: comp['true-label'], false: comp['false-label'] };
 

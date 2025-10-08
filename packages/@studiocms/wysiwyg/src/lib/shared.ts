@@ -15,7 +15,6 @@ declare global {
  */
 export const shared: WYSIWYGSchemaOptions =
 	globalThis.studiocmsWYSIWYG ||
-	// biome-ignore lint/suspicious/noAssignInExpressions: This is a valid use case.
 	(globalThis.studiocmsWYSIWYG = {
 		sanitize: undefined,
 	});
