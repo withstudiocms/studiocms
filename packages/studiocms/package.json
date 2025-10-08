@@ -163,6 +163,7 @@
 		"@withstudiocms/component-registry": "workspace:*",
 		"@withstudiocms/config-utils": "workspace:*",
 		"@withstudiocms/effect": "workspace:*",
+		"@withstudiocms/template-lang": "workspace:*",
 		"astro-integration-kit": "catalog:",
 		"boxen": "^8.0.1",
 		"chalk": "catalog:",

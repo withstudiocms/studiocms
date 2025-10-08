@@ -34,6 +34,8 @@ export const CMSNotificationSettingsId: string = '1';
 
 export const Next_NotificationSettingsId: string = 'SCMS_NOTIFICATION_SETTINGS_1';
 
+export const TemplateConfigId: string = '__StudioCMS_Email_Templates';
+
 /**
  * The default lifetime for cached items.
  * This value is used to determine how long an item should remain in the cache before it is considered expired.

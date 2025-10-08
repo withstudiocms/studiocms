@@ -885,6 +885,9 @@ importers:
       '@withstudiocms/internal_helpers':
         specifier: workspace:*
         version: link:../@withstudiocms/internal_helpers
+      '@withstudiocms/template-lang':
+        specifier: workspace:*
+        version: link:../@withstudiocms/template-lang
       astro:
         specifier: catalog:min
         version: 5.14.1(@types/node@22.18.6)(jiti@2.6.0)(rollup@4.52.3)(typescript@5.9.3)(yaml@2.8.1)
