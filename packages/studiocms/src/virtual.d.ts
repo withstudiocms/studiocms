@@ -559,6 +559,8 @@ declare module 'studiocms:auth/lib/types' {
 
 declare module 'virtual:studiocms/plugins/renderers' {}
 
+declare module 'studiocms:template-editor/script' {}
+
 declare module 'studiocms:renderer' {
 	export const StudioCMSRenderer: typeof import('./virtuals/components/Renderer.astro').default;
 }

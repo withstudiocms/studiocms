@@ -337,6 +337,9 @@ export const studiocms = defineIntegration({
 							'studiocms:i18n/plugins': dynamicVirtual(['./virtuals/i18n/plugin.js']),
 							'studiocms:sdk': dynamicVirtual(['./virtuals/sdk/index.js']),
 							'studiocms:sdk/types': dynamicVirtual(['./virtuals/sdk/types.js']),
+							'studiocms:template-editor/script': ambientScripts([
+								'./components/dashboard/smtp-config/template-editor.js',
+							]),
 						},
 					});
 
