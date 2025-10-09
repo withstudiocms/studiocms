@@ -13,7 +13,6 @@ import { TabItem, Tabs } from 'studiocms:ui/components/tabs';
 import { Toggle } from 'studiocms:ui/components/toggle';
 import PageHeader from '../../components/dashboard/PageHeader.astro';
 import TemplateEditor from '../../components/dashboard/smtp-config/TemplateEditor.astro';
-import TemplateEditorPreviewModal from '../../components/dashboard/smtp-config/TemplateEditorPreviewModal.astro';
 import { Effect, genLogger, runEffect } from '../../effect.js';
 import Layout from '../../layouts/DashboardLayout.astro';
 import type {
@@ -70,7 +69,6 @@ const notificationSettingKeys = Object.keys(notificationSettings.data).filter(
     </PageHeader>
   </div>
 
-  <TemplateEditorPreviewModal {t} />
   <Tabs variant='starlight'>
     <TabItem
       label={t("smtp-settings")}

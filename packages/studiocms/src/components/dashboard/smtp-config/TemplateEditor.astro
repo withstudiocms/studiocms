@@ -1,18 +1,28 @@
 ---
 import { Icon } from 'studiocms:ui/components';
 import { Button } from 'studiocms:ui/components/button';
+import { Modal } from 'studiocms:ui/components/modal';
 
 interface Props {
 	templateKeys: string[];
 	templates: Record<string, string>;
 	defaultTemplates: Record<string, string>;
-	t: (key: 'preview-button-title') => string;
+	t: (key: 'preview-button-title' | 'template-preview-modal-header') => string;
 }
 
 const { templateKeys, templates, defaultTemplates, t } = Astro.props;
 
 const templateSaveAPIEndpoint = Astro.locals.StudioCMS.routeMap.endpointLinks.templates;
 ---
+
+<Modal id='template-editor-preview-modal' size='lg'>
+    <h2 slot="header"><t-smtp key="template-preview-modal-header">{t('template-preview-modal-header')}</t-smtp></h2>
+    <iframe 
+        id="template-editor-preview"
+        sandbox="allow-scripts allow-same-origin allow-modals"
+    ></iframe>
+</Modal>
+
 <Button 
     id="template-preview-button" 
     variant="outlined"
@@ -27,6 +37,7 @@ const templateSaveAPIEndpoint = Astro.locals.StudioCMS.routeMap.endpointLinks.te
         height={20} 
     />
 </Button>
+
 <div 
     id="template-editor" 
     data-current-selection="none" 
@@ -41,6 +52,7 @@ const templateSaveAPIEndpoint = Astro.locals.StudioCMS.routeMap.endpointLinks.te
 </script>
 
 <style is:global>
+    /* Override SUI Card styles to allow full height/width editor */
     #template-editor-card {
         padding: 0;
 
@@ -50,6 +62,17 @@ const templateSaveAPIEndpoint = Astro.locals.StudioCMS.routeMap.endpointLinks.te
             overflow: hidden !important;
             position: relative;
         }
+    }
+
+    /* Fix for modal positioning/size issues
+
+    This overrides the @studiocms/ui modal max size
+    to allow for more information on a slightly bigger modal.
+
+    */
+    #template-editor-preview-modal.sui-modal.lg {
+        max-width: 800px !important;
+        width: min(90vw, 800px) !important;
     }
 </style>
 
@@ -70,5 +93,15 @@ const templateSaveAPIEndpoint = Astro.locals.StudioCMS.routeMap.endpointLinks.te
         right: 1.25rem;
         z-index: 10;
         padding: 0.5rem;
+    }
+
+    #template-editor-preview {
+        width: 100%;
+        min-height: 400px;
+        height: 100%;
+        border: 2px solid var(--border);
+        border-radius: var(--radius-md);
+        /* Ensures the iframe content starts with a white background (simulating a blank email) */
+        background-color: #fff;
     }
 </style>

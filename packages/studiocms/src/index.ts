@@ -295,6 +295,9 @@ export const studiocms = defineIntegration({
 								path: './virtuals/template-engine/index.js',
 								exportDefault: true,
 							}),
+							'studiocms:template-editor/script': ambientScripts([
+								'./virtuals/scripts/template-editor.js',
+							]),
 							'studiocms:components': astroComponentVirtual({
 								FormattedDate: './virtuals/components/FormattedDate.astro',
 								Generator: './virtuals/components/Generator.astro',
@@ -337,9 +340,6 @@ export const studiocms = defineIntegration({
 							'studiocms:i18n/plugins': dynamicVirtual(['./virtuals/i18n/plugin.js']),
 							'studiocms:sdk': dynamicVirtual(['./virtuals/sdk/index.js']),
 							'studiocms:sdk/types': dynamicVirtual(['./virtuals/sdk/types.js']),
-							'studiocms:template-editor/script': ambientScripts([
-								'./components/dashboard/smtp-config/template-editor.js',
-							]),
 						},
 					});
 
