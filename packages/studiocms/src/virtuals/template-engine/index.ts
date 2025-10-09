@@ -1,3 +1,8 @@
+/* v8 ignore start */
+/*
+ * File ignored in v8 migration because it uses a vite virtual module import.
+ * This will be manually migrated later.
+ */
 import { SDKCore } from 'studiocms:sdk';
 import TemplateEngine from '@withstudiocms/template-lang';
 import { Effect } from '../../effect.js';
@@ -87,7 +92,7 @@ export const templateEngine = Effect.gen(function* () {
 });
 
 export default templateEngine;
-
+/* v8 ignore end */
 // Examples of context data:
 
 // Password reset email

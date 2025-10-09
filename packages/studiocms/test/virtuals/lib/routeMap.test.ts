@@ -72,7 +72,7 @@ describe('routeMap', () => {
 			'plugins',
 			'unverifiedEmail',
 			'passwordReset',
-		];
+		] as const;
 		for (const key of keys) {
 			expect(StudioCMSRoutes.mainLinks[key]).toBeDefined();
 			expect(typeof StudioCMSRoutes.mainLinks[key]).toBe('string');
@@ -88,7 +88,7 @@ describe('routeMap', () => {
 			'logoutAPI',
 			'registerAPI',
 			'forgotPasswordAPI',
-		];
+		] as const;
 		for (const key of keys) {
 			expect(StudioCMSRoutes.authLinks[key]).toBeDefined();
 			expect(typeof StudioCMSRoutes.authLinks[key]).toBe('string');
@@ -129,6 +129,8 @@ describe('routeMap', () => {
 		expect(typeof StudioCMSRoutes.endpointLinks.emailNotificationSettingsSite).toBe('string');
 		expect(typeof StudioCMSRoutes.endpointLinks.resendVerificationEmail).toBe('string');
 		expect(typeof StudioCMSRoutes.endpointLinks.updateUserNotifications).toBe('string');
+		expect(StudioCMSRoutes.endpointLinks.templates).toBeDefined();
+		expect(typeof StudioCMSRoutes.endpointLinks.templates).toBe('string');
 	});
 
 	it('StudioCMSRoutes.sdk contains expected keys', () => {
