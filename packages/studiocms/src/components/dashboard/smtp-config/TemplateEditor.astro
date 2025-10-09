@@ -84,11 +84,11 @@ const templateSaveAPIEndpoint = '/api/smtp/templates';
     // --- Function Utils ---
     function updateButtonState(button: HTMLElement, isActive: boolean) {
         if (isActive) {
-        button.classList.add('primary');
-        button.classList.remove('default');
+            button.classList.add('primary');
+            button.classList.remove('default');
         } else {
-        button.classList.remove('primary');
-        button.classList.add('default');
+            button.classList.remove('primary');
+            button.classList.add('default');
         }
     }
 
@@ -98,12 +98,12 @@ const templateSaveAPIEndpoint = '/api/smtp/templates';
 
     function displaySuccessToastThenReload(message: string) {
         toast({
-        title: t['success-label'],
-        type: 'success',
-        description: message
+            title: t['success-label'],
+            type: 'success',
+            description: message
         });
         setTimeout(() => {
-        window.location.reload();
+            window.location.reload();
         }, 3000); // Delay to allow user to read the toast message
     }
 
@@ -114,7 +114,7 @@ const templateSaveAPIEndpoint = '/api/smtp/templates';
         const response = await fetch(saveEndpoint, {
             method: 'POST',
             headers: {
-            'Content-Type': 'application/json',
+                'Content-Type': 'application/json',
             },
             body: JSON.stringify({ templates: allTemplates }),
         });
@@ -170,19 +170,19 @@ const templateSaveAPIEndpoint = '/api/smtp/templates';
     currentTemplates.forEach((template) => {
         const button = $(`#template-btn-${template}`);
         if (button) {
-        button.addEventListener('click', () => {
-            // Update button states
-            allTemplateButtons.forEach((btn) => {
-            updateButtonState(btn, btn.id === button.id);
+            button.addEventListener('click', () => {
+                // Update button states
+                allTemplateButtons.forEach((btn) => {
+                updateButtonState(btn, btn.id === button.id);
+                });
+
+                // Load the selected template content into the editor
+                const templateContent = templates[template] || `<!-- ${t['template-editor-not-found']} -->`;
+                updateEditorContent(templateContent);
+
+                // Update current selection data attribute
+                templateEditor.dataset.currentSelection = template;
             });
-
-            // Load the selected template content into the editor
-            const templateContent = templates[template] || `<!-- ${t['template-editor-not-found']} -->`;
-            updateEditorContent(templateContent);
-
-            // Update current selection data attribute
-            templateEditor.dataset.currentSelection = template;
-        });
         }
     });
 
@@ -190,8 +190,8 @@ const templateSaveAPIEndpoint = '/api/smtp/templates';
     saveButton.addEventListener('click', async () => {
         const currentTemplate = getCurrentTemplate();
         if (currentTemplate && templates[currentTemplate] !== undefined) {
-        const updatedContent = editor.getValue();
-        await saveTemplate(currentTemplate, updatedContent);
+            const updatedContent = editor.getValue();
+            await saveTemplate(currentTemplate, updatedContent);
         } else {
             toast({
                 title: t['error-label'],
@@ -250,25 +250,25 @@ const templateSaveAPIEndpoint = '/api/smtp/templates';
     previewModalButton.addEventListener('click', () => {
         const currentTemplate = getCurrentTemplate();
         if (currentTemplate && templates[currentTemplate] !== undefined) {
-        const templateContent = editor.getValue();
+            const templateContent = editor.getValue();
 
-        const renderedContent = engine.render(templateContent, mockContext);
+            const renderedContent = engine.render(templateContent, mockContext);
 
-        // Create a Blob URL for the template content
-        const blob = new Blob([renderedContent], { type: 'text/html' });
-        const url = URL.createObjectURL(blob);
+            // Create a Blob URL for the template content
+            const blob = new Blob([renderedContent], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
 
-        // Set the iframe src to the Blob URL
-        previewIframe.src = url;
+            // Set the iframe src to the Blob URL
+            previewIframe.src = url;
 
-        // Open the modal
-        previewModal.show();
+            // Open the modal
+            previewModal.show();
         } else {
-        toast({
-            title: t['error-label'],
-            type: 'danger',
-            description: t['template-preview-button-error']
-        });
+            toast({
+                title: t['error-label'],
+                type: 'danger',
+                description: t['template-preview-button-error']
+            });
         }
     })
 </script>
