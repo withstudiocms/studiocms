@@ -394,32 +394,6 @@ const notificationSettingKeys = Object.keys(notificationSettings.data).filter(
 </Layout>
 
 <script>
-  // Display or hide example variables based on selected template
-  const templateVariableSelect = document.querySelector<HTMLElement>('#template-variable-examples-dropdown');
-  const templateVariableLists = {
-    notifications: document.querySelectorAll<HTMLElement>('#template-variable-notifications'),
-    passwordReset: document.querySelectorAll<HTMLElement>('#template-variable-passwordReset'),
-    verifyEmail: document.querySelectorAll<HTMLElement>('#template-variable-verifyEmail'),
-    userInvite: document.querySelectorAll<HTMLElement>('#template-variable-userInvite'),
-  };
-
-  templateVariableSelect?.querySelectorAll<HTMLElement>('.sui-select-option').forEach((option) => {
-    option.addEventListener('click', () => {
-      const selectedValue = option.getAttribute('value');
-
-      Object.keys(templateVariableLists).forEach((key) => {
-        if (key === selectedValue) {
-          templateVariableLists[key as keyof typeof templateVariableLists].forEach((item) => item.classList.remove('hidden'));
-        } else {
-          templateVariableLists[key as keyof typeof templateVariableLists].forEach((item) => item.classList.add('hidden'));
-        }
-      });
-    });
-  });
-
-</script>
-
-<script>
   import { toast } from "studiocms:ui/components/toaster";
 
   const smtpConfigForm = document.getElementById(
@@ -603,7 +577,6 @@ const notificationSettingKeys = Object.keys(notificationSettings.data).filter(
     updateElmLabel,
     updateElmPlaceholder,
     updateSelectElmLabel,
-    updateSelectOptions,
     updateToggleElmLabel,
     updateTrueFalseSelectOptions,
     updateTabLabel
@@ -674,24 +647,6 @@ const notificationSettingKeys = Object.keys(notificationSettings.data).filter(
           ],
         );
       });
-
-    const templateSelectorButtons = document.querySelectorAll<HTMLElement>('.template-selectors button');
-    templateSelectorButtons.forEach((button) => {
-      button.textContent = comp[button.id.replace('template-btn-', '') as keyof typeof comp]
-    })
-
-    const selectOptsToUpdate: Record<string, string> = templateSelectorButtons.length
-      ? Array.from(templateSelectorButtons).reduce((acc, button) => {
-        const templateKey = button.id.replace('template-btn-', '');
-        acc[templateKey] = comp[templateKey as keyof typeof comp];
-        return acc;
-      }, {} as Record<string, string>)
-      : {};
-
-    updateSelectOptions(
-      "template-variable-examples",
-      selectOptsToUpdate,
-    );
   });
 
   if (!customElements.get("t-smtp")) {
