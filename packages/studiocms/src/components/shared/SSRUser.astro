@@ -1,6 +1,7 @@
 ---
 import { extname } from 'node:path';
 import { Icon } from 'studiocms:ui/components/icon';
+import chalk from 'chalk';
 import { lookup } from 'mrmime';
 
 const heroIconsUserDataUri =
@@ -46,6 +47,48 @@ const {
 	id,
 } = Astro.props;
 
+const dt = new Intl.DateTimeFormat('en-us', {
+	hour: '2-digit',
+	minute: '2-digit',
+});
+
+const dateString = dt.format(new Date());
+
+function customLogger(type: 'error' | 'warn' | 'info', ...messages: string[]) {
+	let messageBuilder = {
+		prefix: '[studiocms:Avatar]',
+		timestamp: dateString,
+		content: messages.join(' '),
+	};
+	switch (type) {
+		case 'error':
+			console.error(
+				chalk.bold.red(
+					`${messageBuilder.prefix} [${messageBuilder.timestamp}] ${messageBuilder.content}`
+				)
+			);
+			break;
+		case 'warn':
+			console.warn(
+				chalk.bold.yellow(
+					`${messageBuilder.prefix} [${messageBuilder.timestamp}] ${messageBuilder.content}`
+				)
+			);
+			break;
+		case 'info':
+			console.log(
+				chalk.blue(
+					`${messageBuilder.prefix} [${messageBuilder.timestamp}] ${messageBuilder.content}`
+				)
+			);
+			break;
+		default:
+			console.log(
+				`${messageBuilder.prefix} [${messageBuilder.timestamp}] ${messageBuilder.content}`
+			);
+	}
+}
+
 /* v8 ignore start */
 async function getObjectData(src: string): Promise<{ data: string; type: string } | undefined> {
 	try {
@@ -56,17 +99,17 @@ async function getObjectData(src: string): Promise<{ data: string; type: string 
 			const type = lookup(extension);
 
 			if (!type) {
-				console.error(`Could not determine MIME type for extension: ${extension}`);
+				customLogger('error', `Could not determine MIME type for extension: ${extension}`);
 				return undefined;
 			}
 
 			if (!/^image\/.*$/.test(type)) {
-				console.error(`Unsupported image type: ${type}`);
+				customLogger('error', `Unsupported image type: ${type}`);
 				return undefined;
 			}
 
 			if (type === 'image/svg+xml' || type.startsWith('image/svg')) {
-				console.error('SVG avatars are disallowed for security.');
+				customLogger('error', 'SVG avatars are disallowed for security.');
 				return undefined;
 			}
 
@@ -78,7 +121,7 @@ async function getObjectData(src: string): Promise<{ data: string; type: string 
 
 		// Only allow HTTPS (avoid mixed content + downgrade attacks)
 		if (urlObj.protocol !== 'https:') {
-			console.error(`Insecure avatar URL protocol: ${urlObj.protocol}`);
+			customLogger('error', `Insecure avatar URL protocol: ${urlObj.protocol}`);
 			return undefined;
 		}
 
@@ -97,17 +140,17 @@ async function getObjectData(src: string): Promise<{ data: string; type: string 
 		}
 
 		if (!response || !response.ok) {
-			console.error(`Failed to fetch image: ${response.statusText}`);
+			customLogger('error', `Failed to fetch image: ${response.statusText}`);
 			return undefined;
 		}
 		const contentType = response.headers.get('content-type');
 		if (!contentType || !contentType.startsWith('image/')) {
-			console.error(`Invalid image type: ${contentType}`);
+			customLogger('error', `Invalid image type: ${contentType}`);
 			return undefined;
 		}
 
 		if (contentType === 'image/svg+xml') {
-			console.error('Remote SVG avatars are disallowed for security.');
+			customLogger('error', 'Remote SVG avatars are disallowed for security.');
 			return undefined;
 		}
 
@@ -116,11 +159,11 @@ async function getObjectData(src: string): Promise<{ data: string; type: string 
 		// Handle various error types
 		if (error instanceof Error) {
 			if (error.name === 'AbortError') {
-				console.log(`Avatar URL test timed out after ${timeoutDelay / 1000} seconds`);
+				customLogger('info', `Avatar URL test timed out after ${timeoutDelay / 1000} seconds`);
 			} else if (error.name === 'TypeError') {
-				console.log('Invalid URL or network error:', error.message);
+				customLogger('error', 'Invalid URL or network error:', error.message);
 			} else {
-				console.log('Error testing avatar URL:', error.message);
+				customLogger('error', 'Error testing avatar URL:', error.message);
 			}
 		}
 		return undefined;
