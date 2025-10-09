@@ -75,7 +75,7 @@ const templateSaveAPIEndpoint = Astro.locals.StudioCMS.routeMap.endpointLinks.te
     } from "studiocms:i18n/client";
     import templateEngine from '@withstudiocms/template-lang'
     import { ModalHelper } from 'studiocms:ui/components/modal';
-    import * as ace from 'ace-builds';
+    import { edit } from 'ace-builds';
     import { toast } from 'studiocms:ui/components/toaster';
     import "ace-builds/esm-resolver";
     import "ace-builds/src-noconflict/mode-handlebars";
@@ -180,7 +180,7 @@ const templateSaveAPIEndpoint = Astro.locals.StudioCMS.routeMap.endpointLinks.te
     const currentTheme = window.theme?.getTheme() || 'dark';
     const aceTheme = currentTheme === 'light' ? 'cloud_editor' : 'cloud_editor_dark';
 
-    const editor = ace.edit('template-editor', {
+    const editor = edit('template-editor', {
         mode: 'ace/mode/handlebars', // Using Handlebars as its a close match to our templating language
         theme: `ace/theme/${aceTheme}`,
         value: `<!-- ${t['template-editor-preloaded-content']} -->`,
