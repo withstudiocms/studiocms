@@ -188,8 +188,9 @@ const templateSaveAPIEndpoint = '/api/smtp/templates';
         padding: 0;
 
         .sui-card-body {
-            padding: 0;
             height: 100%;
+            padding: 0 !important;
+            overflow: hidden !important;
         }
     }
 </style>
@@ -202,5 +203,6 @@ const templateSaveAPIEndpoint = '/api/smtp/templates';
         min-height: 100%;
         background-color: var(--background-step-1);
         border-radius: var(--radius-md);
+        overflow: hidden;
     }
 </style>
