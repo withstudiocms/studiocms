@@ -36,7 +36,9 @@ const templateSaveAPIEndpoint = Astro.locals.StudioCMS.routeMap.endpointLinks.te
     data-save-endpoint={templateSaveAPIEndpoint}
 ></div>
 
-<script src="./template-editor.ts"></script>
+<script>
+    import "./template-editor.ts";
+</script>
 
 <style is:global>
     #template-editor-card {
