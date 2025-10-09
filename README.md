@@ -94,7 +94,7 @@ If you encounter any bugs or have ideas for new features, please open an issue o
 
 ### Code Contributions
 
-We welcome contributions from the community! Whether it's bug reports, feature requests, or code contributions, we appreciate your help in making this project better. To get started read our [Contributing Guide](https://docs.studiocms.dev/contributing/getting-started/)
+We welcome contributions from the community! Whether it's bug reports, feature requests, or code contributions, we appreciate your help in making this project better. To get started read our [Contributing Guide](https://docs.studiocms.dev/en/guides/contributing/getting-started/)
 
 Please note that by contributing to this project, you agree to our [Code of Conduct](https://github.com/withstudiocms/.github/blob/main/CODE_OF_CONDUCT.md).
 
