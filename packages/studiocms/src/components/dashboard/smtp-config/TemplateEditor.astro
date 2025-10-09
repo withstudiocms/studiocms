@@ -75,13 +75,13 @@ const templateSaveAPIEndpoint = Astro.locals.StudioCMS.routeMap.endpointLinks.te
     } from "studiocms:i18n/client";
     import { ModalHelper } from 'studiocms:ui/components/modal';
     import { toast } from 'studiocms:ui/components/toaster';
+    import * as ace from 'ace-builds';
     import "ace-builds/esm-resolver";
     import "ace-builds/src-noconflict/mode-handlebars";
     import "ace-builds/src-noconflict/theme-cloud_editor";
     import "ace-builds/src-noconflict/theme-cloud_editor_dark";
     import "ace-builds/src-noconflict/ext-language_tools";
 
-    const { edit } = await import('ace-builds');
     const { default: templateEngine } = await import('@withstudiocms/template-lang');
 
     // --- INTERNATIONALIZATION SETUP ---
@@ -181,7 +181,7 @@ const templateSaveAPIEndpoint = Astro.locals.StudioCMS.routeMap.endpointLinks.te
     const currentTheme = window.theme?.getTheme() || 'dark';
     const aceTheme = currentTheme === 'light' ? 'cloud_editor' : 'cloud_editor_dark';
 
-    const editor = edit('template-editor', {
+    const editor = ace.edit('template-editor', {
         mode: 'ace/mode/handlebars', // Using Handlebars as its a close match to our templating language
         theme: `ace/theme/${aceTheme}`,
         value: `<!-- ${t['template-editor-preloaded-content']} -->`,
