@@ -73,15 +73,16 @@ const templateSaveAPIEndpoint = Astro.locals.StudioCMS.routeMap.endpointLinks.te
         $i18n,
         baseTranslation,
     } from "studiocms:i18n/client";
-    import templateEngine from '@withstudiocms/template-lang'
     import { ModalHelper } from 'studiocms:ui/components/modal';
-    import { edit } from 'ace-builds';
     import { toast } from 'studiocms:ui/components/toaster';
     import "ace-builds/esm-resolver";
     import "ace-builds/src-noconflict/mode-handlebars";
     import "ace-builds/src-noconflict/theme-cloud_editor";
     import "ace-builds/src-noconflict/theme-cloud_editor_dark";
     import "ace-builds/src-noconflict/ext-language_tools";
+
+    const { edit } = await import('ace-builds');
+    const { default: templateEngine } = await import('@withstudiocms/template-lang');
 
     // --- INTERNATIONALIZATION SETUP ---
     const currentPage = "@studiocms/dashboard:smtp";
