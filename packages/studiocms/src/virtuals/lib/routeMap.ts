@@ -334,6 +334,8 @@ export const StudioCMSRoutes = {
 		resendVerificationEmail: dashboardAPIRoute('resend-verify-email'),
 
 		updateUserNotifications: dashboardAPIRoute('update-user-notifications'),
+
+		templates: dashboardAPIRoute('templates'),
 	},
 	sdk: {
 		/**

@@ -43,7 +43,7 @@ interface Props {
 
 const { templateKeys, templates, defaultTemplates, t } = Astro.props;
 
-const templateSaveAPIEndpoint = '/api/smtp/templates';
+const templateSaveAPIEndpoint = Astro.locals.StudioCMS.routeMap.endpointLinks.templates;
 ---
 <Button 
     id="template-preview-button" 
