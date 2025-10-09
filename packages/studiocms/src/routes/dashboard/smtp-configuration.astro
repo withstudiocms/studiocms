@@ -328,15 +328,17 @@ const notificationSettingKeys = Object.keys(notificationSettings.data).filter(
                   <div class="template-editor-instructions prose">
                     <p><t-smtp key="template-instructions">{t("template-instructions")}</t-smtp></p>
                     <h4><t-smtp key="available-variables">{t("available-variables")}</t-smtp></h4>
-                    <span class="not-prose"><Select
-                      name="template-variable-examples"
-                      options={tEngine.availableTemplates.map((template) => ({
-                        label: t(template),
-                        value: template,
-                      }))}
-                      defaultValue="notifications"
-                      fullWidth
-                    /></span>
+                    <span class="not-prose">
+                      <Select
+                        name="template-variable-examples"
+                        options={tEngine.availableTemplates.map((template) => ({
+                          label: t(template),
+                          value: template,
+                        }))}
+                        defaultValue="notifications"
+                        fullWidth
+                      />
+                    </span>
                     <ul>
                       <li><code set:html="{{site.title}}"></code>: <t-smtp key="variable-global-site.title">{t("variable-global-site.title")}</t-smtp></li>
                       <li><code set:html="{{site.description}}"></code>: <t-smtp key="variable-global-site.description">{t("variable-global-site.description")}</t-smtp></li>
