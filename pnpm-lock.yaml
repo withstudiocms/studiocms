@@ -888,6 +888,9 @@ importers:
       '@withstudiocms/template-lang':
         specifier: workspace:*
         version: link:../@withstudiocms/template-lang
+      ace-builds:
+        specifier: ^1.43.3
+        version: 1.43.3
       astro:
         specifier: catalog:min
         version: 5.14.1(@types/node@22.18.6)(jiti@2.6.0)(rollup@4.52.3)(typescript@5.9.3)(yaml@2.8.1)
@@ -2964,6 +2967,9 @@ packages:
 
   abbrev@1.1.1:
     resolution: {integrity: sha512-nne9/IiQ/hzIhY6pdDnbBtz7DjPTKrY00P/zvPSm5pOFkl6xuGrGnXn/VtTNNfNtAfZ9/1RtehkszU9qcTii0Q==}
+
+  ace-builds@1.43.3:
+    resolution: {integrity: sha512-MCl9rALmXwIty/4Qboijo/yNysx1r6hBTzG+6n/TiOm5LFhZpEvEIcIITPFiEOEFDfgBOEmxu+a4f54LEFM6Sg==}
 
   acorn-globals@4.3.4:
     resolution: {integrity: sha512-clfQEh21R+D0leSbUdWf3OcfqyaCSAQ8Ryq00bofSekfr9W8u1jyYZo6ir0xu9Gtcf7BjcHJpnbZH7JOCpP60A==}
@@ -8550,6 +8556,8 @@ snapshots:
     optional: true
 
   abbrev@1.1.1: {}
+
+  ace-builds@1.43.3: {}
 
   acorn-globals@4.3.4:
     dependencies:

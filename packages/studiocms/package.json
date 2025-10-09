@@ -164,6 +164,7 @@
 		"@withstudiocms/config-utils": "workspace:*",
 		"@withstudiocms/effect": "workspace:*",
 		"@withstudiocms/template-lang": "workspace:*",
+		"ace-builds": "^1.43.3",
 		"astro-integration-kit": "catalog:",
 		"boxen": "^8.0.1",
 		"chalk": "catalog:",

@@ -32,9 +32,11 @@ export const templateEngine = Effect.gen(function* () {
 	}
 
 	// Extract the templates from the configuration data
-	const templates = config.data;
-	type Templates = Omit<typeof templates, '_config_version'>;
+	const { _config_version, ...templates } = config.data;
+	type Templates = typeof templates;
 	type TemplateKeys = keyof Templates;
+
+	const templateKeys = Object.keys(templates) as TemplateKeys[];
 
 	return {
 		/**
@@ -52,6 +54,12 @@ export const templateEngine = Effect.gen(function* () {
 		 * @returns The default email template.
 		 */
 		getDefaultTemplate: (key: TemplateKeys) => defaultTemplates[key],
+
+		availableTemplates: templateKeys,
+
+		allTemplates: templates,
+
+		defaultTemplates,
 
 		/**
 		 * Updates the email templates with new templates.

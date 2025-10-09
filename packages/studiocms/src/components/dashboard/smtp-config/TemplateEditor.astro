@@ -1,0 +1,206 @@
+---
+interface Props {
+	templateKeys: string[];
+	templates: Record<string, string>;
+	defaultTemplates: Record<string, string>;
+}
+
+const { templateKeys, templates, defaultTemplates } = Astro.props;
+
+const templateSaveAPIEndpoint = '/api/smtp/templates';
+---
+<div 
+    id="template-editor" 
+    data-current-selection="none" 
+    data-templates={JSON.stringify(templates)}
+    data-template-keys={JSON.stringify(templateKeys)}
+    data-default-templates={JSON.stringify(defaultTemplates)}
+    data-save-endpoint={templateSaveAPIEndpoint}
+></div>
+
+<script>
+  import * as ace from 'ace-builds';
+  import { toast } from 'studiocms:ui/components/toaster';
+  import "ace-builds/src-noconflict/mode-handlebars";
+  import "ace-builds/src-noconflict/theme-cloud_editor";
+  import "ace-builds/src-noconflict/theme-cloud_editor_dark";
+
+  // --- UTILITY FUNCTIONS ---
+  const $ = (selector: string): HTMLElement | null =>
+    document.querySelector(selector);
+  const $$ = (selector: string): NodeListOf<HTMLElement> =>
+    document.querySelectorAll(selector);
+
+  // --- CONSTANTS ---
+  const allTemplateButtons = $$('.template-selectors button');
+  const saveButton = $('#save-template-button') as HTMLElement;
+  const resetButton = $('#reset-template-button') as HTMLElement;
+  const templateEditor = $('#template-editor') as HTMLElement;
+
+  const templates = JSON.parse(templateEditor.dataset.templates || '{}') as Record<string, string>;
+  const currentTemplates = JSON.parse(templateEditor.dataset.templateKeys || '[]') as string[];
+  const defaultTemplates = JSON.parse(templateEditor.dataset.defaultTemplates || '{}') as Record<string, string>;
+  const saveEndpoint = templateEditor.dataset.saveEndpoint as string;
+
+  // --- Function Utils ---
+  function updateButtonState(button: HTMLElement, isActive: boolean) {
+    if (isActive) {
+      button.classList.add('primary');
+      button.classList.remove('default');
+    } else {
+      button.classList.remove('primary');
+      button.classList.add('default');
+    }
+  }
+
+  function getCurrentTemplate(): string {
+    return templateEditor.dataset.currentSelection || 'none';
+  }
+
+  function displaySuccessToastThenReload(message: string) {
+    toast({
+      title: 'Success',
+      type: 'success',
+      description: message
+    });
+    setTimeout(() => {
+      window.location.reload();
+    }, 3000); // Delay to allow user to read the toast message
+  }
+
+  async function saveTemplate(templateKey: string, content: string) {
+    const allTemplates = { ...templates, [templateKey]: content };
+
+    try {
+      const response = await fetch(saveEndpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ templates: allTemplates }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to save template: ${response.statusText}`);
+      }
+
+      displaySuccessToastThenReload('Template saved successfully. The page will reload to apply changes.');
+    } catch (_error) {
+      toast({
+        title: 'Error',
+        type: 'danger',
+        description: 'An error occurred while saving the template. Please try again.'
+      });
+    }
+  }
+
+  // --- ACE EDITOR SETUP ---
+  const currentTheme = window.theme?.getTheme() || 'dark';
+  const aceTheme = currentTheme === 'light' ? 'cloud_editor' : 'cloud_editor_dark';
+
+  const editor = ace.edit('template-editor', {
+    mode: 'ace/mode/handlebars', // Using Handlebars as its a close match to our templating language
+    theme: `ace/theme/${aceTheme}`,
+    value: '<!-- Select a template to load its content here -->',
+    fontSize: '14px',
+    tabSize: 2,
+    useSoftTabs: true,
+    showPrintMargin: false,
+    wrap: true,
+    useWorker: false,
+  });
+
+  // --- EDITOR UTILS ---
+
+  function updateEditorContent(content: string) {
+    editor.setValue(content, -1); // -1 moves cursor to start
+    editor.focus();
+  }
+
+  // --- THEME MANAGEMENT ---
+
+  // Listen for theme changes and update Ace Editor theme accordingly
+  const observer = new MutationObserver(() => {
+    const newTheme = window.theme?.getTheme() || 'dark';
+    const newAceTheme = newTheme === 'light' ? 'cloud_editor' : 'cloud_editor_dark';
+    editor.setTheme(`ace/theme/${newAceTheme}`);
+  });
+  observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+
+  // --- TEMPLATE BUTTON EVENT LISTENERS ---
+  currentTemplates.forEach((template) => {
+    const button = $(`#template-btn-${template}`);
+    if (button) {
+      button.addEventListener('click', () => {
+        // Update button states
+        allTemplateButtons.forEach((btn) => {
+          updateButtonState(btn, btn.id === button.id);
+        });
+
+        // Load the selected template content into the editor
+        const templateContent = templates[template] || '<!-- Template not found -->';
+        updateEditorContent(templateContent);
+
+        // Update current selection data attribute
+        templateEditor.dataset.currentSelection = template;
+      });
+    }
+  });
+
+  // --- SAVE BUTTON EVENT LISTENER ---
+  saveButton.addEventListener('click', async () => {
+    const currentTemplate = getCurrentTemplate();
+    if (currentTemplate && templates[currentTemplate] !== undefined) {
+      const updatedContent = editor.getValue();
+      await saveTemplate(currentTemplate, updatedContent);
+    } else {
+        toast({
+            title: 'Error',
+            type: 'danger',
+            description: 'No template selected or template not found.'
+        });
+    }
+  });
+
+  // --- RESET BUTTON EVENT LISTENER ---
+  resetButton.addEventListener('click', () => {
+    const currentTemplate = getCurrentTemplate();
+    if (currentTemplate && defaultTemplates[currentTemplate]) {
+
+      if (!confirm(`Are you sure you want to reset the "${currentTemplate}" template to its default content? This action cannot be undone.`)) {
+        return;
+      }
+    
+      const defaultContent = defaultTemplates[currentTemplate];
+      updateEditorContent(defaultContent);
+    } else {
+      toast({
+        title: 'Error',
+        type: 'danger',
+        description: 'No template selected or default template not found.'
+      });
+    }
+  });
+</script>
+
+<style is:global>
+    #template-editor-card {
+        padding: 0;
+
+        .sui-card-body {
+            padding: 0;
+            height: 100%;
+        }
+    }
+</style>
+
+<style>
+    #template-editor {
+        width: 100%;
+        height: 100%;
+        min-width: 100%;
+        min-height: 100%;
+        background-color: var(--background-step-1);
+        border-radius: var(--radius-md);
+    }
+</style>
