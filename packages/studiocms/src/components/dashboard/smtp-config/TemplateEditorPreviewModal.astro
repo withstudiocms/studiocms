@@ -24,7 +24,8 @@ const { t } = Astro.props;
         height: 100%;
         border: 2px solid var(--border);
         border-radius: var(--radius-md);
-        background-color: var(--background-step-1);
+        /* Ensures the iframe content starts with a white background (simulating a blank email) */
+        background-color: #fff;
     }
 </style>
 
