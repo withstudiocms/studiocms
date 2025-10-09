@@ -63,7 +63,7 @@ Steps to get a running playground should be the following:
 
 - Clone the GitHub repository
 - Run `pnpm i --frozen-lockfile`
-- Change `dbStartPage` in the Node playground's [StudioCMS config](./playground/studiocms.config.mjs) to `true`.
+- Change `dbStartPage` in the Node playground's [StudioCMS config](./playground/studiocms.config.mts) to `true`.
 - Ensure `.env` variables are configured (see [`.env.demo`](./playground/.env.demo) for an example of available environment variables)
 - Run the following in this order:
   - `pnpm build:studiocms` - Build the StudioCMS packages (required to get the current table schema for the StudioCMS integration)
