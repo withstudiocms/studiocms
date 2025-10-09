@@ -119,10 +119,8 @@ export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
 				}
 
 				// Get the HTML template for the password reset email
-				// const htmlTemplate = getTemplate('passwordReset');
 				const engine = yield* templateEngine;
-				const siteConfigFull = ctx.locals.StudioCMS.siteConfig.data;
-				const { title: siteTitle, description, siteIcon } = siteConfigFull;
+				const { title: siteTitle, description, siteIcon } = config;
 
 				const passwordResetTemplate = yield* engine.render('passwordReset', {
 					site: { title: siteTitle, description, icon: siteIcon ?? undefined },

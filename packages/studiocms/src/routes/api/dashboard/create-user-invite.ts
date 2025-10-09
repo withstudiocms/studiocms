@@ -181,8 +181,7 @@ export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
 					}
 
 					const engine = yield* templateEngine;
-					const siteConfigFull = ctx.locals.StudioCMS.siteConfig.data;
-					const { title: siteTitle, description, siteIcon } = siteConfigFull;
+					const { title: siteTitle, description, siteIcon } = siteConfig;
 
 					const userInviteTemplate = yield* engine.render('userInvite', {
 						site: { title: siteTitle, description, icon: siteIcon ?? undefined },

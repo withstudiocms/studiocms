@@ -194,13 +194,15 @@ function updateEditorContent(content: string, focus = true) {
 	}
 }
 
+let lastPreviewUrl: string | null = null;
 function updatePreviewIFrame(content: string) {
-	// Create a Blob URL for the template content
+	if (lastPreviewUrl) {
+		URL.revokeObjectURL(lastPreviewUrl);
+		lastPreviewUrl = null;
+	}
 	const blob = new Blob([content], { type: 'text/html' });
-	const url = URL.createObjectURL(blob);
-
-	// Set the iframe src to the Blob URL
-	previewIframe.src = url;
+	lastPreviewUrl = URL.createObjectURL(blob);
+	previewIframe.src = lastPreviewUrl;
 }
 
 // --- INTERNATIONALIZATION LISTENER ---
@@ -298,10 +300,18 @@ previewModalButton.addEventListener('click', () => {
 		const templateContent = editor.getValue();
 
 		// Render the template with mock context
-		const renderedContent = engine.render(templateContent, mockContext);
-
-		// Update the iframe with the rendered content
-		updatePreviewIFrame(renderedContent);
+		try {
+			const renderedContent = engine.render(templateContent, mockContext);
+			updatePreviewIFrame(renderedContent);
+		} catch (error) {
+			console.error('Template render failed', error);
+			toast({
+				title: t['error-label'],
+				type: 'danger',
+				description: t['template-preview-render-error'],
+			});
+			return;
+		}
 
 		// Open the modal
 		previewModal.show();
