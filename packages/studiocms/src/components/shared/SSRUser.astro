@@ -47,14 +47,13 @@ const {
 	id,
 } = Astro.props;
 
-const dt = new Intl.DateTimeFormat('en-us', {
-	hour: '2-digit',
-	minute: '2-digit',
-});
-
-const dateString = dt.format(new Date());
-
 function customLogger(type: 'error' | 'warn' | 'info', ...messages: string[]) {
+	const dt = new Intl.DateTimeFormat('en-us', {
+		hour: '2-digit',
+		minute: '2-digit',
+	});
+
+	const dateString = dt.format(new Date());
 	let messageBuilder = {
 		prefix: '[studiocms:Avatar]',
 		timestamp: dateString,
