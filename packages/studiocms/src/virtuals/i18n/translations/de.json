@@ -129,7 +129,9 @@
       "select-page-diff-tracking": "Differenzverfolgung",
       "select-login-page-bg": "Hintergrundbild der Anmeldeseite",
       "select-smtp-mailer": "SMTP-Mailer",
-      "select-hide-default-index": "Index-Seite auf Dashboard verstecken"
+      "select-hide-default-index": "Index-Seite auf Dashboard verstecken",
+      "true-label": "",
+      "false-label": ""
     },
     "@studiocms/dashboard:smtp": {
       "title": "SMTP-Einstellungen",
@@ -162,7 +164,9 @@
       "requireAdminVerification": "Administratoren benötigen eine verifizierte E-Mail-Adresse",
       "requireEditorVerification": "Redakteure benötigen eine verifizierte E-Mail-Adresse",
       "oAuthBypassVerification": "E-Mail-Verifizierung für Nutzer mit externen Konten überspringen",
-      "save-email-settings": "Speichern"
+      "save-email-settings": "Speichern",
+      "true-label": "",
+      "false-label": ""
     },
     "@studiocms/dashboard:user-mngmt-sidebar": {
       "input-placeholder-search": "Suchen...",
@@ -206,7 +210,14 @@
       "api-tokens-no-tokens": "Keine API-Tokens gefunden.",
       "last-edit-pages-header": "Zuletzt bearbeitete Seiten",
       "last-edit-pages-edited": "Bearbeitet",
-      "last-edit-pages-no-edits": "Keine Bearbeitungshistorie gefunden."
+      "last-edit-pages-no-edits": "Keine Bearbeitungshistorie gefunden.",
+      "owner": "",
+      "admin": "",
+      "editor": "",
+      "visitor": "",
+      "unknown": "",
+      "email-verified": "",
+      "email-unverified": ""
     },
     "@studiocms/dashboard:plugin-settings": {
       "title": "Plugin-Einstellungen",
@@ -280,7 +291,10 @@
       "custom-page-types-description-new": "Du hast den Seitentyp geändert. Bitte speichere deine Änderungen und aktualisiere die Seite, um die neuen Felder anzuzeigen.",
       "diff-edited-by-1": "Bearbeitet",
       "diff-edited-by-2": "von",
-      "diff-no-history": "Keine Bearbeitungshistorie gefunden."
+      "diff-no-history": "Keine Bearbeitungshistorie gefunden.",
+      "true-label": "",
+      "false-label": "",
+      "requires-supported-frontend": ""
     },
     "@studiocms/dashboard:404": {
       "title": "Fehler 404",
@@ -294,6 +308,35 @@
       "sub-description": "Deine E-Mail-Adresse wurde nicht bestätigt. Bitte überprüfe deinen Posteingang.",
       "resend-button": "Bestätigungs-E-Mail erneut senden",
       "back-button": "Zur Startseite"
+    },
+    "@studiocms/dashboard:versionCheckModal": {
+      "header-title": "",
+      "current-version": "",
+      "latest-version": "",
+      "last-check": "",
+      "full-changelog": "",
+      "view-on": ""
+    },
+    "@studiocms/dashboard:user-component": {
+      "admin": "",
+      "editor": "",
+      "owner": "",
+      "visitor": "",
+      "unknown": ""
+    },
+    "@studiocms/dashboard:profile-notifications": {
+      "header-title": "",
+      "save-button": "",
+      "account_updated": "",
+      "page_updated": "",
+      "page_deleted": "",
+      "new_page": "",
+      "folder_updated": "",
+      "folder_deleted": "",
+      "new_folder": "",
+      "user_updated": "",
+      "user_deleted": "",
+      "new_user": ""
     }
   }
 }
