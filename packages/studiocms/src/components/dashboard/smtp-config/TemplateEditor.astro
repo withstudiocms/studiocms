@@ -108,28 +108,37 @@ const templateSaveAPIEndpoint = '/api/smtp/templates';
     }
 
     async function saveTemplate(templateKey: string, content: string) {
+        if (!templateKey || templateKey === 'none') {
+            toast({
+                title: t['error-label'],
+                type: 'danger',
+                description: t['template-save-button-error']
+            });
+            return;
+        }
+
         const allTemplates = { ...templates, [templateKey]: content };
 
         try {
-        const response = await fetch(saveEndpoint, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ templates: allTemplates }),
-        });
+            const response = await fetch(saveEndpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ templates: allTemplates }),
+            });
 
-        if (!response.ok) {
-            throw new Error(`${t['template-editor-save-failed']}: ${response.statusText}`);
-        }
+            if (!response.ok) {
+                throw new Error(`${t['template-editor-save-failed']}: ${response.statusText}`);
+            }
 
-        displaySuccessToastThenReload(t['template-editor-save-success']);
+            displaySuccessToastThenReload(t['template-editor-save-success']);
         } catch (_error) {
-        toast({
-            title: t['error-label'],
-            type: 'danger',
-            description: t['template-editor-save-unknown']
-        });
+            toast({
+                title: t['error-label'],
+                type: 'danger',
+                description: t['template-editor-save-unknown']
+            });
         }
     }
 
