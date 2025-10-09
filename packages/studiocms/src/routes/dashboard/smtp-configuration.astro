@@ -13,6 +13,7 @@ import { TabItem, Tabs } from 'studiocms:ui/components/tabs';
 import { Toggle } from 'studiocms:ui/components/toggle';
 import PageHeader from '../../components/dashboard/PageHeader.astro';
 import TemplateEditor from '../../components/dashboard/smtp-config/TemplateEditor.astro';
+import TemplateEditorPreviewModal from '../../components/dashboard/smtp-config/TemplateEditorPreviewModal.astro';
 import { Effect, genLogger, runEffect } from '../../effect.js';
 import Layout from '../../layouts/DashboardLayout.astro';
 import type {
@@ -69,6 +70,7 @@ const notificationSettingKeys = Object.keys(notificationSettings.data).filter(
     </PageHeader>
   </div>
 
+  <TemplateEditorPreviewModal {t} />
   <Tabs variant='starlight'>
     <TabItem
       label={t("smtp-settings")}
@@ -283,13 +285,13 @@ const notificationSettingKeys = Object.keys(notificationSettings.data).filter(
       </Card>
     </TabItem>
     <TabItem
-      label="Mail Templates"
+      label={t("mail-templates")}
       id="tab-mail-templates"
       icon='heroicons:document-text-20-solid'
     >
       <Card fullWidth fullHeight>
         <div slot="header">
-          <h2 class="template-header">Available Mail Templates</h2>
+          <h2 class="template-header"><t-smtp key="available-templates">{t("available-templates")}</t-smtp></h2>
           <div class="template-selectors" data-templates={JSON.stringify(tEngine.availableTemplates)}>
             {
               tEngine.availableTemplates.map((template) => (
@@ -298,7 +300,7 @@ const notificationSettingKeys = Object.keys(notificationSettings.data).filter(
                   size="sm"
                   id={`template-btn-${template}`}
                 >
-                  {template}
+                  {t(template)}
                 </Button>
               ))
             }
@@ -313,6 +315,7 @@ const notificationSettingKeys = Object.keys(notificationSettings.data).filter(
                   templates={tEngine.allTemplates} 
                   templateKeys={tEngine.availableTemplates}
                   defaultTemplates={tEngine.defaultTemplates}
+                  t={t}
                 />
               </Card>
             </div>
@@ -323,31 +326,26 @@ const notificationSettingKeys = Object.keys(notificationSettings.data).filter(
 
                 <div class="template-editor-instructions-container">
                   <div class="template-editor-instructions prose">
-                    <p>
-                      Use the buttons above to select a template to edit. 
-                      After making changes, click "Save Template" to apply your
-                      changes or "Reset to Default" to revert to the original
-                      template.
-                    </p>
-                    <h4>Available Variables</h4>
+                    <p><t-smtp key="template-instructions">{t("template-instructions")}</t-smtp></p>
+                    <h4><t-smtp key="available-variables">{t("available-variables")}</t-smtp></h4>
                     <span class="not-prose"><Select
                       name="template-variable-examples"
                       options={tEngine.availableTemplates.map((template) => ({
-                        label: template,
+                        label: t(template),
                         value: template,
                       }))}
                       defaultValue="notifications"
                       fullWidth
                     /></span>
                     <ul>
-                      <li><code set:html="{{site.title}}"></code>: The title of the site.</li>
-                      <li><code set:html="{{site.description}}"></code>: The description of the site.</li>
-                      <li><code set:html="{{site.icon}}"></code>: The icon URL of the site.</li>
-                      <li id="template-variable-notifications"><code set:html="{{data.title}}"></code>: The title of the notification.</li>
-                      <li id="template-variable-notifications"><code set:html="{{data.message}}"></code>: The message content of the notification.</li>
-                      <li id="template-variable-passwordReset" class="hidden"><code set:html="{{data.link}}"></code>: The password reset link.</li>
-                      <li id="template-variable-verifyEmail" class="hidden"><code set:html="{{data.link}}"></code>: The email verification link.</li>
-                      <li id="template-variable-userInvite" class="hidden"><code set:html="{{data.link}}"></code>: The user invitation link.</li>
+                      <li><code set:html="{{site.title}}"></code>: <t-smtp key="variable-global-site.title">{t("variable-global-site.title")}</t-smtp></li>
+                      <li><code set:html="{{site.description}}"></code>: <t-smtp key="variable-global-site.description">{t("variable-global-site.description")}</t-smtp></li>
+                      <li><code set:html="{{site.icon}}"></code>: <t-smtp key="variable-global-site.icon">{t("variable-global-site.icon")}</t-smtp></li>
+                      <li id="template-variable-notifications"><code set:html="{{data.title}}"></code>: <t-smtp key="variable-notifications-data.title">{t("variable-notifications-data.title")}</t-smtp></li>
+                      <li id="template-variable-notifications"><code set:html="{{data.message}}"></code>: <t-smtp key="variable-notifications-data.message">{t("variable-notifications-data.message")}</t-smtp></li>
+                      <li id="template-variable-passwordReset" class="hidden"><code set:html="{{data.link}}"></code>: <t-smtp key="variable-passwordReset-data.link">{t("variable-passwordReset-data.link")}</t-smtp></li>
+                      <li id="template-variable-verifyEmail" class="hidden"><code set:html="{{data.link}}"></code>: <t-smtp key="variable-verifyEmail-data.link">{t("variable-verifyEmail-data.link")}</t-smtp></li>
+                      <li id="template-variable-userInvite" class="hidden"><code set:html="{{data.link}}"></code>: <t-smtp key="variable-userInvite-data.link">{t("variable-userInvite-data.link")}</t-smtp></li>
                     </ul>
                   </div>
                 </div>
@@ -366,7 +364,7 @@ const notificationSettingKeys = Object.keys(notificationSettings.data).filter(
                         width={20}
                         height={20}
                       />
-                      Save Template
+                      <t-smtp key="template-save-button">{t("template-save-button")}</t-smtp>
                     </Button>
                     <Button
                       variant="outlined"
@@ -380,7 +378,7 @@ const notificationSettingKeys = Object.keys(notificationSettings.data).filter(
                         width={20}
                         height={20}
                       />
-                      Reset to Default
+                      <t-smtp key="template-reset-button">{t("template-reset-button")}</t-smtp>
                     </Button>
                   </div>
                 </div>
@@ -603,6 +601,7 @@ const notificationSettingKeys = Object.keys(notificationSettings.data).filter(
     updateElmLabel,
     updateElmPlaceholder,
     updateSelectElmLabel,
+    updateSelectOptions,
     updateToggleElmLabel,
     updateTrueFalseSelectOptions,
     updateTabLabel
@@ -651,6 +650,7 @@ const notificationSettingKeys = Object.keys(notificationSettings.data).filter(
 
     updateTabLabel("tab-smtp-settings", comp["smtp-settings"]);
     updateTabLabel("tab-site-email-settings", comp["site-email-settings"]);
+    updateTabLabel("tab-mail-templates", comp["mail-templates"]);
 
     const trueFalseOptions = { true: comp['true-label'], false: comp['false-label'] };
 
@@ -672,6 +672,24 @@ const notificationSettingKeys = Object.keys(notificationSettings.data).filter(
           ],
         );
       });
+
+    const templateSelectorButtons = document.querySelectorAll<HTMLElement>('.template-selectors button');
+    templateSelectorButtons.forEach((button) => {
+      button.textContent = comp[button.id.replace('template-btn-', '') as keyof typeof comp]
+    })
+
+    const selectOptsToUpdate: Record<string, string> = templateSelectorButtons.length
+      ? Array.from(templateSelectorButtons).reduce((acc, button) => {
+        const templateKey = button.id.replace('template-btn-', '');
+        acc[templateKey] = comp[templateKey as keyof typeof comp];
+        return acc;
+      }, {} as Record<string, string>)
+      : {};
+
+    updateSelectOptions(
+      "template-variable-examples",
+      selectOptsToUpdate,
+    );
   });
 
   if (!customElements.get("t-smtp")) {
@@ -720,7 +738,7 @@ const notificationSettingKeys = Object.keys(notificationSettings.data).filter(
     display: flex;
     gap: 1rem;
     padding: 1rem;
-    height: 65vh;
+    height: 70vh;
   }
 
   .template-wrapper-col1 {
@@ -762,7 +780,7 @@ const notificationSettingKeys = Object.keys(notificationSettings.data).filter(
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    height: 50vh;
+    height: 55vh;
     min-height: 100%;
     overflow-x: hidden;
     overflow-y: auto;
@@ -774,7 +792,7 @@ const notificationSettingKeys = Object.keys(notificationSettings.data).filter(
     }
 
     .template-editor-instructions-container {
-      height: 45vh;
+      height: 50vh;
     }
   }
 </style>

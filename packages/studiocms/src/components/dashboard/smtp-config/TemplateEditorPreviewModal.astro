@@ -1,0 +1,41 @@
+---
+import { Modal } from 'studiocms:ui/components/modal';
+
+interface Props {
+	t: (key: 'template-preview-modal-header') => string;
+}
+
+const { t } = Astro.props;
+---
+
+<Modal id='template-editor-preview-modal' size='lg'>
+    <h2 slot="header"><t-smtp key="template-preview-modal-header">{t('template-preview-modal-header')}</t-smtp></h2>
+    <iframe 
+        id="template-editor-preview" 
+        class="template-editor-preview" 
+        sandbox="allow-scripts allow-same-origin allow-modals"
+    ></iframe>
+</Modal>
+
+<style>
+    .template-editor-preview {
+        width: 100%;
+        min-height: 400px;
+        height: 100%;
+        border: none;
+        background-color: var(--background-step-1);
+    }
+</style>
+<style is:global>
+
+/* Fix for modal positioning/size issues
+
+This overrides the @studiocms/ui modal max size
+to allow for more information on a slightly bigger modal.
+
+*/
+#template-editor-preview-modal.sui-modal.lg {
+  max-width: 800px !important;
+  width: min(90vw, 800px) !important;
+}
+</style>
