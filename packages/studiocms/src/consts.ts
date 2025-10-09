@@ -34,7 +34,7 @@ export const CMSNotificationSettingsId: string = '1';
 
 export const Next_NotificationSettingsId: string = 'SCMS_NOTIFICATION_SETTINGS_1';
 
-export const TemplateConfigId: string = '__StudioCMS_Email_Templates';
+export const TemplateConfigId: string = 'SCMS_EMAIL_TEMPLATES_1';
 
 /**
  * The default lifetime for cached items.
