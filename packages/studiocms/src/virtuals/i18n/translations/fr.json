@@ -129,7 +129,9 @@
       "select-page-diff-tracking": "Suivi des différences de pages",
       "select-login-page-bg": "Image d'arrière-plan de la page de connexion",
       "select-smtp-mailer": "Messagerie SMTP",
-      "select-hide-default-index": "Masquer la page d'index du tableau de bord"
+      "select-hide-default-index": "Masquer la page d'index du tableau de bord",
+      "true-label": "Oui",
+      "false-label": "Non"
     },
     "@studiocms/dashboard:smtp": {
       "title": "Configuration SMTP",
@@ -162,7 +164,9 @@
       "requireAdminVerification": "Exiger que les administrateurs fassent vérifier leur adresse e-mail",
       "requireEditorVerification": "Exiger que les éditeurs fassent vérifier leur adresse e-mail",
       "oAuthBypassVerification": "Ignorer la vérification des e-mails pour les utilisateurs OAuth",
-      "save-email-settings": "Sauvegarder"
+      "save-email-settings": "Sauvegarder",
+      "true-label": "Oui",
+      "false-label": "Non"
     },
     "@studiocms/dashboard:user-mngmt-sidebar": {
       "input-placeholder-search": "Rechercher...",
@@ -206,7 +210,14 @@
       "api-tokens-no-tokens": "Aucun jeton API trouvé.",
       "last-edit-pages-header": "Dernières pages modifiées",
       "last-edit-pages-edited": "Modifié",
-      "last-edit-pages-no-edits": "Aucun historique trouvé."
+      "last-edit-pages-no-edits": "Aucun historique trouvé.",
+      "owner": "Propriétaire",
+      "admin": "Administrateur",
+      "editor": "Éditeur",
+      "visitor": "Visiteur",
+      "unknown": "Inconnu",
+      "email-verified": "Vérifié",
+      "email-unverified": "Non vérifié"
     },
     "@studiocms/dashboard:plugin-settings": {
       "title": "Paramètres du module d'extension",
@@ -280,7 +291,10 @@
       "custom-page-types-description-new": "Vous avez modifié votre type de page. Veuillez enregistrer vos modifications et actualiser la page pour voir les nouveaux champs.",
       "diff-edited-by-1": "Modifié",
       "diff-edited-by-2": "par",
-      "diff-no-history": "Aucun historique trouvé."
+      "diff-no-history": "Aucun historique trouvé.",
+      "true-label": "Oui",
+      "false-label": "Non",
+      "requires-supported-frontend": "Nécessite une interface front-end prise en charge"
     },
     "@studiocms/dashboard:404": {
       "title": "Erreur 404",
@@ -294,6 +308,35 @@
       "sub-description": "Votre adresse e-mail n'a pas été vérifiée. Veuillez consulter votre boîte de réception pour obtenir un lien de vérification.",
       "resend-button": "Renvoyer l'e-mail de vérification",
       "back-button": "Aller à la page d'accueil"
+    },
+    "@studiocms/dashboard:versionCheckModal": {
+      "header-title": "Informations de version",
+      "current-version": "Version actuelle",
+      "latest-version": "Dernière version",
+      "last-check": "Dernière vérification des mises à jour",
+      "full-changelog": "Journal des changements complet",
+      "view-on": "Consulter sur"
+    },
+    "@studiocms/dashboard:user-component": {
+      "admin": "Administrateur",
+      "editor": "Éditeur",
+      "owner": "Propriétaire",
+      "visitor": "Visiteur",
+      "unknown": "Inconnu"
+    },
+    "@studiocms/dashboard:profile-notifications": {
+      "header-title": "Événements de notification",
+      "save-button": "Enregistrer",
+      "account_updated": "Compte mis à jour",
+      "page_updated": "Éditeur : Page mise à jour",
+      "page_deleted": "Éditeur : Page supprimée",
+      "new_page": "Éditeur : Nouvelle page",
+      "folder_updated": "Éditeur : Dossier mis à jour",
+      "folder_deleted": "Éditeur : Dossier supprimé",
+      "new_folder": "Éditeur : Nouveau dossier",
+      "user_updated": "Admin : Utilisateur mis à jour",
+      "user_deleted": "Admin : Utilisateur supprimé",
+      "new_user": "Admin : Nouvel utilisateur"
     }
   }
 }

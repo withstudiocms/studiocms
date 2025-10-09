@@ -1,6 +1,6 @@
 <!-- Thank you for opening a PR! We really appreciate you taking the time to help out 🙌 -->
 
-#### Description
+## Description
 
 - Closes # <!-- If applicable add an issue number to this PR so it can be closed otherwise feel free to remove this. -->
 - What does this PR change?
