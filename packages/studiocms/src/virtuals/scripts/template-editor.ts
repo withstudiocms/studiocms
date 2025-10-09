@@ -127,6 +127,15 @@ const editor = ace.edit('template-editor', {
 });
 
 // --- FUNCTION UTILITIES ---
+/**
+ * Updates the visual state of a button element by toggling CSS classes based on its active state.
+ *
+ * @param button - The HTML element representing the button to update.
+ * @param isActive - A boolean indicating whether the button should appear active (`true`) or inactive (`false`).
+ *
+ * When `isActive` is `true`, the 'primary' class is added and the 'default' class is removed.
+ * When `isActive` is `false`, the 'primary' class is removed and the 'default' class is added.
+ */
 function updateButtonState(button: HTMLElement, isActive: boolean) {
 	if (isActive) {
 		button.classList.add('primary');
@@ -137,10 +146,23 @@ function updateButtonState(button: HTMLElement, isActive: boolean) {
 	}
 }
 
+/**
+ * Retrieves the name of the currently selected template from the template editor.
+ *
+ * @returns The name of the current template selection, or `'none'` if no selection is present.
+ */
 function getCurrentTemplate(): string {
 	return templateEditor.dataset.currentSelection || 'none';
 }
 
+/**
+ * Displays a success toast notification with the provided message, then reloads the page after a short delay.
+ *
+ * @param message - The message to display in the success toast notification.
+ *
+ * @remarks
+ * The toast is shown for 3 seconds to allow the user to read the message before the page reloads.
+ */
 function displaySuccessToastThenReload(message: string) {
 	toast({
 		title: t['success-label'],
@@ -152,6 +174,18 @@ function displaySuccessToastThenReload(message: string) {
 	}, 3000); // Delay to allow user to read the toast message
 }
 
+/**
+ * Saves the specified template content under the given template key.
+ *
+ * If the template key is invalid or not provided, displays an error toast.
+ * Otherwise, sends a POST request to the save endpoint with all templates,
+ * including the updated one. Displays a success toast and reloads on success,
+ * or an error toast on failure.
+ *
+ * @param templateKey - The unique key identifying the template to save.
+ * @param content - The content of the template to be saved.
+ * @returns A promise that resolves when the save operation is complete.
+ */
 async function saveTemplate(templateKey: string, content: string) {
 	if (!templateKey || templateKey === 'none') {
 		toast({
@@ -187,6 +221,12 @@ async function saveTemplate(templateKey: string, content: string) {
 	}
 }
 
+/**
+ * Updates the content of the editor with the provided string.
+ *
+ * @param content - The new content to set in the editor.
+ * @param focus - Optional. If true (default), the editor will be focused after updating the content.
+ */
 function updateEditorContent(content: string, focus = true) {
 	editor.setValue(content, -1); // -1 moves cursor to start
 	if (focus) {
@@ -195,6 +235,15 @@ function updateEditorContent(content: string, focus = true) {
 }
 
 let lastPreviewUrl: string | null = null;
+/**
+ * Updates the source of the preview iframe with the provided HTML content.
+ *
+ * This function creates a new Blob from the given HTML string, generates an object URL,
+ * and sets it as the source of the preview iframe. If a previous preview URL exists,
+ * it is revoked to free up memory.
+ *
+ * @param content - The HTML content to display in the preview iframe.
+ */
 function updatePreviewIFrame(content: string) {
 	if (lastPreviewUrl) {
 		URL.revokeObjectURL(lastPreviewUrl);
