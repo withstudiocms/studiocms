@@ -42,11 +42,22 @@ import 'ace-builds/src-noconflict/ext-language_tools';
 
 const { default: templateEngine } = await import('@withstudiocms/template-lang');
 
-// --- UTILITY FUNCTIONS ---
-const $ = (selector: string): HTMLElement | null => document.querySelector(selector);
-const $$ = (selector: string): NodeListOf<HTMLElement> => document.querySelectorAll(selector);
-const $$$ = (element: Element, selectors: string): NodeListOf<HTMLElement> =>
-	element.querySelectorAll(selectors);
+// --- TYPE DEFINITIONS ---
+type EngineContext = {
+	site: {
+		title: string;
+		description?: string;
+		icon?: string;
+	};
+	data: Record<string, string>;
+};
+
+// --- HTML UTILITIES ---
+const $ = <T extends HTMLElement>(selector: string): T => document.querySelector(selector) as T;
+const $$ = <T extends HTMLElement>(selector: string): NodeListOf<T> =>
+	document.querySelectorAll(selector) as NodeListOf<T>;
+const $$$ = <T extends HTMLElement>(element: HTMLElement, selectors: string): NodeListOf<T> =>
+	element.querySelectorAll(selectors) as NodeListOf<T>;
 
 // --- VARIABLES ---
 let t: Record<string, string> = {};
@@ -54,20 +65,36 @@ let t: Record<string, string> = {};
 // --- CONSTANTS ---
 const i18nCurrentPage = '@studiocms/dashboard:smtp';
 const allTemplateButtons = $$('.template-selectors button');
-const saveButton = $('#save-template-button') as HTMLElement;
-const resetButton = $('#reset-template-button') as HTMLElement;
-const templateEditor = $('#template-editor') as HTMLElement;
+const saveButton = $('#save-template-button');
+const resetButton = $('#reset-template-button');
+const templateEditor = $('#template-editor');
 const previewModal = new ModalHelper('template-editor-preview-modal');
-const previewModalButton = $('#template-preview-button') as HTMLElement;
-const previewIframe = $('#template-editor-preview') as HTMLIFrameElement;
-const templateVariableSelect = $('#template-variable-examples-dropdown') as HTMLElement;
+const previewModalButton = $('#template-preview-button');
+const previewIframe = $<HTMLIFrameElement>('#template-editor-preview');
+const templateVariableSelect = $('#template-variable-examples-dropdown');
+const templateSelectorButtons = $$('.template-selectors button');
+const currentTheme = window.theme?.getTheme() || 'dark';
+const aceTheme = currentTheme === 'light' ? 'cloud_editor' : 'cloud_editor_dark';
+const engine = new templateEngine({ strict: true });
 const templateVariableLists = {
 	notifications: $$('#template-variable-notifications'),
 	passwordReset: $$('#template-variable-passwordReset'),
 	verifyEmail: $$('#template-variable-verifyEmail'),
 	userInvite: $$('#template-variable-userInvite'),
 };
-const templateSelectorButtons = $$('.template-selectors button');
+const mockContext: EngineContext = {
+	site: {
+		title: 'Example Site',
+		description: 'This is an example site description.',
+		icon: 'https://studiocms.dev/favicon.svg',
+	},
+	data: {
+		name: 'John Doe',
+		link: '#fake-link',
+		title: 'Welcome to Our Service',
+		message: 'This is a sample notification message.',
+	},
+};
 
 // --- DATASET PARSING ---
 const templates = JSON.parse(templateEditor.dataset.templates || '{}') as Record<string, string>;
@@ -80,6 +107,24 @@ const saveEndpoint = templateEditor.dataset.saveEndpoint as string;
 
 // --- INTERNATIONALIZATION SETUP ---
 const i18n = $i18n(i18nCurrentPage, baseTranslation[i18nCurrentPage]);
+
+// --- ACE EDITOR SETUP ---
+const editor = ace.edit('template-editor', {
+	mode: 'ace/mode/handlebars', // Using Handlebars as its a close match to our templating language
+	theme: `ace/theme/${aceTheme}`,
+	value: `<!-- ${t['template-editor-preloaded-content']} -->`,
+	fontSize: '14px',
+	tabSize: 2,
+	useSoftTabs: true,
+	showPrintMargin: false,
+	wrap: true,
+	useWorker: false,
+	displayIndentGuides: true,
+	enableAutoIndent: true,
+	enableBasicAutocompletion: true,
+	enableLiveAutocompletion: true,
+	enableSnippets: true,
+});
 
 // --- FUNCTION UTILITIES ---
 function updateButtonState(button: HTMLElement, isActive: boolean) {
@@ -142,33 +187,20 @@ async function saveTemplate(templateKey: string, content: string) {
 	}
 }
 
-// --- ACE EDITOR SETUP ---
-const currentTheme = window.theme?.getTheme() || 'dark';
-const aceTheme = currentTheme === 'light' ? 'cloud_editor' : 'cloud_editor_dark';
-
-const editor = ace.edit('template-editor', {
-	mode: 'ace/mode/handlebars', // Using Handlebars as its a close match to our templating language
-	theme: `ace/theme/${aceTheme}`,
-	value: `<!-- ${t['template-editor-preloaded-content']} -->`,
-	fontSize: '14px',
-	tabSize: 2,
-	useSoftTabs: true,
-	showPrintMargin: false,
-	wrap: true,
-	useWorker: false,
-	displayIndentGuides: true,
-	enableAutoIndent: true,
-	enableBasicAutocompletion: true,
-	enableLiveAutocompletion: true,
-	enableSnippets: true,
-});
-
-// --- EDITOR UTILITIES ---
 function updateEditorContent(content: string, focus = true) {
 	editor.setValue(content, -1); // -1 moves cursor to start
 	if (focus) {
 		editor.focus();
 	}
+}
+
+function updatePreviewIFrame(content: string) {
+	// Create a Blob URL for the template content
+	const blob = new Blob([content], { type: 'text/html' });
+	const url = URL.createObjectURL(blob);
+
+	// Set the iframe src to the Blob URL
+	previewIframe.src = url;
 }
 
 // --- INTERNATIONALIZATION LISTENER ---
@@ -196,7 +228,6 @@ i18n.subscribe((comp) => {
 });
 
 // --- THEME MANAGEMENT ---
-
 const observer = new MutationObserver(() => {
 	const newTheme = window.theme?.getTheme() || 'dark';
 	const newAceTheme = newTheme === 'light' ? 'cloud_editor' : 'cloud_editor_dark';
@@ -259,44 +290,18 @@ resetButton.addEventListener('click', () => {
 });
 
 // --- PREVIEW BUTTON EVENT LISTENER ---
-type EngineContext = {
-	site: {
-		title: string;
-		description?: string;
-		icon?: string;
-	};
-	data: Record<string, string>;
-};
-
-const mockContext: EngineContext = {
-	site: {
-		title: 'Example Site',
-		description: 'This is an example site description.',
-		icon: 'https://studiocms.dev/favicon.svg',
-	},
-	data: {
-		name: 'John Doe',
-		link: '#fake-link',
-		title: 'Welcome to Our Service',
-		message: 'This is a sample notification message.',
-	},
-};
-
-const engine = new templateEngine({ strict: true });
-
 previewModalButton.addEventListener('click', () => {
+	// Ensure a template is selected
 	const currentTemplate = getCurrentTemplate();
 	if (currentTemplate && templates[currentTemplate] !== undefined) {
+		// Get the current template content from the editor
 		const templateContent = editor.getValue();
 
+		// Render the template with mock context
 		const renderedContent = engine.render(templateContent, mockContext);
 
-		// Create a Blob URL for the template content
-		const blob = new Blob([renderedContent], { type: 'text/html' });
-		const url = URL.createObjectURL(blob);
-
-		// Set the iframe src to the Blob URL
-		previewIframe.src = url;
+		// Update the iframe with the rendered content
+		updatePreviewIFrame(renderedContent);
 
 		// Open the modal
 		previewModal.show();
