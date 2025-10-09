@@ -1,3 +1,5 @@
+import { developerConfig } from 'studiocms:config';
+import { apiResponseLogger } from 'studiocms:logger';
 import { SDKCore } from 'studiocms:sdk';
 import templateEngine from 'studiocms:template-engine';
 import {
@@ -20,6 +22,25 @@ export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
 					templateEngine,
 				]);
 
+				// Check if demo mode is enabled
+				if (developerConfig.demoMode !== false) {
+					return apiResponseLogger(403, 'Demo mode is enabled, this action is not allowed.');
+				}
+
+				// Get user data
+				const userData = ctx.locals.StudioCMS.security?.userSessionData;
+
+				// Check if user is logged in
+				if (!userData?.isLoggedIn) {
+					return apiResponseLogger(403, 'Unauthorized');
+				}
+
+				// Check if user has permission
+				const isAuthorized = ctx.locals.StudioCMS.security?.userPermissionLevel.isAdmin;
+				if (!isAuthorized) {
+					return apiResponseLogger(403, 'Unauthorized');
+				}
+
 				const keys = engine.availableTemplates;
 				type Keys = (typeof keys)[number];
 				const updates: Partial<Record<Keys, string>> = {};
@@ -30,18 +51,15 @@ export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
 				}
 
 				if (Object.keys(updates).length === 0) {
-					return createJsonResponse(
-						{ message: 'No valid templates provided for update.' },
-						{ status: 400 }
-					);
+					return apiResponseLogger(400, 'No valid templates provided for update.');
 				}
 
 				const updatedConfig = yield* sdk.CONFIG.templateConfig.update(updates);
 				if (!updatedConfig) {
-					return createJsonResponse({ error: 'Failed to update templates.' }, { status: 500 });
+					return apiResponseLogger(500, 'Failed to update templates.');
 				}
 
-				return new Response('ok', { status: 200, headers: { 'Content-Type': 'application/json' } });
+				return apiResponseLogger(200, 'Templates updated successfully.');
 			}),
 		OPTIONS: () => Effect.try(() => OptionsResponse({ allowedMethods: ['POST'] })),
 		ALL: () => Effect.try(() => AllResponse()),
