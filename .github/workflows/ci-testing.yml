@@ -64,7 +64,6 @@ jobs:
 
       - name: Run Tests & Code Coverage
         run: pnpm ci:test
-        continue-on-error: ${{ github.event_name == 'pull_request' }}
 
       - name: Upload coverage results to Codecov
         if: github.repository_owner == 'withstudiocms'
