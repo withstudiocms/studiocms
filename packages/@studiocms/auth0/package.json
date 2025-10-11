@@ -1,6 +1,6 @@
 {
   "name": "@studiocms/auth0",
-  "version": "0.1.0-beta.27",
+  "version": "0.1.0-beta.28",
   "description": "Add Auth0 OAuth Support into your StudioCMS project.",
   "author": {
     "name": "withstudiocms",

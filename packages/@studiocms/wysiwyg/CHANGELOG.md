@@ -1,5 +1,12 @@
 # @studiocms/wysiwyg
 
+## 0.1.0-beta.28
+
+### Patch Changes
+
+- Updated dependencies [[`74f9bf8`](https://github.com/withstudiocms/studiocms/commit/74f9bf8cb039d09e9e4589772734eb3a3012178c), [`dc8ca3a`](https://github.com/withstudiocms/studiocms/commit/dc8ca3abfb92944b78d342414e63c3dabe7e77e6), [`cd03b94`](https://github.com/withstudiocms/studiocms/commit/cd03b945e27a459881474443b762e2ec3f427884), [`a53c830`](https://github.com/withstudiocms/studiocms/commit/a53c83017b02d589607874405b2c040474203716), [`c57463b`](https://github.com/withstudiocms/studiocms/commit/c57463bb5846a75fda0dfad8da3590145eb442a4), [`437e45c`](https://github.com/withstudiocms/studiocms/commit/437e45c99e5e740b72a32836b6df48e7c461ef57), [`74b0b36`](https://github.com/withstudiocms/studiocms/commit/74b0b365090433a0c4185d4d32c9e91f5af50087), [`07501ff`](https://github.com/withstudiocms/studiocms/commit/07501fff35c6777f7d08b9857eff3d827ed12e8b), [`9a5a360`](https://github.com/withstudiocms/studiocms/commit/9a5a360e68183693465d29ea5b6ca701ac54cc69), [`872ba2e`](https://github.com/withstudiocms/studiocms/commit/872ba2e286248a79fa46df1c3f5ca354e36e0494), [`e63f679`](https://github.com/withstudiocms/studiocms/commit/e63f679a89ddd50a363d5bbe1b9b0ea403b1292b), [`3b96046`](https://github.com/withstudiocms/studiocms/commit/3b96046aa0fe1eaeb9e472be6ceae1e24dfb78bc), [`64b1515`](https://github.com/withstudiocms/studiocms/commit/64b15158ecc93177fac222f9cabe38b5387d5df5), [`a64cf64`](https://github.com/withstudiocms/studiocms/commit/a64cf64975778d7f0f127aa8bd9f56f777aaed91), [`503a25a`](https://github.com/withstudiocms/studiocms/commit/503a25a5da1c07afeb3d965b73ea5bb99a673ba4), [`0326476`](https://github.com/withstudiocms/studiocms/commit/03264767111f8b4dbdef18eafe25fa2f28c3ceb5)]:
+  - studiocms@0.1.0-beta.28
+
 ## 0.1.0-beta.27
 
 ### Patch Changes
