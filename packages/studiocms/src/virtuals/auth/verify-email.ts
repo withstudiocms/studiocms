@@ -1,9 +1,9 @@
 import { site } from 'astro:config/client';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import { Mailer } from 'studiocms:mailer';
-import getTemplate from 'studiocms:mailer/templates';
 import { SDKCoreJs as sdk } from 'studiocms:sdk';
 import type { CombinedUserData } from 'studiocms:sdk/types';
+import templateEngine from 'studiocms:template-engine';
 import { CMSNotificationSettingsId } from '../../consts.js';
 import { Data, Effect, genLogger, pipeLogger } from '../../effect.js';
 import type { UserSessionData } from './types.js';
@@ -193,12 +193,18 @@ export class VerifyEmail extends Effect.Service<VerifyEmail>()(
 							{ token: verificationToken.id, userId }
 						);
 
-						const htmlTemplate = getTemplate('verifyEmail');
+						// const htmlTemplate = getTemplate('verifyEmail');
+						const engine = yield* templateEngine;
+						const { title: siteTitle, description, siteIcon } = config;
+						const verifyEmailTemplate = yield* engine.render('verifyEmail', {
+							site: { title: siteTitle, description, icon: siteIcon ?? undefined },
+							data: { link: verifyLink.toString() },
+						});
 
 						const mailResponse = yield* MailService.sendMail({
 							to: email,
 							subject: `Email Verification | ${config?.title || 'StudioCMS'}`,
-							html: htmlTemplate(verifyLink),
+							html: verifyEmailTemplate,
 						});
 
 						return mailResponse;

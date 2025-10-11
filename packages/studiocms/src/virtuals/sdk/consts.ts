@@ -48,3 +48,5 @@ export const StudioCMSPkgId: string = 'studiocms';
  * @public
  */
 export const CURRENT_CONFIG_VERSION = '1.0.0';
+
+export const TEMPLATE_CONFIG_VERSION = '1.0.0';
