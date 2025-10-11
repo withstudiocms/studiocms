@@ -1,8 +1,8 @@
 import _logger from 'studiocms:logger';
 import { Mailer } from 'studiocms:mailer';
-import getTemplate from 'studiocms:mailer/templates';
 import { SDKCoreJs as sdk } from 'studiocms:sdk';
 import type { CombinedUserData } from 'studiocms:sdk/types';
+import templateEngine from 'studiocms:template-engine';
 import { Effect, genLogger } from '../../effect.js';
 import type { UserNotificationOptions } from './client.js';
 
@@ -193,7 +193,18 @@ export class Notifications extends Effect.Service<Notifications>()(
 				notification: NotificationTitle;
 			}) =>
 				genLogger('studiocms/lib/notifier/Notifications.sendMail')(function* () {
-					const htmlTemplate = getTemplate('notification');
+					const engine = yield* templateEngine;
+					const siteConfigFull = yield* sdk.GET.siteConfig();
+					// biome-ignore lint/style/noNonNullAssertion: The site config is guaranteed to exist if mailer is enabled
+					const { title: siteTitle, description, siteIcon } = siteConfigFull!.data;
+
+					const notificationTemplate = yield* engine.render('notifications', {
+						site: { title: siteTitle, description, icon: siteIcon ?? undefined },
+						data: {
+							title: `New Notification - ${notificationTitleStrings[notification]}`,
+							message: message,
+						},
+					});
 
 					for (const { email } of users) {
 						if (!email) continue;
@@ -201,10 +212,7 @@ export class Notifications extends Effect.Service<Notifications>()(
 						yield* MailService.sendMail({
 							to: email,
 							subject: `${title} - New Notification`,
-							html: htmlTemplate({
-								title: `New Notification - ${notificationTitleStrings[notification]}`,
-								message,
-							}),
+							html: notificationTemplate,
 						});
 					}
 				});

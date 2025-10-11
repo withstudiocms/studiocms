@@ -16,6 +16,7 @@ type TemplateKeys = keyof Templates;
  *
  * @param template - The template to retrieve.
  * @returns The specified email template.
+ * @deprecated Use the `templateEngine` virtual instead.
  */
 export function getTemplate<T extends TemplateKeys>(template: T): Templates[T] {
 	return templates[template];
