@@ -338,11 +338,7 @@ main {
 	}
 
 	& input[name="search"] {
-	background-image: url("data:image/png;base64,...") !important;
-	background-position: 9px 7px !important;
-	background-repeat: no-repeat !important;
-	padding: 0.5rem 0.5rem 0.5rem 2.5rem !important;
-	height: 40px !important;
+	height: 40px;
 	}
 }
 
