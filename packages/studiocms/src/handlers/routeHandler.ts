@@ -167,6 +167,11 @@ export const routeHandler = defineUtility('astro:config:setup')((params, options
 			enabled: !dbStartPage,
 		},
 		{
+			pattern: dashboardAPIRoute('templates'),
+			entrypoint: routesDir.dashApi('templates.ts'),
+			enabled: dashboardEnabled && !dbStartPage,
+		},
+		{
 			pattern: dashboardAPIRoute('live-render'),
 			entrypoint: routesDir.dashApi('partials/LiveRender.astro'),
 			enabled: dashboardEnabled && !dbStartPage,
