@@ -338,7 +338,7 @@ main {
 	}
 
 	& input[name="search"] {
-	height: 40px;
+		height: 40px;
 	}
 }
 
@@ -438,8 +438,8 @@ main {
 	}
 
 	& input {
-    width: 100%;
-  	}
+		width: 100%;
+	}
 }
 
 .inner-sidebar-users {
