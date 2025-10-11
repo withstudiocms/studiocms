@@ -3,11 +3,10 @@ import node from '@astrojs/node';
 import devApps from '@studiocms/devapps';
 import { defineConfig } from 'astro/config';
 import studioCMS from 'studiocms';
-import { getCoolifyURL } from './hostUtils';
 
 // https://astro.build/config
 export default defineConfig({
-	site: getCoolifyURL(true) || 'https://playground.studiocms.dev',
+	site: 'https://playground.studiocms.dev',
 	output: 'server',
 	adapter: node({ mode: 'standalone' }),
 	security: {
