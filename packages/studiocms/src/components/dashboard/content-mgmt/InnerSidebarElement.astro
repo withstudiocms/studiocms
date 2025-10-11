@@ -24,7 +24,13 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-sidebar');
     <Icon name="heroicons:arrow-left" width={24} height={24} slot="start-content" />
   </Button>
   <form id="search-form">
-    <Input name='search' placeholder={t('input-placeholder-search')} type='search' required />
+  <Input
+    name="search"
+    placeholder={t('input-placeholder-search')}
+    type="search"
+    required
+    icon="heroicons:magnifying-glass"
+  />
   </form>
   <Dropdown
     id='create-new-dropdown'

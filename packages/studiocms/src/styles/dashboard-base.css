@@ -338,12 +338,11 @@ main {
 	}
 
 	& input[name="search"] {
-		/* heroicons:magnifying-glass-16-solid */
-		background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAndJREFUSEvFlUtoFEEQhv/qRVkvevARiM+DiOAjKooS0KCYg9EIigrGi3jzIBK8bNdsCIHt3mURET14EwQhugQRIxg8KMRHEIMGQUFyCCiBGFBE8LLsdLkTZsUkm52BZLGuXV3f/FX19xDqHFTn+vh/gO7u7sXJZPK0iFwAsAnASgBjRDTsnOsvFot9PT09LqoDVRVkMpnVSqkBAFtrFBgBcI6ZP9WCzAIYYxqI6B2AxvDiGxEZSCQS733f30lEbQD2hGcTzrnd6XR6fC7INICIUDabfQ6gBcAkgIvM/GDmZWvtKRG5RUQrAAwxc3MsgDGmlYieBslEdERrHbSpahhjjhLR4zC3Q2vdWy1xmgJr7X0AZwA8ZOYTUQO01vYDOEZE/Vrr43EAYwA2ALjMzDeiAMaYK0R0NWgnMzfEARQBLBKRNs/znkQBMplMu1LqEYAfzLw8DuALgLUAOpn5ehTAGNNJRNcAfGXmdXEAlRncYebzUQBr7d3ACwB6mbkjEvCP5N8i0ux53ocaW7SLiF4CWAKgnZmnNmpmzDJaNpsdKhtrX9kD35xzJ9Pp9OsqPthfdnkfgFXlLRpm5orxogG5XK7JOTcIYCkAR0Q3nXPBszBORGuIqElELgFQYbVJ3/cPdHV1fY6lIEgyxmwnomA71teYwysAGwEE6/ldKdWSSqU+RraoklAoFBKjo6NnlVKtIrIDwBYAPoBA3T2t9e18Pr+5VCoNhk/GTxE56HleoPZvzPt/kMvltjnnXgBYBuBXefCHtdZvK4R5A8KWBhv1LIRMaK0biUim3qmoXY97bq3dCyBw/wgzH1pQBbU+YsEUzAWpO+APfeLiGcjy+NMAAAAASUVORK5CYII=") !important;
-		background-position: 9px 7px !important;
-		background-repeat: no-repeat !important;
-		padding: 0.5rem 0.5rem 0.5rem 2.5rem !important;
-		height: 40px !important;
+	background-image: url("data:image/png;base64,...") !important;
+	background-position: 9px 7px !important;
+	background-repeat: no-repeat !important;
+	padding: 0.5rem 0.5rem 0.5rem 2.5rem !important;
+	height: 40px !important;
 	}
 }
 
