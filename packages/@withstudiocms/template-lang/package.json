@@ -1,6 +1,6 @@
 {
   "name": "@withstudiocms/template-lang",
-  "version": "0.1.0-beta.0",
+  "version": "0.1.0-beta.1",
   "description": "A simple TypeScript ESM template language for HTML emails",
   "author": {
     "name": "withstudiocms",
