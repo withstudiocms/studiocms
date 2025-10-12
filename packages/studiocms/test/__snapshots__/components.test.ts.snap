@@ -83,7 +83,7 @@ exports[`Components Container tests > Shared components > SSRUser component > re
 
 exports[`Components Container tests > Shared components > ThemeManager component > render component 1`] = `
 "<script>
-    window.theme ??= (() => { 
+window.theme ??= (() => { 
         const defaultTheme = "system";
         const storageKey = "studiocms-theme-preference";
         const store =
