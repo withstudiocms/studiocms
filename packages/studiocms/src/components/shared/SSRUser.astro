@@ -27,8 +27,8 @@ interface Props {
 	loading?: 'eager' | 'lazy';
 
 	/**
-	 * The timeout delay for loading the avatar image. Defaults to 5000ms.
-	 */
+ 	 * The timeout delay for loading the avatar image. Defaults to 3000ms.
+ 	 */
 	timeoutDelay?: number;
 
 	id: string;
@@ -50,18 +50,18 @@ const {
         {
             avatar ? (
                 <img
-                  src={heroIconsUserDataUri}
-                  width={64}
-                  height={64}
-                  class="sui-avatar-img"
-                  alt={name}
-                  loading={loading}
-                  decoding="async"
-                  referrerpolicy="no-referrer"
-				  data-src={avatar}
-                  data-fallback={heroIconsUserDataUri}
-                  data-timeout={timeoutDelay}
-                />
+  					src={heroIconsUserDataUri}
+  					data-src={avatar}
+  					width={64}
+  					height={64}
+  					class="sui-avatar-img"
+  					alt={name}
+  					loading={loading}
+  					decoding="async"
+  					referrerpolicy="no-referrer"
+  					data-fallback={heroIconsUserDataUri}
+  					data-timeout={timeoutDelay}
+				/>
             ) : (
                 <Icon
                     name="heroicons:user"
@@ -83,21 +83,19 @@ const {
 	function verifyAndLoadAvatar(img) {
 		const avatarSrc = img.dataset.src;
 		const fallbackSrc = img.dataset.fallback;
-		const timeoutDelay = parseInt(img.dataset.timeout ?? '3000', 10);
-		const isLazy = img.getAttribute('loading') === 'lazy';
-		
+		const timeoutDelay = parseInt(img.dataset.timeout || '3000', 10);
+
 		// If no avatar URL provided, keep fallback
 		if (!avatarSrc) {
 			return;
 		}
 
-		// Only set timeout for eager loading
-		const timeoutId = isLazy ? null : setTimeout(() => {
+		const timeoutId = setTimeout(() => {
 			img.src = fallbackSrc;
 		}, timeoutDelay);
 
 		const clearTimeoutAndListeners = () => {
-			if (timeoutId) clearTimeout(timeoutId);
+			clearTimeout(timeoutId);
 			img.removeEventListener('load', onLoad);
 			img.removeEventListener('error', onError);
 		};
@@ -110,6 +108,7 @@ const {
 
 		img.addEventListener('load', onLoad);
 		img.addEventListener('error', onError);
+
 		// Trigger loading of the actual avatar
 		img.src = avatarSrc;
 	}
