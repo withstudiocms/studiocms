@@ -66,7 +66,7 @@ jobs:
         run: pnpm ci:test
 
       - name: Upload coverage results to Codecov
-        if: github.repository_owner == 'withstudiocms'
+        if: github.event.pull_request.head.repo.full_name == github.repository
         uses: codecov/codecov-action@5a1091511ad55cbe89839c7260b706298ca349f7
         with:
           slug: withstudiocms/studiocms
@@ -76,7 +76,7 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
 
       - name: Upload test results to Codecov
-        if: ${{ always() && github.repository_owner == 'withstudiocms'}}
+        if: github.event.pull_request.head.repo.full_name == github.repository 
         uses: codecov/test-results-action@47f89e9acb64b76debcd5ea40642d25a4adced9f
         with:
           slug: withstudiocms/studiocms
@@ -87,7 +87,7 @@ jobs:
   run-bundle-tests:
     name: Run Bundle Analysis
     runs-on: ubuntu-latest
-    if: github.repository_owner == 'withstudiocms'
+    if: github.event.pull_request.head.repo.full_name == github.repository
     env:
       NODE_OPTIONS: "--max_old_space_size=4096"
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
