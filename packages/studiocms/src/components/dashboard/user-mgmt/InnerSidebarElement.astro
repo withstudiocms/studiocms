@@ -40,8 +40,15 @@ const t = useTranslations(lang, '@studiocms/dashboard:user-mngmt-sidebar');
     <Icon name="heroicons:arrow-left" width={24} height={24} slot="start-content" />
   </Button>
   <form id="search-form">
-    <Input name='search' placeholder={t('input-placeholder-search')} type='search' required />
+    <Input
+        name="search"
+        placeholder={t('input-placeholder-search')}
+        type="search"
+        required
+        icon="heroicons:magnifying-glass-16-solid"
+    />
   </form>
+
   <Dropdown
     id='create-user-dropdown'
     options={[
