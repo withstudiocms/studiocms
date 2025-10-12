@@ -2,4 +2,4 @@
 "studiocms": patch
 ---
 
-Deprecate and hide "Hide Index Page" setting from dashboard
+Deprecates and hides the "Hide Index Page" setting from dashboard. Users who previously relied on this setting should migrate to another method.
