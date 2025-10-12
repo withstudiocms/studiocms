@@ -83,7 +83,7 @@ const {
 	function verifyAndLoadAvatar(img) {
 		const avatarSrc = img.dataset.src;
 		const fallbackSrc = img.dataset.fallback;
-		const timeoutDelay = parseInt(img.dataset.timeout || '3000', 10);
+		const timeoutDelay = parseInt(img.dataset.timeout ?? '3000', 10);
 		
 		// If no avatar URL provided, keep fallback
 		if (!avatarSrc) {
