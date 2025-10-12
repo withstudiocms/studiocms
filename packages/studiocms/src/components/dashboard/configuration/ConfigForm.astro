@@ -80,7 +80,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:configuration');
 
         <div class="form-row">
             <Select label={t('select-smtp-mailer')} name="enable-mailer" defaultValue={`${data.enableMailer}`} options={[{ label: 'True', value: 'true' }, { label: 'False', value: 'false' }]} fullWidth />
-            <Select label={t('select-hide-default-index')} name="hide-default-index" defaultValue={`${data.hideDefaultIndex}`} options={[{ label: 'True', value: 'true' }, { label: 'False', value: 'false' }]} fullWidth />
+            <input type="hidden" name="hide-default-index" value={`${data.hideDefaultIndex}`}  />
         </div>
 
         <Divider />
@@ -184,7 +184,6 @@ updateTrueFalseSelectOptions,
 
         updateTrueFalseSelectOptions('diff-enabled', trueFalseOptions);
         updateTrueFalseSelectOptions('enable-mailer', trueFalseOptions);
-        updateTrueFalseSelectOptions('hide-default-index', trueFalseOptions);
     });
 
     if (!customElements.get('t-config-form')) {
