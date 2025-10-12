@@ -81,22 +81,12 @@ const {
 
 <script>
 	function verifyAndLoadAvatar(img) {
+		const avatarSrc = img.dataset.src;
 		const fallbackSrc = img.dataset.fallback;
 		const timeoutDelay = parseInt(img.dataset.timeout || '3000', 10);
 		
-		if (!img.src || img.src === 'data:,') {
-			img.src = fallbackSrc;
-			return;
-		}
-
-		// Check if image is already loaded (from cache or already complete)
-		if (img.complete) {
-			// Image already loaded - check if it loaded successfully
-			if (img.naturalWidth === 0) {
-				// Image failed to load
-				img.src = fallbackSrc;
-			}
-			// Otherwise, image loaded successfully, no action needed
+		// If no avatar URL provided, keep fallback
+		if (!avatarSrc) {
 			return;
 		}
 
@@ -118,6 +108,8 @@ const {
 
 		img.addEventListener('load', onLoad);
 		img.addEventListener('error', onError);
+		// Trigger loading of the actual avatar
+		img.src = avatarSrc;
 	}
 
 	document.querySelectorAll('.sui-avatar-img').forEach(verifyAndLoadAvatar);
