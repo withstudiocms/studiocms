@@ -84,18 +84,20 @@ const {
 		const avatarSrc = img.dataset.src;
 		const fallbackSrc = img.dataset.fallback;
 		const timeoutDelay = parseInt(img.dataset.timeout ?? '3000', 10);
+		const isLazy = img.getAttribute('loading') === 'lazy';
 		
 		// If no avatar URL provided, keep fallback
 		if (!avatarSrc) {
 			return;
 		}
 
-		const timeoutId = setTimeout(() => {
+		// Only set timeout for eager loading
+		const timeoutId = isLazy ? null : setTimeout(() => {
 			img.src = fallbackSrc;
 		}, timeoutDelay);
 
 		const clearTimeoutAndListeners = () => {
-			clearTimeout(timeoutId);
+			if (timeoutId) clearTimeout(timeoutId);
 			img.removeEventListener('load', onLoad);
 			img.removeEventListener('error', onError);
 		};
