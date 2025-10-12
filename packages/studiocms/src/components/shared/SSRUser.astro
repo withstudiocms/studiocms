@@ -50,7 +50,7 @@ const {
         {
             avatar ? (
                 <img
-                  src={avatar}
+                  src={heroIconsUserDataUri}
                   width={64}
                   height={64}
                   class="sui-avatar-img"
@@ -58,6 +58,7 @@ const {
                   loading={loading}
                   decoding="async"
                   referrerpolicy="no-referrer"
+				  data-src={avatar}
                   data-fallback={heroIconsUserDataUri}
                   data-timeout={timeoutDelay}
                 />
@@ -85,6 +86,17 @@ const {
 		
 		if (!img.src || img.src === 'data:,') {
 			img.src = fallbackSrc;
+			return;
+		}
+
+		// Check if image is already loaded (from cache or already complete)
+		if (img.complete) {
+			// Image already loaded - check if it loaded successfully
+			if (img.naturalWidth === 0) {
+				// Image failed to load
+				img.src = fallbackSrc;
+			}
+			// Otherwise, image loaded successfully, no action needed
 			return;
 		}
 
