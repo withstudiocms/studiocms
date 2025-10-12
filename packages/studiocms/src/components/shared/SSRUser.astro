@@ -79,8 +79,14 @@ const {
     </div>
 </div>
 
-<script data-component-id={id}>
+<script>
 	function verifyAndLoadAvatar(img) {
+		// Skip if already processed
+		if (img.dataset.processed === 'true') {
+			return;
+		}
+		img.dataset.processed = 'true';
+
 		const avatarSrc = img.dataset.src;
 		const fallbackSrc = img.dataset.fallback;
 		const timeoutDelay = parseInt(img.dataset.timeout || '3000', 10);
@@ -89,22 +95,26 @@ const {
 		if (!avatarSrc) {
 			return;
 		}
+
+		let timeoutId;
+
 		const clearTimeoutAndListeners = () => {
-		clearTimeout(timeoutId);
-		img.removeEventListener('load', onLoad);
-		img.removeEventListener('error', onError);
-	};
+			if (timeoutId) clearTimeout(timeoutId);
+			img.removeEventListener('load', onLoad);
+			img.removeEventListener('error', onError);
+		};
 
 		const onLoad = () => clearTimeoutAndListeners();
 		const onError = () => {
-		clearTimeoutAndListeners();
-		img.src = fallbackSrc;
-	};
+			clearTimeoutAndListeners();
+			img.src = fallbackSrc;
+		};
 
+		// Attach listeners BEFORE starting timeout and setting src
 		img.addEventListener('load', onLoad);
 		img.addEventListener('error', onError);
 
-		const timeoutId = setTimeout(() => {
+		timeoutId = setTimeout(() => {
 			img.src = fallbackSrc;
 		}, timeoutDelay);
 
@@ -112,14 +122,7 @@ const {
 		img.src = avatarSrc;
 	}
 
-	const componentId = document.currentScript?.getAttribute('data-component-id');
-	if (componentId) {
-		const container = document.getElementById(componentId);
-		if (container) {
-			const img = container.querySelector('.sui-avatar-img');
-			if (img) verifyAndLoadAvatar(img);
-		}
-	}
+	document.querySelectorAll('.sui-avatar-img').forEach(verifyAndLoadAvatar);
 </script>
 
 <style>
