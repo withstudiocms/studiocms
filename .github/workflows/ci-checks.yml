@@ -25,6 +25,16 @@ jobs:
       commands: > 
         ["ci:lint"]
 
+  check-changeset:
+    name: Check Changesets Status
+    if: github.event_name == 'pull_request'
+    permissions:
+      contents: read
+    uses: withstudiocms/automations/.github/workflows/run-pnpm.yml@729a20ff5e68dd95330fb1914b801960ad4b5e7b # main
+    with:
+      commands: >
+        ["changeset:status"]
+
   lint-knip:
     name: Run Knip Linter and Report
     if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
