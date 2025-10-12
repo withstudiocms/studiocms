@@ -79,7 +79,7 @@ const {
     </div>
 </div>
 
-<script>
+<script data-component-id={id}>
 	function verifyAndLoadAvatar(img) {
 		const avatarSrc = img.dataset.src;
 		const fallbackSrc = img.dataset.fallback;
@@ -89,31 +89,37 @@ const {
 		if (!avatarSrc) {
 			return;
 		}
+		const clearTimeoutAndListeners = () => {
+		clearTimeout(timeoutId);
+		img.removeEventListener('load', onLoad);
+		img.removeEventListener('error', onError);
+	};
+
+		const onLoad = () => clearTimeoutAndListeners();
+		const onError = () => {
+		clearTimeoutAndListeners();
+		img.src = fallbackSrc;
+	};
+
+		img.addEventListener('load', onLoad);
+		img.addEventListener('error', onError);
 
 		const timeoutId = setTimeout(() => {
 			img.src = fallbackSrc;
 		}, timeoutDelay);
 
-		const clearTimeoutAndListeners = () => {
-			clearTimeout(timeoutId);
-			img.removeEventListener('load', onLoad);
-			img.removeEventListener('error', onError);
-		};
-
-		const onLoad = () => clearTimeoutAndListeners();
-		const onError = () => {
-			clearTimeoutAndListeners();
-			img.src = fallbackSrc;
-		};
-
-		img.addEventListener('load', onLoad);
-		img.addEventListener('error', onError);
-
 		// Trigger loading of the actual avatar
 		img.src = avatarSrc;
 	}
 
-	document.querySelectorAll('.sui-avatar-img').forEach(verifyAndLoadAvatar);
+	const componentId = document.currentScript?.getAttribute('data-component-id');
+	if (componentId) {
+		const container = document.getElementById(componentId);
+		if (container) {
+			const img = container.querySelector('.sui-avatar-img');
+			if (img) verifyAndLoadAvatar(img);
+		}
+	}
 </script>
 
 <style>
