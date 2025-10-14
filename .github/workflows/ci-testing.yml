@@ -52,9 +52,6 @@ jobs:
       contents: write # For Allure GitHub Pages deployment
     env:
       NODE_OPTIONS: "--max_old_space_size=4096"
-      ASTRO_DB_REMOTE_URL: ${{ secrets.ASTRO_DB_REMOTE_URL }}
-      ASTRO_DB_APP_TOKEN: ${{ secrets.ASTRO_DB_APP_TOKEN }}
-      CMS_ENCRYPTION_KEY: ${{ secrets.CMS_ENCRYPTION_KEY }}
     steps:
       - name: Check out code using Git
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
