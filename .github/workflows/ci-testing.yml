@@ -48,8 +48,13 @@ jobs:
   codecov:
     name: Run Tests & Code Coverage
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # For Allure GitHub Pages deployment
     env:
       NODE_OPTIONS: "--max_old_space_size=4096"
+      ASTRO_DB_REMOTE_URL: ${{ secrets.ASTRO_DB_REMOTE_URL }}
+      ASTRO_DB_APP_TOKEN: ${{ secrets.ASTRO_DB_APP_TOKEN }}
+      CMS_ENCRYPTION_KEY: ${{ secrets.CMS_ENCRYPTION_KEY }}
     steps:
       - name: Check out code using Git
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
@@ -65,13 +70,91 @@ jobs:
       - name: Run Tests & Code Coverage
         run: pnpm ci:test
 
-      - name: Upload Allure results
+      - name: Get Allure history
+        uses: actions/checkout@v4
+        if: always()
+        continue-on-error: true
+        with:
+          ref: gh-pages
+          path: gh-pages
+
+      - name: Generate Allure Report
+        uses: simple-elf/allure-report-action@master
+        if: always()
+        id: allure-report
+        with:
+          allure_results: allure-results
+          gh_pages: gh-pages
+          allure_report: allure-report
+          allure_history: allure-history
+          keep_reports: 20
+          report_name: latest_report
+
+      - name: Deploy Allure Report to GitHub Pages
+        if: always() && github.ref == 'refs/heads/main'
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: allure-history
+          keep_files: true
+
+      - name: Upload Allure results artifact
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: allure-results
           path: allure-results/
           retention-days: 7
+
+      - name: Comment PR with Allure Report
+        if: always() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            let reportUrl = '';
+            if (context.ref === 'refs/heads/main') {
+              reportUrl = `https://${context.repo.owner}.github.io/${context.repo.repo}/`;
+            } else {
+              reportUrl = 'Report will be available after merge to main branch';
+            }
+            const comment = `## Allure Test Report
+            
+            Allure test report has been generated for this PR.
+            
+            **Report URL:** ${reportUrl}
+            
+            **Test Results Summary:**
+            - Check the detailed report for comprehensive test analysis
+            - View test history, trends, and failure analysis
+            
+            *This comment is automatically updated on each commit.*`;
+            
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            
+            const existingComment = comments.find(comment => 
+              comment.body.includes('Allure Test Report')
+            );
+            
+            if (existingComment) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existingComment.id,
+                body: comment
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: comment
+              });
+            }
 
       - name: Upload coverage results to Codecov
         if: github.event.pull_request.head.repo.full_name == github.repository
