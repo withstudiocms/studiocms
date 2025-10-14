@@ -164,7 +164,7 @@ importers:
         specifier: workspace:*
         version: link:packages/@withstudiocms/buildkit
       allure-commandline:
-        specifier: 2.34.1
+        specifier: ^2.34.1
         version: 2.34.1
       allure-js-commons:
         specifier: ^3.0.8
