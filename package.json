@@ -67,7 +67,7 @@
     "@inox-tools/astro-tests": "^0.8.0",
     "allure-js-commons": "^3.0.8",
     "allure-vitest": "^3.4.1",
-    "allure-commandline": "2.34.1",
+    "allure-commandline": "^2.34.1",
     "execa": "^9.6.0",
     "knip": "^5.64.1",
     "pkg-pr-new": "^0.0.60",
