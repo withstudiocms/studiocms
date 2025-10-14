@@ -1,0 +1,61 @@
+name: Allure Test Report
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test-with-allure:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '22.19.0'
+        cache: 'pnpm'
+        
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v4
+      with:
+        version: 10.17.0
+        
+    - name: Install dependencies
+      run: pnpm install --frozen-lockfile
+      
+    - name: Build packages
+      run: pnpm ci:build
+      
+    - name: Run tests
+      run: pnpm test:ci
+      
+    - name: Get Allure history
+      uses: actions/checkout@v4
+      continue-on-error: true
+      with:
+        ref: gh-pages
+        path: gh-pages
+        
+    - name: Generate Allure report
+      uses: simple-elf/allure-report-action@v1.7
+      with:
+        allure_results: allure-results
+        allure_history: allure-history
+        keep_reports: 20
+        
+    - name: Deploy Allure report to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_branch: gh-pages
+        publish_dir: allure-history
+        force_orphan: false
+        keep_files: true

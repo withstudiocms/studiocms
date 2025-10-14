@@ -6,6 +6,8 @@
     "node": "22.19.0"
   },
   "scripts": {
+    "start": "node ./playground/dist/server/entry.mjs",
+
     "changeset": "changeset",
     "changeset:status": "changeset status --since=origin/main",
 
@@ -19,6 +21,8 @@
     "test:ui": "vitest --ui",
     "test:ui:coverage": "vitest --ui --coverage",
     "test:watch": "vitest",
+    "test:ci": "vitest run",
+    "allure:ci-info": "echo 'Allure reports available at: https://withstudiocms.github.io/studiocms/ after CI runs'",
 
     "build": "pnpm build:packages",
     "build:studiocms": "pnpm build:packages",
@@ -56,21 +60,22 @@
     "@changesets/config": "^3.1.1",
     "@changesets/write": "^0.4.0",
     "@crowdin/crowdin-api-client": "^1.48.3",
-		"@effect/language-service": "^0.41.1",
+    "@effect/language-service": "^0.41.1",
     "@effect/vitest": "^0.26.0",
     "@types/node": "catalog:",
     "@vitest/coverage-v8": "^3.2.4",
     "@vitest/ui": "^3.2.4",
     "@withstudiocms/buildkit": "workspace:*",
     "@inox-tools/astro-tests": "^0.8.0",
+    "allure-commandline": "^2.32.0",
     "execa": "^9.6.0",
+    "jsdom": "^27.0.0",
     "knip": "^5.64.1",
     "pkg-pr-new": "^0.0.60",
     "studiocms": "workspace:*",
-    "typescript": "catalog:",
     "ts-patch": "^3.3.0",
+    "typescript": "catalog:",
     "vite": "catalog:astrojs",
-    "vitest": "^3.2.4",
-    "jsdom": "^27.0.0"
+    "vitest": "^3.2.4"
   }
 }
