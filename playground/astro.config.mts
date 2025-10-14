@@ -4,9 +4,13 @@ import devApps from '@studiocms/devapps';
 import { defineConfig } from 'astro/config';
 import studioCMS from 'studiocms';
 
+const site = process.env.DOKPLOY_DEPLOY_URL
+	? `https://${process.env.DOKPLOY_DEPLOY_URL}`
+	: 'https://playground.studiocms.dev';
+
 // https://astro.build/config
 export default defineConfig({
-	site: 'https://playground.studiocms.dev',
+	site,
 	output: 'server',
 	adapter: node({ mode: 'standalone' }),
 	security: {
