@@ -3,11 +3,16 @@ import node from '@astrojs/node';
 import devApps from '@studiocms/devapps';
 import { defineConfig } from 'astro/config';
 import studioCMS from 'studiocms';
-import { getCoolifyURL } from './hostUtils';
+
+const site = process.env.DOKPLOY_DEPLOY_URL
+	? `https://${process.env.DOKPLOY_DEPLOY_URL}`
+	: 'https://playground.studiocms.dev';
+
+console.log('Site URL:', site);
 
 // https://astro.build/config
 export default defineConfig({
-	site: getCoolifyURL(true) || 'https://playground.studiocms.dev',
+	site,
 	output: 'server',
 	adapter: node({ mode: 'standalone' }),
 	security: {
