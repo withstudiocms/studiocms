@@ -8,6 +8,8 @@ const site = process.env.DOKPLOY_DEPLOY_URL
 	? `https://${process.env.DOKPLOY_DEPLOY_URL}`
 	: 'https://playground.studiocms.dev';
 
+console.log('Site URL:', site);
+
 // https://astro.build/config
 export default defineConfig({
 	site,
