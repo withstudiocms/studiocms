@@ -9,6 +9,8 @@
     "start": "node ./playground/dist/server/entry.mjs",
 
     "changeset": "changeset",
+    "changeset:status": "changeset status --since=origin/main",
+
     "knip": "knip",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",

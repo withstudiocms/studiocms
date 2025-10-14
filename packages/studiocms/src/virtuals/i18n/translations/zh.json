@@ -129,7 +129,9 @@
       "select-page-diff-tracking": "页面内容差异跟踪",
       "select-login-page-bg": "登录页面背景图片",
       "select-smtp-mailer": "SMTP 邮件服务​",
-      "select-hide-default-index": "隐藏仪表盘首页​"
+      "select-hide-default-index": "隐藏仪表盘首页​",
+      "true-label": "",
+      "false-label": ""
     },
     "@studiocms/dashboard:smtp": {
       "title": "SMTP 配置",
@@ -162,7 +164,39 @@
       "requireAdminVerification": "要求管理员验证邮箱​",
       "requireEditorVerification": "要求编辑人员验证邮箱​",
       "oAuthBypassVerification": "跳过 OAuth 用户的邮箱验证",
-      "save-email-settings": "保存"
+      "save-email-settings": "保存",
+      "true-label": "",
+      "false-label": "",
+      "template-editor-save-failed": "",
+      "template-editor-save-success": "",
+      "template-editor-save-unknown": "",
+      "template-editor-preloaded-content": "",
+      "template-editor-not-found": "",
+      "template-save-reset-button-error": "",
+      "template-reset-button-confirm": "",
+      "error-label": "",
+      "success-label": "",
+      "notifications": "",
+      "passwordReset": "",
+      "userInvite": "",
+      "verifyEmail": "",
+      "mail-templates": "",
+      "available-templates": "",
+      "template-instructions": "",
+      "available-variables": "",
+      "variable-global-site.title": "",
+      "variable-global-site.description": "",
+      "variable-global-site.icon": "",
+      "variable-notifications-data.title": "",
+      "variable-notifications-data.message": "",
+      "variable-passwordReset-data.link": "",
+      "variable-verifyEmail-data.link": "",
+      "variable-userInvite-data.link": "",
+      "template-save-button": "",
+      "template-reset-button": "",
+      "preview-button-title": "",
+      "template-preview-button-error": "",
+      "template-preview-modal-header": ""
     },
     "@studiocms/dashboard:user-mngmt-sidebar": {
       "input-placeholder-search": "搜索...",
@@ -206,7 +240,14 @@
       "api-tokens-no-tokens": "未找到 API 令牌。",
       "last-edit-pages-header": "最近编辑的页面",
       "last-edit-pages-edited": "已编辑",
-      "last-edit-pages-no-edits": "未找到历史记录。"
+      "last-edit-pages-no-edits": "未找到历史记录。",
+      "owner": "",
+      "admin": "",
+      "editor": "",
+      "visitor": "",
+      "unknown": "",
+      "email-verified": "",
+      "email-unverified": ""
     },
     "@studiocms/dashboard:plugin-settings": {
       "title": "插件设置",
@@ -280,7 +321,10 @@
       "custom-page-types-description-new": "您已更改了您的页面类型。请保存您的更改并刷新页面以查看新的字段。",
       "diff-edited-by-1": "编辑",
       "diff-edited-by-2": "出自",
-      "diff-no-history": "未找到历史记录。"
+      "diff-no-history": "未找到历史记录。",
+      "true-label": "",
+      "false-label": "",
+      "requires-supported-frontend": ""
     },
     "@studiocms/dashboard:404": {
       "title": "404 错误",
@@ -294,6 +338,35 @@
       "sub-description": "您的邮箱尚未验证。请检查您的电子邮件以获取验证链接。",
       "resend-button": "重新发送验证邮件",
       "back-button": "返回首页"
+    },
+    "@studiocms/dashboard:versionCheckModal": {
+      "header-title": "",
+      "current-version": "",
+      "latest-version": "",
+      "last-check": "",
+      "full-changelog": "",
+      "view-on": ""
+    },
+    "@studiocms/dashboard:user-component": {
+      "admin": "",
+      "editor": "",
+      "owner": "",
+      "visitor": "",
+      "unknown": ""
+    },
+    "@studiocms/dashboard:profile-notifications": {
+      "header-title": "",
+      "save-button": "",
+      "account_updated": "",
+      "page_updated": "",
+      "page_deleted": "",
+      "new_page": "",
+      "folder_updated": "",
+      "folder_deleted": "",
+      "new_folder": "",
+      "user_updated": "",
+      "user_deleted": "",
+      "new_user": ""
     }
   }
 }

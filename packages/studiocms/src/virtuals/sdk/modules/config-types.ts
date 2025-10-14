@@ -155,3 +155,10 @@ export interface StudioCMSNotificationSettings extends StudioCMSDynamicConfigBas
 	requireEditorVerification?: boolean | undefined;
 	oAuthBypassVerification?: boolean | undefined;
 }
+
+export interface StudioCMSTemplateConfig extends StudioCMSDynamicConfigBase {
+	notifications?: string;
+	passwordReset?: string;
+	userInvite?: string;
+	verifyEmail?: string;
+}

@@ -6,9 +6,11 @@ import {
 	Next_MailerConfigId,
 	Next_NotificationSettingsId,
 	Next_SiteConfigId,
+	TemplateConfigId,
 } from '../../../consts.js';
 import { Deepmerge, Effect } from '../../../effect.js';
-import { CURRENT_CONFIG_VERSION } from '../consts.js';
+import defaultTemplates from '../../template-engine/default-templates.js';
+import { CURRENT_CONFIG_VERSION, TEMPLATE_CONFIG_VERSION } from '../consts.js';
 import { AstroDB, type LibSQLClientError } from '../effect/db.js';
 import {
 	tsDynamicConfigSettings,
@@ -29,6 +31,7 @@ import type {
 	StudioCMSMailerConfig,
 	StudioCMSNotificationSettings,
 	StudioCMSSiteConfig,
+	StudioCMSTemplateConfig,
 } from './config-types.js';
 
 export type {
@@ -44,7 +47,9 @@ export type {
 	StudioCMSMailerConfig,
 	StudioCMSNotificationSettings,
 	StudioCMSSiteConfig,
+	StudioCMSTemplateConfig,
 } from './config-types.js';
+
 /**
  * Casts the `data` property of a `RawDynamicConfigEntry` to the specified generic type `T`
  * and returns a new `DynamicConfigEntry<T>` object.
@@ -462,7 +467,33 @@ export class SDKCore_CONFIG extends Effect.Service<SDKCore_CONFIG>()(
 					}),
 			};
 
-			return { siteConfig, mailerConfig, notificationConfig } as const;
+			const templateConfig = {
+				get: () => get<StudioCMSTemplateConfig>(TemplateConfigId),
+				update: (data: ConfigFinal<StudioCMSTemplateConfig>) =>
+					Effect.gen(function* () {
+						const currentData = yield* get<StudioCMSTemplateConfig>(TemplateConfigId);
+						if (!currentData) {
+							// If no current data, create new with defaults merged in (this should not happen often)
+							const updatedData = yield* merge((m) => m(defaultTemplates, data));
+							return yield* create<StudioCMSTemplateConfig>(TemplateConfigId, {
+								...updatedData,
+								_config_version: TEMPLATE_CONFIG_VERSION,
+							});
+						}
+						const updatedData = yield* merge((m) => m(currentData.data, data));
+						return yield* update<StudioCMSTemplateConfig>(TemplateConfigId, {
+							...updatedData,
+							_config_version: TEMPLATE_CONFIG_VERSION,
+						});
+					}),
+				init: (data: ConfigFinal<StudioCMSTemplateConfig>) =>
+					create<StudioCMSTemplateConfig>(TemplateConfigId, {
+						...data,
+						_config_version: TEMPLATE_CONFIG_VERSION,
+					}),
+			};
+
+			return { siteConfig, mailerConfig, notificationConfig, templateConfig } as const;
 		}),
 	}
 ) {}

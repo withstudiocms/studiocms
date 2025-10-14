@@ -12,7 +12,7 @@ permissions:
 jobs:
   add-labels:
     name: Label PRs
-    if: github.event_name == 'pull_request' && github.event.pull_request.state == 'open'
+    if: github.event_name == 'pull_request' && github.event.pull_request.state == 'open' && github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     steps:
       - name: Setup Apollo Git Bot
@@ -31,7 +31,7 @@ jobs:
 
   remove-merged-pr-labels:
     name: Remove merged pull request labels
-    if: github.event.pull_request.merged
+    if: github.event.pull_request.merged && github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     steps:
       - name: Setup Apollo Git Bot
@@ -52,7 +52,7 @@ jobs:
 
   remove-closed-pr-labels:
     name: Remove closed pull request labels
-    if: github.event_name == 'pull_request' && (! github.event.pull_request.merged)
+    if: github.event_name == 'pull_request' && (! github.event.pull_request.merged) && github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     steps:
       - name: Setup Apollo Git Bot
@@ -71,7 +71,7 @@ jobs:
 
   remove-closed-issue-labels:
     name: Remove closed issue labels
-    if: github.event.issue.state == 'closed'
+    if: github.event.issue.state == 'closed' && github.repository_owner == 'withstudiocms'
     runs-on: ubuntu-latest
     steps:
       - name: Setup Apollo Git Bot

@@ -129,7 +129,9 @@
       "select-page-diff-tracking": "Seguimiento de diferencias de página",
       "select-login-page-bg": "Imagen de fondo de página de inicio de sesión",
       "select-smtp-mailer": "Mensajería SMTP",
-      "select-hide-default-index": "Ocultar página índice del panel"
+      "select-hide-default-index": "Ocultar página índice del panel",
+      "true-label": "",
+      "false-label": ""
     },
     "@studiocms/dashboard:smtp": {
       "title": "Configuración SMTP",
@@ -162,7 +164,39 @@
       "requireAdminVerification": "Requerir que los administradores verifiquen su correo electrónico",
       "requireEditorVerification": "Requerir que los editores verifiquen su correo electrónico",
       "oAuthBypassVerification": "Saltar verificación de correo electrónico para los usuarios de OAuth",
-      "save-email-settings": "Guardar"
+      "save-email-settings": "Guardar",
+      "true-label": "",
+      "false-label": "",
+      "template-editor-save-failed": "",
+      "template-editor-save-success": "",
+      "template-editor-save-unknown": "",
+      "template-editor-preloaded-content": "",
+      "template-editor-not-found": "",
+      "template-save-reset-button-error": "",
+      "template-reset-button-confirm": "",
+      "error-label": "",
+      "success-label": "",
+      "notifications": "",
+      "passwordReset": "",
+      "userInvite": "",
+      "verifyEmail": "",
+      "mail-templates": "",
+      "available-templates": "",
+      "template-instructions": "",
+      "available-variables": "",
+      "variable-global-site.title": "",
+      "variable-global-site.description": "",
+      "variable-global-site.icon": "",
+      "variable-notifications-data.title": "",
+      "variable-notifications-data.message": "",
+      "variable-passwordReset-data.link": "",
+      "variable-verifyEmail-data.link": "",
+      "variable-userInvite-data.link": "",
+      "template-save-button": "",
+      "template-reset-button": "",
+      "preview-button-title": "",
+      "template-preview-button-error": "",
+      "template-preview-modal-header": ""
     },
     "@studiocms/dashboard:user-mngmt-sidebar": {
       "input-placeholder-search": "Buscar...",
@@ -206,7 +240,14 @@
       "api-tokens-no-tokens": "No se encontraron tokens de API.",
       "last-edit-pages-header": "Últimas páginas editadas",
       "last-edit-pages-edited": "Editado",
-      "last-edit-pages-no-edits": "No se ha encontrado ningún historial."
+      "last-edit-pages-no-edits": "No se ha encontrado ningún historial.",
+      "owner": "",
+      "admin": "",
+      "editor": "",
+      "visitor": "",
+      "unknown": "",
+      "email-verified": "",
+      "email-unverified": ""
     },
     "@studiocms/dashboard:plugin-settings": {
       "title": "Ajustes del complemento",
@@ -280,7 +321,10 @@
       "custom-page-types-description-new": "Ha cambiado tu tipo de página. Guarde sus cambios y actualice la página para ver los nuevos campos.",
       "diff-edited-by-1": "Editado",
       "diff-edited-by-2": "por",
-      "diff-no-history": "No se ha encontrado ningún historial."
+      "diff-no-history": "No se ha encontrado ningún historial.",
+      "true-label": "",
+      "false-label": "",
+      "requires-supported-frontend": ""
     },
     "@studiocms/dashboard:404": {
       "title": "Error 404",
@@ -294,6 +338,35 @@
       "sub-description": "Tu dirección de correo electrónico no ha sido verificada. Por favor, consulta tu correo electrónico para obtener un enlace de verificación.",
       "resend-button": "Reenviar correo electrónico de verificación",
       "back-button": "Ir al inicio"
+    },
+    "@studiocms/dashboard:versionCheckModal": {
+      "header-title": "",
+      "current-version": "",
+      "latest-version": "",
+      "last-check": "",
+      "full-changelog": "",
+      "view-on": ""
+    },
+    "@studiocms/dashboard:user-component": {
+      "admin": "",
+      "editor": "",
+      "owner": "",
+      "visitor": "",
+      "unknown": ""
+    },
+    "@studiocms/dashboard:profile-notifications": {
+      "header-title": "",
+      "save-button": "",
+      "account_updated": "",
+      "page_updated": "",
+      "page_deleted": "",
+      "new_page": "",
+      "folder_updated": "",
+      "folder_deleted": "",
+      "new_folder": "",
+      "user_updated": "",
+      "user_deleted": "",
+      "new_user": ""
     }
   }
 }
