@@ -985,9 +985,6 @@ importers:
       '@types/three':
         specifier: 0.169.0
         version: 0.169.0
-      allure-commandline:
-        specifier: ^2.34.1
-        version: 2.34.1
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
