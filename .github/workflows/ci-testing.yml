@@ -104,55 +104,6 @@ jobs:
           path: allure-results/
           retention-days: 7
 
-      - name: Comment PR with Allure Report
-        if: always() && github.event_name == 'pull_request'
-        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd #v8
-        with:
-          script: |
-            let reportUrl = '';
-            if (context.ref === 'refs/heads/main') {
-              reportUrl = `https://${context.repo.owner}.github.io/${context.repo.repo}/`;
-            } else {
-              reportUrl = 'Report will be available after merge to main branch';
-            }
-            const comment = `## Allure Test Report
-            
-            Allure test report has been generated for this PR.
-            
-            **Report URL:** ${reportUrl}
-            
-            **Test Results Summary:**
-            - Check the detailed report for comprehensive test analysis
-            - View test history, trends, and failure analysis
-            
-            *This comment is automatically updated on each commit.*`;
-            
-            const { data: comments } = await github.rest.issues.listComments({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-            });
-            
-            const existingComment = comments.find(comment => 
-              comment.body.includes('Allure Test Report')
-            );
-            
-            if (existingComment) {
-              await github.rest.issues.updateComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                comment_id: existingComment.id,
-                body: comment
-              });
-            } else {
-              await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: context.issue.number,
-                body: comment
-              });
-            }
-
       - name: Upload coverage results to Codecov
         if: github.event.pull_request.head.repo.full_name == github.repository
         uses: codecov/codecov-action@5a1091511ad55cbe89839c7260b706298ca349f7
