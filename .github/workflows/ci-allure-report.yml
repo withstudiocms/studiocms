@@ -1,0 +1,137 @@
+name: Allure Report
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+
+# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+concurrency:
+  group: "allure-${{ github.ref }}"
+  cancel-in-progress: false
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  allure-report:
+    name: Generate Allure Report
+    runs-on: ubuntu-latest
+    env:
+      NODE_OPTIONS: "--max_old_space_size=4096"
+      ASTRO_DB_REMOTE_URL: ${{ secrets.ASTRO_DB_REMOTE_URL }}
+      ASTRO_DB_APP_TOKEN: ${{ secrets.ASTRO_DB_APP_TOKEN }}
+      CMS_ENCRYPTION_KEY: ${{ secrets.CMS_ENCRYPTION_KEY }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Install Tools & Dependencies
+        uses: withstudiocms/automations/.github/actions/install@729a20ff5e68dd95330fb1914b801960ad4b5e7b # main
+
+      - name: Build packages
+        run: pnpm ci:build
+
+      - name: Run tests with Allure
+        run: pnpm test
+        continue-on-error: true
+
+      - name: Get Allure history
+        uses: actions/checkout@v4
+        if: always()
+        continue-on-error: true
+        with:
+          ref: gh-pages
+          path: gh-pages
+
+      - name: Allure Report action from marketplace
+        uses: simple-elf/allure-report-action@master
+        if: always()
+        id: allure-report
+        with:
+          allure_results: allure-results
+          gh_pages: gh-pages
+          allure_report: allure-report
+          allure_history: allure-history
+          keep_reports: 20
+
+      - name: Setup Pages
+        if: always() && github.ref == 'refs/heads/main'
+        uses: actions/configure-pages@v4
+
+      - name: Upload Pages artifact
+        if: always() && github.ref == 'refs/heads/main'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: allure-history
+
+      - name: Deploy to GitHub Pages
+        if: always() && github.ref == 'refs/heads/main'
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+      - name: Comment PR with Allure Report
+        if: always() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            
+            // Read the allure report summary
+            let reportUrl = '';
+            if (context.ref === 'refs/heads/main') {
+              reportUrl = `https://${context.repo.owner}.github.io/${context.repo.repo}/`;
+            } else {
+              reportUrl = 'Report will be available after merge to main branch';
+            }
+            
+            const comment = `## 📊 Allure Test Report
+            
+            Allure test report has been generated for this PR.
+            
+            **Report URL:** ${reportUrl}
+            
+            **Test Results Summary:**
+            - Check the detailed report for comprehensive test analysis
+            - View test history, trends, and failure analysis
+            - Access test artifacts and screenshots
+            
+            *This comment is automatically updated on each commit.*`;
+            
+            // Find existing comment or create new one
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            
+            const existingComment = comments.find(comment => 
+              comment.body.includes('📊 Allure Test Report')
+            );
+            
+            if (existingComment) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existingComment.id,
+                body: comment
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: comment
+              });
+            }

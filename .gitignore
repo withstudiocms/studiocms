@@ -14,3 +14,6 @@ coverage
 junit-report.xml
 
 dist
+
+# allure results
+allure-results/*
