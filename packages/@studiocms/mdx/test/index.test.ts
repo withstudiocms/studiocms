@@ -123,7 +123,7 @@ describe('studiocmsMDX', () => {
 						identifier: 'studiocms/mdx',
 						label: 'MDX',
 						pageContentComponent: '/mocked/path/./components/editor.astro',
-						rendererComponent: '/mocked/path/./components/MDXRenderer.astro',
+						rendererComponent: '/mocked/path/./components/render.js',
 					},
 				],
 			});

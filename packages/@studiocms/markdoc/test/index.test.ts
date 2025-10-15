@@ -105,7 +105,7 @@ describe('StudioCMS MarkDoc Plugin', () => {
 					identifier: 'studiocms/markdoc',
 					label: 'MarkDoc',
 					pageContentComponent: '/mock/path/./components/editor.astro',
-					rendererComponent: '/mock/path/./components/MarkDocRenderer.astro',
+					rendererComponent: '/mock/path/./components/render.js',
 				},
 			],
 		});

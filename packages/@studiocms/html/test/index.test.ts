@@ -180,7 +180,7 @@ describe('studiocmsHTML', () => {
 						identifier: 'studiocms/html',
 						label: 'HTML',
 						pageContentComponent: '/mocked/path/./components/editor.astro',
-						rendererComponent: '/mocked/path/./components/renderer.astro',
+						rendererComponent: '/mocked/path/./components/render.js',
 					},
 				],
 			});

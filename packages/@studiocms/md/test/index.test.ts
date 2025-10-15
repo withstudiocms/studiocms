@@ -166,7 +166,7 @@ describe('studiocmsMD', () => {
 						identifier: 'studiocms/markdown',
 						label: 'Markdown',
 						pageContentComponent: '/mocked/path/./components/markdown-editor.astro',
-						rendererComponent: '/mocked/path/./components/markdown-render.astro',
+						rendererComponent: '/mocked/path/./components/render.js',
 					},
 				],
 			});

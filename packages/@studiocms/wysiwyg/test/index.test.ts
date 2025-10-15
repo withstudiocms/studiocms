@@ -88,7 +88,7 @@ describe('StudioCMS WYSIWYG Plugin', () => {
 				{
 					identifier: 'studiocms/wysiwyg',
 					label: 'WYSIWYG',
-					rendererComponent: expect.stringContaining('Render.astro'),
+					rendererComponent: expect.stringContaining('render.js'),
 					pageContentComponent: expect.stringContaining('Editor.astro'),
 				},
 			],
