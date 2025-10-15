@@ -52,7 +52,7 @@ jobs:
         run: pnpm ci:typecheck:studiocms-packages
 
   vitest-tests:
-    name: Tests / Reporting / Code Coverage
+    name: Run Tests, Code Coverage & Allure Report
     runs-on: ubuntu-latest
     permissions:
       contents: write # For Allure GitHub Pages deployment
