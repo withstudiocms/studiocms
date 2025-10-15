@@ -1,4 +1,4 @@
-name: CI - Tests
+name: CI - Testing
 
 on:
   workflow_dispatch:
@@ -17,10 +17,16 @@ concurrency:
 
 permissions:
   contents: read
+
+env:
+  FORCE_COLOR: true
+  # 7 GiB by default on GitHub, setting to 6 GiB
+  # https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners#supported-runners-and-hardware-resources
+  NODE_OPTIONS: --max-old-space-size=6144
   
 jobs:
   typecheck:
-    name: Run Type Checks
+    name: Type Checks
     runs-on: ubuntu-latest
     env:
       NODE_OPTIONS: "--max_old_space_size=4096"
@@ -45,8 +51,8 @@ jobs:
       - name: Run StudioCMS Plugin & Packages TypeCheck
         run: pnpm ci:typecheck:studiocms-packages
 
-  codecov:
-    name: Run Tests & Code Coverage
+  vitest-tests:
+    name: Tests / Reporting / Code Coverage
     runs-on: ubuntu-latest
     permissions:
       contents: write # For Allure GitHub Pages deployment
@@ -88,6 +94,7 @@ jobs:
           keep_reports: 20
           report_name: StudioCMS Test Report
 
+      # Deploy Allure report to GitHub Pages ONLY if we are on main branch
       - name: Deploy Allure Report to GitHub Pages
         if: always() && github.ref == 'refs/heads/main'
         uses: peaceiris/actions-gh-pages@4f9cc6602d3f66b9c108549d475ec49e8ef4d45e #v4
@@ -97,6 +104,7 @@ jobs:
           publish_dir: allure-history
           keep_files: true
 
+      # Upload Allure results as an artifact for easy access when working on PRs
       - name: Upload Allure results artifact
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 #v4.6.2
@@ -105,8 +113,10 @@ jobs:
           path: allure-results/
           retention-days: 7
 
+      # CodeCov reports - only upload from PRs originating from this repository
+      # as we don't have access to secrets from forked repositories
       - name: Upload coverage results to Codecov
-        if: github.event.pull_request.head.repo.full_name == github.repository
+        if: always() && github.event.pull_request.head.repo.full_name == github.repository
         uses: codecov/codecov-action@5a1091511ad55cbe89839c7260b706298ca349f7
         with:
           slug: withstudiocms/studiocms
@@ -116,7 +126,7 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
 
       - name: Upload test results to Codecov
-        if: github.event.pull_request.head.repo.full_name == github.repository 
+        if: always() && github.event.pull_request.head.repo.full_name == github.repository 
         uses: codecov/test-results-action@47f89e9acb64b76debcd5ea40642d25a4adced9f
         with:
           slug: withstudiocms/studiocms
@@ -124,10 +134,13 @@ jobs:
           flags: integrations,plugins,tools-utils
           token: ${{ secrets.CODECOV_TOKEN }}
 
-  run-bundle-tests:
-    name: Run Bundle Analysis
+  # Bundle Analysis can only run on PRs from the same repository or on main branch pushes
+  # This is because it needs to be able to access secret values for environment variables 
+  # to build the test projects
+  bundle-analysis:
+    name: Bundle Analysis
     runs-on: ubuntu-latest
-    if: github.event.pull_request.head.repo.full_name == github.repository
+    if: (github.event.pull_request.head.repo.full_name == github.repository) || (github.ref == 'refs/heads/main' && github.repository == 'withstudiocms/studiocms')
     env:
       NODE_OPTIONS: "--max_old_space_size=4096"
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

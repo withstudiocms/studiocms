@@ -1,14 +1,21 @@
 name: CI - Push to Main
 
 on:
-  workflow_dispatch:
   push:
     branches:
       - main
 
-concurrency: ${{ github.workflow }}-${{ github.ref }}
+concurrency: 
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 permissions: {}
+
+env:
+  FORCE_COLOR: true
+  # 7 GiB by default on GitHub, setting to 6 GiB
+  # https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners#supported-runners-and-hardware-resources
+  NODE_OPTIONS: --max-old-space-size=6144
 
 jobs:
   ci-format:
@@ -43,7 +50,19 @@ jobs:
 
   ci-mergebot:
     name: CI - Merge Bot
-    if: ${{ github.repository_owner == 'withstudiocms' && github.event_name != 'workflow_dispatch' && github.event.commits[0].message != '[ci] lint' }}
+    if: github.repository_owner == 'withstudiocms' && github.event.commits[0].message != '[ci] lint'
     uses: withstudiocms/automations/.github/workflows/mergebot.yml@729a20ff5e68dd95330fb1914b801960ad4b5e7b # main
     secrets:
       DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_MERGEBOT }}
+
+  preview-main:
+    name: Continuous Deployment Snapshot
+    permissions:
+      contents: read
+      id-token: write
+      issues: write
+      pull-requests: write
+    secrets: inherit
+    uses: withstudiocms/automations/.github/workflows/preview.yml@729a20ff5e68dd95330fb1914b801960ad4b5e7b # main
+    with:
+      build-cmd: "pnpm ci:build"
