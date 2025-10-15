@@ -4,5 +4,5 @@ declare module 'studiocms:markdoc/renderer' {
 }
 
 declare module 'virtual:studiocms/plugins/renderers' {
-	export const studiocms_markdoc: typeof import('./components/MarkDocRenderer.astro').default;
+	export const studiocms_markdoc: typeof import('./components/render.js').default;
 }
