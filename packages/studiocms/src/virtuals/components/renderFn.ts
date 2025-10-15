@@ -44,14 +44,14 @@ interface ComponentRenderAugment {
 }
 
 /**
- * Represents a union type for different kinds of render augmentations.
- *
- * This type can be one of:
- * - `PrefixRenderAugment`: Augmentation applied before rendering.
- * - `SuffixRenderAugment`: Augmentation applied after rendering.
- * - `ComponentRenderAugment`: Augmentation applied to a component during rendering.
+ * Represents a union type for prefix and suffix render augmentations.
  */
-export type RenderAugment = PrefixRenderAugment | SuffixRenderAugment | ComponentRenderAugment;
+type PrefixSuffixAugment = PrefixRenderAugment | SuffixRenderAugment;
+
+/**
+ * Represents a union type for different kinds of render augmentations.
+ */
+export type RenderAugment = PrefixSuffixAugment | ComponentRenderAugment;
 
 /**
  * Concatenates the provided HTML string as either a prefix or suffix to the given content.
@@ -61,8 +61,8 @@ export type RenderAugment = PrefixRenderAugment | SuffixRenderAugment | Componen
  * @param content - The main content string to which the HTML will be attached.
  * @returns The resulting string with the HTML added as specified by the type.
  */
-const handlePrefixSuffix = (type: 'prefix' | 'suffix', html: string, content: string) =>
-	type === 'prefix' ? html + content : content + html;
+const handlePrefixSuffix = (augment: PrefixSuffixAugment, content: string) =>
+	augment.type === 'prefix' ? augment.html + content : content + augment.html;
 
 /**
  * Asynchronously renders content to HTML, applying optional sanitization, pre-rendering,
@@ -78,7 +78,7 @@ export const renderFn = async (args: {
 	content: string;
 }) => {
 	// Destructure arguments for easier access
-	const { renderOpts, augments = [], content } = args;
+	const { renderOpts, content, augments = [] } = args;
 	const { result, sanitizeOpts, preRenderer } = renderOpts;
 
 	// Create the initial renderer
@@ -89,26 +89,19 @@ export const renderFn = async (args: {
 
 	// Apply augments in the order they are provided
 	for (const augment of augments) {
-		switch (augment.type) {
-			case 'suffix':
-			case 'prefix':
-			case 'component': {
-				// Extract components from augment (all augments have components)
-				const { components: _components = {} } = augment;
+		// Extract components from augment (all augments have components)
+		const { components: _components = {} } = augment;
 
-				// Create a component proxy with the provided components
-				const components = createComponentProxy(result, _components);
+		// Create a component proxy with the provided components
+		const components = createComponentProxy(result, _components);
 
-				// Handle prefix/suffix augments by concatenating HTML
-				if (augment.type === 'prefix' || augment.type === 'suffix') {
-					renderedContent = handlePrefixSuffix(augment.type, augment.html, renderedContent);
-				}
-
-				// Transform the content with the new components and update renderedContent
-				renderedContent = await transformHTML(renderedContent, components);
-				break;
-			}
+		// Handle prefix/suffix augments by concatenating HTML
+		if (augment.type === 'prefix' || augment.type === 'suffix') {
+			renderedContent = handlePrefixSuffix(augment, renderedContent);
 		}
+
+		// Transform the content with the new components and update renderedContent
+		renderedContent = await transformHTML(renderedContent, components);
 	}
 
 	// Return the final rendered content
