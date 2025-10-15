@@ -138,7 +138,7 @@ describe('StudioCMS MarkDoc Plugin', () => {
 
 		const callArgs = setRendering.mock.calls[0][0];
 		expect(callArgs.pageTypes[0].pageContentComponent).toContain('editor.astro');
-		expect(callArgs.pageTypes[0].rendererComponent).toContain('MarkDocRenderer.astro');
+		expect(callArgs.pageTypes[0].rendererComponent).toContain('render.js');
 	});
 
 	test('plugin sets up virtual imports', async () => {
