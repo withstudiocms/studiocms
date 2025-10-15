@@ -19,6 +19,8 @@ env:
   NODE_OPTIONS: --max-old-space-size=6144
 
 jobs:
+  # Knip Reporter only supports pull requests at the moment 
+  # (We are using a custom github action in the automation for github action alerts)
   lint-knip:
     name: Run Knip Linter and Report
     if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
