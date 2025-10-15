@@ -110,7 +110,7 @@ jobs:
       # CodeCov reports - only upload from PRs originating from this repository
       # as we don't have access to secrets from forked repositories
       - name: Upload coverage results to Codecov
-        if: always() && github.event.pull_request.head.repo.full_name == github.repository
+        if: always() && (github.event.pull_request.head.repo.full_name == github.repository || github.ref == 'refs/heads/main')
         uses: codecov/codecov-action@5a1091511ad55cbe89839c7260b706298ca349f7
         with:
           slug: withstudiocms/studiocms
@@ -120,7 +120,7 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
 
       - name: Upload test results to Codecov
-        if: always() && github.event.pull_request.head.repo.full_name == github.repository 
+        if: always() && (github.event.pull_request.head.repo.full_name == github.repository || github.ref == 'refs/heads/main')
         uses: codecov/test-results-action@47f89e9acb64b76debcd5ea40642d25a4adced9f
         with:
           slug: withstudiocms/studiocms
