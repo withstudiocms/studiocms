@@ -48,6 +48,8 @@ jobs:
   codecov:
     name: Run Tests & Code Coverage
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # For Allure GitHub Pages deployment
     env:
       NODE_OPTIONS: "--max_old_space_size=4096"
     steps:
@@ -64,6 +66,44 @@ jobs:
 
       - name: Run Tests & Code Coverage
         run: pnpm ci:test
+
+      - name: Get Allure history
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        if: always()
+        continue-on-error: true
+        with:
+          persist-credentials: false
+          ref: gh-pages
+          path: gh-pages
+
+      - name: Generate Allure Report
+        uses: simple-elf/allure-report-action@53ebb757a2097edc77c53ecef4d454fc2f2f774c #master
+        if: always()
+        id: allure-report
+        with:
+          allure_results: allure-results
+          gh_pages: gh-pages
+          allure_report: allure-report
+          allure_history: allure-history
+          keep_reports: 20
+          report_name: latest_report
+
+      - name: Deploy Allure Report to GitHub Pages
+        if: always() && github.ref == 'refs/heads/main'
+        uses: peaceiris/actions-gh-pages@4f9cc6602d3f66b9c108549d475ec49e8ef4d45e #v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: allure-history
+          keep_files: true
+
+      - name: Upload Allure results artifact
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 #v4.6.2
+        with:
+          name: allure-results
+          path: allure-results/
+          retention-days: 7
 
       - name: Upload coverage results to Codecov
         if: github.event.pull_request.head.repo.full_name == github.repository

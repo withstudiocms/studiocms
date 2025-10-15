@@ -44,7 +44,18 @@ const projects = projectsWithTests.flatMap(({ scope, names }) =>
 export default defineConfig({
 	test: {
 		projects,
-		reporters: ['default', 'junit'],
+		setupFiles: ['allure-vitest/setup'],
+		reporters: [
+			'default',
+			'junit',
+			'verbose',
+			[
+				'allure-vitest/reporter',
+				{
+					resultsDir: 'allure-results',
+				},
+			],
+		],
 		outputFile: {
 			junit: './junit-report.xml',
 		},
