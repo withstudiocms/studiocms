@@ -2,7 +2,12 @@ import { createRenderer } from 'studiocms:component-registry/runtime';
 import { createComponentProxy, transformHTML } from '@withstudiocms/component-registry';
 import type { SSRResult } from 'astro';
 import type { SanitizeOptions } from 'ultrahtml/transformers/sanitize';
-import type { GenericAsyncFn, PrefixSuffixAugment, RenderAugment } from '../../types';
+import type {
+	GenericAsyncFn,
+	Internal_SCMS_AstroComponent,
+	PrefixSuffixAugment,
+	RenderAugment,
+} from '../../types';
 
 /**
  * Concatenates the provided HTML string as either a prefix or suffix to the given content.
@@ -56,22 +61,38 @@ export const renderFn = async (args: RenderFnOptions) => {
 	// Render content to HTML before applying augments
 	let renderedContent = await render(content);
 
-	// Apply augments in the order they are provided
+	const componentsCollection: Record<string, Internal_SCMS_AstroComponent> = {};
+
+	const augmentCollections = {
+		prefix: [] as PrefixSuffixAugment[],
+		suffix: [] as PrefixSuffixAugment[],
+	};
+
+	// Group augments by type (and extract components)
 	for (const augment of augments) {
-		// Extract components from augment (all augments have components)
-		const { components: _components = {} } = augment;
-
-		// Create a component proxy with the provided components
-		const components = createComponentProxy(result, _components);
-
-		// Handle prefix/suffix augments by concatenating HTML
-		if (augment.type === 'prefix' || augment.type === 'suffix') {
-			renderedContent = handlePrefixSuffix(augment, renderedContent);
+		if (augment.type === 'component') {
+			Object.assign(componentsCollection, augment.components);
+		} else if (augment.type === 'prefix' || augment.type === 'suffix') {
+			augmentCollections[augment.type].push(augment);
+			Object.assign(componentsCollection, augment.components);
 		}
-
-		// Transform the content with the new components and update renderedContent
-		renderedContent = await transformHTML(renderedContent, components);
 	}
+
+	// Create a component proxy with all collected components
+	const components = createComponentProxy(result, componentsCollection);
+
+	// Handle prefix augments by concatenating HTML in order
+	for (const prefixAugment of augmentCollections.prefix) {
+		renderedContent = handlePrefixSuffix(prefixAugment, renderedContent);
+	}
+
+	// Handle suffix augments by concatenating HTML in order
+	for (const suffixAugment of augmentCollections.suffix) {
+		renderedContent = handlePrefixSuffix(suffixAugment, renderedContent);
+	}
+
+	// Transform the content with the new components and update renderedContent
+	renderedContent = await transformHTML(renderedContent, components);
 
 	// Return the final rendered content
 	return renderedContent;

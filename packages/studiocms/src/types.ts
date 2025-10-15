@@ -142,7 +142,7 @@ interface SuffixRenderAugment {
  * @property type - The type of render augment, always set to 'component'.
  * @property components - A record mapping component names to their corresponding AstroComponent instances.
  */
-interface ComponentRenderAugment {
+export interface ComponentRenderAugment {
 	type: 'component';
 	components: Record<string, Internal_SCMS_AstroComponent>;
 }
