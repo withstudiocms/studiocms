@@ -50,7 +50,7 @@ jobs:
 
   mergebot:
     name: CI - Merge Bot
-    if: github.repository_owner == 'withstudiocms' && github.event.commits[0].message != '[ci] lint'
+    if: github.repository_owner == 'withstudiocms' && github.event.head_commit.message != '[ci] lint'
     uses: withstudiocms/automations/.github/workflows/mergebot.yml@729a20ff5e68dd95330fb1914b801960ad4b5e7b # main
     secrets:
       DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_MERGEBOT }}
