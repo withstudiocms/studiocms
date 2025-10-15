@@ -56,7 +56,7 @@ jobs:
       - name: Check out code using Git
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
-          persist-credentials: false
+          persist-credentials: true
   
       - name: Install Tools & Dependencies
         uses: withstudiocms/automations/.github/actions/install@729a20ff5e68dd95330fb1914b801960ad4b5e7b # main
@@ -72,7 +72,7 @@ jobs:
         if: always()
         continue-on-error: true
         with:
-          persist-credentials: false
+          persist-credentials: true
           ref: gh-pages
           path: gh-pages
 
@@ -86,7 +86,7 @@ jobs:
           allure_report: allure-report
           allure_history: allure-history
           keep_reports: 20
-          report_name: latest_report
+          report_name: StudioCMS Test Report
 
       - name: Deploy Allure Report to GitHub Pages
         if: always() && github.ref == 'refs/heads/main'
