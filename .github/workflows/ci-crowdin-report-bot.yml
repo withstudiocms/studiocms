@@ -14,7 +14,7 @@ env:
   NODE_OPTIONS: --max-old-space-size=6144
 
 jobs:
-  translation:
+  translation-report:
     name: Translation Report
     if: ${{ github.repository_owner == 'withstudiocms' }}
     runs-on: ubuntu-latest
