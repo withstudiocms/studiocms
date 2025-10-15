@@ -1,4 +1,4 @@
-name: Write coauthors to a pull request
+name: CI - Write coauthors to a pull request
   
 on:
   issue_comment:
@@ -7,6 +7,12 @@ on:
       
 permissions:
   pull-requests: write
+
+env:
+  FORCE_COLOR: true
+  # 7 GiB by default on GitHub, setting to 6 GiB
+  # https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners#supported-runners-and-hardware-resources
+  NODE_OPTIONS: --max-old-space-size=6144
 
 jobs:
   generate-coauthors:

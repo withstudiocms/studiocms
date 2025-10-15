@@ -1,4 +1,4 @@
-name: CI - Translation Report Bot
+name: CI - Crowdin Report Bot
 
 on:
   schedule:
@@ -7,9 +7,15 @@ on:
 
 permissions: {}
 
+env:
+  FORCE_COLOR: true
+  # 7 GiB by default on GitHub, setting to 6 GiB
+  # https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners#supported-runners-and-hardware-resources
+  NODE_OPTIONS: --max-old-space-size=6144
+
 jobs:
-  translation:
-    name: translation_report
+  translation-report:
+    name: Translation Report
     if: ${{ github.repository_owner == 'withstudiocms' }}
     runs-on: ubuntu-latest
     permissions:

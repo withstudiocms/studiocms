@@ -55,7 +55,8 @@ async function setDiscordMessage() {
 		message += `- ${lang.name} (${lang.id}) - ${lang.translationProgress}% Complete\n`;
 	}
 
-	const suffix = '\n\nSee our [Translation Status page](<https://i18n.studiocms.dev>) for more.';
+	const suffix =
+		'\n\nSee our [Translation Status page](<https://crowdin.com/project/studiocms>) for more.';
 
 	const maxLengthWithoutSuffix = 2000 - suffix.length;
 

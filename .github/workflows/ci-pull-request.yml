@@ -1,10 +1,6 @@
-name: CI - Pkg-pr-new
+name: CI - Pull Request
 
 on:
-  workflow_dispatch:
-  push:
-    branches:
-      - main
   pull_request:
 
 concurrency:
@@ -13,8 +9,7 @@ concurrency:
     ${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.number) || github.sha }}
   cancel-in-progress: true
 
-permissions:
-  contents: read
+permissions: {}
 
 env:
   FORCE_COLOR: true
@@ -23,19 +18,37 @@ env:
   NODE_OPTIONS: --max-old-space-size=6144
 
 jobs:
-  preview-main:
-    name: Continuous Deployment Snapshot
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+  lint-biome-pr:
+    name: Run Biome Linter and Report
+    if: github.event_name == 'pull_request'
     permissions:
       contents: read
-      id-token: write
-      issues: write
       pull-requests: write
+    uses: withstudiocms/automations/.github/workflows/run-pnpm.yml@729a20ff5e68dd95330fb1914b801960ad4b5e7b # main
     secrets: inherit
-    uses: withstudiocms/automations/.github/workflows/preview.yml@729a20ff5e68dd95330fb1914b801960ad4b5e7b # main
     with:
-      build-cmd: "pnpm ci:build"
+      commands: > 
+        ["ci:lint"]
 
+  check-changeset:
+    name: Check Changesets Status
+    if: github.event_name == 'pull_request' && github.event.pull_request.user.login != 'apollo-git-bot[bot]'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Check out code using Git
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Install Tools & Dependencies
+        uses: withstudiocms/automations/.github/actions/install@729a20ff5e68dd95330fb1914b801960ad4b5e7b # main
+
+      - name: Check Changeset Status
+        run: pnpm changeset:status
+        
   preview-changeset-release:
     name: Pre-Release Snapshot
     if: github.event_name == 'pull_request' && (github.event.pull_request.user.login == 'studiocms-no-reply' || github.event.pull_request.user.login == 'apollo-git-bot[bot]')
