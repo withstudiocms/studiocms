@@ -73,8 +73,8 @@ jobs:
         continue-on-error: true
         with:
           persist-credentials: true
-          ref: gh-pages
-          path: gh-pages
+          ref: testing/pages
+          path: testing/pages
 
       - name: Generate Allure Report
         uses: simple-elf/allure-report-action@53ebb757a2097edc77c53ecef4d454fc2f2f774c #master
@@ -82,7 +82,7 @@ jobs:
         id: allure-report
         with:
           allure_results: allure-results
-          gh_pages: gh-pages
+          gh_pages: testing/pages
           allure_report: allure-report
           allure_history: allure-history
           keep_reports: 20
@@ -93,7 +93,7 @@ jobs:
         uses: peaceiris/actions-gh-pages@4f9cc6602d3f66b9c108549d475ec49e8ef4d45e #v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_branch: gh-pages
+          publish_branch: testing/pages
           publish_dir: allure-history
           keep_files: true
 
