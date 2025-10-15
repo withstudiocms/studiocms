@@ -85,6 +85,8 @@ jobs:
           gh_pages: gh-pages
           allure_report: allure-report
           allure_history: allure-history
+          keep_reports: 20
+          report_name: StudioCMS Test Report
 
       - name: Deploy Allure Report to GitHub Pages
         if: always() && github.ref == 'refs/heads/main'
@@ -100,7 +102,7 @@ jobs:
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 #v4.6.2
         with:
           name: allure-results
-          path: allure-results
+          path: allure-results/
           retention-days: 7
 
       - name: Upload coverage results to Codecov
