@@ -7,27 +7,40 @@ import renderFn from './renderFn.js';
 
 interface Props extends PluginPageTypeRendererProps {}
 
+// Get props
 const { data } = Astro.props as Props;
 
+// If no data, return nothing
 if (!data) return;
 
+// Find the renderer for the given page type
 const renderer = pluginRenderers.find((r) => r.pageType === data.package);
 
+/* v8 ignore start */
 if (!renderer) {
 	console.warn(
 		`Renderer for page type "${data.package}" not found. Ensure the plugin is correctly registered and the renderer exists.`
 	);
+	// If no renderer found, return nothing
 	return;
 }
+/* v8 ignore stop */
 
+// Get the renderer module
 const RendererModule: PluginRenderer = renderers[renderer.safePageType as keyof typeof renderers];
 
+/* v8 ignore start */
 // Check if RendererModule has a name property to verify it's a valid interface
 if (!RendererModule.name) {
 	console.error(`Renderer module for page type "${data.package}" not found in renderers.`);
+	// If no renderer module found, return nothing
 	return;
 }
+/* v8 ignore stop */
 
+// Render the content using the render function
+// If no content found, return an error message
+// Pass in the preRenderer and sanitizeOpts if they exist on the RendererModule
 const renderedContent = await renderFn({
 	content: data.defaultContent?.content || '<h1>Error: No content found</h1>',
 	// TODO Setup Augment system for plugins to use

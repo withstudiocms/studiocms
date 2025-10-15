@@ -53,6 +53,11 @@ export type DeepPartial<T> = {
 	[P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
 };
 
+/**
+ * Props for a plugin page type renderer component.
+ *
+ * @property data - Partial combined page data to be rendered by the plugin.
+ */
 export interface PluginPageTypeRendererProps {
 	data: DeepPartial<CombinedPageData>;
 }
@@ -70,10 +75,27 @@ export interface PluginPageTypeEditorProps {
 	content?: string;
 }
 
+/**
+ * Represents a generic asynchronous function that takes an input of type `I` and returns a Promise resolving to type `O`.
+ *
+ * @typeParam I - The input type for the function.
+ * @typeParam O - The output type that the Promise resolves to. Defaults to `I` if not specified.
+ * @param input - The input parameter of type `I`.
+ * @returns A Promise that resolves to a value of type `O`.
+ */
+export type GenericAsyncFn<I, O = I> = (input: I) => Promise<O>;
+
+/**
+ * Represents a plugin renderer with optional sanitization and rendering logic.
+ *
+ * @property name - The unique name of the plugin renderer.
+ * @property sanitizeOpts - Optional configuration for content sanitization.
+ * @property renderer - Optional asynchronous function to render content as a string.
+ */
 export interface PluginRenderer {
 	name: string;
 	sanitizeOpts?: SanitizeOptions;
-	renderer?: (content: string) => Promise<string>;
+	renderer?: GenericAsyncFn<string>;
 }
 
 /**

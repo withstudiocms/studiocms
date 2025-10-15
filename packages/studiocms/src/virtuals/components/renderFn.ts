@@ -2,7 +2,7 @@ import { createRenderer } from 'studiocms:component-registry/runtime';
 import { createComponentProxy, transformHTML } from '@withstudiocms/component-registry';
 import type { SSRResult } from 'astro';
 import type { SanitizeOptions } from 'ultrahtml/transformers/sanitize';
-import type { PrefixSuffixAugment, RenderAugment } from '../../types';
+import type { GenericAsyncFn, PrefixSuffixAugment, RenderAugment } from '../../types';
 
 /**
  * Concatenates the provided HTML string as either a prefix or suffix to the given content.
@@ -16,18 +16,36 @@ const handlePrefixSuffix = (augment: PrefixSuffixAugment, content: string) =>
 	augment.type === 'prefix' ? augment.html + content : content + augment.html;
 
 /**
+ * Options for creating a render function.
+ *
+ * @property result - The SSRResult object containing the server-side rendering context and data.
+ * @property sanitizeOpts - Optional. Configuration options for content sanitization.
+ * @property preRenderer - Optional. An asynchronous function that processes the rendered content before final output.
+ */
+interface CreateRenderOptions {
+	result: SSRResult;
+	sanitizeOpts?: SanitizeOptions;
+	preRenderer?: GenericAsyncFn<string>;
+}
+
+/**
+ * Options for the render function.
+ *
+ * @property renderOpts - The options used to create the render context.
+ * @property augments - Optional array of render augmentations to apply.
+ * @property content - The content string to be rendered.
+ */
+export interface RenderFnOptions {
+	renderOpts: CreateRenderOptions;
+	augments?: RenderAugment[];
+	content: string;
+}
+
+/**
  * Asynchronously renders content to HTML, applying optional sanitization, pre-rendering,
  * and a sequence of augmentations (such as prefix, suffix, or component transformations).
  */
-export const renderFn = async (args: {
-	renderOpts: {
-		result: SSRResult;
-		sanitizeOpts?: SanitizeOptions;
-		preRenderer?: (content: string) => Promise<string>;
-	};
-	augments?: RenderAugment[];
-	content: string;
-}) => {
+export const renderFn = async (args: RenderFnOptions) => {
 	// Destructure arguments for easier access
 	const { renderOpts, content, augments = [] } = args;
 	const { result, sanitizeOpts, preRenderer } = renderOpts;
