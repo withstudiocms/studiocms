@@ -6,6 +6,8 @@
     "node": "22.19.0"
   },
   "scripts": {
+    "start": "node ./playground/dist/server/entry.mjs",
+
     "changeset": "changeset",
     "changeset:status": "changeset status --since=origin/main",
 
