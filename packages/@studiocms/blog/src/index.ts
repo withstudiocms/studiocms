@@ -125,7 +125,7 @@ export function studioCMSBlogPlugin(options?: StudioCMSBlogOptions): StudioCMSPl
 	const { resolve } = createResolver(import.meta.url);
 
 	const editor = resolve('./components/editor.astro');
-	const renderer = resolve('./components/renderer.astro');
+	const renderer = resolve('./components/render.js');
 
 	// Return the plugin configuration
 	return definePlugin({

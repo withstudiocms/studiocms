@@ -27,24 +27,13 @@ export async function renderMarkDoc(content: string): Promise<string> {
 
 	// Render to HTML
 	switch (type) {
-		case 'html': {
-			const data = await renderHTML.render(MarkDocContent);
-			return data;
-		}
 		case 'react-static': {
 			const data = await renderReactStatic.render(MarkDocContent);
 			return data;
 		}
 		default: {
-			if (!type) {
-				throw new Error('Error in MarkDoc config, renderer not found.');
-			}
-			try {
-				const data = await type.render(MarkDocContent);
-				return data;
-			} catch {
-				throw new Error(`Error in MarkDoc renderer, Unable to render with ${type.name}`);
-			}
+			const data = await renderHTML.render(MarkDocContent);
+			return data;
 		}
 	}
 }

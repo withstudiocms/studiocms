@@ -116,7 +116,7 @@ function wysiwyg(opts?: WYSIWYGSchemaOptions): StudioCMSPlugin {
 						{
 							identifier: 'studiocms/wysiwyg',
 							label: 'WYSIWYG',
-							rendererComponent: resolve('./components/Render.astro'),
+							rendererComponent: resolve('./components/render.js'),
 							pageContentComponent: resolve('./components/Editor.astro'),
 						},
 					],
