@@ -1,8 +1,5 @@
 ---
-import { extname } from 'node:path';
 import { Icon } from 'studiocms:ui/components/icon';
-import chalk from 'chalk';
-import { lookup } from 'mrmime';
 
 const heroIconsUserDataUri =
 	'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAADSklEQVR4AdSWS2xMYRTHjQXRRupRKVWrJhrxSCRigTQpYUHq0VYsarwi8RgJ0rCwFJEQEQ1psZFQXWgGRZB6NdFalkSFFRutV1UJNhLj9+dcOubeud8dC2lzfvd/7vedc77TO999DB/2n/+GZgOpVCoOSegx5K/N5WJGugIsNhHusNBZqIJiQ/455tqgiDFni9QAVZthIVyBBTAWJsBKeAOL4Tw4m3MD/GebqVoBV2Ox2ArohAHog1bGZ0MfLCJ2A+pkzg1QrRpkB3X4G5p4xdhOkOknkYYSpYE5Vu2pqZ/ctUFdDXOzS5QGvlkplxyXmJ/lnAOJfgSyMh0C0AbVVJcOLkRp4JQV3GeaJmy8SQzUg6xRBxecG2CTaaffpGgli12DeVAAhaDb8CFzhXCZ2Ouokzk3YNU2ordhGXTCALyDS6AH0C10CzhbpAb4z16DHjZxVtCivWgPJCHO3BJ4i+9skRrwqrJIE1TBZCiBGmjy5qNoTg1EWSAsNlIDbLZi2AEt0A2fDPkX8BOguyFs3d/zTg1QNB+OkPUcjkMNTIfRhvzV+CfgBbGHYBR+qIU2QCG97dqpVAcjoRuOgpqYggr5GnvCuWL2ou3kjkOzWtYGKFBAdgfoPfAR1S02iw1XB0l4achXgzOJ2QaKnYt2WA1cfwtsgETNtZA2FXR/l7LYaUhx7muag5NMloI+XKahzdSKob6mRXwnGEyA7nm949dQ+D3nTmax2hN6SC0lSVcOyTTfBuhYl36/hddS8IP5zmI56y3hADW1Ye30j/g2wLQ21Ri0i0JtaE5G7g0SH8N40PsCSbegBiot7J7pv4hXw6uZViuogRkWpdvP3JzFq6E7JKNIUAP63FbwJn67KsjTSRSUA/o2XGd5Xk07/SVBDei7/zshq0Bvun6KtcIeqIUKKAM9IfNQ+RrTnGL07dBvufrtVesM5xnm2wCbZyuRer9vR+/DCFgOh0FvPX18PsP/DF9AvsY0pxjFKke5up2LqLmLuAzzbUBRJOh7vxEt57wEVKABvQgPQO+Fr6iQrzHNKWY343pNl5PfAHqWMJRpgQ0MDqVAL9RDAqphPujJmI8K+RrTnGKOMa6PlcFlfH2nBnwzHQfDwn4AAAD//6qWhy8AAAAGSURBVAMAJXQ0UKI3Vu0AAAAASUVORK5CYII=';
@@ -47,163 +44,87 @@ const {
 	id,
 } = Astro.props;
 
-function customLogger(type: 'error' | 'warn' | 'info', ...messages: string[]) {
-	const dt = new Intl.DateTimeFormat('en-us', {
-		hour: '2-digit',
-		minute: '2-digit',
-	});
-
-	const dateString = dt.format(new Date());
-	let messageBuilder = {
-		prefix: '[studiocms:Avatar]',
-		timestamp: dateString,
-		content: messages.join(' '),
-	};
-	switch (type) {
-		case 'error':
-			console.error(
-				chalk.bold.red(
-					`${messageBuilder.prefix} [${messageBuilder.timestamp}] ${messageBuilder.content}`
-				)
-			);
-			break;
-		case 'warn':
-			console.warn(
-				chalk.bold.yellow(
-					`${messageBuilder.prefix} [${messageBuilder.timestamp}] ${messageBuilder.content}`
-				)
-			);
-			break;
-		case 'info':
-			console.log(
-				chalk.blue(
-					`${messageBuilder.prefix} [${messageBuilder.timestamp}] ${messageBuilder.content}`
-				)
-			);
-			break;
-		default:
-			console.log(
-				`${messageBuilder.prefix} [${messageBuilder.timestamp}] ${messageBuilder.content}`
-			);
-	}
-}
-
-/* v8 ignore start */
-async function getObjectData(src: string): Promise<{ data: string; type: string } | undefined> {
-	try {
-		const data = src;
-		const extension = extname(src).toLowerCase();
-
-		if (extension) {
-			const type = lookup(extension);
-
-			if (!type) {
-				customLogger('error', `Could not determine MIME type for extension: ${extension}`);
-				return undefined;
-			}
-
-			if (!/^image\/.*$/.test(type)) {
-				customLogger('error', `Unsupported image type: ${type}`);
-				return undefined;
-			}
-
-			if (type === 'image/svg+xml' || type.startsWith('image/svg')) {
-				customLogger('error', 'SVG avatars are disallowed for security.');
-				return undefined;
-			}
-
-			return { data, type };
-		}
-
-		// Create URL object to validate format
-		const urlObj = new URL(src);
-
-		// Only allow HTTPS (avoid mixed content + downgrade attacks)
-		if (urlObj.protocol !== 'https:') {
-			customLogger('error', `Insecure avatar URL protocol: ${urlObj.protocol}`);
-			return undefined;
-		}
-
-		const controller = new AbortController();
-		const timeoutId = setTimeout(() => controller.abort(), timeoutDelay);
-		let response: Response;
-		try {
-			// Fetch the URL with timeout
-			response = await fetch(src, {
-				method: 'HEAD', // Use HEAD to avoid downloading the entire image
-				signal: controller.signal,
-				cache: 'no-cache',
-			});
-		} finally {
-			clearTimeout(timeoutId);
-		}
-
-		if (!response || !response.ok) {
-			customLogger('error', `Failed to fetch image: ${response.statusText}`);
-			return undefined;
-		}
-		const contentType = response.headers.get('content-type');
-		if (!contentType || !contentType.startsWith('image/')) {
-			customLogger('error', `Invalid image type: ${contentType}`);
-			return undefined;
-		}
-
-		if (contentType === 'image/svg+xml') {
-			customLogger('error', 'Remote SVG avatars are disallowed for security.');
-			return undefined;
-		}
-
-		return { data, type: contentType };
-	} catch (error) {
-		// Handle various error types
-		if (error instanceof Error) {
-			if (error.name === 'AbortError') {
-				customLogger('info', `Avatar URL test timed out after ${timeoutDelay / 1000} seconds`);
-			} else if (error.name === 'TypeError') {
-				customLogger('error', 'Invalid URL or network error:', error.message);
-			} else {
-				customLogger('error', 'Error testing avatar URL:', error.message);
-			}
-		}
-		return undefined;
-	}
-}
-/* v8 ignore stop */
-
-const validAvatar = avatar ? await getObjectData(avatar) : undefined;
+// Generate unique ID for this avatar instance
+const avatarId = `avatar-${id}-${Math.random().toString(36).substring(7)}`;
 ---
 
 <div class="sui-user-container" class:list={[className]} id={id}>
-    <div class="sui-avatar-container">
-        {
-            validAvatar ? (
-                <img
-                  src={validAvatar.data}
-                  width={64}
-                  height={64}
-                  class="sui-avatar-img"
-                  alt={name}
-                  loading={loading}
-                  decoding="async"
-                  referrerpolicy="no-referrer"
-                  onerror={`this.src='${heroIconsUserDataUri}'`}
-                />
-            ) : (
-                <Icon
-                    name="heroicons:user"
-                    width={24}
-                    height={24}
-                    role="img"
-                    aria-label={`Placeholder avatar for ${name}`}
-                />
-            )
-        }
-    </div>
+    <div class="sui-avatar-container" id={avatarId}>
+    <Icon
+        name="heroicons:user"
+        width={24}
+        height={24}
+        role="img"
+        aria-label={`Placeholder avatar for ${name}`}
+        class="sui-avatar-fallback"
+    />
+</div>
     <div class="sui-text-content">
         <span class="sui-name">{name}</span>
         <span class="sui-description">{description}</span>
     </div>
 </div>
+
+<script define:vars={{ avatar, avatarId, name, loading, timeoutDelay, heroIconsUserDataUri }}>
+    if (avatar) {
+        const container = document.getElementById(avatarId);
+        if (!container) return;
+
+        const isValidUrl = (url) => {
+            try {
+                const urlObj = new URL(url);
+                return urlObj.protocol === 'https:' || urlObj.protocol === 'http:' || urlObj.protocol === 'data:';
+            } catch {
+                return false;
+            }
+        };
+
+        const isSvg = (url) => {
+            return url.toLowerCase().endsWith('.svg') || 
+                   url.toLowerCase().includes('.svg?') ||
+                   url.toLowerCase().includes('image/svg');
+        };
+
+        if (!isValidUrl(avatar) || isSvg(avatar)) {
+            return;
+        }
+
+        // Create image element
+        const img = document.createElement('img');
+        img.src = avatar;
+        img.width = 64;
+        img.height = 64;
+        img.className = 'sui-avatar-img';
+        img.alt = name;
+        img.loading = loading;
+        img.decoding = 'async';
+        img.referrerPolicy = 'no-referrer';
+        
+        // Set up timeout
+        const timeoutId = setTimeout(() => {
+            img.src = '';
+        }, timeoutDelay);
+
+        // Handle load
+        img.onload = () => {
+            clearTimeout(timeoutId);
+            const fallback = container.querySelector('.sui-avatar-fallback');
+            if (fallback) {
+                container.removeChild(fallback);
+            }
+            container.appendChild(img);
+        };
+
+        img.onerror = () => {
+            clearTimeout(timeoutId);
+            if (img.src !== heroIconsUserDataUri) {
+                img.src = heroIconsUserDataUri;
+            } else {
+                img.remove();
+            }
+        };
+    }
+</script>
 
 <style>
     .sui-user-container {
@@ -229,7 +150,12 @@ const validAvatar = avatar ? await getObjectData(avatar) : undefined;
         display: flex;
         align-items: center;
         justify-content: center;
+		opacity: 0;
+		animation: fadeIn 0.2s ease-in forwards;
     }
+	.sui-avatar-fallback {
+    	opacity: 1;
+	}
     .sui-text-content {
         display: flex;
         flex-direction: column;
@@ -244,4 +170,9 @@ const validAvatar = avatar ? await getObjectData(avatar) : undefined;
         font-weight: 400;
         color: var(--text-muted);
     }
+	@keyframes fadeIn {
+		to {
+			opacity: 1;
+		}
+	}
 </style>
