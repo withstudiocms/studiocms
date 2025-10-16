@@ -11,6 +11,7 @@ import {
 } from '@withstudiocms/internal_helpers/utils';
 import type { AstroIntegration } from 'astro';
 import { AstroError } from 'astro/errors';
+import type { z } from 'astro/zod';
 import { addVirtualImports, createResolver, defineUtility } from 'astro-integration-kit';
 import boxen from 'boxen';
 import { compare as semCompare } from 'semver';
@@ -25,6 +26,7 @@ import {
 } from '../integrations/plugins.js';
 import type {
 	AvailableDashboardPages,
+	RenderAugmentSchema,
 	SafePluginListItemType,
 	SafePluginListType,
 	StudioCMSPlugin,
@@ -297,6 +299,29 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 			content: string;
 		}[] = [];
 
+		const pluginAugments: (
+			| {
+					type: 'component';
+					id: string;
+					safeId: string;
+					components: Record<string, string>;
+			  }
+			| {
+					type: 'prefix';
+					id: string;
+					safeId: string;
+					components: Record<string, string>;
+					html: string;
+			  }
+			| {
+					type: 'suffix';
+					id: string;
+					safeId: string;
+					components: Record<string, string>;
+					html: string;
+			  }
+		)[] = [];
+
 		// Define the Safe Plugin List
 		const safePluginList: SafePluginListType = [];
 
@@ -493,6 +518,30 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 						oAuthButtons: { label: string; image: string; enabled: boolean; safeName: string }[];
 					}
 				);
+		}
+
+		function convertToRuntimeAugment(augment: z.infer<typeof RenderAugmentSchema>) {
+			const id = augment.id;
+			const safeId = convertToSafeString(id);
+			const type = augment.type;
+
+			const components: Record<string, string> = {};
+
+			if (augment.components) {
+				for (const [key, value] of Object.entries(augment.components)) {
+					components[key] = rendererComponentFilter(value, convertToSafeString(safeId + key));
+				}
+			}
+
+			if (type === 'component') {
+				return {
+					id,
+					safeId,
+					type,
+					components,
+				};
+			}
+			return { id, safeId, type, components, html: augment.html };
 		}
 
 		/////
@@ -692,7 +741,7 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 							}
 						},
 
-						setRendering({ pageTypes }) {
+						setRendering({ pageTypes, augments }) {
 							for (const { apiEndpoint, identifier, rendererComponent } of pageTypes || []) {
 								if (apiEndpoint) {
 									pluginEndpoints.push({
@@ -722,6 +771,12 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 							}
 
 							foundPageTypes = pageTypes;
+
+							// Handle Augments
+							for (const augment of augments || []) {
+								const runtimeAugment = convertToRuntimeAugment(augment);
+								pluginAugments.push(runtimeAugment);
+							}
 						},
 
 						setImageService({ imageService }) {
@@ -1029,6 +1084,50 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 					id: 'studiocms:plugins/renderers',
 					content: `
 						export const pluginRenderers = ${JSON.stringify(pluginRenderers.map(({ pageType, safePageType }) => ({ pageType, safePageType })) || [])};
+					`,
+				},
+				{
+					id: 'virtual:studiocms/plugins/augments',
+					content: `
+						${[...pluginAugments]
+							.map(({ components }) =>
+								Object.entries(components)
+									.map(([value]) => value)
+									.join('\n')
+							)
+							.join('\n')}
+					`,
+				},
+				{
+					id: 'studiocms:plugins/augments',
+					content: `
+						import * as augments from 'virtual:studiocms/plugins/augments';
+						import { convertToSafeString } from '${resolve('../utils/safeString.js')}';
+
+						const pluginAugments = ${JSON.stringify(pluginAugments || [])};
+
+						export const renderAugments = pluginAugments.map((entry) => {
+							const { id, safeId, type, components } = entry;
+							if (type === 'component') {
+								return {
+									id,
+									type,
+									components: Object.entries(components).reduce((acc, [key, value]) => ({
+										...acc,
+										[key]: augments[convertToSafeString(safeId + key)],
+									}), {}),
+								};
+							}
+							return {
+								id,
+								type,
+								html: entry.html,
+								components: Object.entries(components).reduce((acc, [key, value]) => ({
+									...acc,
+									[key]: augments[convertToSafeString(safeId + key)],
+								}), {}),
+							};
+						});
 					`,
 				},
 				{

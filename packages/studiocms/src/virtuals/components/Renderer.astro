@@ -1,4 +1,5 @@
 ---
+import { renderAugments } from 'studiocms:plugins/augments';
 import { pluginRenderers } from 'studiocms:plugins/renderers';
 import * as renderers from 'virtual:studiocms/plugins/renderers';
 import type { SSRResult } from 'astro';
@@ -37,6 +38,11 @@ if (!RendererModule.name) {
 	return;
 }
 /* v8 ignore stop */
+
+console.log(
+	'Rendering Augments Available:',
+	JSON.stringify(renderAugments.map(({ id, safeId, type }) => ({ id, safeId, type })))
+);
 
 // Render the content using the render function
 // If no content found, return an error message

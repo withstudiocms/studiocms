@@ -111,6 +111,19 @@ export interface PluginRenderer {
 export type Internal_SCMS_AstroComponent = (props: any) => any;
 
 /**
+ * Represents an augmentation for rendering components.
+ *
+ * @property type - The type of render augment, always set to 'component'.
+ * @property components - A record mapping component names to their corresponding AstroComponent instances.
+ */
+export interface ComponentRenderAugment {
+	type: 'component';
+	id: string;
+	safeId: string;
+	components: Record<string, Internal_SCMS_AstroComponent>;
+}
+
+/**
  * Represents an augmentation for rendering with a prefix.
  *
  * @property {'prefix'} type - The type of render augmentation, always set to 'prefix'.
@@ -119,6 +132,8 @@ export type Internal_SCMS_AstroComponent = (props: any) => any;
  */
 interface PrefixRenderAugment {
 	type: 'prefix';
+	id: string;
+	safeId: string;
 	components: Record<string, Internal_SCMS_AstroComponent>;
 	html: string;
 }
@@ -132,19 +147,10 @@ interface PrefixRenderAugment {
  */
 interface SuffixRenderAugment {
 	type: 'suffix';
+	id: string;
+	safeId: string;
 	components: Record<string, Internal_SCMS_AstroComponent>;
 	html: string;
-}
-
-/**
- * Represents an augmentation for rendering components.
- *
- * @property type - The type of render augment, always set to 'component'.
- * @property components - A record mapping component names to their corresponding AstroComponent instances.
- */
-export interface ComponentRenderAugment {
-	type: 'component';
-	components: Record<string, Internal_SCMS_AstroComponent>;
 }
 
 /**
