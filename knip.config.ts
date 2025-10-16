@@ -145,10 +145,12 @@ const extras = (pkg: string) => {
 			ignoreDependencies?: (string | RegExp)[] | undefined;
 			entry?: string[] | undefined;
 			ignoreUnresolved?: (string | RegExp)[] | undefined;
+			ignore?: string[] | undefined;
 		}
 	> = {
 		markdoc: {
 			ignoreDependencies: ['react-dom', '@types/react-dom', /studiocms:.*/],
+			ignore: ['**/test/test-utils.ts'],
 		},
 		'auth-kit': {
 			ignoreUnresolved: [/^\.\/lists\/[^/]*\.js$/],
