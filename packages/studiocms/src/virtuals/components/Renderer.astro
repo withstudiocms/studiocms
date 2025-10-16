@@ -39,9 +39,9 @@ if (!RendererModule.name) {
 }
 /* v8 ignore stop */
 
-console.log(
-	'Rendering Augments Available:',
-	JSON.stringify(renderAugments.map(({ id, safeId, type }) => ({ id, safeId, type })))
+// Filter augments to only include those specified in the page data
+const augments = renderAugments.filter((augment) =>
+	(data.augments as string[])?.includes(augment.id)
 );
 
 // Render the content using the render function
@@ -49,8 +49,7 @@ console.log(
 // Pass in the preRenderer and sanitizeOpts if they exist on the RendererModule
 const renderedContent = await renderFn({
 	content: data.defaultContent?.content || '<h1>Error: No content found</h1>',
-	// TODO Setup Augment system for plugins to use
-	augments: [],
+	augments,
 	renderOpts: {
 		// @ts-expect-error - $$result is a global variable injected by Astro during compilation and not a editor-known variable
 		result: $$result as SSRResult,
