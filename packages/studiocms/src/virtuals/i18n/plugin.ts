@@ -50,19 +50,15 @@ export function $pluginI18n(pluginId: string, componentId: string): Messages<Tra
  *          default language's "augments" translations or an empty object.
  */
 export function $augmentI18n(): Messages<TranslationsJSON> {
-	/**
-	 * Small hack to convince TypeScript that this is a ComponentsJSON since its a custom
-	 * object that only contains the augments component on each language.
-	 */
-	const isCompJson = (obj: unknown): ComponentsJSON => obj as ComponentsJSON;
-
-	// Return the i18n instance for augments
+	const getComponents = (code: string): ComponentsJSON => {
+		const lang = augmentTranslations[code]?.augments;
+		const fallback = augmentTranslations[defaultLang]?.augments ?? {};
+		return { augments: lang ?? fallback };
+	};
 	return createI18n($locale, {
 		baseLocale: defaultLang,
-		get: async (code) =>
-			isCompJson(augmentTranslations[code]) ||
-			isCompJson(augmentTranslations[defaultLang]) || { augments: {} },
-	})('augments', augmentTranslations[defaultLang]?.augments || {});
+		get: async (code) => getComponents(code),
+	})('augments', getComponents(defaultLang).augments);
 }
 
 export class PluginTranslations extends HTMLElement {

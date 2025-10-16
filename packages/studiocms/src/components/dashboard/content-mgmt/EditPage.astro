@@ -436,7 +436,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
   });
 
   augmentI18n.subscribe((comp) => {
-    const augmentKeys = Object.keys(comp.augments || {});
+    const augmentKeys = Object.keys(comp || {});
     const compTranslations = augmentKeys.reduce(
       (acc, key) => {
         acc[key] = key;

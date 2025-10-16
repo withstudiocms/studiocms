@@ -170,8 +170,6 @@ export const { POST, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 					content: incomingContent,
 				};
 
-				console.log('Received augments for page update:', data.augments);
-
 				if (!data.id) {
 					return apiResponseLogger(400, 'Invalid form data, id is required');
 				}

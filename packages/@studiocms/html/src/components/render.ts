@@ -10,9 +10,9 @@ import { shared } from '../lib/shared.js';
  * (StudioCMS can technically already render HTML out of the box,
  * but will error without any renderer configured for HTML content types.)
  */
-const renderer: PluginRenderer = {
+const renderer = {
 	name: '@studiocms/html',
 	sanitizeOpts: shared.htmlConfig?.sanitize,
-};
+} satisfies PluginRenderer;
 
 export default renderer;

@@ -713,7 +713,7 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 											augmentTranslations[lang] = { augments: {} };
 										}
 
-										await runEffect(
+										augmentTranslations[lang] = await runEffect(
 											deepmerge((merge) => merge(augmentTranslations[lang], langData))
 										);
 									}

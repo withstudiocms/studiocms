@@ -7,9 +7,9 @@ import type { PluginRenderer } from 'studiocms/types';
  * This renderer is responsible for handling Markdoc content within StudioCMS,
  * utilizing shared configuration options for sanitization and rendering.
  */
-const renderer: PluginRenderer = {
+const renderer = {
 	name: '@studiocms/markdoc',
 	renderer: renderMarkDoc,
-};
+} satisfies PluginRenderer;
 
 export default renderer;
