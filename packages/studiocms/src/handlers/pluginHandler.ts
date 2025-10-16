@@ -1118,7 +1118,8 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 					content: [...pluginAugments]
 						.map(({ components }) =>
 							Object.entries(components)
-								.map(([value]) => value)
+								// value is the "export { default as ... } from '...';" string
+								.map(([_key, value]) => value)
 								.join('\n')
 						)
 						.join('\n'),
