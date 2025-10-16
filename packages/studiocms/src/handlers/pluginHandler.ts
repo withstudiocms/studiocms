@@ -893,19 +893,17 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 				},
 				{
 					id: 'studiocms:components/dashboard-grid-components',
-					content: `
-						${availableDashboardGridItems
-							.map((item) => {
-								const components: Record<string, string> = item.body?.components || {};
+					content: availableDashboardGridItems
+						.map((item) => {
+							const components: Record<string, string> = item.body?.components || {};
 
-								const remappedComps = Object.entries(components).map(
-									([key, value]) => `export { default as ${key} } from '${value}';`
-								);
+							const remappedComps = Object.entries(components).map(
+								([key, value]) => `export { default as ${key} } from '${value}';`
+							);
 
-								return remappedComps.join('\n');
-							})
-							.join('\n')}
-					`,
+							return remappedComps.join('\n');
+						})
+						.join('\n'),
 				},
 				{
 					id: 'studiocms:components/dashboard-grid-items',
@@ -935,61 +933,55 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 				},
 				{
 					id: 'studiocms:plugins/dashboard-pages/components/user',
-					content: `
-						${
-							availableDashboardPages.user
-								?.map(({ pageBodyComponent, pageActionsComponent, ...item }) => {
-									const components: Record<string, string> = {
-										pageBodyComponent,
-									};
+					content:
+						availableDashboardPages.user
+							?.map(({ pageBodyComponent, pageActionsComponent, ...item }) => {
+								const components: Record<string, string> = {
+									pageBodyComponent,
+								};
 
-									if (item.sidebar === 'double') {
-										components.innerSidebarComponent = item.innerSidebarComponent;
-									}
+								if (item.sidebar === 'double') {
+									components.innerSidebarComponent = item.innerSidebarComponent;
+								}
 
-									if (pageActionsComponent) {
-										components.pageActionsComponent = pageActionsComponent;
-									}
+								if (pageActionsComponent) {
+									components.pageActionsComponent = pageActionsComponent;
+								}
 
-									const remappedComps = Object.entries(components).map(
-										([key, value]) =>
-											`export { default as ${convertToSafeString(item.title + key)} } from '${value}';`
-									);
+								const remappedComps = Object.entries(components).map(
+									([key, value]) =>
+										`export { default as ${convertToSafeString(item.title + key)} } from '${value}';`
+								);
 
-									return remappedComps.join('\n');
-								})
-								.join('\n') || ''
-						}
-					`,
+								return remappedComps.join('\n');
+							})
+							.join('\n') || '',
 				},
 				{
 					id: 'studiocms:plugins/dashboard-pages/components/admin',
-					content: `
-						${
-							availableDashboardPages.admin
-								?.map(({ pageBodyComponent, pageActionsComponent, ...item }) => {
-									const components: Record<string, string> = {
-										pageBodyComponent,
-									};
+					content:
+						availableDashboardPages.admin
+							?.map(({ pageBodyComponent, pageActionsComponent, ...item }) => {
+								const components: Record<string, string> = {
+									pageBodyComponent,
+								};
 
-									if (item.sidebar === 'double') {
-										components.innerSidebarComponent = item.innerSidebarComponent;
-									}
+								if (item.sidebar === 'double') {
+									components.innerSidebarComponent = item.innerSidebarComponent;
+								}
 
-									if (pageActionsComponent) {
-										components.pageActionsComponent = pageActionsComponent;
-									}
+								if (pageActionsComponent) {
+									components.pageActionsComponent = pageActionsComponent;
+								}
 
-									const remappedComps = Object.entries(components).map(
-										([key, value]) =>
-											`export { default as ${convertToSafeString(item.title + key)} } from '${value}';`
-									);
+								const remappedComps = Object.entries(components).map(
+									([key, value]) =>
+										`export { default as ${convertToSafeString(item.title + key)} } from '${value}';`
+								);
 
-									return remappedComps.join('\n');
-								})
-								.join('\n') || ''
-						}
-					`,
+								return remappedComps.join('\n');
+							})
+							.join('\n') || '',
 				},
 				{
 					id: 'studiocms:plugins/dashboard-pages/user',
@@ -1041,11 +1033,10 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 				},
 				{
 					id: 'virtual:studiocms/plugins/endpoints',
-					content: `
-						${pluginEndpoints.map(({ apiEndpoint }) => apiEndpoint).join('\n')}
-
-						${pluginSettingsEndpoints.map(({ apiEndpoint }) => apiEndpoint).join('\n')}
-					`,
+					content: [
+						pluginEndpoints.map(({ apiEndpoint }) => apiEndpoint).join('\n'),
+						pluginSettingsEndpoints.map(({ apiEndpoint }) => apiEndpoint).join('\n'),
+					].join('\n'),
 				},
 				{
 					id: 'studiocms:plugins/endpoints',
@@ -1076,9 +1067,7 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 				},
 				{
 					id: 'virtual:studiocms/plugins/renderers',
-					content: `
-						${pluginRenderers ? pluginRenderers.map(({ content }) => content).join('\n') : ''}
-					`,
+					content: pluginRenderers ? pluginRenderers.map(({ content }) => content).join('\n') : '',
 				},
 				{
 					id: 'studiocms:plugins/renderers',
@@ -1088,15 +1077,13 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 				},
 				{
 					id: 'virtual:studiocms/plugins/augments',
-					content: `
-						${[...pluginAugments]
-							.map(({ components }) =>
-								Object.entries(components)
-									.map(([value]) => value)
-									.join('\n')
-							)
-							.join('\n')}
-					`,
+					content: [...pluginAugments]
+						.map(({ components }) =>
+							Object.entries(components)
+								.map(([value]) => value)
+								.join('\n')
+						)
+						.join('\n'),
 				},
 				{
 					id: 'studiocms:plugins/augments',
@@ -1140,9 +1127,7 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 				},
 				{
 					id: 'virtual:studiocms:plugins/auth/providers',
-					content: `
-						${oAuthEndpoints.map(({ content }) => content).join('\n')}
-					`,
+					content: oAuthEndpoints.map(({ content }) => content).join('\n'),
 				},
 				{
 					id: 'studiocms:plugins/auth/providers',
