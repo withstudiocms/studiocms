@@ -255,6 +255,29 @@ const RenderingConfigSchema = z.object({
 	 */
 	pageTypes: PageTypesSchema,
 
+	/**
+	 * Augments to modify component rendering
+	 *
+	 * When adding new augments, please ensure that the `id` field is unique across all augments.
+	 *
+	 * the `id` field is also used to identify augment translations from the plugin translations
+	 * schema, below is an example of how to add augment translations:
+	 *
+	 * ```json
+	 * {
+	 *   "en": {
+	 *    "augments": {
+	 *      "augment-id": "This is the augment text"
+	 *    }
+	 *   },
+	 *   "fr": {
+	 *    "augments": {
+	 *      "augment-id": "Ceci est le texte d'augmentation"
+	 *    }
+	 *   }
+	 * }
+	 * ```
+	 */
 	augments: RenderAugmentsSchema,
 });
 

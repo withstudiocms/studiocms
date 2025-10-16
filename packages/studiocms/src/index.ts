@@ -213,6 +213,7 @@ export const studiocms = defineIntegration({
 						messages: pluginMessages,
 						oAuthProvidersConfigured,
 						pluginsTranslations,
+						augmentTranslations,
 					} = await pluginHandler(params, {
 						dashboardRoute,
 						dbStartPage,
@@ -334,8 +335,12 @@ export const studiocms = defineIntegration({
 							}),
 							'studiocms:i18n/client': dynamicVirtual(['./virtuals/i18n/client.js']),
 							'studiocms:i18n/plugin-translations': `
-							  const pluginTranslations = ${JSON.stringify(pluginsTranslations)};
+							  	const pluginTranslations = ${JSON.stringify(pluginsTranslations)};
 								export default pluginTranslations;
+							`,
+							'studiocms:i18n/augment-translations': `
+								const augmentTranslations = ${JSON.stringify(augmentTranslations)};
+								export default augmentTranslations;
 							`,
 							'studiocms:i18n/plugins': dynamicVirtual(['./virtuals/i18n/plugin.js']),
 							'studiocms:sdk': dynamicVirtual(['./virtuals/sdk/index.js']),

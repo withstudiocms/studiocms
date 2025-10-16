@@ -183,6 +183,11 @@ declare module 'studiocms:i18n/plugin-translations' {
 	export default pluginTranslations;
 }
 
+declare module 'studiocms:i18n/augment-translations' {
+	const augmentTranslations: import('./schemas/plugins/i18n').PluginAugmentsTranslationCollection;
+	export default augmentTranslations;
+}
+
 declare module 'studiocms:i18n/plugins' {
 	export declare class PluginTranslations extends HTMLElement {
 		currentLang: string | undefined;
@@ -190,6 +195,7 @@ declare module 'studiocms:i18n/plugins' {
 		connectedCallback(): void;
 	}
 	export const $pluginI18n: typeof import('./virtuals/i18n/plugin').$pluginI18n;
+	export const $augmentI18n: typeof import('./virtuals/i18n/plugin').$augmentI18n;
 }
 
 declare module 'studiocms:imageHandler/components' {

@@ -154,22 +154,19 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
                   multiple
                   fullWidth
                   disabled={renderAugments.length === 0}
-                  defaultValue={
-                    (pageData.augments as string[]).length > 0 && renderAugments.length > 0
-                      ? (pageData.augments as string[])
-                      : ['no-augments']
-                  }
-                  options={
-                    renderAugments.length > 0 
-                      ? renderAugments.map(({ id }) => ({ label: id, value: id })) 
-                      : [
-                          { 
-                            label: t("no-augments"), 
-                            value: 'no-augments',
-                            disabled: true,
-                          }
-                        ]
-                  }
+                  defaultValue={(pageData.augments as string[]).length > 0 &&
+                  renderAugments.length > 0
+                    ? (pageData.augments as string[])
+                    : ["no-augments"]}
+                  options={renderAugments.length > 0
+                    ? renderAugments.map(({ id }) => ({ label: id, value: id }))
+                    : [
+                        {
+                          label: t("no-augments"),
+                          value: "no-augments",
+                          disabled: true,
+                        },
+                      ]}
                 />
               </div>
 
@@ -393,10 +390,13 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
     updateTabLabel,
     updateTrueFalseSelectOptions,
   } from "studiocms:i18n/client";
+  import { $augmentI18n } from "studiocms:i18n/plugins";
 
   const currentPage = "@studiocms/dashboard:content-page";
 
   const i18n = $i18n(currentPage, baseTranslation[currentPage]);
+
+  const augmentI18n = $augmentI18n();
 
   i18n.subscribe((comp) => {
     updateElmLabel("page-title", comp["input-page-title"]);
@@ -415,9 +415,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
       "show-contributors",
       comp["select-page-show-contributors"],
     );
-    updateSelectElmLabel(
-      "cms-plugin-augments", comp["select-augments-label"],
-    )
+    updateSelectElmLabel("cms-plugin-augments", comp["select-augments-label"]);
 
     updateTabLabel("tab-label-basic-info", comp["tab-label-basic-info"]);
     updateTabLabel("tab-label-content", comp["tab-label-content"]);
@@ -432,9 +430,20 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
     updateTrueFalseSelectOptions("show-contributors", trueFalseOptions);
     updateTrueFalseSelectOptions("draft", trueFalseOptions);
     updateTrueFalseSelectOptions("show-in-nav", trueFalseOptions);
+  });
 
+  augmentI18n.subscribe((comp) => {
+    const augmentKeys = Object.keys(comp.augments || {});
+    const compTranslations = augmentKeys.reduce(
+      (acc, key) => {
+        acc[key] = key;
+        return acc;
+      },
+      {} as Record<string, string>,
+    );
     updateSelectOptions("cms-plugin-augments", {
-      "no-augments": comp["no-augments"],
+      ...compTranslations,
+      "no-augments": i18n.get()["no-augments"],
     });
   });
 
@@ -549,7 +558,9 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
       {} as Record<string, FormDataEntryValue>,
     );
 
-    const augments = [...formData.getAll("cms-plugin-augments")].filter((a) => a !== 'no-augments') as string[];
+    const augments = [...formData.getAll("cms-plugin-augments")].filter(
+      (a) => a !== "no-augments",
+    ) as string[];
 
     const formResult = studioCMSEditPageDataAndContentSchema.safeParse({
       ...formDataObject,

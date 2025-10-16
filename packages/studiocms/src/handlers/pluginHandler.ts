@@ -1,3 +1,4 @@
+import { deepmerge, runEffect } from '@withstudiocms/effect';
 import {
 	integrationLogger,
 	type Messages,
@@ -31,7 +32,11 @@ import type {
 	SafePluginListType,
 	StudioCMSPlugin,
 } from '../schemas/index.js';
-import type { PluginTranslationCollection } from '../schemas/plugins/i18n.js';
+import type {
+	PluginAugmentsTranslationCollection,
+	PluginTranslationCollection,
+	PluginTranslations,
+} from '../schemas/plugins/i18n.js';
 import type { GridItemInput } from '../schemas/plugins/shared.js';
 import type { Route } from '../types.js';
 import { buildTranslations, loadJsTranslations } from '../utils/lang-helper.js';
@@ -367,7 +372,26 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 
 		const pluginsTranslations: PluginTranslationCollection = {};
 
+		const augmentTranslations: PluginAugmentsTranslationCollection = {};
+
 		/////
+
+		function getAugmentTranslationsForAllLangs(translations: PluginTranslations) {
+			const augmentCollection: PluginAugmentsTranslationCollection = {};
+
+			for (const [lang, langData] of Object.entries(translations)) {
+				if (langData.augments) {
+					for (const [augmentKey, augmentValue] of Object.entries(langData.augments)) {
+						if (!augmentCollection[lang]) {
+							augmentCollection[lang] = { augments: {} };
+						}
+						augmentCollection[lang].augments[augmentKey] = augmentValue;
+					}
+				}
+			}
+
+			return augmentCollection;
+		}
 
 		function getPlugins() {
 			// Check for `@astrojs/web-vitals` Integration
@@ -677,9 +701,23 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 					await hooks['studiocms:config:setup']({
 						logger: pluginLogger(safeData.identifier, logger),
 
-						setDashboard({ dashboardGridItems, dashboardPages, settingsPage, translations }) {
+						async setDashboard({ dashboardGridItems, dashboardPages, settingsPage, translations }) {
 							if (translations) {
 								pluginsTranslations[convertToSafeString(safeData.identifier)] = translations;
+
+								if (translations.en.augments) {
+									const augmentTrans = getAugmentTranslationsForAllLangs(translations);
+
+									for (const [lang, langData] of Object.entries(augmentTrans)) {
+										if (!augmentTranslations[lang]) {
+											augmentTranslations[lang] = { augments: {} };
+										}
+
+										await runEffect(
+											deepmerge((merge) => merge(augmentTranslations[lang], langData))
+										);
+									}
+								}
 							}
 
 							if (dashboardGridItems) {
@@ -1178,6 +1216,7 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 			messages,
 			oAuthProvidersConfigured,
 			pluginsTranslations,
+			augmentTranslations,
 		};
 	}
 );

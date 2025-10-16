@@ -243,10 +243,13 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
     updateTabLabel,
     updateTrueFalseSelectOptions,
   } from "studiocms:i18n/client";
+  import { $augmentI18n } from "studiocms:i18n/plugins";
 
   const currentPage = "@studiocms/dashboard:content-page";
 
   const i18n = $i18n(currentPage, baseTranslation[currentPage]);
+
+  const augmentI18n = $augmentI18n();
 
   i18n.subscribe((comp) => {
     updateElmLabel("page-title", comp["input-page-title"]);
@@ -278,9 +281,20 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
     updateTrueFalseSelectOptions("show-contributors", trueFalseOptions);
     updateTrueFalseSelectOptions("draft", trueFalseOptions);
     updateTrueFalseSelectOptions("show-in-nav", trueFalseOptions);
+  });
 
+  augmentI18n.subscribe((comp) => {
+    const augmentKeys = Object.keys(comp.augments || {});
+    const compTranslations = augmentKeys.reduce(
+      (acc, key) => {
+        acc[key] = key;
+        return acc;
+      },
+      {} as Record<string, string>,
+    );
     updateSelectOptions("cms-plugin-augments", {
-      "no-augments": comp["no-augments"],
+      ...compTranslations,
+      "no-augments": i18n.get()["no-augments"],
     });
   });
 
