@@ -430,6 +430,9 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
     updateTrueFalseSelectOptions("show-contributors", trueFalseOptions);
     updateTrueFalseSelectOptions("draft", trueFalseOptions);
     updateTrueFalseSelectOptions("show-in-nav", trueFalseOptions);
+    updateSelectOptions("cms-plugin-augments", {
+      'no-augments': comp["no-augments"],
+    });
   });
 
   augmentI18n.subscribe((comp) => {
@@ -441,10 +444,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
       },
       {} as Record<string, string>,
     );
-    updateSelectOptions("cms-plugin-augments", {
-      ...compTranslations,
-      "no-augments": i18n.get()["no-augments"],
-    });
+    updateSelectOptions("cms-plugin-augments", compTranslations);
   });
 
   if (!customElements.get("t-content-edit-page")) {
