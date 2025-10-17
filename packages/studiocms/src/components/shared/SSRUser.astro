@@ -44,86 +44,166 @@ const {
 	id,
 } = Astro.props;
 
-// Generate unique ID for this avatar instance
-const avatarId = `avatar-${id}-${Math.random().toString(36).substring(7)}`;
 ---
 
 <div class="sui-user-container" class:list={[className]} id={id}>
-    <div class="sui-avatar-container" id={avatarId}>
-    <Icon
-        name="heroicons:user"
-        width={24}
-        height={24}
-        role="img"
-        aria-label={`Placeholder avatar for ${name}`}
-        class="sui-avatar-fallback"
-    />
-</div>
+    <div class="sui-avatar-container">
+        {
+			avatar ? (
+				<studiocms-avatar
+					data-avatar-url={avatar}
+					data-avatar-timeout={timeoutDelay}
+					data-avatar-fallback={heroIconsUserDataUri}
+					data-avatar-name={name}
+					data-avatar-loading={loading}
+				>
+					<img
+						src={heroIconsUserDataUri}
+						width={64}
+						height={64}
+						class="sui-avatar-img"
+						alt={name}
+						loading={loading}
+						decoding="async"
+						referrerpolicy="no-referrer"
+					/>
+				</studiocms-avatar>
+			) : (
+                <Icon
+                    name="heroicons:user"
+                    width={24}
+                    height={24}
+                    role="img"
+                    aria-label={`Placeholder avatar for ${name}`}
+                />
+            )
+        }
+    </div>
     <div class="sui-text-content">
         <span class="sui-name">{name}</span>
         <span class="sui-description">{description}</span>
     </div>
 </div>
 
-<script define:vars={{ avatar, avatarId, name, loading, timeoutDelay, heroIconsUserDataUri }}>
-    if (avatar) {
-        const container = document.getElementById(avatarId);
-        if (!container) return;
+<script>
+	class StudioCMSAvatar extends HTMLElement {
+		connectedCallback() {
+			const avatarUrl = this.dataset.avatarUrl;
+			const timeoutDelay = parseInt(this.dataset.avatarTimeout || '3000', 10);
+			const fallbackDataUri = this.dataset.avatarFallback;
+			const avatarName = this.dataset.avatarName || 'User';
 
-        const isValidUrl = (url) => {
-            try {
-                const urlObj = new URL(url);
-                return urlObj.protocol === 'https:' || urlObj.protocol === 'http:' || urlObj.protocol === 'data:';
-            } catch {
-                return false;
-            }
-        };
+			if (!avatarUrl) return;
 
-        const isSvg = (url) => {
-            return url.toLowerCase().endsWith('.svg') || 
-                   url.toLowerCase().includes('.svg?') ||
-                   url.toLowerCase().includes('image/svg');
-        };
+			const img = this.querySelector('img');
+			if (!img) return;
 
-        if (!isValidUrl(avatar) || isSvg(avatar)) {
-            return;
-        }
+			this.loadAvatar(img, avatarUrl, timeoutDelay, fallbackDataUri, avatarName);
+		}
 
-        // Create image element
-        const img = document.createElement('img');
-        img.src = avatar;
-        img.width = 64;
-        img.height = 64;
-        img.className = 'sui-avatar-img';
-        img.alt = name;
-        img.loading = loading;
-        img.decoding = 'async';
-        img.referrerPolicy = 'no-referrer';
-        
-        // Set up timeout
-        const timeoutId = setTimeout(() => {
-            img.src = '';
-        }, timeoutDelay);
+		isValidAvatarUrl(url: string): boolean {
+			try {
+				const urlObj = new URL(url);
 
-        // Handle load
-        img.onload = () => {
-            clearTimeout(timeoutId);
-            const fallback = container.querySelector('.sui-avatar-fallback');
-            if (fallback) {
-                container.removeChild(fallback);
-            }
-            container.appendChild(img);
-        };
+				const validProtocols = ['https:', 'http:', 'data:'];
+				if (!validProtocols.includes(urlObj.protocol)) {
+					return false;
+				}
 
-        img.onerror = () => {
-            clearTimeout(timeoutId);
-            if (img.src !== heroIconsUserDataUri) {
-                img.src = heroIconsUserDataUri;
-            } else {
-                img.remove();
-            }
-        };
-    }
+				const isSvg =
+					url.toLowerCase().endsWith('.svg') ||
+					url.toLowerCase().includes('.svg?') ||
+					url.toLowerCase().includes('image/svg');
+
+				if (isSvg) {
+					return false;
+				}
+
+				return true;
+			} catch {
+				return false;
+			}
+		}
+
+		async verifyAvatarUrl(url: string, timeoutMs: number): Promise<boolean> {
+			try {
+				const controller = new AbortController();
+				const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
+				const response = await fetch(url, {
+					method: 'HEAD',
+					signal: controller.signal,
+					cache: 'no-cache',
+				});
+
+				clearTimeout(timeoutId);
+				return response.ok;
+			} catch (error) {
+				return false;
+			}
+		}
+
+		showFallbackIcon(img: HTMLImageElement, name: string): void {
+			const container = img.parentElement;
+			if (!container) return;
+
+			const iconWrapper = document.createElement('div');
+			iconWrapper.innerHTML = `
+				<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Placeholder avatar for ${name}">
+					<path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+					<circle cx="12" cy="7" r="4"></circle>
+				</svg>
+			`;
+
+			container.removeChild(img);
+			const icon = iconWrapper.firstElementChild;
+			if (icon) {
+				container.appendChild(icon);
+			}
+		}
+
+		async loadAvatar(
+			img: HTMLImageElement,
+			url: string,
+			timeoutMs: number,
+			fallbackDataUri: string | undefined,
+			name: string
+		): Promise<void> {
+			if (!this.isValidAvatarUrl(url)) {
+				this.showFallbackIcon(img, name);
+				return;
+			}
+
+			if (url.startsWith('data:')) {
+				img.src = url;
+				img.classList.add('sui-avatar-loaded');
+				return;
+			}
+
+			const isAccessible = await this.verifyAvatarUrl(url, timeoutMs);
+
+			if (!isAccessible) {
+				if (fallbackDataUri && img.src !== fallbackDataUri) {ng
+				} else {
+					this.showFallbackIcon(img, name);
+				}
+				return;
+			}
+			img.onload = () => {
+				img.classList.add('sui-avatar-loaded');
+			};
+
+			img.onerror = () => {
+				if (fallbackDataUri && img.src !== fallbackDataUri) {
+					img.src = fallbackDataUri;
+				} else {
+					this.showFallbackIcon(img, name);
+				}
+			};
+			img.src = url;
+		}
+	}
+	customElements.define('studiocms-avatar', StudioCMSAvatar);
 </script>
 
 <style>
@@ -150,11 +230,11 @@ const avatarId = `avatar-${id}-${Math.random().toString(36).substring(7)}`;
         display: flex;
         align-items: center;
         justify-content: center;
-		opacity: 0;
-		animation: fadeIn 0.2s ease-in forwards;
+		opacity: 0.5;
+		transition: opacity 0.2s ease-in;
     }
-	.sui-avatar-fallback {
-    	opacity: 1;
+	.sui-avatar-img.sui-avatar-loaded {
+		opacity: 1;
 	}
     .sui-text-content {
         display: flex;
@@ -174,5 +254,51 @@ const avatarId = `avatar-${id}-${Math.random().toString(36).substring(7)}`;
 		to {
 			opacity: 1;
 		}
+	}
+</style>
+
+<style>
+	.sui-user-container {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		gap: 1rem;
+	}
+	.sui-avatar-container {
+		width: 2.5rem;
+		height: 2.5rem;
+		background-color: var(--default-base);
+		border-radius: var(--radius-full);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		overflow: hidden;
+		border: 1px solid var(--border);
+	}
+	.sui-avatar-img {
+		width: 100%;
+		height: auto;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		opacity: 0.5;
+		transition: opacity 0.2s ease-in;
+	}
+	.sui-avatar-img.sui-avatar-loaded {
+		opacity: 1;
+	}
+	.sui-text-content {
+		display: flex;
+		flex-direction: column;
+		gap: 0.125rem;
+	}
+	.sui-name {
+		font-size: 1em;
+		font-weight: 600;
+	}
+	.sui-description {
+		font-size: 0.875em;
+		font-weight: 400;
+		color: var(--text-muted);
 	}
 </style>
