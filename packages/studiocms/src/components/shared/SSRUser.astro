@@ -43,7 +43,6 @@ const {
 	timeoutDelay = 3000,
 	id,
 } = Astro.props;
-
 ---
 
 <div class="sui-user-container" class:list={[className]} id={id}>
@@ -183,7 +182,7 @@ const {
 			const isAccessible = await this.verifyAvatarUrl(url, timeoutMs);
 
 			if (!isAccessible) {
-				if (fallbackDataUri && img.src !== fallbackDataUri) {ng
+				if (fallbackDataUri && img.src !== fallbackDataUri) {
 				} else {
 					this.showFallbackIcon(img, name);
 				}

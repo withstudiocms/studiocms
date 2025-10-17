@@ -34,11 +34,45 @@ describe('Components Container tests', () => {
 		});
 
 		describe('SSRUser component', () => {
-			test('render component', async ({ renderComponent }) => {
+			test('render component without avatar', async ({ renderComponent }) => {
 				const result = await renderComponent(SSRUser, 'SSRUser', {
-					props: { name: 'mock', description: 'mock-admin' },
+					props: {
+						name: 'John Doe',
+						description: 'Software Engineer',
+						id: 'test-user-1',
+					},
 				});
-				expect(result).toMatchSnapshot();
+				expect(result).toContain('<svg');
+				expect(result).toContain('Placeholder avatar for John Doe');
+				expect(result).not.toContain('studiocms-avatar');
+			});
+
+			test('render component with avatar URL', async ({ renderComponent }) => {
+				const result = await renderComponent(SSRUser, 'SSRUser', {
+					props: {
+						name: 'Jane Doe',
+						description: 'Designer',
+						avatar: 'https://example.com/avatar.jpg',
+						id: 'test-user-2',
+					},
+				});
+				expect(result).toContain('studiocms-avatar');
+				expect(result).toContain('data-avatar-url="https://example.com/avatar.jpg"');
+				expect(result).toContain('data-avatar-fallback');
+				expect(result).toContain('data-avatar-name="Jane Doe"');
+			});
+
+			test('render component with avatar fallback image', async ({ renderComponent }) => {
+				const result = await renderComponent(SSRUser, 'SSRUser', {
+					props: {
+						name: 'Bob Smith',
+						description: 'Developer',
+						avatar: 'https://example.com/avatar.jpg',
+						id: 'test-user-3',
+					},
+				});
+				expect(result).toContain('src="data:image/png;base64');
+				expect(result).toContain('sui-avatar-img');
 			});
 		});
 
