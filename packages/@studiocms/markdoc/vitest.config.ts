@@ -1,4 +1,3 @@
-import react from '@astrojs/react';
 import type { AstroIntegration } from 'astro';
 import { getViteConfig } from 'astro/config';
 import { addVirtualImports } from 'astro-integration-kit';
@@ -33,7 +32,7 @@ export default defineProject(
 			},
 		},
 		{
-			integrations: [testIntegration, internalMarkDocIntegration('@studiocms/markdoc'), react()],
+			integrations: [testIntegration, internalMarkDocIntegration('@studiocms/markdoc')],
 		}
 	)
 );

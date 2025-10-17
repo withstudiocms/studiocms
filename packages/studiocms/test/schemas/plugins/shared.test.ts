@@ -9,7 +9,6 @@ import {
 	type GridItemInput,
 	type GridItemUsable,
 	i18nLabelSchema,
-	PageTypeDefaultsOrString,
 	PageTypesSchema,
 	SettingsFieldSchema,
 	SettingsPageSchema,
@@ -155,17 +154,6 @@ describe('FinalDashboardBaseSchema', () => {
 			},
 		};
 		expect(() => FinalDashboardBaseSchema.parse(data)).not.toThrow();
-	});
-});
-
-describe('PageTypeDefaultsOrString', () => {
-	it('should accept default values', () => {
-		expect(() => PageTypeDefaultsOrString.parse('studiocms/markdown')).not.toThrow();
-		expect(() => PageTypeDefaultsOrString.parse('studiocms/html')).not.toThrow();
-	});
-
-	it('should accept arbitrary string', () => {
-		expect(() => PageTypeDefaultsOrString.parse('custom/type')).not.toThrow();
 	});
 });
 

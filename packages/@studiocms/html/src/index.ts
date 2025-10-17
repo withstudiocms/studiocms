@@ -59,7 +59,7 @@ export function studiocmsHTML(options?: HTMLSchemaOptions): StudioCMSPlugin {
 							identifier: 'studiocms/html',
 							label: 'HTML',
 							pageContentComponent: resolve('./components/editor.astro'),
-							rendererComponent: resolve('./components/renderer.astro'),
+							rendererComponent: resolve('./components/render.js'),
 						},
 					],
 				});

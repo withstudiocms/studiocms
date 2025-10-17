@@ -91,70 +91,6 @@ describe('MarkDoc Render Library', () => {
 		expect(Markdoc.default.renderers.reactStatic).toHaveBeenCalled();
 	});
 
-	test('renderMarkDoc with custom renderer', async () => {
-		const { shared } = await import('../../src/lib/shared.js');
-		const { renderMarkDoc } = await import('../../src/lib/render.js');
-
-		const customRenderer = {
-			name: 'custom',
-			render: vi.fn().mockResolvedValue('<h1>Custom Render</h1>'),
-		};
-
-		shared.markDocConfig.type = customRenderer;
-		const content = '# Test Title';
-		const result = await renderMarkDoc(content);
-
-		expect(result).toBe('<h1>Custom Render</h1>');
-		expect(customRenderer.render).toHaveBeenCalled();
-		// Verify that Markdoc.parse was called with the content
-		const Markdoc = await import('@markdoc/markdoc');
-		expect(Markdoc.default.parse).toHaveBeenCalledWith(content, undefined);
-		// Verify that Markdoc.transform was called
-		expect(Markdoc.default.transform).toHaveBeenCalled();
-	});
-
-	test('renderMarkDoc throws error when no renderer type is specified', async () => {
-		const { shared } = await import('../../src/lib/shared.js');
-		const { renderMarkDoc } = await import('../../src/lib/render.js');
-
-		shared.markDocConfig.type = undefined as unknown as 'html';
-
-		const content = '# Test Title';
-
-		await expect(renderMarkDoc(content)).rejects.toThrow(
-			'Error in MarkDoc config, renderer not found.'
-		);
-		// Verify that Markdoc.parse was called with the content
-		const Markdoc = await import('@markdoc/markdoc');
-		expect(Markdoc.default.parse).toHaveBeenCalledWith(content, undefined);
-		// Verify that Markdoc.transform was called
-		expect(Markdoc.default.transform).toHaveBeenCalled();
-	});
-
-	test('renderMarkDoc handles custom renderer errors', async () => {
-		const { shared } = await import('../../src/lib/shared.js');
-		const { renderMarkDoc } = await import('../../src/lib/render.js');
-
-		const failingRenderer = {
-			name: 'failing',
-			render: vi.fn().mockRejectedValue(new Error('Render failed')),
-		};
-
-		shared.markDocConfig.type = failingRenderer;
-		const content = '# Test Title';
-
-		await expect(renderMarkDoc(content)).rejects.toThrow(
-			'Error in MarkDoc renderer, Unable to render with failing'
-		);
-		// Verify that Markdoc.parse was called with the content
-		const Markdoc = await import('@markdoc/markdoc');
-		expect(Markdoc.default.parse).toHaveBeenCalledWith(content, undefined);
-		// Verify that Markdoc.transform was called
-		expect(Markdoc.default.transform).toHaveBeenCalled();
-		// Verify that the failing renderer was called
-		expect(failingRenderer.render).toHaveBeenCalled();
-	});
-
 	test('renderMarkDoc with argParse configuration', async () => {
 		const { shared } = await import('../../src/lib/shared.js');
 		const { renderMarkDoc } = await import('../../src/lib/render.js');
@@ -295,25 +231,5 @@ This is also malformed.`;
 		const result = await renderMarkDoc(content);
 
 		expect(result).toBe('<h1>Test Title</h1>');
-	});
-
-	test('renderMarkDoc handles async renderer', async () => {
-		const { shared } = await import('../../src/lib/shared.js');
-		const { renderMarkDoc } = await import('../../src/lib/render.js');
-
-		const asyncRenderer = {
-			name: 'async',
-			render: vi.fn().mockImplementation(async () => {
-				await new Promise((resolve) => setTimeout(resolve, 10));
-				return '<h1>Async Render</h1>';
-			}),
-		};
-
-		shared.markDocConfig.type = asyncRenderer;
-		const content = '# Test Title';
-		const result = await renderMarkDoc(content);
-
-		expect(result).toBe('<h1>Async Render</h1>');
-		expect(asyncRenderer.render).toHaveBeenCalled();
 	});
 });

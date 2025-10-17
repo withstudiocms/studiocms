@@ -59,7 +59,10 @@
       "default": "./dist/virtual.d.js"
     },
     "./editor": "./dist/components/markdown-editor.astro",
-    "./renderer": "./dist/components/markdown-render.astro"
+    "./renderer": {
+      "types": "./dist/components/render.d.ts",
+      "default": "./dist/components/render.js"
+    }
   },
   "type": "module",
   "dependencies": {

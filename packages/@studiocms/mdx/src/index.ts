@@ -89,7 +89,7 @@ export function studiocmsMDX(options?: MDXPluginOptions): StudioCMSPlugin {
 	const packageIdentifier = '@studiocms/mdx';
 
 	// Resolve the path to the MDX renderer component
-	const renderer = resolve('./components/MDXRenderer.astro');
+	const renderer = resolve('./components/render.js');
 
 	const editor = resolve('./components/editor.astro');
 

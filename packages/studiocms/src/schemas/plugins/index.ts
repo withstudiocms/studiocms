@@ -11,6 +11,66 @@ import {
 } from './shared.js';
 
 /**
+ * Schema for augmenting component rendering.
+ *
+ * This schema defines an object with:
+ * - `type`: A literal string value 'component' indicating the schema type.
+ * - `components`: A record mapping string keys to string values, representing component identifiers and their corresponding values.
+ */
+const ComponentRenderAugmentSchema = z.object({
+	type: z.literal('component'),
+	id: z.string(),
+	components: z.record(z.string()),
+});
+
+/**
+ * Schema for a render augment component with a 'prefix' type.
+ *
+ * Extends the `ComponentRenderAugmentSchema` by adding:
+ * - `type`: A literal value 'prefix' to distinguish this augment type.
+ * - `html`: A string containing the HTML content to be rendered as a prefix.
+ */
+const PrefixRenderAugmentSchema = ComponentRenderAugmentSchema.extend({
+	type: z.literal('prefix'),
+	html: z.string(),
+});
+
+/**
+ * Schema for a render augment component with a 'suffix' type.
+ *
+ * Extends the `ComponentRenderAugmentSchema` by adding:
+ * - `type`: A literal value of 'suffix' to distinguish this augment type.
+ * - `html`: A string containing the HTML content to be rendered as the suffix.
+ */
+const SuffixRenderAugmentSchema = ComponentRenderAugmentSchema.extend({
+	type: z.literal('suffix'),
+	html: z.string(),
+});
+
+/**
+ * A Zod schema that allows validation against one of the following augment schemas:
+ * - `ComponentRenderAugmentSchema`
+ * - `PrefixRenderAugmentSchema`
+ * - `SuffixRenderAugmentSchema`
+ *
+ * This union schema is used to validate render augmentations for plugins,
+ * ensuring that the input matches one of the supported augment schema types.
+ */
+export const RenderAugmentSchema = z.union([
+	ComponentRenderAugmentSchema,
+	PrefixRenderAugmentSchema,
+	SuffixRenderAugmentSchema,
+]);
+
+/**
+ * An optional array schema for render augments.
+ *
+ * This schema validates an array of `RenderAugmentSchema` objects, or `undefined` if not provided.
+ * Useful for specifying additional rendering augmentations in a flexible manner.
+ */
+export const RenderAugmentsSchema = z.array(RenderAugmentSchema).optional();
+
+/**
  * Schema for options used to sanitize HTML content in StudioCMS.
  *
  * @remarks
@@ -194,6 +254,31 @@ const RenderingConfigSchema = z.object({
 	 * Page Type definition. If this is present, the plugin wants to be able to modify the page creation process
 	 */
 	pageTypes: PageTypesSchema,
+
+	/**
+	 * Augments to modify component rendering
+	 *
+	 * When adding new augments, please ensure that the `id` field is unique across all augments.
+	 *
+	 * the `id` field is also used to identify augment translations from the plugin translations
+	 * schema, below is an example of how to add augment translations:
+	 *
+	 * ```json
+	 * {
+	 *   "en": {
+	 *    "augments": {
+	 *      "augment-id": "This is the augment text"
+	 *    }
+	 *   },
+	 *   "fr": {
+	 *    "augments": {
+	 *      "augment-id": "Ceci est le texte d'augmentation"
+	 *    }
+	 *   }
+	 * }
+	 * ```
+	 */
+	augments: RenderAugmentsSchema,
 });
 
 const ImageServiceConfigSchema = z.object({

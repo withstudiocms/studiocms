@@ -117,7 +117,7 @@ export function studiocmsMD(options?: MarkdownSchemaOptions): StudioCMSPlugin {
 	const markdownPageType = {
 		identifier: 'studiocms/markdown',
 		label: 'Markdown',
-		rendererComponent: resolve('./components/markdown-render.astro'),
+		rendererComponent: resolve('./components/render.js'),
 		pageContentComponent: resolve('./components/markdown-editor.astro'),
 	};
 

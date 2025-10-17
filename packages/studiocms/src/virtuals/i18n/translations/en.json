@@ -324,7 +324,9 @@
       "diff-no-history": "No history found.",
       "true-label": "True",
       "false-label": "False",
-      "requires-supported-frontend": "Requires Supported Frontend"
+      "requires-supported-frontend": "Requires Supported Frontend",
+      "select-augments-label": "Page Augments",
+      "no-augments": "No Augments Available"
     },
     "@studiocms/dashboard:404": {
       "title": "Error 404",

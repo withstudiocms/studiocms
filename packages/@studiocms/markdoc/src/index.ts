@@ -70,7 +70,7 @@ export function studiocmsMarkDoc(options?: MarkDocPluginOptions): StudioCMSPlugi
 	const packageIdentifier = '@studiocms/markdoc';
 
 	// Resolve the path to the MarkDoc renderer component
-	const renderer = resolve('./components/MarkDocRenderer.astro');
+	const renderer = resolve('./components/render.js');
 
 	const editor = resolve('./components/editor.astro');
 
