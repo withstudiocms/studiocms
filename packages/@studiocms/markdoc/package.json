@@ -57,10 +57,6 @@
     "./v/types": {
       "types": "./dist/virtual.d.ts",
       "default": "./dist/virtual.d.js"
-    },
-    "./react": {
-      "types": "./dist/react-renderer/renderReact.d.ts",
-      "default": "./dist/react-renderer/renderReact.js"
     }
   },
   "type": "module",
@@ -76,16 +72,10 @@
     "@types/react-dom": "catalog:react"
   },
   "peerDependencies": {
-    "@astrojs/react": "catalog:react",
     "@studiocms/md": "workspace:*",
     "astro": "catalog:min",
     "effect": "catalog:effect",
     "studiocms": "workspace:*",
     "vite": "catalog:min"
-  },
-  "peerDependenciesMeta": {
-    "@astrojs/react": {
-      "optional": true
-    }
   }
 }

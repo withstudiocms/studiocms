@@ -6,7 +6,7 @@ export interface MarkDocRenderer {
 }
 
 export interface MarkDocPluginOptions {
-	type?: 'html' | 'react-static' | MarkDocRenderer;
+	type?: 'html' | 'react-static';
 	argParse?: ParserArgs | undefined;
 	transformConfig?: ConfigType | undefined;
 }

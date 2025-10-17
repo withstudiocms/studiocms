@@ -227,3 +227,5 @@ export class StudioCMSPluginTester {
 		};
 	}
 }
+
+// TODO Create testers for Plugin Renderers as well as RendererAugments

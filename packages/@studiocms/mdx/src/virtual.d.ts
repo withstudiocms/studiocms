@@ -4,5 +4,5 @@ declare module 'studiocms:mdx/renderer' {
 }
 
 declare module 'virtual:studiocms/plugins/renderers' {
-	export const studiocms_mdx: typeof import('./components/MDXRenderer.astro').default;
+	export const studiocms_mdx: typeof import('./components/render.js').default;
 }

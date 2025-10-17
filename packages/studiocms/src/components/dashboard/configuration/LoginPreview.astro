@@ -1,5 +1,4 @@
 ---
-import { Image } from 'astro:assets';
 import { validImages } from 'studiocms:auth/utils/validImages';
 import { type UiLanguageKeys, useTranslations } from 'studiocms:i18n';
 import { Card } from 'studiocms:ui/components/card';
@@ -67,22 +66,22 @@ const t = useTranslations(lang, '@studiocms/dashboard:configuration');
     </div>
     <login-preview class="wrapper" data-sources={JSON.stringify(stringifyable)}>
         <div class="before">
-            <Image
+            <img
                 width={640}
                 height={360}
                 class="content-image light-image-holder"
-                src={lightSrc as ImageMetadata}
+                src={lightSrc.src}
                 draggable="false"
                 alt="Light Preview"
                 loading={"eager"}
             />
         </div>
         <div class="after">
-            <Image
+            <img
                 width={640}
                 height={360}
                 class="content-image dark-image-holder"
-                src={darkSrc as ImageMetadata}
+                src={darkSrc.src}
                 draggable="false"
                 alt="Dark Preview"
                 loading={"eager"}

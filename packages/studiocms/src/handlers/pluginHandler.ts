@@ -1,3 +1,4 @@
+import { deepmerge, runEffect } from '@withstudiocms/effect';
 import {
 	integrationLogger,
 	type Messages,
@@ -11,6 +12,7 @@ import {
 } from '@withstudiocms/internal_helpers/utils';
 import type { AstroIntegration } from 'astro';
 import { AstroError } from 'astro/errors';
+import type { z } from 'astro/zod';
 import { addVirtualImports, createResolver, defineUtility } from 'astro-integration-kit';
 import boxen from 'boxen';
 import { compare as semCompare } from 'semver';
@@ -25,11 +27,16 @@ import {
 } from '../integrations/plugins.js';
 import type {
 	AvailableDashboardPages,
+	RenderAugmentSchema,
 	SafePluginListItemType,
 	SafePluginListType,
 	StudioCMSPlugin,
 } from '../schemas/index.js';
-import type { PluginTranslationCollection } from '../schemas/plugins/i18n.js';
+import type {
+	PluginAugmentsTranslationCollection,
+	PluginTranslationCollection,
+	PluginTranslations,
+} from '../schemas/plugins/i18n.js';
 import type { GridItemInput } from '../schemas/plugins/shared.js';
 import type { Route } from '../types.js';
 import { buildTranslations, loadJsTranslations } from '../utils/lang-helper.js';
@@ -297,6 +304,29 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 			content: string;
 		}[] = [];
 
+		const pluginAugments: (
+			| {
+					type: 'component';
+					id: string;
+					safeId: string;
+					components: Record<string, string>;
+			  }
+			| {
+					type: 'prefix';
+					id: string;
+					safeId: string;
+					components: Record<string, string>;
+					html: string;
+			  }
+			| {
+					type: 'suffix';
+					id: string;
+					safeId: string;
+					components: Record<string, string>;
+					html: string;
+			  }
+		)[] = [];
+
 		// Define the Safe Plugin List
 		const safePluginList: SafePluginListType = [];
 
@@ -342,7 +372,26 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 
 		const pluginsTranslations: PluginTranslationCollection = {};
 
+		const augmentTranslations: PluginAugmentsTranslationCollection = {};
+
 		/////
+
+		function getAugmentTranslationsForAllLangs(translations: PluginTranslations) {
+			const augmentCollection: PluginAugmentsTranslationCollection = {};
+
+			for (const [lang, langData] of Object.entries(translations)) {
+				if (langData.augments) {
+					for (const [augmentKey, augmentValue] of Object.entries(langData.augments)) {
+						if (!augmentCollection[lang]) {
+							augmentCollection[lang] = { augments: {} };
+						}
+						augmentCollection[lang].augments[augmentKey] = augmentValue;
+					}
+				}
+			}
+
+			return augmentCollection;
+		}
 
 		function getPlugins() {
 			// Check for `@astrojs/web-vitals` Integration
@@ -495,6 +544,30 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 				);
 		}
 
+		function convertToRuntimeAugment(augment: z.infer<typeof RenderAugmentSchema>) {
+			const id = augment.id;
+			const safeId = convertToSafeString(id);
+			const type = augment.type;
+
+			const components: Record<string, string> = {};
+
+			if (augment.components) {
+				for (const [key, value] of Object.entries(augment.components)) {
+					components[key] = rendererComponentFilter(value, convertToSafeString(safeId + key));
+				}
+			}
+
+			if (type === 'component') {
+				return {
+					id,
+					safeId,
+					type,
+					components,
+				};
+			}
+			return { id, safeId, type, components, html: augment.html };
+		}
+
 		/////
 
 		integrationLogger(logInfo, 'Setting up StudioCMS plugins...');
@@ -628,9 +701,23 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 					await hooks['studiocms:config:setup']({
 						logger: pluginLogger(safeData.identifier, logger),
 
-						setDashboard({ dashboardGridItems, dashboardPages, settingsPage, translations }) {
+						async setDashboard({ dashboardGridItems, dashboardPages, settingsPage, translations }) {
 							if (translations) {
 								pluginsTranslations[convertToSafeString(safeData.identifier)] = translations;
+
+								if (translations.en.augments) {
+									const augmentTrans = getAugmentTranslationsForAllLangs(translations);
+
+									for (const [lang, langData] of Object.entries(augmentTrans)) {
+										if (!augmentTranslations[lang]) {
+											augmentTranslations[lang] = { augments: {} };
+										}
+
+										augmentTranslations[lang] = await runEffect(
+											deepmerge((merge) => merge(augmentTranslations[lang], langData))
+										);
+									}
+								}
 							}
 
 							if (dashboardGridItems) {
@@ -692,7 +779,7 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 							}
 						},
 
-						setRendering({ pageTypes }) {
+						setRendering({ pageTypes, augments }) {
 							for (const { apiEndpoint, identifier, rendererComponent } of pageTypes || []) {
 								if (apiEndpoint) {
 									pluginEndpoints.push({
@@ -722,6 +809,12 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 							}
 
 							foundPageTypes = pageTypes;
+
+							// Handle Augments
+							for (const augment of augments || []) {
+								const runtimeAugment = convertToRuntimeAugment(augment);
+								pluginAugments.push(runtimeAugment);
+							}
 						},
 
 						setImageService({ imageService }) {
@@ -838,19 +931,17 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 				},
 				{
 					id: 'studiocms:components/dashboard-grid-components',
-					content: `
-						${availableDashboardGridItems
-							.map((item) => {
-								const components: Record<string, string> = item.body?.components || {};
+					content: availableDashboardGridItems
+						.map((item) => {
+							const components: Record<string, string> = item.body?.components || {};
 
-								const remappedComps = Object.entries(components).map(
-									([key, value]) => `export { default as ${key} } from '${value}';`
-								);
+							const remappedComps = Object.entries(components).map(
+								([key, value]) => `export { default as ${key} } from '${value}';`
+							);
 
-								return remappedComps.join('\n');
-							})
-							.join('\n')}
-					`,
+							return remappedComps.join('\n');
+						})
+						.join('\n'),
 				},
 				{
 					id: 'studiocms:components/dashboard-grid-items',
@@ -880,61 +971,55 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 				},
 				{
 					id: 'studiocms:plugins/dashboard-pages/components/user',
-					content: `
-						${
-							availableDashboardPages.user
-								?.map(({ pageBodyComponent, pageActionsComponent, ...item }) => {
-									const components: Record<string, string> = {
-										pageBodyComponent,
-									};
+					content:
+						availableDashboardPages.user
+							?.map(({ pageBodyComponent, pageActionsComponent, ...item }) => {
+								const components: Record<string, string> = {
+									pageBodyComponent,
+								};
 
-									if (item.sidebar === 'double') {
-										components.innerSidebarComponent = item.innerSidebarComponent;
-									}
+								if (item.sidebar === 'double') {
+									components.innerSidebarComponent = item.innerSidebarComponent;
+								}
 
-									if (pageActionsComponent) {
-										components.pageActionsComponent = pageActionsComponent;
-									}
+								if (pageActionsComponent) {
+									components.pageActionsComponent = pageActionsComponent;
+								}
 
-									const remappedComps = Object.entries(components).map(
-										([key, value]) =>
-											`export { default as ${convertToSafeString(item.title + key)} } from '${value}';`
-									);
+								const remappedComps = Object.entries(components).map(
+									([key, value]) =>
+										`export { default as ${convertToSafeString(item.title + key)} } from '${value}';`
+								);
 
-									return remappedComps.join('\n');
-								})
-								.join('\n') || ''
-						}
-					`,
+								return remappedComps.join('\n');
+							})
+							.join('\n') || '',
 				},
 				{
 					id: 'studiocms:plugins/dashboard-pages/components/admin',
-					content: `
-						${
-							availableDashboardPages.admin
-								?.map(({ pageBodyComponent, pageActionsComponent, ...item }) => {
-									const components: Record<string, string> = {
-										pageBodyComponent,
-									};
+					content:
+						availableDashboardPages.admin
+							?.map(({ pageBodyComponent, pageActionsComponent, ...item }) => {
+								const components: Record<string, string> = {
+									pageBodyComponent,
+								};
 
-									if (item.sidebar === 'double') {
-										components.innerSidebarComponent = item.innerSidebarComponent;
-									}
+								if (item.sidebar === 'double') {
+									components.innerSidebarComponent = item.innerSidebarComponent;
+								}
 
-									if (pageActionsComponent) {
-										components.pageActionsComponent = pageActionsComponent;
-									}
+								if (pageActionsComponent) {
+									components.pageActionsComponent = pageActionsComponent;
+								}
 
-									const remappedComps = Object.entries(components).map(
-										([key, value]) =>
-											`export { default as ${convertToSafeString(item.title + key)} } from '${value}';`
-									);
+								const remappedComps = Object.entries(components).map(
+									([key, value]) =>
+										`export { default as ${convertToSafeString(item.title + key)} } from '${value}';`
+								);
 
-									return remappedComps.join('\n');
-								})
-								.join('\n') || ''
-						}
-					`,
+								return remappedComps.join('\n');
+							})
+							.join('\n') || '',
 				},
 				{
 					id: 'studiocms:plugins/dashboard-pages/user',
@@ -986,11 +1071,10 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 				},
 				{
 					id: 'virtual:studiocms/plugins/endpoints',
-					content: `
-						${pluginEndpoints.map(({ apiEndpoint }) => apiEndpoint).join('\n')}
-
-						${pluginSettingsEndpoints.map(({ apiEndpoint }) => apiEndpoint).join('\n')}
-					`,
+					content: [
+						pluginEndpoints.map(({ apiEndpoint }) => apiEndpoint).join('\n'),
+						pluginSettingsEndpoints.map(({ apiEndpoint }) => apiEndpoint).join('\n'),
+					].join('\n'),
 				},
 				{
 					id: 'studiocms:plugins/endpoints',
@@ -1021,14 +1105,55 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 				},
 				{
 					id: 'virtual:studiocms/plugins/renderers',
-					content: `
-						${pluginRenderers ? pluginRenderers.map(({ content }) => content).join('\n') : ''}
-					`,
+					content: pluginRenderers ? pluginRenderers.map(({ content }) => content).join('\n') : '',
 				},
 				{
 					id: 'studiocms:plugins/renderers',
 					content: `
 						export const pluginRenderers = ${JSON.stringify(pluginRenderers.map(({ pageType, safePageType }) => ({ pageType, safePageType })) || [])};
+					`,
+				},
+				{
+					id: 'virtual:studiocms/plugins/augments',
+					content: [...pluginAugments]
+						.map(({ components }) =>
+							Object.entries(components)
+								// value is the "export { default as ... } from '...';" string
+								.map(([_key, value]) => value)
+								.join('\n')
+						)
+						.join('\n'),
+				},
+				{
+					id: 'studiocms:plugins/augments',
+					content: `
+						import * as augments from 'virtual:studiocms/plugins/augments';
+						import { convertToSafeString } from '${resolve('../utils/safeString.js')}';
+
+						const pluginAugments = ${JSON.stringify(pluginAugments || [])};
+
+						export const renderAugments = pluginAugments.map((entry) => {
+							const { id, safeId, type, components } = entry;
+							if (type === 'component') {
+								return {
+									id,
+									type,
+									components: Object.entries(components).reduce((acc, [key, value]) => ({
+										...acc,
+										[key]: augments[convertToSafeString(safeId + key)],
+									}), {}),
+								};
+							}
+							return {
+								id,
+								type,
+								html: entry.html,
+								components: Object.entries(components).reduce((acc, [key, value]) => ({
+									...acc,
+									[key]: augments[convertToSafeString(safeId + key)],
+								}), {}),
+							};
+						});
 					`,
 				},
 				{
@@ -1041,9 +1166,7 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 				},
 				{
 					id: 'virtual:studiocms:plugins/auth/providers',
-					content: `
-						${oAuthEndpoints.map(({ content }) => content).join('\n')}
-					`,
+					content: oAuthEndpoints.map(({ content }) => content).join('\n'),
 				},
 				{
 					id: 'studiocms:plugins/auth/providers',
@@ -1094,6 +1217,7 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 			messages,
 			oAuthProvidersConfigured,
 			pluginsTranslations,
+			augmentTranslations,
 		};
 	}
 );

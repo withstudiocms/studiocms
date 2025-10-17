@@ -84,6 +84,7 @@ export const studioCMSEditPageDataAndContentSchema = studioCMSCreatePageDataSche
 	content: z.string(),
 	contentId: z.string(),
 	pluginFields: z.record(z.custom<FormDataEntryValue>().nullable()).optional().default({}),
+	augments: z.array(z.string()).optional(),
 });
 
 /**

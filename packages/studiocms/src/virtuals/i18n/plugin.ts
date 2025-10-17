@@ -9,10 +9,11 @@
  * `packages/studiocms/src/virtuals/i18n/translations/` on https://github.com/withstudiocms/studiocms
  */
 
+import augmentTranslations from 'studiocms:i18n/augment-translations';
 import { $locale, $localeSettings, defaultLang } from 'studiocms:i18n/client';
 import pluginTranslations from 'studiocms:i18n/plugin-translations';
 import { createI18n, type Messages } from '@nanostores/i18n';
-import type { TranslationsJSON } from '../../schemas/plugins/i18n';
+import type { ComponentsJSON, TranslationsJSON } from '../../schemas/plugins/i18n';
 
 export function $pluginI18n(pluginId: string, componentId: string): Messages<TranslationsJSON> {
 	const translations = pluginTranslations[pluginId];
@@ -31,6 +32,33 @@ export function $pluginI18n(pluginId: string, componentId: string): Messages<Tra
 		baseLocale: defaultLang,
 		get: async (code) => translations[code] ?? base,
 	})(componentId, componentBase);
+}
+
+/**
+ * Augments the i18n instance specifically for handling "augments" translations.
+ *
+ * This function creates and returns an i18n instance configured to provide translation
+ * data for the "augments" component, using a custom translation object per language.
+ * If the requested language is not available, it falls back to the default language,
+ * and if that is also unavailable, it returns an empty "augments" object.
+ *
+ * @remarks
+ * Uses a type assertion hack to convince TypeScript that the translation objects
+ * conform to the `ComponentsJSON` type.
+ *
+ * @returns The i18n instance for the "augments" component, initialized with the
+ *          default language's "augments" translations or an empty object.
+ */
+export function $augmentI18n(): Messages<TranslationsJSON> {
+	const getComponents = (code: string): ComponentsJSON => {
+		const lang = augmentTranslations[code]?.augments;
+		const fallback = augmentTranslations[defaultLang]?.augments ?? {};
+		return { augments: lang ?? fallback };
+	};
+	return createI18n($locale, {
+		baseLocale: defaultLang,
+		get: async (code) => getComponents(code),
+	})('augments', getComponents(defaultLang).augments);
 }
 
 export class PluginTranslations extends HTMLElement {

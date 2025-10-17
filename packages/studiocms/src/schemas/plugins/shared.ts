@@ -447,12 +447,6 @@ export const AvailableDashboardPagesSchema = z.object({
 	admin: z.array(AvailableDashboardBaseSchema).optional(),
 });
 
-export type PageTypeDefaultsOrStringT = 'studiocms/markdown' | 'studiocms/html';
-
-export const PageTypeDefaultsOrString = z
-	.enum(['studiocms/markdown', 'studiocms/html'])
-	.or(z.string());
-
 export const SettingsPageSchema = z
 	.object({
 		/**
@@ -530,12 +524,41 @@ export const PageTypesSchema = z
 			 * }
 			 * ```
 			 */
-			pageContentComponent: PageTypeDefaultsOrString.or(z.string()).optional(),
+			pageContentComponent: z.string().optional(),
 
 			/**
-			 * The path to the actual component that is displayed for the page renderer
+			 * The path to the file that contains the default exported object with the `PluginRenderer` interface.
+			 *
+			 * This is used to render the content on the frontend.
+			 *
+			 * ```ts
+			 * import { createResolver } from 'astro-integration-kit';
+			 * const { resolve } = createResolver(import.meta.url);
+			 *
+			 * {
+			 *   rendererComponent: resolve('./renderers/MyRenderer.ts'),
+			 * }
+			 * ```
+			 *
+			 * with the following export in `MyRenderer.ts`:
+			 * ```ts
+			 * import type { PluginRenderer } from 'studiocms/types';
+			 *
+			 * const MyRenderer: PluginRenderer = {
+			 *   name: 'my-renderer',
+			 *   sanitizeOpts: {
+			 *     // ultrahtml sanitize options
+			 *   },
+			 *   renderer: async (content) => {
+			 *     // Custom rendering logic here
+			 *     return `<div class="my-rendered-content">${content}</div>`;
+			 *   },
+			 * };
+			 *
+			 * export default MyRenderer;
+			 * ```
 			 */
-			rendererComponent: PageTypeDefaultsOrString.or(z.string()).optional(),
+			rendererComponent: z.string().optional(),
 
 			/**
 			 * Fields that are shown in the page metadata tab when creating or editing a page of this type

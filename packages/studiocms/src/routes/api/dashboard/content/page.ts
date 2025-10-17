@@ -80,7 +80,7 @@ export const { POST, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 					return apiResponseLogger(403, 'Unauthorized');
 				}
 
-				const data = yield* readAPIContextJson<UpdatePageData>(ctx);
+				const data = yield* readAPIContextJson<UpdatePageData & { augments?: string[] }>(ctx);
 
 				const content = {
 					id: crypto.randomUUID(),
@@ -115,6 +115,7 @@ export const { POST, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 						updatedAt: new Date(),
 						categories: [],
 						tags: [],
+						augments: data.augments || [],
 						...data,
 					},
 					pageContent: pageContent,
@@ -158,6 +159,7 @@ export const { POST, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 						contentId: string;
 						content: string;
 						pluginFields: Record<string, FormDataEntryValue | null>;
+						augments?: string[];
 					}
 				>(ctx);
 

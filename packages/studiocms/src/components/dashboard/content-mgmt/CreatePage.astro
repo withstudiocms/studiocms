@@ -1,6 +1,7 @@
 ---
 import { type UiLanguageKeys, useTranslations } from 'studiocms:i18n';
 import pluginList from 'studiocms:plugins';
+import { renderAugments } from 'studiocms:plugins/augments';
 import { Card } from 'studiocms:ui/components/card';
 import { Input } from 'studiocms:ui/components/input';
 import { Select } from 'studiocms:ui/components/select';
@@ -81,12 +82,27 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
                 defaultValue="null"
               />
               <Select
-                label={t("select-page-draft")}
-                name="draft"
+                label={t("select-augments-label")}
+                name="cms-plugin-augments"
+                multiple
                 fullWidth
-                options={trueFalse}
-                disabled
-                placeholder="Use submission buttons above"
+                disabled={renderAugments.length === 0}
+                defaultValue={
+                  renderAugments.length > 0
+                    ? []
+                    : ['no-augments']
+                }
+                options={
+                  renderAugments.length > 0 
+                    ? renderAugments.map(({ id }) => ({ label: id, value: id })) 
+                    : [
+                        { 
+                          label: t("no-augments"), 
+                          value: 'no-augments',
+                          disabled: true,
+                        }
+                      ]
+                }
               />
             </div>
 
@@ -109,7 +125,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
               />
             </div>
 
-            <div class="form-row">
+            <div class="form-row-single">
               <div class="form-row-item">
                 <Input
                   label={t("input-page-hero-image")}
@@ -122,6 +138,17 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
                   ></span
                 >
               </div>
+            </div>
+
+            <div class="form-row-booleans">
+              <Select
+                label={t("select-page-draft")}
+                name="draft"
+                fullWidth
+                options={trueFalse}
+                disabled
+                placeholder="Use submission buttons above"
+              />
               <div class="form-row-item">
                 <Select
                   label={t("select-page-show-author")}
@@ -136,9 +163,6 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
                   ></span
                 >
               </div>
-            </div>
-
-            <div class="form-row">
               <div class="form-row-item">
                 <Select
                   label={t("select-page-show-in-nav")}
@@ -215,13 +239,17 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
     makeTranslation,
     updateElmLabel,
     updateSelectElmLabel,
+    updateSelectOptions,
     updateTabLabel,
     updateTrueFalseSelectOptions,
   } from "studiocms:i18n/client";
+  import { $augmentI18n } from "studiocms:i18n/plugins";
 
   const currentPage = "@studiocms/dashboard:content-page";
 
   const i18n = $i18n(currentPage, baseTranslation[currentPage]);
+
+  const augmentI18n = $augmentI18n();
 
   i18n.subscribe((comp) => {
     updateElmLabel("page-title", comp["input-page-title"]);
@@ -240,6 +268,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
       "show-contributors",
       comp["select-page-show-contributors"],
     );
+    updateSelectElmLabel("cms-plugin-augments", comp["select-augments-label"]);
 
     updateTabLabel("tab-label-basic-info", comp["tab-label-basic-info"]);
     updateTabLabel("tab-label-content", comp["tab-label-content"]);
@@ -253,6 +282,21 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
     updateTrueFalseSelectOptions("show-contributors", trueFalseOptions);
     updateTrueFalseSelectOptions("draft", trueFalseOptions);
     updateTrueFalseSelectOptions("show-in-nav", trueFalseOptions);
+    updateSelectOptions("cms-plugin-augments", {
+      'no-augments': comp["no-augments"],
+    });
+  });
+
+  augmentI18n.subscribe((comp) => {
+    const augmentKeys = Object.keys(comp || {});
+    const compTranslations = augmentKeys.reduce(
+      (acc, key) => {
+        acc[key] = key;
+        return acc;
+      },
+      {} as Record<string, string>,
+    );
+    updateSelectOptions("cms-plugin-augments", compTranslations);
   });
 
   if (!customElements.get("t-content-create-page")) {
@@ -322,7 +366,12 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
       formDataKeysToPageDataKeys,
     );
 
-    const formResult = studioCMSCreatePageDataSchema.safeParse(formDataObject);
+    const augments = [...formData.getAll("cms-plugin-augments")].filter((a) => a !== 'no-augments') as string[];
+
+    const formResult = studioCMSCreatePageDataSchema.safeParse({
+      ...formDataObject,
+      augments,
+    });
 
     if (!formResult.success) {
       console.error(formResult.error);
@@ -407,7 +456,23 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 0.75rem;
+  }
 
+  .form-row-single {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .form-row-booleans {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 0.75rem;
+  }
+
+  .form-row,
+  .form-row-single,
+  .form-row-booleans {
     .form-row-item {
       display: flex;
       flex-direction: column;
@@ -427,6 +492,10 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
   @media screen and (max-width: 768px) {
     .form-row {
       grid-template-columns: 1fr;
+    }
+
+    .form-row-booleans {
+      grid-template-columns: 1fr 1fr;
     }
   }
 

@@ -88,14 +88,14 @@ export const MockAstroLocalsWithCSRF = (csrfToken: string): App.Locals => {
  * @param content - The content to include in the props
  * @returns Mock renderer props object
  */
-export const makeRendererProps = (content: string | null) => ({
-	data: {
-		package: 'mock/render',
-		defaultContent: {
-			contentLang: 'default',
-			contentId: 'mocked',
-			id: 'mocked',
-			content,
-		},
-	},
-});
+// export const makeRendererProps = (content: string | null) => ({
+// 	data: {
+// 		package: 'mock/render',
+// 		defaultContent: {
+// 			contentLang: 'default',
+// 			contentId: 'mocked',
+// 			id: 'mocked',
+// 			content,
+// 		},
+// 	},
+// });
