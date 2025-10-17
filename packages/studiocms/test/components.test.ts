@@ -34,6 +34,13 @@ describe('Components Container tests', () => {
 		});
 
 		describe('SSRUser component', () => {
+			test('render component', async ({ renderComponent }) => {
+				const result = await renderComponent(SSRUser, 'SSRUser', {
+					props: { name: 'mock', description: 'mock-admin' },
+				});
+				expect(result).toMatchSnapshot();
+			});
+
 			test('render component without avatar', async ({ renderComponent }) => {
 				const result = await renderComponent(SSRUser, 'SSRUser', {
 					props: {
@@ -45,6 +52,8 @@ describe('Components Container tests', () => {
 				expect(result).toContain('<svg');
 				expect(result).toContain('Placeholder avatar for John Doe');
 				expect(result).not.toContain('studiocms-avatar');
+
+				expect(result).toMatchSnapshot();
 			});
 
 			test('render component with avatar URL', async ({ renderComponent }) => {
@@ -60,6 +69,8 @@ describe('Components Container tests', () => {
 				expect(result).toContain('data-avatar-url="https://example.com/avatar.jpg"');
 				expect(result).toContain('data-avatar-fallback');
 				expect(result).toContain('data-avatar-name="Jane Doe"');
+
+				expect(result).toMatchSnapshot();
 			});
 
 			test('render component with avatar fallback image', async ({ renderComponent }) => {
@@ -73,6 +84,8 @@ describe('Components Container tests', () => {
 				});
 				expect(result).toContain('src="data:image/png;base64');
 				expect(result).toContain('sui-avatar-img');
+
+				expect(result).toMatchSnapshot();
 			});
 		});
 

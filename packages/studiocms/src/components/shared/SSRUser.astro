@@ -104,7 +104,7 @@ const {
 			try {
 				const urlObj = new URL(url);
 
-				const validProtocols = ['https:', 'http:', 'data:'];
+				const validProtocols = ['https:', 'data:'];
 				if (!validProtocols.includes(urlObj.protocol)) {
 					return false;
 				}
@@ -183,6 +183,7 @@ const {
 
 			if (!isAccessible) {
 				if (fallbackDataUri && img.src !== fallbackDataUri) {
+					img.src = fallbackDataUri;
 				} else {
 					this.showFallbackIcon(img, name);
 				}
@@ -253,51 +254,5 @@ const {
 		to {
 			opacity: 1;
 		}
-	}
-</style>
-
-<style>
-	.sui-user-container {
-		display: flex;
-		flex-direction: row;
-		align-items: center;
-		gap: 1rem;
-	}
-	.sui-avatar-container {
-		width: 2.5rem;
-		height: 2.5rem;
-		background-color: var(--default-base);
-		border-radius: var(--radius-full);
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		overflow: hidden;
-		border: 1px solid var(--border);
-	}
-	.sui-avatar-img {
-		width: 100%;
-		height: auto;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		opacity: 0.5;
-		transition: opacity 0.2s ease-in;
-	}
-	.sui-avatar-img.sui-avatar-loaded {
-		opacity: 1;
-	}
-	.sui-text-content {
-		display: flex;
-		flex-direction: column;
-		gap: 0.125rem;
-	}
-	.sui-name {
-		font-size: 1em;
-		font-weight: 600;
-	}
-	.sui-description {
-		font-size: 0.875em;
-		font-weight: 400;
-		color: var(--text-muted);
 	}
 </style>
