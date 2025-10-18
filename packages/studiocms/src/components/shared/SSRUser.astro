@@ -203,7 +203,9 @@ const {
 			img.src = url;
 		}
 	}
-	customElements.define('studiocms-avatar', StudioCMSAvatar);
+	if (!customElements.get('studiocms-avatar')) {
+		customElements.define('studiocms-avatar', StudioCMSAvatar);
+	}
 </script>
 
 <style>
