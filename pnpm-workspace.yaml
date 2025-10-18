@@ -20,10 +20,10 @@ catalogs:
     astro: ^5.14.4
     vite: ^6.3.4
   effect:
-    "@effect/cli": ^0.69.2
-    "@effect/platform": ^0.90.10
-    "@effect/platform-node": ^0.96.1
-    effect: ^3.17.14
+    "@effect/cli": ^0.71.0
+    "@effect/platform": ^0.92.1
+    "@effect/platform-node": ^0.98.3
+    effect: ^3.18.4
   min:
     "@astrojs/markdown-remark": ^6.3.3
     "@libsql/client": ^0.15.10
