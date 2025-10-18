@@ -125,20 +125,20 @@ const {
 		}
 
 		async verifyAvatarUrl(url: string, timeoutMs: number): Promise<boolean> {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 			try {
-				const controller = new AbortController();
-				const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
-
 				const response = await fetch(url, {
 					method: 'HEAD',
 					signal: controller.signal,
 					cache: 'no-cache',
 				});
 
-				clearTimeout(timeoutId);
 				return response.ok;
 			} catch (error) {
 				return false;
+ 	        } finally {
+                clearTimeout(timeoutId);
 			}
 		}
 
