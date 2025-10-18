@@ -324,7 +324,9 @@
       "diff-no-history": "Aucun historique trouvé.",
       "true-label": "Oui",
       "false-label": "Non",
-      "requires-supported-frontend": "Nécessite une interface front-end prise en charge"
+      "requires-supported-frontend": "Nécessite une interface front-end prise en charge",
+      "select-augments-label": "Améliorations de page",
+      "no-augments": "Aucune amélioration disponible"
     },
     "@studiocms/dashboard:404": {
       "title": "Erreur 404",
