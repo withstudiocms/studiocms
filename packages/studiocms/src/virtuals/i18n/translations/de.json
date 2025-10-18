@@ -324,7 +324,9 @@
       "diff-no-history": "Keine Bearbeitungshistorie gefunden.",
       "true-label": "",
       "false-label": "",
-      "requires-supported-frontend": ""
+      "requires-supported-frontend": "",
+      "select-augments-label": "",
+      "no-augments": ""
     },
     "@studiocms/dashboard:404": {
       "title": "Fehler 404",
