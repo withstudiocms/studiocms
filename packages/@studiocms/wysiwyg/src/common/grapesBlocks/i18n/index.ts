@@ -16,7 +16,7 @@ export const loadI18n = (editor: Editor) => {
 			panels: {
 				buttons: {
 					titles: {
-						preview: 'Aperçu', 
+						preview: 'Aperçu',
 						fullscreen: 'Plein écran',
 						'sw-visibility': 'Voir les composants',
 						'export-template': 'Voir le code',
@@ -28,7 +28,7 @@ export const loadI18n = (editor: Editor) => {
 				},
 			},
 			styleManager: {
-				empty: 'Sélectionnez un élément avant d\'utiliser le gestionnaire de style',
+				empty: "Sélectionnez un élément avant d'utiliser le gestionnaire de style",
 				layer: 'Calque',
 				fileButton: 'Images',
 				sectors: {
@@ -37,7 +37,7 @@ export const loadI18n = (editor: Editor) => {
 					typography: 'Typographie',
 					decorations: 'Décorations',
 					extra: 'Extra',
-					flex: 'Flex'
+					flex: 'Flex',
 				},
 				properties: {
 					'background-repeat': 'Répéter',
@@ -88,38 +88,38 @@ export const loadI18n = (editor: Editor) => {
 			blockManager: {
 				labels: {
 					// Basic Blocks
-					'column1': '1 Colonne',
-					'column2': '2 Colonnes',
-					'column3': '3 Colonnes',
+					column1: '1 Colonne',
+					column2: '2 Colonnes',
+					column3: '3 Colonnes',
 					'column3-7': 'Colonnes 3/7',
-					'text': 'Texte',
-					'link': 'Lien',
-					'image': 'Image',
-					'video': 'Vidéo',
-					'map': 'Carte',
-					// Extra Blocks 
-					'tooltip': 'Info-bulle',
+					text: 'Texte',
+					link: 'Lien',
+					image: 'Image',
+					video: 'Vidéo',
+					map: 'Carte',
+					// Extra Blocks
+					tooltip: 'Info-bulle',
 					'custom-code': 'Code Personnalisé',
-					'typed': 'Texte Saisi',
-					'countdown': 'Compte à rebours',
-					'tabs': 'Onglets',
+					typed: 'Texte Saisi',
+					countdown: 'Compte à rebours',
+					tabs: 'Onglets',
 					// Forms Blocks
-					'form': 'Formulaire',
-					'input': 'Champ de saisie',
-					'textarea': 'Zone de texte',
-					'select': 'Liste déroulante',
-					'button': 'Bouton',
-					'label': 'Étiquette',
-					'checkbox': 'Case à cocher',
-					'radio': 'Bouton radio',
+					form: 'Formulaire',
+					input: 'Champ de saisie',
+					textarea: 'Zone de texte',
+					select: 'Liste déroulante',
+					button: 'Bouton',
+					label: 'Étiquette',
+					checkbox: 'Case à cocher',
+					radio: 'Bouton radio',
 					'link-block': 'Bloc de lien',
-					'quote': 'Citation',
+					quote: 'Citation',
 					'text-basic': 'Texte de base',
 				},
 				categories: {
-					'Basic': 'De base',
-					'Extra': 'Supplémentaire',
-					'Forms': 'Formulaires',
+					Basic: 'De base',
+					Extra: 'Supplémentaire',
+					Forms: 'Formulaires',
 				},
 			},
 		},
