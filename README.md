@@ -5,6 +5,7 @@
 [![NPM Version](https://img.shields.io/npm/v/studiocms)](https://npm.im/studiocms)
 [![Formatted with Biome](https://img.shields.io/badge/Formatted_with-Biome-60a5fa?style=flat&logo=biome)](https://biomejs.dev/)
 [![GitHub Actions Workflow Status (ci-testing.yml) ](https://img.shields.io/github/actions/workflow/status/withstudiocms/studiocms/ci-testing.yml?branch=main&logo=githubactions&logoColor=%232088FF&label=repo%20tests)](https://github.com/withstudiocms/studiocms/actions/workflows/ci-testing.yml)
+[![Allure Test Report](https://img.shields.io/badge/Allure%20Test%20Report-blue?style=flat)](https://tests.studiocms.dev)
 [![Crowdin](https://badges.crowdin.net/studiocms/localized.svg)](https://crowdin.com/project/studiocms)
 [![pkg.pr.new](https://img.shields.io/badge/Continuous%20Releases-pkg.pr.new-8A2BE2?logo=pkgsrc&logoColor=FFF)](https://pkg.pr.new/~/withstudiocms/studiocms)
 [![Built with Astro](https://astro.badg.es/v2/built-with-astro/tiny.svg)](https://astro.build)
