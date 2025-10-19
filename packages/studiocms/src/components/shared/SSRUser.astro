@@ -1,8 +1,5 @@
 ---
-import { extname } from 'node:path';
 import { Icon } from 'studiocms:ui/components/icon';
-import chalk from 'chalk';
-import { lookup } from 'mrmime';
 
 const heroIconsUserDataUri =
 	'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAADSklEQVR4AdSWS2xMYRTHjQXRRupRKVWrJhrxSCRigTQpYUHq0VYsarwi8RgJ0rCwFJEQEQ1psZFQXWgGRZB6NdFalkSFFRutV1UJNhLj9+dcOubeud8dC2lzfvd/7vedc77TO999DB/2n/+GZgOpVCoOSegx5K/N5WJGugIsNhHusNBZqIJiQ/455tqgiDFni9QAVZthIVyBBTAWJsBKeAOL4Tw4m3MD/GebqVoBV2Ox2ArohAHog1bGZ0MfLCJ2A+pkzg1QrRpkB3X4G5p4xdhOkOknkYYSpYE5Vu2pqZ/ctUFdDXOzS5QGvlkplxyXmJ/lnAOJfgSyMh0C0AbVVJcOLkRp4JQV3GeaJmy8SQzUg6xRBxecG2CTaaffpGgli12DeVAAhaDb8CFzhXCZ2Ouokzk3YNU2ordhGXTCALyDS6AH0C10CzhbpAb4z16DHjZxVtCivWgPJCHO3BJ4i+9skRrwqrJIE1TBZCiBGmjy5qNoTg1EWSAsNlIDbLZi2AEt0A2fDPkX8BOguyFs3d/zTg1QNB+OkPUcjkMNTIfRhvzV+CfgBbGHYBR+qIU2QCG97dqpVAcjoRuOgpqYggr5GnvCuWL2ou3kjkOzWtYGKFBAdgfoPfAR1S02iw1XB0l4achXgzOJ2QaKnYt2WA1cfwtsgETNtZA2FXR/l7LYaUhx7muag5NMloI+XKahzdSKob6mRXwnGEyA7nm949dQ+D3nTmax2hN6SC0lSVcOyTTfBuhYl36/hddS8IP5zmI56y3hADW1Ye30j/g2wLQ21Ri0i0JtaE5G7g0SH8N40PsCSbegBiot7J7pv4hXw6uZViuogRkWpdvP3JzFq6E7JKNIUAP63FbwJn67KsjTSRSUA/o2XGd5Xk07/SVBDei7/zshq0Bvun6KtcIeqIUKKAM9IfNQ+RrTnGL07dBvufrtVesM5xnm2wCbZyuRer9vR+/DCFgOh0FvPX18PsP/DF9AvsY0pxjFKke5up2LqLmLuAzzbUBRJOh7vxEt57wEVKABvQgPQO+Fr6iQrzHNKWY343pNl5PfAHqWMJRpgQ0MDqVAL9RDAqphPujJmI8K+RrTnGKOMa6PlcFlfH2nBnwzHQfDwn4AAAD//6qWhy8AAAAGSURBVAMAJXQ0UKI3Vu0AAAAASUVORK5CYII=';
@@ -46,149 +43,31 @@ const {
 	timeoutDelay = 3000,
 	id,
 } = Astro.props;
-
-function customLogger(type: 'error' | 'warn' | 'info', ...messages: string[]) {
-	const dt = new Intl.DateTimeFormat('en-us', {
-		hour: '2-digit',
-		minute: '2-digit',
-	});
-
-	const dateString = dt.format(new Date());
-	let messageBuilder = {
-		prefix: '[studiocms:Avatar]',
-		timestamp: dateString,
-		content: messages.join(' '),
-	};
-	switch (type) {
-		case 'error':
-			console.error(
-				chalk.bold.red(
-					`${messageBuilder.prefix} [${messageBuilder.timestamp}] ${messageBuilder.content}`
-				)
-			);
-			break;
-		case 'warn':
-			console.warn(
-				chalk.bold.yellow(
-					`${messageBuilder.prefix} [${messageBuilder.timestamp}] ${messageBuilder.content}`
-				)
-			);
-			break;
-		case 'info':
-			console.log(
-				chalk.blue(
-					`${messageBuilder.prefix} [${messageBuilder.timestamp}] ${messageBuilder.content}`
-				)
-			);
-			break;
-		default:
-			console.log(
-				`${messageBuilder.prefix} [${messageBuilder.timestamp}] ${messageBuilder.content}`
-			);
-	}
-}
-
-/* v8 ignore start */
-async function getObjectData(src: string): Promise<{ data: string; type: string } | undefined> {
-	try {
-		const data = src;
-		const extension = extname(src).toLowerCase();
-
-		if (extension) {
-			const type = lookup(extension);
-
-			if (!type) {
-				customLogger('error', `Could not determine MIME type for extension: ${extension}`);
-				return undefined;
-			}
-
-			if (!/^image\/.*$/.test(type)) {
-				customLogger('error', `Unsupported image type: ${type}`);
-				return undefined;
-			}
-
-			if (type === 'image/svg+xml' || type.startsWith('image/svg')) {
-				customLogger('error', 'SVG avatars are disallowed for security.');
-				return undefined;
-			}
-
-			return { data, type };
-		}
-
-		// Create URL object to validate format
-		const urlObj = new URL(src);
-
-		// Only allow HTTPS (avoid mixed content + downgrade attacks)
-		if (urlObj.protocol !== 'https:') {
-			customLogger('error', `Insecure avatar URL protocol: ${urlObj.protocol}`);
-			return undefined;
-		}
-
-		const controller = new AbortController();
-		const timeoutId = setTimeout(() => controller.abort(), timeoutDelay);
-		let response: Response;
-		try {
-			// Fetch the URL with timeout
-			response = await fetch(src, {
-				method: 'HEAD', // Use HEAD to avoid downloading the entire image
-				signal: controller.signal,
-				cache: 'no-cache',
-			});
-		} finally {
-			clearTimeout(timeoutId);
-		}
-
-		if (!response || !response.ok) {
-			customLogger('error', `Failed to fetch image: ${response.statusText}`);
-			return undefined;
-		}
-		const contentType = response.headers.get('content-type');
-		if (!contentType || !contentType.startsWith('image/')) {
-			customLogger('error', `Invalid image type: ${contentType}`);
-			return undefined;
-		}
-
-		if (contentType === 'image/svg+xml') {
-			customLogger('error', 'Remote SVG avatars are disallowed for security.');
-			return undefined;
-		}
-
-		return { data, type: contentType };
-	} catch (error) {
-		// Handle various error types
-		if (error instanceof Error) {
-			if (error.name === 'AbortError') {
-				customLogger('info', `Avatar URL test timed out after ${timeoutDelay / 1000} seconds`);
-			} else if (error.name === 'TypeError') {
-				customLogger('error', 'Invalid URL or network error:', error.message);
-			} else {
-				customLogger('error', 'Error testing avatar URL:', error.message);
-			}
-		}
-		return undefined;
-	}
-}
-/* v8 ignore stop */
-
-const validAvatar = avatar ? await getObjectData(avatar) : undefined;
 ---
 
 <div class="sui-user-container" class:list={[className]} id={id}>
     <div class="sui-avatar-container">
         {
-            validAvatar ? (
-                <img
-                  src={validAvatar.data}
-                  width={64}
-                  height={64}
-                  class="sui-avatar-img"
-                  alt={name}
-                  loading={loading}
-                  decoding="async"
-                  referrerpolicy="no-referrer"
-                  onerror={`this.src='${heroIconsUserDataUri}'`}
-                />
-            ) : (
+			avatar ? (
+				<studiocms-avatar
+					data-avatar-url={avatar}
+					data-avatar-timeout={timeoutDelay}
+					data-avatar-fallback={heroIconsUserDataUri}
+					data-avatar-name={name}
+					data-avatar-loading={loading}
+				>
+					<img
+						src={heroIconsUserDataUri}
+						width={64}
+						height={64}
+						class="sui-avatar-img"
+						alt={name}
+						loading={loading}
+						decoding="async"
+						referrerpolicy="no-referrer"
+					/>
+				</studiocms-avatar>
+			) : (
                 <Icon
                     name="heroicons:user"
                     width={24}
@@ -204,6 +83,142 @@ const validAvatar = avatar ? await getObjectData(avatar) : undefined;
         <span class="sui-description">{description}</span>
     </div>
 </div>
+
+<script>
+	class StudioCMSAvatar extends HTMLElement {
+		connectedCallback() {
+			const avatarUrl = this.dataset.avatarUrl;
+			const timeoutDelay = parseInt(this.dataset.avatarTimeout || '3000', 10);
+			const fallbackDataUri = this.dataset.avatarFallback;
+			const avatarName = this.dataset.avatarName || 'User';
+
+			if (!avatarUrl) return;
+
+			const img = this.querySelector('img');
+			if (!img) return;
+
+			this.loadAvatar(img, avatarUrl, timeoutDelay, fallbackDataUri, avatarName);
+		}
+
+		isValidAvatarUrl(url: string): boolean {
+			try {
+				const urlObj = new URL(url);
+
+				const validProtocols = ['https:', 'data:'];
+				if (!validProtocols.includes(urlObj.protocol)) {
+					return false;
+				}
+
+				const isSvg =
+					url.toLowerCase().endsWith('.svg') ||
+					url.toLowerCase().includes('.svg?') ||
+					url.toLowerCase().includes('image/svg');
+
+				if (isSvg) {
+					return false;
+				}
+
+				return true;
+			} catch {
+				return false;
+			}
+		}
+
+		async verifyAvatarUrl(url: string, timeoutMs: number): Promise<boolean> {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+			try {
+				const response = await fetch(url, {
+					method: 'HEAD',
+					signal: controller.signal,
+					cache: 'no-cache',
+				});
+
+				return response.ok;
+			} catch (error) {
+				return false;
+ 	        } finally {
+                clearTimeout(timeoutId);
+			}
+		}
+
+		showFallbackIcon(img: HTMLImageElement, name: string): void {
+			const container = img.parentElement;
+			if (!container) return;
+
+			const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+			svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+			svg.setAttribute('width', '24');
+			svg.setAttribute('height', '24');
+			svg.setAttribute('viewBox', '0 0 24 24');
+			svg.setAttribute('fill', 'none');
+			svg.setAttribute('stroke', 'currentColor');
+			svg.setAttribute('stroke-width', '2');
+			svg.setAttribute('stroke-linecap', 'round');
+			svg.setAttribute('stroke-linejoin', 'round');
+			svg.setAttribute('role', 'img');
+			svg.setAttribute('aria-label', `Placeholder avatar for ${name}`);
+			const path1 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+			path1.setAttribute('d', 'M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2');
+	
+			const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+			circle.setAttribute('cx', '12');
+			circle.setAttribute('cy', '7');
+			circle.setAttribute('r', '4');
+
+			svg.appendChild(path1);
+			svg.appendChild(circle);
+
+			container.removeChild(img);
+			container.appendChild(svg);
+		}
+
+		async loadAvatar(
+			img: HTMLImageElement,
+			url: string,
+			timeoutMs: number,
+			fallbackDataUri: string | undefined,
+			name: string
+		): Promise<void> {
+			if (!this.isValidAvatarUrl(url)) {
+				this.showFallbackIcon(img, name);
+				return;
+			}
+
+			if (url.startsWith('data:')) {
+				img.src = url;
+				img.classList.add('sui-avatar-loaded');
+				return;
+			}
+
+			const isAccessible = await this.verifyAvatarUrl(url, timeoutMs);
+
+			if (!isAccessible) {
+				if (fallbackDataUri && img.src !== fallbackDataUri) {
+					img.src = fallbackDataUri;
+				} else {
+					this.showFallbackIcon(img, name);
+				}
+				return;
+			}
+			img.onload = () => {
+				img.classList.add('sui-avatar-loaded');
+			};
+
+			img.onerror = () => {
+				if (fallbackDataUri && img.src !== fallbackDataUri) {
+					img.src = fallbackDataUri;
+				} else {
+					this.showFallbackIcon(img, name);
+				}
+			};
+			img.src = url;
+		}
+	}
+	if (!customElements.get('studiocms-avatar')) {
+		customElements.define('studiocms-avatar', StudioCMSAvatar);
+	}
+</script>
 
 <style>
     .sui-user-container {
@@ -229,7 +244,12 @@ const validAvatar = avatar ? await getObjectData(avatar) : undefined;
         display: flex;
         align-items: center;
         justify-content: center;
+		opacity: 0.5;
+		transition: opacity 0.2s ease-in;
     }
+	.sui-avatar-img.sui-avatar-loaded {
+		opacity: 1;
+	}
     .sui-text-content {
         display: flex;
         flex-direction: column;
