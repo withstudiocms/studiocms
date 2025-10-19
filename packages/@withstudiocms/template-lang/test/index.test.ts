@@ -4,7 +4,7 @@ import { TemplateEngine, TemplateParser, TemplateRenderer } from '../src/index';
 
 const parentSuiteName = '@withstudiocms/template-lang Package Tests';
 
-describe(parentSuiteName, async () => {
+describe(parentSuiteName, () => {
 	// TemplateRenderer tests
 	[
 		{
