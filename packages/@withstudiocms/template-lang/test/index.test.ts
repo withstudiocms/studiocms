@@ -3,6 +3,7 @@ import { describe, expect, test } from 'vitest';
 import { TemplateEngine, TemplateParser, TemplateRenderer } from '../src/index';
 
 const parentSuiteName = '@withstudiocms/template-lang Package Tests';
+const sharedTags = ['package:@withstudiocms/template-lang', 'type:unit', 'scope:withstudiocms'];
 
 describe(parentSuiteName, () => {
 	// TemplateRenderer tests
@@ -74,7 +75,7 @@ describe(parentSuiteName, () => {
 			await allure.parentSuite(parentSuiteName);
 			await allure.suite('TemplateRenderer Tests');
 			await allure.subSuite(name);
-			await allure.tags('package:@withstudiocms/template-lang', 'type:unit', 'scope:withstudiocms');
+			await allure.tags(...sharedTags);
 			await allure.parameter('template', template);
 			await allure.parameter('data', JSON.stringify(data));
 			await allure.parameter('options', JSON.stringify(options));
@@ -115,11 +116,7 @@ describe(parentSuiteName, () => {
 				await allure.parentSuite(parentSuiteName);
 				await allure.suite('TemplateRenderer Tests');
 				await allure.subSuite(name);
-				await allure.tags(
-					'package:@withstudiocms/template-lang',
-					'type:unit',
-					'scope:withstudiocms'
-				);
+				await allure.tags(...sharedTags);
 				await allure.parameter('template', template);
 				await allure.parameter('data', JSON.stringify(data));
 				await allure.parameter('initial engine options', JSON.stringify(engineOpts));
@@ -245,7 +242,7 @@ describe(parentSuiteName, () => {
 			await allure.parentSuite(parentSuiteName);
 			await allure.suite('TemplateParser Tests');
 			await allure.subSuite(name);
-			await allure.tags('package:@withstudiocms/template-lang', 'type:unit', 'scope:withstudiocms');
+			await allure.tags(...sharedTags);
 			await allure.parameter('template', template);
 			await allure.parameter('length', String(length));
 			await allure.parameter('expected', JSON.stringify(expected));
@@ -287,7 +284,7 @@ describe(parentSuiteName, () => {
 			await allure.parentSuite(parentSuiteName);
 			await allure.suite('TemplateParser Tests');
 			await allure.subSuite(name);
-			await allure.tags('package:@withstudiocms/template-lang', 'type:unit', 'scope:withstudiocms');
+			await allure.tags(...sharedTags);
 			await allure.parameter('template', template);
 			await allure.parameter('expected', String(expected));
 
@@ -354,7 +351,7 @@ describe(parentSuiteName, () => {
 			await allure.parentSuite(parentSuiteName);
 			await allure.suite('TemplateEngine Tests');
 			await allure.subSuite(name);
-			await allure.tags('package:@withstudiocms/template-lang', 'type:unit', 'scope:withstudiocms');
+			await allure.tags(...sharedTags);
 			await allure.parameter('template', template);
 			await allure.parameter('data', JSON.stringify(data));
 
@@ -386,7 +383,7 @@ describe(parentSuiteName, () => {
 			await allure.parentSuite(parentSuiteName);
 			await allure.suite('TemplateEngine Tests');
 			await allure.subSuite(name);
-			await allure.tags('package:@withstudiocms/template-lang', 'type:unit', 'scope:withstudiocms');
+			await allure.tags(...sharedTags);
 			await allure.parameter('template', template);
 			await allure.parameter('data', JSON.stringify(data));
 			await allure.parameter('engine options', JSON.stringify(engineOpts));
@@ -443,7 +440,7 @@ describe(parentSuiteName, () => {
 			await allure.parentSuite(parentSuiteName);
 			await allure.suite('TemplateEngine Tests');
 			await allure.subSuite(name);
-			await allure.tags('package:@withstudiocms/template-lang', 'type:unit', 'scope:withstudiocms');
+			await allure.tags(...sharedTags);
 			await allure.parameter('template', template);
 			await allure.parameter('expected', JSON.stringify(expected));
 
@@ -465,7 +462,7 @@ describe(parentSuiteName, () => {
 		await allure.parentSuite(parentSuiteName);
 		await allure.suite('TemplateEngine Tests');
 		await allure.subSuite('TemplateEngine - Should allow updating options after creation');
-		await allure.tags('package:@withstudiocms/template-lang', 'type:unit', 'scope:withstudiocms');
+		await allure.tags(...sharedTags);
 
 		const testEngine = new TemplateEngine();
 
@@ -507,7 +504,7 @@ describe(parentSuiteName, () => {
 		await allure.parentSuite(parentSuiteName);
 		await allure.suite('TemplateEngine Tests');
 		await allure.subSuite('TemplateEngine - Should compile templates for reuse');
-		await allure.tags('package:@withstudiocms/template-lang', 'type:unit', 'scope:withstudiocms');
+		await allure.tags(...sharedTags);
 
 		const engine = new TemplateEngine();
 		const template = 'Dear {{title}} {{lastName}}, your order {{orderId}} is confirmed.';

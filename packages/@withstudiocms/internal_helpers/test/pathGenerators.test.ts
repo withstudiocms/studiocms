@@ -12,7 +12,7 @@ import {
 	stripLeadingSlash,
 	stripTrailingSlash,
 } from '../src/pathGenerators.js';
-import { parentSuiteName } from './test-utils.js';
+import { parentSuiteName, sharedTags } from './test-utils.js';
 
 const localSuiteName = 'Path Generators Tests';
 
@@ -28,19 +28,16 @@ describe(parentSuiteName, () => {
 			await allure.parentSuite(parentSuiteName);
 			await allure.suite(localSuiteName);
 			await allure.subSuite('pathWithBase - Strips leading slash and prepends one');
-			await allure.tags(
-				'package:@withstudiocms/internal_helpers',
-				'type:unit',
-				'scope:withstudiocms'
-			);
+			await allure.tags(...sharedTags);
 
 			await allure.parameter('input', input);
 			await allure.parameter('expected', expected);
 
-			const result = pathWithBase(input);
-
-			await allure.parameter('result', result);
-			expect(result).toBe(expected);
+			await allure.step('Executing pathWithBase', async (ctx) => {
+				const result = pathWithBase(input);
+				await ctx.parameter('result', result);
+				expect(result).toBe(expected);
+			});
 		});
 	});
 
@@ -55,19 +52,16 @@ describe(parentSuiteName, () => {
 			await allure.parentSuite(parentSuiteName);
 			await allure.suite(localSuiteName);
 			await allure.subSuite('fileWithBase - Strips leading slash and prepends one');
-			await allure.tags(
-				'package:@withstudiocms/internal_helpers',
-				'type:unit',
-				'scope:withstudiocms'
-			);
+			await allure.tags(...sharedTags);
 
 			await allure.parameter('input', input);
 			await allure.parameter('expected', expected);
 
-			const result = fileWithBase(input);
-
-			await allure.parameter('result', result);
-			expect(result).toBe(expected);
+			await allure.step('Executing fileWithBase', async (ctx) => {
+				const result = fileWithBase(input);
+				await ctx.parameter('result', result);
+				expect(result).toBe(expected);
+			});
 		});
 	});
 
@@ -81,19 +75,16 @@ describe(parentSuiteName, () => {
 			await allure.parentSuite(parentSuiteName);
 			await allure.suite(localSuiteName);
 			await allure.subSuite('ensureLeadingSlash adds slash if missing');
-			await allure.tags(
-				'package:@withstudiocms/internal_helpers',
-				'type:unit',
-				'scope:withstudiocms'
-			);
+			await allure.tags(...sharedTags);
 
 			await allure.parameter('input', input);
 			await allure.parameter('expected', expected);
 
-			const result = ensureLeadingSlash(input);
-
-			await allure.parameter('result', result);
-			expect(result).toBe(expected);
+			await allure.step('Executing ensureLeadingSlash', async (ctx) => {
+				const result = ensureLeadingSlash(input);
+				await ctx.parameter('result', result);
+				expect(result).toBe(expected);
+			});
 		});
 	});
 
@@ -107,19 +98,17 @@ describe(parentSuiteName, () => {
 			await allure.parentSuite(parentSuiteName);
 			await allure.suite(localSuiteName);
 			await allure.subSuite('ensureTrailingSlash adds slash if missing');
-			await allure.tags(
-				'package:@withstudiocms/internal_helpers',
-				'type:unit',
-				'scope:withstudiocms'
-			);
+			await allure.tags(...sharedTags);
 
 			await allure.parameter('input', input);
 			await allure.parameter('expected', expected);
 
-			const result = ensureTrailingSlash(input);
+			await allure.step('Executing ensureTrailingSlash', async (ctx) => {
+				const result = ensureTrailingSlash(input);
 
-			await allure.parameter('result', result);
-			expect(result).toBe(expected);
+				await ctx.parameter('result', result);
+				expect(result).toBe(expected);
+			});
 		});
 	});
 
@@ -135,19 +124,17 @@ describe(parentSuiteName, () => {
 			await allure.parentSuite(parentSuiteName);
 			await allure.suite(localSuiteName);
 			await allure.subSuite('ensureLeadingAndTrailingSlashes adds both slashes');
-			await allure.tags(
-				'package:@withstudiocms/internal_helpers',
-				'type:unit',
-				'scope:withstudiocms'
-			);
+			await allure.tags(...sharedTags);
 
 			await allure.parameter('input', input);
 			await allure.parameter('expected', expected);
 
-			const result = ensureLeadingAndTrailingSlashes(input);
+			await allure.step('Executing ensureLeadingAndTrailingSlashes', async (ctx) => {
+				const result = ensureLeadingAndTrailingSlashes(input);
 
-			await allure.parameter('result', result);
-			expect(result).toBe(expected);
+				await ctx.parameter('result', result);
+				expect(result).toBe(expected);
+			});
 		});
 	});
 
@@ -161,19 +148,17 @@ describe(parentSuiteName, () => {
 			await allure.parentSuite(parentSuiteName);
 			await allure.suite(localSuiteName);
 			await allure.subSuite('stripLeadingSlash removes leading slash');
-			await allure.tags(
-				'package:@withstudiocms/internal_helpers',
-				'type:unit',
-				'scope:withstudiocms'
-			);
+			await allure.tags(...sharedTags);
 
 			await allure.parameter('input', input);
 			await allure.parameter('expected', expected);
 
-			const result = stripLeadingSlash(input);
+			await allure.step('Executing stripLeadingSlash', async (ctx) => {
+				const result = stripLeadingSlash(input);
 
-			await allure.parameter('result', result);
-			expect(result).toBe(expected);
+				await ctx.parameter('result', result);
+				expect(result).toBe(expected);
+			});
 		});
 	});
 
@@ -187,19 +172,17 @@ describe(parentSuiteName, () => {
 			await allure.parentSuite(parentSuiteName);
 			await allure.suite(localSuiteName);
 			await allure.subSuite('stripTrailingSlash removes trailing slash');
-			await allure.tags(
-				'package:@withstudiocms/internal_helpers',
-				'type:unit',
-				'scope:withstudiocms'
-			);
+			await allure.tags(...sharedTags);
 
 			await allure.parameter('input', input);
 			await allure.parameter('expected', expected);
 
-			const result = stripTrailingSlash(input);
+			await allure.step('Executing stripTrailingSlash', async (ctx) => {
+				const result = stripTrailingSlash(input);
 
-			await allure.parameter('result', result);
-			expect(result).toBe(expected);
+				await ctx.parameter('result', result);
+				expect(result).toBe(expected);
+			});
 		});
 	});
 
@@ -215,19 +198,17 @@ describe(parentSuiteName, () => {
 			await allure.parentSuite(parentSuiteName);
 			await allure.suite(localSuiteName);
 			await allure.subSuite('stripLeadingAndTrailingSlashes removes both');
-			await allure.tags(
-				'package:@withstudiocms/internal_helpers',
-				'type:unit',
-				'scope:withstudiocms'
-			);
+			await allure.tags(...sharedTags);
 
 			await allure.parameter('input', input);
 			await allure.parameter('expected', expected);
 
-			const result = stripLeadingAndTrailingSlashes(input);
+			await allure.step('Executing stripLeadingAndTrailingSlashes', async (ctx) => {
+				const result = stripLeadingAndTrailingSlashes(input);
 
-			await allure.parameter('result', result);
-			expect(result).toBe(expected);
+				await ctx.parameter('result', result);
+				expect(result).toBe(expected);
+			});
 		});
 	});
 
@@ -242,19 +223,17 @@ describe(parentSuiteName, () => {
 			await allure.parentSuite(parentSuiteName);
 			await allure.suite(localSuiteName);
 			await allure.subSuite('stripHtmlExtension removes .html extension');
-			await allure.tags(
-				'package:@withstudiocms/internal_helpers',
-				'type:unit',
-				'scope:withstudiocms'
-			);
+			await allure.tags(...sharedTags);
 
 			await allure.parameter('input', input);
 			await allure.parameter('expected', expected);
 
-			const result = stripHtmlExtension(input);
+			await allure.step('Executing stripHtmlExtension', async (ctx) => {
+				const result = stripHtmlExtension(input);
 
-			await allure.parameter('result', result);
-			expect(result).toBe(expected);
+				await ctx.parameter('result', result);
+				expect(result).toBe(expected);
+			});
 		});
 	});
 
@@ -270,19 +249,17 @@ describe(parentSuiteName, () => {
 			await allure.parentSuite(parentSuiteName);
 			await allure.suite(localSuiteName);
 			await allure.subSuite('ensureHtmlExtension adds .html if missing');
-			await allure.tags(
-				'package:@withstudiocms/internal_helpers',
-				'type:unit',
-				'scope:withstudiocms'
-			);
+			await allure.tags(...sharedTags);
 
 			await allure.parameter('input', input);
 			await allure.parameter('expected', expected);
 
-			const result = ensureHtmlExtension(input);
+			await allure.step('Executing ensureHtmlExtension', async (ctx) => {
+				const result = ensureHtmlExtension(input);
 
-			await allure.parameter('result', result);
-			expect(result).toBe(expected);
+				await ctx.parameter('result', result);
+				expect(result).toBe(expected);
+			});
 		});
 	});
 });

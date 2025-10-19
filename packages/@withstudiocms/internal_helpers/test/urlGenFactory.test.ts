@@ -1,7 +1,7 @@
 import * as allure from 'allure-js-commons';
 import { describe, expect, test } from 'vitest';
 import { createURLGenFactory } from '../src/urlGenFactory.js';
-import { parentSuiteName } from './test-utils.js';
+import { parentSuiteName, sharedTags } from './test-utils.js';
 
 describe(parentSuiteName, () => {
 	const defaultArgs = 'dashboard';
@@ -63,11 +63,7 @@ describe(parentSuiteName, () => {
 			await allure.parentSuite(parentSuiteName);
 			await allure.suite('createURLGenFactory Tests');
 			await allure.subSuite(name);
-			await allure.tags(
-				'package:@withstudiocms/internal_helpers',
-				'type:unit',
-				'scope:withstudiocms'
-			);
+			await allure.tags(...sharedTags);
 			await allure.parameter('defaultArgs', defaultArgs);
 			await allure.parameter('dashboard', String(dashboard));
 			await allure.parameter('number of tests', String(tests.length));
