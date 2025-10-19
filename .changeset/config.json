@@ -1,5 +1,5 @@
 {
-  "$schema": "https://unpkg.com/@changesets/config@3.0.0/schema.json",
+  "$schema": "../node_modules/@changesets/config/schema.json",
   "changelog": ["@changesets/changelog-github", { "repo": "withstudiocms/studiocms" }],
   "commit": false,
   "fixed": [
@@ -25,12 +25,5 @@
   "updateInternalDependencies": "patch",
   "ignore": ["node-playground", "@test-config-utils/integration-utils"],
   "privatePackages": false,
-  "changedFilePatterns": [
-    "**/src/**",
-    "**/*.json",
-    "**/*.md",
-    "**/*.ts",
-    "**/*.mjs",
-    "!**/vitest.config.ts"
-  ]
+  "changedFilePatterns": ["**/src/**/**.*", "**/*.config.ts", "**/package.json"]
 }
