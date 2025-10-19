@@ -32,6 +32,10 @@ const token = Astro.locals?.StudioCMS?.plugins?.editorCSRFToken;
 >
 
 <script>
+    import { $localeSettings, defaultLang } from 'studiocms:i18n/client';
+    import {
+        loadI18n,
+    } from '../common/grapesBlocks/i18n/index.js';
     const [
       { toast },
       { default: grapesjs, usePlugin },
@@ -68,6 +72,19 @@ const token = Astro.locals?.StudioCMS?.plugins?.editorCSRFToken;
             usePlugin(StudioCMSDbStorageAdapter, StudioCMSDbStorageAdapterOpts),
             usePlugin(grapesBlocks),
         ],
+        i18n: {
+            locale: $localeSettings.get() ?? defaultLang,
+            localeFallback: defaultLang,
+        },
+    });
+    loadI18n(editor);
+    
+    $localeSettings.subscribe((settings) => {
+        const lang = settings || defaultLang;
+        const currentLocale = editor.I18n.getLocale();
+        if (lang !== currentLocale) {
+            editor.I18n.setLocale(lang);
+        }
     });
 
     // Simple warn notifier
