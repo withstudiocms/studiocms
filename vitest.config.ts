@@ -1,3 +1,4 @@
+import * as os from 'node:os';
 import { defineConfig } from 'vitest/config';
 
 const projectsWithTests: { scope?: string; names: string[] }[] = [
@@ -53,6 +54,18 @@ export default defineConfig({
 				'allure-vitest/reporter',
 				{
 					resultsDir: 'allure-results',
+					links: {
+						issue: {
+							nameTemplate: 'Issue #%s',
+							urlTemplate: 'https://github.com/withstudiocms/studiocms/issues/%s',
+						},
+					},
+					environmentInfo: {
+						os_platform: os.platform(),
+						os_release: os.release(),
+						os_version: os.version(),
+						node_version: process.version,
+					},
 				},
 			],
 		],

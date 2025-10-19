@@ -2,6 +2,7 @@ import { defineProject } from 'vitest/config';
 
 export default defineProject({
 	test: {
+		name: '@withstudiocms/config-utils',
 		environment: 'node',
 		include: ['**/*.test.ts'],
 		exclude: ['**/fixtures/**', '**/test-utils.ts'],

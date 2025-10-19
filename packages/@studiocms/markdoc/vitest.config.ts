@@ -24,6 +24,7 @@ export default defineProject(
 	getViteConfig(
 		{
 			test: {
+				name: '@studiocms/markdoc',
 				environment: 'node',
 				include: ['**/*.test.ts', '**/*.test.tsx'], // Added .tsx for React tests
 			},
