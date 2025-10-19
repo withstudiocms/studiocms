@@ -1,5 +1,5 @@
 import * as allure from 'allure-js-commons';
-import { describe, expect, it, test } from 'vitest';
+import { describe, expect, test } from 'vitest';
 import {
 	ensureHtmlExtension,
 	ensureLeadingAndTrailingSlashes,
