@@ -25,5 +25,5 @@
   "updateInternalDependencies": "patch",
   "ignore": ["node-playground", "@test-config-utils/integration-utils"],
   "privatePackages": false,
-  "changedFilePatterns": ["**/src/**/**.*", "**/*.config.ts", "**/package.json"]
+  "changedFilePatterns": ["**/src/**/**.*", "**/package.json"]
 }
