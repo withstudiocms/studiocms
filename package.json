@@ -20,8 +20,6 @@
 
     "test": "pnpm clean:allure && vitest run",
     "test:allure": "pnpm clean:allure && vitest run && allure serve allure-results",
-    "test:ui": "vitest --ui",
-    "test:ui:coverage": "vitest --ui --coverage",
     "test:watch": "vitest",
 
     "build": "pnpm build:packages",
@@ -64,7 +62,6 @@
     "@effect/vitest": "^0.26.0",
     "@types/node": "catalog:",
     "@vitest/coverage-v8": "^3.2.4",
-    "@vitest/ui": "^3.2.4",
     "@withstudiocms/buildkit": "workspace:*",
     "@inox-tools/astro-tests": "^0.8.0",
     "allure-js-commons": "^3.4.1",

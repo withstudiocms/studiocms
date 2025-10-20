@@ -154,9 +154,6 @@ importers:
       '@vitest/coverage-v8':
         specifier: ^3.2.4
         version: 3.2.4(vitest@3.2.4)
-      '@vitest/ui':
-        specifier: ^3.2.4
-        version: 3.2.4(vitest@3.2.4)
       '@withstudiocms/buildkit':
         specifier: workspace:*
         version: link:packages/@withstudiocms/buildkit
@@ -7579,7 +7576,8 @@ snapshots:
   '@pkgjs/parseargs@0.11.0':
     optional: true
 
-  '@polka/url@1.0.0-next.29': {}
+  '@polka/url@1.0.0-next.29':
+    optional: true
 
   '@rollup/pluginutils@5.3.0(rollup@4.52.4)':
     dependencies:
@@ -8229,6 +8227,7 @@ snapshots:
       tinyglobby: 0.2.15
       tinyrainbow: 2.0.0
       vitest: 3.2.4(@types/debug@4.1.12)(@types/node@22.18.10)(@vitest/ui@3.2.4)(jiti@2.6.1)(jsdom@27.0.0(postcss@8.5.6))(yaml@2.8.1)
+    optional: true
 
   '@vitest/utils@3.2.4':
     dependencies:
@@ -9193,7 +9192,8 @@ snapshots:
       locate-path: 5.0.0
       path-exists: 4.0.0
 
-  flatted@3.3.3: {}
+  flatted@3.3.3:
+    optional: true
 
   flattie@1.1.1: {}
 
@@ -11244,6 +11244,7 @@ snapshots:
       '@polka/url': 1.0.0-next.29
       mrmime: 2.0.1
       totalist: 3.0.1
+    optional: true
 
   sisteransi@1.0.5: {}
 
@@ -11426,7 +11427,8 @@ snapshots:
 
   toml@3.0.0: {}
 
-  totalist@3.0.1: {}
+  totalist@3.0.1:
+    optional: true
 
   tough-cookie@2.5.0:
     dependencies:
