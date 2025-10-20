@@ -93,7 +93,7 @@ export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
 				if (!checkEmail.success) {
 					return createJsonResponse(
 						{
-							error: checkEmail.error.message,
+							error: checkEmail.error.errors.map((e) => e.message).join(', '),
 						},
 						{
 							status: 400,
