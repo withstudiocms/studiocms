@@ -9,7 +9,13 @@ import {
 	rendererComponentFilter,
 	semverCategories,
 } from '../src/index.js';
-import { mockMarkdown, parentSuiteName, sharedTags } from './test-utils.js';
+import {
+	markdownIncludesURL,
+	markdownParsedUsername,
+	mockMarkdown,
+	parentSuiteName,
+	sharedTags,
+} from './test-utils.js';
 
 const localSuiteName = 'Utility Functions';
 
@@ -368,10 +374,10 @@ describe(parentSuiteName, () => {
 				item.children[0].children.some(
 					(node: any) =>
 						typeof node.url === 'string' &&
-						node.url.includes('https://github.com/Adammatthiesen') &&
+						node.url.includes(markdownIncludesURL) &&
 						node.children.some(
 							(child: any) =>
-								typeof child.value === 'string' && child.value.includes('@Adammatthiesen')
+								typeof child.value === 'string' && child.value.includes(markdownParsedUsername)
 						)
 				)
 			);
