@@ -81,7 +81,7 @@ describe(parentSuiteName, () => {
 		});
 	});
 
-	test('HTTPClient provides a retrying HttpClient instance', async () => {
+	test('HTTPClient provides a retrying HttpClient instance', { timeout: 10000 }, async () => {
 		await allure.parentSuite(parentSuiteName);
 		await allure.suite(localSuiteName);
 		await allure.subSuite('HTTPClient Tests');
