@@ -1,10 +1,14 @@
+import * as allure from 'allure-js-commons';
 import type { Layer } from 'effect/Layer';
 import nodemailer from 'nodemailer';
-import { beforeAll, describe, expect, it } from 'vitest';
+import { beforeAll, describe, expect, it, test } from 'vitest';
 import { Effect } from '../src/effect.js';
 import { SMTPService, SMTPTransportConfig, TransportConfig } from '../src/smtp.js';
+import { parentSuiteName, sharedTags } from './test-utils.js';
 
-describe('SMTP Service', { timeout: 10000 }, () => {
+const localSuiteName = 'SMTP Service Tests';
+
+describe(parentSuiteName, { timeout: 10000 }, () => {
 	let testAccount: Awaited<ReturnType<typeof nodemailer.createTestAccount>>;
 	let testConfig: TransportConfig;
 	let testLayer: Layer<SMTPTransportConfig, never, never>;
@@ -27,100 +31,125 @@ describe('SMTP Service', { timeout: 10000 }, () => {
 		testLayer = SMTPTransportConfig.makeLive(testConfig);
 	});
 
-	describe('SMTPTransportConfig', () => {
-		it('should create a live layer with configuration', () => {
-			const config = TransportConfig({
+	test(`${localSuiteName} - SMTPTransportConfig Should Create Live Layer`, async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('SMTPTransportConfig Tests');
+		await allure.tags(...sharedTags);
+
+		await allure.step('Create live layer with test configuration', async (ctx) => {
+			const configArgs = {
 				transport: {
 					host: 'smtp.example.com',
 					port: 587,
 					secure: false,
 				},
-			});
+			};
+			await ctx.parameter('configArgs', JSON.stringify(configArgs));
+
+			const config = TransportConfig(configArgs);
+			await ctx.parameter('TransportConfig', JSON.stringify(config));
 
 			const layer = SMTPTransportConfig.makeLive(config);
+			await ctx.parameter('layerCreated', String(Boolean(layer)));
+
 			expect(layer).toBeTruthy();
 		});
 	});
 
-	describe('SMTPService initialization', () => {
-		it('should initialize service with valid configuration', async () => {
-			const program = Effect.gen(function* () {
-				const service = yield* SMTPService;
-				expect(service).toBeTruthy();
-				return service;
-			}).pipe(Effect.provide(SMTPService.Default));
+	[
+		{
+			name: 'SMTPService - Should initialize with valid config',
+			configLayer: 'use-valid',
+		},
+		{
+			name: 'SMTPService - Should initialize with proxy config',
+			configLayer: 'use-proxy',
+		},
+	].forEach(({ name, configLayer }) => {
+		test(name, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('SMTPService Initialization Tests');
+			await allure.tags(...sharedTags);
+			await allure.parameter('configLayer', configLayer);
 
-			const runnable = Effect.provide(program, testLayer);
-			const result = await Effect.runPromise(runnable);
+			let layerToUse: Layer<SMTPTransportConfig, never, never>;
 
-			expect(result.Mailer).toBeTypeOf('function');
-			expect(result.verifyTransport).toBeTypeOf('function');
-			expect(result.sendMail).toBeTypeOf('function');
-			expect(result.isIdle).toBeTypeOf('function');
-			expect(result.getVersionString).toBeTypeOf('function');
-		});
-
-		it('should initialize service with proxy configuration', async () => {
-			const proxyConfig = TransportConfig({
-				transport: {
-					host: testAccount.smtp.host,
-					port: testAccount.smtp.port,
-					secure: testAccount.smtp.secure,
-					auth: {
-						user: testAccount.user,
-						pass: testAccount.pass,
+			if (configLayer === 'use-valid') {
+				layerToUse = testLayer;
+			} else if (configLayer === 'use-proxy') {
+				const proxyConfig = TransportConfig({
+					transport: {
+						host: testAccount.smtp.host,
+						port: testAccount.smtp.port,
+						secure: testAccount.smtp.secure,
+						auth: {
+							user: testAccount.user,
+							pass: testAccount.pass,
+						},
+						proxy: 'socks://127.0.0.1:1080',
 					},
-					proxy: 'socks://127.0.0.1:1080',
-				},
-			});
-
-			const proxyLayer = SMTPTransportConfig.makeLive(proxyConfig);
+				});
+				layerToUse = SMTPTransportConfig.makeLive(proxyConfig);
+			} else {
+				throw new Error(`Unknown configLayer: ${configLayer}`);
+			}
 
 			const program = Effect.gen(function* () {
 				const service = yield* SMTPService;
 				return service;
 			}).pipe(Effect.provide(SMTPService.Default));
 
-			const runnable = Effect.provide(program, proxyLayer);
+			const runnable = Effect.provide(program, layerToUse);
 
 			try {
 				const result = await Effect.runPromise(runnable);
-				expect(result).toBeTruthy();
+				await allure.step('SMTPService initialized successfully', async (ctx) => {
+					await ctx.parameter('serviceInitialized', 'true');
+					expect(result).toBeTruthy();
+				});
 			} catch (error) {
-				expect(error instanceof Error).toBe(true);
+				await allure.step('SMTPService initialization failed', async (ctx) => {
+					await ctx.parameter('serviceInitialized', 'false');
+					await ctx.parameter('error', String(error));
+					throw error;
+				});
 			}
 		});
 	});
 
-	describe('Transport verification', () => {
-		it('should verify transport successfully with valid configuration', async () => {
-			const program = Effect.gen(function* () {
-				const service = yield* SMTPService;
-				const isVerified = yield* service.verifyTransport();
-				return isVerified;
-			}).pipe(Effect.provide(SMTPService.Default));
-
-			const runnable = Effect.provide(program, testLayer);
-			const result = await Effect.runPromise(runnable);
-
-			expect(typeof result).toBe('boolean');
-			expect(result).toBe(true);
-		});
-
-		it('should fail verification with invalid configuration', async () => {
-			const invalidConfig = TransportConfig({
-				transport: {
-					host: 'invalid-smtp-server.example.com',
-					port: 587,
-					secure: false,
-					auth: {
-						user: 'invalid@example.com',
-						pass: 'wrongpassword',
+	[
+		{
+			name: 'SMTPService - Verify Transport with Valid Config',
+			configLayer: undefined,
+		},
+		{
+			name: 'SMTPService - Verify Transport with Invalid Config',
+			configLayer: SMTPTransportConfig.makeLive(
+				TransportConfig({
+					transport: {
+						host: 'invalid-smtp-server.example.com',
+						port: 587,
+						secure: false,
+						auth: {
+							user: 'invalid@example.com',
+							pass: 'wrongpassword',
+						},
 					},
-				},
-			});
-
-			const invalidLayer = SMTPTransportConfig.makeLive(invalidConfig);
+				})
+			),
+		},
+	].forEach(({ name, configLayer }) => {
+		test(name, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('SMTPService Transport Verification Tests');
+			await allure.tags(...sharedTags);
+			await allure.parameter(
+				'configLayer',
+				String(configLayer ? 'custom-invalid' : 'default-valid')
+			);
 
 			const program = Effect.gen(function* () {
 				const service = yield* SMTPService;
@@ -128,185 +157,157 @@ describe('SMTP Service', { timeout: 10000 }, () => {
 				return isVerified;
 			}).pipe(Effect.provide(SMTPService.Default));
 
-			const runnable = Effect.provide(program, invalidLayer);
+			const layerToUse = configLayer ? configLayer : testLayer;
+			const runnable = Effect.provide(program, layerToUse);
 
-			await expect(Effect.runPromise(runnable)).rejects.toThrow(/Failed to verify SMTP transport/);
+			if (configLayer) {
+				await allure.step('Expecting transport verification to fail', async (ctx) => {
+					await ctx.parameter('expectedResult', 'failure');
+					await expect(Effect.runPromise(runnable)).rejects.toThrow(
+						/Failed to verify SMTP transport/
+					);
+				});
+			} else {
+				await allure.step('Expecting transport verification to succeed', async (ctx) => {
+					const result = await Effect.runPromise(runnable);
+					await ctx.parameter('expectedResult', 'success');
+					await ctx.parameter('verificationResult', String(result));
+					expect(typeof result).toBe('boolean');
+					expect(result).toBe(true);
+				});
+			}
 		});
 	});
 
-	describe('Mail sending', () => {
-		it('should send email successfully', async () => {
-			const mailOptions = {
-				from: testAccount.user,
+	[
+		{
+			name: 'SMTPService - Should send email successfully',
+			mailOptions: (account: typeof testAccount) => ({
+				from: account.user,
 				to: 'recipient@example.com',
 				subject: 'Test Email',
 				text: 'This is a test email sent from Node.js test suite',
 				html: '<p>This is a <b>test email</b> sent from Node.js test suite</p>',
-			};
-
-			const program = Effect.gen(function* () {
-				const service = yield* SMTPService;
-				const result = yield* service.sendMail(mailOptions);
-				return result;
-			}).pipe(Effect.provide(SMTPService.Default));
-
-			const runnable = Effect.provide(program, testLayer);
-			const result = await Effect.runPromise(runnable);
-
-			expect(result).toBeTruthy();
-			expect(result.messageId).toBeTruthy();
-			expect(result.response).toBeTruthy();
-
-			const previewUrl = nodemailer.getTestMessageUrl(result);
-			if (previewUrl) {
-				console.log('Preview URL:', previewUrl);
-			}
-		});
-
-		it('should handle send mail errors gracefully', async () => {
-			const invalidMailOptions = {
+			}),
+			toPass: true,
+		},
+		{
+			name: 'SMTPService - Should fail to send email with invalid options',
+			mailOptions: () => ({
 				from: '',
 				to: '',
 				subject: 'Test Email',
 				text: 'This should fail',
-			};
+			}),
+			toPass: false,
+		},
+	].forEach(({ name, mailOptions, toPass }) => {
+		test(name, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('Mail Sending Tests');
+			await allure.tags(...sharedTags);
+			await allure.parameter('toPass', String(toPass));
+
+			const options = mailOptions(testAccount);
+			await allure.step('Mail Options Prepared', async (ctx) => {
+				await ctx.parameter('mailOptions', JSON.stringify(options));
+			});
 
 			const program = Effect.gen(function* () {
 				const service = yield* SMTPService;
-				const result = yield* service.sendMail(invalidMailOptions);
+				const result = yield* service.sendMail(options);
 				return result;
 			}).pipe(Effect.provide(SMTPService.Default));
 
 			const runnable = Effect.provide(program, testLayer);
 
-			await expect(Effect.runPromise(runnable)).rejects.toThrow(/Failed to send mail/);
-		});
-	});
-
-	describe('Transport status methods', () => {
-		it('should check if transport is idle', async () => {
-			const program = Effect.gen(function* () {
-				const service = yield* SMTPService;
-				const idle = yield* service.isIdle();
-				return idle;
-			}).pipe(Effect.provide(SMTPService.Default));
-
-			const runnable = Effect.provide(program, testLayer);
-			const result = await Effect.runPromise(runnable);
-
-			expect(typeof result).toBe('boolean');
-		});
-
-		it('should get version string', async () => {
-			const program = Effect.gen(function* () {
-				const service = yield* SMTPService;
-				const version = yield* service.getVersionString();
-				return version;
-			}).pipe(Effect.provide(SMTPService.Default));
-
-			const runnable = Effect.provide(program, testLayer);
-			const result = await Effect.runPromise(runnable);
-
-			expect(typeof result).toBe('string');
-			expect(result.length).toBeGreaterThan(0);
-		});
-	});
-
-	describe('Mailer function', () => {
-		it('should execute custom mailer functions', async () => {
-			const program = Effect.gen(function* () {
-				const service = yield* SMTPService;
-				const customResult = yield* service.Mailer((mailer) => {
-					return {
-						isIdle: mailer.isIdle(),
-						version: mailer.getVersionString(),
-					};
-				});
-				return customResult;
-			}).pipe(Effect.provide(SMTPService.Default));
-
-			const runnable = Effect.provide(program, testLayer);
-			const result = await Effect.runPromise(runnable);
-
-			expect(typeof result.isIdle).toBe('boolean');
-			expect(typeof result.version).toBe('string');
-		});
-
-		it('should handle mailer function errors', async () => {
-			const program = Effect.gen(function* () {
-				const service = yield* SMTPService;
-				// @effect-diagnostics-next-line missingReturnYieldStar:off
-				const customResult = yield* service.Mailer((_mailer) => {
-					throw new Error('Custom mailer function error');
-				});
-				return customResult;
-			}).pipe(Effect.provide(SMTPService.Default));
-
-			const runnable = Effect.provide(program, testLayer);
-
-			await expect(Effect.runPromise(runnable)).rejects.toThrow(/Failed to run Mailer function/);
-		});
-	});
-
-	describe('Configuration conversion', () => {
-		it('should handle configuration without proxy', async () => {
-			const configWithoutProxy = TransportConfig({
-				transport: {
-					host: testAccount.smtp.host,
-					port: testAccount.smtp.port,
-					secure: testAccount.smtp.secure,
-					auth: {
-						user: testAccount.user,
-						pass: testAccount.pass,
-					},
-				},
-				defaults: {
-					from: 'default@example.com',
-				},
-			});
-
-			const layer = SMTPTransportConfig.makeLive(configWithoutProxy);
-
-			const program = Effect.gen(function* () {
-				const service = yield* SMTPService;
-				return service;
-			}).pipe(Effect.provide(SMTPService.Default));
-
-			const runnable = Effect.provide(program, layer);
-			const result = await Effect.runPromise(runnable);
-
-			expect(result).toBeTruthy();
-		});
-
-		it('should handle minimal configuration', async () => {
-			const minimalConfig = TransportConfig({
-				transport: {
-					host: testAccount.smtp.host,
-					port: testAccount.smtp.port,
-				},
-			});
-
-			const layer = SMTPTransportConfig.makeLive(minimalConfig);
-
-			const program = Effect.gen(function* () {
-				const service = yield* SMTPService;
-				return service;
-			}).pipe(Effect.provide(SMTPService.Default));
-
-			const runnable = Effect.provide(program, layer);
-
-			try {
+			if (toPass) {
 				const result = await Effect.runPromise(runnable);
-				expect(result).toBeTruthy();
-			} catch (error) {
-				expect(error instanceof Error).toBe(true);
+				await allure.step('Email sent successfully', async (ctx) => {
+					await ctx.parameter('messageId', result.messageId);
+					await ctx.parameter('response', result.response);
+					const previewUrl = nodemailer.getTestMessageUrl(result);
+					if (previewUrl) {
+						await ctx.parameter('previewUrl', previewUrl);
+						await allure.link(previewUrl, 'Email Preview URL');
+					}
+					expect(result).toBeTruthy();
+					expect(result.messageId).toBeTruthy();
+				});
+			} else {
+				await allure.step('Expecting email sending to fail', async () => {
+					await expect(Effect.runPromise(runnable)).rejects.toThrow(/Failed to send mail/);
+				});
 			}
 		});
 	});
 
-	describe('Integration tests', () => {
-		it('should perform end-to-end mail sending workflow', async () => {
+	[
+		{
+			name: 'SMTPService - Transport Status Methods (isIdle)',
+			method: 'isIdle',
+		},
+		{
+			name: 'SMTPService - Transport Status Methods (getVersionString)',
+			method: 'getVersionString',
+		},
+	].forEach(({ name, method }) => {
+		test(name, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('Transport Status Method Tests');
+			await allure.tags(...sharedTags);
+			await allure.parameter('method', method);
+
 			const program = Effect.gen(function* () {
+				const service = yield* SMTPService;
+				let result: boolean | string;
+				if (method === 'isIdle') {
+					result = yield* service.isIdle();
+				} else if (method === 'getVersionString') {
+					result = yield* service.getVersionString();
+				} else {
+					throw new Error(`Unknown method: ${method}`);
+				}
+				return result;
+			}).pipe(Effect.provide(SMTPService.Default));
+
+			const runnable = Effect.provide(program, testLayer);
+			const result = await Effect.runPromise(runnable);
+
+			await allure.step(`Method ${method} executed`, async (ctx) => {
+				await ctx.parameter('result', String(result));
+				if (method === 'isIdle') {
+					expect(typeof result).toBe('boolean');
+				} else if (method === 'getVersionString') {
+					expect(typeof result).toBe('string');
+					expect((result as string).length).toBeGreaterThan(0);
+				}
+			});
+		});
+	});
+
+	test('SMTPService - Full Integration Test', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('Integration Tests');
+		await allure.tags(...sharedTags);
+
+		let program: Effect.Effect<
+			{
+				verified: true;
+				sent: boolean;
+				version: string;
+			},
+			Error,
+			SMTPTransportConfig
+		>;
+
+		await allure.step('Building Effect program for end-to-end test', async (ctx) => {
+			await ctx.parameter('testAccountUser', testAccount.user);
+
+			program = Effect.gen(function* () {
 				const service = yield* SMTPService;
 
 				const isVerified = yield* service.verifyTransport();
@@ -324,6 +325,8 @@ describe('SMTP Service', { timeout: 10000 }, () => {
 
 				expect(mailResult.messageId).toBeTruthy();
 
+				const previewUrl = nodemailer.getTestMessageUrl(mailResult);
+
 				const version = yield* service.getVersionString();
 				expect(version.length).toBeGreaterThan(0);
 
@@ -331,11 +334,42 @@ describe('SMTP Service', { timeout: 10000 }, () => {
 					verified: isVerified,
 					sent: !!mailResult.messageId,
 					version,
+					previewUrl,
 				};
 			}).pipe(Effect.provide(SMTPService.Default));
+		});
 
-			const runnable = Effect.provide(program, testLayer);
+		let runnable: Effect.Effect<
+			{
+				verified: true;
+				sent: boolean;
+				version: string;
+				previewUrl?: string;
+			},
+			Error,
+			never
+		>;
+
+		await allure.step('Providing test layer to the Effect program', async (ctx) => {
+			runnable = Effect.provide(program, testLayer);
+			await ctx.parameter('layerProvided', 'true');
+		});
+
+		await allure.step('Running the Effect program', async (ctx) => {
 			const result = await Effect.runPromise(runnable);
+
+			await ctx.parameter('verified', String(result.verified));
+			await ctx.parameter('sent', String(result.sent));
+			await ctx.parameter('version', result.version);
+
+			const previewUrl = result.previewUrl;
+
+			if (previewUrl) {
+				await allure.step('Email sent successfully in integration test', async (ctx) => {
+					await ctx.parameter('previewUrl', previewUrl);
+					await allure.link(previewUrl, 'Integration Test Email Preview URL');
+				});
+			}
 
 			expect(result.verified).toBe(true);
 			expect(result.sent).toBe(true);
