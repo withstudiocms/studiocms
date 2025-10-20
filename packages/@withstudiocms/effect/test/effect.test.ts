@@ -1,4 +1,4 @@
-import { describe, expect, it, test } from '@effect/vitest';
+import { describe, expect, test } from '@effect/vitest';
 import * as allure from 'allure-js-commons';
 import { appendSearchParamsToUrl, Effect, HTTPClient, runEffect } from '../src/effect.js';
 import { parentSuiteName, sharedTags } from './test-utils.js';

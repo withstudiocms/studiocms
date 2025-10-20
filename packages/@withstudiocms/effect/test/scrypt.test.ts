@@ -1,6 +1,6 @@
 /** biome-ignore-all lint/suspicious/noExplicitAny: allowed in tests */
 import * as allure from 'allure-js-commons';
-import { beforeEach, describe, expect, it, test } from 'vitest';
+import { beforeEach, describe, expect, test } from 'vitest';
 import { Effect, Exit, Layer } from '../src/effect.js';
 import { Scrypt, ScryptConfig, ScryptConfigOptions, ScryptError } from '../src/scrypt.js';
 import { parentSuiteName, sharedTags } from './test-utils.js';
@@ -390,7 +390,7 @@ describe(parentSuiteName, () => {
 		{ N: 2048, r: 8, p: 1 },
 		{ N: 4096, r: 8, p: 2 },
 	].forEach((options) => {
-		it(`Scrypt - Service Tests - Should work with scrypt parameters N:${options.N}, r:${options.r}, p:${options.p}`, async () => {
+		test(`Scrypt - Service Tests - Should work with scrypt parameters N:${options.N}, r:${options.r}, p:${options.p}`, async () => {
 			await allure.parentSuite(parentSuiteName);
 			await allure.suite(localSuiteName);
 			await allure.subSuite('ScryptService Tests');
