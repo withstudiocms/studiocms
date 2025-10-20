@@ -4,6 +4,13 @@ import {
 	type Fixture,
 } from '@inox-tools/astro-tests/astroFixture';
 
+export const parentSuiteName = '@withstudiocms/config-utils Package Tests';
+export const sharedTags = [
+	'package:@withstudiocms/config-utils',
+	'type:unit',
+	'scope:withstudiocms',
+];
+
 type InlineConfig = Omit<Parameters<typeof baseLoadFixture>[0], 'root'> & {
 	root: string;
 };

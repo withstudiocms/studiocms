@@ -1,8 +1,12 @@
 import { mkdtempSync, rmSync, unlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { afterAll, describe, expect, it } from 'vitest';
+import * as allure from 'allure-js-commons';
+import { afterAll, describe, expect, test } from 'vitest';
 import { exists, findConfig } from '../src/watcher.js';
+import { parentSuiteName, sharedTags } from './test-utils.js';
+
+const localSuiteName = 'Watcher Utility Tests';
 
 // Create a temporary directory for testing
 const testDir = mkdtempSync(join(tmpdir(), 'watcher-test-'));
@@ -11,53 +15,91 @@ afterAll(() => {
 	rmSync(testDir, { recursive: true, force: true });
 });
 
-describe('Watcher Utils', () => {
-	describe('exists', () => {
-		it('returns false if path is undefined', () => {
-			expect(exists(undefined)).toBe(false);
-		});
+describe(parentSuiteName, () => {
+	[
+		{
+			path: undefined,
+			expected: false,
+		},
+		{
+			testFile: true,
+			path: join(testDir, 'exists-test.txt'),
+			expected: true,
+		},
+		{
+			path: join(testDir, 'nonexistent-file.txt'),
+			expected: false,
+		},
+	].forEach(({ testFile, path, expected }) => {
+		test('Watcher Utils - exists Tests', async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('exists Test Set');
+			await allure.tags(...sharedTags);
 
-		it('returns true if file exists', () => {
-			const testFile = join(testDir, 'exists-test.txt');
-			writeFileSync(testFile, 'test');
+			await allure.parameter('path', path ?? 'undefined');
+			await allure.parameter('expected', String(expected));
+			await allure.parameter('testFile', String(!!testFile));
 
-			expect(exists(testFile)).toBe(true);
+			if (testFile) {
+				writeFileSync(path, 'test');
+			}
 
-			unlinkSync(testFile);
-		});
+			await allure.step(`Should return ${expected} for path: ${path}`, async (ctx) => {
+				ctx.parameter('path', path ?? 'undefined');
+				const result = exists(path);
+				ctx.parameter('result', String(result));
+				expect(result).toBe(expected);
+			});
 
-		it('returns false if file does not exist', () => {
-			const nonExistentFile = join(testDir, 'does-not-exist.txt');
-			expect(exists(nonExistentFile)).toBe(false);
+			if (testFile) {
+				unlinkSync(path);
+			}
 		});
 	});
 
-	describe('findConfig', () => {
-		const projectRootUrl = `${testDir}/`;
+	test('Watcher Utils - findConfig Tests', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('findConfig Test Set');
+		await allure.tags(...sharedTags);
 
-		it('returns undefined if configPaths is empty', () => {
-			expect(findConfig(projectRootUrl, [])).toBeUndefined();
+		await allure.step('Should return undefined if configPaths is empty', async (ctx) => {
+			const result = findConfig(`${testDir}/`, []);
+			ctx.parameter('result', String(result));
+			expect(result).toBeUndefined();
 		});
 
-		it('returns the first configUrl that exists', () => {
+		await allure.step('Should return the first configUrl that exists', async (ctx) => {
 			const configPaths = ['a.js', 'b.js', 'c.js'];
+
+			await ctx.parameter('configPaths', JSON.stringify(configPaths));
 
 			// Create only b.js
 			const bPath = join(testDir, 'b.js');
 			writeFileSync(bPath, 'module.exports = {};');
 
-			expect(findConfig(projectRootUrl, configPaths)).toBe(`${projectRootUrl}b.js`);
+			const result = findConfig(`${testDir}/`, configPaths);
+
+			await ctx.parameter('result', String(result));
+
+			expect(result).toBe(`${testDir}/b.js`);
 
 			unlinkSync(bPath);
 		});
 
-		it('returns undefined if none of the config files exist', () => {
+		await allure.step('Should return undefined if none of the config files exist', async (ctx) => {
 			const configPaths = ['nonexistent1.js', 'nonexistent2.js', 'nonexistent3.js'];
-			expect(findConfig(projectRootUrl, configPaths)).toBeUndefined();
+			await ctx.parameter('configPaths', JSON.stringify(configPaths));
+			const result = findConfig(`${testDir}/`, configPaths);
+			await ctx.parameter('result', String(result));
+			expect(result).toBeUndefined();
 		});
 
-		it('returns the first configUrl if multiple exist', () => {
+		await allure.step('Should return the first configUrl if multiple exist', async (ctx) => {
 			const configPaths = ['a.js', 'b.js', 'c.js'];
+
+			await ctx.parameter('configPaths', JSON.stringify(configPaths));
 
 			// Create both a.js and b.js
 			const aPath = join(testDir, 'a.js');
@@ -65,7 +107,9 @@ describe('Watcher Utils', () => {
 			writeFileSync(aPath, 'module.exports = {};');
 			writeFileSync(bPath, 'module.exports = {};');
 
-			expect(findConfig(projectRootUrl, configPaths)).toBe(`${projectRootUrl}a.js`);
+			const result = findConfig(`${testDir}/`, configPaths);
+			await ctx.parameter('result', String(result));
+			expect(result).toBe(`${testDir}/a.js`);
 
 			unlinkSync(aPath);
 			unlinkSync(bPath);

@@ -1,6 +1,10 @@
+import * as allure from 'allure-js-commons';
 import { z } from 'astro/zod';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, test } from 'vitest';
 import { deepRemoveDefaults, parseAndMerge, parseConfig } from '../src/zod-utils.js';
+import { parentSuiteName, sharedTags } from './test-utils.js';
+
+const localSuiteName = 'Zod Utility Tests';
 
 // Helper: simple schema for most tests
 const simpleSchema = z.object({
@@ -9,53 +13,105 @@ const simpleSchema = z.object({
 	baz: z.boolean().optional(),
 });
 
-describe('Zod Utils', () => {
-	describe('parseConfig', () => {
-		it('parses valid config', () => {
-			const result = parseConfig(simpleSchema, { foo: 'hello', bar: 1 });
-			expect(result).toEqual({ foo: 'hello', bar: 1 });
-		});
+describe(parentSuiteName, () => {
+	[
+		{
+			opts: { foo: 'hello', bar: 1 },
+			expected: { foo: 'hello', bar: 1 },
+		},
+		{
+			opts: { foo: 'hi' },
+			expected: { foo: 'hi', bar: 42 },
+		},
+		{
+			opts: { bar: 1 },
+			error: /Invalid Configuration Options/,
+		},
+	].forEach(({ opts, expected, error }) => {
+		test('Zod Utils - parseConfig Test', async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('parseConfig Tests');
+			await allure.tags(...sharedTags);
 
-		it('applies default values', () => {
-			const result = parseConfig(simpleSchema, { foo: 'hi' });
-			expect(result).toEqual({ foo: 'hi', bar: 42 });
-		});
+			await allure.parameter('testCase', JSON.stringify({ opts, expected, error }));
 
-		it('throws on invalid config', () => {
-			expect(() => parseConfig(simpleSchema, { bar: 1 })).toThrow(/Invalid Configuration Options/);
+			if (error) {
+				await allure.step('Should throw error for invalid config', async (ctx) => {
+					await ctx.parameter('input', JSON.stringify(opts));
+					await ctx.parameter('expectedError', error.toString());
+					expect(() => parseConfig(simpleSchema, opts)).toThrow(error);
+				});
+			} else {
+				await allure.step('Should parse config successfully', async (ctx) => {
+					await ctx.parameter('input', JSON.stringify(opts));
+					const result = parseConfig(simpleSchema, opts);
+					expect(result).toEqual(expected);
+				});
+			}
 		});
 	});
 
-	describe('deepRemoveDefaults', () => {
-		it('removes defaults and makes fields optional', () => {
-			const schema = z.object({
+	[
+		{
+			schema: z.object({
 				a: z.string().default('x'),
 				b: z.number(),
 				c: z.object({
 					d: z.boolean().default(true),
 				}),
-			});
-			const noDefaults = deepRemoveDefaults(schema);
-			expect(noDefaults.safeParse({}).success).toBe(true);
-			expect(noDefaults.safeParse({ b: 2, c: { d: false } }).success).toBe(true);
-		});
-
-		it('handles arrays, optionals, nullables, and tuples', () => {
-			const schema = z.object({
+			}),
+			tests: [
+				{
+					input: {},
+					success: true,
+				},
+				{
+					input: { b: 2, c: { d: false } },
+					success: true,
+				},
+			],
+		},
+		{
+			schema: z.object({
 				arr: z.array(z.string().default('x')).default(['y']),
 				opt: z.string().optional(),
 				nul: z.number().nullable(),
 				tup: z.tuple([z.string().default('a'), z.number()]),
-			});
+			}),
+			tests: [
+				{
+					input: {},
+					success: true,
+				},
+				{
+					input: { arr: ['z'], tup: ['b', 2] },
+					success: true,
+				},
+			],
+		},
+	].forEach(({ schema, tests }) => {
+		test('Zod Utils - deepRemoveDefaults Tests', async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('deepRemoveDefaults Test Set');
+			await allure.tags(...sharedTags);
+
 			const noDefaults = deepRemoveDefaults(schema);
-			expect(noDefaults.safeParse({}).success).toBe(true);
-			expect(noDefaults.safeParse({ arr: ['z'], tup: ['b', 2] }).success).toBe(true);
+
+			for (const { input, success } of tests) {
+				await allure.step(`Testing input: ${JSON.stringify(input)}`, async (ctx) => {
+					await ctx.parameter('input', JSON.stringify(input));
+					const result = noDefaults.safeParse(input);
+					expect(result.success).toBe(success);
+				});
+			}
 		});
 	});
 
-	describe('parseAndMerge', () => {
-		it('merges inlineConfig and configFile, configFile takes precedence', () => {
-			const schema = z.object({
+	[
+		{
+			schema: z.object({
 				a: z.string().default('A'),
 				b: z.number().default(1),
 				c: z
@@ -63,56 +119,79 @@ describe('Zod Utils', () => {
 						d: z.boolean().default(false),
 					})
 					.default({ d: false }),
-			});
-			const inlineConfig = { a: 'inline', b: 2, c: { d: false } };
-			const configFile = { a: 'file', c: { d: true } };
-			const result = parseAndMerge(schema, inlineConfig, configFile);
-			expect(result).toEqual({ a: 'file', b: 2, c: { d: true } });
-		});
+			}),
+			inlineConfig: { a: 'inline', b: 2, c: { d: false } },
+			configFile: { a: 'file', c: { d: true } },
+			expected: { a: 'file', b: 2, c: { d: true } },
+		},
+		{
+			schema: z.object({
+				a: z.string().default('A'),
+				b: z.number().default(1),
+				c: z
+					.object({
+						d: z.boolean().default(false),
+					})
+					.default({ d: false }),
+			}),
+			inlineConfig: { a: 'inline', b: 2, c: { d: true } },
+			configFile: undefined,
+			expected: { a: 'inline', b: 2, c: { d: true } },
+		},
+		{
+			schema: z.object({
+				a: z.string().default('A'),
+				b: z.number().default(1),
+				c: z
+					.object({
+						d: z.boolean().default(false),
+					})
+					.default({ d: false }),
+			}),
+			inlineConfig: undefined,
+			configFile: undefined,
+			expected: { a: 'A', b: 1, c: { d: false } },
+		},
+		{
+			schema: z.object({
+				a: z.string().default('A'),
+				b: z.number().default(1),
+				c: z
+					.object({
+						d: z.boolean().default(false),
+					})
+					.default({ d: false }),
+			}),
+			inlineConfig: undefined,
+			configFile: { b: 'not-a-number' },
+			error: /Invalid Config Options/,
+		},
+	].forEach(({ schema, inlineConfig, configFile, expected, error }) => {
+		test('Zod Utils - parseAndMerge Tests', async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('parseAndMerge Test Set');
+			await allure.tags(...sharedTags);
 
-		it('returns inlineConfig if configFile is undefined', () => {
-			const schema = z.object({
-				a: z.string().default('A'),
-				b: z.number().default(1),
-				c: z
-					.object({
-						d: z.boolean().default(false),
-					})
-					.default({ d: false }),
-			});
-			const inlineConfig = { a: 'inline', b: 2, c: { d: true } };
-			const result = parseAndMerge(schema, inlineConfig, undefined);
-			expect(result).toEqual(inlineConfig);
-		});
-
-		it('returns schema defaults if both configs are undefined', () => {
-			const schema = z.object({
-				a: z.string().default('A'),
-				b: z.number().default(1),
-				c: z
-					.object({
-						d: z.boolean().default(false),
-					})
-					.default({ d: false }),
-			});
-			const result = parseAndMerge(schema, undefined, undefined);
-			expect(result).toEqual({ a: 'A', b: 1, c: { d: false } });
-		});
-
-		it('throws on invalid configFile', () => {
-			const schema = z.object({
-				a: z.string().default('A'),
-				b: z.number().default(1),
-				c: z
-					.object({
-						d: z.boolean().default(false),
-					})
-					.default({ d: false }),
-			});
-			// @ts-expect-error - Testing invalid config
-			expect(() => parseAndMerge(schema, undefined, { b: 'not-a-number' })).toThrow(
-				/Invalid Config Options/
+			await allure.parameter(
+				'testCase',
+				JSON.stringify({ inlineConfig, configFile, expected, error })
 			);
+
+			if (error) {
+				await allure.step('Should throw error for invalid config', async (ctx) => {
+					await ctx.parameter('input', JSON.stringify({ inlineConfig, configFile }));
+					await ctx.parameter('expectedError', error.toString());
+					// @ts-expect-error - testing error case
+					expect(() => parseAndMerge(schema, inlineConfig, configFile)).toThrow(error);
+				});
+			} else {
+				await allure.step('Should parse and merge config successfully', async (ctx) => {
+					await ctx.parameter('input', JSON.stringify({ inlineConfig, configFile }));
+					const result = parseAndMerge(schema, inlineConfig, configFile);
+					expect(result).toEqual(expected);
+				});
+			}
 		});
 	});
 });
