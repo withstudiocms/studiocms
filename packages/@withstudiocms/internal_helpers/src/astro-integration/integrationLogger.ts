@@ -88,7 +88,7 @@ export async function logMessages(
 			{
 				logger: logger.fork(label),
 				logLevel,
-				verbose: logLevel === 'info' ? options.verbose : true,
+				verbose: logLevel === 'info' || logLevel === 'debug' ? options.verbose : true,
 			},
 			message
 		);

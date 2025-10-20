@@ -1,3 +1,6 @@
+import type { AstroIntegrationLogger } from 'astro';
+import { vi } from 'vitest';
+
 export const parentSuiteName = '@withstudiocms/internal_helpers Package Tests';
 export const sharedTags = [
 	'package:@withstudiocms/internal_helpers',
@@ -31,3 +34,44 @@ export const mockMarkdown = `
 
 export const markdownIncludesURL = 'https://github.com/Adammatthiesen';
 export const markdownParsedUsername = '@Adammatthiesen';
+
+export interface LogWritable<T> {
+	write: (chunk: T) => boolean;
+}
+export type LoggerLevel = 'debug' | 'info' | 'warn' | 'error' | 'silent';
+export interface LogMessage {
+	label: string | null;
+	level: LoggerLevel;
+	message: string;
+	newLine: boolean;
+}
+
+const loggerDest: LogWritable<LogMessage> = {
+	write: (_chunk: LogMessage) => {
+		// Mock implementation: simply return true
+		return true;
+	},
+};
+
+export const loggerOptions = {
+	level: 'info' as const,
+	dest: loggerDest,
+};
+
+export function createMockLogger() {
+	const logger: AstroIntegrationLogger = {
+		label: '',
+		options: loggerOptions,
+		info: vi.fn(),
+		warn: vi.fn(),
+		error: vi.fn(),
+		debug: vi.fn(),
+		fork: vi.fn((label: string) => {
+			// Each fork returns a new mock logger with the label attached for testing
+			const forked = createMockLogger();
+			forked.label = label;
+			return forked;
+		}),
+	};
+	return logger as unknown as AstroIntegrationLogger;
+}
