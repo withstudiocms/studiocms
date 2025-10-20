@@ -66,6 +66,12 @@ export default defineConfig({
 						os_version: os.version(),
 						node_version: process.version,
 					},
+					globalLabels: {
+						owner: 'withstudiocms',
+						lead: 'Adam Matthiesen',
+						framework: 'Vitest',
+						language: 'TypeScript/JavaScript',
+					},
 				},
 			],
 		],
@@ -89,6 +95,7 @@ export default defineConfig({
 				'**/**/scratchpad/**',
 				'**/**/test/fixtures/**',
 				'**/**/test/test-utils.ts',
+				'**/**/test/test-utils.js',
 				'**/**/runtime.ts',
 				// This is a minified Script used by @studiocms/md that is being injected using an Astro Component
 				'**/**/components/TinyMDE.astro',
