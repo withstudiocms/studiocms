@@ -51,16 +51,28 @@ export const studioCMSCreatePageDataSchema = z.object({
 	}),
 	description: z.string().optional(),
 	package: z.string(),
-	showOnNav: z.coerce.boolean().optional().default(false),
+	showOnNav: z
+		.string()
+		.optional()
+		.transform((v) => !!v && v.toLowerCase() === 'true'),
 	heroImage: z.string().optional(),
 	parentFolder: z
 		.union([z.string(), z.null()])
 		.transform((value) => (value === 'null' || value === null ? null : value))
 		.optional()
 		.default(null),
-	draft: z.coerce.boolean().optional().default(false),
-	showAuthor: z.coerce.boolean().optional().default(false),
-	showContributors: z.coerce.boolean().optional().default(false),
+	draft: z
+		.string()
+		.optional()
+		.transform((v) => !!v && v.toLowerCase() === 'true'),
+	showAuthor: z
+		.string()
+		.optional()
+		.transform((v) => !!v && v.toLowerCase() === 'true'),
+	showContributors: z
+		.string()
+		.optional()
+		.transform((v) => !!v && v.toLowerCase() === 'true'),
 	categories: z
 		.string()
 		.or(z.array(z.string()))
