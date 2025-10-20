@@ -1,39 +1,109 @@
-import { describe, expect, it } from '@effect/vitest';
+import { describe, expect, it, test } from '@effect/vitest';
+import * as allure from 'allure-js-commons';
 import { appendSearchParamsToUrl, Effect, HTTPClient, runEffect } from '../src/effect.js';
+import { parentSuiteName, sharedTags } from './test-utils.js';
 
-describe('Effect Utilities', () => {
-	it('runEffect resolves Effect with value', async () => {
-		const effect = Effect.succeed(42);
-		const result = await runEffect(effect);
-		expect(result).toBe(42);
+const localSuiteName = 'Effect Utility Tests';
+
+describe(parentSuiteName, () => {
+	[
+		{
+			name: 'Effect Utilities - runEffect resolves with value',
+			testFn: Effect.succeed(42),
+			expected: 42,
+		},
+		{
+			name: 'Effect Utilities - runEffect rejects with error',
+			testFn: Effect.fail('error!'),
+			expectedError: 'error!',
+		},
+	].forEach(({ name, testFn, expected, expectedError }) => {
+		test(name, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('runEffect Tests');
+			await allure.tags(...sharedTags);
+
+			if (expected !== undefined) {
+				await allure.step('Running Effect and expecting resolution', async (ctx) => {
+					await ctx.parameter('expected', String(expected));
+					const result = await runEffect(testFn);
+					await ctx.parameter('result', String(result));
+					expect(result).toBe(expected);
+				});
+			} else if (expectedError !== undefined) {
+				await allure.step('Running Effect and expecting rejection', async () => {
+					await expect(runEffect(testFn)).rejects.toThrow(expectedError);
+				});
+			}
+		});
 	});
 
-	it('runEffect rejects Effect with error', async () => {
-		const errorEffect = Effect.fail('error!');
-		await expect(runEffect(errorEffect)).rejects.toThrow('error!');
+	[
+		{
+			curried: true,
+		},
+		{
+			curried: false,
+		},
+	].forEach(({ curried }) => {
+		const testName = curried
+			? 'appendSearchParamsToUrl (curried) appends param correctly'
+			: 'appendSearchParamsToUrl (uncurried) appends param correctly';
+
+		test(testName, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('appendSearchParamsToUrl Tests');
+			await allure.tags(...sharedTags);
+
+			const url = new URL('https://example.com');
+			let resultUrl: URL;
+
+			if (curried) {
+				await allure.step('Using curried version to append param', async (ctx) => {
+					const appendParam = appendSearchParamsToUrl('testKey', 'testValue');
+					resultUrl = appendParam(url);
+					await ctx.parameter('resultUrl', resultUrl.toString());
+
+					expect(resultUrl.searchParams.get('testKey')).toBe('testValue');
+					expect(resultUrl.toString()).toBe('https://example.com/?testKey=testValue');
+				});
+			} else {
+				await allure.step('Using uncurried version to append param', async (ctx) => {
+					resultUrl = appendSearchParamsToUrl(url, 'testKey', 'testValue');
+					await ctx.parameter('resultUrl', resultUrl.toString());
+
+					expect(resultUrl.searchParams.get('testKey')).toBe('testValue');
+					expect(resultUrl.toString()).toBe('https://example.com/?testKey=testValue');
+				});
+			}
+		});
 	});
 
-	it('appendSearchParamsToUrl (curried) appends param', () => {
-		const url = new URL('https://example.com');
-		const appendParam = appendSearchParamsToUrl('foo', 'bar');
-		const resultUrl = appendParam(url);
-		expect(resultUrl.searchParams.get('foo')).toBe('bar');
-		expect(resultUrl.toString()).toBe('https://example.com/?foo=bar');
-	});
+	test('HTTPClient provides a retrying HttpClient instance', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('HTTPClient Tests');
+		await allure.tags(...sharedTags);
 
-	it('appendSearchParamsToUrl (uncurried) appends param', () => {
-		const url = new URL('https://example.com');
-		const resultUrl = appendSearchParamsToUrl(url, 'baz', 'qux');
-		expect(resultUrl.searchParams.get('baz')).toBe('qux');
-		expect(resultUrl.toString()).toBe('https://example.com/?baz=qux');
-	});
+		await allure.step('Creating HTTPClient and making GET request to example.com', async (ctx) => {
+			const client = await runEffect(HTTPClient.pipe(Effect.provide(HTTPClient.Default)));
+			await ctx.parameter('HTTPClient Created', 'true');
 
-	it.effect('HTTPClient provides a retrying HttpClient instance', () =>
-		Effect.gen(function* () {
-			const client = yield* HTTPClient;
-			const response = yield* client.get('https://example.com');
-			const result = yield* response.text;
+			expect(client).toBeDefined();
+
+			const response = await runEffect(client.get('https://example.com'));
+			await ctx.parameter('GET Request Made', 'true');
+
+			expect(response).toBeDefined();
+			expect(response.status).toBe(200);
+
+			const result = await runEffect(response.text);
+			await ctx.parameter('Response Text Retrieved', 'true');
+
+			expect(result).toBeDefined();
 			expect(result).toContain('<title>Example Domain</title>');
-		}).pipe(Effect.provide(HTTPClient.Default))
-	);
+		});
+	});
 });

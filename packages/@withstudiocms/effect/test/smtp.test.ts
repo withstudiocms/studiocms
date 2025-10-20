@@ -1,7 +1,7 @@
 import * as allure from 'allure-js-commons';
 import type { Layer } from 'effect/Layer';
 import nodemailer from 'nodemailer';
-import { beforeAll, describe, expect, it, test } from 'vitest';
+import { beforeAll, describe, expect, test } from 'vitest';
 import { Effect } from '../src/effect.js';
 import { SMTPService, SMTPTransportConfig, TransportConfig } from '../src/smtp.js';
 import { parentSuiteName, sharedTags } from './test-utils.js';
@@ -31,7 +31,7 @@ describe(parentSuiteName, { timeout: 10000 }, () => {
 		testLayer = SMTPTransportConfig.makeLive(testConfig);
 	});
 
-	test(`${localSuiteName} - SMTPTransportConfig Should Create Live Layer`, async () => {
+	test('SMTPService - SMTPTransportConfig Should Create Live Layer', async () => {
 		await allure.parentSuite(parentSuiteName);
 		await allure.suite(localSuiteName);
 		await allure.subSuite('SMTPTransportConfig Tests');
