@@ -51,16 +51,16 @@ export const studioCMSCreatePageDataSchema = z.object({
 	}),
 	description: z.string().optional(),
 	package: z.string(),
-	showOnNav: z.coerce.boolean().optional().default(false),
+	showOnNav: z.string().optional().transform(transformStringToBoolean),
 	heroImage: z.string().optional(),
 	parentFolder: z
 		.union([z.string(), z.null()])
 		.transform((value) => (value === 'null' || value === null ? null : value))
 		.optional()
 		.default(null),
-	draft: z.coerce.boolean().optional().default(false),
-	showAuthor: z.coerce.boolean().optional().default(false),
-	showContributors: z.coerce.boolean().optional().default(false),
+	draft: z.string().optional().transform(transformStringToBoolean),
+	showAuthor: z.string().optional().transform(transformStringToBoolean),
+	showContributors: z.string().optional().transform(transformStringToBoolean),
 	categories: z
 		.string()
 		.or(z.array(z.string()))
@@ -101,4 +101,16 @@ export function formDataToRecord(formData: FormData, keyRemapping?: Record<strin
 		record[mappedKey] = value;
 	}
 	return record;
+}
+
+/**
+ * Transform a string true/false value to boolean.
+ *
+ * - If the input value is undefined, return false.
+ *
+ * @param value - The value to transform, can be undefined, 'true' or 'false'.
+ * @returns Transformed value in boolean.
+ */
+export function transformStringToBoolean(value: string | undefined): boolean {
+	return !!value && value.toLowerCase() === 'true';
 }
