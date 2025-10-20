@@ -3,9 +3,11 @@ import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import * as fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
+import * as allure from 'allure-js-commons';
 import stripAnsi from 'strip-ansi';
-import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, test, vi } from 'vitest';
 import run from '../lib/index.js';
+import { parentSuiteName, sharedTags } from './test-utils.js';
 
 vi.mock('tinyglobby', () => ({
 	glob: vi.fn(async (patterns, _opts) => {
@@ -35,9 +37,10 @@ afterEach(() => {
 	vi.unstubAllGlobals();
 });
 
-describe('buildkit CLI', () => {
+describe(parentSuiteName, () => {
 	const cwd = process.cwd();
 	let tmpDir;
+
 	beforeAll(() => {
 		tmpDir = mkdtempSync(path.join(os.tmpdir(), 'buildkit-cli-test-'));
 		process.chdir(tmpDir);
@@ -49,66 +52,110 @@ describe('buildkit CLI', () => {
 		process.chdir(cwd);
 		rmSync(tmpDir, { recursive: true, force: true });
 	});
-	it('help command: should show help when no command is provided', async () => {
-		process.argv = ['node', 'buildkit'];
-		await run();
 
-		expect(consoleLogSpy).toHaveBeenCalled();
+	[
+		{
+			name: 'Buildkit CLI - help command',
+			args: ['node', 'buildkit'],
+			toContain: [
+				'StudioCMS Buildkit',
+				'Usage:',
+				'Commands:',
+				'dev',
+				'build',
+				'Dev and Build Options:',
+				'--no-clean-dist',
+				'--bundle',
+				'--force-cjs',
+			],
+		},
+		{
+			name: 'Buildkit CLI - help command with invalid command',
+			args: ['node', 'buildkit', 'invalid-command'],
+			toContain: ['StudioCMS Buildkit', 'Usage:'],
+		},
+	].forEach(({ name, args, toContain }) => {
+		test(name, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite('CLI Tests');
+			await allure.subSuite(name);
+			await allure.tags(...sharedTags);
 
-		const output = consoleLogSpy.mock.calls.map((call) => stripAnsi(call[0])).join('\n');
+			await allure.step('Run command', async (ctx) => {
+				process.argv = args;
+				await ctx.parameter('Command Arguments', args.join(' '));
+				await run();
+			});
 
-		expect(output).toContain('StudioCMS Buildkit');
-		expect(output).toContain('Usage:');
-		expect(output).toContain('Commands:');
-		expect(output).toContain('dev');
-		expect(output).toContain('build');
-		expect(output).toContain('Dev and Build Options:');
-		expect(output).toContain('--no-clean-dist');
-		expect(output).toContain('--bundle');
-		expect(output).toContain('--force-cjs');
-	});
+			await allure.step('Verify help output', async (ctx) => {
+				const output = consoleLogSpy.mock.calls.map((call) => stripAnsi(call[0])).join('\n');
 
-	it('buildkit CLI: help command: should show help with invalid command', async () => {
-		process.argv = ['node', 'buildkit', 'invalid-command'];
-		await run();
+				await ctx.parameter('CLI Output', output);
 
-		expect(consoleLogSpy).toHaveBeenCalled();
-
-		const output = consoleLogSpy.mock.calls.map((call) => stripAnsi(call[0])).join('\n');
-
-		expect(output).toContain('StudioCMS Buildkit');
-		expect(output).toContain('Usage:');
-	});
-
-	it('throws if no entry points found', async () => {
-		const { glob } = await import('tinyglobby');
-		glob.mockResolvedValueOnce([]);
-		process.argv = ['node', 'buildkit', 'build', 'src/index.ts'];
-		await run().catch((error) => {
-			expect(error.message).toMatch(/No entry points found/);
+				toContain.forEach((str) => {
+					expect(output).toContain(str);
+				});
+			});
 		});
 	});
 
-	it('runs build with correct esbuild options', async () => {
-		const { glob } = await import('tinyglobby');
-		glob.mockResolvedValueOnce([path.join(tmpDir, 'src/index.ts')]);
-		fs.readFile.mockResolvedValueOnce(
-			JSON.stringify({ type: 'module', dependencies: { foo: '^1.0.0' } })
-		);
+	[
+		{
+			name: 'Buildkit CLI - build command with no entry points',
+			args: ['node', 'buildkit', 'build', 'src/index.ts'],
+			errorMessage: /No entry points found/,
+			globResolveValue: false,
+			fsResolveValues: undefined,
+		},
+		{
+			name: 'Buildkit CLI - build command with entry point',
+			args: [
+				'node',
+				'buildkit',
+				'build',
+				'src/index.ts',
+				'--outdir=dist',
+				'--tsconfig=tsconfig.json',
+			],
+			errorMessage: null,
+			globResolveValue: true,
+			fsResolveValues: [JSON.stringify({ type: 'module', dependencies: { foo: '^1.0.0' } })],
+		},
+	].forEach(({ name, args, errorMessage, globResolveValue, fsResolveValues }) => {
+		test(name, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite('CLI Tests');
+			await allure.subSuite(name);
+			await allure.tags(...sharedTags);
 
-		const execFileSyncMock = vi.spyOn(child_process, 'execFileSync').mockReturnValue('');
+			const { glob } = await import('tinyglobby');
+			glob.mockResolvedValueOnce(globResolveValue ? path.join(tmpDir, 'src/index.ts') : []);
+			if (fsResolveValues) {
+				fs.readFile.mockResolvedValueOnce(fsResolveValues[0]);
+			}
 
-		process.argv = [
-			'node',
-			'buildkit',
-			'build',
-			'src/index.ts',
-			'--outdir=dist',
-			'--tsconfig=tsconfig.json',
-		];
-		await run();
+			await allure.step('Run command', async (ctx) => {
+				process.argv = args;
+				await ctx.parameter('Command Arguments', args.join(' '));
+				if (errorMessage) {
+					await run().catch(async (error) => {
+						await ctx.parameter('Error Message', error.message);
+						expect(error.message).toMatch(errorMessage);
+					});
+				} else {
+					await run();
+				}
+			});
 
-		expect(execFileSyncMock).toHaveBeenCalled();
-		expect(consoleLogSpy.mock.calls.some((call) => call[0].includes('Build Complete'))).toBe(true);
+			if (!errorMessage) {
+				await allure.step('Verify build output', async (ctx) => {
+					const output = consoleLogSpy.mock.calls.map((call) => stripAnsi(call[0])).join('\n');
+					await ctx.parameter('CLI Output', output);
+					expect(consoleLogSpy.mock.calls.some((call) => call[0].includes('Build Complete'))).toBe(
+						true
+					);
+				});
+			}
+		});
 	});
 });
