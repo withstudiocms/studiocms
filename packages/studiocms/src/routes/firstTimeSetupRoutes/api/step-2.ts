@@ -87,13 +87,13 @@ export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
 				// If the email is invalid, return an error
 				const checkEmail = z
 					.string()
-					.email()
+					.email({ message: 'Email address is invalid' })
 					.safeParse(email);
 
 				if (!checkEmail.success) {
 					return createJsonResponse(
 						{
-							error: 'Email address is invalid',
+							error: checkEmail.error.errors.map((e) => e.message).join(', '),
 						},
 						{
 							status: 400,
