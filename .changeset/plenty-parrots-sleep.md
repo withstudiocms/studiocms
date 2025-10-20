@@ -2,4 +2,4 @@
 "studiocms": patch
 ---
 
-Parse zod json errors for frontend
+Fixes zod error parsing for first time setup api route responses.
