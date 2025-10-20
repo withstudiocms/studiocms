@@ -164,7 +164,7 @@ importers:
         specifier: ^2.34.1
         version: 2.34.1
       allure-js-commons:
-        specifier: ^3.0.8
+        specifier: ^3.4.1
         version: 3.4.1
       allure-vitest:
         specifier: ^3.4.1
