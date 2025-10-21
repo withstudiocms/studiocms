@@ -1,9 +1,12 @@
-import { defineProject } from 'vitest/config';
+import { defineProject, mergeConfig } from 'vitest/config';
+import { configShared } from '../../../vitest.shared.js';
 
-export default defineProject({
-	test: {
-		name: '@withstudiocms/auth-kit',
-		environment: 'node',
-		include: ['**/*.test.ts'],
-	},
-});
+export default mergeConfig(
+	configShared,
+	defineProject({
+		test: {
+			name: '@withstudiocms/auth-kit',
+			include: ['**/*.test.ts'],
+		},
+	})
+);
