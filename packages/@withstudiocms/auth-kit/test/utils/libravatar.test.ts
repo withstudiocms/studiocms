@@ -3,7 +3,7 @@ import { describe, expect, test } from 'vitest';
 import libravatar, { type TargetComponents } from '../../src/utils/libravatar.js';
 import { parentSuiteName, sharedTags } from '../test-utils.js';
 
-const localSuiteName = 'Libravatar TS Utility Tests';
+const localSuiteName = 'Libravatar Utility Tests';
 
 // Helper for predictable hash (MD5 of 'user@example.com')
 const knownEmail = 'user@example.com';
