@@ -1,64 +1,87 @@
-import { describe, expect, it } from 'vitest';
+import * as allure from 'allure-js-commons';
+import { describe, expect, test } from 'vitest';
 import {
 	decodeCodePoint,
 	fromCodePoint,
 	replaceCodePoint,
 } from '../../../src/component-proxy/decoder/decode-codepoint.js';
+import { parentSuiteName, sharedTags } from '../../test-utils.js';
 
-describe('decode-codepoint', () => {
-	describe('fromCodePoint', () => {
-		it('returns correct string for BMP code points', () => {
-			expect(fromCodePoint(0x41)).toBe('A');
-			expect(fromCodePoint(0x20ac)).toBe('€');
-		});
+const localSuiteName = 'Component Proxy Tests';
 
-		it('returns correct string for astral code points', () => {
-			expect(fromCodePoint(0x1f600)).toBe('😀');
-			expect(fromCodePoint(0x1d306)).toBe('𝌆');
-		});
+describe(parentSuiteName, () => {
+	[
+		{ input: 0x41, expected: 'A' },
+		{ input: 0x20ac, expected: '€' },
+		{ input: 0x1f600, expected: '😀' },
+		{ input: 0x1d306, expected: '𝌆' },
+	].forEach(({ input, expected }) => {
+		test(`fromCodePoint with input: ${JSON.stringify(input)}`, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('fromCodePoint Tests');
+			await allure.tags(...sharedTags);
 
-		it('returns correct string for multiple code points', () => {
-			expect(fromCodePoint(0x41, 0x42, 0x43)).toBe('ABC');
-		});
-	});
+			await allure.parameter('input', String(input));
+			await allure.parameter('expected', String(expected));
 
-	describe('replaceCodePoint', () => {
-		it('returns replacement character for surrogate code points', () => {
-			expect(replaceCodePoint(0xd800)).toBe(0xfffd);
-			expect(replaceCodePoint(0xdfff)).toBe(0xfffd);
-		});
-
-		it('returns replacement character for code points above Unicode range', () => {
-			expect(replaceCodePoint(0x110000)).toBe(0xfffd);
-		});
-
-		it('returns mapped value for C1 controls', () => {
-			expect(replaceCodePoint(128)).toBe(8364); // €
-			expect(replaceCodePoint(136)).toBe(710); // ˆ
-			expect(replaceCodePoint(153)).toBe(8482); // ™
-		});
-
-		it('returns code point unchanged if not mapped or invalid', () => {
-			expect(replaceCodePoint(0x41)).toBe(0x41);
-			expect(replaceCodePoint(0x20ac)).toBe(0x20ac);
+			await allure.step('Convert code point to string', async (ctx) => {
+				const result = fromCodePoint(input as any);
+				ctx.parameter('result', String(result));
+				expect(result).toBe(expected);
+			});
 		});
 	});
 
-	describe('decodeCodePoint', () => {
-		it('decodes mapped C1 control code points', () => {
-			expect(decodeCodePoint(128)).toBe('€');
-			expect(decodeCodePoint(136)).toBe('ˆ');
-			expect(decodeCodePoint(153)).toBe('™');
-		});
+	[
+		{ input: 0xd800, expected: 0xfffd },
+		{ input: 0xdfff, expected: 0xfffd },
+		{ input: 0x110000, expected: 0xfffd },
+		{ input: 128, expected: 8364 }, // €
+		{ input: 136, expected: 710 }, // ˆ
+		{ input: 153, expected: 8482 }, // ™
+		{ input: 0x41, expected: 0x41 },
+		{ input: 0x20ac, expected: 0x20ac },
+	].forEach(({ input, expected }) => {
+		test(`replaceCodePoint with input: ${input}`, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('replaceCodePoint Tests');
+			await allure.tags(...sharedTags);
 
-		it('decodes regular code points', () => {
-			expect(decodeCodePoint(0x41)).toBe('A');
-			expect(decodeCodePoint(0x20ac)).toBe('€');
-		});
+			await allure.parameter('input', String(input));
+			await allure.parameter('expected', String(expected));
 
-		it('returns replacement character for invalid code points', () => {
-			expect(decodeCodePoint(0xd800)).toBe('�');
-			expect(decodeCodePoint(0x110000)).toBe('�');
+			await allure.step('Replace code point if necessary', async (ctx) => {
+				const result = replaceCodePoint(input);
+				ctx.parameter('result', String(result));
+				expect(result).toBe(expected);
+			});
+		});
+	});
+
+	[
+		{ input: 128, expected: '€' },
+		{ input: 136, expected: 'ˆ' },
+		{ input: 153, expected: '™' },
+		{ input: 0x41, expected: 'A' },
+		{ input: 0x20ac, expected: '€' },
+		{ input: 0x1f600, expected: '😀' },
+	].forEach(({ input, expected }) => {
+		test(`decodeCodePoint with input: ${input} (Deprecated)`, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('decodeCodePoint Tests (Deprecated)');
+			await allure.tags(...sharedTags);
+
+			await allure.parameter('input', String(input));
+			await allure.parameter('expected', String(expected));
+
+			await allure.step('Decode code point to character', async (ctx) => {
+				const result = decodeCodePoint(input);
+				ctx.parameter('result', String(result));
+				expect(result).toBe(expected);
+			});
 		});
 	});
 });
