@@ -1,5 +1,6 @@
+import * as allure from 'allure-js-commons';
 import type { AstroIntegrationLogger } from 'astro';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { describe, expect, test } from 'vitest';
 import {
 	convertHyphensToUnderscores,
 	convertUnderscoresToHyphens,
@@ -7,276 +8,287 @@ import {
 	getIndent,
 	integrationLogger,
 } from '../src/utils.js';
+import { createMockLogger, parentSuiteName, sharedTags } from './test-utils.js';
 
-function createMockLogger() {
-	const logger: Record<string, any> = {
-		info: vi.fn(),
-		warn: vi.fn(),
-		error: vi.fn(),
-		debug: vi.fn(),
-		fork: vi.fn((label: string) => {
-			// Each fork returns a new mock logger with the label attached for testing
-			const forked = createMockLogger();
-			forked.label = label;
-			return forked;
-		}),
-	};
-	return logger as unknown as AstroIntegrationLogger;
-}
+const localSuiteName = 'Utility Tests';
 
-describe('integrationLogger', () => {
-	let logger: AstroIntegrationLogger;
+describe(parentSuiteName, () => {
+	[
+		{ logLevel: 'info' as const, verbose: true, method: 'info' },
+		{ logLevel: 'warn' as const, verbose: true, method: 'warn' },
+		{ logLevel: 'error' as const, verbose: true, method: 'error' },
+		{ logLevel: 'debug' as const, verbose: true, method: 'debug' },
+	].forEach(({ logLevel, verbose, method }) => {
+		test(`Utility - integrationLogger logs at ${logLevel} when verbose is true`, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('integrationLogger Tests');
+			await allure.tags(...sharedTags);
 
-	beforeEach(() => {
-		logger = createMockLogger();
-	});
+			await allure.parameter('logLevel', logLevel);
+			await allure.parameter('verbose', String(verbose));
 
-	it('logs message at specified logLevel when verbose is true', async () => {
-		await integrationLogger({ logLevel: 'info', logger, verbose: true }, 'Test message');
-		expect(logger.info).toHaveBeenCalledWith('Test message');
-	});
+			const logger = createMockLogger();
 
-	it('logs message at specified logLevel when verbose is undefined', async () => {
-		await integrationLogger({ logLevel: 'warn', logger }, 'Warn message');
-		expect(logger.warn).toHaveBeenCalledWith('Warn message');
-	});
-
-	it('does not log info/debug when verbose is false', async () => {
-		await integrationLogger({ logLevel: 'info', logger, verbose: false }, 'Should not log');
-		await integrationLogger({ logLevel: 'debug', logger, verbose: false }, 'Should not log');
-		expect(logger.info).not.toHaveBeenCalled();
-		expect(logger.debug).not.toHaveBeenCalled();
-	});
-
-	it('logs warn/error when verbose is false', async () => {
-		await integrationLogger({ logLevel: 'warn', logger, verbose: false }, 'Warn');
-		await integrationLogger({ logLevel: 'error', logger, verbose: false }, 'Error');
-		expect(logger.warn).toHaveBeenCalledWith('Warn');
-		expect(logger.error).toHaveBeenCalledWith('Error');
-	});
-});
-
-describe('String Utilities', () => {
-	describe('convertHyphensToUnderscores', () => {
-		it('should convert single hyphen to underscore', () => {
-			const result = convertHyphensToUnderscores('hello-world');
-			expect(result).toBe('hello_world');
-		});
-
-		it('should convert multiple hyphens to underscores', () => {
-			const result = convertHyphensToUnderscores('hello-world-test-case');
-			expect(result).toBe('hello_world_test_case');
-		});
-
-		it('should handle consecutive hyphens', () => {
-			const result = convertHyphensToUnderscores('hello--world');
-			expect(result).toBe('hello__world');
-		});
-
-		it('should handle hyphens at the beginning and end', () => {
-			const result = convertHyphensToUnderscores('-hello-world-');
-			expect(result).toBe('_hello_world_');
-		});
-
-		it('should handle empty string', () => {
-			const result = convertHyphensToUnderscores('');
-			expect(result).toBe('');
-		});
-
-		it('should handle string with no hyphens', () => {
-			const result = convertHyphensToUnderscores('helloworld');
-			expect(result).toBe('helloworld');
-		});
-
-		it('should handle string with only hyphens', () => {
-			const result = convertHyphensToUnderscores('---');
-			expect(result).toBe('___');
+			await allure.step(`Should log message at ${logLevel}`, async (ctx) => {
+				const message = `Test message at ${logLevel}`;
+				await integrationLogger({ logLevel, logger, verbose }, message);
+				await ctx.parameter('message', message);
+				expect(logger[method as keyof AstroIntegrationLogger]).toHaveBeenCalledWith(message);
+			});
 		});
 	});
 
-	describe('convertUnderscoresToHyphens', () => {
-		it('should convert single underscore to hyphen', () => {
-			const result = convertUnderscoresToHyphens('hello_world');
-			expect(result).toBe('hello-world');
-		});
+	[
+		{ logLevel: 'info' as const, verbose: false, method: 'info' },
+		{ logLevel: 'warn' as const, verbose: false, method: 'warn' },
+		{ logLevel: 'error' as const, verbose: false, method: 'error' },
+		{ logLevel: 'debug' as const, verbose: false, method: 'debug' },
+		{ logLevel: 'info' as const, verbose: undefined, method: 'info' },
+		{ logLevel: 'warn' as const, verbose: undefined, method: 'warn' },
+		{ logLevel: 'error' as const, verbose: undefined, method: 'error' },
+		{ logLevel: 'debug' as const, verbose: undefined, method: 'debug' },
+	].forEach(({ logLevel, verbose, method }) => {
+		test(`Utility - integrationLogger does not log info/debug when verbose is false for logLevel ${logLevel}`, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('integrationLogger Tests');
+			await allure.tags(...sharedTags);
 
-		it('should convert multiple underscores to hyphens', () => {
-			const result = convertUnderscoresToHyphens('hello_world_test_case');
-			expect(result).toBe('hello-world-test-case');
-		});
+			await allure.parameter('logLevel', logLevel);
+			await allure.parameter('verbose', String(verbose));
 
-		it('should handle consecutive underscores', () => {
-			const result = convertUnderscoresToHyphens('hello__world');
-			expect(result).toBe('hello--world');
-		});
+			const logger = createMockLogger();
 
-		it('should handle underscores at the beginning and end', () => {
-			const result = convertUnderscoresToHyphens('_hello_world_');
-			expect(result).toBe('-hello-world-');
-		});
-
-		it('should handle empty string', () => {
-			const result = convertUnderscoresToHyphens('');
-			expect(result).toBe('');
-		});
-
-		it('should handle string with no underscores', () => {
-			const result = convertUnderscoresToHyphens('helloworld');
-			expect(result).toBe('helloworld');
-		});
-
-		it('should handle string with only underscores', () => {
-			const result = convertUnderscoresToHyphens('___');
-			expect(result).toBe('---');
+			await allure.step(`Should not log info/debug at ${logLevel}`, async (ctx) => {
+				const message = `Test message at ${logLevel}`;
+				await integrationLogger({ logLevel, logger, verbose }, message);
+				await ctx.parameter('message', message);
+				if (method === 'info' || method === 'debug') {
+					expect(logger[method as keyof AstroIntegrationLogger]).not.toHaveBeenCalled();
+				} else {
+					expect(logger[method as keyof AstroIntegrationLogger]).toHaveBeenCalledWith(message);
+				}
+			});
 		});
 	});
 
-	describe('getIndent', () => {
-		it('should return spaces for space-indented line', () => {
-			const result = getIndent('    hello world');
-			expect(result).toBe('    ');
-		});
+	[
+		{ input: 'hello-world', expected: 'hello_world' },
+		{ input: 'hello-world-test-case', expected: 'hello_world_test_case' },
+		{ input: 'hello--world', expected: 'hello__world' },
+		{ input: '-hello-world-', expected: '_hello_world_' },
+		{ input: '', expected: '' },
+		{ input: 'helloworld', expected: 'helloworld' },
+		{ input: '---', expected: '___' },
+	].forEach(({ input, expected }) => {
+		test(`Utility - convertHyphensToUnderscores converts "${input}" to "${expected}"`, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('convertHyphensToUnderscores Tests');
+			await allure.tags(...sharedTags);
 
-		it('should return tabs for tab-indented line', () => {
-			const result = getIndent('\t\thello world');
-			expect(result).toBe('\t\t');
-		});
+			await allure.parameter('input', input);
+			await allure.parameter('expected', expected);
 
-		it('should return mixed whitespace', () => {
-			const result = getIndent('  \t hello world');
-			expect(result).toBe('  \t ');
-		});
-
-		it('should return empty string for non-indented line', () => {
-			const result = getIndent('hello world');
-			expect(result).toBe('');
-		});
-
-		it('should return empty string for empty string', () => {
-			const result = getIndent('');
-			expect(result).toBe('');
-		});
-
-		it('should return whitespace for line with only whitespace', () => {
-			const result = getIndent('   ');
-			expect(result).toBe('   ');
-		});
-
-		it('should handle line with leading and trailing whitespace', () => {
-			const result = getIndent('  hello world  ');
-			expect(result).toBe('  ');
+			await allure.step('Should convert hyphens to underscores', async () => {
+				const result = convertHyphensToUnderscores(input);
+				expect(result).toBe(expected);
+			});
 		});
 	});
 
-	describe('dedent', () => {
-		it('should remove common indentation from multi-line string', () => {
-			const input = `    line 1
+	[
+		{ input: 'hello_world', expected: 'hello-world' },
+		{ input: 'hello_world_test_case', expected: 'hello-world-test-case' },
+		{ input: 'hello__world', expected: 'hello--world' },
+		{ input: '_hello_world_', expected: '-hello-world-' },
+		{ input: '', expected: '' },
+		{ input: 'helloworld', expected: 'helloworld' },
+		{ input: '___', expected: '---' },
+	].forEach(({ input, expected }) => {
+		test(`Utility - convertUnderscoresToHyphens converts "${input}" to "${expected}"`, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('convertUnderscoresToHyphens Tests');
+			await allure.tags(...sharedTags);
+
+			await allure.parameter('input', input);
+			await allure.parameter('expected', expected);
+
+			await allure.step('Should convert underscores to hyphens', async () => {
+				const result = convertUnderscoresToHyphens(input);
+				expect(result).toBe(expected);
+			});
+		});
+	});
+
+	[
+		{
+			original: 'hello-world-test',
+			direction: 'toUnderscores' as const,
+			midway: 'hello_world_test',
+		},
+		{
+			original: 'hello_world_test',
+			direction: 'toHyphens' as const,
+			midway: 'hello-world-test',
+		},
+	].forEach(({ original, direction, midway }) => {
+		test(`Utility - round-trip conversion of "${original}" ${direction}`, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('Round-Trip Conversion Tests');
+			await allure.tags(...sharedTags);
+
+			await allure.parameter('original', original);
+			await allure.parameter('direction', direction);
+
+			await allure.step(`Should round-trip convert "${original}"`, async (ctx) => {
+				let converted: string;
+				let roundTripped: string;
+				if (direction === 'toUnderscores') {
+					converted = convertHyphensToUnderscores(original);
+					roundTripped = convertUnderscoresToHyphens(converted);
+				} else {
+					converted = convertUnderscoresToHyphens(original);
+					roundTripped = convertHyphensToUnderscores(converted);
+				}
+
+				await ctx.parameter('converted', converted);
+				await ctx.parameter('roundTripped', roundTripped);
+
+				expect(converted).toBe(midway);
+				expect(roundTripped).toBe(original);
+			});
+		});
+	});
+
+	[
+		{ input: '    hello world', expected: '    ' },
+		{ input: '\t\thello world', expected: '\t\t' },
+		{ input: '  \t hello world', expected: '  \t ' },
+		{ input: 'hello world', expected: '' },
+		{ input: '   ', expected: '   ' },
+		{ input: '', expected: '' },
+		{ input: '  hello world  ', expected: '  ' },
+	].forEach(({ input, expected }) => {
+		test(`Utility - getIndent returns "${expected}" for input "${input}"`, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('getIndent Tests');
+			await allure.tags(...sharedTags);
+
+			await allure.parameter('input', input);
+			await allure.parameter('expected', expected);
+
+			await allure.step('Should get correct indentation', async () => {
+				const result = getIndent(input);
+				expect(result).toBe(expected);
+			});
+		});
+	});
+
+	[
+		{
+			input: `    line 1
     line 2
-    line 3`;
-			const expected = `line 1
+    line 3`,
+			expected: `line 1
 line 2
-line 3`;
-			const result = dedent(input);
-			expect(result).toBe(expected);
-		});
-
-		it('should handle mixed indentation levels', () => {
-			const input = `    line 1
+line 3`,
+		},
+		{
+			input: `    line 1
         line 2
-    line 3`;
-			const expected = `line 1
+    line 3`,
+			expected: `line 1
     line 2
-line 3`;
-			const result = dedent(input);
-			expect(result).toBe(expected);
-		});
-
-		it('should handle tab indentation', () => {
-			const input = `\tline 1
+line 3`,
+		},
+		{
+			input: `\tline 1
 \tline 2
-\tline 3`;
-			const expected = `line 1
+\tline 3`,
+			expected: `line 1
 line 2
-line 3`;
-			const result = dedent(input);
-			expect(result).toBe(expected);
-		});
-
-		it('should handle empty first line', () => {
-			const input = `
+line 3`,
+		},
+		{
+			input: `
     line 1
-    line 2`;
-			const expected = `line 1
-line 2`;
-			const result = dedent(input);
-			expect(result).toBe(expected);
-		});
-
-		it('should handle leading newlines', () => {
-			const input = `\n\n    line 1
-    line 2`;
-			const expected = `line 1
-line 2`;
-			const result = dedent(input);
-			expect(result).toBe(expected);
-		});
-
-		it('should handle single line with indentation', () => {
-			const input = '    hello world';
-			const expected = 'hello world';
-			const result = dedent(input);
-			expect(result).toBe(expected);
-		});
-
-		it('should handle no indentation', () => {
-			const input = `line 1
+    line 2`,
+			expected: `line 1
+line 2`,
+		},
+		{
+			input: `\n\n    line 1
+    line 2`,
+			expected: `line 1
+line 2`,
+		},
+		{
+			input: '    hello world',
+			expected: 'hello world',
+		},
+		{
+			input: `line 1
 line 2
-line 3`;
-			const expected = `line 1
+line 3`,
+			expected: `line 1
 line 2
-line 3`;
-			const result = dedent(input);
-			expect(result).toBe(expected);
-		});
-
-		it('should handle empty string', () => {
-			const result = dedent('');
-			expect(result).toBe('');
-		});
-
-		it('should handle only whitespace lines', () => {
-			const input = `
+line 3`,
+		},
+		{
+			input: '',
+			expected: '',
+		},
+		{
+			input: `
     line 2
-    line 3`;
-			const expected = `line 2
-line 3`;
-			const result = dedent(input);
-			expect(result).toBe(expected);
+    line 3`,
+			expected: `line 2
+line 3`,
+		},
+	].forEach(({ input, expected }) => {
+		test('Utility - dedent correctly dedents input', async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('dedent Tests');
+			await allure.tags(...sharedTags);
+
+			await allure.parameter('input', input);
+			await allure.parameter('expected', expected);
+
+			await allure.step('Should dedent correctly', async () => {
+				const result = dedent(input);
+				expect(result).toBe(expected);
+			});
 		});
 	});
 
-	describe('integration tests', () => {
-		it('should convert hyphens to underscores and back', () => {
-			const original = 'hello-world-test';
-			const withUnderscores = convertHyphensToUnderscores(original);
-			const backToHyphens = convertUnderscoresToHyphens(withUnderscores);
-			expect(backToHyphens).toBe(original);
-		});
+	test('Utility - Integration test - dedent and convertHyphensToUnderscores', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('Integration Test - dedent and convertHyphensToUnderscores');
+		await allure.tags(...sharedTags);
 
-		it('should convert underscores to hyphens and back', () => {
-			const original = 'hello_world_test';
-			const withHyphens = convertUnderscoresToHyphens(original);
-			const backToUnderscores = convertHyphensToUnderscores(withHyphens);
-			expect(backToUnderscores).toBe(original);
-		});
+		const input = `\tconst hello-world = 'test';\nconst foo-bar = 'value';`;
+		const expected = `const hello_world = 'test';\nconst foo_bar = 'value';`;
 
-		it('should work with dedent on indented code with hyphens', () => {
-			const input = `    const hello-world = 'test';
-    const foo-bar = 'value';`;
+		await allure.parameter('input', input);
+		await allure.parameter('expected', expected);
+
+		await allure.step('Should dedent and convert hyphens to underscores', async (ctx) => {
+			await ctx.parameter('input', input);
+			await ctx.parameter('expected', expected);
+
 			const dedented = dedent(input);
+			await ctx.parameter('dedented', dedented);
+
 			const converted = convertHyphensToUnderscores(dedented);
-			const expected = `const hello_world = 'test';
-const foo_bar = 'value';`;
+			await ctx.parameter('converted', converted);
+
 			expect(converted).toBe(expected);
 		});
 	});
