@@ -2,9 +2,239 @@
 import { mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { Effect } from '@withstudiocms/effect';
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import * as allure from 'allure-js-commons';
+import { afterEach, beforeEach, describe, expect, it, test } from 'vitest';
 import { ComponentNotFoundError } from '../src/errors.js';
 import { ComponentRegistry } from '../src/registry/index.js';
+import { parentSuiteName, sharedTags } from './test-utils.js';
+
+const localSuiteName = 'Component Registry Tests';
+
+describe(parentSuiteName, () => {
+	const testDir = './test-components';
+	let registry: ComponentRegistry;
+
+	beforeEach(async () => {
+		mkdirSync(testDir, { recursive: true });
+
+		registry = await Effect.runPromise(
+			ComponentRegistry.pipe(Effect.provide(ComponentRegistry.Default))
+		);
+	});
+
+	afterEach(() => {
+		rmSync(testDir, { recursive: true, force: true });
+	});
+
+	test('ComponentRegistry - registerComponentFromFile - basic Astro file', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('ComponentRegistry Tests');
+		await allure.tags(...sharedTags);
+
+		const astroContent = `---
+interface Props {
+    title: string;
+    count?: number;
+    isVisible: boolean;
+}
+
+const { title, count = 0, isVisible } = Astro.props;
+---
+
+<div>
+    <h1>{title}</h1>
+    {isVisible && <p>Count: {count}</p>}
+</div>`;
+
+		const filePath = join(testDir, 'BasicComponent.astro');
+		writeFileSync(filePath, astroContent);
+
+		await allure.step('Register component from file', async () => {
+			await Effect.runPromise(registry.registerComponentFromFile(filePath));
+		});
+
+		await allure.step('Verify component is registered', async (ctx) => {
+			const component = await Effect.runPromise(registry.getComponentProps('BasicComponent'));
+
+			expect(component).toBeTruthy();
+			expect(component.props).toBeTruthy();
+			expect(component.props.length).toBe(3);
+
+			const titleProp = component.props.find((p: any) => p.name === 'title');
+			await ctx.parameter('titleProp', JSON.stringify(titleProp));
+			expect(titleProp).toBeTruthy();
+			expect(titleProp?.optional).toBe(false);
+			expect(titleProp?.type).toBe('string');
+
+			const countProp = component.props.find((p: any) => p.name === 'count');
+			await ctx.parameter('countProp', JSON.stringify(countProp));
+			expect(countProp).toBeTruthy();
+			expect(countProp?.optional).toBe(true);
+			expect(countProp?.type).toBe('number');
+
+			const isVisibleProp = component.props.find((p: any) => p.name === 'isVisible');
+			await ctx.parameter('isVisibleProp', JSON.stringify(isVisibleProp));
+			expect(isVisibleProp).toBeTruthy();
+			expect(isVisibleProp?.optional).toBe(false);
+			expect(isVisibleProp?.type).toBe('boolean');
+		});
+	});
+
+	test('ComponentRegistry - registerComponentFromFile - custom name', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('ComponentRegistry Tests');
+		await allure.tags(...sharedTags);
+
+		const astroContent = `---
+interface Props {
+    message: string;
+}
+
+const { message } = Astro.props;
+---
+
+<p>{message}</p>`;
+
+		const filePath = join(testDir, 'SomeFile.astro');
+		writeFileSync(filePath, astroContent);
+
+		await allure.step('Register component with custom name', async () => {
+			await Effect.runPromise(registry.registerComponentFromFile(filePath, 'CustomName'));
+		});
+
+		await allure.step('Verify component is registered with custom name', async (ctx) => {
+			const component = await Effect.runPromise(registry.getComponentProps('CustomName'));
+
+			expect(component).toBeTruthy();
+			expect(component.props.length).toBe(1);
+			expect(component.props[0].name).toBe('message');
+
+			await ctx.parameter('Registered Component Props', JSON.stringify(component.props));
+		});
+	});
+
+	// TODO: Refactor registerComponentFromFile to NOT throw on no props, but register with empty props array
+	// it makes more sense for the registry to handle this gracefully
+	test('ComponentRegistry - registerComponentFromFile - error on no props', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('ComponentRegistry Tests');
+		await allure.tags(...sharedTags);
+
+		const astroContent = `---
+// No props interface
+---
+
+<div>Static content</div>`;
+
+		const filePath = join(testDir, 'StaticComponent.astro');
+		writeFileSync(filePath, astroContent);
+
+		await allure.step('Attempt to register component with no props', async (ctx) => {
+			const res = await Effect.runPromise(
+				registry.registerComponentFromFile(filePath).pipe(
+					Effect.catchAll((error: any) => {
+						return Effect.succeed(new Error(`Failed to register component: ${error.message}`));
+					})
+				)
+			);
+
+			expect(res instanceof Error).toBe(true);
+			await ctx.parameter('Error Message', res instanceof Error ? res.message : 'No error');
+		});
+	});
+
+	test('ComponentRegistry - registerComponentFromFile - complex prop types', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('ComponentRegistry Tests');
+		await allure.tags(...sharedTags);
+
+		const astroContent = `---
+interface User {
+    id: number;
+    name: string;
+}
+
+interface Props {
+    users: User[];
+    callback?: (user: User) => void;
+    metadata: Record<string, any>;
+    status: 'pending' | 'active' | 'inactive';
+}
+
+const { users, callback, metadata, status } = Astro.props;
+---
+
+<div>
+    {users.map(user => <p key={user.id}>{user.name}</p>)}
+    <span>Status: {status}</span>
+</div>`;
+
+		const filePath = join(testDir, 'ComplexComponent.astro');
+		writeFileSync(filePath, astroContent);
+
+		await allure.step('Register component from file', async () => {
+			await Effect.runPromise(registry.registerComponentFromFile(filePath));
+		});
+
+		await allure.step('Verify component is registered with complex props', async (ctx) => {
+			const component = await Effect.runPromise(registry.getComponentProps('ComplexComponent'));
+
+			expect(component).toBeTruthy();
+			expect(component.props.length).toBe(4);
+
+			await ctx.parameter('Registered Component Props', JSON.stringify(component.props));
+
+			const usersProp = component.props.find((p: any) => p.name === 'users');
+			await ctx.parameter('usersProp', JSON.stringify(usersProp));
+			expect(usersProp).toBeTruthy();
+			expect(usersProp?.optional).toBe(false);
+
+			const callbackProp = component.props.find((p: any) => p.name === 'callback');
+			await ctx.parameter('callbackProp', JSON.stringify(callbackProp));
+			expect(callbackProp).toBeTruthy();
+			expect(callbackProp?.optional).toBe(true);
+
+			const metadataProp = component.props.find((p: any) => p.name === 'metadata');
+			await ctx.parameter('metadataProp', JSON.stringify(metadataProp));
+			expect(metadataProp).toBeTruthy();
+
+			const statusProp = component.props.find((p: any) => p.name === 'status');
+			await ctx.parameter('statusProp', JSON.stringify(statusProp));
+			expect(statusProp).toBeTruthy();
+		});
+	});
+
+	test('ComponentRegistry - registerComponentFromFile - non-existent file', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('ComponentRegistry Tests');
+		await allure.tags(...sharedTags);
+
+		const filePath = join(testDir, 'DoesNotExist.astro');
+
+		await allure.step('Attempt to register non-existent component file', async (ctx) => {
+			await expect(
+				Effect.runPromise(registry.registerComponentFromFile(filePath))
+			).rejects.toThrow();
+
+			await ctx.parameter('File Path', filePath);
+		});
+	});
+});
+
+//
+//
+//
+//
+//
+//
+// OLD
+//
+//
 
 describe('ComponentRegistry', () => {
 	const testDir = './test-components';
@@ -26,152 +256,152 @@ describe('ComponentRegistry', () => {
 		rmSync(testDir, { recursive: true, force: true });
 	});
 
-	describe('registerComponentFromFile', () => {
-		it('should register a component from a basic Astro file', async () => {
-			const astroContent = `---
-interface Props {
-    title: string;
-    count?: number;
-    isVisible: boolean;
-}
+	// describe('registerComponentFromFile', () => {
+	// 	// 		it('should register a component from a basic Astro file', async () => {
+	// 	// 			const astroContent = `---
+	// 	// interface Props {
+	// 	//     title: string;
+	// 	//     count?: number;
+	// 	//     isVisible: boolean;
+	// 	// }
 
-const { title, count = 0, isVisible } = Astro.props;
----
+	// 	// const { title, count = 0, isVisible } = Astro.props;
+	// 	// ---
 
-<div>
-    <h1>{title}</h1>
-    {isVisible && <p>Count: {count}</p>}
-</div>`;
+	// 	// <div>
+	// 	//     <h1>{title}</h1>
+	// 	//     {isVisible && <p>Count: {count}</p>}
+	// 	// </div>`;
 
-			const filePath = join(testDir, 'BasicComponent.astro');
-			writeFileSync(filePath, astroContent);
+	// 	// 			const filePath = join(testDir, 'BasicComponent.astro');
+	// 	// 			writeFileSync(filePath, astroContent);
 
-			await Effect.runPromise(registry.registerComponentFromFile(filePath));
+	// 	// 			await Effect.runPromise(registry.registerComponentFromFile(filePath));
 
-			expect(true).toBeTruthy();
+	// 	// 			expect(true).toBeTruthy();
 
-			const component = await Effect.runPromise(registry.getComponentProps('BasicComponent'));
+	// 	// 			const component = await Effect.runPromise(registry.getComponentProps('BasicComponent'));
 
-			expect(component).toBeTruthy();
-			expect(component.props).toBeTruthy();
-			expect(component.props.length).toBe(3);
+	// 	// 			expect(component).toBeTruthy();
+	// 	// 			expect(component.props).toBeTruthy();
+	// 	// 			expect(component.props.length).toBe(3);
 
-			const titleProp = component.props.find((p: any) => p.name === 'title');
-			const countProp = component.props.find((p: any) => p.name === 'count');
-			const isVisibleProp = component.props.find((p: any) => p.name === 'isVisible');
+	// 	// 			const titleProp = component.props.find((p: any) => p.name === 'title');
+	// 	// 			const countProp = component.props.find((p: any) => p.name === 'count');
+	// 	// 			const isVisibleProp = component.props.find((p: any) => p.name === 'isVisible');
 
-			expect(titleProp).toBeTruthy();
-			expect(titleProp?.optional).toBe(false);
-			expect(titleProp?.type).toBe('string');
+	// 	// 			expect(titleProp).toBeTruthy();
+	// 	// 			expect(titleProp?.optional).toBe(false);
+	// 	// 			expect(titleProp?.type).toBe('string');
 
-			expect(countProp).toBeTruthy();
-			expect(countProp?.optional).toBe(true);
-			expect(countProp?.type).toBe('number');
+	// 	// 			expect(countProp).toBeTruthy();
+	// 	// 			expect(countProp?.optional).toBe(true);
+	// 	// 			expect(countProp?.type).toBe('number');
 
-			expect(isVisibleProp).toBeTruthy();
-			expect(isVisibleProp?.optional).toBe(false);
-			expect(isVisibleProp?.type).toBe('boolean');
-		});
+	// 	// 			expect(isVisibleProp).toBeTruthy();
+	// 	// 			expect(isVisibleProp?.optional).toBe(false);
+	// 	// 			expect(isVisibleProp?.type).toBe('boolean');
+	// 	// 		});
 
-		it('should register component with custom name', async () => {
-			const astroContent = `---
-interface Props {
-    message: string;
-}
+	// 	// 		it('should register component with custom name', async () => {
+	// 	// 			const astroContent = `---
+	// 	// interface Props {
+	// 	//     message: string;
+	// 	// }
 
-const { message } = Astro.props;
----
+	// 	// const { message } = Astro.props;
+	// 	// ---
 
-<p>{message}</p>`;
+	// 	// <p>{message}</p>`;
 
-			const filePath = join(testDir, 'SomeFile.astro');
-			writeFileSync(filePath, astroContent);
+	// 	// 			const filePath = join(testDir, 'SomeFile.astro');
+	// 	// 			writeFileSync(filePath, astroContent);
 
-			await Effect.runPromise(registry.registerComponentFromFile(filePath, 'CustomName'));
+	// 	// 			await Effect.runPromise(registry.registerComponentFromFile(filePath, 'CustomName'));
 
-			const component = await Effect.runPromise(registry.getComponentProps('CustomName'));
+	// 	// 			const component = await Effect.runPromise(registry.getComponentProps('CustomName'));
 
-			expect(component).toBeTruthy();
-			expect(component.props.length).toBe(1);
-			expect(component.props[0].name).toBe('message');
-		});
+	// 	// 			expect(component).toBeTruthy();
+	// 	// 			expect(component.props.length).toBe(1);
+	// 	// 			expect(component.props[0].name).toBe('message');
+	// 	// 		});
 
-		it('should error on component with no props', async () => {
-			const astroContent = `---
-// No props interface
----
+	// 	// 		it('should error on component with no props', async () => {
+	// 	// 			const astroContent = `---
+	// 	// // No props interface
+	// 	// ---
 
-<div>Static content</div>`;
+	// 	// <div>Static content</div>`;
 
-			const filePath = join(testDir, 'StaticComponent.astro');
-			writeFileSync(filePath, astroContent);
+	// 	// 			const filePath = join(testDir, 'StaticComponent.astro');
+	// 	// 			writeFileSync(filePath, astroContent);
 
-			const res = await Effect.runPromise(
-				registry.registerComponentFromFile(filePath).pipe(
-					Effect.catchAll((error: any) => {
-						return Effect.succeed(new Error(`Failed to register component: ${error.message}`));
-					})
-				)
-			);
+	// 	// 			const res = await Effect.runPromise(
+	// 	// 				registry.registerComponentFromFile(filePath).pipe(
+	// 	// 					Effect.catchAll((error: any) => {
+	// 	// 						return Effect.succeed(new Error(`Failed to register component: ${error.message}`));
+	// 	// 					})
+	// 	// 				)
+	// 	// 			);
 
-			expect(res instanceof Error).toBe(true);
-		});
+	// 	// 			expect(res instanceof Error).toBe(true);
+	// 	// 		});
 
-		it('should handle complex prop types', async () => {
-			const astroContent = `---
-interface User {
-    id: number;
-    name: string;
-}
+	// 	// 		it('should handle complex prop types', async () => {
+	// 	// 			const astroContent = `---
+	// 	// interface User {
+	// 	//     id: number;
+	// 	//     name: string;
+	// 	// }
 
-interface Props {
-    users: User[];
-    callback?: (user: User) => void;
-    metadata: Record<string, any>;
-    status: 'pending' | 'active' | 'inactive';
-}
+	// 	// interface Props {
+	// 	//     users: User[];
+	// 	//     callback?: (user: User) => void;
+	// 	//     metadata: Record<string, any>;
+	// 	//     status: 'pending' | 'active' | 'inactive';
+	// 	// }
 
-const { users, callback, metadata, status } = Astro.props;
----
+	// 	// const { users, callback, metadata, status } = Astro.props;
+	// 	// ---
 
-<div>
-    {users.map(user => <p key={user.id}>{user.name}</p>)}
-    <span>Status: {status}</span>
-</div>`;
+	// 	// <div>
+	// 	//     {users.map(user => <p key={user.id}>{user.name}</p>)}
+	// 	//     <span>Status: {status}</span>
+	// 	// </div>`;
 
-			const filePath = join(testDir, 'ComplexComponent.astro');
-			writeFileSync(filePath, astroContent);
+	// 	// 			const filePath = join(testDir, 'ComplexComponent.astro');
+	// 	// 			writeFileSync(filePath, astroContent);
 
-			await Effect.runPromise(registry.registerComponentFromFile(filePath));
+	// 	// 			await Effect.runPromise(registry.registerComponentFromFile(filePath));
 
-			const component = await Effect.runPromise(registry.getComponentProps('ComplexComponent'));
+	// 	// 			const component = await Effect.runPromise(registry.getComponentProps('ComplexComponent'));
 
-			expect(component).toBeTruthy();
-			expect(component.props.length).toBe(4);
+	// 	// 			expect(component).toBeTruthy();
+	// 	// 			expect(component.props.length).toBe(4);
 
-			const usersProp = component.props.find((p: any) => p.name === 'users');
-			const callbackProp = component.props.find((p: any) => p.name === 'callback');
-			const metadataProp = component.props.find((p: any) => p.name === 'metadata');
-			const statusProp = component.props.find((p: any) => p.name === 'status');
+	// 	// 			const usersProp = component.props.find((p: any) => p.name === 'users');
+	// 	// 			const callbackProp = component.props.find((p: any) => p.name === 'callback');
+	// 	// 			const metadataProp = component.props.find((p: any) => p.name === 'metadata');
+	// 	// 			const statusProp = component.props.find((p: any) => p.name === 'status');
 
-			expect(usersProp).toBeTruthy();
-			expect(usersProp?.optional).toBe(false);
+	// 	// 			expect(usersProp).toBeTruthy();
+	// 	// 			expect(usersProp?.optional).toBe(false);
 
-			expect(callbackProp).toBeTruthy();
-			expect(callbackProp?.optional).toBe(true);
+	// 	// 			expect(callbackProp).toBeTruthy();
+	// 	// 			expect(callbackProp?.optional).toBe(true);
 
-			expect(metadataProp).toBeTruthy();
-			expect(statusProp).toBeTruthy();
-		});
+	// 	// 			expect(metadataProp).toBeTruthy();
+	// 	// 			expect(statusProp).toBeTruthy();
+	// 	// 		});
 
-		it('should throw error for non-existent file', async () => {
-			const filePath = join(testDir, 'DoesNotExist.astro');
+	// 	// it('should throw error for non-existent file', async () => {
+	// 	// 	const filePath = join(testDir, 'DoesNotExist.astro');
 
-			await expect(
-				Effect.runPromise(registry.registerComponentFromFile(filePath))
-			).rejects.toThrow();
-		});
-	});
+	// 	// 	await expect(
+	// 	// 		Effect.runPromise(registry.registerComponentFromFile(filePath))
+	// 	// 	).rejects.toThrow();
+	// 	// });
+	// });
 
 	describe('getComponentProps', () => {
 		it('should return component props for registered component', async () => {
