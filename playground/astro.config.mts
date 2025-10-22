@@ -19,4 +19,10 @@ export default defineConfig({
 		checkOrigin: false,
 	},
 	integrations: [db(), studioCMS(), devApps()],
+
+	// Used for devcontainer/docker development
+	server: {
+		port: 4321,
+		host: true,
+	},
 });

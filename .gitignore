@@ -4,6 +4,8 @@ node_modules
 .moon/docker
 .npmrc
 
+.pnpm-store
+
 # typedoc
 www/docs/src/content/docs/typedoc/*
 

@@ -1,8 +1,7 @@
 👋 Welcome to StudioCMS!
 
 🛠️ To get started, run the following commands:
-- `cd studiocms/` 
-- `proto install` - ProtoCLI will install and ensure correct versions for all engines and package managers
-- `pnpm install` - Install all dependencies for the monorepo
+- Follow the instructions in the README to setup the playground
+- Then run `pnpm dev` to start tinkering!
 
 🎉 The monorepo will then be ready to develop
