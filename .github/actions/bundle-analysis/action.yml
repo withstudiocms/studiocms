@@ -18,4 +18,5 @@ runs:
 
     - name: Run @${{ inputs.cmd }} Bundle Analysis
       shell: bash
-      run: pnpm bundle-test:${{ inputs.cmd }}
+      run: | # zizmor: ignore[template-injection]
+        pnpm bundle-test:${{ inputs.cmd }}

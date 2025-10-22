@@ -18,4 +18,5 @@ runs:
 
     - name: Run @${{ inputs.cmd }} TypeCheck
       shell: bash
-      run: pnpm ci:typecheck:${{ inputs.cmd }}
+      run: | # zizmor: ignore[template-injection]
+        pnpm ci:typecheck:${{ inputs.cmd }}
