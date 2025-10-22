@@ -166,6 +166,8 @@ const config: KnipConfig = {
 	workspaces: {
 		'.': {
 			ignoreDependencies: ['@changesets/config', 'studiocms', 'vite', 'allure-js-commons'],
+			// biome-ignore lint/suspicious/noTemplateCurlyInString: This is intended for matrix builds
+			ignoreBinaries: ['ci:typecheck:${{ matrix.cmd }}', 'bundle-test:${{ matrix.cmd }}'],
 			entry: ['.github/workflows/*.yml', '.github/scripts/**/*.mjs', 'scripts/**/*.mjs'],
 			project: ['.github/scripts/**/*.mjs', 'scripts/**/*.mjs'],
 		},
