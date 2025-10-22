@@ -41,7 +41,7 @@ jobs:
         run: pnpm ci:typecheck:${{ matrix.cmd }}
 
   vitest-tests:
-    name: Run Tests, Code Coverage & Allure Report
+    name: Code Coverage & Test Report
     runs-on: ubuntu-latest
     permissions:
       contents: write # For Allure GitHub Pages deployment

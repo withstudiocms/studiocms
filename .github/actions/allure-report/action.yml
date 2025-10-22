@@ -64,4 +64,4 @@ runs:
         message: |
           ### Allure Test Report for this PR:
           ${{ steps.allure.outputs.test_result_icon }} [Allure Report](${{ steps.allure.outputs.report_url }}) | [History](${{ steps.allure.outputs.report_history_url }})
-        comment_tag: allure_test_report
+        comment-tag: allure_test_report
