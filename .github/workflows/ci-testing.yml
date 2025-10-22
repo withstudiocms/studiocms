@@ -22,8 +22,9 @@ jobs:
   typecheck:
     name: Type Checks
     runs-on: ubuntu-latest
-    env:
-      NODE_OPTIONS: "--max_old_space_size=4096"
+    strategy:
+      matrix:
+        cmd: [ 'withstudiocms', 'studiocms', 'studiocms-packages' ]
     steps:
       - name: Check out code using Git
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
@@ -36,14 +37,8 @@ jobs:
       - name: Run Build for TypeChecks
         run: pnpm ci:build
 
-      - name: Run withstudiocms TypeCheck
-        run: pnpm ci:typecheck:withstudiocms
-
-      - name: Run StudioCMS TypeCheck
-        run: pnpm ci:typecheck:studiocms
-
-      - name: Run StudioCMS Plugin & Packages TypeCheck
-        run: pnpm ci:typecheck:studiocms-packages
+      - name: Run @${{ matrix.cmd }} TypeCheck
+        run: pnpm ci:typecheck:${{ matrix.cmd }}
 
   vitest-tests:
     name: Run Tests, Code Coverage & Allure Report
@@ -135,6 +130,9 @@ jobs:
     name: Bundle Analysis
     runs-on: ubuntu-latest
     if: (github.event.pull_request.head.repo.full_name == github.repository) || (github.ref == 'refs/heads/main' && github.repository == 'withstudiocms/studiocms')
+    strategy:
+      matrix:
+        cmd: [ 'blog', 'headless' ]
     env:
       NODE_OPTIONS: "--max_old_space_size=4096"
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
@@ -154,5 +152,5 @@ jobs:
       - name: Build packages
         run: pnpm ci:build
 
-      - name: Build Astro Bundle Tests
-        run: pnpm bundle-test:all
+      - name: Build Astro Bundle Test for @${{ matrix.cmd }}
+        run: pnpm bundle-test:${{ matrix.cmd }}

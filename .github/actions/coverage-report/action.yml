@@ -1,0 +1,37 @@
+name: Generate Code Coverage Report and Upload
+description: This action generates a code coverage report from test results and upload to Codecov.
+
+inputs:
+  slug:
+    description: "The repository slug for Codecov (e.g., owner/repo)."
+    required: true
+    default: "withstudiocms/studiocms"
+  coverage_flags:
+    description: "Flags to categorize the coverage report."
+    required: false
+    default: "integrations,plugins,tools-utils"
+  codecov_token:
+    description: "The Codecov upload token."
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Upload coverage report to Codecov
+      uses: codecov/codecov-action@5a1091511ad55cbe89839c7260b706298ca349f7
+      if: always() && (github.event.pull_request.head.repo.full_name == github.repository || github.ref == 'refs/heads/main')
+      with:
+        slug: ${{ inputs.slug }}
+        directory: "./coverage/"
+        files: "./coverage-final.json"
+        flags: ${{ inputs.coverage_flags }}
+        token: ${{ inputs.codecov_token }}
+
+    - name: Upload test results to Codecov
+      uses: codecov/test-results-action@47f89e9acb64b76debcd5ea40642d25a4adced9f
+      if: always() && (github.event.pull_request.head.repo.full_name == github.repository || github.ref == 'refs/heads/main')
+      with:
+        slug: ${{ inputs.slug }}
+        files: "./junit-report.xml"
+        flags: ${{ inputs.coverage_flags }}
+        token: ${{ inputs.codecov_token }}
