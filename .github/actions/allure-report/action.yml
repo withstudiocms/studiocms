@@ -18,6 +18,10 @@ inputs:
     description: "The directory containing Allure results."
     required: false
     default: "allure-results"
+  cname:
+    description: "Custom domain name for the Allure report site."
+    required: false
+    default: ""
 
 runs:
   using: "composite"
@@ -42,6 +46,7 @@ runs:
         report_dir: "${{ inputs.allure_report_dir }}"
         list_dirs: ${{ github.ref == 'refs/heads/main' }}
         branch_cleanup_enabled: ${{ github.ref == 'refs/heads/main' }}
+        cname: ${{ inputs.cname }}
 
     - name: Git Commit and Push Action
       uses: mgrybyk-org/git-commit-pull-push-action@d4ea5a1c3ad8fa12c8abc042b97ce2f194721eb1 # v1.2.6
