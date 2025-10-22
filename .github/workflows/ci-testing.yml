@@ -17,39 +17,32 @@ concurrency:
 
 permissions:
   contents: read
-  
+
 jobs:
   typecheck:
     name: Type Checks
     runs-on: ubuntu-latest
-    env:
-      NODE_OPTIONS: "--max_old_space_size=4096"
+    strategy:
+      fail-fast: false
+      matrix:
+        cmd: ["withstudiocms", "studiocms", "studiocms-packages"]
     steps:
-      - name: Check out code using Git
+      - name: Checkout code
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           persist-credentials: false
-  
-      - name: Install Tools & Dependencies
-        uses: withstudiocms/automations/.github/actions/install@729a20ff5e68dd95330fb1914b801960ad4b5e7b # main
 
-      - name: Run Build for TypeChecks
-        run: pnpm ci:build
-
-      - name: Run withstudiocms TypeCheck
-        run: pnpm ci:typecheck:withstudiocms
-
-      - name: Run StudioCMS TypeCheck
-        run: pnpm ci:typecheck:studiocms
-
-      - name: Run StudioCMS Plugin & Packages TypeCheck
-        run: pnpm ci:typecheck:studiocms-packages
+      - name: Run @${{ matrix.cmd }} TypeCheck
+        uses: ./.github/actions/type-check
+        with:
+          cmd: ${{ matrix.cmd }}
 
   vitest-tests:
-    name: Run Tests, Code Coverage & Allure Report
+    name: Code Coverage & Test Report
     runs-on: ubuntu-latest
     permissions:
       contents: write # For Allure GitHub Pages deployment
+      pull-requests: write # For Allure PR comments
     env:
       NODE_OPTIONS: "--max_old_space_size=4096"
     steps:
@@ -57,7 +50,7 @@ jobs:
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           persist-credentials: true
-  
+
       - name: Install Tools & Dependencies
         uses: withstudiocms/automations/.github/actions/install@729a20ff5e68dd95330fb1914b801960ad4b5e7b # main
 
@@ -67,74 +60,35 @@ jobs:
       - name: Run Tests & Code Coverage
         run: pnpm ci:test
 
-      - name: Get Allure history
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      - name: Generate Allure Report and Deploy
         if: always()
-        continue-on-error: true
+        uses: ./.github/actions/allure-report
         with:
-          persist-credentials: true
-          ref: testing/pages
-          path: testing/pages
+          gh_pages_branch: testing/allure
+          gh_page_history: testing/allure
+          allure_report_id: studiocms-tests
+          allure_report_dir: allure-results
+          cname: tests.studiocms.dev
 
-      - name: Generate Allure Report
-        uses: simple-elf/allure-report-action@53ebb757a2097edc77c53ecef4d454fc2f2f774c #master
-        if: always()
-        id: allure-report
-        with:
-          allure_results: allure-results
-          gh_pages: testing/pages
-          allure_report: allure-report
-          allure_history: allure-history
-          keep_reports: 20
-          report_name: StudioCMS Test Report
-
-      # Deploy Allure report to GitHub Pages ONLY if we are on main branch
-      - name: Deploy Allure Report to GitHub Pages
-        if: always() && github.ref == 'refs/heads/main'
-        uses: peaceiris/actions-gh-pages@4f9cc6602d3f66b9c108549d475ec49e8ef4d45e #v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_branch: testing/pages
-          publish_dir: allure-history
-          keep_files: true
-
-      # Upload Allure results as an artifact for easy access when working on PRs
-      - name: Upload Allure results artifact
-        if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 #v4.6.2
-        with:
-          name: allure-results
-          path: allure-results/
-          retention-days: 7
-
-      # CodeCov reports - only upload from PRs originating from this repository
-      # as we don't have access to secrets from forked repositories
-      - name: Upload coverage results to Codecov
+      - name: Generate Code Coverage Report and Upload
         if: always() && (github.event.pull_request.head.repo.full_name == github.repository || github.ref == 'refs/heads/main')
-        uses: codecov/codecov-action@5a1091511ad55cbe89839c7260b706298ca349f7
+        uses: ./.github/actions/coverage-report
         with:
           slug: withstudiocms/studiocms
-          directory: ./coverage/
-          files: ./coverage-final.json
-          flags: integrations,plugins,tools-utils
-          token: ${{ secrets.CODECOV_TOKEN }}
-
-      - name: Upload test results to Codecov
-        if: always() && (github.event.pull_request.head.repo.full_name == github.repository || github.ref == 'refs/heads/main')
-        uses: codecov/test-results-action@47f89e9acb64b76debcd5ea40642d25a4adced9f
-        with:
-          slug: withstudiocms/studiocms
-          files: ./junit-report.xml
-          flags: integrations,plugins,tools-utils
-          token: ${{ secrets.CODECOV_TOKEN }}
+          coverage_flags: integrations,plugins,tools-utils
+          codecov_token: ${{ secrets.CODECOV_TOKEN }}
 
   # Bundle Analysis can only run on PRs from the same repository or on main branch pushes
-  # This is because it needs to be able to access secret values for environment variables 
+  # This is because it needs to be able to access secret values for environment variables
   # to build the test projects
   bundle-analysis:
     name: Bundle Analysis
     runs-on: ubuntu-latest
     if: (github.event.pull_request.head.repo.full_name == github.repository) || (github.ref == 'refs/heads/main' && github.repository == 'withstudiocms/studiocms')
+    strategy:
+      fail-fast: false
+      matrix:
+        cmd: ["blog", "headless"]
     env:
       NODE_OPTIONS: "--max_old_space_size=4096"
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
@@ -148,11 +102,7 @@ jobs:
           fetch-depth: 2
           persist-credentials: false
 
-      - name: Install Tools & Dependencies
-        uses: withstudiocms/automations/.github/actions/install@729a20ff5e68dd95330fb1914b801960ad4b5e7b # main
-
-      - name: Build packages
-        run: pnpm ci:build
-
-      - name: Build Astro Bundle Tests
-        run: pnpm bundle-test:all
+      - name: Build Astro Bundle Test for @${{ matrix.cmd }}
+        uses: ./.github/actions/bundle-analysis
+        with:
+          cmd: ${{ matrix.cmd }}
