@@ -55,6 +55,7 @@ runs:
         repository: ${{ inputs.gh_page_history }}
         branch: ${{ inputs.gh_pages_branch }}
         pull_args: --rebase -X ours
+        commit_message: "chore: update Allure report"
 
     - name: Comment PR with Allure Report link
       if: ${{ always() && github.event_name == 'pull_request' && steps.allure.outputs.report_url }}
