@@ -1,0 +1,27 @@
+name: Run Bundle Analysis
+description: This action runs bundle analysis for specified commands.
+
+inputs:
+  cmd:
+    description: "The command to run bundle analysis for."
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Check out code using Git
+      uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      with:
+        fetch-depth: 2
+        persist-credentials: false
+
+    - name: Install Tools & Dependencies
+      uses: withstudiocms/automations/.github/actions/install@729a20ff5e68dd95330fb1914b801960ad4b5e7b # main
+
+    - name: run Build for Bundle Analysis
+      shell: bash
+      run: pnpm ci:build
+
+    - name: Run @${{ inputs.cmd }} Bundle Analysis
+      shell: bash
+      run: pnpm bundle-test:${{ inputs.cmd }}
