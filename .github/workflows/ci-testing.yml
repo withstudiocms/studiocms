@@ -23,6 +23,7 @@ jobs:
     name: Type Checks
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         cmd: ["withstudiocms", "studiocms", "studiocms-packages"]
     steps:
@@ -89,6 +90,7 @@ jobs:
     runs-on: ubuntu-latest
     if: (github.event.pull_request.head.repo.full_name == github.repository) || (github.ref == 'refs/heads/main' && github.repository == 'withstudiocms/studiocms')
     strategy:
+      fail-fast: false
       matrix:
         cmd: ["blog", "headless"]
     env:
