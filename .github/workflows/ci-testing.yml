@@ -27,6 +27,11 @@ jobs:
       matrix:
         cmd: ["withstudiocms", "studiocms", "studiocms-packages"]
     steps:
+      - name: Checkout code
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          persist-credentials: false
+
       - name: Run @${{ matrix.cmd }} TypeCheck
         uses: ./.github/actions/type-check
         with:
@@ -91,6 +96,12 @@ jobs:
       ASTRO_DB_APP_TOKEN: ${{ secrets.ASTRO_DB_APP_TOKEN }}
       CMS_ENCRYPTION_KEY: ${{ secrets.CMS_ENCRYPTION_KEY }}
     steps:
+      - name: Check out code using Git
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          fetch-depth: 2
+          persist-credentials: false
+
       - name: Build Astro Bundle Test for @${{ matrix.cmd }}
         uses: ./.github/actions/bundle-analysis
         with:

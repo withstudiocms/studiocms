@@ -9,12 +9,6 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Check out code using Git
-      uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-      with:
-        fetch-depth: 2
-        persist-credentials: false
-
     - name: Install Tools & Dependencies
       uses: withstudiocms/automations/.github/actions/install@729a20ff5e68dd95330fb1914b801960ad4b5e7b # main
 
