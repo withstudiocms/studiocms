@@ -426,25 +426,27 @@ export class StudioCMSRouteConfig extends Context.Tag('StudioCMSRouteConfig')<
 /**
  * Process and derive route settings from the main configuration.
  */
-const processConfig = Effect.fn((config: RouteConfig) =>
-	Effect.try(() => {
-		const processed = {
-			dbStartPage: config.dbStartPage,
-			shouldInject404Route: config.shouldInject404Route && !config.dbStartPage,
-			restAPIEnabled:
-				!config.dbStartPage && config.authConfig.enabled && !config.developerConfig.demoMode,
-			dashboardEnabled: config.dashboardEnabled && !config.dbStartPage,
-			dashboardAPIEnabled:
-				config.dashboardEnabled && !config.dbStartPage && config.authConfig.enabled,
-			usernameAndPasswordAPI: config.authConfig.providers.usernameAndPassword,
+const processedConfig = Effect.fn(
+	({
+		dbStartPage,
+		shouldInject404Route,
+		authConfig,
+		dashboardEnabled,
+		developerConfig,
+		oAuthProvidersConfigured,
+	}: RouteConfig) =>
+		Effect.succeed({
+			dbStartPage: dbStartPage,
+			shouldInject404Route: shouldInject404Route && !dbStartPage,
+			restAPIEnabled: !dbStartPage && authConfig.enabled && !developerConfig.demoMode,
+			dashboardEnabled: dashboardEnabled && !dbStartPage,
+			dashboardAPIEnabled: dashboardEnabled && !dbStartPage && authConfig.enabled,
+			usernameAndPasswordAPI: authConfig.enabled && authConfig.providers.usernameAndPassword,
 			userRegistrationEnabled:
-				config.authConfig.providers.usernameAndPassword &&
-				config.authConfig.providers.usernameAndPasswordConfig.allowUserRegistration,
-			oAuthEnabled: config.authConfig.enabled && config.oAuthProvidersConfigured,
-		};
-
-		return processed;
-	})
+				authConfig.providers.usernameAndPassword &&
+				authConfig.providers.usernameAndPasswordConfig.allowUserRegistration,
+			oAuthEnabled: authConfig.enabled && oAuthProvidersConfigured,
+		})
 );
 
 /**
@@ -475,7 +477,7 @@ export const getRoutes = Effect.gen(function* () {
 		usernameAndPasswordAPI,
 		dashboardEnabled,
 		dashboardAPIEnabled,
-	} = yield* processConfig(config);
+	} = yield* processedConfig(config);
 
 	const routes: InjectedRoute[] = [];
 

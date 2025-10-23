@@ -891,7 +891,7 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 			) {
 				extraRoutes.push({
 					pattern: dashboardRoute('[...pluginPage]'),
-					entrypoint: 'studiocms/frontend/[dashboard]/[...pluginPage].astro',
+					entrypoint: 'studiocms/frontend/pages/[dashboard]/[...pluginPage].astro',
 					prerender: false,
 				});
 			}
