@@ -2,7 +2,6 @@
   "links": [
     "..",
     "changeset-release_main",
-    "main",
-    "renovate_pnpm-workspace-dependencies"
+    "main"
   ]
 }
