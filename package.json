@@ -59,7 +59,7 @@
     "@changesets/config": "^3.1.1",
     "@changesets/write": "^0.4.0",
     "@crowdin/crowdin-api-client": "^1.48.3",
-    "@effect/language-service": "^0.45.1",
+    "@effect/language-service": "^0.46.0",
     "@effect/vitest": "^0.26.0",
     "@types/node": "catalog:",
     "@vitest/coverage-v8": "^3.2.4",
