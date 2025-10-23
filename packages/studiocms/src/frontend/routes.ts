@@ -430,22 +430,26 @@ const processedConfig = Effect.fn(
 	({
 		dbStartPage,
 		shouldInject404Route,
-		authConfig,
 		dashboardEnabled,
 		developerConfig,
 		oAuthProvidersConfigured,
+		authConfig: {
+			enabled: authEnabled,
+			providers: {
+				usernameAndPassword,
+				usernameAndPasswordConfig: { allowUserRegistration },
+			},
+		},
 	}: RouteConfig) =>
 		Effect.succeed({
 			dbStartPage: dbStartPage,
 			shouldInject404Route: shouldInject404Route && !dbStartPage,
-			restAPIEnabled: !dbStartPage && authConfig.enabled && !developerConfig.demoMode,
+			restAPIEnabled: !dbStartPage && authEnabled && !developerConfig.demoMode,
 			dashboardEnabled: dashboardEnabled && !dbStartPage,
-			dashboardAPIEnabled: dashboardEnabled && !dbStartPage && authConfig.enabled,
-			usernameAndPasswordAPI: authConfig.enabled && authConfig.providers.usernameAndPassword,
-			userRegistrationEnabled:
-				authConfig.providers.usernameAndPassword &&
-				authConfig.providers.usernameAndPasswordConfig.allowUserRegistration,
-			oAuthEnabled: authConfig.enabled && oAuthProvidersConfigured,
+			dashboardAPIEnabled: dashboardEnabled && !dbStartPage && authEnabled,
+			usernameAndPasswordAPI: authEnabled && usernameAndPassword,
+			userRegistrationEnabled: usernameAndPassword && allowUserRegistration,
+			oAuthEnabled: authEnabled && oAuthProvidersConfigured,
 		})
 );
 
