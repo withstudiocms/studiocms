@@ -1,6 +1,9 @@
 import { StudioCMSRoutes } from 'studiocms:lib';
 import { oAuthButtons } from 'studiocms:plugins/auth/providers';
 
+/**
+ * Data for each OAuth provider button.
+ */
 export type ProviderData = {
 	enabled: boolean;
 	href: string;
@@ -8,6 +11,9 @@ export type ProviderData = {
 	image: string;
 };
 
+/**
+ * Array of OAuth provider data for rendering buttons.
+ */
 export const providerData: ProviderData[] = oAuthButtons.map(
 	({ enabled, image, label, safeName }) => ({
 		enabled,
@@ -17,4 +23,7 @@ export const providerData: ProviderData[] = oAuthButtons.map(
 	})
 );
 
+/**
+ * Whether to show any OAuth buttons.
+ */
 export const showOAuth = providerData.some((provider) => provider.enabled);

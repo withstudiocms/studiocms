@@ -1,8 +1,8 @@
 ---
 import { useTranslations } from 'studiocms:i18n';
 import { Divider } from 'studiocms:ui/components/divider';
+import { providerData, showOAuth } from '../shared/oAuthButtonProviders.js';
 import OAuthButton from './OAuthButton.astro';
-import { providerData, showOAuth } from './oAuthButtonProviders.js';
 
 const lang = Astro.locals.StudioCMS.defaultLang;
 const t = useTranslations(lang, '@studiocms/auth:oauth-stack');

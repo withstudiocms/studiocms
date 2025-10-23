@@ -4,7 +4,7 @@ import type { UiLanguageKeys } from 'studiocms:i18n';
 import { Card } from 'studiocms:ui/components/card';
 import { Icon } from 'studiocms:ui/components/icon';
 import { createComponentProxy, transformHTML } from '../../../runtime/index.js';
-import type { GridItem } from './shared.js';
+import type { GridItemUsable as GridItem } from '../../../schemas/plugins/shared.js';
 
 export interface Props extends GridItem {
 	lang: UiLanguageKeys;
