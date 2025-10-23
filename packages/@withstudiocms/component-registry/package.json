@@ -77,7 +77,7 @@
 	"dependencies": {
 		"@withstudiocms/effect": "workspace:*",
 		"astro-integration-kit": "catalog:",
-		"ts-morph": "^27.0.0",
+		"ts-morph": "^27.0.2",
 		"ultrahtml": "1.6.0"
 	},
 	"devDependencies": {
