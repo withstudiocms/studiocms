@@ -16,13 +16,13 @@ reviews:
   collapse_walkthrough: true
   changed_files_summary: true
   sequence_diagrams: true
-  estimate_code_review_effort: true
+  estimate_code_review_effort: false
   assess_linked_issues: true
-  related_issues: true
-  related_prs: true
-  suggested_labels: true
-  auto_apply_labels: true
-  suggested_reviewers: true
+  related_issues: false
+  related_prs: false
+  suggested_labels: false
+  auto_apply_labels: false
+  suggested_reviewers: false
   auto_assign_reviewers: false
   poem: false
   labeling_instructions: []
