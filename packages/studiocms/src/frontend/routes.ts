@@ -462,7 +462,7 @@ const processedConfig = Effect.fn(
 			dashboardEnabled: dashboardEnabled && !dbStartPage,
 			dashboardAPIEnabled: dashboardEnabled && !dbStartPage && authEnabled,
 			usernameAndPasswordAPI: authEnabled && usernameAndPassword,
-			userRegistrationEnabled: usernameAndPassword && allowUserRegistration,
+			userRegistrationEnabled: authEnabled && usernameAndPassword && allowUserRegistration,
 			oAuthEnabled: authEnabled && oAuthProvidersConfigured,
 		})
 );
