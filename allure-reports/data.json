@@ -1,10 +1,10 @@
 {
   "links": [
     "..",
-    "adam_dev-container",
     "adam_refactor-frontend",
     "changeset-release_main",
     "main",
-    "renovate_all-minor-patch"
+    "renovate_all-minor-patch",
+    "renovate_pnpm-workspace-dependencies"
   ]
 }
