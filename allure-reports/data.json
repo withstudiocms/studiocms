@@ -3,7 +3,6 @@
     "..",
     "changeset-release_main",
     "main",
-    "renovate_all-minor-patch",
     "renovate_pnpm-workspace-dependencies"
   ]
 }
