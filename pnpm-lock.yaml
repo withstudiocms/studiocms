@@ -841,14 +841,14 @@ importers:
         specifier: '>=0.17.2'
         version: 0.18.0
       '@iconify-json/circle-flags':
-        specifier: ^1.2.8
-        version: 1.2.9
+        specifier: ^1.2.10
+        version: 1.2.10
       '@iconify-json/flat-color-icons':
         specifier: ^1.2.3
         version: 1.2.3
       '@iconify-json/simple-icons':
-        specifier: ^1.2.54
-        version: 1.2.54
+        specifier: ^1.2.55
+        version: 1.2.55
       '@inox-tools/runtime-logger':
         specifier: ^0.7.0
         version: 0.7.0(astro@5.14.7(@types/node@22.18.10)(jiti@2.6.1)(rollup@4.52.4)(typescript@5.9.3)(yaml@2.8.1))
@@ -859,8 +859,8 @@ importers:
         specifier: ^1.2.2
         version: 1.2.2(nanostores@1.0.1)
       '@nanostores/persistent':
-        specifier: ^1.1.0
-        version: 1.1.0(nanostores@1.0.1)
+        specifier: ^1.2.0
+        version: 1.2.0(nanostores@1.0.1)
       '@studiocms/ui':
         specifier: catalog:studiocms
         version: 1.0.0-beta.3(astro@5.14.7(@types/node@22.18.10)(jiti@2.6.1)(rollup@4.52.4)(typescript@5.9.3)(yaml@2.8.1))(vite@6.4.0(@types/node@22.18.10)(jiti@2.6.1)(yaml@2.8.1))
@@ -889,8 +889,8 @@ importers:
         specifier: workspace:*
         version: link:../@withstudiocms/template-lang
       ace-builds:
-        specifier: ^1.43.3
-        version: 1.43.3
+        specifier: ^1.43.4
+        version: 1.43.4
       astro:
         specifier: catalog:min
         version: 5.14.7(@types/node@22.18.10)(jiti@2.6.1)(rollup@4.52.4)(typescript@5.9.3)(yaml@2.8.1)
@@ -910,7 +910,7 @@ importers:
         specifier: ^3.4.52
         version: 3.4.52
       dompurify:
-        specifier: ^3.2.7
+        specifier: ^3.3.0
         version: 3.3.0
       dotenv:
         specifier: ^17.2.3
@@ -946,8 +946,8 @@ importers:
         specifier: ^1.0.1
         version: 1.0.1
       package-manager-detector:
-        specifier: ^1.4.0
-        version: 1.4.1
+        specifier: ^1.5.0
+        version: 1.5.0
       semver:
         specifier: ^7.7.3
         version: 7.7.3
@@ -1699,8 +1699,8 @@ packages:
     resolution: {integrity: sha512-vBZP4NlzfOlerQTnba4aqZoMhE/a9HY7HRqoOPaETQcSQuWEIyZMHGfVu6w9wGtGK5fED5qRs2DteVCjOH60sA==}
     engines: {node: '>=14'}
 
-  '@iconify-json/circle-flags@1.2.9':
-    resolution: {integrity: sha512-V054DfSNVdz/f089C8juzxlX+EXYHdjZg9FItm13XRm+fOQeMh8X0Eo7xzvWUIGbSmKRN5liHj0ORC95xJw30w==}
+  '@iconify-json/circle-flags@1.2.10':
+    resolution: {integrity: sha512-sZRxs689a281RtZvuAiKtV7pQHv8Tk0HkinSM7QvLgdLEK8xgGRCcbDvL09Rq+/KtemmsMzGhS9/qt+r3ca+Ug==}
 
   '@iconify-json/flat-color-icons@1.2.3':
     resolution: {integrity: sha512-KcmJ7CY0TKFv5GuBjiS4/v++jEcNXna1jfY+yq014tnw/MN/jMI2oYpoMHGuIpYtUqDu7eove+WySnOYO8nS3w==}
@@ -1708,8 +1708,8 @@ packages:
   '@iconify-json/heroicons@1.2.3':
     resolution: {integrity: sha512-n+vmCEgTesRsOpp5AB5ILB6srsgsYK+bieoQBNlafvoEhjVXLq8nIGN4B0v/s4DUfa0dOrjwE/cKJgIKdJXOEg==}
 
-  '@iconify-json/simple-icons@1.2.54':
-    resolution: {integrity: sha512-OQQYl8yC5j3QklZOYnK31QYe5h47IhyCoxSLd53f0e0nA4dgi8VOZS30SgSAbsecQ+S0xlGJMjXIHTIqZ+ML3w==}
+  '@iconify-json/simple-icons@1.2.55':
+    resolution: {integrity: sha512-9vc04pmup/zcef8hDypWU8nMwMaFVkWuUzWkxyL++DVp5AA8baoJHK6RyKN1v+cvfR2agxkUb053XVggzFFkTA==}
 
   '@iconify/types@2.0.0':
     resolution: {integrity: sha512-+wluvCrRhXrhyOmRDJ3q8mux9JkKy5SJ/v8ol2tu4FVjyYvtEzkc/3pK15ET6RKg4b4w4BmTk1+gsCUhf21Ykg==}
@@ -2039,8 +2039,8 @@ packages:
     peerDependencies:
       nanostores: ^0.9.0 || ^0.10.0 || ^0.11.0 || ^1.0.0
 
-  '@nanostores/persistent@1.1.0':
-    resolution: {integrity: sha512-e6vfv7H99VkCfSoNTR/qNVMj6vXwWcsEL+LCQQamej5GK9iDefKxPCJjdOpBi1p4lNCFIQ+9VjYF1spvvc2p6A==}
+  '@nanostores/persistent@1.2.0':
+    resolution: {integrity: sha512-kf5WOLpVI9Pk+AwXHIax4in3pesNe8299BEGQ2H8kgI05SZw7KKWCDv7bt2FOlND8E5y7rO5PRW34q0UCAl/DA==}
     engines: {node: ^20.0.0 || >=22.0.0}
     peerDependencies:
       nanostores: ^0.9.0 || ^0.10.0 || ^0.11.0 || ^1.0.0
@@ -2870,8 +2870,8 @@ packages:
   abbrev@1.1.1:
     resolution: {integrity: sha512-nne9/IiQ/hzIhY6pdDnbBtz7DjPTKrY00P/zvPSm5pOFkl6xuGrGnXn/VtTNNfNtAfZ9/1RtehkszU9qcTii0Q==}
 
-  ace-builds@1.43.3:
-    resolution: {integrity: sha512-MCl9rALmXwIty/4Qboijo/yNysx1r6hBTzG+6n/TiOm5LFhZpEvEIcIITPFiEOEFDfgBOEmxu+a4f54LEFM6Sg==}
+  ace-builds@1.43.4:
+    resolution: {integrity: sha512-8hAxVfo2ImICd69BWlZwZlxe9rxDGDjuUhh+WeWgGDvfBCE+r3lkynkQvIovDz4jcMi8O7bsEaFygaDT+h9sBA==}
 
   acorn-globals@4.3.4:
     resolution: {integrity: sha512-clfQEh21R+D0leSbUdWf3OcfqyaCSAQ8Ryq00bofSekfr9W8u1jyYZo6ir0xu9Gtcf7BjcHJpnbZH7JOCpP60A==}
@@ -4803,8 +4803,8 @@ packages:
   package-manager-detector@0.2.11:
     resolution: {integrity: sha512-BEnLolu+yuz22S56CU1SUKq3XC3PkwD5wv4ikR4MfGvnRVcmzXR9DwSlW2fEamyTPyXHomBJRzgapeuBvRNzJQ==}
 
-  package-manager-detector@1.4.1:
-    resolution: {integrity: sha512-dSMiVLBEA4XaNJ0PRb4N5cV/SEP4BWrWZKBmfF+OUm2pQTiZ6DDkKeWaltwu3JRhLoy59ayIkJ00cx9K9CaYTg==}
+  package-manager-detector@1.5.0:
+    resolution: {integrity: sha512-uBj69dVlYe/+wxj8JOpr97XfsxH/eumMt6HqjNTmJDf/6NO9s+0uxeOneIz3AsPt2m6y9PqzDzd3ATcU17MNfw==}
 
   pako@0.2.9:
     resolution: {integrity: sha512-NUcwaKxUxWrZLpDG+z/xZaCgQITkA/Dv4V/T6bw7VON6l1Xz/VnrBqrYjZQ12TamKHzITTfOEIYUj48y2KXImA==}
@@ -7000,7 +7000,7 @@ snapshots:
 
   '@fastify/busboy@2.1.1': {}
 
-  '@iconify-json/circle-flags@1.2.9':
+  '@iconify-json/circle-flags@1.2.10':
     dependencies:
       '@iconify/types': 2.0.0
 
@@ -7012,7 +7012,7 @@ snapshots:
     dependencies:
       '@iconify/types': 2.0.0
 
-  '@iconify-json/simple-icons@1.2.54':
+  '@iconify-json/simple-icons@1.2.55':
     dependencies:
       '@iconify/types': 2.0.0
 
@@ -7341,7 +7341,7 @@ snapshots:
     dependencies:
       nanostores: 1.0.1
 
-  '@nanostores/persistent@1.1.0(nanostores@1.0.1)':
+  '@nanostores/persistent@1.2.0(nanostores@1.0.1)':
     dependencies:
       nanostores: 1.0.1
 
@@ -8252,7 +8252,7 @@ snapshots:
       commander: 13.1.0
       figlet: 1.9.3
       is-unicode-supported: 2.1.0
-      package-manager-detector: 1.4.1
+      package-manager-detector: 1.5.0
       slice-ansi: 7.1.2
       strip-ansi: 7.1.2
       tinyexec: 1.0.1
@@ -8263,7 +8263,7 @@ snapshots:
 
   abbrev@1.1.1: {}
 
-  ace-builds@1.43.3: {}
+  ace-builds@1.43.4: {}
 
   acorn-globals@4.3.4:
     dependencies:
@@ -8442,7 +8442,7 @@ snapshots:
       neotraverse: 0.6.18
       p-limit: 6.2.0
       p-queue: 8.1.1
-      package-manager-detector: 1.4.1
+      package-manager-detector: 1.5.0
       picomatch: 4.0.3
       prompts: 2.4.2
       rehype: 13.0.2
@@ -10676,7 +10676,7 @@ snapshots:
     dependencies:
       quansync: 0.2.11
 
-  package-manager-detector@1.4.1: {}
+  package-manager-detector@1.5.0: {}
 
   pako@0.2.9: {}
 
