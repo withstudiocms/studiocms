@@ -1,4 +1,4 @@
-@import "../fonts/onest-font.css";
+@import "../fonts/css/onest-variable.css";
 
 html {
 	background: var(--background);

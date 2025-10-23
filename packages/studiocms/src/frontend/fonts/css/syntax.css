@@ -3,7 +3,7 @@
 /* Custom Monospace Font that creates a unique code block with syntax highlighting */
 @font-face {
 	font-family: "Monaspace";
-	src: url("./SyntaxFont.woff2") format("woff2");
+	src: url("../woff2/syntax.woff2") format("woff2");
 }
 
 @font-palette-values --github-dark {

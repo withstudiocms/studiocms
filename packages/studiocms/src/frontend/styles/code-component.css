@@ -1,4 +1,4 @@
-@import "../fonts/syntax-font.css";
+@import "../fonts/css/syntax.css";
 
 .custom-code {
 	font-family: var(--scms-font-syntax);
