@@ -1,5 +1,5 @@
 import type { InjectedRoute } from 'astro';
-import { Context, Effect, Layer, pipe } from '../effect.js';
+import { Context, Effect, Layer } from '../effect.js';
 
 /**
  * Resolves the file path for a given route.
@@ -423,6 +423,9 @@ export class StudioCMSRouteConfig extends Context.Tag('StudioCMSRouteConfig')<
 	static Live = (config: RouteConfig) => Layer.succeed(this, config);
 }
 
+/**
+ * Processed Route Configuration
+ */
 interface ProcessedRouteConfig {
 	dbStartPage: boolean;
 	shouldInject404Route: boolean;
@@ -533,11 +536,11 @@ const mapProcessedConfig = Effect.fn(
 /**
  * Flat map processed configuration to route groups.
  */
-const flatMapProcessedConfig = (dashboardRoute: (path: string) => string) =>
+const flatMapProcessedConfig = (config: Pick<RouteConfig, 'dashboardRoute'>) =>
 	Effect.fn((processed: ProcessedRouteConfig) =>
 		mapProcessedConfig({
 			...processed,
-			dashboardRoute,
+			dashboardRoute: config.dashboardRoute,
 		})
 	);
 
@@ -557,27 +560,24 @@ const mapRouteGroups = Effect.fn(
 );
 
 /**
+ * Inject extra routes from the configuration.
+ */
+const injectExtraRoutes = (config: Pick<RouteConfig, 'extraRoutes'>) =>
+	Effect.fn((routes: InjectedRoute[]) =>
+		Effect.succeed<InjectedRoute[]>([...routes, ...config.extraRoutes])
+	);
+
+/**
  * Get the array of routes to be injected into the Astro integration.
  */
 export const getRoutes = Effect.gen(function* () {
 	// Get the StudioCMS route configuration
 	const config = yield* StudioCMSRouteConfig;
 
-	// Destructure necessary properties from the configuration
-	const { dashboardRoute, extraRoutes = [] } = config;
-
 	// Process the configuration and map to route groups
-	const initialRoutes = yield* pipe(
-		processedConfig(config),
-		Effect.flatMap(flatMapProcessedConfig(dashboardRoute)),
-		Effect.flatMap(mapRouteGroups)
+	return yield* processedConfig(config).pipe(
+		Effect.flatMap(flatMapProcessedConfig(config)),
+		Effect.flatMap(mapRouteGroups),
+		Effect.flatMap(injectExtraRoutes(config))
 	);
-
-	// Append any extra routes from the configuration
-	if (extraRoutes && extraRoutes.length > 0) {
-		initialRoutes.push(...extraRoutes);
-	}
-
-	// Return the final array of routes
-	return initialRoutes;
 });
