@@ -86,7 +86,7 @@ export const defaultPlugin: StudioCMSPlugin = {
 						body: {
 							html: '<totals></totals>',
 							components: {
-								totals: resolve('../components/default-grid-items/Totals.astro'),
+								totals: resolve('./plugin-components/Totals.astro'),
 							},
 						},
 					},
@@ -103,9 +103,7 @@ export const defaultPlugin: StudioCMSPlugin = {
 						body: {
 							html: '<recentlyupdatedpages></recentlyupdatedpages>',
 							components: {
-								recentlyupdatedpages: resolve(
-									'../components/default-grid-items/Recently-updated-pages.astro'
-								),
+								recentlyupdatedpages: resolve('../plugin-components/Recently-updated-pages.astro'),
 							},
 						},
 					},
@@ -122,9 +120,7 @@ export const defaultPlugin: StudioCMSPlugin = {
 						body: {
 							html: '<recentlysignedupusers></recentlysignedupusers>',
 							components: {
-								recentlysignedupusers: resolve(
-									'../components/default-grid-items/Recently-signed-up.astro'
-								),
+								recentlysignedupusers: resolve('../plugin-components/Recently-signed-up.astro'),
 							},
 						},
 					},
@@ -141,9 +137,7 @@ export const defaultPlugin: StudioCMSPlugin = {
 						body: {
 							html: '<recentlycreatedpages></recentlycreatedpages>',
 							components: {
-								recentlycreatedpages: resolve(
-									'../components/default-grid-items/Recently-created-pages.astro'
-								),
+								recentlycreatedpages: resolve('../plugin-components/Recently-created-pages.astro'),
 							},
 						},
 					},
