@@ -473,7 +473,7 @@ importers:
         specifier: catalog:effect
         version: 3.18.4
       katex:
-        specifier: ^0.16.23
+        specifier: ^0.16.25
         version: 0.16.25
       studiocms:
         specifier: workspace:*
