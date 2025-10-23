@@ -693,7 +693,7 @@ importers:
         specifier: 'catalog:'
         version: 0.19.1(astro@5.14.7(@types/node@22.18.10)(jiti@2.6.1)(rollup@4.52.4)(typescript@5.9.3)(yaml@2.8.1))
       ts-morph:
-        specifier: ^27.0.0
+        specifier: ^27.0.2
         version: 27.0.2
       ultrahtml:
         specifier: 1.6.0
