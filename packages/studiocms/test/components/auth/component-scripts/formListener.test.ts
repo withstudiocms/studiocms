@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { formListener } from '../../../../src/components/auth/component-scripts/formListener';
+import { formListener } from '../../../../src/frontend/scripts/auth/formListener';
 
 // mock global fetch
 beforeEach(() => {

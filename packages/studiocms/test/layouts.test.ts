@@ -1,7 +1,7 @@
 /// <reference types="astro/client" />
 import { describe, expect } from 'vitest';
-import AuthLayout from '../src/layouts/AuthLayout.astro';
-import FirstTimeSetupLayout from '../src/layouts/FirstTimeSetupLayout.astro';
+import AuthLayout from '../src/frontend/layouts/AuthLayout.astro';
+import FirstTimeSetupLayout from '../src/frontend/layouts/FirstTimeSetupLayout.astro';
 import { test } from './fixtures/AstroContainer';
 
 describe('Layout Container tests', () => {
