@@ -531,6 +531,32 @@ const mapProcessedConfig = Effect.fn(
 );
 
 /**
+ * Flat map processed configuration to route groups.
+ */
+const flatMapProcessedConfig = (dashboardRoute: (path: string) => string) =>
+	Effect.fn((processed: ProcessedRouteConfig) =>
+		mapProcessedConfig({
+			...processed,
+			dashboardRoute,
+		})
+	);
+
+/**
+ * Map route groups to a flat array of routes.
+ */
+const mapRouteGroups = Effect.fn(
+	(routeGroups: Array<{ enabled: boolean; routes: InjectedRoute[] }>) =>
+		Effect.succeed(
+			routeGroups.reduce<InjectedRoute[]>((acc, { enabled, routes }) => {
+				if (enabled) {
+					acc.push(...routes);
+				}
+				return acc;
+			}, [])
+		)
+);
+
+/**
  * Get the array of routes to be injected into the Astro integration.
  */
 export const getRoutes = Effect.gen(function* () {
@@ -543,20 +569,8 @@ export const getRoutes = Effect.gen(function* () {
 	// Process the configuration and map to route groups
 	const initialRoutes = yield* pipe(
 		processedConfig(config),
-		Effect.flatMap((processed) =>
-			mapProcessedConfig({
-				...processed,
-				dashboardRoute,
-			})
-		),
-		Effect.map((routeGroups) =>
-			routeGroups.reduce<InjectedRoute[]>((acc, { enabled, routes }) => {
-				if (enabled) {
-					acc.push(...routes);
-				}
-				return acc;
-			}, [])
-		)
+		Effect.flatMap(flatMapProcessedConfig(dashboardRoute)),
+		Effect.flatMap(mapRouteGroups)
 	);
 
 	// Append any extra routes from the configuration
