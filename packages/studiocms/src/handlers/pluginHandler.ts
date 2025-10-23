@@ -103,7 +103,7 @@ export const defaultPlugin: StudioCMSPlugin = {
 						body: {
 							html: '<recentlyupdatedpages></recentlyupdatedpages>',
 							components: {
-								recentlyupdatedpages: resolve('../plugin-components/Recently-updated-pages.astro'),
+								recentlyupdatedpages: resolve('./plugin-components/Recently-updated-pages.astro'),
 							},
 						},
 					},
@@ -120,7 +120,7 @@ export const defaultPlugin: StudioCMSPlugin = {
 						body: {
 							html: '<recentlysignedupusers></recentlysignedupusers>',
 							components: {
-								recentlysignedupusers: resolve('../plugin-components/Recently-signed-up.astro'),
+								recentlysignedupusers: resolve('./plugin-components/Recently-signed-up.astro'),
 							},
 						},
 					},
@@ -137,7 +137,7 @@ export const defaultPlugin: StudioCMSPlugin = {
 						body: {
 							html: '<recentlycreatedpages></recentlycreatedpages>',
 							components: {
-								recentlycreatedpages: resolve('../plugin-components/Recently-created-pages.astro'),
+								recentlycreatedpages: resolve('./plugin-components/Recently-created-pages.astro'),
 							},
 						},
 					},
