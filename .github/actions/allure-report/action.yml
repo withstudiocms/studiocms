@@ -1,0 +1,68 @@
+name: Generate Allure Report and Deploy
+description: This action generates an Allure report from test results and deploys it to GitHub Pages.
+
+inputs:
+  gh_pages_branch:
+    description: "The branch where the Allure report will be deployed."
+    required: true
+    default: "testing/allure"
+  gh_page_history:
+    description: "The directory to store Allure history."
+    required: true
+    default: "testing/allure"
+  allure_report_id:
+    description: "The identifier for the Allure report."
+    required: false
+    default: "self-test"
+  allure_report_dir:
+    description: "The directory containing Allure results."
+    required: false
+    default: "allure-results"
+  cname:
+    description: "Custom domain name for the Allure report site."
+    required: false
+    default: ""
+
+runs:
+  using: "composite"
+  steps:
+    - name: Get Allure history
+      uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      if: always()
+      continue-on-error: true
+      with:
+        persist-credentials: true
+        ref: ${{ inputs.gh_pages_branch }}
+        path: ${{ inputs.gh_page_history }}
+
+    - name: Allure Report Action
+      uses: withstudiocms/allure-branch-reporter-action@5199e020467cbb8d4baa1e3c0c7e14e599e95b1b # main
+      if: always()
+      continue-on-error: true
+      id: allure # used in comment to PR
+      with:
+        report_id: "${{ inputs.allure_report_id }}"
+        gh_pages: ${{ inputs.gh_page_history }}
+        report_dir: "${{ inputs.allure_report_dir }}"
+        list_dirs: ${{ github.ref == 'refs/heads/main' }}
+        branch_cleanup_enabled: ${{ github.ref == 'refs/heads/main' }}
+        cname: ${{ inputs.cname }}
+
+    - name: Git Commit and Push Action
+      uses: mgrybyk-org/git-commit-pull-push-action@d4ea5a1c3ad8fa12c8abc042b97ce2f194721eb1 # v1.2.6
+      if: always()
+      with:
+        repository: ${{ inputs.gh_page_history }}
+        branch: ${{ inputs.gh_pages_branch }}
+        pull_args: --rebase -X ours
+        commit_message: "chore: update Allure report"
+
+    - name: Comment PR with Allure Report link
+      if: ${{ always() && github.event_name == 'pull_request' && steps.allure.outputs.report_url }}
+      continue-on-error: true
+      uses: thollander/actions-comment-pull-request@24bffb9b452ba05a4f3f77933840a6a841d1b32b # v3.0.1
+      with:
+        message: |
+          ### Allure Test Report for this PR:
+          ${{ steps.allure.outputs.test_result_icon }} [Allure Report](${{ steps.allure.outputs.report_url }}) | [History](${{ steps.allure.outputs.report_history_url }})
+        comment-tag: allure_test_report

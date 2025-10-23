@@ -49,8 +49,7 @@
     "ci:typecheck:withstudiocms": "pnpm --filter @withstudiocms/* typecheck",
 
     "bundle-test:blog": "pnpm --filter @bundletests/studiocms-blog build",
-    "bundle-test:headless": "pnpm --filter @bundletests/studiocms-headless build",
-    "bundle-test:all": "pnpm --filter @bundletests/* build"
+    "bundle-test:headless": "pnpm --filter @bundletests/studiocms-headless build"
   },
   "devDependencies": {
     "@actions/core": "^1.11.1",

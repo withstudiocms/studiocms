@@ -1,0 +1,22 @@
+name: Run Bundle Analysis
+description: This action runs bundle analysis for specified commands.
+
+inputs:
+  cmd:
+    description: "The command to run bundle analysis for."
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Install Tools & Dependencies
+      uses: withstudiocms/automations/.github/actions/install@729a20ff5e68dd95330fb1914b801960ad4b5e7b # main
+
+    - name: run Build for Bundle Analysis
+      shell: bash
+      run: pnpm ci:build
+
+    - name: Run @${{ inputs.cmd }} Bundle Analysis
+      shell: bash
+      run: | # zizmor: ignore[template-injection]
+        pnpm bundle-test:${{ inputs.cmd }}
