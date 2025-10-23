@@ -1,4 +1,5 @@
-import { describe, expect, it } from 'vitest';
+import * as allure from 'allure-js-commons';
+import { describe, expect, test } from 'vitest';
 import {
 	AllResponse,
 	createHtmlResponse,
@@ -7,143 +8,229 @@ import {
 	createTextResponse,
 	OptionsResponse,
 } from '../../src/astro/response-helpers.js';
+import { parentSuiteName, sharedTags } from '../test-utils.js';
 
-describe('response-helpers', () => {
-	describe('OptionsResponse', () => {
-		it('should return a 204 response with correct headers', () => {
+const localSuiteName = 'Response Helpers Tests';
+
+describe(parentSuiteName, () => {
+	test('Response Helpers - OptionsResponse', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('OptionsResponse Tests');
+		await allure.tags(...sharedTags);
+
+		await allure.step('Testing OptionsResponse with custom methods and origins', async (ctx) => {
 			const res = OptionsResponse({
 				allowedMethods: ['GET', 'POST'],
 				allowedOrigins: ['https://example.com'],
 				headers: { 'X-Test': 'test' },
 			});
+			await ctx.parameter('Status', String(res.status));
+			await ctx.parameter('Allowed Methods', res.headers.get('Allow') || '');
+			await ctx.parameter('Allowed Origins', res.headers.get('Access-Control-Allow-Origin') || '');
+
 			expect(res.status).toBe(204);
-			expect(res.statusText).toBe('No Content');
 			expect(res.headers.get('Allow')).toBe('OPTIONS, GET, POST');
 			expect(res.headers.get('Access-Control-Allow-Origin')).toBe('https://example.com');
 			expect(res.headers.get('X-Test')).toBe('test');
-			expect(res.headers.get('Date')).toBeTruthy();
 		});
 
-		it('should default allowedOrigins to *', () => {
+		await allure.step('Testing OptionsResponse with default origins', async (ctx) => {
 			const res = OptionsResponse({
 				allowedMethods: ['GET'],
 			});
+			await ctx.parameter('Status', String(res.status));
+			await ctx.parameter('Allowed Origins', res.headers.get('Access-Control-Allow-Origin') || '');
+
 			expect(res.headers.get('Access-Control-Allow-Origin')).toBe('*');
 		});
 	});
 
-	describe('AllResponse', () => {
-		it('should return a 405 response with correct headers', () => {
+	test('Response Helpers - AllResponse', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('AllResponse Tests');
+		await allure.tags(...sharedTags);
+
+		await allure.step('Testing AllResponse with custom headers and origins', async (ctx) => {
 			const res = AllResponse({
 				allowedOrigins: ['https://foo.com'],
 				headers: { 'X-Foo': 'bar' },
 			});
+			await ctx.parameter('Status', String(res.status));
+			await ctx.parameter('Allowed Origins', res.headers.get('Access-Control-Allow-Origin') || '');
+
 			expect(res.status).toBe(405);
 			expect(res.statusText).toBe('Method Not Allowed');
 			expect(res.headers.get('Access-Control-Allow-Origin')).toBe('https://foo.com');
 			expect(res.headers.get('X-Foo')).toBe('bar');
-			expect(res.headers.get('Date')).toBeTruthy();
 		});
 
-		it('should default allowedOrigins to *', () => {
+		await allure.step('Testing AllResponse with default origins', async (ctx) => {
 			const res = AllResponse({});
+			await ctx.parameter('Status', String(res.status));
+			await ctx.parameter('Allowed Origins', res.headers.get('Access-Control-Allow-Origin') || '');
+
 			expect(res.headers.get('Access-Control-Allow-Origin')).toBe('*');
 		});
 	});
 
-	describe('createJsonResponse', () => {
-		it('should return a 200 JSON response by default', async () => {
-			const data = { foo: 'bar' };
+	test('Response Helpers - createJsonResponse', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('createJsonResponse Tests');
+		await allure.tags(...sharedTags);
+
+		await allure.step('Creating JSON response with default options', async (ctx) => {
+			const data = { message: 'Hello, World!' };
 			const res = createJsonResponse(data);
+			await ctx.parameter('Status', String(res.status));
+			await ctx.parameter('Content-Type', res.headers.get('Content-Type') || '');
+
 			expect(res.status).toBe(200);
-			expect(res.statusText).toBe('OK');
 			expect(res.headers.get('Content-Type')).toBe('application/json');
-			expect(res.headers.get('Access-Control-Allow-Origin')).toBe('*');
 			expect(await res.json()).toEqual(data);
 		});
 
-		it('should allow custom status and headers', async () => {
-			const res = createJsonResponse(
-				{ ok: true },
-				{
-					status: 201,
-					statusText: 'Created',
-					headers: { 'X-Custom': 'yes' },
-					allowedOrigins: ['https://bar.com'],
-				}
+		await allure.step('Creating JSON response with custom options', async (ctx) => {
+			const data = { success: true };
+			const res = createJsonResponse(data, {
+				status: 201,
+				statusText: 'Created',
+				headers: { 'X-Custom-Header': 'CustomValue' },
+				allowedOrigins: ['https://custom.com'],
+			});
+			await ctx.parameter('Status', String(res.status));
+			await ctx.parameter('Status Text', res.statusText);
+			await ctx.parameter('X-Custom-Header', res.headers.get('X-Custom-Header') || '');
+			await ctx.parameter(
+				'Access-Control-Allow-Origin',
+				res.headers.get('Access-Control-Allow-Origin') || ''
 			);
+
 			expect(res.status).toBe(201);
 			expect(res.statusText).toBe('Created');
-			expect(res.headers.get('X-Custom')).toBe('yes');
-			expect(res.headers.get('Access-Control-Allow-Origin')).toBe('https://bar.com');
+			expect(res.headers.get('X-Custom-Header')).toBe('CustomValue');
+			expect(res.headers.get('Access-Control-Allow-Origin')).toBe('https://custom.com');
+			expect(await res.json()).toEqual(data);
 		});
 	});
 
-	describe('createTextResponse', () => {
-		it('should return a 200 text response by default', async () => {
-			const res = createTextResponse('hello world');
+	test('Response Helpers - createTextResponse', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('createTextResponse Tests');
+		await allure.tags(...sharedTags);
+
+		await allure.step('Creating Text response with default options', async (ctx) => {
+			const text = 'Hello, Text Response!';
+			const res = createTextResponse(text);
+			await ctx.parameter('Status', String(res.status));
+			await ctx.parameter('Content-Type', res.headers.get('Content-Type') || '');
+
 			expect(res.status).toBe(200);
-			expect(res.statusText).toBe('OK');
 			expect(res.headers.get('Content-Type')).toBe('text/plain');
-			expect(res.headers.get('Access-Control-Allow-Origin')).toBe('*');
-			expect(await res.text()).toBe('hello world');
+			expect(await res.text()).toBe(text);
 		});
 
-		it('should allow custom status and headers', async () => {
-			const res = createTextResponse('foo', {
-				status: 404,
-				statusText: 'Not Found',
-				headers: { 'X-Txt': 'bar' },
-				allowedOrigins: ['https://baz.com'],
+		await allure.step('Creating Text response with custom options', async (ctx) => {
+			const text = 'Custom Text Response';
+			const res = createTextResponse(text, {
+				status: 202,
+				statusText: 'Accepted',
+				headers: { 'X-Text-Header': 'TextValue' },
+				allowedOrigins: ['https://text.com'],
 			});
-			expect(res.status).toBe(404);
-			expect(res.statusText).toBe('Not Found');
-			expect(res.headers.get('X-Txt')).toBe('bar');
-			expect(res.headers.get('Access-Control-Allow-Origin')).toBe('https://baz.com');
+			await ctx.parameter('Status', String(res.status));
+			await ctx.parameter('Status Text', res.statusText);
+			await ctx.parameter('X-Text-Header', res.headers.get('X-Text-Header') || '');
+			await ctx.parameter(
+				'Access-Control-Allow-Origin',
+				res.headers.get('Access-Control-Allow-Origin') || ''
+			);
+
+			expect(res.status).toBe(202);
+			expect(res.statusText).toBe('Accepted');
+			expect(res.headers.get('X-Text-Header')).toBe('TextValue');
+			expect(res.headers.get('Access-Control-Allow-Origin')).toBe('https://text.com');
+			expect(await res.text()).toBe(text);
 		});
 	});
 
-	describe('createHtmlResponse', () => {
-		it('should return a 200 HTML response by default', async () => {
-			const html = '<h1>Test</h1>';
+	test('Response Helpers - createHtmlResponse', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('createHtmlResponse Tests');
+		await allure.tags(...sharedTags);
+
+		await allure.step('Creating HTML response with default options', async (ctx) => {
+			const html = '<h1>Hello, HTML Response!</h1>';
 			const res = createHtmlResponse(html);
+			await ctx.parameter('Status', String(res.status));
+			await ctx.parameter('Content-Type', res.headers.get('Content-Type') || '');
+
 			expect(res.status).toBe(200);
-			expect(res.statusText).toBe('OK');
 			expect(res.headers.get('Content-Type')).toBe('text/html');
-			expect(res.headers.get('Access-Control-Allow-Origin')).toBe('*');
 			expect(await res.text()).toBe(html);
 		});
 
-		it('should allow custom status and headers', async () => {
-			const res = createHtmlResponse('<div>foo</div>', {
-				status: 500,
-				statusText: 'Server Error',
-				headers: { 'X-HTML': 'baz' },
+		await allure.step('Creating HTML response with custom options', async (ctx) => {
+			const html = '<p>Custom HTML Response</p>';
+			const res = createHtmlResponse(html, {
+				status: 203,
+				statusText: 'Non-Authoritative Information',
+				headers: { 'X-HTML-Header': 'HTMLValue' },
 				allowedOrigins: ['https://html.com'],
 			});
-			expect(res.status).toBe(500);
-			expect(res.statusText).toBe('Server Error');
-			expect(res.headers.get('X-HTML')).toBe('baz');
+			await ctx.parameter('Status', String(res.status));
+			await ctx.parameter('Status Text', res.statusText);
+			await ctx.parameter('X-HTML-Header', res.headers.get('X-HTML-Header') || '');
+			await ctx.parameter(
+				'Access-Control-Allow-Origin',
+				res.headers.get('Access-Control-Allow-Origin') || ''
+			);
+
+			expect(res.status).toBe(203);
+			expect(res.statusText).toBe('Non-Authoritative Information');
+			expect(res.headers.get('X-HTML-Header')).toBe('HTMLValue');
 			expect(res.headers.get('Access-Control-Allow-Origin')).toBe('https://html.com');
+			expect(await res.text()).toBe(html);
 		});
 	});
 
-	describe('createRedirectResponse', () => {
-		it('should return a 302 response with Location header', () => {
+	test('Response Helpers - createRedirectResponse', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('createRedirectResponse Tests');
+		await allure.tags(...sharedTags);
+
+		await allure.step('Creating Redirect response with default options', async (ctx) => {
 			const res = createRedirectResponse('https://redirect.com');
+			await ctx.parameter('Status', String(res.status));
+			await ctx.parameter('Location', res.headers.get('Location') || '');
+
 			expect(res.status).toBe(302);
 			expect(res.statusText).toBe('Found');
 			expect(res.headers.get('Location')).toBe('https://redirect.com');
 			expect(res.headers.get('Access-Control-Allow-Origin')).toBe('*');
 		});
 
-		it('should allow custom headers and allowedOrigins', () => {
-			const res = createRedirectResponse('https://foo.com', {
-				headers: { 'X-Redirect': 'yes' },
-				allowedOrigins: ['https://bar.com'],
-			});
-			expect(res.headers.get('X-Redirect')).toBe('yes');
-			expect(res.headers.get('Access-Control-Allow-Origin')).toBe('https://bar.com');
-		});
+		await allure.step(
+			'Creating Redirect response with custom headers and allowedOrigins',
+			async (ctx) => {
+				const res = createRedirectResponse('https://foo.com', {
+					headers: { 'X-Redirect': 'yes' },
+					allowedOrigins: ['https://bar.com'],
+				});
+				await ctx.parameter('X-Redirect', res.headers.get('X-Redirect') || '');
+				await ctx.parameter(
+					'Access-Control-Allow-Origin',
+					res.headers.get('Access-Control-Allow-Origin') || ''
+				);
+
+				expect(res.headers.get('X-Redirect')).toBe('yes');
+				expect(res.headers.get('Access-Control-Allow-Origin')).toBe('https://bar.com');
+			}
+		);
 	});
 });

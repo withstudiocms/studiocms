@@ -24,7 +24,7 @@ export type LoggerOpts = {
  * @returns A promise that resolves when logging is complete.
  */
 export const integrationLogger = async (opts: LoggerOpts, message: string): Promise<void> => {
-	const { logLevel, logger, verbose } = opts;
+	const { logLevel, logger, verbose = false } = opts;
 
 	switch (verbose) {
 		case true:

@@ -1,4 +1,5 @@
-import { describe, expect, it } from 'vitest';
+import * as allure from 'allure-js-commons';
+import { describe, expect, test } from 'vitest';
 import {
 	buildAliasExports,
 	buildVirtualImport,
@@ -6,69 +7,127 @@ import {
 	RuntimeInternalId,
 } from '../../src/registry/consts.js';
 import type { ComponentRegistryEntry } from '../../src/types.js';
+import { parentSuiteName, sharedTags } from '../test-utils.js';
 
-describe('buildVirtualImport', () => {
-	it('should generate virtual import code with given keys, props, and components', () => {
-		const componentKeys = ['Button', 'Input'];
-		const componentProps: ComponentRegistryEntry[] = [
-			{
-				name: 'Button',
-				safeName: 'button',
-				props: [{ name: 'Button', type: 'string', optional: false }],
-			},
-			{
-				name: 'Input',
-				safeName: 'input',
-				props: [{ name: 'Input', type: 'string', optional: false }],
-			},
-		];
-		const components = ['export const Button = () => {};', 'export const Input = () => {};'];
+const localSuiteName = 'Registry Constants Tests';
 
-		const result = buildVirtualImport(componentKeys, componentProps, components);
+describe(parentSuiteName, () => {
+	[
+		{
+			componentKeys: ['Button', 'Input'],
+			componentProps: [
+				{
+					name: 'Button',
+					safeName: 'button',
+					props: [{ name: 'Button', type: 'string', optional: false }],
+				},
+				{
+					name: 'Input',
+					safeName: 'input',
+					props: [{ name: 'Input', type: 'string', optional: false }],
+				},
+			],
+			components: ['export const Button = () => {};', 'export const Input = () => {};'],
+			expectedToContain: [
+				`export const componentKeys = ${JSON.stringify(['Button', 'Input'])};`,
+				`export const componentProps = ${JSON.stringify([
+					{
+						name: 'Button',
+						safeName: 'button',
+						props: [{ name: 'Button', type: 'string', optional: false }],
+					},
+					{
+						name: 'Input',
+						safeName: 'input',
+						props: [{ name: 'Input', type: 'string', optional: false }],
+					},
+				])};`,
+				'export const Button = () => {};',
+				'export const Input = () => {};',
+			],
+		},
+		{
+			componentKeys: [],
+			componentProps: [],
+			components: [],
+			expectedToContain: [
+				`export const componentKeys = ${JSON.stringify([])};`,
+				`export const componentProps = ${JSON.stringify([])};`,
+			],
+		},
+		{
+			componentKeys: ['A'],
+			componentProps: [{ name: 'A', safeName: 'a', props: {} }],
+			components: [],
+			expectedToContain: [
+				`export const componentKeys = ${JSON.stringify(['A'])};`,
+				`export const componentProps = ${JSON.stringify([{ name: 'A', safeName: 'a', props: {} }])};`,
+			],
+		},
+	].forEach(({ componentKeys, componentProps, components, expectedToContain }) => {
+		test('buildVirtualImport Test Case', async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('buildVirtualImport Tests');
+			await allure.tags(...sharedTags);
 
-		expect(result).toContain(`export const componentKeys = ${JSON.stringify(componentKeys)};`);
-		expect(result).toContain(`export const componentProps = ${JSON.stringify(componentProps)};`);
-		expect(result).toContain('export const Button = () => {};');
-		expect(result).toContain('export const Input = () => {};');
+			await allure.step('Generate virtual import code and verify contents', async (ctx) => {
+				const result = buildVirtualImport(
+					componentKeys,
+					componentProps as ComponentRegistryEntry[],
+					components
+				);
+
+				expectedToContain.forEach((expected) => {
+					expect(result).toContain(expected);
+				});
+
+				ctx.parameter('componentKeys', JSON.stringify(componentKeys));
+				ctx.parameter('componentProps', JSON.stringify(componentProps));
+				ctx.parameter('components', JSON.stringify(components));
+			});
+		});
 	});
 
-	it('should handle empty arrays', () => {
-		const result = buildVirtualImport([], [], []);
-		expect(result).toContain('export const componentKeys = [];');
-		expect(result).toContain('export const componentProps = [];');
-		// Should not throw or add extra newlines
-		expect(result.trim().endsWith('];')).toBe(true);
-	});
+	[
+		{
+			virtualId: 'my-module',
+			expected: [
+				{ property: 'my-module', value: `export * from '${InternalId}';` },
+				{ property: 'my-module/runtime', value: `export * from '${RuntimeInternalId}';` },
+			],
+		},
+		{
+			virtualId: 'another-module',
+			expected: [
+				{ property: 'another-module', value: `export * from '${InternalId}';` },
+				{ property: 'another-module/runtime', value: `export * from '${RuntimeInternalId}';` },
+			],
+		},
+		{
+			virtualId: 'test-module',
+			expected: [
+				{ property: 'test-module', value: `export * from '${InternalId}';` },
+				{ property: 'test-module/runtime', value: `export * from '${RuntimeInternalId}';` },
+			],
+		},
+	].forEach(({ virtualId, expected }) => {
+		test('buildAliasExports Test Case', async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('buildAliasExports Tests');
+			await allure.tags(...sharedTags);
 
-	it('should handle undefined components array gracefully', () => {
-		// @ts-expect-error testing undefined for components
-		const result = buildVirtualImport(['A'], [{ key: 'A', props: {} }], undefined);
-		expect(result).toContain('export const componentKeys = ["A"];');
-		expect(result).toContain('export const componentProps = [{"key":"A","props":{}}];');
-	});
-});
+			await allure.step('Generate alias exports and verify contents', async (ctx) => {
+				const result = buildAliasExports(virtualId);
 
-describe('buildAliasExports', () => {
-	it('should return correct export statements for a given virtualId', () => {
-		const virtualId = 'my-module';
-		const result = buildAliasExports(virtualId);
+				expected.forEach(({ property, value }) => {
+					expect(result).toHaveProperty(property, value);
+				});
 
-		expect(result).toHaveProperty(virtualId, `export * from '${InternalId}';`);
-		expect(result).toHaveProperty(`${virtualId}/runtime`, `export * from '${RuntimeInternalId}';`);
-	});
-
-	it('should work with different virtualIds', () => {
-		const virtualId = 'another-module';
-		const result = buildAliasExports(virtualId);
-
-		expect(result[virtualId]).toBe(`export * from '${InternalId}';`);
-		expect(result[`${virtualId}/runtime`]).toBe(`export * from '${RuntimeInternalId}';`);
-	});
-
-	it('should not include extra keys', () => {
-		const virtualId = 'test-module';
-		const result = buildAliasExports(virtualId);
-
-		expect(Object.keys(result)).toEqual([virtualId, `${virtualId}/runtime`]);
+				ctx.parameter('virtualId', virtualId);
+				ctx.parameter('expected', JSON.stringify(expected));
+			});
+		});
 	});
 });

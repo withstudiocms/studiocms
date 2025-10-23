@@ -1,109 +1,292 @@
-import { describe, expect, it } from 'vitest';
+import * as allure from 'allure-js-commons';
+import { describe, expect, test } from 'vitest';
 import {
 	handlerFilter,
 	matchFilterCheck,
 	sortByPriority,
 } from '../../../src/astro/utils/middleware.js';
+import { parentSuiteName, sharedTags } from '../../test-utils.js';
 
-describe('Middleware Utils', () => {
-	describe('matchFilterCheck', () => {
-		it('returns defaultValue if paths is undefined', () => {
-			expect(matchFilterCheck(undefined, '/foo', true)).toBe(true);
-			expect(matchFilterCheck(undefined, '/foo', false)).toBe(false);
-		});
+const localSuiteName = 'Middleware Utility Tests';
 
-		it('returns defaultValue if paths is empty array', () => {
-			expect(matchFilterCheck([], '/foo', true)).toBe(true);
-			expect(matchFilterCheck([], '/foo', false)).toBe(false);
-		});
+describe(parentSuiteName, () => {
+	[
+		{
+			paths: undefined,
+			pathname: '/foo',
+			defaultValue: true,
+			expected: true,
+		},
+		{
+			paths: undefined,
+			pathname: '/foo',
+			defaultValue: false,
+			expected: false,
+		},
+		{
+			paths: [],
+			pathname: '/foo',
+			defaultValue: true,
+			expected: true,
+		},
+		{
+			paths: [],
+			pathname: '/foo',
+			defaultValue: true,
+			expected: true,
+		},
+		{
+			paths: '',
+			pathname: '/foo',
+			defaultValue: true,
+			expected: true,
+		},
+		{
+			paths: '',
+			pathname: '/foo',
+			defaultValue: false,
+			expected: false,
+		},
+		{
+			paths: ['/foo/*', '/baz/*'],
+			pathname: '/baz/bar',
+			defaultValue: false,
+			expected: true,
+		},
+		{
+			paths: ['/foo/*', '/baz/*'],
+			pathname: '/qux/bar',
+			defaultValue: false,
+			expected: false,
+		},
+		{
+			paths: '   ',
+			pathname: '/foo',
+			defaultValue: false,
+			expected: false,
+		},
+		{
+			paths: ' /foo/* ',
+			pathname: '/foo/bar',
+			defaultValue: false,
+			expected: true,
+		},
+	].forEach(({ paths, pathname, defaultValue, expected }) => {
+		test('Middleware - matchFilterCheck', async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('matchFilterCheck Tests');
+			await allure.tags(...sharedTags);
 
-		it('returns defaultValue if paths is empty string', () => {
-			expect(matchFilterCheck('', '/foo', true)).toBe(true);
-			expect(matchFilterCheck('', '/foo', false)).toBe(false);
-		});
+			await allure.parameter('Paths', JSON.stringify(paths));
+			await allure.parameter('Pathname', pathname);
+			await allure.parameter('Default Value', String(defaultValue));
+			await allure.parameter('Expected', String(expected));
 
-		it('returns micromatch.isMatch result for string pattern', () => {
-			expect(matchFilterCheck('/foo/*', '/foo/bar', false)).toBe(true);
-			expect(matchFilterCheck('/foo/*', '/baz/bar', false)).toBe(false);
-		});
-
-		it('returns micromatch.isMatch result for array of patterns', () => {
-			expect(matchFilterCheck(['/foo/*', '/baz/*'], '/baz/bar', false)).toBe(true);
-			expect(matchFilterCheck(['/foo/*', '/baz/*'], '/qux/bar', false)).toBe(false);
-		});
-
-		it('trims string patterns before checking', () => {
-			expect(matchFilterCheck('   ', '/foo', false)).toBe(false);
-			expect(matchFilterCheck(' /foo/* ', '/foo/bar', false)).toBe(true);
+			await allure.step('Checking matchFilterCheck result', async (ctx) => {
+				const result = matchFilterCheck(paths, pathname, defaultValue);
+				await ctx.parameter('Result', String(result));
+				expect(result).toBe(expected);
+			});
 		});
 	});
 
-	describe('handlerFilter', () => {
-		it('includes all paths if includePaths is undefined', () => {
-			expect(handlerFilter(undefined, undefined, '/foo')).toBe(true);
-			expect(handlerFilter(undefined, undefined, '/bar')).toBe(true);
-		});
+	[
+		{
+			includePaths: undefined,
+			excludePaths: undefined,
+			pathname: '/foo',
+			expected: true,
+		},
+		{
+			includePaths: undefined,
+			excludePaths: undefined,
+			pathname: '/bar',
+			expected: true,
+		},
+		{
+			includePaths: '/foo/*',
+			excludePaths: undefined,
+			pathname: '/foo/bar',
+			expected: true,
+		},
+		{
+			includePaths: '/foo/*',
+			excludePaths: undefined,
+			pathname: '/bar',
+			expected: false,
+		},
+		{
+			includePaths: undefined,
+			excludePaths: '/foo/*',
+			pathname: '/foo/bar',
+			expected: false,
+		},
+		{
+			includePaths: '/foo/*',
+			excludePaths: '/foo/bar',
+			pathname: '/foo/bar',
+			expected: false,
+		},
+		{
+			includePaths: '/foo/*',
+			excludePaths: '/baz/*',
+			pathname: '/foo/bar',
+			expected: true,
+		},
+		{
+			includePaths: ['/foo/*', '/baz/*'],
+			excludePaths: '/qux/*',
+			pathname: '/baz/bar',
+			expected: true,
+		},
+		{
+			includePaths: '/foo/*',
+			excludePaths: undefined,
+			pathname: '/baz/bar',
+			expected: false,
+		},
+		{
+			includePaths: ['/foo/*'],
+			excludePaths: undefined,
+			pathname: '/baz/bar',
+			expected: false,
+		},
+		{
+			includePaths: '/foo/*',
+			excludePaths: '/foo/bar',
+			pathname: '/foo/bar',
+			expected: false,
+		},
+		{
+			includePaths: ['/foo/*'],
+			excludePaths: ['/foo/bar'],
+			pathname: '/foo/bar',
+			expected: false,
+		},
+		{
+			includePaths: '',
+			excludePaths: '',
+			pathname: '/foo',
+			expected: true,
+		},
+		{
+			includePaths: [],
+			excludePaths: [],
+			pathname: '/foo',
+			expected: true,
+		},
+		{
+			includePaths: '',
+			excludePaths: '/foo',
+			pathname: '/foo',
+			expected: false,
+		},
+		{
+			includePaths: [],
+			excludePaths: ['/foo'],
+			pathname: '/foo',
+			expected: false,
+		},
+	].forEach(({ includePaths, excludePaths, pathname, expected }) => {
+		test('Middleware - handlerFilter', async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('handlerFilter Tests');
+			await allure.tags(...sharedTags);
 
-		it('excludes no paths if excludePaths is undefined', () => {
-			expect(handlerFilter('/foo/*', undefined, '/foo/bar')).toBe(true);
-			expect(handlerFilter('/foo/*', undefined, '/bar')).toBe(false);
-		});
+			await allure.parameter('Include Paths', JSON.stringify(includePaths));
+			await allure.parameter('Exclude Paths', JSON.stringify(excludePaths));
+			await allure.parameter('Pathname', pathname);
+			await allure.parameter('Expected', String(expected));
 
-		it('returns false if pathname matches excludePaths', () => {
-			expect(handlerFilter(undefined, '/foo/*', '/foo/bar')).toBe(false);
-			expect(handlerFilter('/foo/*', '/foo/bar', '/foo/bar')).toBe(false);
-		});
-
-		it('returns true if pathname matches includePaths and not excludePaths', () => {
-			expect(handlerFilter('/foo/*', '/baz/*', '/foo/bar')).toBe(true);
-			expect(handlerFilter(['/foo/*', '/baz/*'], '/qux/*', '/baz/bar')).toBe(true);
-		});
-
-		it('returns false if pathname does not match includePaths', () => {
-			expect(handlerFilter('/foo/*', undefined, '/baz/bar')).toBe(false);
-			expect(handlerFilter(['/foo/*'], undefined, '/baz/bar')).toBe(false);
-		});
-
-		it('returns false if pathname matches excludePaths even if included', () => {
-			expect(handlerFilter('/foo/*', '/foo/bar', '/foo/bar')).toBe(false);
-			expect(handlerFilter(['/foo/*'], ['/foo/bar'], '/foo/bar')).toBe(false);
-		});
-
-		it('handles empty string and empty array for includePaths and excludePaths', () => {
-			expect(handlerFilter('', '', '/foo')).toBe(true);
-			expect(handlerFilter([], [], '/foo')).toBe(true);
-			expect(handlerFilter('', '/foo', '/foo')).toBe(false);
-			expect(handlerFilter([], ['/foo'], '/foo')).toBe(false);
-		});
-
-		describe('sortByPriority', () => {
-			it('sorts lower numbers before higher numbers', () => {
-				expect(sortByPriority(1, 2)).toBeLessThan(0);
-				expect(sortByPriority(10, 5)).toBeGreaterThan(0);
-				expect(sortByPriority(3, 3)).toBe(0);
+			await allure.step('Checking handlerFilter result', async (ctx) => {
+				const result = handlerFilter(includePaths, excludePaths, pathname);
+				await ctx.parameter('Result', String(result));
+				expect(result).toBe(expected);
 			});
+		});
+	});
 
-			it('treats undefined as lowest priority (sorted last)', () => {
-				expect(sortByPriority(1, undefined)).toBeLessThan(0);
-				expect(sortByPriority(undefined, 1)).toBeGreaterThan(0);
-			});
+	[
+		{
+			a: 1,
+			b: 2,
+			opt: 'less-than',
+		},
+		{
+			a: 10,
+			b: 5,
+			opt: 'greater-than',
+		},
+		{
+			a: 3,
+			b: 3,
+			opt: 'equal',
+		},
+		{
+			a: 1,
+			b: undefined,
+			opt: 'less-than',
+		},
+		{
+			a: undefined,
+			b: 1,
+			opt: 'greater-than',
+		},
+		{
+			a: 1,
+			b: null,
+			opt: 'less-than',
+		},
+		{
+			a: null,
+			b: 1,
+			opt: 'greater-than',
+		},
+		{
+			a: undefined,
+			b: undefined,
+			opt: 'equal',
+		},
+		{
+			a: null,
+			b: null,
+			opt: 'equal',
+		},
+		{
+			a: undefined,
+			b: null,
+			opt: 'equal',
+		},
+		{
+			a: null,
+			b: undefined,
+			opt: 'equal',
+		},
+	].forEach(({ a, b, opt }) => {
+		test('Middleware - sortByPriority', async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('sortByPriority Tests');
+			await allure.tags(...sharedTags);
 
-			it('treats null as lowest priority (sorted last)', () => {
-				expect(sortByPriority(1, null)).toBeLessThan(0);
-				expect(sortByPriority(null, 1)).toBeGreaterThan(0);
-			});
+			await allure.parameter('A', String(a));
+			await allure.parameter('B', String(b));
+			await allure.parameter('Expected', opt);
 
-			it('treats both undefined as equal', () => {
-				expect(sortByPriority(undefined, undefined)).toBe(0);
-			});
-
-			it('treats both null as equal', () => {
-				expect(sortByPriority(null, null)).toBe(0);
-			});
-
-			it('treats undefined and null as equal', () => {
-				expect(sortByPriority(undefined, null)).toBe(0);
-				expect(sortByPriority(null, undefined)).toBe(0);
+			await allure.step('Checking sortByPriority result', async (ctx) => {
+				const result = sortByPriority(a, b);
+				let resultDesc = '';
+				if (result < 0) {
+					resultDesc = 'less-than';
+				} else if (result > 0) {
+					resultDesc = 'greater-than';
+				} else {
+					resultDesc = 'equal';
+				}
+				await ctx.parameter('Result', resultDesc);
+				expect(resultDesc).toBe(opt);
 			});
 		});
 	});

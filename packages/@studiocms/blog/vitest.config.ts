@@ -43,6 +43,7 @@ export default defineProject(
 	getViteConfig(
 		{
 			test: {
+				name: '@studiocms/blog',
 				environment: 'node',
 				include: ['**/*.test.ts'],
 			},

@@ -24,6 +24,7 @@ export default defineProject(
 	getViteConfig(
 		{
 			test: {
+				name: '@studiocms/wysiwyg',
 				environment: 'node',
 				include: ['**/*.test.ts', '**/*.test.tsx'],
 			},

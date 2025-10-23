@@ -1,73 +1,265 @@
-import { describe, expect, it } from 'vitest';
-import * as paths from '../src/pathGenerators.js';
+import * as allure from 'allure-js-commons';
+import { describe, expect, test } from 'vitest';
+import {
+	ensureHtmlExtension,
+	ensureLeadingAndTrailingSlashes,
+	ensureLeadingSlash,
+	ensureTrailingSlash,
+	fileWithBase,
+	pathWithBase,
+	stripHtmlExtension,
+	stripLeadingAndTrailingSlashes,
+	stripLeadingSlash,
+	stripTrailingSlash,
+} from '../src/pathGenerators.js';
+import { parentSuiteName, sharedTags } from './test-utils.js';
 
-describe('pathGenerators', () => {
-	it('pathWithBase strips leading slash and prepends one', () => {
-		expect(paths.pathWithBase('/foo/bar')).toBe('/foo/bar');
-		expect(paths.pathWithBase('foo/bar')).toBe('/foo/bar');
-		expect(paths.pathWithBase('/')).toBe('/');
-		expect(paths.pathWithBase('')).toBe('/');
+const localSuiteName = 'Path Generators Tests';
+
+describe(parentSuiteName, () => {
+	// pathWithBase tests
+	[
+		{ input: '/foo/bar', expected: '/foo/bar' },
+		{ input: 'foo/bar', expected: '/foo/bar' },
+		{ input: '/', expected: '/' },
+		{ input: '', expected: '/' },
+	].forEach(({ input, expected }) => {
+		test('pathWithBase - Strips leading slash and prepends one', async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('pathWithBase - Strips leading slash and prepends one');
+			await allure.tags(...sharedTags);
+
+			await allure.parameter('input', input);
+			await allure.parameter('expected', expected);
+
+			await allure.step('Executing pathWithBase', async (ctx) => {
+				const result = pathWithBase(input);
+				await ctx.parameter('result', result);
+				expect(result).toBe(expected);
+			});
+		});
 	});
 
-	it('fileWithBase strips leading slash and prepends one', () => {
-		expect(paths.fileWithBase('/file.txt')).toBe('/file.txt');
-		expect(paths.fileWithBase('file.txt')).toBe('/file.txt');
-		expect(paths.fileWithBase('/')).toBe('/');
-		expect(paths.fileWithBase('')).toBe('/');
+	// fileWithBase tests
+	[
+		{ input: '/file.txt', expected: '/file.txt' },
+		{ input: 'file.txt', expected: '/file.txt' },
+		{ input: '/', expected: '/' },
+		{ input: '', expected: '/' },
+	].forEach(({ input, expected }) => {
+		test('fileWithBase - Strips leading slash and prepends one', async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('fileWithBase - Strips leading slash and prepends one');
+			await allure.tags(...sharedTags);
+
+			await allure.parameter('input', input);
+			await allure.parameter('expected', expected);
+
+			await allure.step('Executing fileWithBase', async (ctx) => {
+				const result = fileWithBase(input);
+				await ctx.parameter('result', result);
+				expect(result).toBe(expected);
+			});
+		});
 	});
 
-	it('ensureLeadingSlash adds slash if missing', () => {
-		expect(paths.ensureLeadingSlash('foo')).toBe('/foo');
-		expect(paths.ensureLeadingSlash('/foo')).toBe('/foo');
-		expect(paths.ensureLeadingSlash('')).toBe('/');
+	// ensureLeadingSlash tests
+	[
+		{ input: 'foo', expected: '/foo' },
+		{ input: '/foo', expected: '/foo' },
+		{ input: '', expected: '/' },
+	].forEach(({ input, expected }) => {
+		test('ensureLeadingSlash adds slash if missing', async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('ensureLeadingSlash adds slash if missing');
+			await allure.tags(...sharedTags);
+
+			await allure.parameter('input', input);
+			await allure.parameter('expected', expected);
+
+			await allure.step('Executing ensureLeadingSlash', async (ctx) => {
+				const result = ensureLeadingSlash(input);
+				await ctx.parameter('result', result);
+				expect(result).toBe(expected);
+			});
+		});
 	});
 
-	it('ensureTrailingSlash adds slash if missing', () => {
-		expect(paths.ensureTrailingSlash('foo')).toBe('foo/');
-		expect(paths.ensureTrailingSlash('foo/')).toBe('foo/');
-		expect(paths.ensureTrailingSlash('')).toBe('/');
+	// ensureTrailingSlash tests
+	[
+		{ input: 'foo', expected: 'foo/' },
+		{ input: 'foo/', expected: 'foo/' },
+		{ input: '', expected: '/' },
+	].forEach(({ input, expected }) => {
+		test('ensureTrailingSlash adds slash if missing', async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('ensureTrailingSlash adds slash if missing');
+			await allure.tags(...sharedTags);
+
+			await allure.parameter('input', input);
+			await allure.parameter('expected', expected);
+
+			await allure.step('Executing ensureTrailingSlash', async (ctx) => {
+				const result = ensureTrailingSlash(input);
+
+				await ctx.parameter('result', result);
+				expect(result).toBe(expected);
+			});
+		});
 	});
 
-	it('ensureLeadingAndTrailingSlashes adds both slashes', () => {
-		expect(paths.ensureLeadingAndTrailingSlashes('foo')).toBe('/foo/');
-		expect(paths.ensureLeadingAndTrailingSlashes('/foo')).toBe('/foo/');
-		expect(paths.ensureLeadingAndTrailingSlashes('foo/')).toBe('/foo/');
-		expect(paths.ensureLeadingAndTrailingSlashes('/foo/')).toBe('/foo/');
-		expect(paths.ensureLeadingAndTrailingSlashes('')).toBe('/');
+	// ensureLeadingAndTrailingSlashes tests
+	[
+		{ input: 'foo', expected: '/foo/' },
+		{ input: '/foo', expected: '/foo/' },
+		{ input: 'foo/', expected: '/foo/' },
+		{ input: '/foo/', expected: '/foo/' },
+		{ input: '', expected: '/' },
+	].forEach(({ input, expected }) => {
+		test('ensureLeadingAndTrailingSlashes adds both slashes', async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('ensureLeadingAndTrailingSlashes adds both slashes');
+			await allure.tags(...sharedTags);
+
+			await allure.parameter('input', input);
+			await allure.parameter('expected', expected);
+
+			await allure.step('Executing ensureLeadingAndTrailingSlashes', async (ctx) => {
+				const result = ensureLeadingAndTrailingSlashes(input);
+
+				await ctx.parameter('result', result);
+				expect(result).toBe(expected);
+			});
+		});
 	});
 
-	it('stripLeadingSlash removes leading slash', () => {
-		expect(paths.stripLeadingSlash('/foo')).toBe('foo');
-		expect(paths.stripLeadingSlash('foo')).toBe('foo');
-		expect(paths.stripLeadingSlash('')).toBe('');
+	// stripLeadingSlash tests
+	[
+		{ input: '/foo', expected: 'foo' },
+		{ input: 'foo', expected: 'foo' },
+		{ input: '', expected: '' },
+	].forEach(({ input, expected }) => {
+		test('stripLeadingSlash removes leading slash', async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('stripLeadingSlash removes leading slash');
+			await allure.tags(...sharedTags);
+
+			await allure.parameter('input', input);
+			await allure.parameter('expected', expected);
+
+			await allure.step('Executing stripLeadingSlash', async (ctx) => {
+				const result = stripLeadingSlash(input);
+
+				await ctx.parameter('result', result);
+				expect(result).toBe(expected);
+			});
+		});
 	});
 
-	it('stripTrailingSlash removes trailing slash', () => {
-		expect(paths.stripTrailingSlash('foo/')).toBe('foo');
-		expect(paths.stripTrailingSlash('foo')).toBe('foo');
-		expect(paths.stripTrailingSlash('')).toBe('');
+	// stripTrailingSlash tests
+	[
+		{ input: 'foo/', expected: 'foo' },
+		{ input: 'foo', expected: 'foo' },
+		{ input: '', expected: '' },
+	].forEach(({ input, expected }) => {
+		test('stripTrailingSlash removes trailing slash', async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('stripTrailingSlash removes trailing slash');
+			await allure.tags(...sharedTags);
+
+			await allure.parameter('input', input);
+			await allure.parameter('expected', expected);
+
+			await allure.step('Executing stripTrailingSlash', async (ctx) => {
+				const result = stripTrailingSlash(input);
+
+				await ctx.parameter('result', result);
+				expect(result).toBe(expected);
+			});
+		});
 	});
 
-	it('stripLeadingAndTrailingSlashes removes both', () => {
-		expect(paths.stripLeadingAndTrailingSlashes('/foo/')).toBe('foo');
-		expect(paths.stripLeadingAndTrailingSlashes('foo/')).toBe('foo');
-		expect(paths.stripLeadingAndTrailingSlashes('/foo')).toBe('foo');
-		expect(paths.stripLeadingAndTrailingSlashes('foo')).toBe('foo');
-		expect(paths.stripLeadingAndTrailingSlashes('')).toBe('');
+	// stripLeadingAndTrailingSlashes tests
+	[
+		{ input: '/foo/', expected: 'foo' },
+		{ input: 'foo/', expected: 'foo' },
+		{ input: '/foo', expected: 'foo' },
+		{ input: 'foo', expected: 'foo' },
+		{ input: '', expected: '' },
+	].forEach(({ input, expected }) => {
+		test('stripLeadingAndTrailingSlashes removes both', async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('stripLeadingAndTrailingSlashes removes both');
+			await allure.tags(...sharedTags);
+
+			await allure.parameter('input', input);
+			await allure.parameter('expected', expected);
+
+			await allure.step('Executing stripLeadingAndTrailingSlashes', async (ctx) => {
+				const result = stripLeadingAndTrailingSlashes(input);
+
+				await ctx.parameter('result', result);
+				expect(result).toBe(expected);
+			});
+		});
 	});
 
-	it('stripHtmlExtension removes .html extension', () => {
-		expect(paths.stripHtmlExtension('/foo/bar.html')).toBe('/foo/bar');
-		expect(paths.stripHtmlExtension('/foo/bar/')).toBe('/foo/bar');
-		expect(paths.stripHtmlExtension('/foo/bar')).toBe('/foo/bar');
-		expect(paths.stripHtmlExtension('/foo/bar.html/')).toBe('/foo/bar');
+	// stripHtmlExtension tests
+	[
+		{ input: '/foo/bar.html', expected: '/foo/bar' },
+		{ input: '/foo/bar/', expected: '/foo/bar' },
+		{ input: '/foo/bar', expected: '/foo/bar' },
+		{ input: '/foo/bar.html/', expected: '/foo/bar' },
+	].forEach(({ input, expected }) => {
+		test('stripHtmlExtension removes .html extension', async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('stripHtmlExtension removes .html extension');
+			await allure.tags(...sharedTags);
+
+			await allure.parameter('input', input);
+			await allure.parameter('expected', expected);
+
+			await allure.step('Executing stripHtmlExtension', async (ctx) => {
+				const result = stripHtmlExtension(input);
+
+				await ctx.parameter('result', result);
+				expect(result).toBe(expected);
+			});
+		});
 	});
 
-	it('ensureHtmlExtension adds .html if missing', () => {
-		expect(paths.ensureHtmlExtension('/foo/bar')).toBe('/foo/bar.html');
-		expect(paths.ensureHtmlExtension('foo/bar')).toBe('/foo/bar.html');
-		expect(paths.ensureHtmlExtension('/foo/bar.html')).toBe('/foo/bar.html');
-		expect(paths.ensureHtmlExtension('foo/bar.html')).toBe('/foo/bar.html');
-		expect(paths.ensureHtmlExtension('')).toBe('/index.html');
+	// ensureHtmlExtension tests
+	[
+		{ input: '/foo/bar', expected: '/foo/bar.html' },
+		{ input: 'foo/bar', expected: '/foo/bar.html' },
+		{ input: '/foo/bar.html', expected: '/foo/bar.html' },
+		{ input: 'foo/bar.html', expected: '/foo/bar.html' },
+		{ input: '', expected: '/index.html' },
+	].forEach(({ input, expected }) => {
+		test('ensureHtmlExtension adds .html if missing', async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('ensureHtmlExtension adds .html if missing');
+			await allure.tags(...sharedTags);
+
+			await allure.parameter('input', input);
+			await allure.parameter('expected', expected);
+
+			await allure.step('Executing ensureHtmlExtension', async (ctx) => {
+				const result = ensureHtmlExtension(input);
+
+				await ctx.parameter('result', result);
+				expect(result).toBe(expected);
+			});
+		});
 	});
 });
