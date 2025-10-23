@@ -55,7 +55,6 @@ jobs:
         uses: crowdin/github-action@08713f00a50548bfe39b37e8f44afb53e7a802d4 # v2.12.0
         with:
           upload_sources: false
-          upload_translations: false
           download_translations: true
           localization_branch_name: l10n_main
           create_pull_request: true
@@ -83,7 +82,6 @@ jobs:
         uses: crowdin/github-action@08713f00a50548bfe39b37e8f44afb53e7a802d4 # v2.12.0
         with:
           upload_sources: true
-          upload_translations: true
           download_translations: false
         env:
           CROWDIN_PROJECT_ID: ${{ secrets.CROWDIN_PROJECT_ID }}
