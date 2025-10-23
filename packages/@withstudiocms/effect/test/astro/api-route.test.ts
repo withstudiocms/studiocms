@@ -1,6 +1,8 @@
 /** biome-ignore-all lint/suspicious/noExplicitAny: allowed for tests */
+
+import * as allure from 'allure-js-commons';
 import type { APIContext } from 'astro';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, test } from 'vitest';
 import {
 	createEffectAPIRoute,
 	createEffectAPIRoutes,
@@ -9,10 +11,18 @@ import {
 	withEffectAPI,
 } from '../../src/astro/api-route.js';
 import { Effect } from '../../src/effect.js';
+import { parentSuiteName, sharedTags } from '../test-utils.js';
 
-describe('Api-Route Tests', () => {
-	describe('defineAPIRoute tests (deprecated Utility)', () => {
-		it('should call fn with context and return the response from runEffect', async () => {
+const localSuiteName = 'API Route Helpers Tests';
+
+describe(parentSuiteName, () => {
+	test('API Route - defineAPIRoute (deprecated Utility)', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('defineAPIRoute Tests (Deprecated)');
+		await allure.tags(...sharedTags, 'deprecated');
+
+		await allure.step('Testing defineAPIRoute with successful Effect', async (ctx) => {
 			const mockContext = {};
 			const mockResponse = new Response('ok', { status: 200 });
 
@@ -26,11 +36,14 @@ describe('Api-Route Tests', () => {
 
 			const result = await handler(fn);
 
+			await ctx.parameter('Expected Status', String(mockResponse.status));
+			await ctx.parameter('Result Status', String(result.status));
+
 			expect(calledWith).toBe(mockContext);
 			expect(result).toBe(mockResponse);
 		});
 
-		it('should propagate errors from runEffect', async () => {
+		await allure.step('Testing defineAPIRoute with failing Effect', async () => {
 			const mockContext = {};
 			const error = new Error('fail');
 
@@ -42,14 +55,19 @@ describe('Api-Route Tests', () => {
 		});
 	});
 
-	describe('createEffectAPIRoute tests', () => {
-		it('should call the handler with the context and return its response', async () => {
+	test('API Route - createEffectAPIRoute', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('createEffectAPIRoute Tests');
+		await allure.tags(...sharedTags);
+
+		await allure.step('Testing createEffectAPIRoute with successful Effect', async (ctx) => {
 			const mockContext = { request: new Request('http://localhost') };
 			const mockResponse = new Response('ok', { status: 200 });
 
-			let handlerCalledWith: any = null;
+			let calledWith: any = null;
 			const handler = (ctx: any) => {
-				handlerCalledWith = ctx;
+				calledWith = ctx;
 				return Effect.succeed(mockResponse);
 			};
 
@@ -58,11 +76,14 @@ describe('Api-Route Tests', () => {
 			// @ts-expect-error - Testing mocked context
 			const result = await route(mockContext);
 
-			expect(handlerCalledWith).toBe(mockContext);
+			await ctx.parameter('Expected Status', String(mockResponse.status));
+			await ctx.parameter('Result Status', String(result.status));
+
+			expect(calledWith).toBe(mockContext);
 			expect(result).toBe(mockResponse);
 		});
 
-		it('should propagate errors thrown by the handler', async () => {
+		await allure.step('Testing createEffectAPIRoute with failing Effect', async () => {
 			const mockContext = { request: new Request('http://localhost') };
 			const error = new Error('fail');
 			const handler = () => {
@@ -76,14 +97,19 @@ describe('Api-Route Tests', () => {
 		});
 	});
 
-	describe('withEffectAPI tests', () => {
-		it('should create an API route with the provided handler', async () => {
+	test('API Route - withEffectAPI', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('withEffectAPI Tests');
+		await allure.tags(...sharedTags);
+
+		await allure.step('Testing withEffectAPI with successful Effect', async (ctx) => {
 			const mockContext = { request: new Request('http://localhost') };
 			const mockResponse = new Response('ok', { status: 200 });
 
-			let handlerCalledWith: any = null;
+			let calledWith: any = null;
 			const handler = (ctx: any) => {
-				handlerCalledWith = ctx;
+				calledWith = ctx;
 				return Effect.succeed(mockResponse);
 			};
 
@@ -92,130 +118,190 @@ describe('Api-Route Tests', () => {
 			// @ts-expect-error - Testing mocked context
 			const result = await route(mockContext);
 
-			expect(handlerCalledWith).toBe(mockContext);
+			await ctx.parameter('Expected Status', String(mockResponse.status));
+			await ctx.parameter('Result Status', String(result.status));
+
+			expect(calledWith).toBe(mockContext);
 			expect(result).toBe(mockResponse);
 		});
 
-		it('should propagate errors from the handler', async () => {
+		await allure.step('Testing withEffectAPI with failing Effect', async () => {
 			const mockContext = { request: new Request('http://localhost') };
 			const error = new Error('fail');
-			const handler = () => Effect.fail(error);
+			const handler = () => {
+				return Effect.fail(error);
+			};
 
 			const route = withEffectAPI(handler);
+
 			// @ts-expect-error - Testing mocked context
 			const result = await route(mockContext);
 			const resultData = await result.json();
 
-			expect(result.status).toBe(500);
-			expect(resultData).toEqual({ error: 'fail' });
-		});
+			await allure.step('Asserting error response', async (ctx) => {
+				await ctx.parameter('Expected Status', '500');
+				await ctx.parameter('Result Status', String(result.status));
+				await ctx.parameter('Expected Error Message', 'fail');
+				await ctx.parameter('Result Error Message', resultData.error);
 
-		it('should apply CORS headers if configured', async () => {
-			const mockContext = {
-				request: new Request('https://example.com', { headers: { Origin: 'https://example.com' } }),
-			};
-			const handler = () =>
-				Effect.succeed(new Response(JSON.stringify({ message: 'ok' }), { status: 200 }));
-
-			const route = withEffectAPI(handler, {
-				cors: {
-					origin: ['https://example.com'],
-				},
+				expect(result.status).toBe(500);
+				expect(resultData).toEqual({ error: 'fail' });
 			});
-
-			// @ts-expect-error - Testing mocked context
-			const result = await route(mockContext);
-
-			expect(result.headers.get('Access-Control-Allow-Origin')).toBe('https://example.com');
 		});
 
-		it('should handle preflight requests with CORS', async () => {
-			const mockContext = {
-				request: new Request('https://example.com', {
-					method: 'OPTIONS',
-					headers: { Origin: 'https://example.com' },
-				}),
-			};
-			const handler = () => Effect.succeed(new Response(null, { status: 204 }));
+		await allure.step(
+			'Testing withEffectAPI should apply CORS headers if configured',
+			async (ctx) => {
+				const mockContext = {
+					request: new Request('https://example.com', {
+						headers: { Origin: 'https://example.com' },
+					}),
+				};
+				const handler = () =>
+					Effect.succeed(new Response(JSON.stringify({ message: 'ok' }), { status: 200 }));
 
-			const route = withEffectAPI(handler, {
-				cors: {
-					origin: ['https://example.com'],
-					methods: ['GET', 'POST', 'OPTIONS'],
-				},
-			});
-
-			// @ts-expect-error - Testing mocked context
-			const result = await route(mockContext);
-
-			expect(result.status).toBe(204);
-			expect(result.headers.get('Access-Control-Allow-Origin')).toBe('https://example.com');
-			expect(result.headers.get('Access-Control-Allow-Methods')).toBe('OPTIONS, GET, POST');
-		});
-
-		it('should handle preflight requests without CORS', async () => {
-			const mockContext = { request: new Request('https://example.com', { method: 'OPTIONS' }) };
-			const handler = () => Effect.succeed(new Response(null, { status: 204 }));
-
-			const route = withEffectAPI(handler);
-
-			// @ts-expect-error - Testing mocked context
-			const result = await route(mockContext);
-
-			expect(result.status).toBe(204);
-			expect(result.headers.get('Access-Control-Allow-Origin')).toBe('*');
-		});
-
-		it('should apply success middleware if provided', async () => {
-			const mockContext = { request: new Request('http://localhost') };
-			const mockResponse = new Response('ok', { status: 200 });
-
-			let handlerCalledWith: any = null;
-			const handler = (ctx: any) => {
-				handlerCalledWith = ctx;
-				return Effect.succeed(mockResponse);
-			};
-
-			const onSuccess = (response: Response, ctx: any) => {
-				expect(ctx).toBe(mockContext);
-				return new Response(response.body, {
-					status: response.status,
-					headers: { 'X-Custom-Header': 'value' },
+				const route = withEffectAPI(handler, {
+					cors: {
+						origin: ['https://example.com'],
+					},
 				});
-			};
 
-			const route = withEffectAPI(handler, { onSuccess });
+				// @ts-expect-error - Testing mocked context
+				const result = await route(mockContext);
 
-			// @ts-expect-error - Testing mocked context
-			const result = await route(mockContext);
+				await ctx.parameter(
+					'Access-Control-Allow-Origin',
+					result.headers.get('Access-Control-Allow-Origin') || ''
+				);
 
-			expect(handlerCalledWith).toBe(mockContext);
-			expect(result.headers.get('X-Custom-Header')).toBe('value');
-			expect(result.status).toBe(200);
-		});
+				expect(result.headers.get('Access-Control-Allow-Origin')).toBe('https://example.com');
+			}
+		);
 
-		it('should apply error middleware if provided', async () => {
-			const mockContext = { request: new Request('http://localhost') };
-			const error = new Error('fail');
+		await allure.step(
+			'Testing withEffectAPI should handle preflight requests (with cors)',
+			async (ctx) => {
+				const mockContext = {
+					request: new Request('https://example.com', {
+						method: 'OPTIONS',
+						headers: { Origin: 'https://example.com' },
+					}),
+				};
+				const handler = () => Effect.succeed(new Response(null, { status: 204 }));
 
-			const handler = () => Effect.fail(error);
+				const route = withEffectAPI(handler, {
+					cors: {
+						origin: ['https://example.com'],
+						methods: ['GET', 'POST', 'OPTIONS'],
+					},
+				});
 
-			const onError = (err: unknown, ctx: APIContext) => {
-				expect(ctx).toBe(mockContext);
-				return new Response(JSON.stringify({ error: (err as Error).message }), { status: 500 });
-			};
+				// @ts-expect-error - Testing mocked context
+				const result = await route(mockContext);
 
-			const route = withEffectAPI(handler, { onError });
+				await ctx.parameter('Status', String(result.status));
+				await ctx.parameter(
+					'Access-Control-Allow-Origin',
+					result.headers.get('Access-Control-Allow-Origin') || ''
+				);
+				await ctx.parameter(
+					'Access-Control-Allow-Methods',
+					result.headers.get('Access-Control-Allow-Methods') || ''
+				);
 
-			// @ts-expect-error - Testing mocked context
-			const result = await route(mockContext);
-			const resultData = await result.json();
+				expect(result.status).toBe(204);
+				expect(result.headers.get('Access-Control-Allow-Origin')).toBe('https://example.com');
+				expect(result.headers.get('Access-Control-Allow-Methods')).toBe('OPTIONS, GET, POST');
+			}
+		);
 
-			expect(result.status).toBe(500);
-			expect(resultData).toEqual({ error: 'fail' });
-		});
+		await allure.step(
+			'Testing withEffectAPI should handle preflight requests (without cors)',
+			async (ctx) => {
+				const mockContext = {
+					request: new Request('https://example.com', {
+						method: 'OPTIONS',
+					}),
+				};
+				const handler = () => Effect.succeed(new Response(null, { status: 204 }));
 
-		it('should handle multiple CORS origins', async () => {
+				const route = withEffectAPI(handler);
+
+				// @ts-expect-error - Testing mocked context
+				const result = await route(mockContext);
+
+				await ctx.parameter('Status', String(result.status));
+				await ctx.parameter(
+					'Access-Control-Allow-Origin',
+					result.headers.get('Access-Control-Allow-Origin') || ''
+				);
+
+				expect(result.status).toBe(204);
+				expect(result.headers.get('Access-Control-Allow-Origin')).toBe('*');
+			}
+		);
+
+		await allure.step(
+			'Testing withEffectAPI should apply success middleware if provided',
+			async (ctx) => {
+				const mockContext = { request: new Request('http://localhost') };
+				const mockResponse = new Response('ok', { status: 200 });
+
+				let handlerCalledWith: any = null;
+				const handler = (ctx: any) => {
+					handlerCalledWith = ctx;
+					return Effect.succeed(mockResponse);
+				};
+
+				const onSuccess = (response: Response, ctx: any) => {
+					expect(ctx).toBe(mockContext);
+					return new Response(response.body, {
+						status: response.status,
+						headers: { 'X-Custom-Header': 'value' },
+					});
+				};
+
+				const route = withEffectAPI(handler, { onSuccess });
+
+				// @ts-expect-error - Testing mocked context
+				const result = await route(mockContext);
+
+				await ctx.parameter('Custom Header', result.headers.get('X-Custom-Header') || '');
+
+				expect(handlerCalledWith).toBe(mockContext);
+				expect(result.headers.get('X-Custom-Header')).toBe('value');
+				expect(result.status).toBe(200);
+			}
+		);
+
+		await allure.step(
+			'Testing withEffectAPI should apply error middleware if provided',
+			async (ctx) => {
+				const mockContext = { request: new Request('http://localhost') };
+				const error = new Error('fail');
+
+				const handler = () => Effect.fail(error);
+
+				const onError = (err: unknown, ctx: APIContext) => {
+					expect(ctx).toBe(mockContext);
+					return new Response(JSON.stringify({ error: (err as Error).message }), { status: 500 });
+				};
+
+				const route = withEffectAPI(handler, { onError });
+
+				// @ts-expect-error - Testing mocked context
+				const result = await route(mockContext);
+				const resultData = await result.json();
+
+				await ctx.parameter('Status', String(result.status));
+				await ctx.parameter('Error Message', resultData.error);
+
+				expect(result.status).toBe(500);
+				expect(resultData).toEqual({ error: 'fail' });
+			}
+		);
+
+		await allure.step('Testing withEffectAPI should handle multiple CORS origins', async (ctx) => {
 			const mockContext = {
 				request: new Request('https://example.com', { headers: { Origin: 'https://example.com' } }),
 			};
@@ -231,12 +317,22 @@ describe('Api-Route Tests', () => {
 			// @ts-expect-error - Testing mocked context
 			const result = await route(mockContext);
 
+			await ctx.parameter(
+				'Access-Control-Allow-Origin',
+				result.headers.get('Access-Control-Allow-Origin') || ''
+			);
+
 			expect(result.headers.get('Access-Control-Allow-Origin')).toBe('https://example.com');
 		});
 	});
 
-	describe('createEffectAPIRoutes tests', () => {
-		it('should create multiple API routes with the provided handlers', async () => {
+	test('API Route - createEffectAPIRoutes', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('createEffectAPIRoutes Tests');
+		await allure.tags(...sharedTags);
+
+		await allure.step('Testing createEffectAPIRoutes with multiple handlers', async () => {
 			const mockContext = { request: new Request('http://localhost') };
 			const mockResponse1 = new Response('ok1', { status: 200 });
 			const mockResponse2 = new Response('ok2', { status: 200 });
@@ -272,8 +368,13 @@ describe('Api-Route Tests', () => {
 		});
 	});
 
-	describe('EffectAPIRouteBuilder tests', () => {
-		it('should build an API route with the provided handler', async () => {
+	test('API Route - EffectAPIRouteBuilder', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('EffectAPIRouteBuilder Tests');
+		await allure.tags(...sharedTags);
+
+		await allure.step('Testing EffectAPIRouteBuilder builds routes correctly', async () => {
 			const mockContext = { request: new Request('http://localhost') };
 			const mockResponse = new Response('ok', { status: 200 });
 
@@ -286,11 +387,13 @@ describe('Api-Route Tests', () => {
 			const { GET, POST } = new EffectAPIRouteBuilder().get(handler).post(handler).build();
 
 			// @ts-expect-error - Testing mocked context
-			const [postResult, getResult] = await Promise.all([POST(mockContext), GET(mockContext)]);
+			const getResult = await GET(mockContext);
+			// @ts-expect-error - Testing mocked context
+			const postResult = await POST(mockContext);
 
 			expect(handlerCalledWith).toBe(mockContext);
-			expect(postResult).toBe(mockResponse);
 			expect(getResult).toBe(mockResponse);
+			expect(postResult).toBe(mockResponse);
 		});
 	});
 });

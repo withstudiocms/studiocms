@@ -1,5 +1,6 @@
 import { runEffect } from '@withstudiocms/effect';
-import { describe, expect, it } from 'vitest';
+import * as allure from 'allure-js-commons';
+import { describe, expect, test } from 'vitest';
 import { UserPermissionLevel } from '../../src/types.js';
 import {
 	getDefaultUserSession,
@@ -9,83 +10,169 @@ import {
 	verifyUsernameLength,
 	verifyUsernameSafe,
 } from '../../src/utils/user.js';
+import { parentSuiteName, sharedTags } from '../test-utils.js';
 
-describe('User Utils', () => {
-	it('verifyUsernameLength returns error for too short username', async () => {
-		const result = await runEffect(verifyUsernameLength('ab'));
-		expect(result).toBe('Username must be between 3 and 32 characters long');
-	});
+const localSuiteName = 'User Utility Tests';
 
-	it('verifyUsernameLength returns error for too long username', async () => {
-		const result = await runEffect(verifyUsernameLength('a'.repeat(33)));
-		expect(result).toBe('Username must be between 3 and 32 characters long');
-	});
+describe(parentSuiteName, () => {
+	[
+		{
+			input: 'ab',
+			expected: 'Username must be between 3 and 32 characters long',
+		},
+		{
+			input: 'a'.repeat(33),
+			expected: 'Username must be between 3 and 32 characters long',
+		},
+		{
+			input: 'validuser',
+			expected: undefined,
+		},
+	].forEach(({ input, expected }) => {
+		test('User Utility - verifyUsernameLength', async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('verifyUsernameLength Tests');
+			await allure.tags(...sharedTags);
 
-	it('verifyUsernameLength returns undefined for valid username', async () => {
-		const result = await runEffect(verifyUsernameLength('validuser'));
-		expect(result).toBeUndefined();
-	});
+			await allure.parameter('input', input);
+			await allure.parameter('expected', expected ?? 'undefined');
 
-	it('verifyUsernameCharacters returns error for invalid characters', async () => {
-		const result = await runEffect(verifyUsernameCharacters('Invalid!User'));
-		expect(result).toBe(
-			'Username can only contain lowercase letters, numbers, hyphens (-), and underscores (_)'
-		);
-	});
-
-	it('verifyUsernameCharacters returns undefined for valid username', async () => {
-		const result = await runEffect(verifyUsernameCharacters('valid_user-123'));
-		expect(result).toBeUndefined();
-	});
-
-	it('verifyUsernameSafe returns error for unsafe username', async () => {
-		const result = await runEffect(verifyUsernameSafe('admin'));
-		expect(result).toBe(
-			'Username should not be a commonly used unsafe username (admin, root, etc.)'
-		);
-	});
-
-	it('verifyUsernameSafe returns undefined for safe username', async () => {
-		const result = await runEffect(verifyUsernameSafe('uniquename123'));
-		expect(result).toBeUndefined();
-	});
-
-	it('getDefaultUserSession returns correct default session', async () => {
-		const session = await runEffect(getDefaultUserSession());
-		expect(session).toStrictEqual({
-			isLoggedIn: false,
-			user: null,
-			permissionLevel: 'unknown',
+			await allure.step(`Should return "${expected}"`, async () => {
+				const result = await runEffect(verifyUsernameLength(input));
+				expect(result).toBe(expected);
+			});
 		});
 	});
 
-	it('getLevel returns unknown for null', async () => {
-		const result = await runEffect(getLevel(null));
-		expect(result).toBe('unknown');
+	[
+		{
+			input: 'Invalid!User',
+			expected:
+				'Username can only contain lowercase letters, numbers, hyphens (-), and underscores (_)',
+		},
+		{
+			input: 'valid_user-123',
+			expected: undefined,
+		},
+	].forEach(({ input, expected }) => {
+		test('User Utility - verifyUsernameCharacters', async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('verifyUsernameCharacters Tests');
+			await allure.tags(...sharedTags);
+
+			await allure.parameter('input', input);
+			await allure.parameter('expected', expected ?? 'undefined');
+
+			await allure.step(`Should return "${expected}"`, async () => {
+				const result = await runEffect(verifyUsernameCharacters(input));
+				expect(result).toBe(expected);
+			});
+		});
 	});
 
-	it('getLevel returns permissionLevel from UserSessionData', async () => {
-		const userData = { isLoggedIn: true, user: null, permissionLevel: 'admin' as const };
-		const result = await runEffect(getLevel(userData));
-		expect(result).toBe('admin');
+	[
+		{
+			input: 'admin',
+			expected: 'Username should not be a commonly used unsafe username (admin, root, etc.)',
+		},
+		{
+			input: 'root',
+			expected: 'Username should not be a commonly used unsafe username (admin, root, etc.)',
+		},
+		{
+			input: 'uniquename123',
+			expected: undefined,
+		},
+	].forEach(({ input, expected }) => {
+		test('User Utility - verifyUsernameSafe', async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('verifyUsernameSafe Tests');
+			await allure.tags(...sharedTags);
+
+			await allure.parameter('input', input);
+			await allure.parameter('expected', expected ?? 'undefined');
+
+			await allure.step(`Should return "${expected}"`, async () => {
+				const result = await runEffect(verifyUsernameSafe(input));
+				expect(result).toBe(expected);
+			});
+		});
 	});
 
-	it('getLevel returns permissionsData.rank from CombinedUserData', async () => {
-		const userData = {
-			isLoggedIn: true,
-			user: null,
-			permissionLevel: 'visitor' as const,
-			permissionsData: { rank: 'editor' as const },
-		};
-		const result = await runEffect(getLevel(userData));
-		expect(result).toBe('editor');
+	test('User Utility - getDefaultUserSession', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('getDefaultUserSession Tests');
+		await allure.tags(...sharedTags);
+
+		await allure.step('Should return default user session', async () => {
+			const result = await runEffect(getDefaultUserSession());
+			expect(result).toEqual({
+				isLoggedIn: false,
+				user: null,
+				permissionLevel: 'unknown',
+			});
+		});
 	});
 
-	it('parseRequiredPerms returns correct UserPermissionLevel', async () => {
-		expect(await runEffect(parseRequiredPerms('owner'))).toBe(UserPermissionLevel.owner);
-		expect(await runEffect(parseRequiredPerms('admin'))).toBe(UserPermissionLevel.admin);
-		expect(await runEffect(parseRequiredPerms('editor'))).toBe(UserPermissionLevel.editor);
-		expect(await runEffect(parseRequiredPerms('visitor'))).toBe(UserPermissionLevel.visitor);
-		expect(await runEffect(parseRequiredPerms('unknown'))).toBe(UserPermissionLevel.unknown);
+	[
+		{
+			input: null,
+			expected: 'unknown',
+		},
+		{
+			input: { isLoggedIn: true, user: null, permissionLevel: 'admin' as const },
+			expected: 'admin',
+		},
+		{
+			input: {
+				isLoggedIn: true,
+				user: null,
+				permissionLevel: 'visitor' as const,
+				permissionsData: { rank: 'editor' as const },
+			},
+			expected: 'editor',
+		},
+	].forEach(({ input, expected }) => {
+		test('User Utility - getLevel', async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('getLevel Tests');
+			await allure.tags(...sharedTags);
+
+			await allure.parameter('input', JSON.stringify(input));
+			await allure.parameter('expected', expected ?? 'undefined');
+
+			await allure.step(`Should return "${expected}"`, async () => {
+				const result = await runEffect(getLevel(input));
+				expect(result).toBe(expected);
+			});
+		});
+	});
+
+	[
+		{ input: 'owner' as const, expected: UserPermissionLevel.owner },
+		{ input: 'admin' as const, expected: UserPermissionLevel.admin },
+		{ input: 'editor' as const, expected: UserPermissionLevel.editor },
+		{ input: 'visitor' as const, expected: UserPermissionLevel.visitor },
+		{ input: 'unknown' as const, expected: UserPermissionLevel.unknown },
+	].forEach(({ input, expected }) => {
+		test('User Utility - parseRequiredPerms', async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('parseRequiredPerms Tests');
+			await allure.tags(...sharedTags);
+
+			await allure.parameter('input', input);
+			await allure.parameter('expected', JSON.stringify(expected));
+
+			await allure.step(`Should return "${expected}"`, async () => {
+				const result = await runEffect(parseRequiredPerms(input));
+				expect(result).toBe(expected);
+			});
+		});
 	});
 });

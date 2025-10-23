@@ -1,56 +1,79 @@
 /** biome-ignore-all lint/suspicious/noExplicitAny: allowed in tests */
-import { describe, expect, it } from 'vitest';
-import {
-	type DecodingOptions,
-	decode,
-	EntityLevel,
-} from '../../../src/component-proxy/decoder/index';
+import * as allure from 'allure-js-commons';
+import { describe, expect, test } from 'vitest';
+import { decode, EntityLevel } from '../../../src/component-proxy/decoder/index';
+import { parentSuiteName, sharedTags } from '../../test-utils.js';
 
-// Mock util.js functions for isolated testing if needed
-// But here, let's assume decodeHTML and decodeXML work as expected
+const localSuiteName = 'Component Proxy Tests';
 
-describe('decode', () => {
-	it('decodes XML entities by default', () => {
-		// &lt; = <
-		expect(decode('&lt;tag&gt;')).toBe('<tag>');
-		// &amp; = &
-		expect(decode('foo &amp; bar')).toBe('foo & bar');
-	});
+describe(parentSuiteName, () => {
+	[
+		{
+			input: '&lt;tag&gt;',
+			options: undefined,
+			expected: '<tag>',
+		},
+		{
+			input: 'foo &amp; bar',
+			options: undefined,
+			expected: 'foo & bar',
+		},
+		{
+			input: '&lt;tag&gt;',
+			options: EntityLevel.XML,
+			expected: '<tag>',
+		},
+		{
+			input: '&copy;',
+			options: EntityLevel.HTML,
+			expected: '©',
+		},
+		{
+			input: 'foo &amp; bar',
+			options: { level: EntityLevel.HTML },
+			expected: 'foo & bar',
+		},
+		{
+			input: '&copy;',
+			options: { level: EntityLevel.HTML },
+			expected: '©',
+		},
+		{
+			input: '&lt;tag&gt;',
+			options: { level: EntityLevel.XML },
+			expected: '<tag>',
+		},
+		{
+			input: '&copy;',
+			options: { level: EntityLevel.XML, mode: 'Strict' as any },
+			expected: '&copy;',
+		},
+		{
+			input: '&lt;tag&gt;',
+			options: { level: EntityLevel.XML, mode: 'Legacy' as any },
+			expected: '<tag>',
+		},
+		{
+			input: 'plain text',
+			options: undefined,
+			expected: 'plain text',
+		},
+	].forEach(({ input, options, expected }) => {
+		test(`decode - input: ${input}`, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('decode Tests');
+			await allure.tags(...sharedTags);
 
-	it('decodes XML entities when EntityLevel.XML is specified', () => {
-		expect(decode('&lt;tag&gt;', EntityLevel.XML)).toBe('<tag>');
-	});
+			await allure.parameter('input', input);
+			await allure.parameter('options', JSON.stringify(options));
+			await allure.parameter('expected', expected);
 
-	it('decodes HTML entities when EntityLevel.HTML is specified', () => {
-		// &copy; is only in HTML, not XML
-		expect(decode('&copy;', EntityLevel.HTML)).toBe('©');
-		// &amp; is in both
-		expect(decode('foo &amp; bar', EntityLevel.HTML)).toBe('foo & bar');
-	});
-
-	it('decodes HTML entities when options.level is HTML', () => {
-		const options: DecodingOptions = { level: EntityLevel.HTML };
-		expect(decode('&copy;', options)).toBe('©');
-	});
-
-	it('decodes XML entities when options.level is XML', () => {
-		const options: DecodingOptions = { level: EntityLevel.XML };
-		expect(decode('&lt;tag&gt;', options)).toBe('<tag>');
-	});
-
-	it('passes mode to decodeHTML when level is HTML', () => {
-		// This test assumes decodeHTML respects the mode argument.
-		// We'll just check that the function doesn't throw and decodes as expected.
-		const options: DecodingOptions = { level: EntityLevel.HTML, mode: 'Strict' as any };
-		expect(decode('&copy;', options)).toBe('©');
-	});
-
-	it('ignores mode when level is XML', () => {
-		const options: DecodingOptions = { level: EntityLevel.XML, mode: 'Legacy' as any };
-		expect(decode('&lt;tag&gt;', options)).toBe('<tag>');
-	});
-
-	it('returns input unchanged if there are no entities', () => {
-		expect(decode('plain text')).toBe('plain text');
+			await allure.step('Decode input string', async (ctx) => {
+				const result = decode(input, options);
+				ctx.parameter('result', result);
+				expect(result).toBe(expected);
+			});
+		});
 	});
 });

@@ -1,49 +1,63 @@
 import { Effect, runEffect } from '@withstudiocms/effect';
-import { describe, expect, it } from 'vitest';
+import * as allure from 'allure-js-commons';
+import { describe, expect, test } from 'vitest';
 import { CheckIfUnsafe } from '../../src/utils/unsafeCheck.js';
+import { parentSuiteName, sharedTags } from '../test-utils.js';
 
-describe('CheckIfUnsafe Utils', () => {
-	it('CheckIfUnsafe.username returns true for a reserved username', async () => {
-		const effect = Effect.gen(function* () {
-			const service = yield* CheckIfUnsafe;
-			return service;
-		}).pipe(Effect.provide(CheckIfUnsafe.Default));
+const localSuiteName = 'CheckIfUnsafe Tests';
 
-		const service = await runEffect(effect);
-		const result = await runEffect(service.username('admin'));
-		expect(result).toBe(true);
+describe(parentSuiteName, async () => {
+	const service = await runEffect(CheckIfUnsafe.pipe(Effect.provide(CheckIfUnsafe.Default)));
+
+	[
+		{
+			input: 'admin',
+			expected: true,
+		},
+		{
+			input: 'not_reserved_user',
+			expected: false,
+		},
+	].forEach(({ input, expected }) => {
+		test(`CheckIfUnsafe.username - should return ${expected} for username "${input}"`, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('CheckIfUnsafe.username Tests');
+			await allure.tags(...sharedTags);
+
+			await allure.parameter('input', input);
+			await allure.parameter('expected', String(expected));
+
+			await allure.step(`Should return ${expected}`, async () => {
+				const result = await runEffect(service.username(input));
+				expect(result).toBe(expected);
+			});
+		});
 	});
 
-	it('CheckIfUnsafe.username returns false for a non-reserved username', async () => {
-		const effect = Effect.gen(function* () {
-			const service = yield* CheckIfUnsafe;
-			return service;
-		}).pipe(Effect.provide(CheckIfUnsafe.Default));
+	[
+		{
+			input: 'password',
+			expected: true,
+		},
+		{
+			input: 'uniquepassword123',
+			expected: false,
+		},
+	].forEach(({ input, expected }) => {
+		test(`CheckIfUnsafe.password - should return ${expected} for password "${input}"`, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('CheckIfUnsafe.password Tests');
+			await allure.tags(...sharedTags);
 
-		const service = await runEffect(effect);
-		const result = await runEffect(service.username('not_reserved_user'));
-		expect(result).toBe(false);
-	});
+			await allure.parameter('input', input);
+			await allure.parameter('expected', String(expected));
 
-	it('CheckIfUnsafe.password returns true for a common password', async () => {
-		const effect = Effect.gen(function* () {
-			const service = yield* CheckIfUnsafe;
-			return service;
-		}).pipe(Effect.provide(CheckIfUnsafe.Default));
-
-		const service = await runEffect(effect);
-		const result = await runEffect(service.password('password'));
-		expect(result).toBe(true);
-	});
-
-	it('CheckIfUnsafe.password returns false for a non-common password', async () => {
-		const effect = Effect.gen(function* () {
-			const service = yield* CheckIfUnsafe;
-			return service;
-		}).pipe(Effect.provide(CheckIfUnsafe.Default));
-
-		const service = await runEffect(effect);
-		const result = await runEffect(service.password('uniquepassword123'));
-		expect(result).toBe(false);
+			await allure.step(`Should return ${expected}`, async () => {
+				const result = await runEffect(service.password(input));
+				expect(result).toBe(expected);
+			});
+		});
 	});
 });

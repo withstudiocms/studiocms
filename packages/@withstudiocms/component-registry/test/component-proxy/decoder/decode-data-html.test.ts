@@ -1,29 +1,37 @@
-import { describe, expect, it } from 'vitest';
+import * as allure from 'allure-js-commons';
+import { describe, expect, test } from 'vitest';
 import { htmlDecodeTree } from '../../../src/component-proxy/decoder/decode-data-html.js';
+import { parentSuiteName, sharedTags } from '../../test-utils.js';
 
-describe('htmlDecodeTree', () => {
-	it('should be defined', () => {
-		expect(htmlDecodeTree).toBeDefined();
+const localSuiteName = 'Component Proxy Tests';
+
+describe(parentSuiteName, () => {
+	test('decode-data-html - htmlDecodeTree structure and content', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('decode-data-html Tests');
+		await allure.tags(...sharedTags);
+
+		await allure.step('Verify htmlDecodeTree structure and content', async () => {
+			// Test the structure of htmlDecodeTree
+			expect(htmlDecodeTree).toBeDefined();
+			expect(htmlDecodeTree).toBeInstanceOf(Uint16Array);
+		});
 	});
 
-	it('should be an instance of Uint16Array', () => {
-		expect(htmlDecodeTree).toBeInstanceOf(Uint16Array);
-	});
+	test('decode-data-html - htmlDecodeTree properties', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('decode-data-html Tests');
+		await allure.tags(...sharedTags);
 
-	it('should have a non-zero length', () => {
-		expect(htmlDecodeTree.length).toBeGreaterThan(0);
-	});
-
-	it('should contain only numbers', () => {
-		for (let i = 0; i < htmlDecodeTree.length; i++) {
-			expect(typeof htmlDecodeTree[i]).toBe('number');
-		}
-	});
-
-	it('should have values in the valid Uint16 range', () => {
-		for (let i = 0; i < htmlDecodeTree.length; i++) {
-			expect(htmlDecodeTree[i]).toBeGreaterThanOrEqual(0);
-			expect(htmlDecodeTree[i]).toBeLessThanOrEqual(0xffff);
-		}
+		await allure.step('Verify htmlDecodeTree properties', async () => {
+			expect(htmlDecodeTree.length).toBeGreaterThan(0);
+			for (let i = 0; i < htmlDecodeTree.length; i++) {
+				expect(typeof htmlDecodeTree[i]).toBe('number');
+				expect(htmlDecodeTree[i]).toBeGreaterThanOrEqual(0);
+				expect(htmlDecodeTree[i]).toBeLessThanOrEqual(0xffff);
+			}
+		});
 	});
 });

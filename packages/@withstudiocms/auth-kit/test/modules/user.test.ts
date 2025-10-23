@@ -1,10 +1,14 @@
 /** biome-ignore-all lint/suspicious/noExplicitAny: allowed for tests */
 import { Effect, runEffect } from '@withstudiocms/effect';
 import { Scrypt as _Scrypt, ScryptConfigOptions } from '@withstudiocms/effect/scrypt';
-import { describe, expect, it } from 'vitest';
+import * as allure from 'allure-js-commons';
+import { describe, expect, test } from 'vitest';
 import { User } from '../../src/modules/user.js';
 import { type UserConfig, UserPermissionLevel } from '../../src/types.js';
 import { makeSessionId } from '../../src/utils/session.js';
+import { parentSuiteName, sharedTags } from '../test-utils.js';
+
+const localSuiteName = 'User Module Tests';
 
 // Minimal fake user tools for testing
 const fakeUser = {
@@ -101,147 +105,259 @@ const serviceBuilder = Effect.gen(function* () {
 	return _service;
 });
 
-describe('User Module', () => {
-	it('verifyUsernameInput returns true for valid username', async () => {
-		const service = await Effect.runPromise(serviceBuilder);
-		const result = await runEffect(service.verifyUsernameInput('valid_user'));
-		expect(result).toBe(true);
+describe(parentSuiteName, async () => {
+	const service = await Effect.runPromise(serviceBuilder);
+
+	[
+		{
+			input: 'valid_user',
+			expected: true,
+		},
+		{
+			input: 'ab',
+			expected: /between 3 and 32 characters/,
+		},
+	].forEach(({ input, expected }) => {
+		test('User Module - verifyUsernameInput Tests', async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('verifyUsernameInput Tests');
+			await allure.tags(...sharedTags);
+
+			await allure.parameter('input', input);
+			await allure.parameter('expected', String(expected));
+
+			await allure.step(`Should return ${expected}`, async () => {
+				const result = await runEffect(service.verifyUsernameInput(input));
+				if (expected === true) {
+					expect(result).toBe(true);
+				} else {
+					expect(result).toMatch(expected as RegExp);
+				}
+			});
+		});
 	});
 
-	it('verifyUsernameInput returns error string for invalid username', async () => {
-		const service = await Effect.runPromise(serviceBuilder);
-		const result = await runEffect(service.verifyUsernameInput('ab'));
-		expect(result).toMatch(/between 3 and 32 characters/);
+	test('User Module - createUserAvatar returns a valid Libravatar URL', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('createUserAvatar Tests');
+		await allure.tags(...sharedTags);
+
+		const email = 'test@example.com';
+		await allure.step('Should return a valid Libravatar URL', async (ctx) => {
+			const url = await runEffect(service.createUserAvatar(email));
+			await ctx.parameter('generated URL', url);
+			expect(typeof url).toBe('string');
+			expect(url).toMatch(/^https:\/\/seccdn\.libravatar\.org\/avatar\/[a-f0-9]+/);
+		});
 	});
 
-	it('createUserAvatar returns a valid Libravatar URL', async () => {
-		const service = await Effect.runPromise(serviceBuilder);
-		const url = await runEffect(service.createUserAvatar('test@example.com'));
-		expect(typeof url).toBe('string');
-		expect(url).toMatch(/^https:\/\/seccdn\.libravatar\.org\/avatar\/[a-f0-9]+/);
+	test('User Module - createLocalUser returns a user object', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('createLocalUser Tests');
+		await allure.tags(...sharedTags);
+
+		await allure.step('Should return a user object', async () => {
+			const user = await runEffect(
+				service.createLocalUser('Test User', 'testuser', 'test@example.com', 'password')
+			);
+			expect(user.username).toBe('testuser');
+			expect(user.email).toBe('test@example.com');
+		});
 	});
 
-	it('createLocalUser returns a user object', async () => {
-		const service = await Effect.runPromise(serviceBuilder);
-		const user = await runEffect(
-			service.createLocalUser('Test User', 'testuser', 'test@example.com', 'password')
-		);
-		expect(user.username).toBe('testuser');
-		expect(user.email).toBe('test@example.com');
+	test('User Module - createOAuthUser returns a user object', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('createOAuthUser Tests');
+		await allure.tags(...sharedTags);
+
+		await allure.step('Should return a user object', async () => {
+			const user = await runEffect(
+				service.createOAuthUser(fakeUser, { provider: 'github', providerUserId: '123' })
+			);
+			expect(user.id).toBe(fakeUser.id);
+		});
 	});
 
-	it('createOAuthUser returns a user object', async () => {
-		const service = await Effect.runPromise(serviceBuilder);
-		const user = await runEffect(
-			service.createOAuthUser(fakeUser, { provider: 'github', providerUserId: '123' })
-		);
-		expect(user.id).toBe(fakeUser.id);
+	test('User Module - getUserPasswordHash returns the user password', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('getUserPasswordHash Tests');
+		await allure.tags(...sharedTags);
+
+		await allure.step('Should return the user password hash', async () => {
+			const hash = await runEffect(service.getUserPasswordHash('user-id'));
+			expect(hash).toBe(fakeUser.password);
+		});
 	});
 
-	it('getUserPasswordHash returns the user password', async () => {
-		const service = await Effect.runPromise(serviceBuilder);
-		const hash = await runEffect(service.getUserPasswordHash('user-id'));
-		expect(hash).toBe(fakeUser.password);
+	[
+		{
+			input: 'notfound',
+		},
+		{
+			input: 'user-id',
+		},
+	].forEach(({ input }) => {
+		test('User Module - getUserPasswordHash fails if user not found', async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('getUserPasswordHash Tests');
+			await allure.tags(...sharedTags);
+
+			await allure.parameter('input userId', input);
+
+			const userToolsNoPass = {
+				...userTools,
+				getUserById: async () => ({ ...fakeUser, password: null }),
+			};
+			const config = { ...userConfig, userTools: userToolsNoPass };
+			// @ts-expect-error mock
+			const serviceNoPass = await Effect.runPromise(User(config));
+
+			await allure.step('Should throw an error', async () => {
+				let err: any;
+				try {
+					await runEffect(serviceNoPass.getUserPasswordHash(input));
+				} catch (e) {
+					err = e;
+				}
+				expect(JSON.stringify(err)).toMatch(
+					'{"_id":"FiberFailure","cause":{"_id":"Cause","_tag":"Fail","failure":{"cause":"User has no password","_tag":"UserError"}}}'
+				);
+			});
+		});
 	});
 
-	it('getUserPasswordHash fails if user not found', async () => {
-		const service = await Effect.runPromise(serviceBuilder);
-		let err: any;
-		try {
-			await runEffect(service.getUserPasswordHash('notfound'));
-		} catch (e) {
-			err = e;
-		}
-		expect(JSON.stringify(err)).toMatch(/Fail/);
+	[
+		{
+			input: 'test@example.com',
+			expected: true,
+		},
+		{
+			input: 'notfound@example.com',
+			expected: false,
+		},
+	].forEach(({ input, expected }) => {
+		test('User Module - doesUserExistByEmail Tests', async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('doesUserExistByEmail Tests');
+			await allure.tags(...sharedTags);
+
+			await allure.parameter('input email', input);
+			await allure.parameter('expected', String(expected));
+
+			await allure.step(`Should return ${expected}`, async () => {
+				const result = await runEffect(service.getUserFromEmail(input));
+				expect(result?.email).toBe(expected ? input : undefined);
+			});
+		});
 	});
 
-	it('getUserPasswordHash fails if user has no password', async () => {
-		const userToolsNoPass = {
-			...userTools,
-			getUserById: async () => ({ ...fakeUser, password: null }),
-		};
-		const config = { ...userConfig, userTools: userToolsNoPass };
-		// @ts-expect-error mock
-		const serviceNoPass = await Effect.runPromise(User(config));
-		let err: any;
-		try {
-			await runEffect(serviceNoPass.getUserPasswordHash('user-id'));
-		} catch (e) {
-			err = e;
-		}
-		expect(JSON.stringify(err)).toMatch(/Fail/);
+	test('User Module - getUserData returns logged out session if no user', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('getUserData Tests');
+		await allure.tags(...sharedTags);
+
+		await allure.step('Should return logged out session', async () => {
+			// @ts-expect-error - mocked type
+			const result = await runEffect(service.getUserData({ cookies: { get: () => undefined } }));
+			expect(result.isLoggedIn).toBe(false);
+			expect(result.user).toBe(null);
+			expect(result.permissionLevel).toBe('unknown');
+		});
 	});
 
-	it('getUserFromEmail returns user for valid email', async () => {
-		const service = await Effect.runPromise(serviceBuilder);
-		const user = await runEffect(service.getUserFromEmail('test@example.com'));
-		expect(user).toBeTruthy();
-		expect(user?.email).toBe('test@example.com');
+	test('User Module - getUserData returns logged in session for valid user', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('getUserData Tests');
+		await allure.tags(...sharedTags);
+
+		await allure.step('Should return logged in session', async () => {
+			const result = await runEffect(
+				// @ts-expect-error - mocked type
+				service.getUserData({ cookies: { get: () => ({ value: 'valid-session-token' }) } })
+			);
+			expect(result.isLoggedIn).toBe(true);
+			expect(result.user).toBeTruthy();
+			expect(result.permissionLevel).toBe('admin');
+		});
 	});
 
-	it('getUserFromEmail returns undefined for invalid email', async () => {
-		const service = await Effect.runPromise(serviceBuilder);
-		const user = await runEffect(service.getUserFromEmail('notfound@example.com'));
-		expect(user).toBeUndefined();
-	});
+	test('User Module - getUserData returns logged out session for expired session', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('getUserData Tests');
+		await allure.tags(...sharedTags);
 
-	it('getUserData returns logged out session if no token', async () => {
-		const service = await Effect.runPromise(serviceBuilder);
-		const context = { cookies: { get: () => undefined } };
-		// @ts-expect-error - mocked type
-		const result = await runEffect(service.getUserData(context));
-		expect(result.isLoggedIn).toBe(false);
-		expect(result.user).toBe(null);
-	});
-
-	it('getUserData returns logged in session for valid token', async () => {
-		const service = await Effect.runPromise(serviceBuilder);
-		const context = { cookies: { get: (_name: string) => ({ value: 'valid-session-token' }) } };
-		// @ts-expect-error - mocked type
-		const result = await runEffect(service.getUserData(context));
-		expect(result.isLoggedIn).toBe(true);
-		expect(result.user).toBeTruthy();
-		expect(result.permissionLevel).toBe('admin');
-	});
-
-	it('getUserData returns logged out session if session invalid', async () => {
-		const service = await Effect.runPromise(serviceBuilder);
 		let cookieDeleted = false;
 		const context = {
 			cookies: {
-				get: () => ({ value: 'invalid-session-token' }),
+				get: () => ({ value: 'expired-session-token' }),
 				set: () => {
 					cookieDeleted = true;
 				},
 			},
 		};
-		// @ts-expect-error - mocked type
-		const result = await runEffect(service.getUserData(context));
-		expect(result.isLoggedIn).toBe(false);
-		expect(cookieDeleted).toBe(true);
+
+		await allure.step('Should return logged out session and delete cookie', async () => {
+			// @ts-expect-error - mocked type
+			const result = await runEffect(service.getUserData(context));
+			expect(result.isLoggedIn).toBe(false);
+			expect(result.user).toBe(null);
+			expect(result.permissionLevel).toBe('unknown');
+			expect(cookieDeleted).toBe(true);
+		});
 	});
 
-	it('getUserPermissionLevel returns correct enum', async () => {
-		const service = await Effect.runPromise(serviceBuilder);
+	test('User Module - getUserPermissionLevel returns correct enum', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('getUserPermissionLevel Tests');
+		await allure.tags(...sharedTags);
+
 		const userData = { permissionLevel: 'admin' as const };
-		// @ts-expect-error - mocked type
-		const level = await runEffect(service.getUserPermissionLevel(userData));
-		expect(level).toBe(UserPermissionLevel.admin);
+
+		await allure.step('Should return correct permission level', async () => {
+			// @ts-expect-error - mocked type
+			const level = await runEffect(service.getUserPermissionLevel(userData));
+			expect(level).toBe(UserPermissionLevel.admin);
+		});
 	});
 
-	it('isUserAllowed returns true if user has required permission', async () => {
-		const service = await Effect.runPromise(serviceBuilder);
-		const userData = { permissionLevel: 'admin' as const };
-		// @ts-expect-error - mocked type
-		const allowed = await runEffect(service.isUserAllowed(userData, 'editor'));
-		expect(allowed).toBe(true);
-	});
+	[
+		{
+			userData: { permissionLevel: 'admin' as const },
+			requiredLevel: 'editor' as const,
+			expected: true,
+		},
+		{
+			userData: { permissionLevel: 'visitor' as const },
+			requiredLevel: 'admin' as const,
+			expected: false,
+		},
+	].forEach(({ userData, requiredLevel, expected }) => {
+		test('User Module - isUserAllowed Tests', async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('isUserAllowed Tests');
+			await allure.tags(...sharedTags);
 
-	it('isUserAllowed returns false if user does not have required permission', async () => {
-		const service = await Effect.runPromise(serviceBuilder);
-		const userData = { permissionLevel: 'visitor' as const };
-		// @ts-expect-error - mocked type
-		const allowed = await runEffect(service.isUserAllowed(userData, 'admin'));
-		expect(allowed).toBe(false);
+			await allure.parameter('userData', JSON.stringify(userData));
+			await allure.parameter('requiredLevel', requiredLevel);
+			await allure.parameter('expected', String(expected));
+
+			await allure.step(`Should return ${expected}`, async () => {
+				// @ts-expect-error - mocked type
+				const result = await runEffect(service.isUserAllowed(userData, requiredLevel));
+				expect(result).toBe(expected);
+			});
+		});
 	});
 });

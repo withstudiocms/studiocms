@@ -51,7 +51,7 @@ interface UserIdentity {
 	domain: string | null;
 }
 
-type TargetComponents = [string | null, number | null];
+export type TargetComponents = [string | null, number | null];
 
 /**
  * Return the right (target, port) pair from a list of SRV records.

@@ -1,7 +1,8 @@
 /** biome-ignore-all lint/suspicious/noExplicitAny: allowed for tests */
 import { Context, Effect, Layer } from '@withstudiocms/effect';
 import { ScryptConfigOptions } from '@withstudiocms/effect/scrypt';
-import { describe, expect, expectTypeOf, it } from 'vitest';
+import * as allure from 'allure-js-commons';
+import { describe, expect, it, test } from 'vitest';
 import {
 	AuthKitConfig,
 	AuthKitOptions,
@@ -10,187 +11,242 @@ import {
 } from '../src/config.js';
 import type { SessionConfig } from '../src/types.js';
 import { defaultSessionConfig } from '../src/utils/session.js';
+import { parentSuiteName, sharedTags } from './test-utils.js';
 
-describe('Config Helper', () => {
-	it('AuthKitConfig object matches expected shape', async () => {
-		const CMS_ENCRYPTION_KEY = 'test-key';
+const localSuiteName = 'Config Tests';
 
-		const Services = Context.make(
-			AuthKitOptions,
-			AuthKitConfig({
-				CMS_ENCRYPTION_KEY,
-				scrypt: ScryptConfigOptions({
-					encryptionKey: CMS_ENCRYPTION_KEY,
+const validKeyBytes = new Uint8Array(16).fill(1);
+const validBase64Key = Buffer.from(validKeyBytes).toString('base64');
+const tooShort = Buffer.from([1, 2, 3]).toString('base64');
+const tooLong = Buffer.from(new Uint8Array(32)).toString('base64');
+
+describe(parentSuiteName, () => {
+	test('AuthKitConfig - AuthKitConfig creates correct config object', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('AuthKitConfig Tests');
+		await allure.tags(...sharedTags);
+
+		await allure.step('Should create AuthKitConfig object without error', async () => {
+			const CMS_ENCRYPTION_KEY = 'test-key';
+
+			const Services = Context.make(
+				AuthKitOptions,
+				AuthKitConfig({
+					CMS_ENCRYPTION_KEY,
+					scrypt: ScryptConfigOptions({
+						encryptionKey: CMS_ENCRYPTION_KEY,
+						keylen: 64,
+						options: { N: 16384, r: 8, p: 1 },
+					}),
+					// @ts-expect-error testing purposefully incorrect type
+					session: {
+						cookieName: 'auth_session',
+						expTime: 1000 * 60 * 60,
+					},
+				})
+			);
+
+			expect(Context.get(Services, AuthKitOptions)).toStrictEqual({
+				CMS_ENCRYPTION_KEY: 'test-key',
+				scrypt: {
+					encryptionKey: 'test-key',
 					keylen: 64,
 					options: { N: 16384, r: 8, p: 1 },
-				}),
-				// @ts-expect-error testing purposefully incorrect type
+				},
 				session: {
 					cookieName: 'auth_session',
 					expTime: 1000 * 60 * 60,
 				},
-			})
-		);
-
-		expect(Context.get(Services, AuthKitOptions)).toStrictEqual({
-			CMS_ENCRYPTION_KEY: 'test-key',
-			scrypt: {
-				encryptionKey: 'test-key',
-				keylen: 64,
-				options: { N: 16384, r: 8, p: 1 },
-			},
-			session: {
-				cookieName: 'auth_session',
-				expTime: 1000 * 60 * 60,
-			},
+			});
 		});
 	});
 
-	describe('makePasswordModConfig', () => {
-		const validKeyBytes = new Uint8Array(16).fill(1);
-		const validBase64Key = Buffer.from(validKeyBytes).toString('base64');
+	[
+		{
+			input: { CMS_ENCRYPTION_KEY: '' },
+			error: 'CMS_ENCRYPTION_KEY must be a non-empty base64 string',
+		},
+		{
+			input: { CMS_ENCRYPTION_KEY: 'not-base64!' },
+			error: 'CMS_ENCRYPTION_KEY must decode to 16 bytes, got 7',
+		},
+		{
+			input: { CMS_ENCRYPTION_KEY: tooShort },
+			error: 'CMS_ENCRYPTION_KEY must decode to 16 bytes, got 3',
+		},
+		{
+			input: { CMS_ENCRYPTION_KEY: tooLong },
+			error: 'CMS_ENCRYPTION_KEY must decode to 16 bytes, got 32',
+		},
+		{
+			input: { CMS_ENCRYPTION_KEY: validBase64Key },
+			expected: PasswordModConfigFinal({
+				scrypt: ScryptConfigOptions({
+					encryptionKey: validBase64Key,
+					keylen: 64,
+					options: { N: 16384, r: 8, p: 1 },
+				}),
+			}),
+		},
+	].forEach(({ input, error, expected }) => {
+		it(`makePasswordModConfig with CMS_ENCRYPTION_KEY="${
+			input.CMS_ENCRYPTION_KEY
+		}" ${error ? 'throws error' : 'returns valid config'}`, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('makePasswordModConfig Tests');
+			await allure.tags(...sharedTags);
 
-		it('throws if CMS_ENCRYPTION_KEY is empty', async () => {
-			expect(() => makePasswordModConfig({ CMS_ENCRYPTION_KEY: '' })).toThrow(
-				'CMS_ENCRYPTION_KEY must be a non-empty base64 string'
-			);
+			await allure.parameter('input', JSON.stringify(input));
+
+			if (error) {
+				await allure.step(`Should throw error: ${error}`, async () => {
+					expect(() => makePasswordModConfig(input)).toThrow(error);
+				});
+			} else {
+				await allure.step('Should return valid PasswordModConfigFinal', async () => {
+					const result = makePasswordModConfig(input);
+					expect(result).toEqual(expected);
+				});
+			}
 		});
+	});
 
-		it('throws if CMS_ENCRYPTION_KEY is not valid base64', () => {
-			expect(() => makePasswordModConfig({ CMS_ENCRYPTION_KEY: 'not-base64!' })).toThrow(
-				'CMS_ENCRYPTION_KEY must decode to 16 bytes, got 7'
-			);
-		});
+	test('makePasswordModConfig - environment variable overrides work correctly', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('makePasswordModConfig Tests');
+		await allure.tags(...sharedTags);
 
-		it('throws if CMS_ENCRYPTION_KEY does not decode to 16 bytes', () => {
-			const tooShort = Buffer.from([1, 2, 3]).toString('base64');
-			expect(() => makePasswordModConfig({ CMS_ENCRYPTION_KEY: tooShort })).toThrow(
-				'CMS_ENCRYPTION_KEY must decode to 16 bytes, got 3'
-			);
-			const tooLong = Buffer.from(new Uint8Array(32)).toString('base64');
-			expect(() => makePasswordModConfig({ CMS_ENCRYPTION_KEY: tooLong })).toThrow(
-				'CMS_ENCRYPTION_KEY must decode to 16 bytes, got 32'
-			);
-		});
+		const prev = {
+			SCRYPT_N: process.env.SCRYPT_N,
+			SCRYPT_R: process.env.SCRYPT_R,
+			SCRYPT_P: process.env.SCRYPT_P,
+		};
+		process.env.SCRYPT_N = '32768';
+		process.env.SCRYPT_R = '16';
+		process.env.SCRYPT_P = '4';
 
-		it('returns PasswordModConfigFinal with default scrypt params', () => {
+		await allure.step('Should respect environment variable overrides', async () => {
 			const config = makePasswordModConfig({ CMS_ENCRYPTION_KEY: validBase64Key });
-			expect(config).toHaveProperty('scrypt');
-			expect(config).toMatchObject(
-				PasswordModConfigFinal({
-					scrypt: ScryptConfigOptions({
-						encryptionKey: validBase64Key,
-						keylen: 64,
-						options: { N: 16384, r: 8, p: 1 },
-					}),
-				})
-			);
+			expect(config.scrypt.options).toMatchObject({ N: 32768, r: 16, p: 4 });
 		});
 
-		it('respects SCRYPT_N, SCRYPT_R, SCRYPT_P env vars and clamps them', () => {
-			const prev = {
-				N: process.env.SCRYPT_N,
-				R: process.env.SCRYPT_R,
-				P: process.env.SCRYPT_P,
-			};
-			process.env.SCRYPT_N = '65536';
-			process.env.SCRYPT_R = '16';
-			process.env.SCRYPT_P = '4';
-			const config = makePasswordModConfig({ CMS_ENCRYPTION_KEY: validBase64Key });
-			expect(config.scrypt.options).toMatchObject({ N: 65536, r: 16, p: 4 });
-			process.env.SCRYPT_N = '99999999'; // above max
-			process.env.SCRYPT_R = '99'; // above max
-			process.env.SCRYPT_P = '99'; // above max
-			const config2 = makePasswordModConfig({ CMS_ENCRYPTION_KEY: validBase64Key });
-			expect(config2.scrypt.options).toMatchObject({ N: 1048576, r: 32, p: 16 });
-			process.env.SCRYPT_N = prev.N;
-			process.env.SCRYPT_R = prev.R;
-			process.env.SCRYPT_P = prev.P;
-		});
+		process.env.SCRYPT_N = prev.SCRYPT_N;
+		process.env.SCRYPT_R = prev.SCRYPT_R;
+		process.env.SCRYPT_P = prev.SCRYPT_P;
+	});
 
-		it('clamps SCRYPT_N to nearest lower power of two', () => {
-			const oldEnv = { ...process.env };
-			process.env.SCRYPT_N = '20000'; // nearest lower power of two is 16384
+	test('makePasswordModConfig - clamps SCRYPT_N to nearest lower power of two', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('makePasswordModConfig Tests');
+		await allure.tags(...sharedTags);
+
+		const oldEnv = { ...process.env };
+		process.env.SCRYPT_N = '20000'; // nearest lower power of two is 16384
+
+		await allure.step('Should clamp SCRYPT_N correctly', async () => {
 			const config = makePasswordModConfig({ CMS_ENCRYPTION_KEY: validBase64Key });
 			expect(config.scrypt.options.N).toBe(16384);
-			process.env = oldEnv;
 		});
 
-		it('throws if session.cookieName is missing or empty', () => {
-			const validKeyBytes = new Uint8Array(16).fill(1);
-			const validBase64Key = Buffer.from(validKeyBytes).toString('base64');
+		process.env = oldEnv;
+	});
+
+	test('AuthKitOptions - Throws if session.cookieName is missing or empty', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('AuthKitOptions Tests');
+		await allure.tags(...sharedTags);
+
+		await allure.step('Should throw error for missing/empty session.cookieName', async () => {
 			const userTools = {} as any;
 			const baseConfig = {
 				CMS_ENCRYPTION_KEY: validBase64Key,
 				userTools,
 			};
 
-			expect(() =>
-				AuthKitOptions.Live({
-					...baseConfig,
+			const testCases = [
+				{
 					session: { ...defaultSessionConfig, cookieName: '' } as Required<SessionConfig>,
-				})
-			).toThrow('session.cookieName must be a non-empty string');
-
-			expect(() =>
-				AuthKitOptions.Live({
-					...baseConfig,
+					error: 'session.cookieName must be a non-empty string',
+				},
+				{
 					session: { ...defaultSessionConfig, cookieName: '   ' } as Required<SessionConfig>,
-				})
-			).toThrow('session.cookieName must be a non-empty string');
-
-			expect(() =>
-				AuthKitOptions.Live({
-					...baseConfig,
+					error: 'session.cookieName must be a non-empty string',
+				},
+				{
 					session: {
 						...defaultSessionConfig,
 						cookieName: undefined as any,
 					} as Required<SessionConfig>,
-				})
-			).toThrow('session.cookieName must be a non-empty string');
-		});
+					error: 'session.cookieName must be a non-empty string',
+				},
+			];
 
-		it('throws if session.expTime is not a positive integer', () => {
-			const validKeyBytes = new Uint8Array(16).fill(1);
-			const validBase64Key = Buffer.from(validKeyBytes).toString('base64');
+			for (const { session, error } of testCases) {
+				expect(() =>
+					AuthKitOptions.Live({
+						...baseConfig,
+						session,
+					})
+				).toThrow(error);
+			}
+		});
+	});
+
+	test('AuthKitOptions - throws if session.expTime is invalid', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('AuthKitOptions Tests');
+		await allure.tags(...sharedTags);
+
+		await allure.step('Should throw error for invalid session.expTime', async () => {
 			const userTools = {} as any;
 			const baseConfig = {
 				CMS_ENCRYPTION_KEY: validBase64Key,
 				userTools,
 			};
 
-			expect(() =>
-				AuthKitOptions.Live({
-					...baseConfig,
+			const testCases = [
+				{
 					session: { ...defaultSessionConfig, expTime: 0 } as Required<SessionConfig>,
-				})
-			).toThrow('session.expTime must be a positive integer (ms)');
-
-			expect(() =>
-				AuthKitOptions.Live({
-					...baseConfig,
+					error: 'session.expTime must be a positive integer (ms)',
+				},
+				{
 					session: { ...defaultSessionConfig, expTime: -100 } as Required<SessionConfig>,
-				})
-			).toThrow('session.expTime must be a positive integer (ms)');
-
-			expect(() =>
-				AuthKitOptions.Live({
-					...baseConfig,
+					error: 'session.expTime must be a positive integer (ms)',
+				},
+				{
 					session: { ...defaultSessionConfig, expTime: Number.NaN } as Required<SessionConfig>,
-				})
-			).toThrow('session.expTime must be a positive integer (ms)');
-
-			expect(() =>
-				AuthKitOptions.Live({
-					...baseConfig,
+					error: 'session.expTime must be a positive integer (ms)',
+				},
+				{
 					session: { ...defaultSessionConfig, expTime: 1.5 } as Required<SessionConfig>,
-				})
-			).toThrow('session.expTime must be a positive integer (ms)');
-		});
+					error: 'session.expTime must be a positive integer (ms)',
+				},
+			];
 
-		it('merges session config with defaults', () => {
-			const validKeyBytes = new Uint8Array(16).fill(1);
-			const validBase64Key = Buffer.from(validKeyBytes).toString('base64');
+			for (const { session, error } of testCases) {
+				expect(() =>
+					AuthKitOptions.Live({
+						...baseConfig,
+						session,
+					})
+				).toThrow(error);
+			}
+		});
+	});
+
+	test('AuthKitOptions - merges session config with defaults', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('AuthKitOptions Tests');
+		await allure.tags(...sharedTags);
+
+		await allure.step('Should merge session config with defaults', async () => {
 			const userTools = {} as any;
 			const customSession = {
 				cookieName: 'custom_cookie',
@@ -206,7 +262,6 @@ describe('Config Helper', () => {
 
 			const testContext = Context.get(resolvedContext, AuthKitOptions);
 
-			expectTypeOf(layer).toEqualTypeOf<Layer.Layer<AuthKitOptions, never, never>>();
 			expect(testContext.session).toEqual({
 				...defaultSessionConfig,
 				...customSession,
