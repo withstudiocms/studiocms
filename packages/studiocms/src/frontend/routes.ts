@@ -1,5 +1,5 @@
 import type { InjectedRoute } from 'astro';
-import { Context, Effect, Layer } from '../effect.js';
+import { Context, Effect, Layer, pipe } from '../effect.js';
 
 /**
  * Resolves the file path for a given route.
@@ -423,6 +423,17 @@ export class StudioCMSRouteConfig extends Context.Tag('StudioCMSRouteConfig')<
 	static Live = (config: RouteConfig) => Layer.succeed(this, config);
 }
 
+interface ProcessedRouteConfig {
+	dbStartPage: boolean;
+	shouldInject404Route: boolean;
+	restAPIEnabled: boolean;
+	dashboardEnabled: boolean;
+	dashboardAPIEnabled: boolean;
+	usernameAndPasswordAPI: boolean;
+	userRegistrationEnabled: boolean;
+	oAuthEnabled: boolean;
+}
+
 /**
  * Process and derive route settings from the main configuration.
  */
@@ -441,7 +452,7 @@ const processedConfig = Effect.fn(
 			},
 		},
 	}: RouteConfig) =>
-		Effect.succeed({
+		Effect.succeed<ProcessedRouteConfig>({
 			dbStartPage: dbStartPage,
 			shouldInject404Route: shouldInject404Route && !dbStartPage,
 			restAPIEnabled: !dbStartPage && authEnabled && !developerConfig.demoMode,
@@ -465,75 +476,94 @@ function setPrerenderFalse(items: InjectedRoute[] | InjectedRoute) {
 }
 
 /**
+ * Map processed configuration to route groups.
+ */
+const mapProcessedConfig = Effect.fn(
+	({
+		dashboardAPIEnabled,
+		dashboardEnabled,
+		dbStartPage,
+		oAuthEnabled,
+		restAPIEnabled,
+		shouldInject404Route,
+		userRegistrationEnabled,
+		usernameAndPasswordAPI,
+		dashboardRoute,
+	}: ProcessedRouteConfig & { dashboardRoute: (path: string) => string }) =>
+		Effect.succeed([
+			{
+				enabled: dbStartPage,
+				routes: setPrerenderFalse(setupRoutes),
+			},
+			{
+				enabled: !dbStartPage,
+				routes: setPrerenderFalse(noDbSetupRoutes),
+			},
+			{
+				enabled: shouldInject404Route,
+				routes: setPrerenderFalse(error404Route),
+			},
+			{
+				enabled: restAPIEnabled,
+				routes: setPrerenderFalse(restRoutes),
+			},
+			{
+				enabled: oAuthEnabled,
+				routes: setPrerenderFalse(oAuthEnabledRoutes),
+			},
+			{
+				enabled: usernameAndPasswordAPI,
+				routes: setPrerenderFalse(usernameAndPasswordAPIRoutes),
+			},
+			{
+				enabled: userRegistrationEnabled,
+				routes: setPrerenderFalse(userRegistrationEnabledRoutes(dashboardRoute)),
+			},
+			{
+				enabled: dashboardEnabled,
+				routes: setPrerenderFalse(dashboardEnabledRoutes(dashboardRoute)),
+			},
+			{
+				enabled: dashboardAPIEnabled,
+				routes: setPrerenderFalse(dashboardAPIEnabledRoutes(dashboardRoute)),
+			},
+		])
+);
+
+/**
  * Get the array of routes to be injected into the Astro integration.
  */
 export const getRoutes = Effect.gen(function* () {
+	// Get the StudioCMS route configuration
 	const config = yield* StudioCMSRouteConfig;
 
+	// Destructure necessary properties from the configuration
 	const { dashboardRoute, extraRoutes = [] } = config;
 
-	const {
-		dbStartPage,
-		shouldInject404Route,
-		restAPIEnabled,
-		userRegistrationEnabled,
-		oAuthEnabled,
-		usernameAndPasswordAPI,
-		dashboardEnabled,
-		dashboardAPIEnabled,
-	} = yield* processedConfig(config);
-
-	const routes: InjectedRoute[] = [];
-
-	// Inject setup routes if dbStartPage is true
-	if (dbStartPage) {
-		routes.push(...setPrerenderFalse(setupRoutes));
-	}
-
-	// Inject dashboard routes if dashboard is enabled and not in setup mode
-	if (!dbStartPage) {
-		routes.push(...setPrerenderFalse(noDbSetupRoutes));
-	}
-
-	// Inject 404 route if configured
-	if (shouldInject404Route) {
-		routes.push(...setPrerenderFalse(error404Route));
-	}
-
-	// Inject REST API routes if enabled
-	if (restAPIEnabled) {
-		routes.push(...setPrerenderFalse(restRoutes));
-	}
-
-	// Inject OAuth routes if enabled
-	if (oAuthEnabled) {
-		routes.push(...setPrerenderFalse(oAuthEnabledRoutes));
-	}
-
-	// Inject username and password API routes if enabled
-	if (usernameAndPasswordAPI) {
-		routes.push(...setPrerenderFalse(usernameAndPasswordAPIRoutes));
-	}
-
-	// Inject user registration routes if enabled
-	if (userRegistrationEnabled) {
-		routes.push(...setPrerenderFalse(userRegistrationEnabledRoutes(dashboardRoute)));
-	}
-
-	// Inject dashboard routes if enabled
-	if (dashboardEnabled) {
-		routes.push(...setPrerenderFalse(dashboardEnabledRoutes(dashboardRoute)));
-	}
-
-	// Inject dashboard API routes if enabled
-	if (dashboardAPIEnabled) {
-		routes.push(...setPrerenderFalse(dashboardAPIEnabledRoutes(dashboardRoute)));
-	}
+	// Process the configuration and map to route groups
+	const initialRoutes = yield* pipe(
+		processedConfig(config),
+		Effect.flatMap((processed) =>
+			mapProcessedConfig({
+				...processed,
+				dashboardRoute,
+			})
+		),
+		Effect.map((routeGroups) =>
+			routeGroups.reduce<InjectedRoute[]>((acc, { enabled, routes }) => {
+				if (enabled) {
+					acc.push(...routes);
+				}
+				return acc;
+			}, [])
+		)
+	);
 
 	// Append any extra routes from the configuration
 	if (extraRoutes && extraRoutes.length > 0) {
-		routes.push(...extraRoutes);
+		initialRoutes.push(...extraRoutes);
 	}
 
-	return routes;
+	// Return the final array of routes
+	return initialRoutes;
 });
