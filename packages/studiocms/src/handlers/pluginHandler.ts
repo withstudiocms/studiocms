@@ -10,14 +10,14 @@ import {
 	readJson,
 	rendererComponentFilter,
 } from '@withstudiocms/internal_helpers/utils';
-import type { AstroIntegration } from 'astro';
+import type { AstroIntegration, InjectedRoute } from 'astro';
 import { AstroError } from 'astro/errors';
 import type { z } from 'astro/zod';
 import { addVirtualImports, createResolver, defineUtility } from 'astro-integration-kit';
 import boxen from 'boxen';
 import { compare as semCompare } from 'semver';
 import { loadEnv } from 'vite';
-import { routesDir, StudioCMSDefaultRobotsConfig } from '../consts.js';
+import { StudioCMSDefaultRobotsConfig } from '../consts.js';
 import { StudioCMSError } from '../errors.js';
 import {
 	checkForWebVitals,
@@ -38,7 +38,6 @@ import type {
 	PluginTranslations,
 } from '../schemas/plugins/i18n.js';
 import type { GridItemInput } from '../schemas/plugins/shared.js';
-import type { Route } from '../types.js';
 import { buildTranslations, loadJsTranslations } from '../utils/lang-helper.js';
 
 // Resolver Function
@@ -331,7 +330,7 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 		const safePluginList: SafePluginListType = [];
 
 		// List of extra routes
-		const extraRoutes: Route[] = [];
+		const extraRoutes: InjectedRoute[] = [];
 
 		// List of messages
 		const messages: Messages = [];
@@ -897,9 +896,9 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 				(availableDashboardPages.admin && availableDashboardPages.admin.length > 0)
 			) {
 				extraRoutes.push({
-					enabled: true,
 					pattern: dashboardRoute('[...pluginPage]'),
-					entrypoint: routesDir.dashRoute('[...pluginPage].astro'),
+					entrypoint: 'studiocms/frontend/[dashboard]/[...pluginPage].astro',
+					prerender: false,
 				});
 			}
 

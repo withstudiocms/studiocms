@@ -68,32 +68,44 @@ export type CurrentRESTAPIVersions = (typeof currentRESTAPIVersions)[number];
 
 /**
  * Routes Directory Resolver
+ *
+ * @deprecated use new src/frontend/routes resolver functions instead
  */
 const baseDir = (path: string) => `studiocms/src/${path}`;
 
 /**
  * Base Directory Functions
+ *
+ * @deprecated use new src/frontend/routes resolver functions instead
  */
 const baseRoutesDir = (path: string) => baseDir(`routes/${path}`);
 
 /**
  * Base Directory Functions for Middleware
+ *
+ * @deprecated use new src/frontend/routes resolver functions instead
  */
 const baseMiddlewareDir = (path: string) => baseDir(`middleware/${path}`);
 
 /**
  * Base Directory Functions for API Routes
+ *
+ * @deprecated use new src/frontend/routes resolver functions instead
  */
 const baseAPIRoutesDir = (path: string) => baseRoutesDir(`api/${path}`);
 
 /**
  * Base Directory Functions for REST API Routes
+ *
+ * @deprecated use new src/frontend/routes resolver functions instead
  */
 const baseRestDir = (version: CurrentRESTAPIVersions) => (path: string) =>
 	baseRoutesDir(`api/rest/${version}/${path}`);
 
 /**
  * REST API Directory
+ *
+ * @deprecated use new src/frontend/routes resolver functions instead
  */
 export const routesDir = {
 	// Main Routes

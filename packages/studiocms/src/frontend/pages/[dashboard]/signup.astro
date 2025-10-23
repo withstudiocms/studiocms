@@ -1,0 +1,123 @@
+---
+import { authConfig } from 'studiocms:config';
+import { useTranslations } from 'studiocms:i18n';
+import { Button } from 'studiocms:ui/components/button';
+import { Input } from 'studiocms:ui/components/input';
+import { providerData, showOAuth } from '../../components/auth/oAuthButtonProviders.js';
+import AuthLayout from '../../layouts/AuthLayout.astro';
+
+const lang = Astro.locals.StudioCMS.defaultLang;
+const t = useTranslations(lang, '@studiocms/auth:signup');
+
+const {
+	providers: {
+		usernameAndPassword,
+		usernameAndPasswordConfig: { allowUserRegistration },
+	},
+} = authConfig;
+
+const SHOW_OAUTH = showOAuth && providerData.some(({ enabled }) => enabled);
+
+let paragraph:
+	| 'sub-header-usernamepasswordoauth'
+	| 'sub-header-usernamepassword'
+	| 'sub-header-oauth'
+	| 'sub-header-noprovider';
+
+if (usernameAndPassword && SHOW_OAUTH) {
+	paragraph = 'sub-header-usernamepasswordoauth';
+} else if (usernameAndPassword && !SHOW_OAUTH) {
+	paragraph = 'sub-header-usernamepassword';
+} else if (!usernameAndPassword && SHOW_OAUTH) {
+	paragraph = 'sub-header-oauth';
+} else {
+	paragraph = 'sub-header-noprovider';
+}
+---
+<AuthLayout 
+    title={t('title')} 
+    description={t('description')} 
+    {lang} 
+    checkLogin
+    >
+    
+    <div slot="header" class="form-header">
+        <h1>
+            <t-signup key="header">{t('header')}</t-signup>
+        </h1>
+        <p>
+            <t-signup key={paragraph}>{t(paragraph)}</t-signup>
+        </p>
+    </div>
+
+    { usernameAndPassword && (
+        <form class="form" id="sign-up-form" method="post" action={Astro.locals.StudioCMS.routeMap.authLinks.registerAPI}>
+
+            <Input label={t('username-label')} name="username" type="text" />
+            <Input label={t('email-label')} name="email" type="email" />
+            <Input label={t('displayname-label')} name="displayname" type="text" />
+            <Input label={t('password-label')} name="password" type="password" />
+            <Input label={t('confirm-password-label')} name="confirm-password" type="password" />
+
+            <Button fullWidth type="submit" as="button" type="submit" color='primary' variant='solid'>
+                <t-signup key="create-account-button">{t('create-account-button')}</t-signup>
+            </Button>
+        </form>
+    )}
+
+    { allowUserRegistration && (
+        <p slot="footer">
+            <t-signup key="allow-login-haveaccount">
+                {t('allow-login-haveaccount')}
+            </t-signup> 
+            <a href={Astro.locals.StudioCMS.routeMap.authLinks.loginURL}>
+                <t-signup key="allow-login-login">
+                    {t('allow-login-login')}
+                </t-signup>
+            </a>
+        </p>
+    )}
+
+</AuthLayout>
+
+<script>
+    import { 
+        $i18n,
+        $localeSettings,
+        baseTranslation,
+        defaultLang,
+        documentUpdater,
+        makeTranslation,
+        updateElmLabel,
+    } from 'studiocms:i18n/client';
+
+    const currentPage = '@studiocms/auth:signup';
+
+    let lang = defaultLang;
+
+    const i18n = $i18n(currentPage, baseTranslation[currentPage]);
+
+    $localeSettings.subscribe((locale) => {
+        lang = locale || defaultLang;
+    });
+    
+    i18n.subscribe(comp => {
+        documentUpdater(comp, lang)
+        updateElmLabel('username', comp['username-label']);
+        updateElmLabel('email', comp['email-label']);
+        updateElmLabel('displayname', comp['displayname-label']);
+        updateElmLabel('password', comp['password-label']);
+        updateElmLabel('confirm-password', comp['confirm-password-label']);
+    });
+
+    if (!customElements.get('t-signup')) {
+        customElements.define('t-signup', makeTranslation(currentPage, i18n));
+    }
+</script>
+
+<script>
+    import { formListener } from '../../scripts/auth/formListener.js';
+    const signUpForm = document.getElementById('sign-up-form') as HTMLFormElement;
+
+    signUpForm.addEventListener('submit', async (event) => formListener(event, signUpForm, 'register'));
+</script>

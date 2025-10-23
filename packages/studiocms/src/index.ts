@@ -33,7 +33,6 @@ import {
 	AstroConfigViteSettings,
 	getUiOpts,
 	makeDashboardRoute,
-	routesDir,
 } from './consts.js';
 import {
 	changelogHelper,
@@ -225,7 +224,7 @@ export const studiocms = defineIntegration({
 					});
 
 					// Setup Routes
-					routeHandler(params, {
+					await routeHandler(params, {
 						oAuthProvidersConfigured,
 						authConfig,
 						dashboardEnabled,
@@ -239,7 +238,7 @@ export const studiocms = defineIntegration({
 					if (!dbStartPage)
 						addMiddleware({
 							order: 'pre',
-							entrypoint: routesDir.middleware('index.ts'),
+							entrypoint: 'studiocms/frontend/middleware/index.ts',
 						});
 
 					// Inject Integrations into Astro project
