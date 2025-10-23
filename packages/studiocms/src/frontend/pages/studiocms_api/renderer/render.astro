@@ -1,0 +1,27 @@
+---
+export const partial = true;
+
+import { pipe } from '../../../../effect.js';
+import { parseMarkdown } from '../../../../utils/tinyMDParser.js';
+
+const astroJsonData = await Astro.request.json();
+const queryParam = Astro.url.searchParams.get('content');
+
+const data = pipe(
+	() => {
+		const jsonData: { content: string | undefined } | undefined = astroJsonData;
+
+		if (jsonData?.content) {
+			return jsonData.content;
+		}
+
+		if (queryParam && queryParam !== 'null') {
+			return queryParam;
+		}
+
+		return 'No content to display';
+	},
+	(content) => parseMarkdown(content())
+);
+---
+<Fragment set:html={data} />

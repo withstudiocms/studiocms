@@ -3,7 +3,7 @@ import {
 	allowedIdentifiers,
 	sortByDate,
 	withinLast30Days,
-} from '../../../src/components/default-grid-items/utils';
+} from '../../../src/handlers/plugin-components/utils';
 
 describe('allowedIdentifiers', () => {
 	it('should contain the expected identifiers', () => {

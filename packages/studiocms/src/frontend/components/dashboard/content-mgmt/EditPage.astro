@@ -1,0 +1,741 @@
+---
+import { FormattedDate } from 'studiocms:components';
+import { type UiLanguageKeys, useTranslations } from 'studiocms:i18n';
+import type { SettingsField } from 'studiocms:plugin-helpers';
+import pluginList from 'studiocms:plugins';
+import { renderAugments } from 'studiocms:plugins/augments';
+import { runSDK, SDKCoreJs } from 'studiocms:sdk';
+import type { SiteConfigCacheObject } from 'studiocms:sdk/types';
+import { Button } from 'studiocms:ui/components/button';
+import { Card } from 'studiocms:ui/components/card';
+import { Center } from 'studiocms:ui/components/center';
+import { Icon } from 'studiocms:ui/components/icon';
+import { Input } from 'studiocms:ui/components/input';
+import { Select } from 'studiocms:ui/components/select';
+import { TabItem, Tabs } from 'studiocms:ui/components/tabs';
+import { editorKeys } from 'virtual:studiocms/components/Editors';
+import { Effect } from 'effect';
+import PageEditorSwapper from './PageEditorSwapper.astro';
+import PageTypeHandler from './PageTypeHandler.astro';
+import PluginFields from './PluginFields.astro';
+import { convertToSafeString, importEditorKeys } from './runtime.js';
+import {
+	categoriesOptions,
+	pageTypeOptions,
+	parentFolderOptions,
+	tagsOptions,
+	trueFalse,
+} from './shared.js';
+
+const urlParams = Astro.url.searchParams;
+const editId = urlParams.get('edit') || '';
+
+interface Props {
+	lang: UiLanguageKeys;
+	config: SiteConfigCacheObject;
+}
+
+const { lang, config } = Astro.props as Props;
+
+const enableDiffs = config.data.enableDiffs;
+
+const [[currentPageData, users], editors] = await Promise.all([
+	runSDK(Effect.all([SDKCoreJs.GET.page.byId(editId), SDKCoreJs.GET.users.all()])),
+	importEditorKeys(editorKeys),
+]);
+
+if (!currentPageData) {
+	return new Response(null, { status: 404, statusText: 'Page Not Found' });
+}
+
+const pageData = currentPageData.data;
+
+function getParentFolderValue(value: string | null): string | undefined {
+	const options = parentFolderOptions;
+	if (value === null) return 'null';
+	return options.find((option: { value: FormDataEntryValue }) => option.value === value)?.value;
+}
+
+const diffs = await runSDK(SDKCoreJs.diffTracking.get.byPageId.latest(pageData.id, 10));
+
+const user = (id: string) => users.find((u) => u.id === id)?.name;
+
+// biome-ignore lint/suspicious/noExplicitAny: This is a valid use case for explicit any.
+let editor: any = editors[convertToSafeString(pageData.package)];
+
+const CurrentEditorComponent = editor;
+
+const pluginFields = pluginList
+	.flatMap(({ pageTypes }) => {
+		const pageTypeOutput: {
+			identifier: string;
+			fields?: SettingsField[];
+		}[] = [];
+
+		if (!pageTypes) {
+			return pageTypeOutput;
+		}
+
+		for (const pageType of pageTypes) {
+			pageTypeOutput.push(pageType);
+		}
+
+		return pageTypeOutput;
+	})
+	.find((pageType) => pageType.identifier === pageData.package);
+
+const t = useTranslations(lang, '@studiocms/dashboard:content-page');
+---
+
+<PageTypeHandler pluginFields={pluginFields ? [pluginFields] : []}>
+  <PageEditorSwapper editorKeys={editorKeys}>
+    <div
+      id="edit-page-container"
+      data-content-management-url={Astro.locals.StudioCMS.routeMap.mainLinks
+        .contentManagement}
+    >
+      <form
+        id="edit-page-form"
+        action={Astro.locals.StudioCMS.routeMap.endpointLinks.content.page}
+      >
+        <Tabs variant={"starlight"}>
+          <TabItem
+            id="tab-label-basic-info"
+            label={t("tab-label-basic-info")}
+            icon={"heroicons:information-circle-20-solid"}
+            color={"primary"}
+          >
+            <div class="tab-section">
+              <div class="form-row">
+                <Input
+                  label={t("input-page-title")}
+                  name="page-title"
+                  isRequired
+                  defaultValue={pageData.title}
+                />
+                <Input
+                  label={t("input-page-slug")}
+                  name="page-slug"
+                  isRequired
+                  defaultValue={pageData.slug}
+                />
+
+                <input type="hidden" name="page-id" value={pageData.id} />
+              </div>
+
+              <div class="form-row">
+                <Input
+                  label={t("input-page-description")}
+                  name="page-description"
+                  isRequired
+                  defaultValue={pageData.description}
+                />
+                <Select
+                  label={t("select-page-type")}
+                  name="page-type"
+                  isRequired
+                  fullWidth
+                  defaultValue={pageData.package}
+                  options={pageTypeOptions}
+                />
+              </div>
+
+              <div class="form-row">
+                <Select
+                  label={t("select-page-parent-folder")}
+                  name="parent-folder"
+                  fullWidth
+                  options={parentFolderOptions}
+                  defaultValue={getParentFolderValue(pageData.parentFolder)}
+                />
+                <Select
+                  label={t("select-augments-label")}
+                  name="cms-plugin-augments"
+                  multiple
+                  fullWidth
+                  disabled={renderAugments.length === 0}
+                  defaultValue={(pageData.augments as string[]).length > 0 &&
+                  renderAugments.length > 0
+                    ? (pageData.augments as string[])
+                    : ["no-augments"]}
+                  options={renderAugments.length > 0
+                    ? renderAugments.map(({ id }) => ({ label: id, value: id }))
+                    : [
+                        {
+                          label: t("no-augments"),
+                          value: "no-augments",
+                          disabled: true,
+                        },
+                      ]}
+                />
+              </div>
+
+              <div class="form-row">
+                <Select
+                  label={t("select-page-categories")}
+                  name="categories"
+                  placeholder="Work in Progress"
+                  fullWidth
+                  options={categoriesOptions}
+                  disabled
+                />
+                <Select
+                  label={t("select-page-tags")}
+                  name="tags"
+                  placeholder="Work in Progress"
+                  fullWidth
+                  options={tagsOptions}
+                  disabled
+                />
+              </div>
+
+              <div class="form-row-single">
+                <div class="form-row-item">
+                  <Input
+                    label={t("input-page-hero-image")}
+                    name="page-hero-image"
+                    placeholder="https://..."
+                    defaultValue={pageData.heroImage}
+                  />
+                  <span class="form-row-item__description"
+                    ><t-content-edit-page key="requires-supported-frontend"
+                      >{t("requires-supported-frontend")}</t-content-edit-page
+                    ></span
+                  >
+                </div>
+              </div>
+
+              <div class="form-row-booleans">
+                <Select
+                  label={t("select-page-draft")}
+                  name="draft"
+                  fullWidth
+                  options={trueFalse}
+                  defaultValue={`${pageData.draft ?? false}`}
+                />
+                <div class="form-row-item">
+                  <Select
+                    label={t("select-page-show-author")}
+                    name="show-author"
+                    defaultValue={`${pageData.showAuthor}`}
+                    fullWidth
+                    options={trueFalse}
+                  />
+                  <span class="form-row-item__description"
+                    ><t-content-edit-page key="requires-supported-frontend"
+                      >{t("requires-supported-frontend")}</t-content-edit-page
+                    ></span
+                  >
+                </div>
+                <div class="form-row-item">
+                  <Select
+                    label={t("select-page-show-in-nav")}
+                    name="show-in-nav"
+                    defaultValue={`${pageData.showOnNav}`}
+                    fullWidth
+                    options={trueFalse}
+                  />
+                  <span class="form-row-item__description"
+                    ><t-content-edit-page key="requires-supported-frontend"
+                      >{t("requires-supported-frontend")}</t-content-edit-page
+                    ></span
+                  >
+                </div>
+                <div class="form-row-item">
+                  <Select
+                    label={t("select-page-show-contributors")}
+                    name="show-contributors"
+                    defaultValue={`${pageData.showContributors}`}
+                    fullWidth
+                    options={trueFalse}
+                  />
+                  <span class="form-row-item__description"
+                    ><t-content-edit-page key="requires-supported-frontend"
+                      >{t("requires-supported-frontend")}</t-content-edit-page
+                    ></span
+                  >
+                </div>
+              </div>
+
+              <div
+                id="custom-page-type-fields"
+                class:list={[pluginFields?.fields ? "" : "page-types-hidden"]}
+              >
+                <Card fullWidth>
+                  <div slot="header">
+                    <span>
+                      <t-content-edit-page key="custom-page-type-fields-header"
+                        >{
+                          t("custom-page-type-fields-header")
+                        }</t-content-edit-page
+                      >
+                    </span>
+                  </div>
+                  {
+                    pluginFields?.fields && (
+                      <PluginFields fields={pluginFields.fields} />
+                    )
+                  }
+                </Card>
+              </div>
+            </div>
+          </TabItem>
+          <TabItem
+            id="tab-label-content"
+            label={t("tab-label-content")}
+            icon={"heroicons:document-text-20-solid"}
+            color={"success"}
+          >
+            <input
+              type="hidden"
+              name="page-content-id"
+              value={pageData.defaultContent?.id}
+            />
+
+            <div class="tab-section">
+              <div class="page-content-editor">
+                <CurrentEditorComponent
+                  content={pageData.defaultContent?.content}
+                  id={pageData.id}
+                />
+                <div
+                  id="page-content-editor-placeholder"
+                  style="display: none;"
+                >
+                </div>
+              </div>
+            </div>
+          </TabItem>
+
+          {
+            enableDiffs && (
+              <TabItem
+                id="tab-label-diff"
+                label={t("tab-label-diff")}
+                icon={"heroicons:archive-box-20-solid"}
+                color={"warning"}
+              >
+                <div class="tab-section">
+                  <div class="edit-card-list">
+                    {diffs.length > 0 ? (
+                      diffs.map((diff) => (
+                        <Card fullWidth class={"edit-card"}>
+                          <div class="card-row">
+                            <span class="card-title">{pageData.title}</span>
+                            <span class="card-date">
+                              <t-content-edit-page key="diff-edited-by-1">
+                                {t("diff-edited-by-1")}
+                              </t-content-edit-page>
+                              : <FormattedDate date={diff.timestamp!} />{" "}
+                              <t-content-edit-page key="diff-edited-by-2">
+                                {t("diff-edited-by-2")}
+                              </t-content-edit-page>{" "}
+                              {user(diff.userId)}
+                            </span>
+                          </div>
+
+                          <div class="card-row">
+                            <span class="card-description">
+                              {pageData.description}
+                            </span>
+                            <Button
+                              size="sm"
+                              as="a"
+                              href={
+                                Astro.locals.StudioCMS.routeMap.mainLinks
+                                  .contentManagementDiff + `?diff=${diff.id}`
+                              }
+                            >
+                              <Icon
+                                name="heroicons:eye"
+                                width={24}
+                                height={24}
+                                class="card-icon"
+                              />
+                            </Button>
+                          </div>
+                        </Card>
+                      ))
+                    ) : (
+                      <Card
+                        fullWidth
+                        style="background-color: var(--background-step-1);"
+                      >
+                        <Center>
+                          <t-content-edit-page key="diff-no-history">
+                            {t("diff-no-history")}
+                          </t-content-edit-page>
+                        </Center>
+                      </Card>
+                    )}
+                  </div>
+                </div>
+              </TabItem>
+            )
+          }
+        </Tabs>
+      </form>
+    </div>
+  </PageEditorSwapper>
+</PageTypeHandler>
+
+<script>
+  import {
+    $i18n,
+    baseTranslation,
+    makeTranslation,
+    updateElmLabel,
+    updateSelectElmLabel,
+    updateSelectOptions,
+    updateTabLabel,
+    updateTrueFalseSelectOptions,
+  } from "studiocms:i18n/client";
+  import { $augmentI18n } from "studiocms:i18n/plugins";
+
+  const currentPage = "@studiocms/dashboard:content-page";
+
+  const i18n = $i18n(currentPage, baseTranslation[currentPage]);
+
+  const augmentI18n = $augmentI18n();
+
+  i18n.subscribe((comp) => {
+    updateElmLabel("page-title", comp["input-page-title"]);
+    updateElmLabel("page-slug", comp["input-page-slug"]);
+    updateElmLabel("page-description", comp["input-page-description"]);
+    updateElmLabel("page-hero-image", comp["input-page-hero-image"]);
+
+    updateSelectElmLabel("page-type", comp["select-page-type"]);
+    updateSelectElmLabel("show-in-nav", comp["select-page-show-in-nav"]);
+    updateSelectElmLabel("parent-folder", comp["select-page-parent-folder"]);
+    updateSelectElmLabel("draft", comp["select-page-draft"]);
+    updateSelectElmLabel("categories", comp["select-page-categories"]);
+    updateSelectElmLabel("tags", comp["select-page-tags"]);
+    updateSelectElmLabel("show-author", comp["select-page-show-author"]);
+    updateSelectElmLabel(
+      "show-contributors",
+      comp["select-page-show-contributors"],
+    );
+    updateSelectElmLabel("cms-plugin-augments", comp["select-augments-label"]);
+
+    updateTabLabel("tab-label-basic-info", comp["tab-label-basic-info"]);
+    updateTabLabel("tab-label-content", comp["tab-label-content"]);
+    updateTabLabel("tab-label-diff", comp["tab-label-diff"]);
+
+    const trueFalseOptions = {
+      true: comp["true-label"],
+      false: comp["false-label"],
+    };
+
+    updateTrueFalseSelectOptions("show-author", trueFalseOptions);
+    updateTrueFalseSelectOptions("show-contributors", trueFalseOptions);
+    updateTrueFalseSelectOptions("draft", trueFalseOptions);
+    updateTrueFalseSelectOptions("show-in-nav", trueFalseOptions);
+    updateSelectOptions("cms-plugin-augments", {
+      'no-augments': comp["no-augments"],
+    });
+  });
+
+  augmentI18n.subscribe((comp) => {
+    const augmentKeys = Object.keys(comp || {});
+    const compTranslations = augmentKeys.reduce(
+      (acc, key) => {
+        acc[key] = key;
+        return acc;
+      },
+      {} as Record<string, string>,
+    );
+    updateSelectOptions("cms-plugin-augments", compTranslations);
+  });
+
+  if (!customElements.get("t-content-edit-page")) {
+    customElements.define(
+      "t-content-edit-page",
+      makeTranslation(currentPage, i18n),
+    );
+  }
+</script>
+
+<script>
+  import type { tsPageDataInsert } from "studiocms:sdk/types";
+  import { toast } from "studiocms:ui/components/toaster";
+  import {
+    formDataToRecord,
+    studioCMSEditPageDataAndContentSchema,
+  } from "../../../scripts/formdata-utils.js";
+
+  // get the elements
+  const editPageForm = document.getElementById(
+    "edit-page-form",
+  ) as HTMLFormElement;
+  const createContainer = document.getElementById(
+    "edit-page-container",
+  ) as HTMLDivElement;
+
+  const knownFormDataKeys = [
+    "page-title",
+    "page-slug",
+    "page-description",
+    "page-hero-image",
+    "page-type",
+    "show-in-nav",
+    "parent-folder",
+    "draft",
+    "categories",
+    "tags",
+    "show-author",
+    "show-contributors",
+    "page-content-id",
+    "page-content",
+    "page-id",
+  ] as const;
+
+  type KnownFormDataKeys = (typeof knownFormDataKeys)[number];
+
+  const knownDataKeys = [
+    "title",
+    "slug",
+    "description",
+    "heroImage",
+    "package",
+    "showOnNav",
+    "parentFolder",
+    "draft",
+    "categories",
+    "tags",
+    "showAuthor",
+    "showContributors",
+    "contentId",
+    "content",
+    "id",
+  ] as const;
+
+  type KnownDataKeys = (typeof knownDataKeys)[number];
+
+  const formDataKeysToPageDataKeys: Record<
+    KnownFormDataKeys,
+    keyof tsPageDataInsert | "contentId" | "content"
+  > = {
+    "page-title": "title",
+    "page-slug": "slug",
+    "page-description": "description",
+    "page-hero-image": "heroImage",
+    "page-type": "package",
+    "show-in-nav": "showOnNav",
+    "parent-folder": "parentFolder",
+    draft: "draft",
+    categories: "categories",
+    tags: "tags",
+    "show-author": "showAuthor",
+    "show-contributors": "showContributors",
+    "page-content-id": "contentId",
+    "page-content": "content",
+    "page-id": "id",
+  };
+
+  const { contentManagementUrl } = createContainer.dataset;
+
+  editPageForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const formData = new FormData(editPageForm);
+
+    const formDataObject = formDataToRecord(
+      formData,
+      formDataKeysToPageDataKeys,
+    );
+
+    const pluginsFormData = Object.entries(formDataObject).reduce(
+      (acc, [key, value]) => {
+        // if the key is not in the knownFormDataKeys or knownDataKeys, it's a plugin field
+        if (
+          !knownFormDataKeys.includes(key as KnownFormDataKeys) &&
+          !knownDataKeys.includes(key as KnownDataKeys)
+        ) {
+          acc[key] = value;
+          delete formDataObject[key];
+        }
+        return acc;
+      },
+      {} as Record<string, FormDataEntryValue>,
+    );
+
+    const augments = [...formData.getAll("cms-plugin-augments")].filter(
+      (a) => a !== "no-augments",
+    ) as string[];
+
+    const formResult = studioCMSEditPageDataAndContentSchema.safeParse({
+      ...formDataObject,
+      augments,
+      pluginFields: pluginsFormData,
+    });
+
+    if (!formResult.success) {
+      console.error(formResult.error);
+      toast({
+        title: "Error",
+        description:
+          "There was an error with the form data. Please check the console for details.",
+        type: "danger",
+      });
+      return;
+    }
+
+    const response = await fetch(editPageForm.action, {
+      method: "PATCH",
+      body: formResult.data
+        ? JSON.stringify({ ...formResult.data, pluginFields: pluginsFormData })
+        : undefined,
+    });
+
+    const res = await response.json();
+
+    if (response.status !== 200) {
+      toast({
+        title: "Error",
+        description: res.error,
+        type: "danger",
+      });
+      return;
+    }
+
+    if (response.status === 200) {
+      toast({
+        title: "Success",
+        description: res.message,
+        type: "success",
+      });
+      if (contentManagementUrl) window.location.href = contentManagementUrl;
+      return;
+    }
+  });
+</script>
+
+<style>
+  .page-types-hidden {
+    display: none;
+  }
+
+  #edit-page-container {
+    height: 100%;
+    width: 100%;
+    min-width: 100%;
+  }
+
+  #edit-page-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding-top: 0.5rem;
+  }
+
+  .tab-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+  }
+
+  .form-row-single {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .form-row-booleans {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 0.75rem;
+  }
+
+  .form-row,
+  .form-row-single,
+  .form-row-booleans {
+    .form-row-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+
+      .form-row-item__description {
+        color: var(--text-muted);
+        padding-left: 0.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+        font-size: 0.875rem;
+      }
+    }
+  }
+
+  @media screen and (max-width: 768px) {
+    .form-row {
+      grid-template-columns: 1fr;
+    }
+
+    .form-row-booleans {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .page-content-editor {
+    height: 250px;
+    margin-bottom: 2rem;
+
+    .editor-container {
+      height: 100%;
+      overflow: hidden;
+      margin-bottom: 1rem;
+    }
+
+    #page-content {
+      height: 100%;
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1rem;
+      font-size: 1rem;
+      overflow-y: auto;
+    }
+  }
+
+  .edit-card-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.875rem;
+  }
+
+  .edit-card {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--background-step-2);
+
+    & .card-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      & .card-title {
+        font-weight: 600;
+        font-size: 1.25rem;
+      }
+
+      & .card-date {
+        color: var(--text-muted);
+        font-size: 0.8rem;
+      }
+
+      & .card-description {
+        font-size: 1rem;
+        color: var(--text-muted);
+        line-clamp: 1;
+      }
+
+      & .card-icon {
+        color: var(--text-muted);
+      }
+    }
+  }
+</style>

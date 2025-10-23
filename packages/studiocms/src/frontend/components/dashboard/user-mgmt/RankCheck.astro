@@ -1,0 +1,57 @@
+---
+import { User } from 'studiocms:auth/lib';
+import type { AvailablePermissionRanks } from '@withstudiocms/auth-kit/types';
+import { Effect } from '../../../../effect.js';
+
+interface Props {
+	requiredPermission?: AvailablePermissionRanks;
+}
+
+const { requiredPermission = 'unknown' } = Astro.props;
+
+const { userSessionData: user } = Astro.locals.StudioCMS?.security ?? {
+	userSessionData: null,
+};
+
+const isAuthorized = await Effect.runPromise(
+	Effect.gen(function* () {
+		const { isUserAllowed } = yield* User;
+		return yield* isUserAllowed(user, requiredPermission);
+	})
+);
+
+if (!isAuthorized) {
+	return Astro.redirect(Astro.locals.StudioCMS.routeMap.mainLinks.userManagement);
+}
+---
+
+{
+    /*
+
+// OLD CODE FOR STATIC/HYBRID Setup
+
+<rank-check
+    data-authorized={`${isAuthorized}`}
+    data-redirect={StudioCMSRoutes.mainLinks.userManagement}
+    style="display: hidden;" 
+></rank-check>
+
+<script>
+    if (!customElements.get('rank-check')) {
+        class RankCheck extends HTMLElement {
+            constructor() {
+                super();
+                const authorized = this.dataset.authorized;
+                const redirect = this.dataset.redirect;
+
+                if (authorized === 'false') {
+                    window.location.href = redirect!;
+                }
+            }
+        }
+
+        customElements.define('rank-check', RankCheck);
+    }
+</script>
+*/
+}

@@ -126,6 +126,7 @@ export default defineConfig({
 				'**/**/components/TinyMDE.astro',
 				// Exclude files from runtime only paths
 				'**/routes/**',
+				'**/frontend/**',
 				'**/runtime/**',
 				'**/dist/**',
 				'**/studiocms/studiocms-cli.mjs',

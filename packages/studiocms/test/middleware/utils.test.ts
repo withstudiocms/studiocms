@@ -9,7 +9,7 @@ import {
 	makeFallbackSiteConfig,
 	SetLocal,
 	setLocals,
-} from '../../src/middleware/utils';
+} from '../../src/frontend/middleware/utils';
 
 describe('getUserPermissionLevel', () => {
 	it('returns correct permission level for each user type', async () => {

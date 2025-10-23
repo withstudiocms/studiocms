@@ -72,7 +72,6 @@
 			"types": "./dist/consts.d.ts",
 			"default": "./dist/consts.js"
 		},
-		"./Renderer": "./dist/virtuals/components/Renderer.astro",
 		"./db/config": {
 			"types": "./dist/db/config.d.ts",
 			"default": "./dist/db/config.js"
@@ -126,11 +125,6 @@
 			"default": "./dist/types.js"
 		},
 		"./v/types": "./dist/virtual.d.ts",
-		"./components/*": "./src/components/*",
-		"./layouts/*": "./src/layouts/*",
-		"./styles/*": "./src/styles/*",
-		"./src/middleware/*": "./src/middleware/*",
-		"./src/routes/*": "./src/routes/*",
 		"./effect": {
 			"types": "./dist/effect.d.ts",
 			"default": "./dist/effect.js"
@@ -146,7 +140,13 @@
 		"./test-utils": {
 			"types": "./dist/test-utils.d.ts",
 			"default": "./dist/test-utils.js"
-		}
+		},
+		"./Renderer": "./dist/virtuals/components/Renderer.astro",
+		"./frontend/*": "./src/frontend/*",
+		"./components/*": "./src/frontend/components/*",
+		"./layouts/*": "./src/frontend/layouts/*",
+		"./styles/*": "./src/frontend/styles/*",
+		"./src/middleware/*": "./src/frontend/middleware/*"
 	},
 	"type": "module",
 	"dependencies": {

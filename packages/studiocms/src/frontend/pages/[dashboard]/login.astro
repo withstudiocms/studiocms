@@ -1,0 +1,269 @@
+---
+import { authConfig, developerConfig } from 'studiocms:config';
+import { useTranslations } from 'studiocms:i18n';
+import { Button } from 'studiocms:ui/components/button';
+import { Card } from 'studiocms:ui/components/card';
+import { Center } from 'studiocms:ui/components/center';
+import { Input } from 'studiocms:ui/components/input';
+import { Modal } from 'studiocms:ui/components/modal';
+import { providerData, showOAuth } from '../../components/shared/oAuthButtonProviders';
+import AuthLayout from '../../layouts/AuthLayout.astro';
+
+const lang = Astro.locals.StudioCMS.defaultLang;
+const t = useTranslations(lang, '@studiocms/auth:login');
+
+let DemoMode: {
+	enabled: boolean;
+	username?: string;
+	password?: string;
+} = {
+	enabled: false,
+};
+
+if (developerConfig.demoMode) {
+	DemoMode = {
+		enabled: true,
+		username: developerConfig.demoMode.username,
+		password: developerConfig.demoMode.password,
+	};
+}
+
+const {
+	providers: {
+		usernameAndPassword,
+		usernameAndPasswordConfig: { allowUserRegistration },
+	},
+} = authConfig;
+
+const SHOW_OAUTH = showOAuth && providerData.some(({ enabled }) => enabled);
+
+const { siteConfig: config } = Astro.locals.StudioCMS;
+
+const { enableMailer } = config.data || {
+	enableMailer: false,
+};
+
+let paragraph:
+	| 'sub-header-usernamepasswordoauth'
+	| 'sub-header-usernamepassword'
+	| 'sub-header-oauth'
+	| 'sub-header-noprovider';
+
+if (usernameAndPassword && SHOW_OAUTH) {
+	paragraph = 'sub-header-usernamepasswordoauth';
+} else if (usernameAndPassword && !SHOW_OAUTH) {
+	paragraph = 'sub-header-usernamepassword';
+} else if (!usernameAndPassword && SHOW_OAUTH) {
+	paragraph = 'sub-header-oauth';
+} else {
+	paragraph = 'sub-header-noprovider';
+}
+---
+<AuthLayout 
+    title={t('title')} 
+    description={t('description')} 
+    {lang}
+    checkLogin
+    >
+
+    <Modal id="forgot-password-modal" size='md' isForm actionButton={'Submit'} cancelButton={'Cancel'}>
+        <h2 slot='header'>
+            <t-login key="forgot-password-title">{t('forgot-password-title')}</t-login>
+        </h2>
+
+        <input type="hidden" name="action-url" value={Astro.locals.StudioCMS.routeMap.authLinks.forgotPasswordAPI} />
+
+        <p>
+            <t-login key="forgot-password-message">{t('forgot-password-message')}</t-login>
+        </p>
+
+        <Input label={t('email-label')} name="email" type="email" />
+
+    </Modal>
+
+    <div slot="header" class="form-header">
+
+        { DemoMode.enabled && ( 
+            <Card fullWidth>
+                <h2 slot="header"><t-login key="demo-mode-credentials">{t('demo-mode-credentials')}</t-login></h2>
+
+                <table class="demo-table">
+                    <tr>
+                        <td><t-login key="username-label">{t('username-label')}</t-login></td>
+                        <td>{DemoMode.username}</td>
+                    </tr>
+                    <tr>
+                        <td><t-login key="password-label">{t('password-label')}</t-login></td>
+                        <td>{DemoMode.password}</td>
+                    </tr>
+                </table>
+            </Card>
+        )}
+
+        <h1>
+            <t-login key="header">{t('header')}</t-login>
+        </h1>
+        <p>
+            <t-login key={paragraph}>{t(paragraph)}</t-login>
+        </p>
+    </div>
+
+    { usernameAndPassword && (
+        <form class="form" id="login-form" method="post" action={Astro.locals.StudioCMS.routeMap.authLinks.loginAPI}>
+
+            <Input label={t('username-label')} name="username" type="text" />
+            <Input label={t('password-label')} name="password" type='password' />
+
+            <Button fullWidth as="button" type="submit" color='primary' size='md' variant='solid'>
+                <t-login key="login-button">{t('login-button')}</t-login>
+            </Button>
+
+            { enableMailer && ( 
+                <Center>
+                    <div id="forgot-password" class="forgot-password">
+                        <t-login key="forgot-password">{t('forgot-password')}</t-login>
+                    </div>
+                </Center>
+            )}
+        </form>
+    )}
+
+    { allowUserRegistration && (
+        <p slot="footer">
+            <t-login key="allow-registration-noaccount">
+                {t('allow-registration-noaccount')}
+            </t-login> 
+            <a href={Astro.locals.StudioCMS.routeMap.authLinks.signupURL}>
+                <t-login key="allow-registration-register">
+                    {t('allow-registration-register')}
+                </t-login>
+            </a>
+        </p>
+    )}
+
+</AuthLayout>
+
+<style>
+    .forgot-password {
+        color: var(--text-muted);
+        font-size: 0.875rem;
+        text-decoration: underline;
+    }
+
+    .forgot-password:hover {
+        color: var(--primary-hover);
+        cursor: pointer;
+    }
+
+    .demo-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .demo-table td {
+        padding: 0.5rem;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .demo-table td:first-child {
+        font-weight: bold;
+    }
+
+    .demo-table tr:last-child td {
+        border-bottom: none;
+    }
+
+    .demo-table tr:nth-child(odd) {
+        background-color: var(--background-step-1);
+    }
+
+    .form-header {
+        margin-bottom: 1rem;
+    }
+</style>
+
+<script>
+    import { 
+        $i18n,
+        $localeSettings,
+        baseTranslation,
+        defaultLang,
+        documentUpdater,
+        makeTranslation,
+        updateElmLabel,
+    } from 'studiocms:i18n/client';
+
+    const currentPage = '@studiocms/auth:login';
+
+    let lang = defaultLang;
+
+    const i18n = $i18n(currentPage, baseTranslation[currentPage]);
+
+    $localeSettings.subscribe((locale) => {
+        lang = locale || defaultLang;
+    });
+    
+    i18n.subscribe(comp => {
+        documentUpdater(comp, lang)
+        updateElmLabel('username', comp['username-label']);
+        updateElmLabel('password', comp['password-label']);
+        updateElmLabel('email', comp['email-label']);
+    });
+
+    if (!customElements.get('t-login')) {
+        customElements.define('t-login', makeTranslation(currentPage, i18n));
+    }
+</script>
+
+<script>
+    import { formListener } from '../../scripts/auth/formListener.js';
+    import { ModalHelper } from 'studiocms:ui/components/modal';
+    import { toast } from 'studiocms:ui/components/toaster';
+    
+    const loginForm = document.getElementById('login-form') as HTMLFormElement | null;
+    if (loginForm) {
+        loginForm.addEventListener('submit', (event) => formListener(event, loginForm, 'login'));
+    }
+
+    const forgotPasswordLink = document.getElementById('forgot-password') as HTMLDivElement;
+
+    if (forgotPasswordLink) {
+        const forgotPasswordModal = new ModalHelper('forgot-password-modal', 'forgot-password');
+
+        forgotPasswordModal.registerConfirmCallback(async (formData) => {
+            if (!formData) return;
+
+            const actionUrl = formData.get('action-url')?.toString() as string;
+
+            const data = {
+                email: formData.get('email')?.toString(),
+            };
+
+            const response = await fetch(actionUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                toast({
+                    title: 'Success',
+                    description: result.message,
+                    type: 'success',
+                })
+                return;
+            } else {
+                toast({
+                    title: 'Error',
+                    description: result.error || 'An error occurred',
+                    type: 'danger',
+                })
+                return;
+            }
+        })
+    }
+</script>

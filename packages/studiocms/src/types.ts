@@ -9,8 +9,10 @@ import type { CombinedPageData } from './virtuals/sdk/types/index.js';
 
 /**
  * Represents a route object that can be used for a Array of routes for the Astro integration injectRoute() function.
+ *
+ * @deprecated use InjectedRoute from 'astro' instead
  */
-export type Route = InjectedRoute & { enabled: boolean };
+export type Route = InjectedRoute;
 
 /**
  * Options for starting the server.
