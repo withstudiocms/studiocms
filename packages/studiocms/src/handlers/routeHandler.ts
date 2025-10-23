@@ -1,6 +1,6 @@
 import { Effect, runEffect } from '@withstudiocms/effect';
 import { defineUtility } from 'astro-integration-kit';
-import { getRoutes, type RouteConfig, StudioCMSRouteConfig } from '../frontend/routes.js';
+import { getAstroProject, type RouteConfig, StudioCMSRouteConfig } from '../frontend/routes.js';
 
 /**
  * Utility that integrates StudioCMS routes into Astro's configuration during setup.
@@ -31,14 +31,22 @@ import { getRoutes, type RouteConfig, StudioCMSRouteConfig } from '../frontend/r
  */
 export const routeHandler = defineUtility('astro:config:setup')(
 	async (params, options: RouteConfig) => {
-		const { injectRoute } = params;
+		const { injectRoute, addMiddleware } = params;
 
-		const routeEffect = getRoutes.pipe(Effect.provide(StudioCMSRouteConfig.Live(options)));
+		// Create the route effect with the provided options
+		const projectEffect = getAstroProject.pipe(Effect.provide(StudioCMSRouteConfig.Live(options)));
 
-		const routes = await runEffect(routeEffect);
+		// Run the effect to get the routes and middleware
+		const { routes, middleware } = await runEffect(projectEffect);
 
+		// Inject each route into Astro
 		for (const route of routes) {
 			injectRoute(route);
+		}
+
+		// Add each middleware into Astro
+		for (const mw of middleware) {
+			addMiddleware(mw);
 		}
 	}
 );

@@ -136,7 +136,7 @@ export const studiocms = defineIntegration({
 				},
 				'astro:config:setup': async (params) => {
 					// Destructure the params
-					const { logger, updateConfig, createCodegenDir, command, addMiddleware } = params;
+					const { logger, updateConfig, createCodegenDir, command } = params;
 
 					logger.info('Checking configuration...');
 
@@ -234,12 +234,6 @@ export const studiocms = defineIntegration({
 						extraRoutes,
 						shouldInject404Route,
 					});
-
-					if (!dbStartPage)
-						addMiddleware({
-							order: 'pre',
-							entrypoint: 'studiocms/frontend/middleware/index.ts',
-						});
 
 					// Inject Integrations into Astro project
 					addIntegrationArray(params, [
