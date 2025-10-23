@@ -1,7 +1,7 @@
 catalog:
   "@types/node": ^22.0.0
   arctic: ^3.7.0
-  astro-integration-kit: ^0.19.0
+  astro-integration-kit: ^0.19.1
   chalk: ^5.6.2
   deepmerge-ts: ^7.1.5
   esbuild: ^0.25.8
@@ -15,9 +15,9 @@ catalogs:
   astrojs:
     "@astrojs/db": ^0.18.0
     "@astrojs/rss": ^4.0.12
-    "@astrojs/check": ^0.9.4
-    "@astrojs/node": ^9.4.6
-    astro: ^5.14.4
+    "@astrojs/check": ^0.9.5
+    "@astrojs/node": ^9.5.0
+    astro: ^5.14.7
     vite: ^6.3.4
   effect:
     "@effect/cli": ^0.71.0
@@ -34,7 +34,7 @@ catalogs:
   react:
     "@astrojs/react": ^4.4.0
     "@types/react": ^19.2.2
-    "@types/react-dom": ^19.2.1
+    "@types/react-dom": ^19.2.2
     react: ^19.2.0
     "react-dom": ^19.2.0
   studiocms:
