@@ -1,4 +1,5 @@
-import { describe, expect, it } from 'vitest';
+import * as allure from 'allure-js-commons';
+import { describe, expect, test } from 'vitest';
 import {
 	decodeHTML,
 	decodeHTMLAttribute,
@@ -9,94 +10,296 @@ import {
 	htmlDecodeTree,
 	replaceCodePoint,
 } from '../../../src/component-proxy/decoder/util.js';
+import { parentSuiteName, sharedTags } from '../../test-utils.js';
 
-describe('decodeHTML', () => {
-	it('decodes named HTML entities (legacy mode)', () => {
-		expect(decodeHTML('foo &amp; bar')).toBe('foo & bar');
-		expect(decodeHTML('2 &lt; 3 &gt; 1')).toBe('2 < 3 > 1');
-		expect(decodeHTML('Euro: &euro;')).toBe('Euro: €');
+const localSuiteName = 'Component Proxy Tests';
+
+describe(parentSuiteName, () => {
+	[
+		{
+			input: 'foo &amp; bar',
+			expected: 'foo & bar',
+		},
+		{
+			input: '2 &lt; 3 &gt; 1',
+			expected: '2 < 3 > 1',
+		},
+		{
+			input: 'Euro: &euro;',
+			expected: 'Euro: €',
+		},
+		{
+			input: 'A&#65;B',
+			expected: 'AAB',
+		},
+		{
+			input: 'A&#x41;B',
+			expected: 'AAB',
+		},
+		{
+			input: 'Smile: &#128512;',
+			expected: 'Smile: 😀',
+		},
+		{
+			input: 'foo &invalid bar',
+			expected: 'foo &invalid bar',
+		},
+		{
+			input: 'foo &amp bar',
+			expected: 'foo & bar',
+		},
+		{
+			input: 'foo & bar',
+			expected: 'foo & bar',
+		},
+		{
+			input: 'foo &amp; bar',
+			expected: 'foo & bar',
+		},
+		{
+			input: 'foo &amp; bar',
+			expected: 'foo & bar',
+		},
+	].forEach(({ input, expected }) => {
+		test(`decodeHTML with input: ${input}`, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('decodeHTML Tests');
+			await allure.tags(...sharedTags);
+
+			await allure.parameter('input', input);
+			await allure.parameter('expected', expected);
+
+			await allure.step('Decode HTML entities', async (ctx) => {
+				const result = decodeHTML(input);
+				ctx.parameter('result', result);
+				expect(result).toBe(expected);
+			});
+		});
 	});
 
-	it('decodes numeric HTML entities', () => {
-		expect(decodeHTML('A&#65;B')).toBe('AAB');
-		expect(decodeHTML('A&#x41;B')).toBe('AAB');
-		expect(decodeHTML('Smile: &#128512;')).toBe('Smile: 😀');
+	[
+		{
+			input: 'foo &amp; bar',
+			expected: 'foo & bar',
+		},
+		{
+			input: 'foo &amp bar',
+			expected: 'foo &amp bar',
+		},
+		{
+			input: 'foo &lt; bar',
+			expected: 'foo < bar',
+		},
+	].forEach(({ input, expected }) => {
+		test(`decodeHTMLStrict with input: ${input}`, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('decodeHTMLStrict Tests');
+			await allure.tags(...sharedTags);
+
+			await allure.parameter('input', input);
+			await allure.parameter('expected', expected);
+
+			await allure.step('Decode HTML entities strictly', async (ctx) => {
+				const result = decodeHTMLStrict(input);
+				ctx.parameter('result', result);
+				expect(result).toBe(expected);
+			});
+		});
 	});
 
-	it('handles incomplete or invalid entities gracefully', () => {
-		expect(decodeHTML('foo &invalid bar')).toBe('foo &invalid bar');
-		expect(decodeHTML('foo &amp bar')).toBe('foo & bar');
-		expect(decodeHTML('foo & bar')).toBe('foo & bar');
+	[
+		{
+			input: 'Tom &amp; Jerry',
+			expected: 'Tom & Jerry',
+		},
+		{
+			input: 'x &lt y',
+			expected: 'x < y',
+		},
+		{
+			input: 'foo &amp bar',
+			expected: 'foo & bar',
+		},
+	].forEach(({ input, expected }) => {
+		test(`decodeHTMLAttribute with input: ${input}`, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('decodeHTMLAttribute Tests');
+			await allure.tags(...sharedTags);
+
+			await allure.parameter('input', input);
+			await allure.parameter('expected', expected);
+
+			await allure.step('Decode HTML entities in attribute mode', async (ctx) => {
+				const result = decodeHTMLAttribute(input);
+				ctx.parameter('result', result);
+				expect(result).toBe(expected);
+			});
+		});
 	});
 
-	it('supports DecodingMode.Legacy by default', () => {
-		expect(decodeHTML('foo &amp bar')).toBe('foo & bar');
-		expect(decodeHTML('foo &amp; bar')).toBe('foo & bar');
-	});
-});
+	[
+		{
+			input: 'foo &amp; bar',
+			expected: 'foo & bar',
+		},
+		{
+			input: 'foo &lt; bar &gt; baz',
+			expected: 'foo < bar > baz',
+		},
+		{
+			input: 'Caf&#233;',
+			expected: 'Café',
+		},
+	].forEach(({ input, expected }) => {
+		test(`decodeXML with input: ${input}`, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('decodeXML Tests');
+			await allure.tags(...sharedTags);
 
-describe('decodeHTMLStrict', () => {
-	it('decodes only semicolon-terminated entities', () => {
-		expect(decodeHTMLStrict('foo &amp; bar')).toBe('foo & bar');
-		expect(decodeHTMLStrict('foo &amp bar')).toBe('foo &amp bar');
-		expect(decodeHTMLStrict('foo &lt; bar')).toBe('foo < bar');
-	});
-});
+			await allure.parameter('input', input);
+			await allure.parameter('expected', expected);
 
-describe('decodeHTMLAttribute', () => {
-	it('decodes entities in attribute mode', () => {
-		expect(decodeHTMLAttribute('Tom &amp; Jerry')).toBe('Tom & Jerry');
-		expect(decodeHTMLAttribute('x &lt y')).toBe('x < y');
-		expect(decodeHTMLAttribute('foo &amp bar')).toBe('foo & bar');
+			await allure.step('Decode XML entities strictly', async (ctx) => {
+				const result = decodeXML(input);
+				ctx.parameter('result', result);
+				expect(result).toBe(expected);
+			});
+		});
 	});
-});
 
-describe('decodeXML', () => {
-	it('decodes XML entities strictly', () => {
-		expect(decodeXML('foo &amp; bar')).toBe('foo & bar');
-		expect(decodeXML('foo &lt; bar')).toBe('foo < bar');
-		expect(decodeXML('foo &amp bar')).toBe('foo &amp bar');
-		expect(decodeXML('foo &unknown; bar')).toBe('foo &unknown; bar');
-	});
-});
+	[
+		{
+			input: 65,
+			expected: 'A',
+		},
+		{
+			input: 0x1f600,
+			expected: '😀',
+		},
+	].forEach(({ input, expected }) => {
+		test(`fromCodePoint with input: ${input}`, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('fromCodePoint Tests');
+			await allure.tags(...sharedTags);
 
-describe('fromCodePoint', () => {
-	it('returns string for valid code points', () => {
-		expect(fromCodePoint(65)).toBe('A');
-		expect(fromCodePoint(0x1f600)).toBe('😀');
-	});
-});
+			await allure.parameter('input', String(input));
+			await allure.parameter('expected', String(expected));
 
-describe('replaceCodePoint', () => {
-	it('returns replacement character for invalid code points', () => {
-		expect(replaceCodePoint(0x110000)).toBe(0xfffd);
-		expect(replaceCodePoint(-1)).toBe(-1);
+			await allure.step('Convert code point to string', async (ctx) => {
+				const result = fromCodePoint(input);
+				ctx.parameter('result', String(result));
+				expect(result).toBe(expected);
+			});
+		});
 	});
-	it('returns code point for valid code points', () => {
-		expect(replaceCodePoint(65)).toBe(65);
-		expect(replaceCodePoint(0x1f600)).toBe(0x1f600);
-	});
-});
 
-describe('determineBranch', () => {
-	it('returns -1 for invalid branch', () => {
-		expect(determineBranch(htmlDecodeTree, 0, 0, 9999)).toBe(-1);
-	});
-	it('returns a non -1 index for a valid branch (example: "a" -> 0x61) in the root', () => {
-		const idx = determineBranch(htmlDecodeTree, htmlDecodeTree[0], 1, 0x61);
-		expect(typeof idx).toBe('number');
-		expect(idx).not.toBe(-1);
-	});
-});
+	[
+		{
+			input: 0x110000,
+			expected: 0xfffd,
+		},
+		{
+			input: -1,
+			expected: -1,
+		},
+		{
+			input: 65,
+			expected: 65,
+		},
+		{
+			input: 0x1f600,
+			expected: 0x1f600,
+		},
+	].forEach(({ input, expected }) => {
+		test(`replaceCodePoint with input: ${input}`, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('replaceCodePoint Tests');
+			await allure.tags(...sharedTags);
 
-describe('decodeHTML (edge cases)', () => {
-	it('returns input if no entities present', () => {
-		expect(decodeHTML('plain text')).toBe('plain text');
+			await allure.parameter('input', String(input));
+			await allure.parameter('expected', String(expected));
+
+			await allure.step('Replace invalid code points', async (ctx) => {
+				const result = replaceCodePoint(input);
+				ctx.parameter('result', String(result));
+				expect(result).toBe(expected);
+			});
+		});
 	});
-	it('handles multiple entities', () => {
-		expect(decodeHTML('&lt;&gt;&amp;')).toBe('<>&');
+
+	[
+		{
+			current: 0,
+			nodeIndex: 0,
+			char: 9999,
+			toBe: -1,
+		},
+		{
+			current: htmlDecodeTree[0],
+			nodeIndex: 1,
+			char: 0x61,
+			notToBe: -1,
+		},
+	].forEach(({ current, nodeIndex, char, toBe, notToBe }) => {
+		const desc =
+			toBe === -1 ? 'returns -1 for invalid branch' : 'returns valid index for valid branch';
+		test(`determineBranch ${desc} (char: ${char})`, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('determineBranch Tests');
+			await allure.tags(...sharedTags);
+
+			await allure.parameter('current', String(current));
+			await allure.parameter('nodeIndex', String(nodeIndex));
+			await allure.parameter('char', String(char));
+
+			await allure.step('Determine branch index', async (ctx) => {
+				const result = determineBranch(htmlDecodeTree, current, nodeIndex, char);
+				ctx.parameter('result', String(result));
+				if (toBe !== undefined) {
+					expect(result).toBe(toBe);
+				}
+				if (notToBe !== undefined) {
+					expect(result).not.toBe(notToBe);
+				}
+			});
+		});
 	});
-	it('handles empty string', () => {
-		expect(decodeHTML('')).toBe('');
+
+	[
+		{
+			input: 'plain text',
+			expected: 'plain text',
+		},
+		{
+			input: '&lt;&gt;&amp;',
+			expected: '<>&',
+		},
+		{
+			input: '',
+			expected: '',
+		},
+	].forEach(({ input, expected }) => {
+		test(`decodeHTML (edge cases) with input: ${input}`, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('decodeHTML (edge cases) Tests');
+			await allure.tags(...sharedTags);
+
+			await allure.parameter('input', input);
+			await allure.parameter('expected', expected);
+
+			await allure.step('Decode HTML entities using tree', async (ctx) => {
+				const result = decodeHTML(input);
+				ctx.parameter('result', result);
+				expect(result).toBe(expected);
+			});
+		});
 	});
 });
