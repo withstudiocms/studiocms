@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
 	providerData,
 	showOAuth,
-} from '../../../src/frontend/components/auth/oAuthButtonProviders';
+} from '../../../src/frontend/components/shared/oAuthButtonProviders';
 
 describe('oAuthButtonProviders', () => {
 	it('should map oAuthButtons to providerData correctly', () => {

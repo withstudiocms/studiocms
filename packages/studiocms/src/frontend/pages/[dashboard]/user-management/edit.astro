@@ -12,13 +12,10 @@ import { Modal } from 'studiocms:ui/components/modal';
 import { Select } from 'studiocms:ui/components/select';
 import { Effect, genLogger, runEffect } from '../../../../effect.js';
 import PageHeader from '../../../components/dashboard/PageHeader.astro';
-import {
-	providerData,
-	showOAuth,
-} from '../../../components/dashboard/profile/oAuthButtonProviders';
 import InnerSidebarElement from '../../../components/dashboard/user-mgmt/InnerSidebarElement.astro';
 import RankCheck from '../../../components/dashboard/user-mgmt/RankCheck.astro';
 import SocialSignin from '../../../components/dashboard/user-mgmt/SocialSignin.astro';
+import { providerData, showOAuth } from '../../../components/shared/oAuthButtonProviders.js';
 import Layout from '../../../layouts/DashboardLayout.astro';
 
 const { siteConfig: config, defaultLang: lang, security } = Astro.locals.StudioCMS;

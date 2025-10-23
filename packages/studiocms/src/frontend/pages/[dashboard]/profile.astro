@@ -5,12 +5,9 @@ import PageHeader from '../../components/dashboard/PageHeader.astro';
 import APITokens from '../../components/dashboard/profile/APITokens.astro';
 import BasicInfo from '../../components/dashboard/profile/BasicInfo.astro';
 import Notifications from '../../components/dashboard/profile/Notifications.astro';
-import {
-	providerData,
-	showOAuth,
-} from '../../components/dashboard/profile/oAuthButtonProviders.js';
 import SocialSignin from '../../components/dashboard/profile/SocialSignin.astro';
 import UpdatePassword from '../../components/dashboard/profile/UpdatePassword.astro';
+import { providerData, showOAuth } from '../../components/shared/oAuthButtonProviders.js';
 import Layout from '../../layouts/DashboardLayout.astro';
 
 const { siteConfig: config, defaultLang: lang, security } = Astro.locals.StudioCMS;
