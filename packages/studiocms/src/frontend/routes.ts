@@ -1,5 +1,34 @@
-import type { InjectedRoute } from 'astro';
-import { Context, Effect, Layer } from '../effect.js';
+import type { AstroIntegrationMiddleware, InjectedRoute } from 'astro';
+import { Effect } from '../effect.js';
+import {
+	flatMapProcessedConfig,
+	injectExtraRoutes,
+	injectMiddleware,
+	mapRouteGroups,
+	processedConfig,
+	StudioCMSRouteConfig,
+} from './utils.js';
+
+export * from './types.js';
+export * from './utils.js';
+
+/*
+
+	/// Route Definitions ///
+
+	The following are the core route definitions for the StudioCMS
+	Dashboard, API, and frontend pages.
+
+	These are mappings for converting what looks like a standard Astro
+	project structure into injected routes for Astro integrations.
+
+	Each route definition includes the URL pattern and the corresponding
+	entrypoint file within the StudioCMS package.
+
+	These route definitions are conditionally included based on the
+	configuration options provided to StudioCMS.
+
+*/
 
 /**
  * Resolves the file path for a given route.
@@ -17,7 +46,7 @@ const resolvePath = (path: string) => `studiocms/frontend/${path}`;
  *
  * Enabled when dbStartPage is true.
  */
-const setupRoutes: InjectedRoute[] = [
+export const setupRoutes: InjectedRoute[] = [
 	// Frontend setup pages
 	{
 		pattern: '/',
@@ -55,7 +84,7 @@ const setupRoutes: InjectedRoute[] = [
  *
  * These routes include SDK API endpoints and the renderer service.
  */
-const noDbSetupRoutes: InjectedRoute[] = [
+export const noDbSetupRoutes: InjectedRoute[] = [
 	// SDK API routes
 	{
 		pattern: '/studiocms_api/sdk/list-pages',
@@ -85,7 +114,7 @@ const noDbSetupRoutes: InjectedRoute[] = [
  *
  * These routes cover folders, pages, settings, users, and public access.
  */
-const restRoutes: InjectedRoute[] = [
+export const restRoutes: InjectedRoute[] = [
 	{
 		pattern: '/studiocms_api/rest/v1/folders',
 		entrypoint: resolvePath('pages/studiocms_api/rest/v1/folders/index.ts'),
@@ -141,7 +170,7 @@ const restRoutes: InjectedRoute[] = [
  *
  * Injected when oAuthEnabled is true.
  */
-const oAuthEnabledRoutes: InjectedRoute[] = [
+export const oAuthEnabledRoutes: InjectedRoute[] = [
 	{
 		pattern: '/studiocms_api/auth/[provider]',
 		entrypoint: resolvePath('pages/studiocms_api/auth/[provider]/index.ts'),
@@ -157,7 +186,7 @@ const oAuthEnabledRoutes: InjectedRoute[] = [
  *
  * Injected when usernameAndPasswordAPI is true.
  */
-const usernameAndPasswordAPIRoutes: InjectedRoute[] = [
+export const usernameAndPasswordAPIRoutes: InjectedRoute[] = [
 	{
 		pattern: '/studiocms_api/auth/login',
 		entrypoint: resolvePath('pages/studiocms_api/auth/login.ts'),
@@ -173,7 +202,7 @@ const usernameAndPasswordAPIRoutes: InjectedRoute[] = [
  *
  * Injected when userRegistrationEnabled is true.
  */
-const userRegistrationEnabledRoutes = (
+export const userRegistrationEnabledRoutes = (
 	dashboardRoute: (path: string) => string
 ): InjectedRoute[] => [
 	{
@@ -191,7 +220,9 @@ const userRegistrationEnabledRoutes = (
  *
  * Injected when dashboardEnabled is true.
  */
-const dashboardEnabledRoutes = (dashboardRoute: (path: string) => string): InjectedRoute[] => [
+export const dashboardEnabledRoutes = (
+	dashboardRoute: (path: string) => string
+): InjectedRoute[] => [
 	// Dashboard API Routes
 	{
 		pattern: '/studiocms_api/dashboard/templates',
@@ -290,7 +321,9 @@ const dashboardEnabledRoutes = (dashboardRoute: (path: string) => string): Injec
  *
  * Injected when dashboardAPIEnabled is true.
  */
-const dashboardAPIEnabledRoutes = (dashboardRoute: (path: string) => string): InjectedRoute[] => [
+export const dashboardAPIEnabledRoutes = (
+	dashboardRoute: (path: string) => string
+): InjectedRoute[] => [
 	// Dashboard page routes
 	{
 		pattern: dashboardRoute('password-reset'),
@@ -381,203 +414,68 @@ const dashboardAPIEnabledRoutes = (dashboardRoute: (path: string) => string): In
  *
  * Injected when shouldInject404Route is true.
  */
-const error404Route: InjectedRoute = {
+export const error404Route: InjectedRoute = {
 	pattern: '/404',
 	entrypoint: resolvePath('pages/404.astro'),
 };
 
 /**
- * Configuration interface for StudioCMS routes.
- */
-export interface RouteConfig {
-	dbStartPage: boolean;
-	shouldInject404Route: boolean;
-	dashboardEnabled: boolean;
-	oAuthProvidersConfigured: boolean;
-	extraRoutes: InjectedRoute[];
-	developerConfig: {
-		demoMode:
-			| false
-			| {
-					username: string;
-					password: string;
-			  };
-	};
-	authConfig: {
-		enabled: boolean;
-		providers: {
-			usernameAndPassword: boolean;
-			usernameAndPasswordConfig: { allowUserRegistration: boolean };
-		};
-	};
-	dashboardRoute: (path: string) => string;
-}
-
-/**
- * Effect Layer providing the StudioCMS route configuration.
- */
-export class StudioCMSRouteConfig extends Context.Tag('StudioCMSRouteConfig')<
-	StudioCMSRouteConfig,
-	RouteConfig
->() {
-	static Live = (config: RouteConfig) => Layer.succeed(this, config);
-}
-
-/**
- * Processed Route Configuration
- */
-interface ProcessedRouteConfig {
-	dbStartPage: boolean;
-	shouldInject404Route: boolean;
-	restAPIEnabled: boolean;
-	dashboardEnabled: boolean;
-	dashboardAPIEnabled: boolean;
-	usernameAndPasswordAPI: boolean;
-	userRegistrationEnabled: boolean;
-	oAuthEnabled: boolean;
-}
-
-/**
- * Process and derive route settings from the main configuration.
- */
-const processedConfig = Effect.fn(
-	({
-		dbStartPage,
-		shouldInject404Route,
-		dashboardEnabled,
-		developerConfig,
-		oAuthProvidersConfigured,
-		authConfig: {
-			enabled: authEnabled,
-			providers: {
-				usernameAndPassword,
-				usernameAndPasswordConfig: { allowUserRegistration },
-			},
-		},
-	}: RouteConfig) =>
-		Effect.succeed<ProcessedRouteConfig>({
-			dbStartPage: dbStartPage,
-			shouldInject404Route: shouldInject404Route && !dbStartPage,
-			restAPIEnabled: !dbStartPage && authEnabled && !developerConfig.demoMode,
-			dashboardEnabled: dashboardEnabled && !dbStartPage,
-			dashboardAPIEnabled: dashboardEnabled && !dbStartPage && authEnabled,
-			usernameAndPasswordAPI: authEnabled && usernameAndPassword,
-			userRegistrationEnabled: authEnabled && usernameAndPassword && allowUserRegistration,
-			oAuthEnabled: authEnabled && oAuthProvidersConfigured,
-		})
-);
-
-/**
- * Sets the `prerender` property to `false` for the given routes.
+ * Generate middleware based on the database start page configuration.
  *
- * @param items - An array of `InjectedRoute` objects.
- * @returns An array of `InjectedRoute` objects with `prerender` set to `false`.
+ * @param dbStartPage - Indicates if the database start page is enabled.
+ * @returns An array of Astro integration middleware configurations.
  */
-function setPrerenderFalse(items: InjectedRoute[] | InjectedRoute) {
-	const routes = Array.isArray(items) ? items : [items];
-	return routes.map((item) => ({ ...item, prerender: false }));
-}
+export const middleware = (dbStartPage: boolean): AstroIntegrationMiddleware[] => {
+	// Generate middleware array
+	const middlewares: AstroIntegrationMiddleware[] = [];
+
+	// Add the main middleware only if there is no database start page
+	if (!dbStartPage) {
+		// Add the StudioCMS main middleware
+		middlewares.push({
+			order: 'pre' as const,
+			entrypoint: resolvePath('middleware/index.ts'),
+		});
+	}
+
+	// Return the configured middleware array
+	return middlewares;
+};
+
+/*
+
+	/// Primary Utility Export ///
+
+	The following effect retrieves and constructs the full set of routes
+	to be injected into the Astro integration based on the provided
+	configuration options.
+
+	@see `/src/handlers/routeHandler.ts` for the utility that uses this effect.
+
+*/
 
 /**
- * Map processed configuration to route groups.
+ * Effect to get the Astro project routes and middleware for StudioCMS.
+ *
+ * This effect processes the provided `RouteConfig` and derives the
+ * appropriate routes and middleware to be injected into Astro.
+ *
+ * @returns An effect that resolves to an object containing the routes
+ *          and middleware to be injected.
  */
-const mapProcessedConfig = Effect.fn(
-	({
-		dashboardAPIEnabled,
-		dashboardEnabled,
-		dbStartPage,
-		oAuthEnabled,
-		restAPIEnabled,
-		shouldInject404Route,
-		userRegistrationEnabled,
-		usernameAndPasswordAPI,
-		dashboardRoute,
-	}: ProcessedRouteConfig & { dashboardRoute: (path: string) => string }) =>
-		Effect.succeed([
-			{
-				enabled: dbStartPage,
-				routes: setPrerenderFalse(setupRoutes),
-			},
-			{
-				enabled: !dbStartPage,
-				routes: setPrerenderFalse(noDbSetupRoutes),
-			},
-			{
-				enabled: shouldInject404Route,
-				routes: setPrerenderFalse(error404Route),
-			},
-			{
-				enabled: restAPIEnabled,
-				routes: setPrerenderFalse(restRoutes),
-			},
-			{
-				enabled: oAuthEnabled,
-				routes: setPrerenderFalse(oAuthEnabledRoutes),
-			},
-			{
-				enabled: usernameAndPasswordAPI,
-				routes: setPrerenderFalse(usernameAndPasswordAPIRoutes),
-			},
-			{
-				enabled: userRegistrationEnabled,
-				routes: setPrerenderFalse(userRegistrationEnabledRoutes(dashboardRoute)),
-			},
-			{
-				enabled: dashboardEnabled,
-				routes: setPrerenderFalse(dashboardEnabledRoutes(dashboardRoute)),
-			},
-			{
-				enabled: dashboardAPIEnabled,
-				routes: setPrerenderFalse(dashboardAPIEnabledRoutes(dashboardRoute)),
-			},
-		])
-);
-
-/**
- * Flat map processed configuration to route groups.
- */
-const flatMapProcessedConfig = (config: Pick<RouteConfig, 'dashboardRoute'>) =>
-	Effect.fn((processed: ProcessedRouteConfig) =>
-		mapProcessedConfig({
-			...processed,
-			dashboardRoute: config.dashboardRoute,
-		})
-	);
-
-/**
- * Map route groups to a flat array of routes.
- */
-const mapRouteGroups = Effect.fn(
-	(routeGroups: Array<{ enabled: boolean; routes: InjectedRoute[] }>) =>
-		Effect.succeed(
-			routeGroups.reduce<InjectedRoute[]>((acc, { enabled, routes }) => {
-				if (enabled) {
-					acc.push(...routes);
-				}
-				return acc;
-			}, [])
-		)
-);
-
-/**
- * Inject extra routes from the configuration.
- */
-const injectExtraRoutes = (config: Pick<RouteConfig, 'extraRoutes'>) =>
-	Effect.fn((routes: InjectedRoute[]) =>
-		Effect.succeed<InjectedRoute[]>([...routes, ...config.extraRoutes])
-	);
-
-/**
- * Get the array of routes to be injected into the Astro integration.
- */
-export const getRoutes = Effect.gen(function* () {
+export const getAstroProject = Effect.gen(function* () {
 	// Get the StudioCMS route configuration
 	const config = yield* StudioCMSRouteConfig;
 
-	// Process the configuration and map to route groups
+	// Process the configuration
 	return yield* processedConfig(config).pipe(
+		// Map processed config to route groups
 		Effect.flatMap(flatMapProcessedConfig(config)),
+		// Map route groups to final routes
 		Effect.flatMap(mapRouteGroups),
-		Effect.flatMap(injectExtraRoutes(config))
+		// Inject extra routes from config
+		Effect.flatMap(injectExtraRoutes(config)),
+		// Inject middleware based on config
+		Effect.flatMap(injectMiddleware(config))
 	);
 });

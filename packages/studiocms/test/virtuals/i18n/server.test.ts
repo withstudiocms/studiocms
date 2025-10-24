@@ -55,7 +55,7 @@ describe('i18n/server', () => {
 		});
 
 		it('returns defaultLang if language not found', () => {
-			expect(getLangFromUrl(new URL('http://localhost/no/dashboard'))).toBe('en');
+			expect(getLangFromUrl(new URL('http://localhost/su/dashboard'))).toBe('en');
 			expect(getLangFromUrl(new URL('http://localhost/dashboard'))).toBe('en');
 		});
 	});
