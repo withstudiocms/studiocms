@@ -1,5 +1,11 @@
 # @withstudiocms/internal_helpers
 
+## 0.1.0-beta.3
+
+### Patch Changes
+
+- [#945](https://github.com/withstudiocms/studiocms/pull/945) [`1306785`](https://github.com/withstudiocms/studiocms/commit/130678577bcd6a05403c208ca4f46f06e48b9ca4) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - fixes logMessages logging debug messages when verbose is false
+
 ## 0.1.0-beta.2
 
 ### Patch Changes
