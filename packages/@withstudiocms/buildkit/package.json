@@ -1,6 +1,6 @@
 {
   "name": "@withstudiocms/buildkit",
-  "version": "0.1.0-beta.5",
+  "version": "0.1.0-beta.6",
   "description": "Build kit based on esbuild for the withstudiocms github org",
   "author": {
     "name": "withstudiocms",
