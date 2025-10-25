@@ -78,21 +78,6 @@ const kyselyMigrator =
 		);
 
 /**
- * Composes a Kysely client for the given Schema with a migrator that loads migrations
- * from the provided folder path.
- *
- * The returned value is an effectful pipeline that, when executed, will:
- * 1. instantiate a Kysely client typed to Schema, and
- * 2. create/attach a migrator configured to use the migrations located in migrationFolder.
- *
- * @template Schema - The database schema shape used to type the Kysely client.
- * @param migrationFolder - Filesystem path to the directory containing migration files.
- * @returns An effect pipeline which produces a migrator bound to a Kysely client for Schema.
- */
-const makeMigratorBase = <Schema>(migrationFolder: string) =>
-	kyselyClient<Schema>().pipe(Effect.flatMap(kyselyMigrator(migrationFolder)));
-
-/**
  * Creates an Effect that builds a migration helper object for a given migration folder.
  *
  * @template Schema - The database schema type used by the migrator.
@@ -113,7 +98,9 @@ const makeMigratorBase = <Schema>(migrationFolder: string) =>
  */
 const makeMigrator = <Schema>(migrationFolder: string) =>
 	Effect.gen(function* () {
-		const base = yield* makeMigratorBase<Schema>(migrationFolder);
+		const base = yield* kyselyClient<Schema>().pipe(
+			Effect.flatMap(kyselyMigrator(migrationFolder))
+		);
 
 		const toLatest = yield* useWithErrorPromise(() => base.migrateToLatest());
 		const down = yield* useWithErrorPromise(() => base.migrateDown());
