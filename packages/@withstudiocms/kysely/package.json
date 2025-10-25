@@ -38,10 +38,6 @@
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     },
-    "./drivers/*": {
-      "types": "./dist/drivers/*.d.ts",
-      "default": "./dist/drivers/*.js"
-    },
     "./client": {
       "types": "./dist/client.d.ts",
       "default": "./dist/client.js"
@@ -53,6 +49,14 @@
     "./tables": {
       "types": "./dist/tables.d.ts",
       "default": "./dist/tables.js"
+    },
+    "./core/*": {
+      "types": "./dist/core/*.d.ts",
+      "default": "./dist/core/*.js"
+    },
+    "./drivers/*": {
+      "types": "./dist/drivers/*.d.ts",
+      "default": "./dist/drivers/*.js"
     }
   },
   "type": "module",
