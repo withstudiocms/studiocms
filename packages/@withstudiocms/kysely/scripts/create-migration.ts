@@ -20,17 +20,14 @@ async function createMigration() {
 	const migrationsDir = path.join(__dirname, '../src/migrations');
 	const filepath = path.join(migrationsDir, filename);
 
-	const template = `import { type Kysely, sql } from 'kysely';
-import type { StudioCMSDatabaseSchema } from '../tables.js';
-
-export async function up(db: Kysely<StudioCMSDatabaseSchema>): Promise<void> {
-    // Migration code here
-}
-
-export async function down(db: Kysely<StudioCMSDatabaseSchema>): Promise<void> {
-    // Rollback code here
-}
-`;
+	const stubFilepath = path.join(__dirname, 'stubs', 'migration-stub.stub');
+	let template: string;
+	try {
+		template = await fs.readFile(stubFilepath, 'utf-8');
+	} catch {
+		console.error('Failed to read migration stub file');
+		process.exit(1);
+	}
 
 	try {
 		await fs.mkdir(migrationsDir, { recursive: true });
