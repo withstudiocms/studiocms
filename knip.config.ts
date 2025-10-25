@@ -85,6 +85,7 @@ const atWithStudioCMSPackages = [
 	'component-registry',
 	'internal_helpers',
 	'template-lang',
+	'kysely',
 ] as const;
 
 const bundleTestPackages = ['studiocms-blog', 'studiocms-headless'] as const;
@@ -154,6 +155,10 @@ const extras = (pkg: string) => {
 		},
 		'auth-kit': {
 			ignoreUnresolved: [/^\.\/lists\/[^/]*\.js$/],
+		},
+		kysely: {
+			ignore: ['**/migrations/**'],
+			ignoreDependencies: ['@libsql/client'],
 		},
 		...ignoredVirtuals,
 	};
