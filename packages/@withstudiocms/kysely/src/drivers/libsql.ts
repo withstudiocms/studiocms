@@ -7,7 +7,7 @@ import { Config, Effect, Redacted } from 'effect';
  * This generator reads the following configuration keys:
  * - `STUDIOCMS_LIBSQL_URL` (required, redacted) — connection URL for the libsql instance.
  * - `STUDIOCMS_LIBSQL_AUTH_TOKEN` (required, redacted) — authentication token for the libsql instance.
- * - `STUDIOCMS_LIBSQL_SYNC_INTERVAL_MS` (optional) — synchronization interval in milliseconds. If not set, no interval is configured.
+ * - `STUDIOCMS_LIBSQL_SYNC_INTERVAL` (optional) — synchronization interval in milliseconds. If not set, no interval is configured.
  * - `STUDIOCMS_LIBSQL_SYNC_URL` (optional, redacted) — optional sync URL. If not set, no sync URL is configured.
  *
  * Secrets (URL, auth token, sync URL) are obtained via the redacted config helpers and passed to the dialect via Redacted.value to preserve redaction semantics.
@@ -15,7 +15,7 @@ import { Config, Effect, Redacted } from 'effect';
  * The returned Effect yields a fully constructed LibsqlDialect instance:
  * - url: string (from STUDIOCMS_LIBSQL_URL)
  * - authToken: string (from STUDIOCMS_LIBSQL_AUTH_TOKEN)
- * - syncInterval?: number (from STUDIOCMS_LIBSQL_SYNC_INTERVAL_MS, or undefined)
+ * - syncInterval?: number (from STUDIOCMS_LIBSQL_SYNC_INTERVAL, or undefined)
  * - syncUrl?: string (from STUDIOCMS_LIBSQL_SYNC_URL, or undefined)
  *
  * @remarks
