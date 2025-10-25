@@ -16,8 +16,8 @@ import type { StudioCMSDatabaseSchema } from './tables.js';
  * @returns A fully configured, live database client instance typed to `Schema`.
  *
  * @example
- * // Create a client for the PostgreSQL dialect:
- * // const db = getDBClientLive<MySchema>('postgres');
+ * // Create a client for the Chosen dialect:
+ * // const db = getDBClientLive<MySchema>(yourDriver);
  */
 export const getDBClientLive = (dialect: Dialect) =>
 	makeDBClientLive<StudioCMSDatabaseSchema>(dialect);

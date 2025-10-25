@@ -20,7 +20,7 @@ const migrationFolder = path.join(__dirname, './migrations');
  * @returns A migrator instance configured for the given dialect and the package migration folder.
  *
  * @example
- * const migrator = getMigratorLive<MySchema>('postgres');
+ * const migrator = getMigratorLive<MySchema>(yourDriver);
  * await migrator.migrateToLatest();
  */
 export const getMigratorLive = (dialect: Dialect) =>
