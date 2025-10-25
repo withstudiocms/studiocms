@@ -145,6 +145,46 @@ export async function up(db: Kysely<StudioCMSDatabaseSchema>): Promise<void> {
 		.addColumn('id', 'text', (col) => col.primaryKey())
 		.addColumn('data', 'text', (col) => col.notNull())
 		.execute();
+
+	// DEPRECATED TABLES - to be removed in future migrations
+	await db.schema
+		.createTable('StudioCMSSiteConfig')
+		.addColumn('id', 'text', (col) => col.primaryKey())
+		.addColumn('title', 'text', (col) => col.notNull())
+		.addColumn('description', 'text', (col) => col.notNull())
+		.addColumn('defaultOgImage', 'text')
+		.addColumn('siteIcon', 'text')
+		.addColumn('loginPageBackground', 'text', (col) => col.notNull().defaultTo('studiocms-curves'))
+		.addColumn('loginPageCustomImage', 'text')
+		.addColumn('enableDiffs', 'integer', (col) => col.notNull().defaultTo(0))
+		.addColumn('diffPerPage', 'integer', (col) => col.notNull().defaultTo(10))
+		.addColumn('gridItems', 'text', (col) => col.notNull().defaultTo(JSON.stringify([])))
+		.addColumn('enableMailer', 'integer', (col) => col.notNull().defaultTo(0))
+		.addColumn('hideDefaultIndex', 'integer', (col) => col.notNull().defaultTo(0))
+		.execute();
+
+	await db.schema
+		.createTable('StudioCMSMailerConfig')
+		.addColumn('id', 'text', (col) => col.primaryKey())
+		.addColumn('host', 'text', (col) => col.notNull())
+		.addColumn('port', 'integer', (col) => col.notNull())
+		.addColumn('secure', 'integer', (col) => col.notNull().defaultTo(0))
+		.addColumn('proxy', 'text')
+		.addColumn('auth_user', 'text')
+		.addColumn('auth_password', 'text')
+		.addColumn('tls_rejectUnauthorized', 'integer')
+		.addColumn('tls_servername', 'text')
+		.addColumn('default_sender', 'text', (col) => col.notNull())
+		.execute();
+
+	await db.schema
+		.createTable('StudioCMSNotificationSettings')
+		.addColumn('id', 'text', (col) => col.primaryKey())
+		.addColumn('emailVerification', 'integer', (col) => col.notNull().defaultTo(0))
+		.addColumn('requireAdminVerification', 'integer', (col) => col.notNull().defaultTo(0))
+		.addColumn('requireEditorVerification', 'integer', (col) => col.notNull().defaultTo(0))
+		.addColumn('oAuthBypassVerification', 'integer', (col) => col.notNull().defaultTo(0))
+		.execute();
 }
 
 export async function down(db: Kysely<StudioCMSDatabaseSchema>): Promise<void> {
@@ -164,4 +204,9 @@ export async function down(db: Kysely<StudioCMSDatabaseSchema>): Promise<void> {
 	await db.schema.dropTable('StudioCMSEmailVerificationTokens').execute();
 	await db.schema.dropTable('StudioCMSPluginData').execute();
 	await db.schema.dropTable('StudioCMSDynamicConfigSettings').execute();
+
+	// DEPRECATED TABLES - to be removed in future migrations
+	await db.schema.dropTable('StudioCMSSiteConfig').execute();
+	await db.schema.dropTable('StudioCMSMailerConfig').execute();
+	await db.schema.dropTable('StudioCMSNotificationSettings').execute();
 }
