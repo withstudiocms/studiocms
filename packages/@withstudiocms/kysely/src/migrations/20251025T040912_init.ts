@@ -1,10 +1,13 @@
 /**
- * - Migration: Initial setup of StudioCMS database schema
+ * - Title: Initial setup of StudioCMS database schema
  * - Created: Oct. 25, 2025
  * - Author: Adam Matthiesen (@Adammatthiesen)
  * - GitHub PR: #963
  * - Description: This migration initializes the database schema for StudioCMS,
  *   creating all necessary tables for users, sessions, permissions, pages, and more.
+ *
+ *   This re-creates the original AstroDB schema within Kysely to ensure compatibility
+ *   with existing installations while transitioning to Kysely as the database layer.
  */
 
 import { type Kysely, sql } from 'kysely';
