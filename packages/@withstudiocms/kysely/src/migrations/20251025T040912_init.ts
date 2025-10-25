@@ -1,0 +1,10 @@
+import { type Kysely, sql } from 'kysely';
+import type { StudioCMSDatabaseSchema } from '../tables.js';
+
+export async function up(db: Kysely<StudioCMSDatabaseSchema>): Promise<void> {
+	// Migration code here
+}
+
+export async function down(db: Kysely<StudioCMSDatabaseSchema>): Promise<void> {
+	// Rollback code here
+}

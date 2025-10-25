@@ -1,0 +1,75 @@
+{
+  "name": "@withstudiocms/kysely",
+  "version": "0.1.0-beta.0",
+  "description": "",
+  "author": {
+    "name": "withstudiocms",
+    "url": "https://studiocms.dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/withstudiocms/studiocms.git",
+    "directory": "packages/@withstudiocms/kysely"
+  },
+  "contributors": [
+    "Adammatthiesen",
+    "jdtjenkins",
+    "dreyfus92",
+    "code.spirit"
+  ],
+  "license": "MIT",
+  "homepage": "https://studiocms.dev",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "pnpm buildkit build 'src/**/*.ts'",
+    "dev": "pnpm buildkit dev 'src/**/*.ts'",
+    "typecheck": "tspc -p tsconfig.tspc.json",
+    "create-migration": "tsx scripts/create-migration.ts"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./drivers/*": {
+      "types": "./dist/drivers/*.d.ts",
+      "default": "./dist/drivers/*.js"
+    },
+    "./client": {
+      "types": "./dist/client.d.ts",
+      "default": "./dist/client.js"
+    },
+    "./migrator": {
+      "types": "./dist/migrator.d.ts",
+      "default": "./dist/migrator.js"
+    },
+    "./tables": {
+      "types": "./dist/tables.d.ts",
+      "default": "./dist/tables.js"
+    }
+  },
+  "type": "module",
+  "dependencies": {
+    "@libsql/client": "^0.15.15",
+    "@libsql/kysely-libsql": "^0.4.1",
+    "kysely": "^0.28.8",
+    "pg": "^8.16.3",
+    "mysql2": "^3.15.3"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "@types/pg": "^8.15.5",
+    "tsx": "^4.20.6"
+  },
+  "peerDependencies": {
+    "@effect/schema": "catalog:effect",
+		"effect": "catalog:effect"
+  }
+}
