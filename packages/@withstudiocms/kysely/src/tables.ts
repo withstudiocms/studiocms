@@ -88,7 +88,7 @@ export const StudioCMSPageData = Table({
 	title: Schema.String,
 	description: Schema.String,
 	showOnNav: BooleanFromNumber,
-	publishedAt: ColumnType(Schema.DateFromString, Schema.String, Schema.Never),
+	publishedAt: ColumnType(Schema.DateFromString, Schema.String, Schema.String),
 	updatedAt: ColumnType(Schema.DateFromString, Schema.String, Schema.String),
 	slug: Schema.String,
 	contentLang: Schema.String,
@@ -133,7 +133,7 @@ export const StudioCMSPageDataTags = Table({
  */
 export const StudioCMSPageDataCategories = Table({
 	id: Schema.Number,
-	parent: Schema.Number,
+	parent: Schema.NullishOr(Schema.Number),
 	description: Schema.String,
 	name: Schema.String,
 	slug: Schema.String,
