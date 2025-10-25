@@ -111,7 +111,7 @@ const makeMigratorBase = <Schema>(migrationFolder: string) =>
  * Note: This function returns an Effect (deferred computation). You must run/interpret the Effect
  * to obtain and invoke the migration helpers.
  */
-export const makeMigrator = <Schema>(migrationFolder: string) =>
+const makeMigrator = <Schema>(migrationFolder: string) =>
 	Effect.gen(function* () {
 		const base = yield* makeMigratorBase<Schema>(migrationFolder);
 

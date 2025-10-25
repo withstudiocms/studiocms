@@ -131,7 +131,7 @@ export const kyselyClient = <Schema>() =>
  *   );
  * ```
  */
-export const makeKyselyClient = <Schema>(dialect: Dialect) => {
+const makeKyselyClient = <Schema>(dialect: Dialect) => {
 	const db = new Kysely<Schema>({
 		dialect,
 	});
@@ -184,7 +184,7 @@ type EffectDB<Schema> = <T>(
  * (via kyselyClient) and wiring of the helper functions. All operations exposed by the helpers return Effect.Effect values
  * and therefore are lazy until executed by the Effect runtime.
  */
-export const dbClient = <Schema>() =>
+const dbClient = <Schema>() =>
 	Effect.gen(function* () {
 		const rawDB = yield* kyselyClient<Schema>();
 

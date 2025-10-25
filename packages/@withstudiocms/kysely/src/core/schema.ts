@@ -151,7 +151,7 @@ export const ColumnType = <
  *   // Here someValue is narrowed to ColumnTypes<any, any, any>
  * }
  */
-export const isColumnTypes = (value: unknown): value is ColumnTypes<any, any, any> =>
+const isColumnTypes = (value: unknown): value is ColumnTypes<any, any, any> =>
 	hasProperty(value, ColumnTypesId);
 
 /**
@@ -512,31 +512,3 @@ export const BooleanFromNumber = Schema.transform(Schema.Number, Schema.Boolean,
 	decode: (n) => n === 1,
 	encode: (b) => (b ? 1 : 0),
 });
-
-/*
-
-// Define table schemas with Kysely column types
-const Users = Table({
-  id: Generated(Schema.Int),
-  name: Schema.String,
-  email: Schema.String,
-  createdAt: Generated(Schema.DateFromString),
-});
-
-const Posts = Table({
-  id: Generated(Schema.Int),
-  title: Schema.String,
-  content: Schema.String,
-  authorId: Schema.Int,
-  publishedAt: Schema.OptionFromSelf(Schema.DateFromString),
-});
-
-// Create database schema
-const DatabaseSchema = Schema.Struct({
-  users: Users,
-  posts: Posts,
-});
-
-type DatabaseSchema = typeof DatabaseSchema.Encoded;
-
-*/
