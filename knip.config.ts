@@ -155,6 +155,10 @@ const extras = (pkg: string) => {
 		'auth-kit': {
 			ignoreUnresolved: [/^\.\/lists\/[^/]*\.js$/],
 		},
+		kysely: {
+			ignore: ['**/migrations/**'],
+			ignoreDependencies: ['@libsql/client'],
+		},
 		...ignoredVirtuals,
 	};
 	const supportsExtras = Object.keys(extrasMap).includes(pkg);
