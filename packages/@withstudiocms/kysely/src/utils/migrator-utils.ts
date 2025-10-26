@@ -217,7 +217,7 @@ export async function syncDatabaseSchema(
 }
 
 export async function rollbackMigration(
-	currentSchema: TableDefinition[],
+	schemaDefinition: TableDefinition[],
 	previousSchema: TableDefinition[],
 	db: Kysely<StudioCMSDatabaseSchema>
 ) {
@@ -225,7 +225,7 @@ export async function rollbackMigration(
 
 	const previousTableNames = new Set(previousSchema.map((table) => table.name));
 
-	for (const tableDef of currentSchema) {
+	for (const tableDef of schemaDefinition) {
 		if (!previousTableNames.has(tableDef.name)) {
 			const exists = await tableExists(tableDef.name, db);
 			if (exists) {
