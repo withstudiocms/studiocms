@@ -1,6 +1,6 @@
 /** biome-ignore-all lint/suspicious/noExplicitAny: It's okay, doing dynamic stuff */
 
-import { Data, Effect, pipe } from 'effect';
+import { Cause, Data, Effect, pipe } from 'effect';
 import { type Kysely, type QueryResult, type Sql, sql } from 'kysely';
 import type { StudioCMSDatabaseSchema } from '../tables.js';
 
@@ -13,6 +13,13 @@ class SqlError extends Data.TaggedError('SqlError')<{ cause: unknown }> {}
 class DialectDeterminationError extends Data.TaggedError('DialectDeterminationError')<{
 	cause: unknown;
 }> {}
+
+// ============================================================================
+// Error Helpers
+// ============================================================================
+
+const handleCause = (cause: Cause.Cause<DialectDeterminationError | SqlError>) =>
+	Effect.logError(`Migration failure: ${Cause.pretty(cause)}`);
 
 // ============================================================================
 // Effect Wrappers
@@ -443,100 +450,104 @@ const detectRemovedTables = Effect.fn(function* (
 // MAIN MIGRATION FUNCTIONS
 // ============================================================================
 
-export const syncDatabaseSchema = Effect.fn(function* (
+export const syncDatabaseSchema = (
 	db: Kysely<StudioCMSDatabaseSchema>,
 	schemaDefinition: TableDefinition[],
 	previousSchemaDefinition: TableDefinition[]
-) {
-	yield* Effect.logInfo('Starting database schema synchronization...');
+) =>
+	Effect.gen(function* () {
+		yield* Effect.logInfo('Starting database schema synchronization...');
 
-	const removedTables = yield* detectRemovedTables(schemaDefinition, previousSchemaDefinition);
+		const removedTables = yield* detectRemovedTables(schemaDefinition, previousSchemaDefinition);
 
-	// Drop removed tables
-	if (removedTables.length > 0) {
-		yield* Effect.logInfo(
-			`🗑️  Dropping ${removedTables.length} removed table(s) from previous schema:`
-		);
-		for (const tableName of removedTables) {
-			const exists = yield* tableExists(db, tableName);
-			if (exists) {
-				yield* Effect.logInfo(`  Dropping removed table: ${tableName}...`);
-				yield* Effect.tryPromise({
-					try: () => db.schema.dropTable(tableName).execute(),
-					catch: (cause) => new SqlError({ cause }),
-				});
-				yield* Effect.logInfo(`  ✓ Dropped: ${tableName}`);
-			} else {
-				yield* Effect.logInfo(`  ℹ Table ${tableName} already doesn't exist, skipping.`);
+		// Drop removed tables
+		if (removedTables.length > 0) {
+			yield* Effect.logInfo(
+				`🗑️  Dropping ${removedTables.length} removed table(s) from previous schema:`
+			);
+			for (const tableName of removedTables) {
+				const exists = yield* tableExists(db, tableName);
+				if (exists) {
+					yield* Effect.logInfo(`  Dropping removed table: ${tableName}...`);
+					yield* Effect.tryPromise({
+						try: () => db.schema.dropTable(tableName).execute(),
+						catch: (cause) => new SqlError({ cause }),
+					});
+					yield* Effect.logInfo(`  ✓ Dropped: ${tableName}`);
+				} else {
+					yield* Effect.logInfo(`  ℹ Table ${tableName} already doesn't exist, skipping.`);
+				}
+			}
+			yield* Effect.logInfo('');
+		}
+
+		// Sync current schema
+		for (const tableDef of schemaDefinition) {
+			const exists = yield* tableExists(db, tableDef.name);
+
+			switch (tableDef.deprecated) {
+				case true: {
+					if (exists) {
+						yield* Effect.logInfo(`Table ${tableDef.name} is deprecated. Dropping...`);
+						yield* Effect.tryPromise({
+							try: () => db.schema.dropTable(tableDef.name).execute(),
+							catch: (cause) => new SqlError({ cause }),
+						});
+						yield* Effect.logInfo(`Table ${tableDef.name} dropped.`);
+					} else {
+						yield* Effect.logInfo(
+							`Deprecated table ${tableDef.name} does not exist. Skipping drop.`
+						);
+					}
+					break;
+				}
+				case false:
+				case undefined: {
+					if (!exists) {
+						yield* createTable(db, tableDef);
+					} else {
+						const existingColumns = yield* getTableColumns(db, tableDef.name);
+						yield* addMissingColumns(db, tableDef, existingColumns);
+
+						const existingIndexes = yield* getTableIndexes(db, tableDef.name);
+						yield* addMissingIndexes(db, tableDef, existingIndexes);
+						yield* dropRemovedIndexes(db, tableDef, existingIndexes);
+					}
+					break;
+				}
 			}
 		}
-		yield* Effect.logInfo('');
-	}
 
-	// Sync current schema
-	for (const tableDef of schemaDefinition) {
-		const exists = yield* tableExists(db, tableDef.name);
+		yield* Effect.logInfo('✅ Database schema synchronization complete.');
+	}).pipe(Effect.catchAllCause(handleCause));
 
-		switch (tableDef.deprecated) {
-			case true: {
+export const rollbackMigration = (
+	db: Kysely<StudioCMSDatabaseSchema>,
+	schemaDefinition: TableDefinition[],
+	previousSchema: TableDefinition[]
+) =>
+	Effect.gen(function* () {
+		yield* Effect.logInfo('Starting database schema rollback...');
+
+		const previousTableNames = new Set(previousSchema.map((table) => table.name));
+
+		for (const tableDef of schemaDefinition) {
+			if (!previousTableNames.has(tableDef.name)) {
+				const exists = yield* tableExists(db, tableDef.name);
 				if (exists) {
-					yield* Effect.logInfo(`Table ${tableDef.name} is deprecated. Dropping...`);
+					yield* Effect.logInfo(
+						`Rolling back: Dropping table not present in previous schema: ${tableDef.name}...`
+					);
 					yield* Effect.tryPromise({
 						try: () => db.schema.dropTable(tableDef.name).execute(),
 						catch: (cause) => new SqlError({ cause }),
 					});
-					yield* Effect.logInfo(`Table ${tableDef.name} dropped.`);
+					yield* Effect.logInfo(`✓ Dropped table: ${tableDef.name}`);
 				} else {
-					yield* Effect.logInfo(`Deprecated table ${tableDef.name} does not exist. Skipping drop.`);
+					yield* Effect.logInfo(`Table ${tableDef.name} does not exist. Skipping drop.`);
 				}
-				break;
-			}
-			case false:
-			case undefined: {
-				if (!exists) {
-					yield* createTable(db, tableDef);
-				} else {
-					const existingColumns = yield* getTableColumns(db, tableDef.name);
-					yield* addMissingColumns(db, tableDef, existingColumns);
-
-					const existingIndexes = yield* getTableIndexes(db, tableDef.name);
-					yield* addMissingIndexes(db, tableDef, existingIndexes);
-					yield* dropRemovedIndexes(db, tableDef, existingIndexes);
-				}
-				break;
 			}
 		}
-	}
 
-	yield* Effect.logInfo('✅ Database schema synchronization complete.');
-});
-
-export const rollbackMigration = Effect.fn(function* (
-	db: Kysely<StudioCMSDatabaseSchema>,
-	schemaDefinition: TableDefinition[],
-	previousSchema: TableDefinition[]
-) {
-	yield* Effect.logInfo('Starting database schema rollback...');
-
-	const previousTableNames = new Set(previousSchema.map((table) => table.name));
-
-	for (const tableDef of schemaDefinition) {
-		if (!previousTableNames.has(tableDef.name)) {
-			const exists = yield* tableExists(db, tableDef.name);
-			if (exists) {
-				yield* Effect.logInfo(
-					`Rolling back: Dropping table not present in previous schema: ${tableDef.name}...`
-				);
-				yield* Effect.tryPromise({
-					try: () => db.schema.dropTable(tableDef.name).execute(),
-					catch: (cause) => new SqlError({ cause }),
-				});
-				yield* Effect.logInfo(`✓ Dropped table: ${tableDef.name}`);
-			} else {
-				yield* Effect.logInfo(`Table ${tableDef.name} does not exist. Skipping drop.`);
-			}
-		}
-	}
-
-	yield* Effect.logInfo('✅ Migration rollback completed!');
-});
+		yield* Effect.logInfo('✅ Migration rollback completed!');
+	}).pipe(Effect.catchAllCause(handleCause));
