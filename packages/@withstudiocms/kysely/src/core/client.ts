@@ -1,7 +1,8 @@
-import * as S from '@effect/schema/Schema';
 import { Context, Effect, pipe } from 'effect';
+import * as S from 'effect/Schema';
 import { type Dialect, Kysely, NoResultError } from 'kysely';
 import { type DatabaseError, NotFoundError, QueryError, QueryParseError } from './errors.js';
+import type { StripNeverFromObject } from './schema.js';
 
 /**
  * Represents an asynchronous query function.
@@ -138,33 +139,6 @@ const makeKyselyClient = <Schema>(dialect: Dialect) => {
 	return db;
 };
 
-/**
- * Represents a helper that runs an asynchronous database operation inside an effect.
- *
- * @template Schema - The database schema type used by the Kysely client supplied to the callback.
- * @template T - The result type produced by the provided callback; this becomes the success value of the returned Effect.
- *
- * @param fn - A callback that receives a Kysely instance typed with Schema and performs asynchronous queries,
- *             returning a Promise that resolves to a value of type T. Any errors thrown by this callback or by
- *             the underlying database client that correspond to QueryError or NotFoundError will be surfaced
- *             through the Effect's error channel.
- *
- * @returns An Effect that, when executed, runs the provided callback with a Kysely<Schema> instance and yields
- *          the callback's resolved value T on success. Failures are represented as QueryError | NotFoundError.
- *
- * @remarks
- * - Use this type to encapsulate database access within an effectful workflow and centralize error handling.
- * - The implementation is expected to map/convert database exceptions into the declared error union so callers
- *   can handle them in the effect system.
- *
- * @example
- * // Example usage (illustrative):
- * // const runQuery: EffectDB<MySchema> = async (db) => { return await db.selectFrom('users').selectAll().execute(); }
- */
-type EffectDB<Schema> = <T>(
-	fn: (db: Kysely<Schema>) => Promise<T>
-) => Effect.Effect<T, QueryError | NotFoundError, never>;
-
 ///
 
 /**
@@ -235,17 +209,17 @@ const dbClient = <Schema>() =>
 		 * const effect = findByKey({ id: 'abc' }); // returns Effect.Effect<ResultType, DatabaseError>
 		 */
 		const withEncoder =
-			<IEncoded, IType, O>({
+			<IEncoded, IType, O, CIType = StripNeverFromObject<IType>>({
 				encoder,
 				query,
 			}: {
 				encoder: S.Schema<IType, IEncoded>;
-				query: (db: EffectDB<Schema>, input: IEncoded) => Effect.Effect<O, DatabaseError>;
+				query: QueryFn<IEncoded, O>;
 			}) =>
-			(input: IType): Effect.Effect<O, DatabaseError> =>
+			(input: CIType): Effect.Effect<O, DatabaseError> =>
 				Effect.gen(function* () {
-					const encoded = yield* encode(encoder, input);
-					return yield* query(db, encoded);
+					const encoded = yield* encode(encoder, input as unknown as IType);
+					return yield* toEffect(query, encoded);
 				});
 
 		/**
@@ -270,11 +244,11 @@ const dbClient = <Schema>() =>
 				query,
 			}: {
 				decoder: S.Schema<OType, OEncoded>;
-				query: (db: EffectDB<Schema>) => Effect.Effect<OEncoded, DatabaseError>;
+				query: QueryFn<undefined, OEncoded>;
 			}) =>
 			(): Effect.Effect<OType, DatabaseError> =>
 				Effect.gen(function* () {
-					const res = yield* query(db);
+					const res = yield* toEffect(query, undefined);
 					return yield* decode(decoder, res);
 				});
 
@@ -303,19 +277,19 @@ const dbClient = <Schema>() =>
 		 * // const effect = op(userInput); // Effect<Either<OType, DatabaseError>>
 		 */
 		const withCodec =
-			<IEncoded, IType, OEncoded, OType>({
+			<IEncoded, IType, OEncoded, OType, CIType = StripNeverFromObject<IType>>({
 				encoder,
 				decoder,
 				query,
 			}: {
 				encoder: S.Schema<IType, IEncoded>;
 				decoder: S.Schema<OType, OEncoded>;
-				query: (db: EffectDB<Schema>, input: IEncoded) => Effect.Effect<OEncoded, DatabaseError>;
+				query: QueryFn<IEncoded, OEncoded>;
 			}) =>
-			(input: IType): Effect.Effect<OType, DatabaseError> =>
+			(input: CIType): Effect.Effect<OType, DatabaseError> =>
 				Effect.gen(function* () {
-					const encoded = yield* encode(encoder, input);
-					const res = yield* query(db, encoded);
+					const encoded = yield* encode(encoder, input as unknown as IType);
+					const res = yield* toEffect(query, encoded);
 					return yield* decode(decoder, res);
 				});
 

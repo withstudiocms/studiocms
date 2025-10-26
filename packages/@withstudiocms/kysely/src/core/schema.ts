@@ -56,8 +56,8 @@ export interface ColumnTypes<
 > {
 	readonly [ColumnTypesId]: ColumnTypesId;
 	readonly Select: Select;
-	readonly Insert: Insert;
-	readonly Update: Update;
+	Insert: Insert;
+	Update: Update;
 }
 
 /**
@@ -296,26 +296,30 @@ export const JsonColumnType = <
 > &
 	ColumnTypes<typeof Select, Insert, Update> => ColumnType(Select, Insert, Update);
 
+export type StripNeverFromObject<T> = {
+	[K in keyof T as T[K] extends never ? never : K]: T[K];
+};
+
 /**
  * Helper type function to extract the select shapes from column types.
  */
 type GetSelectType<T> = T extends ColumnTypes<infer Select, any, any>
-	? Schema.Schema.Type<Select>
-	: Schema.Schema.Type<T>;
+	? Schema.Schema.Type<StripNeverFromObject<Select>>
+	: Schema.Schema.Type<StripNeverFromObject<T>>;
 
 /**
  * Helper type function to extract the insert shapes from column types.
  */
 type GetInsertType<T> = T extends ColumnTypes<any, infer Insert, any>
-	? Schema.Schema.Type<Insert>
-	: Schema.Schema.Type<T>;
+	? Schema.Schema.Type<StripNeverFromObject<Insert>>
+	: Schema.Schema.Type<StripNeverFromObject<T>>;
 
 /**
  * Helper type function to extract the update shapes from column types.
  */
 type GetUpdateType<T> = T extends ColumnTypes<any, any, infer Update>
-	? Schema.Schema.Type<Update>
-	: Schema.Schema.Type<T>;
+	? Schema.Schema.Type<StripNeverFromObject<Update>>
+	: Schema.Schema.Type<StripNeverFromObject<T>>;
 
 /**
  * Helper type function to extract the select encoded shapes from column types.
@@ -328,15 +332,15 @@ type GetSelectEncoded<T> = T extends ColumnTypes<infer Select, any, any>
  * Helper type function to extract the insert encoded shapes from column types.
  */
 type GetInsertEncoded<T> = T extends ColumnTypes<any, infer Insert, any>
-	? Schema.Schema.Encoded<Insert>
-	: Schema.Schema.Encoded<T>;
+	? Schema.Schema.Encoded<StripNeverFromObject<Insert>>
+	: Schema.Schema.Encoded<StripNeverFromObject<T>>;
 
 /**
  * Helper type function to extract the update encoded shapes from column types.
  */
 type GetUpdateEncoded<T> = T extends ColumnTypes<any, any, infer Update>
-	? Schema.Schema.Encoded<Update>
-	: Schema.Schema.Encoded<T>;
+	? Schema.Schema.Encoded<StripNeverFromObject<Update>>
+	: Schema.Schema.Encoded<StripNeverFromObject<T>>;
 
 /**
  * Represents a strongly-typed database table definition.
@@ -445,8 +449,8 @@ export const Table = <Columns extends Schema.Struct.Fields>(columns: Columns): T
 	return Object.assign(Schema.Struct(columns), {
 		[ColumnTypesId]: ColumnTypesId,
 		Select,
-		Insert,
-		Update,
+		Insert: Insert,
+		Update: Update,
 	} as const);
 };
 

@@ -65,9 +65,6 @@ catalogs:
     '@effect/platform-node':
       specifier: ^0.98.4
       version: 0.98.4
-    '@effect/schema':
-      specifier: ^0.75.5
-      version: 0.75.5
     effect:
       specifier: ^3.18.4
       version: 3.18.4
@@ -834,9 +831,6 @@ importers:
 
   packages/@withstudiocms/kysely:
     dependencies:
-      '@effect/schema':
-        specifier: catalog:effect
-        version: 0.75.5(effect@3.18.4)
       '@libsql/client':
         specifier: ^0.15.15
         version: 0.15.15
@@ -1541,12 +1535,6 @@ packages:
     peerDependencies:
       '@effect/platform': ^0.92.0
       effect: ^3.18.0
-
-  '@effect/schema@0.75.5':
-    resolution: {integrity: sha512-TQInulTVCuF+9EIbJpyLP6dvxbQJMphrnRqgexm/Ze39rSjfhJuufF7XvU3SxTgg3HnL7B/kpORTJbHhlE6thw==}
-    deprecated: this package has been merged into the main effect package
-    peerDependencies:
-      effect: ^3.9.2
 
   '@effect/sql@0.46.0':
     resolution: {integrity: sha512-nm9TuTTG7gLmJlIPkf71wA5lXArSvkpm1oYoIF+rhf01wef+1ujz9Mv1SfuzYbzsk7W9+OXUIRMxz/nSlKkiGQ==}
@@ -7098,11 +7086,6 @@ snapshots:
       '@effect/platform': 0.92.1(effect@3.18.4)
       effect: 3.18.4
       msgpackr: 1.11.5
-
-  '@effect/schema@0.75.5(effect@3.18.4)':
-    dependencies:
-      effect: 3.18.4
-      fast-check: 3.23.2
 
   '@effect/sql@0.46.0(@effect/experimental@0.56.0(@effect/platform@0.92.1(effect@3.18.4))(effect@3.18.4))(@effect/platform@0.92.1(effect@3.18.4))(effect@3.18.4)':
     dependencies:

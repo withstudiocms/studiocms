@@ -30,7 +30,10 @@ import { Config, Effect, Redacted } from 'effect';
  */
 export const libsqlDriver = Effect.gen(function* () {
 	const rawUrl = yield* Config.redacted('STUDIOCMS_LIBSQL_URL');
-	const authToken = yield* Config.redacted('STUDIOCMS_LIBSQL_AUTH_TOKEN');
+	const authToken = yield* Config.withDefault(
+		Config.redacted('STUDIOCMS_LIBSQL_AUTH_TOKEN'),
+		undefined
+	);
 	const syncInterval = yield* Config.withDefault(
 		Config.number('STUDIOCMS_LIBSQL_SYNC_INTERVAL'),
 		undefined
@@ -42,7 +45,7 @@ export const libsqlDriver = Effect.gen(function* () {
 
 	return new LibsqlDialect({
 		url: Redacted.value(rawUrl),
-		authToken: Redacted.value(authToken),
+		authToken: authToken ? Redacted.value(authToken) : undefined,
 		syncInterval: syncInterval,
 		syncUrl: syncUrl ? Redacted.value(syncUrl) : undefined,
 	});

@@ -73,7 +73,6 @@
     "tsx": "^4.20.6"
   },
   "peerDependencies": {
-    "@effect/schema": "catalog:effect",
 		"effect": "catalog:effect"
   }
 }

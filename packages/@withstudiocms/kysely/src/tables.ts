@@ -18,7 +18,7 @@ export const StudioCMSUsersTable = Table({
 	avatar: Schema.NullishOr(Schema.String),
 	username: Schema.String,
 	password: Schema.NullishOr(Schema.String),
-	updatedAt: ColumnType(Schema.DateFromString, Schema.String, Schema.Never),
+	updatedAt: ColumnType(Schema.DateFromString, Schema.String, Schema.String),
 	createdAt: ColumnType(Schema.DateFromString, Schema.Never, Schema.Never),
 	emailVerified: BooleanFromNumber,
 	notifications: Schema.NullishOr(Schema.String),

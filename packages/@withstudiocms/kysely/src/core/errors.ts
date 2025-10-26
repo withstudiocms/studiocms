@@ -1,5 +1,5 @@
-import type { ParseError } from '@effect/schema/ParseResult';
 import { Data } from 'effect';
+import type { ParseError } from 'effect/ParseResult';
 
 /**
  * Error thrown when a query cannot be parsed.
