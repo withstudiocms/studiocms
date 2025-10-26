@@ -1,5 +1,5 @@
 import { Context, Effect, pipe } from 'effect';
-import * as S from 'effect/Schema';
+import * as Schema from 'effect/Schema';
 import { type Dialect, Kysely, NoResultError } from 'kysely';
 import { type DatabaseError, NotFoundError, QueryError, QueryParseError } from './errors.js';
 import type { StripNeverFromObject } from './schema.js';
@@ -41,10 +41,10 @@ type QueryFn<I, O> = (input: I) => Promise<O>;
  * - This function delegates encoding to the schema's encode function and maps any schema parse
  *   errors to QueryParseError to provide a consistent error type for callers.
  */
-const encode = <IEncoded, IType>(inputSchema: S.Schema<IType, IEncoded>, input: IType) =>
+const encode = <IEncoded, IType>(inputSchema: Schema.Schema<IType, IEncoded>, input: IType) =>
 	pipe(
 		input,
-		S.encode(inputSchema),
+		Schema.encode(inputSchema),
 		Effect.mapError((parseError) => new QueryParseError({ parseError }))
 	);
 
@@ -62,10 +62,10 @@ const encode = <IEncoded, IType>(inputSchema: S.Schema<IType, IEncoded>, input: 
  * This helper pipes `encoded` through the schema decoder and maps any parse errors to a `QueryParseError`
  * so callers receive a consistent error type for schema validation failures.
  */
-const decode = <OEncoded, OType>(outputSchema: S.Schema<OType, OEncoded>, encoded: OEncoded) =>
+const decode = <OEncoded, OType>(outputSchema: Schema.Schema<OType, OEncoded>, encoded: OEncoded) =>
 	pipe(
 		encoded,
-		S.decode(outputSchema),
+		Schema.decode(outputSchema),
 		Effect.mapError((parseError) => new QueryParseError({ parseError }))
 	);
 
@@ -199,7 +199,7 @@ const dbClient = <Schema>() =>
 				encoder,
 				query,
 			}: {
-				encoder: S.Schema<IType, IEncoded>;
+				encoder: Schema.Schema<IType, IEncoded>;
 				query: QueryFn<IEncoded, O>;
 			}) =>
 			(input: CIType): Effect.Effect<O, DatabaseError> =>
@@ -235,7 +235,7 @@ const dbClient = <Schema>() =>
 				decoder,
 				query,
 			}: {
-				decoder: S.Schema<OType, OEncoded>;
+				decoder: Schema.Schema<OType, OEncoded>;
 				query: QueryFn<undefined, OEncoded>;
 			}) =>
 			(): Effect.Effect<OType, DatabaseError> =>
@@ -280,8 +280,8 @@ const dbClient = <Schema>() =>
 				decoder,
 				query,
 			}: {
-				encoder: S.Schema<IType, IEncoded>;
-				decoder: S.Schema<OType, OEncoded>;
+				encoder: Schema.Schema<IType, IEncoded>;
+				decoder: Schema.Schema<OType, OEncoded>;
 				query: QueryFn<IEncoded, OEncoded>;
 			}) =>
 			(input: CIType): Effect.Effect<OType, DatabaseError> =>
