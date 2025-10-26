@@ -55,9 +55,9 @@ export interface ColumnTypes<
 	Update extends Schema.Schema.All,
 > {
 	readonly [ColumnTypesId]: ColumnTypesId;
-	readonly select: Select;
-	readonly insert: Insert;
-	readonly update: Update;
+	readonly Select: Select;
+	readonly Insert: Insert;
+	readonly Update: Update;
 }
 
 /**
@@ -105,9 +105,9 @@ export const ColumnType = <
 	Insert extends Schema.Schema.All,
 	Update extends Schema.Schema.All,
 >(
-	select: Select,
-	insert: Insert,
-	update: Update
+	Select: Select,
+	Insert: Insert,
+	Update: Update
 ): Schema.Schema<
 	kysely.ColumnType<
 		Schema.Schema.Type<Select>,
@@ -129,9 +129,9 @@ export const ColumnType = <
 		}),
 		{
 			[ColumnTypesId]: ColumnTypesId,
-			select,
-			insert,
-			update,
+			Select,
+			Insert,
+			Update,
 		} as const
 	);
 };
@@ -278,23 +278,23 @@ export const JsonColumnType = <
 	Insert extends Schema.Schema<string, string, any> = Schema.Schema<string, string, never>,
 	Update extends Schema.Schema<string, string, any> = Schema.Schema<string, string, never>,
 >(
-	select: Schema.Schema<SelectType, SelectEncoded, SelectContext>,
-	insert: Insert = Schema.String as any,
-	update: Update = Schema.String as any
+	Select: Schema.Schema<SelectType, SelectEncoded, SelectContext>,
+	Insert: Insert = Schema.String as any,
+	Update: Update = Schema.String as any
 ): Schema.Schema<
 	kysely.JSONColumnType<
-		Schema.Schema.Type<typeof select>,
+		Schema.Schema.Type<typeof Select>,
 		Schema.Schema.Type<Insert>,
 		Schema.Schema.Type<Update>
 	>,
 	kysely.JSONColumnType<
-		Schema.Schema.Encoded<typeof select>,
+		Schema.Schema.Encoded<typeof Select>,
 		Schema.Schema.Encoded<Insert>,
 		Schema.Schema.Encoded<Update>
 	>,
-	Schema.Schema.Context<typeof select | Insert | Update>
+	Schema.Schema.Context<typeof Select | Insert | Update>
 > &
-	ColumnTypes<typeof select, Insert, Update> => ColumnType(select, insert, update);
+	ColumnTypes<typeof Select, Insert, Update> => ColumnType(Select, Insert, Update);
 
 /**
  * Helper type function to extract the select shapes from column types.
@@ -438,15 +438,15 @@ export interface Table<Columns extends Schema.Struct.Fields>
  * that do not carry dedicated column-type metadata are treated as-is for all three shapes.
  */
 export const Table = <Columns extends Schema.Struct.Fields>(columns: Columns): Table<Columns> => {
-	const select: any = Schema.Struct(Record.map(columns, (v) => (isColumnTypes(v) ? v.select : v)));
-	const insert: any = Schema.Struct(Record.map(columns, (v) => (isColumnTypes(v) ? v.insert : v)));
-	const update: any = Schema.Struct(Record.map(columns, (v) => (isColumnTypes(v) ? v.update : v)));
+	const Select: any = Schema.Struct(Record.map(columns, (v) => (isColumnTypes(v) ? v.Select : v)));
+	const Insert: any = Schema.Struct(Record.map(columns, (v) => (isColumnTypes(v) ? v.Insert : v)));
+	const Update: any = Schema.Struct(Record.map(columns, (v) => (isColumnTypes(v) ? v.Update : v)));
 
 	return Object.assign(Schema.Struct(columns), {
 		[ColumnTypesId]: ColumnTypesId,
-		select,
-		insert,
-		update,
+		Select,
+		Insert,
+		Update,
 	} as const);
 };
 
