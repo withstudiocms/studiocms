@@ -19,7 +19,12 @@ class DialectDeterminationError extends Data.TaggedError('DialectDeterminationEr
 // ============================================================================
 
 const handleCause = (cause: Cause.Cause<DialectDeterminationError | SqlError>) =>
-	Effect.logError(`Migration failure: ${Cause.pretty(cause)}`);
+	Effect.logError(`Migration failure: ${Cause.pretty(cause)}`).pipe(
+		Effect.map(() => {
+			return new Error('Migration failed. See logs for details.');
+		}),
+		Effect.flatMap((error) => Effect.die(error))
+	);
 
 // ============================================================================
 // Effect Wrappers

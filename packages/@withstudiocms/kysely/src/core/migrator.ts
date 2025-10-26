@@ -133,10 +133,14 @@ export class JSONMigrationProvider implements MigrationProvider {
 
 				const migration: Migration = {
 					up: async (db) => {
-						await Effect.runPromise(syncDatabaseSchema(db, definition, previousSchema));
+						await Effect.runPromise(syncDatabaseSchema(db, definition, previousSchema)).catch(
+							console.error
+						);
 					},
 					down: async (db) => {
-						await Effect.runPromise(rollbackMigration(db, definition, previousSchema));
+						await Effect.runPromise(rollbackMigration(db, definition, previousSchema)).catch(
+							console.error
+						);
 					},
 				};
 
