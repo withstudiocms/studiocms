@@ -25,6 +25,22 @@ export const dbClientExample = Effect.gen(function* () {
 
 	const users = yield* getUsers();
 	console.log('Users:', users);
+	/*
+	    type of 'users' is:
+		const users: readonly {
+			readonly url: string | null | undefined;
+			readonly id: string;
+			readonly name: string;
+			readonly email: string | null | undefined;
+			readonly avatar: string | null | undefined;
+			readonly username: string;
+			readonly password: string | null | undefined;
+			readonly updatedAt: Date;
+			readonly createdAt: Date;
+			readonly emailVerified: boolean;
+			readonly notifications: string | null | undefined;
+		}[]
+	*/
 
 	//
 	// insert new user
@@ -32,7 +48,9 @@ export const dbClientExample = Effect.gen(function* () {
 
 	const insertUser = withEncoder({
 		encoder: StudioCMSUsersTable.Insert,
-		query: (newUser) => db.insertInto('StudioCMSUsersTable').values(newUser).execute(),
+		query: (
+			newUser // 'newUser' type comes from 'encoder'
+		) => db.insertInto('StudioCMSUsersTable').values(newUser).execute(),
 	});
 
 	const newUser = yield* insertUser({
@@ -48,6 +66,10 @@ export const dbClientExample = Effect.gen(function* () {
 		updatedAt: new Date().toISOString(),
 	});
 	console.log('Inserted new user:', newUser); // withEncoder returns a 'InsertResult[]'
+	/*
+		type of 'newUser' is:
+		const newUser: InsertResult[]
+	*/
 
 	//
 	// insert new user with codec so we can get decoded result
@@ -56,7 +78,9 @@ export const dbClientExample = Effect.gen(function* () {
 	const insertNewUser = withCodec({
 		encoder: StudioCMSUsersTable.Insert,
 		decoder: StudioCMSUsersTable.Select,
-		query: (newUser) =>
+		query: (
+			newUser // 'newUser' type comes from 'encoder'
+		) =>
 			db.insertInto('StudioCMSUsersTable').values(newUser).returningAll().executeTakeFirstOrThrow(),
 	});
 
@@ -73,6 +97,22 @@ export const dbClientExample = Effect.gen(function* () {
 		updatedAt: new Date().toISOString(),
 	});
 	console.log('Inserted user with codec:', insertedUser); // withCodec returns decoded results
+	/*
+	    type of 'insertedUser' is:
+		const user: {
+			readonly url: string | null | undefined;
+			readonly id: string;
+			readonly name: string;
+			readonly email: string | null | undefined;
+			readonly avatar: string | null | undefined;
+			readonly username: string;
+			readonly password: string | null | undefined;
+			readonly updatedAt: Date;
+			readonly createdAt: Date;
+			readonly emailVerified: boolean;
+			readonly notifications: string | null | undefined;
+		}
+	*/
 
 	//
 	// get a user by id
@@ -80,7 +120,9 @@ export const dbClientExample = Effect.gen(function* () {
 	const getUserById = withCodec({
 		encoder: Schema.String,
 		decoder: Schema.UndefinedOr(StudioCMSUsersTable.Select),
-		query: (id: string) =>
+		query: (
+			id // 'id' type comes from 'encoder'
+		) =>
 			db
 				.selectFrom('StudioCMSUsersTable')
 				.selectAll()
@@ -90,4 +132,20 @@ export const dbClientExample = Effect.gen(function* () {
 
 	const user = yield* getUserById('some-user-id');
 	console.log('User by ID:', user);
+	/*
+	    type of 'user' is:
+		const user: {
+			readonly url: string | null | undefined;
+			readonly id: string;
+			readonly name: string;
+			readonly email: string | null | undefined;
+			readonly avatar: string | null | undefined;
+			readonly username: string;
+			readonly password: string | null | undefined;
+			readonly updatedAt: Date;
+			readonly createdAt: Date;
+			readonly emailVerified: boolean;
+			readonly notifications: string | null | undefined;
+		} | undefined
+	*/
 });
