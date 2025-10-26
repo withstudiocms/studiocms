@@ -2,7 +2,6 @@
 
 import { Effect } from 'effect';
 import { type Kysely, sql } from 'kysely';
-import type { StudioCMSDatabaseSchema } from '../tables.js';
 import { SqlError } from './errors.js';
 import { createIndexes } from './indexes.js';
 import type { ColumnDefinition, ColumnType, TableDefinition } from './types.js';
@@ -106,10 +105,7 @@ export function applyColumnConstraints(col: any, def: ColumnDefinition, isAlterT
  *          success or fails with a SqlError if the CREATE TABLE operation fails.
  * @throws {SqlError} If the underlying CREATE TABLE promise rejects, the error is wrapped as SqlError.
  */
-export const createTable = Effect.fn(function* (
-	db: Kysely<StudioCMSDatabaseSchema>,
-	tableDef: TableDefinition
-) {
+export const createTable = Effect.fn(function* (db: Kysely<any>, tableDef: TableDefinition) {
 	yield* Effect.logInfo(`Creating table ${tableDef.name}...`);
 
 	let tableBuilder = db.schema.createTable(tableDef.name);
@@ -149,7 +145,7 @@ export const createTable = Effect.fn(function* (
  *
  * The function logs informational messages about the check and about any columns that are added.
  *
- * @param db - Kysely instance connected to the target database (StudioCMSDatabaseSchema).
+ * @param db - Kysely instance connected to the target database.
  * @param tableDef - Table definition containing the table name and column definitions to ensure exist.
  * @param existingColumns - Array of column names that already exist on the target table.
  *
@@ -167,7 +163,7 @@ export const createTable = Effect.fn(function* (
  * // yield* addMissingColumns(db, myTableDefinition, ['id', 'created_at']);
  */
 export const addMissingColumns = Effect.fn(function* (
-	db: Kysely<StudioCMSDatabaseSchema>,
+	db: Kysely<any>,
 	tableDef: TableDefinition,
 	existingColumns: string[]
 ) {

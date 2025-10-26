@@ -1,6 +1,6 @@
+/** biome-ignore-all lint/suspicious/noExplicitAny: allow for dynamic functions */
 import { Effect } from 'effect';
 import type { Kysely } from 'kysely';
-import type { StudioCMSDatabaseSchema } from '../tables.js';
 import { getDialect } from './introspection.js';
 import { makeSql } from './sql.js';
 import type { DatabaseDialect, TableDefinition, TriggerDefinition } from './types.js';
@@ -224,7 +224,7 @@ EXECUTE FUNCTION ${quoteIdent('postgres', fnName)}();`;
  * @throws If dialect detection or any SQL execution fails, the returned effect will fail with the underlying error.
  */
 export const addMissingTriggersForTable = Effect.fn(function* (
-	db: Kysely<StudioCMSDatabaseSchema>,
+	db: Kysely<any>,
 	tableDef: TableDefinition,
 	existingTriggers: string[]
 ) {
@@ -297,7 +297,7 @@ export const addMissingTriggersForTable = Effect.fn(function* (
  * yield* dropRemovedTriggersForTable(db, tableDefinition, currentTriggerNames);
  */
 export const dropRemovedTriggersForTable = Effect.fn(function* (
-	db: Kysely<StudioCMSDatabaseSchema>,
+	db: Kysely<any>,
 	tableDef: TableDefinition,
 	existingTriggers: string[]
 ) {

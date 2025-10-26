@@ -1,6 +1,5 @@
 import type { Dialect } from 'kysely';
 import { makeDBClientLive } from './core/client.js';
-import type { StudioCMSDatabaseSchema } from './tables.js';
 
 /**
  * Factory that creates a live database client configured for the specified SQL dialect.
@@ -19,5 +18,4 @@ import type { StudioCMSDatabaseSchema } from './tables.js';
  * // Create a client for the Chosen dialect:
  * // const db = getDBClientLive<MySchema>(yourDriver);
  */
-export const getDBClientLive = (dialect: Dialect) =>
-	makeDBClientLive<StudioCMSDatabaseSchema>(dialect);
+export const getDBClientLive = <Schema>(dialect: Dialect) => makeDBClientLive<Schema>(dialect);

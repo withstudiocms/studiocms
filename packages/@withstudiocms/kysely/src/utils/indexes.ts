@@ -1,6 +1,6 @@
+/** biome-ignore-all lint/suspicious/noExplicitAny: allow dynamic stuff */
 import { Effect } from 'effect';
 import type { Kysely } from 'kysely';
-import type { StudioCMSDatabaseSchema } from '../tables.js';
 import { SqlError } from './errors.js';
 import { getDialect, indexExists } from './introspection.js';
 import { makeSql } from './sql.js';
@@ -20,7 +20,7 @@ import type { TableDefinition } from './types.js';
  * - The returned names are raw index identifiers as reported by the database.
  * - Behavior for schemas other than "public" (Postgres) is not handled.
  *
- * @param db - A Kysely database instance (Kysely<StudioCMSDatabaseSchema>) used to detect dialect and execute the query.
+ * @param db - A Kysely database instance (Kysely<any>) used to detect dialect and execute the query.
  * @param tableName - The table name to inspect (used verbatim in the dialect-specific queries).
  *
  * @returns An Effect that resolves to an array of index names (string[]) for the specified table.
@@ -33,10 +33,7 @@ import type { TableDefinition } from './types.js';
  * // const indexes = yield* getTableIndexes(db, 'users');
  * // // indexes -> ['users_email_idx', 'users_created_at_idx']
  */
-export const getTableIndexes = Effect.fn(function* (
-	db: Kysely<StudioCMSDatabaseSchema>,
-	tableName: string
-) {
+export const getTableIndexes = Effect.fn(function* (db: Kysely<any>, tableName: string) {
 	const dialect = yield* getDialect(db);
 
 	switch (dialect) {
@@ -102,10 +99,7 @@ export const getTableIndexes = Effect.fn(function* (
  * @throws SqlError - If executing the underlying index creation statement fails, the effect will
  *                    fail with a SqlError describing the cause.
  */
-export const createIndexes = Effect.fn(function* (
-	db: Kysely<StudioCMSDatabaseSchema>,
-	tableDef: TableDefinition
-) {
+export const createIndexes = Effect.fn(function* (db: Kysely<any>, tableDef: TableDefinition) {
 	if (!tableDef.indexes || tableDef.indexes.length === 0) return;
 
 	yield* Effect.logInfo(`Creating indexes for table ${tableDef.name} if they do not exist`);
@@ -174,7 +168,7 @@ export const createIndexes = Effect.fn(function* (
  * // yield* addMissingIndexes(db, myTableDef, existingIndexNames);
  */
 export const addMissingIndexes = Effect.fn(function* (
-	db: Kysely<StudioCMSDatabaseSchema>,
+	db: Kysely<any>,
 	tableDef: TableDefinition,
 	existingIndexes: string[]
 ) {
@@ -239,7 +233,7 @@ export const addMissingIndexes = Effect.fn(function* (
  *          a SqlError if an underlying drop operation fails.
  */
 export const dropRemovedIndexes = Effect.fn(function* (
-	db: Kysely<StudioCMSDatabaseSchema>,
+	db: Kysely<any>,
 	tableDef: TableDefinition,
 	existingIndexes: string[]
 ) {

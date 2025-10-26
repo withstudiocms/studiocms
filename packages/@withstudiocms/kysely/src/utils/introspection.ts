@@ -2,7 +2,6 @@
 
 import { Effect } from 'effect';
 import type { Kysely } from 'kysely';
-import type { StudioCMSDatabaseSchema } from '../tables.js';
 import { DialectDeterminationError } from './errors.js';
 import { makeSql } from './sql.js';
 import type { DatabaseDialect } from './types.js';
@@ -26,7 +25,7 @@ import type { DatabaseDialect } from './types.js';
  * @throws DialectDeterminationError if obtaining the executor fails or if the
  *         adapter capabilities do not match any known dialect pattern.
  */
-export const getDialect = Effect.fn(function* (db: Kysely<StudioCMSDatabaseSchema>) {
+export const getDialect = Effect.fn(function* (db: Kysely<any>) {
 	const { adapter } = yield* Effect.try({
 		try: () => db.getExecutor(),
 		catch: (cause) => new DialectDeterminationError({ cause }),
@@ -84,10 +83,7 @@ export const getDialect = Effect.fn(function* (db: Kysely<StudioCMSDatabaseSchem
  * // yield* in an Effect generator:
  * // const exists = yield* tableExists(db, 'users');
  */
-export const tableExists = Effect.fn(function* (
-	db: Kysely<StudioCMSDatabaseSchema>,
-	tableName: string
-) {
+export const tableExists = Effect.fn(function* (db: Kysely<any>, tableName: string) {
 	const dialect = yield* getDialect(db);
 
 	switch (dialect) {
@@ -130,7 +126,7 @@ export const tableExists = Effect.fn(function* (
  * and "postgres". The check queries sqlite_master, information_schema.STATISTICS, or
  * pg_indexes respectively.
  *
- * @param db - A Kysely instance for the target database (StudioCMSDatabaseSchema).
+ * @param db - A Kysely instance for the target database.
  * @param indexName - The name of the index to look up. Matching and sensitivity depend on the
  *   underlying DBMS (collation and identifier case rules).
  *
@@ -147,10 +143,7 @@ export const tableExists = Effect.fn(function* (
  *
  * @throws If the database query fails or an unsupported dialect is encountered.
  */
-export const indexExists = Effect.fn(function* (
-	db: Kysely<StudioCMSDatabaseSchema>,
-	indexName: string
-) {
+export const indexExists = Effect.fn(function* (db: Kysely<any>, indexName: string) {
 	const dialect = yield* getDialect(db);
 
 	switch (dialect) {
@@ -208,15 +201,12 @@ export const indexExists = Effect.fn(function* (
  *    the underlying Effect will fail/throw according to the effect/DB driver behavior.
  *  - Callers should ensure `tableName` refers to an existing table in the connected database.
  *
- * @param db - A Kysely instance typed with the application's database schema (Kysely<StudioCMSDatabaseSchema>).
+ * @param db - A Kysely instance typed with the application's database schema (Kysely<any>).
  * @param tableName - The name of the table whose columns should be listed.
  * @returns An Effect (generator) that resolves to an array of column name strings (string[]).
  * @throws If dialect resolution or the underlying SQL query fails, or if an unsupported dialect is encountered.
  */
-export const getTableColumns = Effect.fn(function* (
-	db: Kysely<StudioCMSDatabaseSchema>,
-	tableName: string
-) {
+export const getTableColumns = Effect.fn(function* (db: Kysely<any>, tableName: string) {
 	const dialect = yield* getDialect(db);
 
 	switch (dialect) {
@@ -274,10 +264,7 @@ export const getTableColumns = Effect.fn(function* (
  * // Obtain an Effect that yields trigger names for the "users" table, then run it with your Effect runtime.
  * const effect = getTableTriggers(db, 'users');
  */
-export const getTableTriggers = Effect.fn(function* (
-	db: Kysely<StudioCMSDatabaseSchema>,
-	tableName: string
-) {
+export const getTableTriggers = Effect.fn(function* (db: Kysely<any>, tableName: string) {
 	const dialect = yield* getDialect(db);
 
 	switch (dialect) {

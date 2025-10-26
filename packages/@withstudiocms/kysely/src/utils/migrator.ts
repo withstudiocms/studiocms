@@ -2,7 +2,6 @@
 
 import { Effect } from 'effect';
 import type { Kysely } from 'kysely';
-import type { StudioCMSDatabaseSchema } from '../tables.js';
 import { handleCause, SqlError } from './errors.js';
 import { addMissingIndexes, dropRemovedIndexes, getTableIndexes } from './indexes.js';
 import { getTableColumns, getTableTriggers, tableExists } from './introspection.js';
@@ -70,7 +69,7 @@ export * from './types.js';
  * // await Effect.runPromise(syncDatabaseSchema(db, currentSchema, previousSchema));
  */
 export const syncDatabaseSchema = (
-	db: Kysely<StudioCMSDatabaseSchema>,
+	db: Kysely<any>,
 	schemaDefinition: TableDefinition[],
 	previousSchemaDefinition: TableDefinition[]
 ) =>
@@ -190,7 +189,7 @@ export const syncDatabaseSchema = (
  * // await runEffect(rollbackMigration(db, currentSchema, prevSchema));
  */
 export const rollbackMigration = (
-	db: Kysely<StudioCMSDatabaseSchema>,
+	db: Kysely<any>,
 	schemaDefinition: TableDefinition[],
 	previousSchema: TableDefinition[]
 ) =>
