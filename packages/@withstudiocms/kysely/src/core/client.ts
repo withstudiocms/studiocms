@@ -160,7 +160,7 @@ const makeKyselyClient = <Schema>(dialect: Dialect) => {
  */
 const dbClient = <Schema>() =>
 	Effect.gen(function* () {
-		const rawDB = yield* kyselyClient<Schema>();
+		const db = yield* kyselyClient<Schema>();
 
 		/**
 		 * Effect-wrapped helper that runs an asynchronous operation against the shared Kysely<Schema> instance.
@@ -178,7 +178,7 @@ const dbClient = <Schema>() =>
 		 *   return client.selectFrom('users').selectAll().execute();
 		 * });
 		 */
-		const db = Effect.fn(<T>(fn: (db: Kysely<Schema>) => Promise<T>) => toEffect(fn, rawDB));
+		const effectDb = Effect.fn(<T>(fn: (db: Kysely<Schema>) => Promise<T>) => toEffect(fn, db));
 
 		/**
 		 * Compose an encoder and a database query into an effectful operation.
@@ -294,8 +294,8 @@ const dbClient = <Schema>() =>
 				});
 
 		return {
-			$: rawDB,
 			db,
+			effectDb,
 			withEncoder,
 			withDecoder,
 			withCodec,

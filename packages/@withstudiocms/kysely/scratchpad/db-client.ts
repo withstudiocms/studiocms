@@ -12,15 +12,15 @@ export const dbClientExample = Effect.gen(function* () {
 		)
 	);
 
-	const db = yield* getDBClientLive(dialect);
+	const { db, withCodec, withDecoder, withEncoder } = yield* getDBClientLive(dialect);
 
 	//
 	// get users
 	//
 
-	const getUsers = db.withDecoder({
+	const getUsers = withDecoder({
 		decoder: Schema.Array(StudioCMSUsersTable.Select),
-		query: () => db.$.selectFrom('StudioCMSUsersTable').selectAll().execute(),
+		query: () => db.selectFrom('StudioCMSUsersTable').selectAll().execute(),
 	});
 
 	const users = yield* getUsers();
@@ -30,9 +30,9 @@ export const dbClientExample = Effect.gen(function* () {
 	// insert new user
 	//
 
-	const insertUser = db.withEncoder({
+	const insertUser = withEncoder({
 		encoder: StudioCMSUsersTable.Insert,
-		query: (newUser) => db.$.insertInto('StudioCMSUsersTable').values(newUser).execute(),
+		query: (newUser) => db.insertInto('StudioCMSUsersTable').values(newUser).execute(),
 	});
 
 	const newUser = yield* insertUser({
@@ -53,14 +53,11 @@ export const dbClientExample = Effect.gen(function* () {
 	// insert new user with codec so we can get decoded result
 	//
 
-	const insertNewUser = db.withCodec({
+	const insertNewUser = withCodec({
 		encoder: StudioCMSUsersTable.Insert,
 		decoder: StudioCMSUsersTable.Select,
 		query: (newUser) =>
-			db.$.insertInto('StudioCMSUsersTable')
-				.values(newUser)
-				.returningAll()
-				.executeTakeFirstOrThrow(),
+			db.insertInto('StudioCMSUsersTable').values(newUser).returningAll().executeTakeFirstOrThrow(),
 	});
 
 	const insertedUser = yield* insertNewUser({
@@ -76,4 +73,21 @@ export const dbClientExample = Effect.gen(function* () {
 		updatedAt: new Date().toISOString(),
 	});
 	console.log('Inserted user with codec:', insertedUser); // withCodec returns decoded results
+
+	//
+	// get a user by id
+	//
+	const getUserById = withCodec({
+		encoder: Schema.String,
+		decoder: Schema.UndefinedOr(StudioCMSUsersTable.Select),
+		query: (id: string) =>
+			db
+				.selectFrom('StudioCMSUsersTable')
+				.selectAll()
+				.where('id', '=', id)
+				.executeTakeFirstOrThrow(),
+	});
+
+	const user = yield* getUserById('some-user-id');
+	console.log('User by ID:', user);
 });
