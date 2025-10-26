@@ -1,6 +1,6 @@
 /** biome-ignore-all lint/suspicious/noExplicitAny: It's okay, doing dynamic stuff */
 
-import { Cause, Data, Effect, pipe } from 'effect';
+import { Cause, Data, Effect } from 'effect';
 import { type Kysely, type QueryResult, type Sql, sql } from 'kysely';
 import type { StudioCMSDatabaseSchema } from '../tables.js';
 
@@ -20,10 +20,7 @@ class DialectDeterminationError extends Data.TaggedError('DialectDeterminationEr
 
 const handleCause = (cause: Cause.Cause<DialectDeterminationError | SqlError>) =>
 	Effect.logError(`Migration failure: ${Cause.pretty(cause)}`).pipe(
-		Effect.map(() => {
-			return new Error('Migration failed. See logs for details.');
-		}),
-		Effect.flatMap((error) => Effect.die(error))
+		Effect.map(() => Effect.die(new Error('Migration failed. See logs for details.')))
 	);
 
 // ============================================================================
@@ -435,29 +432,32 @@ const createIndexes = Effect.fn(function* (
 
 	yield* Effect.logInfo(`Creating indexes for table ${tableDef.name} if they do not exist`);
 
-	for (const indexDef of tableDef.indexes) {
-		const exists = yield* indexExists(db, indexDef.name);
-		if (exists) {
-			yield* Effect.logInfo(`Index ${indexDef.name} already exists for table ${tableDef.name}`);
-			continue;
-		}
+	yield* Effect.forEach(
+		tableDef.indexes,
+		Effect.fn(function* (indexDef) {
+			const exists = yield* indexExists(db, indexDef.name);
+			if (exists) {
+				yield* Effect.logInfo(`Index ${indexDef.name} already exists for table ${tableDef.name}`);
+				return;
+			}
 
-		let indexBuilder = db.schema
-			.createIndex(indexDef.name)
-			.on(tableDef.name)
-			.columns(indexDef.columns);
+			let indexBuilder = db.schema
+				.createIndex(indexDef.name)
+				.on(tableDef.name)
+				.columns(indexDef.columns);
 
-		if (indexDef.unique) {
-			indexBuilder = indexBuilder.unique();
-		}
+			if (indexDef.unique) {
+				indexBuilder = indexBuilder.unique();
+			}
 
-		yield* Effect.tryPromise({
-			try: () => indexBuilder.execute(),
-			catch: (cause) => new SqlError({ cause }),
-		});
+			yield* Effect.tryPromise({
+				try: () => indexBuilder.execute(),
+				catch: (cause) => new SqlError({ cause }),
+			});
 
-		yield* Effect.logInfo(`Index ${indexDef.name} created for table ${tableDef.name}`);
-	}
+			yield* Effect.logInfo(`Index ${indexDef.name} created for table ${tableDef.name}`);
+		})
+	);
 });
 
 const addMissingIndexes = Effect.fn(function* (
@@ -471,26 +471,29 @@ const addMissingIndexes = Effect.fn(function* (
 
 	let addedCount = 0;
 
-	for (const indexDef of tableDef.indexes) {
-		if (existingIndexes.includes(indexDef.name)) continue;
+	yield* Effect.forEach(
+		tableDef.indexes,
+		Effect.fn(function* (indexDef) {
+			if (existingIndexes.includes(indexDef.name)) return;
 
-		let indexBuilder = db.schema
-			.createIndex(indexDef.name)
-			.on(tableDef.name)
-			.columns(indexDef.columns);
+			let indexBuilder = db.schema
+				.createIndex(indexDef.name)
+				.on(tableDef.name)
+				.columns(indexDef.columns);
 
-		if (indexDef.unique) {
-			indexBuilder = indexBuilder.unique();
-		}
+			if (indexDef.unique) {
+				indexBuilder = indexBuilder.unique();
+			}
 
-		yield* Effect.tryPromise({
-			try: () => indexBuilder.execute(),
-			catch: (cause) => new SqlError({ cause }),
-		});
+			yield* Effect.tryPromise({
+				try: () => indexBuilder.execute(),
+				catch: (cause) => new SqlError({ cause }),
+			});
 
-		yield* Effect.logInfo(`Index ${indexDef.name} added for table ${tableDef.name}`);
-		addedCount++;
-	}
+			yield* Effect.logInfo(`Index ${indexDef.name} added for table ${tableDef.name}`);
+			addedCount++;
+		})
+	);
 
 	if (addedCount === 0) {
 		yield* Effect.logInfo(`No missing indexes to add for table ${tableDef.name}`);
@@ -505,18 +508,16 @@ const dropRemovedIndexes = Effect.fn(function* (
 	const definedIndexes = new Set((tableDef.indexes || []).map((idx) => idx.name));
 	const indexesToDrop = existingIndexes.filter((idx) => !definedIndexes.has(idx));
 
-	yield* pipe(
+	yield* Effect.forEach(
 		indexesToDrop,
-		Effect.forEach(
-			Effect.fn(function* (indexName) {
-				yield* Effect.logInfo(`Dropping index ${indexName} from table ${tableDef.name}`);
-				yield* Effect.tryPromise({
-					try: () => db.schema.dropIndex(indexName).execute(),
-					catch: (cause) => new SqlError({ cause }),
-				});
-				yield* Effect.logInfo(`Index ${indexName} dropped from table ${tableDef.name}`);
-			})
-		)
+		Effect.fn(function* (indexName) {
+			yield* Effect.logInfo(`Dropping index ${indexName} from table ${tableDef.name}`);
+			yield* Effect.tryPromise({
+				try: () => db.schema.dropIndex(indexName).execute(),
+				catch: (cause) => new SqlError({ cause }),
+			});
+			yield* Effect.logInfo(`Index ${indexName} dropped from table ${tableDef.name}`);
+		})
 	);
 });
 
@@ -528,11 +529,14 @@ const createTable = Effect.fn(function* (
 
 	let tableBuilder = db.schema.createTable(tableDef.name);
 
-	for (const colDef of tableDef.columns) {
-		tableBuilder = tableBuilder.addColumn(colDef.name, colDef.type, (col) =>
-			applyColumnConstraints(col, colDef)
-		);
-	}
+	yield* Effect.forEach(
+		tableDef.columns,
+		Effect.fn(function* (colDef) {
+			tableBuilder = tableBuilder.addColumn(colDef.name, colDef.type, (col) =>
+				applyColumnConstraints(col, colDef)
+			);
+		})
+	);
 
 	yield* Effect.tryPromise({
 		try: () => tableBuilder.execute(),
@@ -554,22 +558,25 @@ const addMissingColumns = Effect.fn(function* (
 
 	let addedCount = 0;
 
-	for (const colDef of tableDef.columns) {
-		if (existingColumns.includes(colDef.name)) continue;
-		if (colDef.primaryKey) continue;
+	yield* Effect.forEach(
+		tableDef.columns,
+		Effect.fn(function* (colDef) {
+			if (existingColumns.includes(colDef.name)) return;
+			if (colDef.primaryKey) return;
 
-		yield* Effect.tryPromise({
-			try: () =>
-				db.schema
-					.alterTable(tableDef.name)
-					.addColumn(colDef.name, colDef.type, (col) => applyColumnConstraints(col, colDef, true))
-					.execute(),
-			catch: (cause) => new SqlError({ cause }),
-		});
+			yield* Effect.tryPromise({
+				try: () =>
+					db.schema
+						.alterTable(tableDef.name)
+						.addColumn(colDef.name, colDef.type, (col) => applyColumnConstraints(col, colDef, true))
+						.execute(),
+				catch: (cause) => new SqlError({ cause }),
+			});
 
-		yield* Effect.logInfo(`Column ${colDef.name} added to table ${tableDef.name}`);
-		addedCount++;
-	}
+			yield* Effect.logInfo(`Column ${colDef.name} added to table ${tableDef.name}`);
+			addedCount++;
+		})
+	);
 
 	if (addedCount === 0) {
 		yield* Effect.logInfo(`No missing columns to add for table ${tableDef.name}`);
@@ -596,32 +603,35 @@ const addMissingTriggersForTable = Effect.fn(function* (
 
 	const dialect = yield* getDialect(db);
 
-	for (const t of tableDef.triggers) {
-		if (existingTriggers.includes(t.name)) continue;
+	yield* Effect.forEach(
+		tableDef.triggers,
+		Effect.fn(function* (t) {
+			if (existingTriggers.includes(t.name)) return;
 
-		yield* Effect.logInfo(`Creating trigger ${t.name} on ${tableDef.name}...`);
+			yield* Effect.logInfo(`Creating trigger ${t.name} on ${tableDef.name}...`);
 
-		switch (dialect) {
-			case 'sqlite': {
-				const sqlText = buildSQLiteTriggerSQL(tableDef.name, t);
-				yield* makeSql((sql) => sql.raw(sqlText).execute(db));
-				break;
+			switch (dialect) {
+				case 'sqlite': {
+					const sqlText = buildSQLiteTriggerSQL(tableDef.name, t);
+					yield* makeSql((sql) => sql.raw(sqlText).execute(db));
+					break;
+				}
+				case 'mysql': {
+					const sqlText = buildMySQLTriggerSQL(tableDef.name, t);
+					yield* makeSql((sql) => sql.raw(sqlText).execute(db));
+					break;
+				}
+				case 'postgres': {
+					const { fnSQL, trgSQL } = buildPostgresTriggerSQL(tableDef.name, t);
+					yield* makeSql((sql) => sql.raw(fnSQL).execute(db));
+					yield* makeSql((sql) => sql.raw(trgSQL).execute(db));
+					break;
+				}
 			}
-			case 'mysql': {
-				const sqlText = buildMySQLTriggerSQL(tableDef.name, t);
-				yield* makeSql((sql) => sql.raw(sqlText).execute(db));
-				break;
-			}
-			case 'postgres': {
-				const { fnSQL, trgSQL } = buildPostgresTriggerSQL(tableDef.name, t);
-				yield* makeSql((sql) => sql.raw(fnSQL).execute(db));
-				yield* makeSql((sql) => sql.raw(trgSQL).execute(db));
-				break;
-			}
-		}
 
-		yield* Effect.logInfo(`Trigger ${t.name} created on ${tableDef.name}`);
-	}
+			yield* Effect.logInfo(`Trigger ${t.name} created on ${tableDef.name}`);
+		})
+	);
 });
 
 const dropRemovedTriggersForTable = Effect.fn(function* (
@@ -636,39 +646,42 @@ const dropRemovedTriggersForTable = Effect.fn(function* (
 
 	const dialect = yield* getDialect(db);
 
-	for (const trigName of toDrop) {
-		yield* Effect.logInfo(`Dropping trigger ${trigName} from ${tableDef.name}...`);
+	yield* Effect.forEach(
+		toDrop,
+		Effect.fn(function* (trigName) {
+			yield* Effect.logInfo(`Dropping trigger ${trigName} from ${tableDef.name}...`);
 
-		switch (dialect) {
-			case 'sqlite': {
-				yield* makeSql((sql) =>
-					sql.raw(`DROP TRIGGER IF EXISTS ${quoteIdent('sqlite', trigName)};`).execute(db)
-				);
-				break;
+			switch (dialect) {
+				case 'sqlite': {
+					yield* makeSql((sql) =>
+						sql.raw(`DROP TRIGGER IF EXISTS ${quoteIdent('sqlite', trigName)};`).execute(db)
+					);
+					break;
+				}
+				case 'mysql': {
+					yield* makeSql((sql) =>
+						sql.raw(`DROP TRIGGER IF EXISTS ${quoteIdent('mysql', trigName)};`).execute(db)
+					);
+					break;
+				}
+				case 'postgres': {
+					yield* makeSql((sql) =>
+						sql
+							.raw(
+								`DROP TRIGGER IF EXISTS ${quoteIdent('postgres', trigName)} ON ${quoteIdent(
+									'postgres',
+									tableDef.name
+								)};`
+							)
+							.execute(db)
+					);
+					break;
+				}
 			}
-			case 'mysql': {
-				yield* makeSql((sql) =>
-					sql.raw(`DROP TRIGGER IF EXISTS ${quoteIdent('mysql', trigName)};`).execute(db)
-				);
-				break;
-			}
-			case 'postgres': {
-				yield* makeSql((sql) =>
-					sql
-						.raw(
-							`DROP TRIGGER IF EXISTS ${quoteIdent('postgres', trigName)} ON ${quoteIdent(
-								'postgres',
-								tableDef.name
-							)};`
-						)
-						.execute(db)
-				);
-				break;
-			}
-		}
 
-		yield* Effect.logInfo(`Trigger ${trigName} dropped from ${tableDef.name}`);
-	}
+			yield* Effect.logInfo(`Trigger ${trigName} dropped from ${tableDef.name}`);
+		})
+	);
 });
 
 // ============================================================================
@@ -690,62 +703,73 @@ export const syncDatabaseSchema = (
 			yield* Effect.logInfo(
 				`🗑️  Dropping ${removedTables.length} removed table(s) from previous schema:`
 			);
-			for (const tableName of removedTables) {
-				const exists = yield* tableExists(db, tableName);
-				if (exists) {
-					yield* Effect.logInfo(`  Dropping removed table: ${tableName}...`);
-					yield* Effect.tryPromise({
-						try: () => db.schema.dropTable(tableName).execute(),
-						catch: (cause) => new SqlError({ cause }),
-					});
-					yield* Effect.logInfo(`  ✓ Dropped: ${tableName}`);
-				} else {
-					yield* Effect.logInfo(`  ℹ Table ${tableName} already doesn't exist, skipping.`);
-				}
-			}
+
+			yield* Effect.forEach(
+				removedTables,
+				Effect.fn(function* (tableName) {
+					const exists = yield* tableExists(db, tableName);
+					if (exists) {
+						yield* Effect.logInfo(`  Dropping removed table: ${tableName}...`);
+						yield* Effect.tryPromise({
+							try: () => db.schema.dropTable(tableName).execute(),
+							catch: (cause) => new SqlError({ cause }),
+						});
+						yield* Effect.logInfo(`  ✓ Dropped: ${tableName}`);
+					} else {
+						yield* Effect.logInfo(`  ℹ Table ${tableName} already doesn't exist, skipping.`);
+					}
+				})
+			);
 			yield* Effect.logInfo('');
 		}
 
 		// Sync current schema
-		for (const tableDef of schemaDefinition) {
-			const exists = yield* tableExists(db, tableDef.name);
+		yield* Effect.forEach(
+			schemaDefinition,
+			Effect.fn(function* (tableDef) {
+				const exists = yield* tableExists(db, tableDef.name);
 
-			switch (tableDef.deprecated) {
-				case true: {
-					if (exists) {
-						yield* Effect.logInfo(`Table ${tableDef.name} is deprecated. Dropping...`);
-						yield* Effect.tryPromise({
-							try: () => db.schema.dropTable(tableDef.name).execute(),
-							catch: (cause) => new SqlError({ cause }),
-						});
-						yield* Effect.logInfo(`Table ${tableDef.name} dropped.`);
-					} else {
-						yield* Effect.logInfo(
-							`Deprecated table ${tableDef.name} does not exist. Skipping drop.`
-						);
+				switch (tableDef.deprecated) {
+					case true: {
+						if (exists) {
+							yield* Effect.logInfo(`Table ${tableDef.name} is deprecated. Dropping...`);
+							yield* Effect.tryPromise({
+								try: () => db.schema.dropTable(tableDef.name).execute(),
+								catch: (cause) => new SqlError({ cause }),
+							});
+							yield* Effect.logInfo(`Table ${tableDef.name} dropped.`);
+						} else {
+							yield* Effect.logInfo(
+								`Deprecated table ${tableDef.name} does not exist. Skipping drop.`
+							);
+						}
+						break;
 					}
-					break;
-				}
-				case false:
-				case undefined: {
-					if (!exists) {
-						yield* createTable(db, tableDef);
-					} else {
-						const existingColumns = yield* getTableColumns(db, tableDef.name);
-						yield* addMissingColumns(db, tableDef, existingColumns);
+					case false:
+					case undefined: {
+						if (!exists) {
+							yield* createTable(db, tableDef);
+						} else {
+							const existingColumns = yield* getTableColumns(db, tableDef.name);
+							yield* addMissingColumns(db, tableDef, existingColumns);
 
-						const existingIndexes = yield* getTableIndexes(db, tableDef.name);
-						yield* addMissingIndexes(db, tableDef, existingIndexes);
-						yield* dropRemovedIndexes(db, tableDef, existingIndexes);
+							const existingIndexes = yield* getTableIndexes(db, tableDef.name);
+							yield* Effect.all([
+								addMissingIndexes(db, tableDef, existingIndexes),
+								dropRemovedIndexes(db, tableDef, existingIndexes),
+							]);
 
-						const existingTriggers = yield* getTableTriggers(db, tableDef.name);
-						yield* addMissingTriggersForTable(db, tableDef, existingTriggers);
-						yield* dropRemovedTriggersForTable(db, tableDef, existingTriggers);
+							const existingTriggers = yield* getTableTriggers(db, tableDef.name);
+							yield* Effect.all([
+								addMissingTriggersForTable(db, tableDef, existingTriggers),
+								dropRemovedTriggersForTable(db, tableDef, existingTriggers),
+							]);
+						}
+						break;
 					}
-					break;
 				}
-			}
-		}
+			})
+		);
 
 		yield* Effect.logInfo('✅ Database schema synchronization complete.');
 	}).pipe(Effect.catchAllCause(handleCause));
@@ -760,23 +784,26 @@ export const rollbackMigration = (
 
 		const previousTableNames = new Set(previousSchema.map((table) => table.name));
 
-		for (const tableDef of schemaDefinition) {
-			if (!previousTableNames.has(tableDef.name)) {
-				const exists = yield* tableExists(db, tableDef.name);
-				if (exists) {
-					yield* Effect.logInfo(
-						`Rolling back: Dropping table not present in previous schema: ${tableDef.name}...`
-					);
-					yield* Effect.tryPromise({
-						try: () => db.schema.dropTable(tableDef.name).execute(),
-						catch: (cause) => new SqlError({ cause }),
-					});
-					yield* Effect.logInfo(`✓ Dropped table: ${tableDef.name}`);
-				} else {
-					yield* Effect.logInfo(`Table ${tableDef.name} does not exist. Skipping drop.`);
+		yield* Effect.forEach(
+			schemaDefinition,
+			Effect.fn(function* (tableDef) {
+				if (!previousTableNames.has(tableDef.name)) {
+					const exists = yield* tableExists(db, tableDef.name);
+					if (exists) {
+						yield* Effect.logInfo(
+							`Rolling back: Dropping table not present in previous schema: ${tableDef.name}...`
+						);
+						yield* Effect.tryPromise({
+							try: () => db.schema.dropTable(tableDef.name).execute(),
+							catch: (cause) => new SqlError({ cause }),
+						});
+						yield* Effect.logInfo(`✓ Dropped table: ${tableDef.name}`);
+					} else {
+						yield* Effect.logInfo(`Table ${tableDef.name} does not exist. Skipping drop.`);
+					}
 				}
-			}
-		}
+			})
+		);
 
 		yield* Effect.logInfo('✅ Migration rollback completed!');
 	}).pipe(Effect.catchAllCause(handleCause));
