@@ -8,7 +8,7 @@ import type * as kysely from 'kysely';
 /**
  * Unique identifier for ColumnTypes marker.
  */
-export const ColumnTypesId = Symbol.for('effect-sql-kysely/ColumnTypesId');
+export const ColumnTypesId = Symbol.for('@withstudiocms/kysely/ColumnTypesId');
 
 /**
  * Unique identifier type for ColumnTypes marker.
