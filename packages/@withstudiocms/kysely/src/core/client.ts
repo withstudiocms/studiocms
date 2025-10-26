@@ -174,39 +174,25 @@ const dbClient = <Schema>() =>
 		 * - Use this helper to perform database operations in a composable Effect-based workflow while reusing the configured `rawDB`.
 		 *
 		 * @example
-		 * const effect = db((client) => {
-		 *   return client.selectFrom('users').selectAll().execute();
-		 * });
+		 * const effect = db((client) => client.selectFrom('users').selectAll().execute());
 		 */
 		const effectDb = Effect.fn(<T>(fn: (db: Kysely<Schema>) => Promise<T>) => toEffect(fn, db));
 
 		/**
-		 * Compose an encoder and a database query into an effectful operation.
+		 * Creates a helper that encodes a plain input object and executes a query with the encoded value, returning an effectful result.
 		 *
-		 * This higher-order helper accepts an encoder and a query function and returns a new function
-		 * that:
-		 *  - encodes a value of type IType into IEncoded using the provided schema encoder,
-		 *  - invokes the provided query with the encoded value and the surrounding database handle,
-		 *  - returns the resulting effect that yields O on success or fails with DatabaseError.
+		 * This higher-order function accepts an encoder schema and a query function. It returns a new function that:
+		 * - accepts a cleaned input object (CIType — i.e., IType with `never` properties stripped),
+		 * - encodes the input to the wire/storage shape (IEncoded) using the provided schema,
+		 * - invokes the provided query function with the encoded value,
+		 * - and returns the resulting Effect which may fail with a DatabaseError or succeed with a value of type O.
 		 *
-		 * @param params.encoder - A schema encoder of type S.Schema<IType, IEncoded> used to transform the external input into the encoded form.
-		 * @param params.query - A function (db: EffectDB<Schema>, input: IEncoded) => Effect.Effect<O, DatabaseError> that performs the database operation using the encoded input.
+		 * The returned function performs encoding and query execution inside the Effect/IO context; no synchronous throws are expected.
 		 *
-		 * @returns A function that takes an input of type IType and returns Effect.Effect<O, DatabaseError>.
-		 *          The returned effect will fail if encoding fails or if the query effect fails.
+		 * @param options.encoder - A schema implementing S.Schema<IType, IEncoded> used to encode the input before running the query.
+		 * @param options.query - A function that accepts the encoded value (IEncoded) and returns an Effect that yields O or fails with DatabaseError.
 		 *
-		 * @remarks
-		 * - The returned function closes over an external EffectDB<Schema> instance (named `db`) which is supplied to the provided query.
-		 * - Encoding failures and query failures are surfaced as DatabaseError in the effect's error channel.
-		 *
-		 * @example
-		 * const findByKey = withEncoder({
-		 *   encoder: keySchema,
-		 *   query: (db, encodedKey) => queryByKey(db, encodedKey),
-		 * });
-		 *
-		 * // use:
-		 * const effect = findByKey({ id: 'abc' }); // returns Effect.Effect<ResultType, DatabaseError>
+		 * @returns A function that accepts input: CIType and returns Effect.Effect<O, DatabaseError>. The effect encodes the input and runs the query inside the Effect runtime.
 		 */
 		const withEncoder =
 			<IEncoded, IType, O, CIType = StripNeverFromObject<IType>>({
@@ -223,20 +209,26 @@ const dbClient = <Schema>() =>
 				});
 
 		/**
-		 * Create a lazy effect that runs a database query and decodes its result.
+		 * Create an effectful operation that runs a query and decodes its result.
 		 *
-		 * @param options.decoder - A schema/decoder that knows how to convert OEncoded into OType.
-		 * @param options.query - A function that receives the ambient database handle and
-		 *   returns an effect producing the encoded result (OEncoded) or a DatabaseError.
+		 * @template OEncoded - The encoded/transport representation returned by the query (e.g. raw DB row).
+		 * @template OType - The target decoded TypeScript type produced by the provided schema.
 		 *
-		 * @returns A zero-argument effect which, when executed, runs the provided query
-		 *   against the captured database handle, then decodes the query result with the
-		 *   provided schema and yields the decoded value (OType). Any DatabaseError raised
-		 *   by the query or by decoding is propagated.
+		 * @param options.decoder - A schema (e.g. io-ts, zod-like or internal Schema) that can decode/validate the query result
+		 *                          from OEncoded into OType. If decoding fails, the resulting effect fails with a decoding error
+		 *                          (wrapped as a DatabaseError).
+		 * @param options.query - A parameterless query function (QueryFn<undefined, OEncoded>) that when executed produces
+		 *                         an OEncoded value inside an Effect. Any error raised by the query is surfaced as a DatabaseError.
 		 *
-		 * @remarks
-		 * - The returned effect is lazy: nothing runs until the effect is executed.
-		 * - Errors may come from the query itself or from the decoding step.
+		 * @returns A zero-argument function which, when invoked, returns an Effect that:
+		 *          - executes the provided query,
+		 *          - attempts to decode the query result using the provided schema,
+		 *          - on success yields the decoded OType value,
+		 *          - on failure fails with a DatabaseError (either from the query or from decoding).
+		 *
+		 * @example
+		 * const run = withDecoder({ decoder: userSchema, query: fetchUserRow });
+		 * const effect = run(); // Effect< userType, DatabaseError >
 		 */
 		const withDecoder =
 			<OEncoded, OType>({
@@ -253,28 +245,34 @@ const dbClient = <Schema>() =>
 				});
 
 		/**
-		 * Composes an encoder, a decoder and an effectful query into a single, strongly-typed operation.
+		 * Creates a codec-wrapped query function that composes an encoder, a query, and a decoder into a single Effectful operation.
 		 *
-		 * @param options.encoder - Schema used to encode a value of IType into IEncoded.
-		 * @param options.decoder - Schema used to decode a value of OEncoded into OType.
-		 * @param options.query - Effectful function that performs the database operation. It receives an EffectDB<Schema>
-		 *                         and an encoded input (IEncoded) and returns an Effect that yields OEncoded or fails with DatabaseError.
+		 * @param params - An object containing the encoder, decoder and query.
+		 * @param params.encoder - Schema that encodes values of IType into IEncoded.
+		 * @param params.decoder - Schema that decodes values of OEncoded into OType.
+		 * @param params.query - Function that accepts IEncoded and returns an Effect producing OEncoded (or failing with DatabaseError).
 		 *
-		 * @returns A function that accepts an input of IType and returns an Effect.Effect<OType, DatabaseError>. When run, the
-		 *          resulting effect will:
-		 *            1. Encode the provided input using the supplied encoder.
-		 *            2. Invoke the provided query with the encoded input against the captured `db` instance.
-		 *            3. Decode the query result using the supplied decoder and yield the decoded OType.
+		 * @returns A function which accepts an input of type CIType and returns an Effect that yields OType or fails with DatabaseError.
 		 *
 		 * @remarks
-		 * - The implementation composes the three steps in sequence using Effect.gen (i.e. monadic sequencing).
-		 * - Any failure during encode, query, or decode is represented by DatabaseError and will cause the returned Effect to fail.
-		 * - The function closes over a surrounding `db: EffectDB<Schema>` instance; callers do not pass the DB directly to the returned function.
+		 * The returned function executes the following steps in sequence:
+		 * 1. Encode the provided input using the `encoder` schema.
+		 * 2. Run the `query` with the encoded value to obtain an encoded response.
+		 * 3. Decode the response using the `decoder` schema and return the resulting OType.
+		 *
+		 * Failures propagated by the returned Effect may include:
+		 * - Encoding/decoding validation errors from the provided schemas.
+		 * - Database/query errors emitted by the `query` Effect (DatabaseError).
 		 *
 		 * @example
-		 * // Conceptual usage:
-		 * // const op = withCodec({ encoder, decoder, query });
-		 * // const effect = op(userInput); // Effect<Either<OType, DatabaseError>>
+		 * const getUser = withCodec({
+		 *   encoder: UserIdSchema,
+		 *   decoder: UserSchema,
+		 *   query: (encoded) => db.queryUser(encoded),
+		 * });
+		 *
+		 * // getUser returns Effect<User, DatabaseError>
+		 * const effect = getUser({ id: 'abc' });
 		 */
 		const withCodec =
 			<IEncoded, IType, OEncoded, OType, CIType = StripNeverFromObject<IType>>({
