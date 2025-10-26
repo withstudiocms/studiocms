@@ -28,23 +28,46 @@ async function cleanStubHeading(stubContent: string) {
 	return lines.join('\n');
 }
 
-async function updatePreviousMigrationLabel(
+async function updatePreviousMigrationImport(
 	stubContent: string,
 	previousMigrationFilename: string
 ) {
-	// Find the following line:
-	// const previousSchema = await getPreviousMigrationSchema(null);
-	// and replace the null/argument with the previous migration filename as a string.
 	const lines = stubContent.split('\n');
-	const targetIndex = lines.findIndex((line) =>
-		line.includes('const previousSchema = await getPreviousMigrationSchema(')
-	);
+	const placeholderContent = `// import { schemaDefinition as previousSchema } from './placeholder-for-previous-migration.js';`;
+	const targetIndex = lines.findIndex((line) => line.includes(placeholderContent));
 
 	if (targetIndex !== -1) {
 		lines[targetIndex] =
-			`	const previousSchema = await getPreviousMigrationSchema('${previousMigrationFilename.replace(/\.ts$/, '')}');`;
+			`import { schemaDefinition as previousSchema } from './${previousMigrationFilename.replace(/\.ts$/, '')}.js';`;
 	}
+
+	if (targetIndex === -1) {
+		// If the placeholder import line is not found, look a real import line
+		const targetIndexReal = lines.findIndex((line) =>
+			line.includes('import { schemaDefinition as previousSchema } from')
+		);
+		if (targetIndexReal !== -1) {
+			lines[targetIndexReal] =
+				`import { schemaDefinition as previousSchema } from './${previousMigrationFilename.replace(/\.ts$/, '')}.js';`;
+		}
+	}
+
+	// Update the previousSchema constant if it is defined as an empty array
+	const updateConstantIndex = lines.findIndex((line) =>
+		line.includes('const previousSchema: TableDefinition[] = [];')
+	);
+
+	if (updateConstantIndex !== -1) {
+		lines.splice(updateConstantIndex, 2);
+	}
+
 	return lines.join('\n');
+}
+
+async function cleanup(content: string, previousMigrationFilename: string) {
+	let updatedContent = await cleanStubHeading(content);
+	updatedContent = await updatePreviousMigrationImport(updatedContent, previousMigrationFilename);
+	return updatedContent;
 }
 
 async function createMigration() {
@@ -73,13 +96,11 @@ async function createMigration() {
 	const latestMigrationPath = path.join(migrationsDir, latestMigrationFile);
 	const latestMigrationContent = await fs.readFile(latestMigrationPath, 'utf-8');
 
-	const template = await cleanStubHeading(latestMigrationContent);
-
-	const finalTemplate = await updatePreviousMigrationLabel(template, latestMigrationFile);
+	const template = await cleanup(latestMigrationContent, latestMigrationFile);
 
 	try {
 		await fs.mkdir(migrationsDir, { recursive: true });
-		await fs.writeFile(filepath, finalTemplate);
+		await fs.writeFile(filepath, template, 'utf-8');
 		console.log(`✓ Created migration: ${filename}`);
 	} catch (error) {
 		console.error('Failed to create migration:', error);

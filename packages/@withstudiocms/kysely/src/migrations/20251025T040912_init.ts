@@ -13,11 +13,14 @@
 import type { Kysely } from 'kysely';
 import type { StudioCMSDatabaseSchema } from '../tables.js';
 import {
-	getPreviousMigrationSchema,
 	rollbackMigration,
 	syncDatabaseSchema,
 	type TableDefinition,
 } from '../utils/migrator-utils.js';
+
+// import { schemaDefinition as previousSchema } from './placeholder-for-previous-migration.js';
+
+const previousSchema: TableDefinition[] = [];
 
 // ============================================================================
 // DYNAMIC SCHEMA DEFINITION
@@ -276,9 +279,6 @@ export const schemaDefinition: TableDefinition[] = [
 // ============================================================================
 // MIGRATION FUNCTIONS
 // ============================================================================
-
-// Get previous schema definition from last migration file
-const previousSchema = await getPreviousMigrationSchema(null);
 
 // Apply schema changes
 export async function up(db: Kysely<StudioCMSDatabaseSchema>): Promise<void> {
