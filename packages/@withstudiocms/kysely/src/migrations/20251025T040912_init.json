@@ -1,5 +1,5 @@
 {
-  "$schema": "../core/migration-schema.json",
+  "$schema": "../schemas/migration-schema.json",
   "title": "Initial setup of StudioCMS database schema",
   "created": "Oct 25, 2025",
   "author": "Adam Matthiesen",

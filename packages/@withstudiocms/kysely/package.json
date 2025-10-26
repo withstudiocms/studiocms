@@ -57,6 +57,9 @@
     "./drivers/*": {
       "types": "./dist/drivers/*.d.ts",
       "default": "./dist/drivers/*.js"
+    },
+    "./schemas/*": {
+      "default": "./dist/schemas/*.json"
     }
   },
   "type": "module",
