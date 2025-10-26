@@ -10,215 +10,280 @@
  *   with existing installations while transitioning to Kysely as the database layer.
  */
 
-import { type Kysely, sql } from 'kysely';
+import type { Kysely } from 'kysely';
 import type { StudioCMSDatabaseSchema } from '../tables.js';
+import {
+	getPreviousMigrationSchema,
+	rollbackMigration,
+	syncDatabaseSchema,
+	type TableDefinition,
+} from '../utils/migrator-utils.js';
 
-export async function up(db: Kysely<StudioCMSDatabaseSchema>): Promise<void> {
-	// Migration code here
-	await db.schema
-		.createTable('StudioCMSUsersTable')
-		.addColumn('id', 'text', (col) => col.primaryKey())
-		.addColumn('url', 'text')
-		.addColumn('name', 'text', (col) => col.notNull())
-		.addColumn('email', 'text')
-		.addColumn('avatar', 'text')
-		.addColumn('username', 'text', (col) => col.notNull())
-		.addColumn('password', 'text')
-		.addColumn('updatedAt', 'text', (col) => col.notNull())
-		.addColumn('createdAt', 'text', (col) => col.notNull().defaultTo(sql`CURRENT_TIMESTAMP`))
-		.addColumn('emailVerified', 'integer', (col) => col.notNull().defaultTo(0))
-		.addColumn('notifications', 'text')
-		.execute();
+// ============================================================================
+// DYNAMIC SCHEMA DEFINITION
+// ============================================================================
+// Define your entire database schema here. The sync function will automatically
+// create tables and add missing columns based on this configuration.
+// ============================================================================
 
-	await db.schema
-		.createTable('StudioCMSOAuthAccounts')
-		.addColumn('providerUserId', 'text', (col) => col.notNull())
-		.addColumn('provider', 'text', (col) => col.notNull())
-		.addColumn('userId', 'text', (col) => col.notNull().references('StudioCMSUsersTable.id'))
-		.execute();
-
-	await db.schema
-		.createTable('StudioCMSSessionTable')
-		.addColumn('id', 'text', (col) => col.primaryKey())
-		.addColumn('userId', 'text', (col) => col.notNull().references('StudioCMSUsersTable.id'))
-		.addColumn('expiresAt', 'text', (col) => col.notNull())
-		.execute();
-
-	await db.schema
-		.createTable('StudioCMSPermissions')
-		.addColumn('user', 'text', (col) => col.notNull().references('StudioCMSUsersTable.id'))
-		.addColumn(
-			'permissions',
-			'text',
-			(col) => col.notNull() // In a real migration, consider using an enum type if supported
-		)
-		.execute();
-
-	await db.schema
-		.createTable('StudioCMSAPIKeys')
-		.addColumn('id', 'text', (col) => col.primaryKey())
-		.addColumn('userId', 'text', (col) => col.notNull().references('StudioCMSUsersTable.id'))
-		.addColumn('key', 'text', (col) => col.notNull())
-		.addColumn('creationDate', 'text', (col) => col.notNull())
-		.addColumn('description', 'text')
-		.execute();
-
-	await db.schema
-		.createTable('StudioCMSUserResetTokens')
-		.addColumn('id', 'text', (col) => col.primaryKey())
-		.addColumn('userId', 'text', (col) => col.notNull().references('StudioCMSUsersTable.id'))
-		.addColumn('token', 'text', (col) => col.notNull())
-		.execute();
-
-	await db.schema
-		.createTable('StudioCMSPageFolderStructure')
-		.addColumn('id', 'text', (col) => col.primaryKey())
-		.addColumn('name', 'text', (col) => col.notNull())
-		.addColumn('parent', 'text')
-		.execute();
-
-	await db.schema
-		.createTable('StudioCMSPageData')
-		.addColumn('id', 'text', (col) => col.primaryKey())
-		.addColumn('package', 'text', (col) => col.notNull())
-		.addColumn('title', 'text', (col) => col.notNull())
-		.addColumn('description', 'text', (col) => col.notNull())
-		.addColumn('showOnNav', 'integer', (col) => col.notNull().defaultTo(0))
-		.addColumn('publishedAt', 'text')
-		.addColumn('updatedAt', 'text', (col) => col.notNull())
-		.addColumn('slug', 'text', (col) => col.notNull())
-		.addColumn('contentLang', 'text', (col) => col.notNull())
-		.addColumn('heroImage', 'text')
-		.addColumn('categories', 'text', (col) => col.notNull().defaultTo(JSON.stringify([])))
-		.addColumn('tags', 'text', (col) => col.notNull().defaultTo(JSON.stringify([])))
-		.addColumn('authorId', 'text', (col) => col.notNull())
-		.addColumn('contributorIds', 'text', (col) => col.notNull().defaultTo(JSON.stringify([])))
-		.addColumn('showAuthor', 'integer', (col) => col.notNull().defaultTo(0))
-		.addColumn('showContributors', 'integer', (col) => col.notNull().defaultTo(0))
-		.addColumn('parentFolder', 'text')
-		.addColumn('draft', 'integer', (col) => col.notNull().defaultTo(0))
-		.addColumn('augments', 'text', (col) => col.notNull().defaultTo(JSON.stringify([])))
-		.execute();
-
-	await db.schema
-		.createTable('StudioCMSDiffTracking')
-		.addColumn('id', 'text', (col) => col.primaryKey())
-		.addColumn('pageId', 'text', (col) => col.notNull().references('StudioCMSPageData.id'))
-		.addColumn('userId', 'text', (col) => col.notNull().references('StudioCMSUsersTable.id'))
-		.addColumn('timestamp', 'text', (col) => col.notNull())
-		.addColumn('pageMetaData', 'text', (col) => col.notNull())
-		.addColumn('pageContentStart', 'text', (col) => col.notNull())
-		.addColumn('diff', 'text')
-		.execute();
-
-	await db.schema
-		.createTable('StudioCMSPageDataTags')
-		.addColumn('id', 'integer', (col) => col.primaryKey())
-		.addColumn('description', 'text', (col) => col.notNull())
-		.addColumn('name', 'text', (col) => col.notNull())
-		.addColumn('slug', 'text', (col) => col.notNull())
-		.addColumn('meta', 'text', (col) => col.notNull())
-		.execute();
-
-	await db.schema
-		.createTable('StudioCMSPageDataCategories')
-		.addColumn('id', 'integer', (col) => col.primaryKey())
-		.addColumn('parent', 'integer')
-		.addColumn('description', 'text', (col) => col.notNull())
-		.addColumn('name', 'text', (col) => col.notNull())
-		.addColumn('slug', 'text', (col) => col.notNull())
-		.addColumn('meta', 'text', (col) => col.notNull())
-		.execute();
-
-	await db.schema
-		.createTable('StudioCMSPageContent')
-		.addColumn('id', 'text', (col) => col.primaryKey())
-		.addColumn('contentId', 'text', (col) => col.notNull().references('StudioCMSPageData.id'))
-		.addColumn('contentLang', 'text', (col) => col.notNull())
-		.addColumn('content', 'text', (col) => col.notNull())
-		.execute();
-
-	await db.schema
-		.createTable('StudioCMSEmailVerificationTokens')
-		.addColumn('id', 'text', (col) => col.primaryKey())
-		.addColumn('userId', 'text', (col) => col.notNull().references('StudioCMSUsersTable.id'))
-		.addColumn('token', 'text', (col) => col.notNull())
-		.addColumn('expiresAt', 'text', (col) => col.notNull())
-		.execute();
-
-	await db.schema
-		.createTable('StudioCMSPluginData')
-		.addColumn('id', 'text', (col) => col.primaryKey())
-		.addColumn('data', 'text', (col) => col.notNull())
-		.execute();
-
-	await db.schema
-		.createTable('StudioCMSDynamicConfigSettings')
-		.addColumn('id', 'text', (col) => col.primaryKey())
-		.addColumn('data', 'text', (col) => col.notNull())
-		.execute();
-
+export const schemaDefinition: TableDefinition[] = [
+	{
+		name: 'StudioCMSUsersTable',
+		columns: [
+			{ name: 'id', type: 'text', primaryKey: true },
+			{ name: 'url', type: 'text' },
+			{ name: 'name', type: 'text', notNull: true },
+			{ name: 'email', type: 'text' },
+			{ name: 'avatar', type: 'text' },
+			{ name: 'username', type: 'text', notNull: true },
+			{ name: 'password', type: 'text' },
+			{ name: 'updatedAt', type: 'text', notNull: true },
+			{ name: 'createdAt', type: 'text', notNull: true, defaultSQL: 'CURRENT_TIMESTAMP' },
+			{ name: 'emailVerified', type: 'integer', notNull: true, default: 0 },
+			{ name: 'notifications', type: 'text' },
+		],
+	},
+	{
+		name: 'StudioCMSOAuthAccounts',
+		columns: [
+			{ name: 'providerUserId', type: 'text', notNull: true },
+			{ name: 'provider', type: 'text', notNull: true },
+			{
+				name: 'userId',
+				type: 'text',
+				notNull: true,
+				references: { table: 'StudioCMSUsersTable', column: 'id' },
+			},
+		],
+	},
+	{
+		name: 'StudioCMSSessionTable',
+		columns: [
+			{ name: 'id', type: 'text', primaryKey: true },
+			{
+				name: 'userId',
+				type: 'text',
+				notNull: true,
+				references: { table: 'StudioCMSUsersTable', column: 'id' },
+			},
+			{ name: 'expiresAt', type: 'text', notNull: true },
+		],
+	},
+	{
+		name: 'StudioCMSPermissions',
+		columns: [
+			{
+				name: 'user',
+				type: 'text',
+				notNull: true,
+				references: { table: 'StudioCMSUsersTable', column: 'id' },
+			},
+			{ name: 'permissions', type: 'text', notNull: true },
+		],
+	},
+	{
+		name: 'StudioCMSAPIKeys',
+		columns: [
+			{ name: 'id', type: 'text', primaryKey: true },
+			{
+				name: 'userId',
+				type: 'text',
+				notNull: true,
+				references: { table: 'StudioCMSUsersTable', column: 'id' },
+			},
+			{ name: 'key', type: 'text', notNull: true },
+			{ name: 'creationDate', type: 'text', notNull: true },
+			{ name: 'description', type: 'text' },
+		],
+	},
+	{
+		name: 'StudioCMSUserResetTokens',
+		columns: [
+			{ name: 'id', type: 'text', primaryKey: true },
+			{
+				name: 'userId',
+				type: 'text',
+				notNull: true,
+				references: { table: 'StudioCMSUsersTable', column: 'id' },
+			},
+			{ name: 'token', type: 'text', notNull: true },
+		],
+	},
+	{
+		name: 'StudioCMSPageFolderStructure',
+		columns: [
+			{ name: 'id', type: 'text', primaryKey: true },
+			{ name: 'name', type: 'text', notNull: true },
+			{ name: 'parent', type: 'text' },
+		],
+	},
+	{
+		name: 'StudioCMSPageData',
+		columns: [
+			{ name: 'id', type: 'text', primaryKey: true },
+			{ name: 'package', type: 'text', notNull: true },
+			{ name: 'title', type: 'text', notNull: true },
+			{ name: 'description', type: 'text', notNull: true },
+			{ name: 'showOnNav', type: 'integer', notNull: true, default: 0 },
+			{ name: 'publishedAt', type: 'text' },
+			{ name: 'updatedAt', type: 'text', notNull: true },
+			{ name: 'slug', type: 'text', notNull: true },
+			{ name: 'contentLang', type: 'text', notNull: true },
+			{ name: 'heroImage', type: 'text' },
+			{ name: 'categories', type: 'text', notNull: true, default: JSON.stringify([]) },
+			{ name: 'tags', type: 'text', notNull: true, default: JSON.stringify([]) },
+			{ name: 'authorId', type: 'text', notNull: true },
+			{ name: 'contributorIds', type: 'text', notNull: true, default: JSON.stringify([]) },
+			{ name: 'showAuthor', type: 'integer', notNull: true, default: 0 },
+			{ name: 'showContributors', type: 'integer', notNull: true, default: 0 },
+			{ name: 'parentFolder', type: 'text' },
+			{ name: 'draft', type: 'integer', notNull: true, default: 0 },
+			{ name: 'augments', type: 'text', notNull: true, default: JSON.stringify([]) },
+		],
+	},
+	{
+		name: 'StudioCMSDiffTracking',
+		columns: [
+			{ name: 'id', type: 'text', primaryKey: true },
+			{
+				name: 'pageId',
+				type: 'text',
+				notNull: true,
+				references: { table: 'StudioCMSPageData', column: 'id' },
+			},
+			{
+				name: 'userId',
+				type: 'text',
+				notNull: true,
+				references: { table: 'StudioCMSUsersTable', column: 'id' },
+			},
+			{ name: 'timestamp', type: 'text', notNull: true },
+			{ name: 'pageMetaData', type: 'text', notNull: true },
+			{ name: 'pageContentStart', type: 'text', notNull: true },
+			{ name: 'diff', type: 'text' },
+		],
+	},
+	{
+		name: 'StudioCMSPageDataTags',
+		columns: [
+			{ name: 'id', type: 'integer', primaryKey: true },
+			{ name: 'description', type: 'text', notNull: true },
+			{ name: 'name', type: 'text', notNull: true },
+			{ name: 'slug', type: 'text', notNull: true },
+			{ name: 'meta', type: 'text', notNull: true },
+		],
+	},
+	{
+		name: 'StudioCMSPageDataCategories',
+		columns: [
+			{ name: 'id', type: 'integer', primaryKey: true },
+			{ name: 'parent', type: 'integer' },
+			{ name: 'description', type: 'text', notNull: true },
+			{ name: 'name', type: 'text', notNull: true },
+			{ name: 'slug', type: 'text', notNull: true },
+			{ name: 'meta', type: 'text', notNull: true },
+		],
+	},
+	{
+		name: 'StudioCMSPageContent',
+		columns: [
+			{ name: 'id', type: 'text', primaryKey: true },
+			{
+				name: 'contentId',
+				type: 'text',
+				notNull: true,
+				references: { table: 'StudioCMSPageData', column: 'id' },
+			},
+			{ name: 'contentLang', type: 'text', notNull: true },
+			{ name: 'content', type: 'text', notNull: true },
+		],
+	},
+	{
+		name: 'StudioCMSEmailVerificationTokens',
+		columns: [
+			{ name: 'id', type: 'text', primaryKey: true },
+			{
+				name: 'userId',
+				type: 'text',
+				notNull: true,
+				references: { table: 'StudioCMSUsersTable', column: 'id' },
+			},
+			{ name: 'token', type: 'text', notNull: true },
+			{ name: 'expiresAt', type: 'text', notNull: true },
+		],
+	},
+	{
+		name: 'StudioCMSPluginData',
+		columns: [
+			{ name: 'id', type: 'text', primaryKey: true },
+			{ name: 'data', type: 'text', notNull: true },
+		],
+	},
+	{
+		name: 'StudioCMSDynamicConfigSettings',
+		columns: [
+			{ name: 'id', type: 'text', primaryKey: true },
+			{ name: 'data', type: 'text', notNull: true },
+		],
+	},
 	// DEPRECATED TABLES - to be removed in future migrations
-	await db.schema
-		.createTable('StudioCMSSiteConfig')
-		.addColumn('id', 'text', (col) => col.primaryKey())
-		.addColumn('title', 'text', (col) => col.notNull())
-		.addColumn('description', 'text', (col) => col.notNull())
-		.addColumn('defaultOgImage', 'text')
-		.addColumn('siteIcon', 'text')
-		.addColumn('loginPageBackground', 'text', (col) => col.notNull().defaultTo('studiocms-curves'))
-		.addColumn('loginPageCustomImage', 'text')
-		.addColumn('enableDiffs', 'integer', (col) => col.notNull().defaultTo(0))
-		.addColumn('diffPerPage', 'integer', (col) => col.notNull().defaultTo(10))
-		.addColumn('gridItems', 'text', (col) => col.notNull().defaultTo(JSON.stringify([])))
-		.addColumn('enableMailer', 'integer', (col) => col.notNull().defaultTo(0))
-		.addColumn('hideDefaultIndex', 'integer', (col) => col.notNull().defaultTo(0))
-		.execute();
+	{
+		name: 'StudioCMSSiteConfig',
+		columns: [
+			{ name: 'id', type: 'text', primaryKey: true },
+			{ name: 'title', type: 'text', notNull: true },
+			{ name: 'description', type: 'text', notNull: true },
+			{ name: 'defaultOgImage', type: 'text' },
+			{ name: 'siteIcon', type: 'text' },
+			{ name: 'loginPageBackground', type: 'text', notNull: true, default: 'studiocms-curves' },
+			{ name: 'loginPageCustomImage', type: 'text' },
+			{ name: 'enableDiffs', type: 'integer', notNull: true, default: 0 },
+			{ name: 'diffPerPage', type: 'integer', notNull: true, default: 10 },
+			{ name: 'gridItems', type: 'text', notNull: true, default: JSON.stringify([]) },
+			{ name: 'enableMailer', type: 'integer', notNull: true, default: 0 },
+			{ name: 'hideDefaultIndex', type: 'integer', notNull: true, default: 0 },
+		],
+	},
+	{
+		name: 'StudioCMSMailerConfig',
+		columns: [
+			{ name: 'id', type: 'text', primaryKey: true },
+			{ name: 'host', type: 'text', notNull: true },
+			{ name: 'port', type: 'integer', notNull: true },
+			{ name: 'secure', type: 'integer', notNull: true, default: 0 },
+			{ name: 'proxy', type: 'text' },
+			{ name: 'auth_user', type: 'text' },
+			{ name: 'auth_password', type: 'text' },
+			{ name: 'tls_rejectUnauthorized', type: 'integer' },
+			{ name: 'tls_servername', type: 'text' },
+			{ name: 'default_sender', type: 'text', notNull: true },
+		],
+	},
+	{
+		name: 'StudioCMSNotificationSettings',
+		columns: [
+			{ name: 'id', type: 'text', primaryKey: true },
+			{ name: 'emailVerification', type: 'integer', notNull: true, default: 0 },
+			{ name: 'requireAdminVerification', type: 'integer', notNull: true, default: 0 },
+			{ name: 'requireEditorVerification', type: 'integer', notNull: true, default: 0 },
+			{ name: 'oAuthBypassVerification', type: 'integer', notNull: true, default: 0 },
+		],
+	},
+];
 
-	await db.schema
-		.createTable('StudioCMSMailerConfig')
-		.addColumn('id', 'text', (col) => col.primaryKey())
-		.addColumn('host', 'text', (col) => col.notNull())
-		.addColumn('port', 'integer', (col) => col.notNull())
-		.addColumn('secure', 'integer', (col) => col.notNull().defaultTo(0))
-		.addColumn('proxy', 'text')
-		.addColumn('auth_user', 'text')
-		.addColumn('auth_password', 'text')
-		.addColumn('tls_rejectUnauthorized', 'integer')
-		.addColumn('tls_servername', 'text')
-		.addColumn('default_sender', 'text', (col) => col.notNull())
-		.execute();
+// ============================================================================
+// MIGRATION FUNCTIONS
+// ============================================================================
 
-	await db.schema
-		.createTable('StudioCMSNotificationSettings')
-		.addColumn('id', 'text', (col) => col.primaryKey())
-		.addColumn('emailVerification', 'integer', (col) => col.notNull().defaultTo(0))
-		.addColumn('requireAdminVerification', 'integer', (col) => col.notNull().defaultTo(0))
-		.addColumn('requireEditorVerification', 'integer', (col) => col.notNull().defaultTo(0))
-		.addColumn('oAuthBypassVerification', 'integer', (col) => col.notNull().defaultTo(0))
-		.execute();
+// Get previous schema definition from last migration file
+const previousSchema = await getPreviousMigrationSchema(null);
+
+// Apply schema changes
+export async function up(db: Kysely<StudioCMSDatabaseSchema>): Promise<void> {
+	await syncDatabaseSchema(schemaDefinition, previousSchema, db);
 }
 
+// Rollback schema changes
 export async function down(db: Kysely<StudioCMSDatabaseSchema>): Promise<void> {
-	// Rollback code here
-	await db.schema.dropTable('StudioCMSUsersTable').execute();
-	await db.schema.dropTable('StudioCMSOAuthAccounts').execute();
-	await db.schema.dropTable('StudioCMSSessionTable').execute();
-	await db.schema.dropTable('StudioCMSPermissions').execute();
-	await db.schema.dropTable('StudioCMSAPIKeys').execute();
-	await db.schema.dropTable('StudioCMSUserResetTokens').execute();
-	await db.schema.dropTable('StudioCMSPageFolderStructure').execute();
-	await db.schema.dropTable('StudioCMSPageData').execute();
-	await db.schema.dropTable('StudioCMSDiffTracking').execute();
-	await db.schema.dropTable('StudioCMSPageDataTags').execute();
-	await db.schema.dropTable('StudioCMSPageDataCategories').execute();
-	await db.schema.dropTable('StudioCMSPageContent').execute();
-	await db.schema.dropTable('StudioCMSEmailVerificationTokens').execute();
-	await db.schema.dropTable('StudioCMSPluginData').execute();
-	await db.schema.dropTable('StudioCMSDynamicConfigSettings').execute();
-
-	// DEPRECATED TABLES - to be removed in future migrations
-	await db.schema.dropTable('StudioCMSSiteConfig').execute();
-	await db.schema.dropTable('StudioCMSMailerConfig').execute();
-	await db.schema.dropTable('StudioCMSNotificationSettings').execute();
+	await rollbackMigration(schemaDefinition, previousSchema, db);
 }
