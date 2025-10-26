@@ -119,6 +119,7 @@ export const dbClientExample = Effect.gen(function* () {
 	//
 	// get a user by id
 	//
+
 	const getUserById = withCodec({
 		encoder: Schema.String,
 		decoder: Schema.UndefinedOr(StudioCMSUsersTable.Select),
