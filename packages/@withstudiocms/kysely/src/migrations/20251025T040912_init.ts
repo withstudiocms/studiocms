@@ -24,6 +24,8 @@ import {
 // ============================================================================
 // Define your entire database schema here. The sync function will automatically
 // create tables and add missing columns based on this configuration.
+// This allows each migration to represent the full desired state of the database
+// at that point in time, simplifying schema management and evolution.
 // ============================================================================
 
 export const schemaDefinition: TableDefinition[] = [
