@@ -13,7 +13,7 @@
     },
     "created": {
       "type": "string",
-      "description": "Date when the migration was created (format: 'Month. Day, Year')",
+      "description": "Date when the migration was created (format: 'Month Day, Year')",
       "pattern": "^[A-Z][a-z]{2,8}\\s\\d{1,2},\\s\\d{4}$"
     },
     "author": {
