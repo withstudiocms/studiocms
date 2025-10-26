@@ -1,0 +1,154 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://studiocms.dev/schemas/migration.json",
+  "title": "StudioCMS Migration Definition",
+  "description": "Schema for StudioCMS database migration definition files",
+  "type": "object",
+  "required": ["title", "created", "author", "description", "definition"],
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "A brief title describing the migration",
+      "minLength": 1
+    },
+    "created": {
+      "type": "string",
+      "description": "Date when the migration was created (format: 'Month. Day, Year')",
+      "pattern": "^[A-Z][a-z]{2,8}\\s\\d{1,2},\\s\\d{4}$"
+    },
+    "author": {
+      "type": "string",
+      "description": "Name of the migration author",
+      "minLength": 1
+    },
+    "githubPR": {
+      "type": "string",
+      "description": "GitHub Pull Request reference (e.g., '#123')",
+      "pattern": "^#\\d+$"
+    },
+    "description": {
+      "type": "string",
+      "description": "Detailed description of what this migration does",
+      "minLength": 1
+    },
+    "previousMigration": {
+      "type": "string",
+      "description": "Key of the previous migration this one builds upon",
+      "minLength": 1
+    },
+    "definition": {
+      "type": "array",
+      "description": "Array of table definitions for this migration",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/definitions/tableDefinition"
+      }
+    }
+  },
+  "definitions": {
+    "tableDefinition": {
+      "type": "object",
+      "description": "Definition of a database table",
+      "required": ["name", "columns"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Table name (preferably prefixed with 'StudioCMS')",
+          "minLength": 1,
+          "pattern": "^[A-Za-z_][A-Za-z0-9_]*$"
+        },
+        "deprecated": {
+          "type": "boolean",
+          "description": "Mark table as deprecated to drop it during migration",
+          "default": false
+        },
+        "columns": {
+          "type": "array",
+          "description": "Array of column definitions for this table",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/definitions/columnDefinition"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "columnDefinition": {
+      "type": "object",
+      "description": "Definition of a table column",
+      "required": ["name", "type"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Column name",
+          "minLength": 1,
+          "pattern": "^[A-Za-z_][A-Za-z0-9_]*$"
+        },
+        "type": {
+          "type": "string",
+          "description": "SQLite column type",
+          "enum": ["integer", "text", "blob"]
+        },
+        "primaryKey": {
+          "type": "boolean",
+          "description": "Mark this column as the primary key",
+          "default": false
+        },
+        "autoIncrement": {
+          "type": "boolean",
+          "description": "Enable auto-increment (only valid for integer primary keys)",
+          "default": false
+        },
+        "notNull": {
+          "type": "boolean",
+          "description": "Column cannot be null",
+          "default": false
+        },
+        "unique": {
+          "type": "boolean",
+          "description": "Column must have unique values",
+          "default": false
+        },
+        "default": {
+          "oneOf": [{ "type": "string" }, { "type": "number" }],
+          "description": "Default value for the column"
+        },
+        "defaultSQL": {
+          "type": "string",
+          "description": "SQL expression for default value (e.g., 'CURRENT_TIMESTAMP')"
+        },
+        "references": {
+          "type": "object",
+          "description": "Foreign key reference definition",
+          "required": ["table", "column"],
+          "properties": {
+            "table": {
+              "type": "string",
+              "description": "Referenced table name",
+              "minLength": 1
+            },
+            "column": {
+              "type": "string",
+              "description": "Referenced column name",
+              "minLength": 1
+            },
+            "onDelete": {
+              "type": "string",
+              "description": "Action to take when referenced row is deleted",
+              "enum": ["cascade", "set null", "restrict", "no action"]
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "not": {
+            "required": ["default", "defaultSQL"]
+          }
+        }
+      ]
+    }
+  }
+}

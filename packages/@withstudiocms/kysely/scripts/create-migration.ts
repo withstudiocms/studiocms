@@ -2,73 +2,10 @@
 import { promises as fs } from 'node:fs';
 import * as path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import type { TableDefinition } from '../src/utils/migrator-utils.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
-async function cleanStubHeading(stubContent: string) {
-	// Remove the existing comment and replace with a template comment
-	const lines = stubContent.split('\n');
-	const startIndex = lines.findIndex((line) => line.includes('/**'));
-	const endIndex = lines.findIndex((line) => line.includes('*/'));
-
-	if (startIndex !== -1 && endIndex !== -1 && endIndex > startIndex) {
-		lines.splice(
-			startIndex,
-			endIndex - startIndex + 1,
-			'/**',
-			' * - Title: <title here>',
-			' * - Created: <date>',
-			' * - Author: <author>',
-			' * - GitHub PR: <pr>',
-			' * - Description: <description>',
-			' */'
-		);
-	}
-	return lines.join('\n');
-}
-
-async function updatePreviousMigrationImport(
-	stubContent: string,
-	previousMigrationFilename: string
-) {
-	const lines = stubContent.split('\n');
-	const placeholderContent = `// import { schemaDefinition as previousSchema } from './placeholder-for-previous-migration.js';`;
-	const targetIndex = lines.findIndex((line) => line.includes(placeholderContent));
-
-	if (targetIndex !== -1) {
-		lines[targetIndex] =
-			`import { schemaDefinition as previousSchema } from './${previousMigrationFilename.replace(/\.ts$/, '')}.js';`;
-	}
-
-	if (targetIndex === -1) {
-		// If the placeholder import line is not found, look a real import line
-		const targetIndexReal = lines.findIndex((line) =>
-			line.includes('import { schemaDefinition as previousSchema } from')
-		);
-		if (targetIndexReal !== -1) {
-			lines[targetIndexReal] =
-				`import { schemaDefinition as previousSchema } from './${previousMigrationFilename.replace(/\.ts$/, '')}.js';`;
-		}
-	}
-
-	// Update the previousSchema constant if it is defined as an empty array
-	const updateConstantIndex = lines.findIndex((line) =>
-		line.includes('const previousSchema: TableDefinition[] = [];')
-	);
-
-	if (updateConstantIndex !== -1) {
-		lines.splice(updateConstantIndex, 2);
-	}
-
-	return lines.join('\n');
-}
-
-async function cleanup(content: string, previousMigrationFilename: string) {
-	let updatedContent = await cleanStubHeading(content);
-	updatedContent = await updatePreviousMigrationImport(updatedContent, previousMigrationFilename);
-	return updatedContent;
-}
 
 async function createMigration() {
 	const migrationName = process.argv[2];
@@ -80,15 +17,13 @@ async function createMigration() {
 	}
 
 	const timestamp = new Date().toISOString().replace(/[-:]/g, '').split('.')[0];
-	const filename = `${timestamp}_${migrationName}.ts`;
+	const filename = `${timestamp}_${migrationName}.json`;
 	const migrationsDir = path.join(__dirname, '../src/migrations');
 	const filepath = path.join(migrationsDir, filename);
 
 	// get the latest migration file to copy its content as a template
 	const files = await fs.readdir(migrationsDir);
-	const migrationFiles = files
-		.filter((file) => file.endsWith('.ts') || file.endsWith('.js'))
-		.sort();
+	const migrationFiles = files.filter((file) => file.endsWith('.json')).sort();
 
 	const latestMigrationFile = migrationFiles[migrationFiles.length - 1];
 	console.log(`Found latest migration file: ${latestMigrationFile}`);
@@ -96,7 +31,29 @@ async function createMigration() {
 	const latestMigrationPath = path.join(migrationsDir, latestMigrationFile);
 	const latestMigrationContent = await fs.readFile(latestMigrationPath, 'utf-8');
 
-	const template = await cleanup(latestMigrationContent, latestMigrationFile);
+	const JSONData = JSON.parse(latestMigrationContent) as {
+		$schema: string;
+		title: string;
+		created: string;
+		author: string;
+		githubPR: string;
+		description: string;
+		previousMigration: string;
+		definition: TableDefinition[];
+	};
+
+	JSONData.previousMigration = latestMigrationFile.replace('.json', '');
+	JSONData.created = new Date().toLocaleDateString('en-US', {
+		month: 'short',
+		day: 'numeric',
+		year: 'numeric',
+	});
+	JSONData.title = '<title here>';
+	JSONData.author = '<author>';
+	JSONData.githubPR = '<pr>';
+	JSONData.description = '<description>';
+
+	const template = JSON.stringify(JSONData, null, 2);
 
 	try {
 		await fs.mkdir(migrationsDir, { recursive: true });

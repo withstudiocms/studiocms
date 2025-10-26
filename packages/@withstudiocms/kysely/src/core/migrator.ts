@@ -1,7 +1,18 @@
 import { promises as fs } from 'node:fs';
 import * as path from 'node:path';
 import { Effect } from 'effect';
-import { type Dialect, FileMigrationProvider, type Kysely, Migrator } from 'kysely';
+import {
+	type Dialect,
+	type Kysely,
+	type Migration,
+	type MigrationProvider,
+	Migrator,
+} from 'kysely';
+import {
+	rollbackMigration,
+	syncDatabaseSchema,
+	type TableDefinition,
+} from '../utils/migrator-utils.js';
 import { kyselyClient, makeDBClientLive } from './client.js';
 import { MigratorError } from './errors.js';
 
@@ -47,6 +58,62 @@ const useWithErrorPromise = <A>(_try: () => Promise<A>) =>
 		catch: (cause) => new MigratorError({ cause }),
 	});
 
+export class JSONMigrationProvider implements MigrationProvider {
+	#props: { migrationFolder: string };
+
+	constructor(props: { migrationFolder: string }) {
+		this.#props = props;
+	}
+
+	async getMigrations(): Promise<Record<string, Migration>> {
+		const files = await fs.readdir(this.#props.migrationFolder);
+		const migrations: Record<string, Migration> = {};
+
+		for (const fileName of files) {
+			if (fileName.endsWith('.json')) {
+				const filePath = path.join(this.#props.migrationFolder, fileName);
+				const fileContent = await fs.readFile(filePath, 'utf-8');
+
+				const { definition, previousMigration } = JSON.parse(fileContent) as {
+					definition: TableDefinition[];
+					previousMigration: string;
+				};
+
+				const migrationKey = fileName.substring(0, fileName.lastIndexOf('.'));
+
+				const previousMigrationKey = previousMigration !== 'none' ? previousMigration : null;
+
+				const previousSchemaFilePath = previousMigrationKey
+					? path.join(this.#props.migrationFolder, `${previousMigrationKey}.json`)
+					: null;
+
+				let previousSchema: TableDefinition[] = [];
+
+				if (previousSchemaFilePath) {
+					const previousSchemaContent = await fs.readFile(previousSchemaFilePath, 'utf-8');
+					const previousSchemaJSON = JSON.parse(previousSchemaContent) as {
+						definition: TableDefinition[];
+					};
+					previousSchema = previousSchemaJSON.definition;
+				}
+
+				const migration: Migration = {
+					up: async (db) => {
+						await syncDatabaseSchema(definition, previousSchema, db);
+					},
+					down: async (db) => {
+						await rollbackMigration(definition, previousSchema, db);
+					},
+				};
+
+				migrations[migrationKey] = migration;
+			}
+		}
+
+		return migrations;
+	}
+}
+
 /**
  * Create a factory for constructing a Kysely `Migrator` that loads migration files from a filesystem folder.
  *
@@ -69,9 +136,7 @@ const kyselyMigrator =
 			() =>
 				new Migrator({
 					db,
-					provider: new FileMigrationProvider({
-						fs,
-						path,
+					provider: new JSONMigrationProvider({
 						migrationFolder,
 					}),
 				})
