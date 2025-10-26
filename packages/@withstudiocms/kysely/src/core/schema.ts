@@ -484,7 +484,7 @@ export const Table = <Columns extends Schema.Struct.Fields>(columns: Columns): T
  * });
  * ```
  */
-export const defineSchema = <Tables extends Record<string, Table<any>>>(tables: Tables) =>
+export const Database = <Tables extends Record<string, Table<any>>>(tables: Tables) =>
 	Schema.Struct(tables);
 
 /**
@@ -516,3 +516,30 @@ export const BooleanFromNumber = Schema.transform(Schema.Number, Schema.Boolean,
 	decode: (n) => n === 1,
 	encode: (b) => (b ? 1 : 0),
 });
+
+/**
+ * Encode a database schema to its encoded representation.
+ *
+ * This function takes a database schema defined using the `Database` function
+ * and returns its encoded form, which is suitable for serialization or storage.
+ *
+ * @template T - The database schema type extending `Schema.Schema.All`.
+ * @param schema - The database schema to encode.
+ * @returns The encoded representation of the database schema.
+ *
+ * @example
+ * ```ts
+ * const dbSchema = Database({
+ *   users: Table({
+ *     id: Generated(Schema.Int),
+ *     name: Schema.String,
+ *     isActive: BooleanFromNumber,
+ *   }),
+ * });
+ *
+ * const encodedSchema = encodeDatabase(dbSchema);
+ * ```
+ */
+export function encodeDatabase<T extends Schema.Schema.All>(schema: T): T['Encoded'] {
+	return schema.Encoded;
+}

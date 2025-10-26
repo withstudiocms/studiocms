@@ -2,7 +2,8 @@ import { Schema } from 'effect';
 import {
 	BooleanFromNumber,
 	ColumnType,
-	defineSchema,
+	Database,
+	encodeDatabase,
 	JsonColumnType,
 	Table,
 } from './core/schema.js';
@@ -179,7 +180,7 @@ export const StudioCMSDynamicConfigSettings = Table({
 /**
  * Complete StudioCMS Database Schema Definition
  */
-export const StudioCMSDatabaseSchema = defineSchema({
+export const StudioCMSDatabaseSchema = Database({
 	StudioCMSUsersTable,
 	StudioCMSOAuthAccounts,
 	StudioCMSSessionTable,
@@ -198,6 +199,11 @@ export const StudioCMSDatabaseSchema = defineSchema({
 });
 
 /**
+ * Encoded StudioCMS Database Schema
+ */
+const StudioCMSDatabaseSchemaEncoded = encodeDatabase(StudioCMSDatabaseSchema);
+
+/**
  * Type representing the StudioCMS Database Schema.
  */
-export type StudioCMSDatabaseSchema = typeof StudioCMSDatabaseSchema.Encoded;
+export type StudioCMSDatabaseSchema = typeof StudioCMSDatabaseSchemaEncoded;
