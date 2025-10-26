@@ -1,42 +1,7 @@
 /** biome-ignore-all lint/suspicious/noExplicitAny: It's okay, doing dynamic stuff */
 
-import fs from 'node:fs/promises';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { type Kysely, sql } from 'kysely';
 import type { StudioCMSDatabaseSchema } from '../tables.js';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-// Helper to check if a table exists
-async function tableExists(
-	tableName: string,
-	db: Kysely<StudioCMSDatabaseSchema>
-): Promise<boolean> {
-	const result = await sql<{ name: string }>`
-    SELECT name FROM sqlite_master 
-    WHERE type='table' AND name=${tableName}
-  `.execute(db);
-
-	return result.rows.length > 0;
-}
-
-// Helper to get existing columns for a table
-async function getTableColumns(
-	tableName: string,
-	db: Kysely<StudioCMSDatabaseSchema>
-): Promise<string[]> {
-	const result = await sql`PRAGMA table_info(${sql.ref(tableName)})`.execute(db);
-	return result.rows.map((row: any) => row.name);
-}
-
-// ============================================================================
-// DYNAMIC SCHEMA DEFINITION
-// ============================================================================
-// Define your entire database schema here. The sync function will automatically
-// create tables and add missing columns based on this configuration.
-// ============================================================================
 
 type ColumnType = 'integer' | 'text' | 'blob';
 
@@ -62,9 +27,27 @@ export interface TableDefinition {
 	columns: ColumnDefinition[];
 }
 
-// ============================================================================
-// DYNAMIC SYNC FUNCTIONS
-// ============================================================================
+// Helper to check if a table exists
+async function tableExists(
+	tableName: string,
+	db: Kysely<StudioCMSDatabaseSchema>
+): Promise<boolean> {
+	const result = await sql<{ name: string }>`
+    SELECT name FROM sqlite_master 
+    WHERE type='table' AND name=${tableName}
+  `.execute(db);
+
+	return result.rows.length > 0;
+}
+
+// Helper to get existing columns for a table
+async function getTableColumns(
+	tableName: string,
+	db: Kysely<StudioCMSDatabaseSchema>
+): Promise<string[]> {
+	const result = await sql`PRAGMA table_info(${sql.ref(tableName)})`.execute(db);
+	return result.rows.map((row: any) => row.name);
+}
 
 // Helper to apply column constraints dynamically
 function applyColumnConstraints(col: any, def: ColumnDefinition, isAlterTable = false) {
@@ -239,47 +222,4 @@ export async function rollbackMigration(
 	}
 
 	console.log('✅ Migration rollback completed!');
-}
-
-export async function getPreviousMigrationSchema(
-	previousMigrationName: string | null
-): Promise<TableDefinition[]> {
-	console.log('Getting previous migration schema');
-
-	// Derive the previous migration file path
-	const migrationsFolder = '../migrations';
-	const migrationFiles = await fs.readdir(path.join(__dirname, migrationsFolder));
-	const sortedMigrations = migrationFiles
-		.filter((file) => (file.endsWith('.ts') && !file.endsWith('.d.ts')) || file.endsWith('.js'))
-		.sort();
-
-	if (!previousMigrationName) {
-		console.log('No previous migration specified, returning empty schema');
-		return [];
-	}
-
-	// previousMigrationName is expected to be without extension
-	const previousMigrationFile = sortedMigrations.find((file) =>
-		file.startsWith(previousMigrationName)
-	);
-
-	if (!previousMigrationFile) {
-		console.log('No previous migration found, returning empty schema');
-		return [];
-	}
-
-	const previousMigrationPath = path.join(__dirname, migrationsFolder, previousMigrationFile);
-
-	const previousMigrationModule = await import(previousMigrationPath);
-
-	if (typeof previousMigrationModule.schemaDefinition !== 'undefined') {
-		const schemaDef = previousMigrationModule.schemaDefinition as TableDefinition[];
-		if (Array.isArray(schemaDef)) {
-			return schemaDef;
-		}
-		console.log('Previous migration schemaDefinition is not an array, returning empty schema');
-		return [];
-	}
-	console.log('Previous migration does not export schemaDefinition, returning empty schema');
-	return [];
 }
