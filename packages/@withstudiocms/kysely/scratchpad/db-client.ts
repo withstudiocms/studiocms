@@ -52,7 +52,7 @@ export const dbClientExample = Effect.gen(function* () {
 		encoder: StudioCMSUsersTable.Insert,
 		query: (
 			newUser // 'newUser' type comes from 'encoder'
-		) => db.insertInto('StudioCMSUsersTable').values(newUser).execute(),
+		) => db.insertInto('StudioCMSUsersTable').values(newUser).executeTakeFirstOrThrow(),
 	});
 
 	const newUser = yield* insertUser({
@@ -67,10 +67,10 @@ export const dbClientExample = Effect.gen(function* () {
 		id: crypto.randomUUID(),
 		updatedAt: new Date().toISOString(),
 	});
-	console.log('Inserted new user:', newUser); // withEncoder returns a 'InsertResult[]'
+	console.log('Inserted new user:', newUser); // withEncoder returns a 'InsertResult'
 	/*
 		type of 'newUser' is:
-		const newUser: InsertResult[]
+		const newUser: InsertResult
 	*/
 
 	//
@@ -125,12 +125,7 @@ export const dbClientExample = Effect.gen(function* () {
 		decoder: Schema.UndefinedOr(StudioCMSUsersTable.Select),
 		query: (
 			id // 'id' type comes from 'encoder'
-		) =>
-			db
-				.selectFrom('StudioCMSUsersTable')
-				.selectAll()
-				.where('id', '=', id)
-				.executeTakeFirstOrThrow(),
+		) => db.selectFrom('StudioCMSUsersTable').selectAll().where('id', '=', id).executeTakeFirst(),
 	});
 
 	const user = yield* getUserById('some-user-id');
