@@ -58,6 +58,44 @@ const useWithErrorPromise = <A>(_try: () => Promise<A>) =>
 		catch: (cause) => new MigratorError({ cause }),
 	});
 
+/**
+ * Provides migrations by reading JSON files from a folder and converting them into
+ * runtime Migration objects compatible with the migrator system.
+ *
+ * Behavior:
+ * - Reads all files in the provided migrationFolder and considers only files ending with `.json`.
+ * - Each migration file is expected to be a JSON object with the shape:
+ *   { definition: TableDefinition[], previousMigration: string }
+ *   where `previousMigration` is the filename (without extension) of the previous migration
+ *   or the string `"none"` to indicate there is no previous migration.
+ * - The migration key is derived from the filename by stripping the `.json` extension.
+ * - If a `previousMigration` is specified (not `"none"`), the provider will attempt to
+ *   read the corresponding JSON file to obtain the previous schema definition.
+ * - For each migration file a Migration object is created with:
+ *   - up: runs syncDatabaseSchema(definition, previousSchema, db)
+ *   - down: runs rollbackMigration(definition, previousSchema, db)
+ *
+ * Notes and error handling:
+ * - IO and JSON parsing errors (readdir, readFile, JSON.parse) are propagated to the caller.
+ * - The implementation assumes the JSON files contain valid TableDefinition arrays for both
+ *   the current and previous schema (if present).
+ *
+ * Example migration JSON file:
+ * {
+ *   "definition": [ /* array of TableDefinition objects *\/ ],
+ *   "previousMigration": "20240101_initial" // or "none"
+ * }
+ *
+ * @remarks
+ * The provider returns a mapping from migration keys (filename without extension)
+ * to Migration objects. Consumers should execute migrations using the returned
+ * Migration functions (up/down) against a database handle.
+ *
+ * @param props - Configuration object.
+ * @param props.migrationFolder - Filesystem path to the folder containing migration JSON files.
+ *
+ * @public
+ */
 export class JSONMigrationProvider implements MigrationProvider {
 	#props: { migrationFolder: string };
 
