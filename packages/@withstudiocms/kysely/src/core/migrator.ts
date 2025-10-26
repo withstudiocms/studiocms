@@ -133,8 +133,8 @@ const makeMigrator = <Schema>(migrationFolder: string) =>
  */
 export const makeMigratorLive = <Schema>(dialect: Dialect, migrationFolder: string) =>
 	Effect.gen(function* () {
-		const db = yield* makeDBClientLive<Schema>(dialect);
+		const { db } = yield* makeDBClientLive<Schema>(dialect);
 		return yield* makeMigrator<Schema>(migrationFolder).pipe(
-			Effect.provideService(kyselyClient<Schema>(), db.$)
+			Effect.provideService(kyselyClient<Schema>(), db)
 		);
 	});
