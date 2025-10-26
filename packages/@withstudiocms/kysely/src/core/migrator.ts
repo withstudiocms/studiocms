@@ -8,11 +8,7 @@ import {
 	type MigrationProvider,
 	Migrator,
 } from 'kysely';
-import {
-	rollbackMigration,
-	syncDatabaseSchema,
-	type TableDefinition,
-} from '../utils/migrator-utils.js';
+import { rollbackMigration, syncDatabaseSchema, type TableDefinition } from '../utils/migrator.js';
 import { kyselyClient, makeDBClientLive } from './client.js';
 import { MigratorError } from './errors.js';
 
@@ -137,10 +133,10 @@ export class JSONMigrationProvider implements MigrationProvider {
 
 				const migration: Migration = {
 					up: async (db) => {
-						await syncDatabaseSchema(definition, previousSchema, db);
+						await Effect.runPromise(syncDatabaseSchema(db, definition, previousSchema));
 					},
 					down: async (db) => {
-						await rollbackMigration(definition, previousSchema, db);
+						await Effect.runPromise(rollbackMigration(db, definition, previousSchema));
 					},
 				};
 
