@@ -69,6 +69,13 @@
           "items": {
             "$ref": "#/definitions/columnDefinition"
           }
+        },
+        "indexes": {
+          "type": "array",
+          "description": "Array of index definitions for this table",
+          "items": {
+            "$ref": "#/definitions/indexDefinition"
+          }
         }
       },
       "additionalProperties": false
@@ -149,6 +156,34 @@
           }
         }
       ]
+    },
+    "indexDefinition": {
+      "type": "object",
+      "description": "Definition of a database index",
+      "required": ["name", "columns"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Index name (e.g., 'idx_tablename_columnname')",
+          "minLength": 1,
+          "pattern": "^idx_[A-Za-z0-9_]+$"
+        },
+        "columns": {
+          "type": "array",
+          "description": "Columns included in the index",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "unique": {
+          "type": "boolean",
+          "description": "Whether this is a unique index",
+          "default": false
+        }
+      },
+      "additionalProperties": false
     }
   }
 }
