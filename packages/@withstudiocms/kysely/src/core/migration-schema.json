@@ -76,6 +76,11 @@
           "items": {
             "$ref": "#/definitions/indexDefinition"
           }
+        },
+        "triggers": {
+          "type": "array",
+          "description": "Array of trigger definitions for this table (cross-dialect: BEFORE/AFTER INSERT/UPDATE/DELETE, FOR EACH ROW)",
+          "items": { "$ref": "#/definitions/triggerDefinition" }
         }
       },
       "additionalProperties": false
@@ -181,6 +186,35 @@
           "type": "boolean",
           "description": "Whether this is a unique index",
           "default": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "triggerDefinition": {
+      "type": "object",
+      "description": "Cross-dialect trigger definition",
+      "required": ["name", "timing", "event", "bodySQL"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Trigger name",
+          "minLength": 1,
+          "pattern": "^trg_[A-Za-z0-9_]+$"
+        },
+        "timing": {
+          "type": "string",
+          "description": "Trigger timing",
+          "enum": ["before", "after"]
+        },
+        "event": {
+          "type": "string",
+          "description": "Trigger event",
+          "enum": ["insert", "update", "delete"]
+        },
+        "bodySQL": {
+          "type": "string",
+          "description": "SQL statements executed by the trigger body. Use NEW/OLD as appropriate.",
+          "minLength": 1
         }
       },
       "additionalProperties": false

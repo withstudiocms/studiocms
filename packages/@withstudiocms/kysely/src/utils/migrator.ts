@@ -40,8 +40,10 @@ const makeSql = <T>(fn: (sql: Sql) => Promise<QueryResult<T>>) =>
 // TYPES AND INTERFACES
 // ============================================================================
 
-type ColumnType = 'integer' | 'text';
 type DatabaseDialect = 'sqlite' | 'mysql' | 'postgres';
+type ColumnType = 'integer' | 'text';
+type TriggerTiming = 'before' | 'after';
+type TriggerEvent = 'insert' | 'update' | 'delete';
 
 interface ColumnDefinition {
 	name: string;
@@ -65,11 +67,21 @@ interface IndexDefinition {
 	unique?: boolean;
 }
 
+interface TriggerDefinition {
+	name: string;
+	timing: TriggerTiming; // 'before' | 'after'
+	event: TriggerEvent; // 'insert' | 'update' | 'delete'
+	// Body statements that can reference NEW/OLD. For SQLite/MySQL this is the trigger body;
+	// for Postgres it's placed inside a trigger function that returns NEW/OLD automatically.
+	bodySQL: string;
+}
+
 export interface TableDefinition {
 	name: string;
 	deprecated?: boolean;
 	columns: ColumnDefinition[];
 	indexes?: IndexDefinition[];
+	triggers?: TriggerDefinition[];
 }
 
 // ============================================================================
@@ -261,6 +273,118 @@ const getTableIndexes = Effect.fn(function* (
 		}
 	}
 });
+
+const getTableTriggers = Effect.fn(function* (
+	db: Kysely<StudioCMSDatabaseSchema>,
+	tableName: string
+) {
+	const dialect = yield* getDialect(db);
+
+	switch (dialect) {
+		case 'sqlite': {
+			const result = yield* makeSql<{ name: string }>((sql) =>
+				sql<{ name: string }>`
+                    SELECT name 
+                    FROM sqlite_master 
+                    WHERE type='trigger' AND tbl_name=${tableName}
+                `.execute(db)
+			);
+			return result.rows.map((r) => r.name);
+		}
+		case 'mysql': {
+			const result = yield* makeSql<{ TRIGGER_NAME: string }>((sql) =>
+				sql<{ TRIGGER_NAME: string }>`
+                    SELECT TRIGGER_NAME
+                    FROM information_schema.TRIGGERS
+                    WHERE TRIGGER_SCHEMA = DATABASE() 
+                      AND EVENT_OBJECT_TABLE = ${tableName}
+                `.execute(db)
+			);
+			return result.rows.map((r) => r.TRIGGER_NAME);
+		}
+		case 'postgres': {
+			const result = yield* makeSql<{ tgname: string }>((sql) =>
+				sql<{ tgname: string }>`
+                    SELECT t.tgname
+                    FROM pg_trigger t
+                    JOIN pg_class c ON c.oid = t.tgrelid
+                    JOIN pg_namespace n ON n.oid = c.relnamespace
+                    WHERE NOT t.tgisinternal
+                      AND n.nspname = 'public'
+                      AND c.relname = ${tableName}
+                `.execute(db)
+			);
+			return result.rows.map((r) => r.tgname);
+		}
+	}
+});
+
+// ============================================================================
+// TRIGGER SQL BUILDERS (Dialect-specific)
+// ============================================================================
+
+function quoteIdent(dialect: DatabaseDialect, ident: string): string {
+	switch (dialect) {
+		case 'mysql':
+			return `\`${ident}\``;
+		case 'sqlite':
+		case 'postgres':
+			return `"${ident}"`;
+	}
+}
+
+function toUpperKeyword<T extends string>(v: T): string {
+	return v.toUpperCase();
+}
+
+function buildSQLiteTriggerSQL(table: string, t: TriggerDefinition): string {
+	const timing = toUpperKeyword(t.timing); // BEFORE|AFTER
+	const event = toUpperKeyword(t.event); // INSERT|UPDATE|DELETE
+	// SQLite uses FOR EACH ROW implicitly; BEGIN...END allows multi-statement bodies
+	return `CREATE TRIGGER IF NOT EXISTS ${quoteIdent('sqlite', t.name)} ${timing} ${event} ON ${quoteIdent('sqlite', table)}
+FOR EACH ROW
+BEGIN
+${t.bodySQL}
+END;`;
+}
+
+function buildMySQLTriggerSQL(table: string, t: TriggerDefinition): string {
+	const timing = toUpperKeyword(t.timing); // BEFORE|AFTER
+	const event = toUpperKeyword(t.event); // INSERT|UPDATE|DELETE
+	// MySQL requires FOR EACH ROW. Programmatic clients don't need DELIMITER changes.
+	const body = t.bodySQL.trim();
+	const bodyWrapped = body.toUpperCase().startsWith('BEGIN')
+		? body
+		: `BEGIN
+${body}
+END`;
+	return `CREATE TRIGGER ${quoteIdent('mysql', t.name)} ${timing} ${event} ON ${quoteIdent('mysql', table)}
+FOR EACH ROW
+${bodyWrapped};`;
+}
+
+function buildPostgresTriggerSQL(table: string, t: TriggerDefinition) {
+	const timing = toUpperKeyword(t.timing); // BEFORE|AFTER
+	const event = toUpperKeyword(t.event); // INSERT|UPDATE|DELETE
+	const fnName = `${table}_${t.name}_fn`;
+	const returnValue = t.event === 'delete' ? 'OLD' : 'NEW';
+
+	const fnSQL = `CREATE OR REPLACE FUNCTION ${quoteIdent('postgres', fnName)}()
+RETURNS trigger
+LANGUAGE plpgsql
+AS $$
+BEGIN
+${t.bodySQL}
+RETURN ${returnValue};
+END
+$$;`;
+
+	const trgSQL = `CREATE TRIGGER ${quoteIdent('postgres', t.name)} ${timing} ${event} ON ${quoteIdent('postgres', table)}
+FOR EACH ROW
+EXECUTE FUNCTION ${quoteIdent('postgres', fnName)}();`;
+
+	return { fnSQL, trgSQL };
+}
 
 // ============================================================================
 // SCHEMA MODIFICATION HELPERS
@@ -463,6 +587,90 @@ const detectRemovedTables = Effect.fn(function* (
 	return removedTables;
 });
 
+const addMissingTriggersForTable = Effect.fn(function* (
+	db: Kysely<StudioCMSDatabaseSchema>,
+	tableDef: TableDefinition,
+	existingTriggers: string[]
+) {
+	if (!tableDef.triggers || tableDef.triggers.length === 0) return;
+
+	const dialect = yield* getDialect(db);
+
+	for (const t of tableDef.triggers) {
+		if (existingTriggers.includes(t.name)) continue;
+
+		yield* Effect.logInfo(`Creating trigger ${t.name} on ${tableDef.name}...`);
+
+		switch (dialect) {
+			case 'sqlite': {
+				const sqlText = buildSQLiteTriggerSQL(tableDef.name, t);
+				yield* makeSql((sql) => sql.raw(sqlText).execute(db));
+				break;
+			}
+			case 'mysql': {
+				const sqlText = buildMySQLTriggerSQL(tableDef.name, t);
+				yield* makeSql((sql) => sql.raw(sqlText).execute(db));
+				break;
+			}
+			case 'postgres': {
+				const { fnSQL, trgSQL } = buildPostgresTriggerSQL(tableDef.name, t);
+				yield* makeSql((sql) => sql.raw(fnSQL).execute(db));
+				yield* makeSql((sql) => sql.raw(trgSQL).execute(db));
+				break;
+			}
+		}
+
+		yield* Effect.logInfo(`Trigger ${t.name} created on ${tableDef.name}`);
+	}
+});
+
+const dropRemovedTriggersForTable = Effect.fn(function* (
+	db: Kysely<StudioCMSDatabaseSchema>,
+	tableDef: TableDefinition,
+	existingTriggers: string[]
+) {
+	const defined = new Set((tableDef.triggers ?? []).map((t) => t.name));
+	const toDrop = existingTriggers.filter((name) => !defined.has(name));
+
+	if (toDrop.length === 0) return;
+
+	const dialect = yield* getDialect(db);
+
+	for (const trigName of toDrop) {
+		yield* Effect.logInfo(`Dropping trigger ${trigName} from ${tableDef.name}...`);
+
+		switch (dialect) {
+			case 'sqlite': {
+				yield* makeSql((sql) =>
+					sql.raw(`DROP TRIGGER IF EXISTS ${quoteIdent('sqlite', trigName)};`).execute(db)
+				);
+				break;
+			}
+			case 'mysql': {
+				yield* makeSql((sql) =>
+					sql.raw(`DROP TRIGGER IF EXISTS ${quoteIdent('mysql', trigName)};`).execute(db)
+				);
+				break;
+			}
+			case 'postgres': {
+				yield* makeSql((sql) =>
+					sql
+						.raw(
+							`DROP TRIGGER IF EXISTS ${quoteIdent('postgres', trigName)} ON ${quoteIdent(
+								'postgres',
+								tableDef.name
+							)};`
+						)
+						.execute(db)
+				);
+				break;
+			}
+		}
+
+		yield* Effect.logInfo(`Trigger ${trigName} dropped from ${tableDef.name}`);
+	}
+});
+
 // ============================================================================
 // MAIN MIGRATION FUNCTIONS
 // ============================================================================
@@ -529,6 +737,10 @@ export const syncDatabaseSchema = (
 						const existingIndexes = yield* getTableIndexes(db, tableDef.name);
 						yield* addMissingIndexes(db, tableDef, existingIndexes);
 						yield* dropRemovedIndexes(db, tableDef, existingIndexes);
+
+						const existingTriggers = yield* getTableTriggers(db, tableDef.name);
+						yield* addMissingTriggersForTable(db, tableDef, existingTriggers);
+						yield* dropRemovedTriggersForTable(db, tableDef, existingTriggers);
 					}
 					break;
 				}
