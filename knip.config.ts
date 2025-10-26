@@ -157,7 +157,7 @@ const extras = (pkg: string) => {
 			ignoreUnresolved: [/^\.\/lists\/[^/]*\.js$/],
 		},
 		kysely: {
-			ignore: ['**/migrations/**'],
+			ignore: ['**/node_modules/**', '**/dist/**', '**/scratchpad/**', '**/migrations/**'],
 			ignoreDependencies: ['@libsql/client'],
 		},
 		...ignoredVirtuals,
