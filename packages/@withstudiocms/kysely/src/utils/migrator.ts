@@ -76,7 +76,7 @@ export interface TableDefinition {
 // DATABASE DIALECT DETECTION
 // ============================================================================
 
-const getDialect = Effect.fn(function* (db: Kysely<any>) {
+const getDialect = Effect.fn(function* (db: Kysely<StudioCMSDatabaseSchema>) {
 	const { adapter } = yield* Effect.try({
 		try: () => db.getExecutor(),
 		catch: (cause) => new DialectDeterminationError({ cause }),
@@ -112,7 +112,7 @@ const getDialect = Effect.fn(function* (db: Kysely<any>) {
 // SCHEMA INTROSPECTION HELPERS (Database-Agnostic)
 // ============================================================================
 
-const tableExists = Effect.fn(function* (db: Kysely<any>, tableName: string) {
+const tableExists = Effect.fn(function* (db: Kysely<StudioCMSDatabaseSchema>, tableName: string) {
 	const dialect = yield* getDialect(db);
 
 	switch (dialect) {
@@ -147,7 +147,7 @@ const tableExists = Effect.fn(function* (db: Kysely<any>, tableName: string) {
 	}
 });
 
-const indexExists = Effect.fn(function* (db: Kysely<any>, indexName: string) {
+const indexExists = Effect.fn(function* (db: Kysely<StudioCMSDatabaseSchema>, indexName: string) {
 	const dialect = yield* getDialect(db);
 
 	switch (dialect) {
@@ -183,7 +183,10 @@ const indexExists = Effect.fn(function* (db: Kysely<any>, indexName: string) {
 	}
 });
 
-const getTableColumns = Effect.fn(function* (db: Kysely<any>, tableName: string) {
+const getTableColumns = Effect.fn(function* (
+	db: Kysely<StudioCMSDatabaseSchema>,
+	tableName: string
+) {
 	const dialect = yield* getDialect(db);
 
 	switch (dialect) {
@@ -216,7 +219,10 @@ const getTableColumns = Effect.fn(function* (db: Kysely<any>, tableName: string)
 	}
 });
 
-const getTableIndexes = Effect.fn(function* (db: Kysely<any>, tableName: string) {
+const getTableIndexes = Effect.fn(function* (
+	db: Kysely<StudioCMSDatabaseSchema>,
+	tableName: string
+) {
 	const dialect = yield* getDialect(db);
 
 	switch (dialect) {
@@ -297,7 +303,10 @@ function applyColumnConstraints(col: any, def: ColumnDefinition, isAlterTable = 
 	return col;
 }
 
-const createIndexes = Effect.fn(function* (db: Kysely<any>, tableDef: TableDefinition) {
+const createIndexes = Effect.fn(function* (
+	db: Kysely<StudioCMSDatabaseSchema>,
+	tableDef: TableDefinition
+) {
 	if (!tableDef.indexes || tableDef.indexes.length === 0) return;
 
 	yield* Effect.logInfo(`Creating indexes for table ${tableDef.name} if they do not exist`);
@@ -328,7 +337,7 @@ const createIndexes = Effect.fn(function* (db: Kysely<any>, tableDef: TableDefin
 });
 
 const addMissingIndexes = Effect.fn(function* (
-	db: Kysely<any>,
+	db: Kysely<StudioCMSDatabaseSchema>,
 	tableDef: TableDefinition,
 	existingIndexes: string[]
 ) {
@@ -365,7 +374,7 @@ const addMissingIndexes = Effect.fn(function* (
 });
 
 const dropRemovedIndexes = Effect.fn(function* (
-	db: Kysely<any>,
+	db: Kysely<StudioCMSDatabaseSchema>,
 	tableDef: TableDefinition,
 	existingIndexes: string[]
 ) {
@@ -387,7 +396,10 @@ const dropRemovedIndexes = Effect.fn(function* (
 	);
 });
 
-const createTable = Effect.fn(function* (db: Kysely<any>, tableDef: TableDefinition) {
+const createTable = Effect.fn(function* (
+	db: Kysely<StudioCMSDatabaseSchema>,
+	tableDef: TableDefinition
+) {
 	yield* Effect.logInfo(`Creating table ${tableDef.name}...`);
 
 	let tableBuilder = db.schema.createTable(tableDef.name);
@@ -410,7 +422,7 @@ const createTable = Effect.fn(function* (db: Kysely<any>, tableDef: TableDefinit
 });
 
 const addMissingColumns = Effect.fn(function* (
-	db: Kysely<any>,
+	db: Kysely<StudioCMSDatabaseSchema>,
 	tableDef: TableDefinition,
 	existingColumns: string[]
 ) {
