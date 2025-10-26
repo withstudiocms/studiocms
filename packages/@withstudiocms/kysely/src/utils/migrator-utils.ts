@@ -402,7 +402,6 @@ export async function syncDatabaseSchema(
 					console.log(`Table ${tableDef.name} is deprecated and does not exist, skipping drop.`);
 				}
 				break;
-
 			case false:
 			case undefined: {
 				if (!exists) {
