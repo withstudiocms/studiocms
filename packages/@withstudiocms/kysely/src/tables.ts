@@ -112,7 +112,7 @@ export const StudioCMSDiffTracking = Table({
 	userId: Schema.String,
 	pageId: Schema.String,
 	timestamp: ColumnType(Schema.DateFromString, Schema.String, Schema.Never),
-	pageMetaData: JsonColumnType(Schema.Any, Schema.String, Schema.String),
+	pageMetaData: JsonColumnType(Schema.Object, Schema.String, Schema.String),
 	pageContentStart: Schema.String,
 	diff: Schema.NullishOr(Schema.String),
 });
@@ -125,7 +125,7 @@ export const StudioCMSPageDataTags = Table({
 	description: Schema.String,
 	name: Schema.String,
 	slug: Schema.String,
-	meta: JsonColumnType(Schema.Any, Schema.String, Schema.String),
+	meta: JsonColumnType(Schema.Object, Schema.String, Schema.String),
 });
 
 /**
@@ -137,7 +137,7 @@ export const StudioCMSPageDataCategories = Table({
 	description: Schema.String,
 	name: Schema.String,
 	slug: Schema.String,
-	meta: JsonColumnType(Schema.Any, Schema.String, Schema.String),
+	meta: JsonColumnType(Schema.Object, Schema.String, Schema.String),
 });
 
 /**
@@ -165,7 +165,7 @@ export const StudioCMSEmailVerificationTokens = Table({
  */
 export const StudioCMSPluginData = Table({
 	id: Schema.String,
-	data: JsonColumnType(Schema.Any, Schema.String, Schema.String),
+	data: JsonColumnType(Schema.Object, Schema.String, Schema.String),
 });
 
 /**
@@ -173,7 +173,7 @@ export const StudioCMSPluginData = Table({
  */
 export const StudioCMSDynamicConfigSettings = Table({
 	id: Schema.String,
-	data: JsonColumnType(Schema.Any, Schema.String, Schema.String),
+	data: JsonColumnType(Schema.Object, Schema.String, Schema.String),
 });
 
 /**
