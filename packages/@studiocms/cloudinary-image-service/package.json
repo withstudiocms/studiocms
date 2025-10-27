@@ -1,6 +1,6 @@
 {
   "name": "@studiocms/cloudinary-image-service",
-  "version": "0.1.0-beta.27",
+  "version": "0.1.0-beta.28",
   "description": "Cloudinary Image Service For StudioCMS!",
   "author": {
     "name": "withstudiocms",

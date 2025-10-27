@@ -1,5 +1,14 @@
 # @withstudiocms/component-registry
 
+## 0.1.0-beta.4
+
+### Patch Changes
+
+- [#956](https://github.com/withstudiocms/studiocms/pull/956) [`1d26adb`](https://github.com/withstudiocms/studiocms/commit/1d26adbce761f8856d4282d7d1b81d9570df32ac) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update dependency ts-morph to ^27.0.2
+
+- Updated dependencies [[`d3123fe`](https://github.com/withstudiocms/studiocms/commit/d3123febbb0acdfb8d79629e9c2b101dff8a2bc7), [`58e8d06`](https://github.com/withstudiocms/studiocms/commit/58e8d0629ce039be239f17ef616256f53570901f), [`0f924e7`](https://github.com/withstudiocms/studiocms/commit/0f924e7a27f0e7480afe4f58061451499a5f6913)]:
+  - @withstudiocms/effect@0.1.0-beta.4
+
 ## 0.1.0-beta.3
 
 ### Patch Changes
