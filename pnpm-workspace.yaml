@@ -13,11 +13,11 @@ catalog:
 
 catalogs:
   astrojs:
-    "@astrojs/db": ^0.18.0
-    "@astrojs/rss": ^4.0.12
+    "@astrojs/db": ^0.18.1
+    "@astrojs/rss": ^4.0.13
     "@astrojs/check": ^0.9.5
     "@astrojs/node": ^9.5.0
-    astro: ^5.14.7
+    astro: ^5.15.1
     vite: ^6.3.4
   effect:
     "@effect/cli": ^0.71.0
