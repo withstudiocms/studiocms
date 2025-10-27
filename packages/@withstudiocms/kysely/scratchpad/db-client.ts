@@ -1,7 +1,7 @@
 import { ConfigProvider, Effect, Schema } from 'effect';
 import { libsqlDriver } from '../src/drivers/libsql.js';
 import { getDBClientLive } from '../src/index.js';
-import { StudioCMSUsersTable } from '../src/tables.js';
+import { type StudioCMSDatabaseSchema, StudioCMSUsersTable } from '../src/tables.js';
 
 export const dbClientExample = Effect.gen(function* () {
 	// Setup the LibSQL driver with a database URL from config
@@ -14,7 +14,8 @@ export const dbClientExample = Effect.gen(function* () {
 	);
 
 	// Get the Kysely DB client with Effect helpers
-	const { db, withCodec, withDecoder, withEncoder } = yield* getDBClientLive(dialect);
+	const { db, withCodec, withDecoder, withEncoder } =
+		yield* getDBClientLive<StudioCMSDatabaseSchema>(dialect);
 
 	//
 	// get users

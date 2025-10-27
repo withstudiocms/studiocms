@@ -3,6 +3,8 @@
  * environments that do not support them. Users should import migrator-related
  * functions directly from the migrator module. `@withstudiocms/kysely/migrator`.
  */
+
+export * from './client.js';
 export * from './core/schema.js';
 export * from './schema.js';
 export * from './tables.js';
