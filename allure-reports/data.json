@@ -1,7 +1,10 @@
 {
   "links": [
     "..",
+    "adam_kysely-project",
     "changeset-release_main",
-    "main"
+    "main",
+    "renovate_all-minor-patch",
+    "renovate_effect-@withstudiocms-dependencies"
   ]
 }
