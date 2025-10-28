@@ -29,19 +29,13 @@ import { Config, Effect, Redacted } from 'effect';
  * // const dialect = yield* libsqlDriver();
  */
 export const libsqlDriver = Effect.gen(function* () {
-	const rawUrl = yield* Config.redacted('STUDIOCMS_LIBSQL_URL');
-	const authToken = yield* Config.withDefault(
-		Config.redacted('STUDIOCMS_LIBSQL_AUTH_TOKEN'),
-		undefined
-	);
+	const rawUrl = yield* Config.redacted('CMS_LIBSQL_URL');
+	const authToken = yield* Config.withDefault(Config.redacted('CMS_LIBSQL_AUTH_TOKEN'), undefined);
 	const syncInterval = yield* Config.withDefault(
-		Config.number('STUDIOCMS_LIBSQL_SYNC_INTERVAL'),
+		Config.number('CMS_LIBSQL_SYNC_INTERVAL'),
 		undefined
 	);
-	const syncUrl = yield* Config.withDefault(
-		Config.redacted('STUDIOCMS_LIBSQL_SYNC_URL'),
-		undefined
-	);
+	const syncUrl = yield* Config.withDefault(Config.redacted('CMS_LIBSQL_SYNC_URL'), undefined);
 
 	return new LibsqlDialect({
 		url: Redacted.value(rawUrl),

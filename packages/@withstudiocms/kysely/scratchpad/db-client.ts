@@ -8,7 +8,7 @@ export const dbClientExample = Effect.gen(function* () {
 	const dialect = yield* libsqlDriver.pipe(
 		Effect.withConfigProvider(
 			ConfigProvider.fromJson({
-				STUDIOCMS_LIBSQL_URL: 'file:./test.db',
+				CMS_LIBSQL_URL: 'file:./test.db',
 			})
 		)
 	);

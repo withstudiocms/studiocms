@@ -27,11 +27,11 @@ import { createPool } from 'mysql2';
  * @returns An Effect that resolves to a configured MysqlDialect ready for use with Kysely.
  */
 export const mysqlDriver = Effect.gen(function* () {
-	const database = yield* Config.string('STUDIOCMS_MYSQL_DATABASE');
-	const host = yield* Config.string('STUDIOCMS_MYSQL_HOST');
-	const port = yield* Config.number('STUDIOCMS_MYSQL_PORT');
-	const user = yield* Config.redacted('STUDIOCMS_MYSQL_USER');
-	const password = yield* Config.redacted('STUDIOCMS_MYSQL_PASSWORD');
+	const database = yield* Config.string('CMS_MYSQL_DATABASE');
+	const host = yield* Config.string('CMS_MYSQL_HOST');
+	const port = yield* Config.number('CMS_MYSQL_PORT');
+	const user = yield* Config.redacted('CMS_MYSQL_USER');
+	const password = yield* Config.redacted('CMS_MYSQL_PASSWORD');
 
 	return new MysqlDialect({
 		pool: createPool({

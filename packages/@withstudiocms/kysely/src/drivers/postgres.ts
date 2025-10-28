@@ -28,11 +28,11 @@ import { Pool } from 'pg';
  *          yields a PostgresDialect configured with a pg Pool.
  */
 export const postgresDriver = Effect.gen(function* () {
-	const database = yield* Config.string('STUDIOCMS_PG_DATABASE');
-	const host = yield* Config.string('STUDIOCMS_PG_HOST');
-	const port = yield* Config.number('STUDIOCMS_PG_PORT');
-	const user = yield* Config.redacted('STUDIOCMS_PG_USER');
-	const password = yield* Config.redacted('STUDIOCMS_PG_PASSWORD');
+	const database = yield* Config.string('CMS_PG_DATABASE');
+	const host = yield* Config.string('CMS_PG_HOST');
+	const port = yield* Config.number('CMS_PG_PORT');
+	const user = yield* Config.redacted('CMS_PG_USER');
+	const password = yield* Config.redacted('CMS_PG_PASSWORD');
 
 	return new PostgresDialect({
 		pool: new Pool({
