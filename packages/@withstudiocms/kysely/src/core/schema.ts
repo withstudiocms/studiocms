@@ -506,7 +506,8 @@ export const Database = <Tables extends Record<string, Table<any>>>(tables: Tabl
  * const encodedSchema = encodeDatabase(dbSchema);
  * ```
  */
-export const encodeDatabase = <T extends Schema.Schema.All>(schema: T): T['Encoded'] => schema.Encoded;
+export const encodeDatabase = <T extends Schema.Schema.All>(schema: T): T['Encoded'] =>
+	schema.Encoded;
 
 /**
  * Transformer schema that maps between numeric (1/0) and boolean values.
@@ -560,24 +561,20 @@ export const BooleanFromNumber = Schema.transform(Schema.Number, Schema.Boolean,
  * @constant
  * @public
  */
-export const StringArrayFromString = Schema.transform(
-	Schema.String,
-	Schema.Array(Schema.String), {
-		decode: (str) => {
-			try {
-				const parsed = JSON.parse(str);
-				if (Array.isArray(parsed) && parsed.every((item) => typeof item === 'string')) {
-					return parsed;
-				} else {
-					return [];
-				}
-			} catch {
-				return [];
+export const StringArrayFromString = Schema.transform(Schema.String, Schema.Array(Schema.String), {
+	decode: (str) => {
+		try {
+			const parsed = JSON.parse(str);
+			if (Array.isArray(parsed) && parsed.every((item) => typeof item === 'string')) {
+				return parsed;
 			}
-		},
-		encode: (arr) => JSON.stringify(arr),
-	}
-)
+			return [];
+		} catch {
+			return [];
+		}
+	},
+	encode: (arr) => JSON.stringify(arr),
+});
 
 /**
  * Schema transformer that maps between JSON-encoded strings and TypeScript objects.
@@ -603,15 +600,15 @@ export const StringArrayFromString = Schema.transform(
  */
 export const JSONObjectFromString = Schema.transform(
 	Schema.String,
-	Schema.Record({ key: Schema.String, value: Schema.Unknown }), {
+	Schema.Record({ key: Schema.String, value: Schema.Unknown }),
+	{
 		decode: (str) => {
 			try {
 				const parsed = JSON.parse(str);
 				if (typeof parsed === 'object' && parsed !== null && !Array.isArray(parsed)) {
 					return parsed;
-				} else {
-					return {};
 				}
+				return {};
 			} catch {
 				return {};
 			}

@@ -6,9 +6,9 @@ import { type DatabaseError, NotFoundError, QueryError, QueryParseError } from '
 type HasNullOrUndefined<T> = null extends T ? true : undefined extends T ? true : false;
 
 export type OptionalNullable<T> = {
-  [K in keyof T as HasNullOrUndefined<T[K]> extends true ? K : never]?: T[K]
+	[K in keyof T as HasNullOrUndefined<T[K]> extends true ? K : never]?: T[K];
 } & {
-  [K in keyof T as HasNullOrUndefined<T[K]> extends true ? never : K]: T[K]
+	[K in keyof T as HasNullOrUndefined<T[K]> extends true ? never : K]: T[K];
 };
 
 /**
