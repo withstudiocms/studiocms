@@ -296,30 +296,26 @@ export const JsonColumnType = <
 > &
 	ColumnTypes<typeof Select, Insert, Update> => ColumnType(Select, Insert, Update);
 
-export type StripNeverFromObject<T> = {
-	[K in keyof T as T[K] extends never ? never : K]: T[K];
-};
-
 /**
  * Helper type function to extract the select shapes from column types.
  */
 type GetSelectType<T> = T extends ColumnTypes<infer Select, any, any>
-	? Schema.Schema.Type<StripNeverFromObject<Select>>
-	: Schema.Schema.Type<StripNeverFromObject<T>>;
+	? Schema.Schema.Type<Select>
+	: Schema.Schema.Type<T>;
 
 /**
  * Helper type function to extract the insert shapes from column types.
  */
 type GetInsertType<T> = T extends ColumnTypes<any, infer Insert, any>
-	? Schema.Schema.Type<StripNeverFromObject<Insert>>
-	: Schema.Schema.Type<StripNeverFromObject<T>>;
+	? Schema.Schema.Type<Insert>
+	: Schema.Schema.Type<T>;
 
 /**
  * Helper type function to extract the update shapes from column types.
  */
 type GetUpdateType<T> = T extends ColumnTypes<any, any, infer Update>
-	? Schema.Schema.Type<StripNeverFromObject<Update>>
-	: Schema.Schema.Type<StripNeverFromObject<T>>;
+	? Schema.Schema.Type<Update>
+	: Schema.Schema.Type<T>;
 
 /**
  * Helper type function to extract the select encoded shapes from column types.
@@ -332,15 +328,15 @@ type GetSelectEncoded<T> = T extends ColumnTypes<infer Select, any, any>
  * Helper type function to extract the insert encoded shapes from column types.
  */
 type GetInsertEncoded<T> = T extends ColumnTypes<any, infer Insert, any>
-	? Schema.Schema.Encoded<StripNeverFromObject<Insert>>
-	: Schema.Schema.Encoded<StripNeverFromObject<T>>;
+	? Schema.Schema.Encoded<Insert>
+	: Schema.Schema.Encoded<T>;
 
 /**
  * Helper type function to extract the update encoded shapes from column types.
  */
 type GetUpdateEncoded<T> = T extends ColumnTypes<any, any, infer Update>
-	? Schema.Schema.Encoded<StripNeverFromObject<Update>>
-	: Schema.Schema.Encoded<StripNeverFromObject<T>>;
+	? Schema.Schema.Encoded<Update>
+	: Schema.Schema.Encoded<T>;
 
 /**
  * Represents a strongly-typed database table definition.
@@ -488,6 +484,31 @@ export const Database = <Tables extends Record<string, Table<any>>>(tables: Tabl
 	Schema.Struct(tables);
 
 /**
+ * Encode a database schema to its encoded representation.
+ *
+ * This function takes a database schema defined using the `Database` function
+ * and returns its encoded form, which is suitable for serialization or storage.
+ *
+ * @template T - The database schema type extending `Schema.Schema.All`.
+ * @param schema - The database schema to encode.
+ * @returns The encoded representation of the database schema.
+ *
+ * @example
+ * ```ts
+ * const dbSchema = Database({
+ *   users: Table({
+ *     id: Generated(Schema.Int),
+ *     name: Schema.String,
+ *     isActive: BooleanFromNumber,
+ *   }),
+ * });
+ *
+ * const encodedSchema = encodeDatabase(dbSchema);
+ * ```
+ */
+export const encodeDatabase = <T extends Schema.Schema.All>(schema: T): T['Encoded'] => schema.Encoded;
+
+/**
  * Transformer schema that maps between numeric (1/0) and boolean values.
  *
  * Decodes a numeric value to a boolean: returns `true` only when the input is strictly `1`,
@@ -518,28 +539,134 @@ export const BooleanFromNumber = Schema.transform(Schema.Number, Schema.Boolean,
 });
 
 /**
- * Encode a database schema to its encoded representation.
+ * Schema transformer that maps between JSON-encoded string arrays and TypeScript string arrays.
  *
- * This function takes a database schema defined using the `Database` function
- * and returns its encoded form, which is suitable for serialization or storage.
- *
- * @template T - The database schema type extending `Schema.Schema.All`.
- * @param schema - The database schema to encode.
- * @returns The encoded representation of the database schema.
+ * Decodes a JSON string into a TypeScript array of strings. If the input is not a valid JSON array
+ * of strings, it returns an empty array.
+ * Encodes a TypeScript array of strings into a JSON string.
  *
  * @example
- * ```ts
- * const dbSchema = Database({
- *   users: Table({
- *     id: Generated(Schema.Int),
- *     name: Schema.String,
- *     isActive: BooleanFromNumber,
- *   }),
- * });
+ * // decode
+ * StringArrayFromString.decode('["tag1", "tag2"]'); // ['tag1', 'tag2']
+ * StringArrayFromString.decode('invalid json'); // []
  *
- * const encodedSchema = encodeDatabase(dbSchema);
- * ```
+ * // encode
+ * StringArrayFromString.encode(['tag1', 'tag2']); // '["tag1","tag2"]'
+ *
+ * @remarks
+ * The decode function uses JSON.parse and includes error handling to ensure that invalid JSON
+ * inputs do not throw exceptions but instead result in an empty array.
+ *
+ * @constant
+ * @public
  */
-export function encodeDatabase<T extends Schema.Schema.All>(schema: T): T['Encoded'] {
-	return schema.Encoded;
-}
+export const StringArrayFromString = Schema.transform(
+	Schema.String,
+	Schema.Array(Schema.String), {
+		decode: (str) => {
+			try {
+				const parsed = JSON.parse(str);
+				if (Array.isArray(parsed) && parsed.every((item) => typeof item === 'string')) {
+					return parsed;
+				} else {
+					return [];
+				}
+			} catch {
+				return [];
+			}
+		},
+		encode: (arr) => JSON.stringify(arr),
+	}
+)
+
+/**
+ * Schema transformer that maps between JSON-encoded strings and TypeScript objects.
+ *
+ * Decodes a JSON string into a TypeScript object. If the input is not a valid JSON object,
+ * it returns an empty object.
+ * Encodes a TypeScript object into a JSON string.
+ *
+ * @example
+ * // decode
+ * JSONObjectFromString.decode('{"key": "value"}'); // { key: 'value' }
+ * JSONObjectFromString.decode('invalid json'); // {}
+ *
+ * // encode
+ * JSONObjectFromString.encode({ key: 'value' }); // '{"key":"value"}'
+ *
+ * @remarks
+ * The decode function uses JSON.parse and includes error handling to ensure that invalid JSON
+ * inputs do not throw exceptions but instead result in an empty object.
+ *
+ * @constant
+ * @public
+ */
+export const JSONObjectFromString = Schema.transform(
+	Schema.String,
+	Schema.Record({ key: Schema.String, value: Schema.Unknown }), {
+		decode: (str) => {
+			try {
+				const parsed = JSON.parse(str);
+				if (typeof parsed === 'object' && parsed !== null && !Array.isArray(parsed)) {
+					return parsed;
+				} else {
+					return {};
+				}
+			} catch {
+				return {};
+			}
+		},
+		encode: (obj) => JSON.stringify(obj),
+	}
+);
+
+/**
+ * Schema transformer that maps between string representations of dates and JavaScript Date objects.
+ *
+ * Decodes a date string (ISO 8601 format) into a JavaScript Date object.
+ * Encodes a JavaScript Date object into an ISO 8601 date string.
+ *
+ * @example
+ * // decode
+ * DateFromString.decode('2023-01-01T00:00:00.000Z'); // new Date('2023-01-01T00:00:00.000Z')
+ *
+ * // encode
+ * DateFromString.encode(new Date('2023-01-01T00:00:00.000Z')); // '2023-01-01T00:00:00.000Z'
+ *
+ * @remarks
+ * The decode function uses the JavaScript Date constructor to parse the date string.
+ * Invalid date strings will result in an "Invalid Date" object.
+ *
+ * @constant
+ * @public
+ */
+export const DateFromString = ColumnType(Schema.DateFromString, Schema.String, Schema.String);
+
+/**
+ * Schema transformer for createdAt date columns.
+ *
+ * Decodes a date string into a JavaScript Date object.
+ * Encodes a JavaScript Date object into a date string.
+ *
+ * The insert type is `Schema.Never`, indicating that this field should not be provided
+ * during insert operations, as it is expected to be generated by the database.
+ *
+ * @example
+ * // decode
+ * CreatedAtDate.decode('2023-01-01T00:00:00.000Z'); // new Date('2023-01-01T00:00:00.000Z')
+ *
+ * // encode
+ * CreatedAtDate.encode(new Date('2023-01-01T00:00:00.000Z')); // '2023-01-01T00:00:00.000Z'
+ *
+ * @remarks
+ * This schema is typically used for "created at" timestamp columns that are
+ * automatically set by the database upon record creation.
+ *
+ * @constant
+ * @public
+ */
+export const CreatedAtDate = ColumnType(
+	Schema.DateFromString,
+	Schema.UndefinedOr(Schema.String),
+	Schema.Never
+);

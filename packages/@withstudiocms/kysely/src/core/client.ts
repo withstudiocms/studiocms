@@ -2,7 +2,14 @@ import { Context, Effect, pipe } from 'effect';
 import * as Schema from 'effect/Schema';
 import { type Dialect, Kysely, NoResultError } from 'kysely';
 import { type DatabaseError, NotFoundError, QueryError, QueryParseError } from './errors.js';
-import type { StripNeverFromObject } from './schema.js';
+
+type HasNullOrUndefined<T> = null extends T ? true : undefined extends T ? true : false;
+
+export type OptionalNullable<T> = {
+  [K in keyof T as HasNullOrUndefined<T[K]> extends true ? K : never]?: T[K]
+} & {
+  [K in keyof T as HasNullOrUndefined<T[K]> extends true ? never : K]: T[K]
+};
 
 /**
  * Represents an asynchronous query function.
@@ -195,7 +202,7 @@ const dbClient = <Schema>() =>
 		 * @returns A function that accepts input: CIType and returns Effect.Effect<O, DatabaseError>. The effect encodes the input and runs the query inside the Effect runtime.
 		 */
 		const withEncoder =
-			<IEncoded, IType, O, CIType = StripNeverFromObject<IType>>({
+			<IEncoded, IType, O, CIType = OptionalNullable<IType>>({
 				encoder,
 				query,
 			}: {
@@ -275,7 +282,7 @@ const dbClient = <Schema>() =>
 		 * const effect = getUser({ id: 'abc' });
 		 */
 		const withCodec =
-			<IEncoded, IType, OEncoded, OType, CIType = StripNeverFromObject<IType>>({
+			<IEncoded, IType, OEncoded, OType, CIType = OptionalNullable<IType>>({
 				encoder,
 				decoder,
 				query,

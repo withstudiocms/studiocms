@@ -2,9 +2,12 @@ import { Schema } from 'effect';
 import {
 	BooleanFromNumber,
 	ColumnType,
+	CreatedAtDate,
 	Database,
+	DateFromString,
 	encodeDatabase,
-	JsonColumnType,
+	JSONObjectFromString,
+	StringArrayFromString,
 	Table,
 } from './core/schema.js';
 
@@ -19,8 +22,8 @@ export const StudioCMSUsersTable = Table({
 	avatar: Schema.NullishOr(Schema.String),
 	username: Schema.String,
 	password: Schema.NullishOr(Schema.String),
-	updatedAt: ColumnType(Schema.DateFromString, Schema.String, Schema.String),
-	createdAt: ColumnType(Schema.DateFromString, Schema.Never, Schema.Never),
+	updatedAt: DateFromString,
+	createdAt: CreatedAtDate,
 	emailVerified: BooleanFromNumber,
 	notifications: Schema.NullishOr(Schema.String),
 });
@@ -40,7 +43,7 @@ export const StudioCMSOAuthAccounts = Table({
 export const StudioCMSSessionTable = Table({
 	id: Schema.String,
 	userId: Schema.String,
-	expiresAt: ColumnType(Schema.DateFromString, Schema.String, Schema.String),
+	expiresAt: DateFromString,
 });
 
 /**
@@ -58,7 +61,7 @@ export const StudioCMSAPIKeys = Table({
 	id: Schema.String,
 	userId: Schema.String,
 	key: Schema.String,
-	creationDate: ColumnType(Schema.DateFromString, Schema.String, Schema.Never),
+	creationDate: CreatedAtDate,
 	description: Schema.NullishOr(Schema.String),
 });
 
@@ -89,20 +92,20 @@ export const StudioCMSPageData = Table({
 	title: Schema.String,
 	description: Schema.String,
 	showOnNav: BooleanFromNumber,
-	publishedAt: ColumnType(Schema.DateFromString, Schema.String, Schema.String),
-	updatedAt: ColumnType(Schema.DateFromString, Schema.String, Schema.String),
+	publishedAt: DateFromString,
+	updatedAt: DateFromString,
 	slug: Schema.String,
 	contentLang: Schema.String,
 	heroImage: Schema.NullishOr(Schema.String),
-	categories: JsonColumnType(Schema.Array(Schema.String), Schema.String, Schema.String),
-	tags: JsonColumnType(Schema.Array(Schema.String), Schema.String, Schema.String),
+	categories: ColumnType(StringArrayFromString, Schema.String, Schema.String),
+	tags: ColumnType(StringArrayFromString, Schema.String, Schema.String),
 	authorId: Schema.String,
-	contributorIds: JsonColumnType(Schema.Array(Schema.String), Schema.String, Schema.String),
+	contributorIds: ColumnType(StringArrayFromString, Schema.String, Schema.String),
 	showAuthor: BooleanFromNumber,
 	showContributors: BooleanFromNumber,
 	parentFolder: Schema.NullishOr(Schema.String),
 	draft: BooleanFromNumber,
-	augments: JsonColumnType(Schema.Array(Schema.String), Schema.String, Schema.String),
+	augments: ColumnType(StringArrayFromString, Schema.String, Schema.String),
 });
 
 /**
@@ -112,8 +115,8 @@ export const StudioCMSDiffTracking = Table({
 	id: Schema.String,
 	userId: Schema.String,
 	pageId: Schema.String,
-	timestamp: ColumnType(Schema.DateFromString, Schema.String, Schema.Never),
-	pageMetaData: JsonColumnType(Schema.Object, Schema.String, Schema.String),
+	timestamp: CreatedAtDate,
+	pageMetaData: ColumnType(JSONObjectFromString, Schema.String, Schema.String),
 	pageContentStart: Schema.String,
 	diff: Schema.NullishOr(Schema.String),
 });
@@ -126,7 +129,7 @@ export const StudioCMSPageDataTags = Table({
 	description: Schema.String,
 	name: Schema.String,
 	slug: Schema.String,
-	meta: JsonColumnType(Schema.Object, Schema.String, Schema.String),
+	meta: ColumnType(JSONObjectFromString, Schema.String, Schema.String),
 });
 
 /**
@@ -138,7 +141,7 @@ export const StudioCMSPageDataCategories = Table({
 	description: Schema.String,
 	name: Schema.String,
 	slug: Schema.String,
-	meta: JsonColumnType(Schema.Object, Schema.String, Schema.String),
+	meta: ColumnType(JSONObjectFromString, Schema.String, Schema.String),
 });
 
 /**
@@ -158,7 +161,7 @@ export const StudioCMSEmailVerificationTokens = Table({
 	id: Schema.String,
 	userId: Schema.String,
 	token: Schema.String,
-	expiresAt: ColumnType(Schema.DateFromString, Schema.String, Schema.String),
+	expiresAt: DateFromString,
 });
 
 /**
@@ -166,7 +169,7 @@ export const StudioCMSEmailVerificationTokens = Table({
  */
 export const StudioCMSPluginData = Table({
 	id: Schema.String,
-	data: JsonColumnType(Schema.Object, Schema.String, Schema.String),
+	data: ColumnType(JSONObjectFromString, Schema.String, Schema.String),
 });
 
 /**
@@ -174,7 +177,7 @@ export const StudioCMSPluginData = Table({
  */
 export const StudioCMSDynamicConfigSettings = Table({
 	id: Schema.String,
-	data: JsonColumnType(Schema.Object, Schema.String, Schema.String),
+	data: ColumnType(JSONObjectFromString, Schema.String, Schema.String),
 });
 
 /**
