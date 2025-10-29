@@ -354,5 +354,5 @@ export const SDKConfigModule = Effect.gen(function* () {
 		mailerConfig,
 		notificationConfig,
 		templateConfig,
-	} as const;
+	};
 });
