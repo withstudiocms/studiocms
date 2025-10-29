@@ -1,6 +1,6 @@
 {
   "name": "@studiocms/github",
-  "version": "0.1.0-beta.27",
+  "version": "0.1.0-beta.28",
   "description": "Add GitHub OAuth Support to your StudioCMS project.",
   "author": {
     "name": "withstudiocms",
