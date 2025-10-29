@@ -1,5 +1,76 @@
 # studiocms
 
+## 0.1.0-beta.28
+
+### Patch Changes
+
+- [#920](https://github.com/withstudiocms/studiocms/pull/920) [`5550673`](https://github.com/withstudiocms/studiocms/commit/55506739e3f96b690ad7999dbc1f9261ac63e644) Thanks [@ad1tyayadav](https://github.com/ad1tyayadav)! - Deprecates and hides the "Hide Index Page" setting from dashboard. Users who previously relied on this setting should migrate to another method.
+
+- [#917](https://github.com/withstudiocms/studiocms/pull/917) [`7ef34d7`](https://github.com/withstudiocms/studiocms/commit/7ef34d7e553bb966e86bfddb4d63c622aad2dc83) Thanks [@Ananya44444](https://github.com/Ananya44444)! - Replaces custom CSS search icon with Input component icon prop and removes unused CSS.
+
+- [#875](https://github.com/withstudiocms/studiocms/pull/875) [`74f9bf8`](https://github.com/withstudiocms/studiocms/commit/74f9bf8cb039d09e9e4589772734eb3a3012178c) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Updates to `@studiocms/ui@1.0.0-beta.2`
+
+- [#862](https://github.com/withstudiocms/studiocms/pull/862) [`dc8ca3a`](https://github.com/withstudiocms/studiocms/commit/dc8ca3abfb92944b78d342414e63c3dabe7e77e6) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update dependency @iconify-json/simple-icons to ^1.2.53
+
+- [#887](https://github.com/withstudiocms/studiocms/pull/887) [`cd03b94`](https://github.com/withstudiocms/studiocms/commit/cd03b945e27a459881474443b762e2ec3f427884) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update dependency dotenv to ^17.2.3
+
+- [#928](https://github.com/withstudiocms/studiocms/pull/928) [`a33c6df`](https://github.com/withstudiocms/studiocms/commit/a33c6df2e595f6867e0bdc82554017e003a01aed) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update studiocms dependencies
+
+- [#957](https://github.com/withstudiocms/studiocms/pull/957) [`df658d7`](https://github.com/withstudiocms/studiocms/commit/df658d7a91230426ec59480dbefbeb2b8e7c550b) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update studiocms dependencies
+
+- [#905](https://github.com/withstudiocms/studiocms/pull/905) [`a53c830`](https://github.com/withstudiocms/studiocms/commit/a53c83017b02d589607874405b2c040474203716) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Introduces a new email template editor and preview feature
+
+- [#950](https://github.com/withstudiocms/studiocms/pull/950) [`0954e8f`](https://github.com/withstudiocms/studiocms/commit/0954e8f60d539e7ab13c00b8e904851ccdc2d9e0) Thanks [@mvdve](https://github.com/mvdve)! - Fixes the form validation parsing of boolean select fields values by transforming the string values to boolean for content management pages.
+
+- [#898](https://github.com/withstudiocms/studiocms/pull/898) [`c57463b`](https://github.com/withstudiocms/studiocms/commit/c57463bb5846a75fda0dfad8da3590145eb442a4) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Update `@studiocms/ui` to 1.0.0-beta.3 and cleanup now unneeded styles
+
+- [#891](https://github.com/withstudiocms/studiocms/pull/891) [`437e45c`](https://github.com/withstudiocms/studiocms/commit/437e45c99e5e740b72a32836b6df48e7c461ef57) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Updates feedback button to point to GitHub (temporary measure until astro-feedback integration)
+
+- [#909](https://github.com/withstudiocms/studiocms/pull/909) [`74b0b36`](https://github.com/withstudiocms/studiocms/commit/74b0b365090433a0c4185d4d32c9e91f5af50087) Thanks [@apollo-git-bot](https://github.com/apps/apollo-git-bot)! - Translation Updated (PR: #909)
+
+- [#892](https://github.com/withstudiocms/studiocms/pull/892) [`07501ff`](https://github.com/withstudiocms/studiocms/commit/07501fff35c6777f7d08b9857eff3d827ed12e8b) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Fixes missing translation
+
+- [#946](https://github.com/withstudiocms/studiocms/pull/946) [`1717b71`](https://github.com/withstudiocms/studiocms/commit/1717b7194e3dd42b75fc51952860a3bd3e2f5f3f) Thanks [@mvdve](https://github.com/mvdve)! - Fixes zod error parsing for first-time setup api route responses.
+
+- [#876](https://github.com/withstudiocms/studiocms/pull/876) [`9a5a360`](https://github.com/withstudiocms/studiocms/commit/9a5a360e68183693465d29ea5b6ca701ac54cc69) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Enables i18n support for StudioCMS dashboard.
+
+- [#871](https://github.com/withstudiocms/studiocms/pull/871) [`872ba2e`](https://github.com/withstudiocms/studiocms/commit/872ba2e286248a79fa46df1c3f5ca354e36e0494) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Updates quick user tools, Logout page, and buttons to utilize POST requests.
+
+- [#889](https://github.com/withstudiocms/studiocms/pull/889) [`e63f679`](https://github.com/withstudiocms/studiocms/commit/e63f679a89ddd50a363d5bbe1b9b0ea403b1292b) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Implements a better API route type `PluginAPIRoute` from the `studiocms/plugins` export for plugin onCreate, onEdit, and onDelete API handlers.
+
+- [#882](https://github.com/withstudiocms/studiocms/pull/882) [`3b96046`](https://github.com/withstudiocms/studiocms/commit/3b96046aa0fe1eaeb9e472be6ceae1e24dfb78bc) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Optimizes middleware cache
+
+- [#940](https://github.com/withstudiocms/studiocms/pull/940) [`f0ea2fb`](https://github.com/withstudiocms/studiocms/commit/f0ea2fb22f8f137190ad24cf6a9bdf219fb1285e) Thanks [@apollo-git-bot](https://github.com/apps/apollo-git-bot)! - Translation Updated (PR: #940)
+
+- [#936](https://github.com/withstudiocms/studiocms/pull/936) [`a552fc6`](https://github.com/withstudiocms/studiocms/commit/a552fc658d7739bda594fb063075ae85c456709d) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Implements new rendering system, allowing plugins to augment the rendering pipeline with prefix, suffix, or simple component augmentation.
+
+- [#866](https://github.com/withstudiocms/studiocms/pull/866) [`64b1515`](https://github.com/withstudiocms/studiocms/commit/64b15158ecc93177fac222f9cabe38b5387d5df5) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Deprecates the legacy StudioCMSSiteConfig, StudioCMSMailerConfig, and StudioCMSNotificationSettings tables to be fully removed in a future release.
+
+  Note: Users will need to run `astro db push --remote` to ensure their DB schemas are up-to-date.
+
+- [#902](https://github.com/withstudiocms/studiocms/pull/902) [`a64cf64`](https://github.com/withstudiocms/studiocms/commit/a64cf64975778d7f0f127aa8bd9f56f777aaed91) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Reorganizes create and edit content pages, as well as SMTP config page.
+
+- [#953](https://github.com/withstudiocms/studiocms/pull/953) [`000ea26`](https://github.com/withstudiocms/studiocms/commit/000ea26f1f9e302df6701d354a32f5b8b1c6c9d0) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Refactors internal file structure of Astro frontend pages and api endpoints to simplify long-term maintenance
+
+- [#929](https://github.com/withstudiocms/studiocms/pull/929) [`8840b69`](https://github.com/withstudiocms/studiocms/commit/8840b69300cf5aab9e47c4bd65f5fec67a346f3d) Thanks [@apollo-git-bot](https://github.com/apps/apollo-git-bot)! - Translation Updated (PR: #929)
+
+- [#868](https://github.com/withstudiocms/studiocms/pull/868) [`503a25a`](https://github.com/withstudiocms/studiocms/commit/503a25a5da1c07afeb3d965b73ea5bb99a673ba4) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Improve page creation and edit data processing
+
+- [#961](https://github.com/withstudiocms/studiocms/pull/961) [`a57c724`](https://github.com/withstudiocms/studiocms/commit/a57c724fac0553fd6eb88c6a1bf850450520c369) Thanks [@apollo-git-bot](https://github.com/apps/apollo-git-bot)! - Translation Updated (PR: #961)
+
+- [#962](https://github.com/withstudiocms/studiocms/pull/962) [`6516cfa`](https://github.com/withstudiocms/studiocms/commit/6516cfa01ea0d5b35442e8cd455a86cc4b4ce260) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - cleans up internal code
+
+- [#938](https://github.com/withstudiocms/studiocms/pull/938) [`9dce1e7`](https://github.com/withstudiocms/studiocms/commit/9dce1e7aa656cfd0e51587afe74e2009726759f4) Thanks [@ad1tyayadav](https://github.com/ad1tyayadav)! - Move avatar loading to client-side to eliminate render blocking
+
+- [#874](https://github.com/withstudiocms/studiocms/pull/874) [`0326476`](https://github.com/withstudiocms/studiocms/commit/03264767111f8b4dbdef18eafe25fa2f28c3ceb5) Thanks [@apollo-git-bot](https://github.com/apps/apollo-git-bot)! - Translation Updated (PR: #874)
+
+- Updated dependencies [[`d3123fe`](https://github.com/withstudiocms/studiocms/commit/d3123febbb0acdfb8d79629e9c2b101dff8a2bc7), [`1d26adb`](https://github.com/withstudiocms/studiocms/commit/1d26adbce761f8856d4282d7d1b81d9570df32ac), [`58e8d06`](https://github.com/withstudiocms/studiocms/commit/58e8d0629ce039be239f17ef616256f53570901f), [`0407845`](https://github.com/withstudiocms/studiocms/commit/04078451befeda774e9b14a148464e895a269ca6), [`0f924e7`](https://github.com/withstudiocms/studiocms/commit/0f924e7a27f0e7480afe4f58061451499a5f6913), [`1306785`](https://github.com/withstudiocms/studiocms/commit/130678577bcd6a05403c208ca4f46f06e48b9ca4)]:
+  - @withstudiocms/effect@0.1.0-beta.4
+  - @withstudiocms/component-registry@0.1.0-beta.4
+  - @withstudiocms/template-lang@0.1.0-beta.1
+  - @withstudiocms/internal_helpers@0.1.0-beta.3
+  - @withstudiocms/auth-kit@0.1.0-beta.3
+
 ## 0.1.0-beta.27
 
 ### Patch Changes

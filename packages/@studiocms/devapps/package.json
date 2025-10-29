@@ -1,6 +1,6 @@
 {
   "name": "@studiocms/devapps",
-  "version": "0.1.0-beta.27",
+  "version": "0.1.0-beta.28",
   "description": "A dedicated CMS for Astro DB. Built from the ground up by the Astro community.",
   "author": {
     "name": "withstudiocms",

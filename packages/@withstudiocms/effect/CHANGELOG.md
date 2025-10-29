@@ -1,5 +1,15 @@
 # @withstudiocms/effect
 
+## 0.1.0-beta.4
+
+### Patch Changes
+
+- [#927](https://github.com/withstudiocms/studiocms/pull/927) [`d3123fe`](https://github.com/withstudiocms/studiocms/commit/d3123febbb0acdfb8d79629e9c2b101dff8a2bc7) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update dependency nodemailer to ^7.0.9
+
+- [#966](https://github.com/withstudiocms/studiocms/pull/966) [`58e8d06`](https://github.com/withstudiocms/studiocms/commit/58e8d0629ce039be239f17ef616256f53570901f) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update @withstudiocms dependencies
+
+- [#942](https://github.com/withstudiocms/studiocms/pull/942) [`0f924e7`](https://github.com/withstudiocms/studiocms/commit/0f924e7a27f0e7480afe4f58061451499a5f6913) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - chore(deps): Updated Effect dependencies (PR: #863)
+
 ## 0.1.0-beta.3
 
 ### Patch Changes
