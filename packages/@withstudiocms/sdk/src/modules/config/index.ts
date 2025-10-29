@@ -48,6 +48,10 @@ export const SDKConfigModule = Effect.gen(function* () {
 		CacheService,
 	]);
 
+	// =================================================================
+	// Database Operation Utilities
+	// =================================================================
+
 	/**
 	 * Inserts a new dynamic configuration setting into the database.
 	 *
@@ -100,6 +104,10 @@ export const SDKConfigModule = Effect.gen(function* () {
 				.executeTakeFirstOrThrow(),
 	});
 
+	// =================================================================
+	// Configuration Module Operations
+	// =================================================================
+
 	/**
 	 * Helper function to create or update a dynamic configuration entry and update the cache.
 	 *
@@ -113,24 +121,6 @@ export const SDKConfigModule = Effect.gen(function* () {
 					Effect.tap(() => cache.set<DataType>(cacheKey(id), data, cacheOpts))
 				) as Effect.Effect<DynamicConfigEntry<DataType>, DatabaseError>
 		);
-
-	/**
-	 * Creates a new dynamic configuration entry in the database and updates the cache.
-	 *
-	 * @param id - The ID of the configuration entry to create.
-	 * @param data - The configuration data to store.
-	 * @returns An effect that yields the created dynamic configuration entry or a database error.
-	 */
-	const create = _tappedCacheUpdate(_insert);
-
-	/**
-	 * Updates an existing dynamic configuration entry in the database and updates the cache.
-	 *
-	 * @param id - The ID of the configuration entry to update.
-	 * @param data - The new configuration data to store.
-	 * @returns An effect that yields the updated dynamic configuration entry or a database error.
-	 */
-	const update = _tappedCacheUpdate(_update);
 
 	/**
 	 * Updates the cache with the given configuration entry and returns it.
@@ -162,6 +152,28 @@ export const SDKConfigModule = Effect.gen(function* () {
 		return yield* setAndReturn<DataType>(id, uncached.data as DataType);
 	});
 
+	// =================================================================
+	// Configuration Module Methods
+	// =================================================================
+
+	/**
+	 * Creates a new dynamic configuration entry in the database and updates the cache.
+	 *
+	 * @param id - The ID of the configuration entry to create.
+	 * @param data - The configuration data to store.
+	 * @returns An effect that yields the created dynamic configuration entry or a database error.
+	 */
+	const create = _tappedCacheUpdate(_insert);
+
+	/**
+	 * Updates an existing dynamic configuration entry in the database and updates the cache.
+	 *
+	 * @param id - The ID of the configuration entry to update.
+	 * @param data - The new configuration data to store.
+	 * @returns An effect that yields the updated dynamic configuration entry or a database error.
+	 */
+	const update = _tappedCacheUpdate(_update);
+
 	/**
 	 * Retrieves a dynamic configuration entry from the cache or database.
 	 *
@@ -176,6 +188,10 @@ export const SDKConfigModule = Effect.gen(function* () {
 			Effect.catchTag('CacheMissError', () => freshGet<DataType>(id))
 		)
 	);
+
+	// =================================================================
+	// Configuration Modules
+	// =================================================================
 
 	/**
 	 * StudioCMS Site Configuration Module
