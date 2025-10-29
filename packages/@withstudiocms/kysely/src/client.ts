@@ -1,5 +1,14 @@
+import { Context, Layer } from 'effect';
 import type { Dialect } from 'kysely';
-import { makeDBClientLive } from './core/client.js';
+import {
+	type DBClientInterface,
+	type KyselyDBClientLive,
+	makeDBClientLive,
+} from './core/client.js';
+
+export type { Dialect } from 'kysely';
+
+export type { KyselyDBClientLive, DBClientInterface };
 
 /**
  * Factory that creates a live database client configured for the specified SQL dialect.
@@ -19,3 +28,16 @@ import { makeDBClientLive } from './core/client.js';
  * // const db = getDBClientLive<MySchema>(yourDriver);
  */
 export const getDBClientLive = <Schema>(dialect: Dialect) => makeDBClientLive<Schema>(dialect);
+
+export class KyselyDBClientService extends Context.Tag(
+	'@withstudiocms/kysely/client/KyselyDBClientService'
+)<
+	KyselyDBClientService,
+	{
+		getDBClientLive: <Schema>(dialect: Dialect) => KyselyDBClientLive<Schema>;
+	}
+>() {
+	static Live = Layer.succeed(this, {
+		getDBClientLive: <Schema>(dialect: Dialect) => getDBClientLive<Schema>(dialect),
+	});
+}

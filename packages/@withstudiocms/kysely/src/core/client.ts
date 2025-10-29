@@ -11,6 +11,48 @@ export type OptionalNullable<T> = {
 	[K in keyof T as HasNullOrUndefined<T[K]> extends true ? never : K]: T[K];
 };
 
+type EffectDb<Schema> = <T>(
+	fn: (db: Kysely<Schema>) => Promise<T>
+) => Effect.Effect.AsEffect<Effect.Effect<T, NotFoundError | QueryError, never>>;
+
+type WithEncoder = <IEncoded, IType, O, CIType = OptionalNullable<IType>>({
+	encoder,
+	query,
+}: {
+	encoder: Schema.Schema<IType, IEncoded, never>;
+	query: QueryFn<IEncoded, O>;
+}) => (input: CIType) => Effect.Effect<O, DatabaseError, never>;
+
+type WithDecoder = <OEncoded, OType>({
+	decoder,
+	query,
+}: {
+	decoder: Schema.Schema<OType, OEncoded, never>;
+	query: QueryFn<undefined, OEncoded>;
+}) => () => Effect.Effect<OType, DatabaseError, never>;
+
+type WithCodec = <IEncoded, IType, OEncoded, OType, CIType = OptionalNullable<IType>>({
+	encoder,
+	decoder,
+	query,
+}: {
+	encoder: Schema.Schema<IType, IEncoded, never>;
+	decoder: Schema.Schema<OType, OEncoded, never>;
+	query: QueryFn<IEncoded, OEncoded>;
+}) => (input: CIType) => Effect.Effect<OType, DatabaseError, never>;
+
+export type DBClientInterface<Schema> = {
+	readonly db: Kysely<Schema>;
+	readonly effectDb: EffectDb<Schema>;
+	readonly withEncoder: WithEncoder;
+	readonly withDecoder: WithDecoder;
+	readonly withCodec: WithCodec;
+};
+
+type KyselyDBClientRaw<Schema> = Effect.Effect<DBClientInterface<Schema>, never, Kysely<Schema>>;
+
+export type KyselyDBClientLive<Schema> = Effect.Effect<DBClientInterface<Schema>, never, never>;
+
 /**
  * Represents an asynchronous query function.
  *
@@ -27,7 +69,7 @@ export type OptionalNullable<T> = {
  *
  * @throws Any error encountered during execution (e.g., network or DB errors).
  */
-type QueryFn<I, O> = (input: I) => Promise<O>;
+export type QueryFn<I, O> = (input: I) => Promise<O>;
 
 /**
  * Encode a value using the provided schema and normalize schema parse errors into QueryParseError.
@@ -165,7 +207,7 @@ const makeKyselyClient = <Schema>(dialect: Dialect) => {
  * (via kyselyClient) and wiring of the helper functions. All operations exposed by the helpers return Effect.Effect values
  * and therefore are lazy until executed by the Effect runtime.
  */
-const dbClient = <Schema>() =>
+const dbClient = <Schema>(): KyselyDBClientRaw<Schema> =>
 	Effect.gen(function* () {
 		const db = yield* kyselyClient<Schema>();
 
@@ -327,5 +369,5 @@ const dbClient = <Schema>() =>
  * }));
  * ```
  */
-export const makeDBClientLive = <Schema>(dialect: Dialect) =>
+export const makeDBClientLive = <Schema>(dialect: Dialect): KyselyDBClientLive<Schema> =>
 	dbClient<Schema>().pipe(Effect.provideService(kyselyClient<Schema>(), makeKyselyClient(dialect)));

@@ -860,6 +860,19 @@ importers:
         specifier: ^4.20.6
         version: 4.20.6
 
+  packages/@withstudiocms/sdk:
+    dependencies:
+      '@withstudiocms/effect':
+        specifier: workspace:*
+        version: link:../effect
+      '@withstudiocms/kysely':
+        specifier: workspace:*
+        version: link:../kysely
+    devDependencies:
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.18.12
+
   packages/@withstudiocms/template-lang:
     devDependencies:
       '@types/node':
