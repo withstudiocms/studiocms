@@ -86,6 +86,7 @@ const atWithStudioCMSPackages = [
 	'internal_helpers',
 	'template-lang',
 	'kysely',
+	'sdk',
 ] as const;
 
 const bundleTestPackages = ['studiocms-blog', 'studiocms-headless'] as const;
