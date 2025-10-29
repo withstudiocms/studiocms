@@ -1,3 +1,6 @@
+/**
+ * Default email templates for various mailer scenarios.
+ */
 export const defaultTemplates = {
 	/**
 	 * A simple HTML template for general notifications.

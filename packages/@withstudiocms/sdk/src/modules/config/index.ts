@@ -1,8 +1,7 @@
 import { Deepmerge, Effect, Schema } from '@withstudiocms/effect';
-import type { OptionalNullable } from '@withstudiocms/kysely/core/client';
 import type { DatabaseError } from '@withstudiocms/kysely/core/errors';
 import { StudioCMSDynamicConfigSettings } from '@withstudiocms/kysely/tables';
-import { CacheService } from '../../cache.js';
+import { CacheMissError, CacheService } from '../../cache.js';
 import { DBClientLive } from '../../context.js';
 import {
 	MailerConfigId,
@@ -15,13 +14,15 @@ import {
 	TemplateConfigVersion,
 } from './consts.js';
 import defaultTemplates from './templates/mailer.js';
-import type {
-	ConfigFinal,
-	DynamicConfigEntry,
-	StudioCMSMailerConfig,
-	StudioCMSNotificationSettings,
-	StudioCMSSiteConfig,
-	StudioCMSTemplateConfig,
+import {
+	type ConfigFinal,
+	castData,
+	type DbQueryFn,
+	type DynamicConfigEntry,
+	type StudioCMSMailerConfig,
+	type StudioCMSNotificationSettings,
+	type StudioCMSSiteConfig,
+	type StudioCMSTemplateConfig,
 } from './types.js';
 
 /**
@@ -78,7 +79,7 @@ export const SDKConfigModule = Effect.gen(function* () {
 				.selectFrom('StudioCMSDynamicConfigSettings')
 				.selectAll()
 				.where('id', '=', id)
-				.executeTakeFirstOrThrow(),
+				.executeTakeFirst(),
 	});
 
 	/**
@@ -105,28 +106,13 @@ export const SDKConfigModule = Effect.gen(function* () {
 	 * @param fn - The function to create or update the configuration entry.
 	 * @returns A function that takes an ID and data, performs the create or update operation, and updates the cache.
 	 */
-	const _tappedCacheUpdate = (
-		fn: (
-			input: OptionalNullable<{
-				readonly id: string;
-				readonly data: string;
-			}>
-		) => Effect.Effect<
-			{
-				readonly id: string;
-				readonly data: {
-					readonly [x: string]: unknown;
-				};
-			},
-			DatabaseError,
-			never
-		>
-	) =>
-		Effect.fn(function* <DataType>(id: string, data: DataType) {
-			return yield* fn({ id, data: JSON.stringify(data) }).pipe(
-				Effect.tap(() => cache.set<DataType>(cacheKey(id), data, cacheOpts))
-			) as Effect.Effect<DynamicConfigEntry<DataType>, DatabaseError>;
-		});
+	const _tappedCacheUpdate = (fn: DbQueryFn) =>
+		Effect.fn(
+			<DataType>(id: string, data: DataType) =>
+				fn({ id, data: JSON.stringify(data) }).pipe(
+					Effect.tap(() => cache.set<DataType>(cacheKey(id), data, cacheOpts))
+				) as Effect.Effect<DynamicConfigEntry<DataType>, DatabaseError>
+		);
 
 	/**
 	 * Creates a new dynamic configuration entry in the database and updates the cache.
@@ -147,44 +133,49 @@ export const SDKConfigModule = Effect.gen(function* () {
 	const update = _tappedCacheUpdate(_update);
 
 	/**
+	 * Updates the cache with the given configuration entry and returns it.
+	 *
+	 * @param id - The ID of the configuration entry.
+	 * @param data - The configuration data.
+	 * @returns An effect that yields the dynamic configuration entry.
+	 */
+	const setAndReturn = <DataType>(id: string, data: DataType) =>
+		Effect.gen(function* () {
+			yield* cache.set<DataType>(cacheKey(id), data, cacheOpts);
+			return yield* castData<DataType>({ id, data });
+		});
+
+	/**
+	 * Retrieves a fresh dynamic configuration entry from the database and updates the cache.
+	 *
+	 * @param id - The ID of the configuration entry to retrieve.
+	 * @returns An effect that yields the dynamic configuration entry or undefined if not found, or a database error.
+	 */
+	const freshGet = Effect.fn(function* <DataType>(id: string) {
+		// Fetch from DB
+		const uncached = yield* _select(id);
+
+		// If not found in DB, return undefined
+		if (!uncached) return undefined;
+
+		// Return result
+		return yield* setAndReturn<DataType>(id, uncached.data as DataType);
+	});
+
+	/**
 	 * Retrieves a dynamic configuration entry from the cache or database.
 	 *
 	 * @param id - The ID of the configuration entry to retrieve.
 	 * @returns An effect that yields the dynamic configuration entry or undefined if not found, or a database error.
 	 */
-	const get = Effect.fn(function* <DataType>(id: string) {
-		// Try to get from cache first
-		const cached = yield* cache.get<DataType>(cacheKey(id));
-
-		// If not in cache, fetch from DB and populate cache
-		if (!cached) {
-			// Fetch from DB
-			const uncached = yield* _select(id);
-
-			// If not found in DB, return undefined
-			if (!uncached) {
-				return undefined;
-			}
-
-			// Parse and cache
-			const parsedData = uncached.data as DataType;
-
-			// Update cache
-			yield* cache.set<DataType>(cacheKey(id), parsedData, cacheOpts);
-
-			// Return result
-			return {
-				id: uncached.id,
-				data: parsedData,
-			} as DynamicConfigEntry<DataType>;
-		}
-
-		// Return cached value
-		return {
-			id,
-			data: cached,
-		} as DynamicConfigEntry<DataType>;
-	});
+	const get = Effect.fn(<DataType>(id: string) =>
+		cache.get<DataType>(cacheKey(id)).pipe(
+			Effect.flatMap((cached) =>
+				cached ? castData<DataType>({ id, data: cached }) : Effect.fail(new CacheMissError())
+			),
+			Effect.catchTag('CacheMissError', () => freshGet<DataType>(id))
+		)
+	);
 
 	/**
 	 * StudioCMS Site Configuration Module
@@ -204,7 +195,10 @@ export const SDKConfigModule = Effect.gen(function* () {
 		 * @returns An effect that yields the updated site configuration entry or a database error.
 		 */
 		update: (data: ConfigFinal<StudioCMSSiteConfig>) =>
-			update<StudioCMSSiteConfig>(SiteConfigId, { ...data, _config_version: SiteConfigVersion }),
+			update<StudioCMSSiteConfig>(SiteConfigId, {
+				...data,
+				_config_version: SiteConfigVersion,
+			}),
 
 		/**
 		 * Initializes the site configuration.
@@ -213,7 +207,10 @@ export const SDKConfigModule = Effect.gen(function* () {
 		 * @returns An effect that yields the created site configuration entry or a database error.
 		 */
 		init: (data: ConfigFinal<StudioCMSSiteConfig>) =>
-			create<StudioCMSSiteConfig>(SiteConfigId, { ...data, _config_version: SiteConfigVersion }),
+			create<StudioCMSSiteConfig>(SiteConfigId, {
+				...data,
+				_config_version: SiteConfigVersion,
+			}),
 	};
 
 	/**

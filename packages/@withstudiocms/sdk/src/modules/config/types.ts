@@ -1,4 +1,52 @@
+import { Effect } from '@withstudiocms/effect';
+import type { OptionalNullable } from '@withstudiocms/kysely/core/client';
+import type { DatabaseError } from '@withstudiocms/kysely/core/errors';
 import type { StudioCMSDynamicConfigSettings } from '@withstudiocms/kysely/tables';
+
+/**
+ * Casts the given id and data into a DynamicConfigEntry.
+ *
+ * @template T - The type of the data in the configuration entry.
+ * @param param0 - An object containing the id and data.
+ * @returns An effect that yields a DynamicConfigEntry with the given id and data.
+ */
+export const castData = <T>({
+	id,
+	data,
+}: {
+	id: string;
+	data: T;
+}): Effect.Effect<DynamicConfigEntry<T>> =>
+	Effect.succeed({
+		id,
+		data,
+	});
+
+/**
+ * Represents a database query function for retrieving dynamic configuration entries.
+ *
+ * This function takes an input object containing an optional nullable `id` string
+ * and returns an effect that yields a dynamic configuration entry with its `id`
+ * and `data` properties, or a `DatabaseError` if the operation fails.
+ *
+ * @param input - An object containing an optional nullable `id` string.
+ * @returns An effect that yields the dynamic configuration entry or a database error.
+ */
+export type DbQueryFn = (
+	input: OptionalNullable<{
+		readonly id: string;
+		readonly data: string;
+	}>
+) => Effect.Effect<
+	{
+		readonly id: string;
+		readonly data: {
+			readonly [x: string]: unknown;
+		};
+	},
+	DatabaseError,
+	never
+>;
 
 /**
  * Represents the dynamic configuration settings type for StudioCMS.
