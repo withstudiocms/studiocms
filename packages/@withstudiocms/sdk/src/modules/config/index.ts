@@ -2,6 +2,7 @@ import { Deepmerge, Effect, Schema } from '@withstudiocms/effect';
 import type { DatabaseError } from '@withstudiocms/kysely/core/errors';
 import { StudioCMSDynamicConfigSettings } from '@withstudiocms/kysely/tables';
 import { CacheMissError, CacheService } from '../../cache.js';
+import { cacheKeyGetters, cacheTags } from '../../consts.js';
 import { DBClientLive } from '../../context.js';
 import {
 	MailerConfigId,
@@ -31,12 +32,12 @@ import {
  * @param id - The configuration ID.
  * @returns The generated cache key.
  */
-const cacheKey = (id: string) => `dynamic-config:${id}`;
+const cacheKey = cacheKeyGetters.dynamicConfig;
 
 /**
  * Cache options for dynamic configuration entries.
  */
-const cacheOpts = { tags: ['dynamic-config'] };
+const cacheOpts = { tags: cacheTags.dynamicConfig };
 
 /**
  * StudioCMS Configuration Modules
