@@ -1,4 +1,5 @@
 import { Deepmerge, Effect, Schema } from '@withstudiocms/effect';
+import type { OptionalNullable } from '@withstudiocms/kysely/core/client';
 import type { DatabaseError } from '@withstudiocms/kysely/core/errors';
 import { StudioCMSDynamicConfigSettings } from '@withstudiocms/kysely/tables';
 import { CacheService } from '../../cache.js';
@@ -24,6 +25,19 @@ import type {
 } from './types.js';
 
 /**
+ * Generates a cache key for the given configuration ID.
+ *
+ * @param id - The configuration ID.
+ * @returns The generated cache key.
+ */
+const cacheKey = (id: string) => `dynamic-config:${id}`;
+
+/**
+ * Cache options for dynamic configuration entries.
+ */
+const cacheOpts = { tags: ['dynamic-config'] };
+
+/**
  * StudioCMS Configuration Modules
  */
 export const SDKConfigModule = Effect.gen(function* () {
@@ -32,14 +46,6 @@ export const SDKConfigModule = Effect.gen(function* () {
 		Deepmerge,
 		CacheService,
 	]);
-
-	/**
-	 * Generates a cache key for the given configuration ID.
-	 *
-	 * @param id - The configuration ID.
-	 * @returns The generated cache key.
-	 */
-	const cacheKey = (id: string) => `dynamic-config:${id}`;
 
 	/**
 	 * Inserts a new dynamic configuration setting into the database.
@@ -94,17 +100,51 @@ export const SDKConfigModule = Effect.gen(function* () {
 	});
 
 	/**
+	 * Helper function to create or update a dynamic configuration entry and update the cache.
+	 *
+	 * @param fn - The function to create or update the configuration entry.
+	 * @returns A function that takes an ID and data, performs the create or update operation, and updates the cache.
+	 */
+	const _tappedCacheUpdate = (
+		fn: (
+			input: OptionalNullable<{
+				readonly id: string;
+				readonly data: string;
+			}>
+		) => Effect.Effect<
+			{
+				readonly id: string;
+				readonly data: {
+					readonly [x: string]: unknown;
+				};
+			},
+			DatabaseError,
+			never
+		>
+	) =>
+		Effect.fn(function* <DataType>(id: string, data: DataType) {
+			return yield* fn({ id, data: JSON.stringify(data) }).pipe(
+				Effect.tap(() => cache.set<DataType>(cacheKey(id), data, cacheOpts))
+			) as Effect.Effect<DynamicConfigEntry<DataType>, DatabaseError>;
+		});
+
+	/**
 	 * Creates a new dynamic configuration entry in the database and updates the cache.
 	 *
 	 * @param id - The ID of the configuration entry to create.
 	 * @param data - The configuration data to store.
 	 * @returns An effect that yields the created dynamic configuration entry or a database error.
 	 */
-	const create = Effect.fn(function* <DataType>(id: string, data: DataType) {
-		return yield* _insert({ id, data: JSON.stringify(data) }).pipe(
-			Effect.tap(() => cache.set<DataType>(cacheKey(id), data, { tags: ['dynamic-config'] }))
-		) as Effect.Effect<DynamicConfigEntry<DataType>, DatabaseError>;
-	});
+	const create = _tappedCacheUpdate(_insert);
+
+	/**
+	 * Updates an existing dynamic configuration entry in the database and updates the cache.
+	 *
+	 * @param id - The ID of the configuration entry to update.
+	 * @param data - The new configuration data to store.
+	 * @returns An effect that yields the updated dynamic configuration entry or a database error.
+	 */
+	const update = _tappedCacheUpdate(_update);
 
 	/**
 	 * Retrieves a dynamic configuration entry from the cache or database.
@@ -130,7 +170,7 @@ export const SDKConfigModule = Effect.gen(function* () {
 			const parsedData = uncached.data as DataType;
 
 			// Update cache
-			yield* cache.set<DataType>(cacheKey(id), parsedData, { tags: ['dynamic-config'] });
+			yield* cache.set<DataType>(cacheKey(id), parsedData, cacheOpts);
 
 			// Return result
 			return {
@@ -144,19 +184,6 @@ export const SDKConfigModule = Effect.gen(function* () {
 			id,
 			data: cached,
 		} as DynamicConfigEntry<DataType>;
-	});
-
-	/**
-	 * Updates an existing dynamic configuration entry in the database and updates the cache.
-	 *
-	 * @param id - The ID of the configuration entry to update.
-	 * @param data - The new configuration data to store.
-	 * @returns An effect that yields the updated dynamic configuration entry or a database error.
-	 */
-	const update = Effect.fn(function* <DataType>(id: string, data: DataType) {
-		return yield* _update({ id, data: JSON.stringify(data) }).pipe(
-			Effect.tap(() => cache.set<DataType>(cacheKey(id), data, { tags: ['dynamic-config'] }))
-		) as Effect.Effect<DynamicConfigEntry<DataType>, DatabaseError>;
 	});
 
 	/**
