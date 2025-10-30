@@ -16,6 +16,14 @@ Current Conversion Progress to new SDK
 - [ ] RestAPI
 - [ ] Update
 - [x] Cache Service
+- [ ] Utils (previously sdk/effect)
+  - [ ] Collectors
+  - [x] FolderTree
+  - [x] Generators
+  - [x] getVersionFromNPM
+  - [ ] Parsers
+  - [x] PluginUtils (now src/lib/pluginUtils)
+  - [ ] Users
 
 ## License
 

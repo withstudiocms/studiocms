@@ -1,26 +1,104 @@
-import { Effect } from '@withstudiocms/effect';
+import type { Effect } from '@withstudiocms/effect';
 import type { OptionalNullable } from '@withstudiocms/kysely/core/client';
 import type { DatabaseError } from '@withstudiocms/kysely/core/errors';
-import type { StudioCMSDynamicConfigSettings } from '@withstudiocms/kysely/tables';
+import type {
+	StudioCMSAPIKeys,
+	StudioCMSDiffTracking,
+	StudioCMSDynamicConfigSettings,
+	StudioCMSEmailVerificationTokens,
+	StudioCMSOAuthAccounts,
+	StudioCMSPageContent,
+	StudioCMSPageData,
+	StudioCMSPageDataCategories,
+	StudioCMSPageDataTags,
+	StudioCMSPageFolderStructure,
+	StudioCMSPermissions,
+	StudioCMSPluginData,
+	StudioCMSSessionTable,
+	StudioCMSUserResetTokens,
+	StudioCMSUsersTable,
+} from '@withstudiocms/kysely/tables';
+
+export type tsPageDataCategories = typeof StudioCMSPageDataCategories;
+export type tsPageDataTags = typeof StudioCMSPageDataTags;
+export type tsPageData = typeof StudioCMSPageData;
+export type tsPageContent = typeof StudioCMSPageContent;
+export type tsSiteConfig = typeof StudioCMSDynamicConfigSettings;
+export type tsUsers = typeof StudioCMSUsersTable;
+export type tsPageFolder = typeof StudioCMSPageFolderStructure;
+export type tsAPIKeys = typeof StudioCMSAPIKeys;
+export type tsDiffTracking = typeof StudioCMSDiffTracking;
+export type tsEmailVerificationTokens = typeof StudioCMSEmailVerificationTokens;
+export type tsOAuthAccounts = typeof StudioCMSOAuthAccounts;
+export type tsPermissions = typeof StudioCMSPermissions;
+export type tsPluginData = typeof StudioCMSPluginData;
+export type tsSessionTable = typeof StudioCMSSessionTable;
+export type tsUserResetTokens = typeof StudioCMSUserResetTokens;
+
+export type tsPageDataCategoriesSelect = tsPageDataCategories['Select']['Type'];
+export type tsPageDataTagsSelect = tsPageDataTags['Select']['Type'];
+export type tsPageContentSelect = tsPageContent['Select']['Type'];
+export type tsUsersSelect = tsUsers['Select']['Type'];
+export type tsPageFolderSelect = tsPageFolder['Select']['Type'];
+export type tsPageDataSelect = tsPageData['Select']['Type'];
 
 /**
- * Casts the given id and data into a DynamicConfigEntry.
- *
- * @template T - The type of the data in the configuration entry.
- * @param param0 - An object containing the id and data.
- * @returns An effect that yields a DynamicConfigEntry with the given id and data.
+ * Represents a stripped-down version of the `tsPageDataSelect` type,
+ * excluding the properties 'categories', 'tags', and 'contributorIds'.
  */
-export const castData = <T>({
-	id,
-	data,
-}: {
+export type PageDataStripped = Omit<tsPageDataSelect, 'categories' | 'tags' | 'contributorIds'>;
+
+/**
+ * Represents the combined data for a page, extending the stripped page data.
+ *
+ * @interface CombinedPageData
+ * @extends PageDataStripped
+ *
+ * @property {string[]} contributorIds - An array of contributor IDs associated with the page.
+ * @property {tsPageDataCategoriesSelect[]} categories - An array of categories selected for the page.
+ * @property {tsPageDataTagsSelect[]} tags - An array of tags selected for the page.
+ * @property {tsPageContentSelect[]} content - An array of content selected for the page.
+ */
+export interface CombinedPageData extends PageDataStripped {
+	contributorIds: string[];
+	categories: tsPageDataCategoriesSelect[];
+	tags: tsPageDataTagsSelect[];
+	multiLangContent: tsPageContentSelect[];
+	defaultContent: tsPageContentSelect | undefined;
+	urlRoute: string;
+	authorData: tsUsersSelect | undefined;
+	contributorsData: tsUsersSelect[];
+}
+
+/**
+ * Represents a node in a folder structure, which may contain child nodes and page data.
+ *
+ * @property id - Unique identifier for the folder node.
+ * @property name - Name of the folder node.
+ * @property page - Indicates whether this node represents a page.
+ * @property pageData - Data associated with the page, or `null` if not applicable.
+ * @property children - Array of child folder nodes.
+ */
+export interface FolderNode {
 	id: string;
-	data: T;
-}): Effect.Effect<DynamicConfigEntry<T>> =>
-	Effect.succeed({
-		id,
-		data,
-	});
+	name: string;
+	page: boolean;
+	pageData: CombinedPageData | null;
+	children: FolderNode[];
+}
+
+/**
+ * Represents a folder item in a list, including its unique identifier, name, and optional parent folder.
+ *
+ * @property id - The unique identifier for the folder.
+ * @property name - The display name of the folder.
+ * @property parent - The identifier of the parent folder, or `null` if the folder is at the root level.
+ */
+export interface FolderListItem {
+	id: string;
+	name: string;
+	parent?: string | null;
+}
 
 /**
  * Represents a database query function for retrieving dynamic configuration entries.
@@ -47,17 +125,6 @@ export type DbQueryFn = (
 	DatabaseError,
 	never
 >;
-
-/**
- * Represents the dynamic configuration settings type for StudioCMS.
- *
- * This type is inferred from the shape of `StudioCMSDynamicConfigSettings`,
- * allowing for strong typing and IntelliSense support wherever the dynamic
- * configuration settings are used.
- *
- * @see StudioCMSDynamicConfigSettings
- */
-export type DynamicConfigSettings = typeof StudioCMSDynamicConfigSettings;
 
 /**
  * Represents a dynamic configuration entry with a unique identifier and associated data.

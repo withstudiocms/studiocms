@@ -4,6 +4,15 @@ import { StudioCMSDynamicConfigSettings } from '@withstudiocms/kysely/tables';
 import { CacheMissError, CacheService } from '../../cache.js';
 import { cacheKeyGetters, cacheTags } from '../../consts.js';
 import { DBClientLive } from '../../context.js';
+import type {
+	ConfigFinal,
+	DbQueryFn,
+	DynamicConfigEntry,
+	StudioCMSMailerConfig,
+	StudioCMSNotificationSettings,
+	StudioCMSSiteConfig,
+	StudioCMSTemplateConfig,
+} from '../../types.js';
 import {
 	MailerConfigId,
 	MailerConfigVersion,
@@ -15,16 +24,7 @@ import {
 	TemplateConfigVersion,
 } from './consts.js';
 import defaultTemplates from './templates/mailer.js';
-import {
-	type ConfigFinal,
-	castData,
-	type DbQueryFn,
-	type DynamicConfigEntry,
-	type StudioCMSMailerConfig,
-	type StudioCMSNotificationSettings,
-	type StudioCMSSiteConfig,
-	type StudioCMSTemplateConfig,
-} from './types.js';
+import { castData } from './type-utils.js';
 
 /**
  * Generates a cache key for the given configuration ID.
