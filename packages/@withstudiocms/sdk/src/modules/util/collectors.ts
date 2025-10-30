@@ -102,11 +102,8 @@ const useCollectorError = <T>(_try: () => T) =>
  *   SDK modules to obtain normalized, assembled data for pages, users, tags, and categories.
  */
 export const SDKCollectors = Effect.gen(function* () {
-	const [
-		{ db, withCodec },
-		{ findNodesAlongPathToId },
-		{ parseIdNumberArray, parseIdStringArray },
-	] = yield* Effect.all([DBClientLive, SDKFolderTree, SDKParsers]);
+	const [{ withCodec }, { findNodesAlongPathToId }, { parseIdNumberArray, parseIdStringArray }] =
+		yield* Effect.all([DBClientLive, SDKFolderTree, SDKParsers]);
 
 	// =================================================
 	// Database query helpers
@@ -121,8 +118,10 @@ export const SDKCollectors = Effect.gen(function* () {
 	const _getUserData = withCodec({
 		encoder: Schema.String,
 		decoder: Schema.UndefinedOr(StudioCMSUsersTable.Select),
-		query: (id) =>
-			db.selectFrom('StudioCMSUsersTable').selectAll().where('id', '=', id).executeTakeFirst(),
+		callbackFn: (db, id) =>
+			db((c) =>
+				c.selectFrom('StudioCMSUsersTable').selectAll().where('id', '=', id).executeTakeFirst()
+			),
 	});
 
 	/**
@@ -134,7 +133,8 @@ export const SDKCollectors = Effect.gen(function* () {
 	const _getPageContent = withCodec({
 		encoder: Schema.String,
 		decoder: Schema.Array(StudioCMSPageContent.Select),
-		query: (id) => db.selectFrom('StudioCMSPageContent').selectAll().where('id', '=', id).execute(),
+		callbackFn: (db, id) =>
+			db((c) => c.selectFrom('StudioCMSPageContent').selectAll().where('id', '=', id).execute()),
 	});
 
 	/**
@@ -146,8 +146,10 @@ export const SDKCollectors = Effect.gen(function* () {
 	const _getOAuthAccountData = withCodec({
 		encoder: Schema.String,
 		decoder: Schema.Array(StudioCMSOAuthAccounts.Select),
-		query: (id) =>
-			db.selectFrom('StudioCMSOAuthAccounts').selectAll().where('userId', '=', id).execute(),
+		callbackFn: (db, id) =>
+			db((c) =>
+				c.selectFrom('StudioCMSOAuthAccounts').selectAll().where('userId', '=', id).execute()
+			),
 	});
 
 	/**
@@ -159,8 +161,10 @@ export const SDKCollectors = Effect.gen(function* () {
 	const _getUserPermissionsData = withCodec({
 		encoder: Schema.String,
 		decoder: Schema.UndefinedOr(StudioCMSPermissions.Select),
-		query: (id) =>
-			db.selectFrom('StudioCMSPermissions').selectAll().where('user', '=', id).executeTakeFirst(),
+		callbackFn: (db, id) =>
+			db((c) =>
+				c.selectFrom('StudioCMSPermissions').selectAll().where('user', '=', id).executeTakeFirst()
+			),
 	});
 
 	// =================================================
@@ -216,8 +220,10 @@ export const SDKCollectors = Effect.gen(function* () {
 	const collectCategories = withCodec({
 		encoder: Schema.Array(Schema.Number),
 		decoder: Schema.Array(StudioCMSPageDataCategories.Select),
-		query: (ids) =>
-			db.selectFrom('StudioCMSPageDataCategories').selectAll().where('id', 'in', ids).execute(),
+		callbackFn: (db, ids) =>
+			db((c) =>
+				c.selectFrom('StudioCMSPageDataCategories').selectAll().where('id', 'in', ids).execute()
+			),
 	});
 
 	/**
@@ -229,8 +235,8 @@ export const SDKCollectors = Effect.gen(function* () {
 	const collectTags = withCodec({
 		encoder: Schema.Array(Schema.Number),
 		decoder: Schema.Array(StudioCMSPageDataTags.Select),
-		query: (ids) =>
-			db.selectFrom('StudioCMSPageDataTags').selectAll().where('id', 'in', ids).execute(),
+		callbackFn: (db, ids) =>
+			db((c) => c.selectFrom('StudioCMSPageDataTags').selectAll().where('id', 'in', ids).execute()),
 	});
 
 	function collectPageData(

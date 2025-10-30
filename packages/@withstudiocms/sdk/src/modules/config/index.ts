@@ -43,7 +43,7 @@ const cacheOpts = { tags: cacheTags.dynamicConfig };
  * StudioCMS Configuration Modules
  */
 export const SDKConfigModule = Effect.gen(function* () {
-	const [{ db, withCodec }, { merge }, cache] = yield* Effect.all([
+	const [{ withCodec }, { merge }, cache] = yield* Effect.all([
 		DBClientLive,
 		Deepmerge,
 		CacheService,
@@ -62,12 +62,14 @@ export const SDKConfigModule = Effect.gen(function* () {
 	const _insert = withCodec({
 		decoder: StudioCMSDynamicConfigSettings.Select,
 		encoder: StudioCMSDynamicConfigSettings.Insert,
-		query: (data) =>
-			db
-				.insertInto('StudioCMSDynamicConfigSettings')
-				.values(data)
-				.returning(['id', 'data'])
-				.executeTakeFirstOrThrow(),
+		callbackFn: (db, data) =>
+			db((c) =>
+				c
+					.insertInto('StudioCMSDynamicConfigSettings')
+					.values(data)
+					.returning(['id', 'data'])
+					.executeTakeFirstOrThrow()
+			),
 	});
 
 	/**
@@ -79,12 +81,14 @@ export const SDKConfigModule = Effect.gen(function* () {
 	const _select = withCodec({
 		decoder: Schema.UndefinedOr(StudioCMSDynamicConfigSettings.Select),
 		encoder: Schema.String,
-		query: (id) =>
-			db
-				.selectFrom('StudioCMSDynamicConfigSettings')
-				.selectAll()
-				.where('id', '=', id)
-				.executeTakeFirst(),
+		callbackFn: (db, id) =>
+			db((c) =>
+				c
+					.selectFrom('StudioCMSDynamicConfigSettings')
+					.selectAll()
+					.where('id', '=', id)
+					.executeTakeFirst()
+			),
 	});
 
 	/**
@@ -96,13 +100,15 @@ export const SDKConfigModule = Effect.gen(function* () {
 	const _update = withCodec({
 		decoder: StudioCMSDynamicConfigSettings.Select,
 		encoder: StudioCMSDynamicConfigSettings.Update,
-		query: ({ id, data }) =>
-			db
-				.updateTable('StudioCMSDynamicConfigSettings')
-				.set({ data })
-				.where('id', '=', id)
-				.returning(['id', 'data'])
-				.executeTakeFirstOrThrow(),
+		callbackFn: (db, { id, data }) =>
+			db((c) =>
+				c
+					.updateTable('StudioCMSDynamicConfigSettings')
+					.set({ data })
+					.where('id', '=', id)
+					.returning(['id', 'data'])
+					.executeTakeFirstOrThrow()
+			),
 	});
 
 	// =================================================================

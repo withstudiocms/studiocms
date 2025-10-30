@@ -85,7 +85,7 @@ const useFolderTreeError = <T>(_try: () => T) =>
  *          and querying folder trees.
  */
 export const SDKFolderTree = Effect.gen(function* () {
-	const { db, withDecoder } = yield* DBClientLive;
+	const { withDecoder } = yield* DBClientLive;
 
 	/**
 	 * Fetches the current folder structures from the database.
@@ -96,7 +96,8 @@ export const SDKFolderTree = Effect.gen(function* () {
 	 */
 	const _getCurrentFolders = withDecoder({
 		decoder: Schema.Array(StudioCMSPageFolderStructure.Select),
-		query: () => db.selectFrom('StudioCMSPageFolderStructure').selectAll().execute(),
+		callbackFn: (db) =>
+			db((c) => c.selectFrom('StudioCMSPageFolderStructure').selectAll().execute()),
 	});
 
 	/**

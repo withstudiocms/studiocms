@@ -14,7 +14,7 @@ export const dbClientExample = Effect.gen(function* () {
 	);
 
 	// Get the Kysely DB client with Effect helpers
-	const { db, withCodec, withDecoder, withEncoder } =
+	const { withCodec, withDecoder, withEncoder } =
 		yield* getDBClientLive<StudioCMSDatabaseSchema>(dialect);
 
 	//
@@ -23,7 +23,8 @@ export const dbClientExample = Effect.gen(function* () {
 
 	const getUsers = withDecoder({
 		decoder: Schema.Array(StudioCMSUsersTable.Select),
-		query: () => db.selectFrom('StudioCMSUsersTable').selectAll().execute(),
+		callbackFn: (db) =>
+			db((client) => client.selectFrom('StudioCMSUsersTable').selectAll().execute()),
 	});
 
 	const users = yield* getUsers();
@@ -51,9 +52,8 @@ export const dbClientExample = Effect.gen(function* () {
 
 	const insertUser = withEncoder({
 		encoder: StudioCMSUsersTable.Insert,
-		query: (
-			newUser // 'newUser' type comes from 'encoder'
-		) => db.insertInto('StudioCMSUsersTable').values(newUser).executeTakeFirstOrThrow(),
+		callbackFn: (db, newUser) =>
+			db((client) => client.insertInto('StudioCMSUsersTable').values(newUser).executeTakeFirst()),
 	});
 
 	const newUser = yield* insertUser({
@@ -81,10 +81,14 @@ export const dbClientExample = Effect.gen(function* () {
 	const insertNewUser = withCodec({
 		encoder: StudioCMSUsersTable.Insert,
 		decoder: StudioCMSUsersTable.Select,
-		query: (
-			newUser // 'newUser' type comes from 'encoder'
-		) =>
-			db.insertInto('StudioCMSUsersTable').values(newUser).returningAll().executeTakeFirstOrThrow(),
+		callbackFn: (db, newUser) =>
+			db((client) =>
+				client
+					.insertInto('StudioCMSUsersTable')
+					.values(newUser)
+					.returningAll()
+					.executeTakeFirstOrThrow()
+			),
 	});
 
 	const insertedUser = yield* insertNewUser({
@@ -124,9 +128,10 @@ export const dbClientExample = Effect.gen(function* () {
 	const getUserById = withCodec({
 		encoder: Schema.String,
 		decoder: Schema.UndefinedOr(StudioCMSUsersTable.Select),
-		query: (
-			id // 'id' type comes from 'encoder'
-		) => db.selectFrom('StudioCMSUsersTable').selectAll().where('id', '=', id).executeTakeFirst(),
+		callbackFn: (db, id) =>
+			db((client) =>
+				client.selectFrom('StudioCMSUsersTable').selectAll().where('id', '=', id).executeTakeFirst()
+			),
 	});
 
 	const user = yield* getUserById('some-user-id');

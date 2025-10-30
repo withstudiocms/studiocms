@@ -15,61 +15,54 @@ type EffectDb<Schema> = <T>(
 	fn: (db: Kysely<Schema>) => Promise<T>
 ) => Effect.Effect.AsEffect<Effect.Effect<T, NotFoundError | QueryError, never>>;
 
-type WithEncoder = <IEncoded, IType, O, CIType = OptionalNullable<IType>>({
+export type QueryFn<I, O> = (input: I) => Promise<O>;
+
+type DBCallback<Schema> = <T>(
+	fn: (db: Kysely<Schema>) => Promise<T>
+) => Effect.Effect.AsEffect<Effect.Effect<T, NotFoundError | QueryError, never>>;
+
+type DBCallbackFn<Schema, I, O> = (
+	db: DBCallback<Schema>,
+	input: I
+) => Effect.Effect<O, NotFoundError | QueryError, never>;
+
+type WithEncoder<Schema> = <IEncoded, IType, O, CIType = OptionalNullable<IType>>({
+	callbackFn,
 	encoder,
-	query,
 }: {
-	encoder: Schema.Schema<IType, IEncoded, never>;
-	query: QueryFn<IEncoded, O>;
+	encoder: Schema.Schema<IType, IEncoded>;
+	callbackFn: DBCallbackFn<Schema, IEncoded, O>;
 }) => (input: CIType) => Effect.Effect<O, DatabaseError, never>;
 
-type WithDecoder = <OEncoded, OType>({
+type WithDecoder<Schema> = <OEncoded, OType>({
 	decoder,
-	query,
+	callbackFn,
 }: {
 	decoder: Schema.Schema<OType, OEncoded, never>;
-	query: QueryFn<undefined, OEncoded>;
+	callbackFn: DBCallbackFn<Schema, undefined, OEncoded>;
 }) => () => Effect.Effect<OType, DatabaseError, never>;
 
-type WithCodec = <IEncoded, IType, OEncoded, OType, CIType = OptionalNullable<IType>>({
+type WithCodec<Schema> = <IEncoded, IType, OEncoded, OType, CIType = OptionalNullable<IType>>({
 	encoder,
 	decoder,
-	query,
+	callbackFn,
 }: {
 	encoder: Schema.Schema<IType, IEncoded, never>;
 	decoder: Schema.Schema<OType, OEncoded, never>;
-	query: QueryFn<IEncoded, OEncoded>;
+	callbackFn: DBCallbackFn<Schema, IEncoded, OEncoded>;
 }) => (input: CIType) => Effect.Effect<OType, DatabaseError, never>;
 
 export type DBClientInterface<Schema> = {
 	readonly db: Kysely<Schema>;
 	readonly effectDb: EffectDb<Schema>;
-	readonly withEncoder: WithEncoder;
-	readonly withDecoder: WithDecoder;
-	readonly withCodec: WithCodec;
+	readonly withEncoder: WithEncoder<Schema>;
+	readonly withDecoder: WithDecoder<Schema>;
+	readonly withCodec: WithCodec<Schema>;
 };
 
 type KyselyDBClientRaw<Schema> = Effect.Effect<DBClientInterface<Schema>, never, Kysely<Schema>>;
 
 export type KyselyDBClientLive<Schema> = Effect.Effect<DBClientInterface<Schema>, never, never>;
-
-/**
- * Represents an asynchronous query function.
- *
- * The function receives an input of type `I` and returns a `Promise` resolving to `O`.
- * Implementations typically perform I/O (e.g., database or network) and may reject
- * with an error if the operation fails.
- *
- * @template I - Type of the input argument provided to the query function.
- * @template O - Type of the resolved value returned by the Promise.
- *
- * @example
- * // QueryFn<{ id: string }, User>
- * const getUser: QueryFn<{ id: string }, User> = async (input) => { ... };
- *
- * @throws Any error encountered during execution (e.g., network or DB errors).
- */
-export type QueryFn<I, O> = (input: I) => Promise<O>;
 
 /**
  * Encode a value using the provided schema and normalize schema parse errors into QueryParseError.
@@ -245,16 +238,16 @@ const dbClient = <Schema>(): KyselyDBClientRaw<Schema> =>
 		 */
 		const withEncoder =
 			<IEncoded, IType, O, CIType = OptionalNullable<IType>>({
+				callbackFn,
 				encoder,
-				query,
 			}: {
 				encoder: Schema.Schema<IType, IEncoded>;
-				query: QueryFn<IEncoded, O>;
+				callbackFn: (db: typeof effectDb, input: IEncoded) => Effect.Effect<O, DatabaseError>;
 			}) =>
-			(input: CIType): Effect.Effect<O, DatabaseError> =>
+			(input: CIType) =>
 				Effect.gen(function* () {
 					const encoded = yield* encode(encoder, input as unknown as IType);
-					return yield* toEffect(query, encoded);
+					return yield* callbackFn(effectDb, encoded);
 				});
 
 		/**
@@ -282,14 +275,17 @@ const dbClient = <Schema>(): KyselyDBClientRaw<Schema> =>
 		const withDecoder =
 			<OEncoded, OType>({
 				decoder,
-				query,
+				callbackFn,
 			}: {
 				decoder: Schema.Schema<OType, OEncoded>;
-				query: QueryFn<undefined, OEncoded>;
+				callbackFn: (
+					db: typeof effectDb,
+					input: undefined
+				) => Effect.Effect<OEncoded, DatabaseError>;
 			}) =>
 			(): Effect.Effect<OType, DatabaseError> =>
 				Effect.gen(function* () {
-					const res = yield* toEffect(query, undefined);
+					const res = yield* callbackFn(effectDb, undefined);
 					return yield* decode(decoder, res);
 				});
 
@@ -327,16 +323,19 @@ const dbClient = <Schema>(): KyselyDBClientRaw<Schema> =>
 			<IEncoded, IType, OEncoded, OType, CIType = OptionalNullable<IType>>({
 				encoder,
 				decoder,
-				query,
+				callbackFn,
 			}: {
 				encoder: Schema.Schema<IType, IEncoded>;
 				decoder: Schema.Schema<OType, OEncoded>;
-				query: QueryFn<IEncoded, OEncoded>;
+				callbackFn: (
+					db: typeof effectDb,
+					input: IEncoded
+				) => Effect.Effect<OEncoded, DatabaseError>;
 			}) =>
 			(input: CIType): Effect.Effect<OType, DatabaseError> =>
 				Effect.gen(function* () {
 					const encoded = yield* encode(encoder, input as unknown as IType);
-					const res = yield* toEffect(query, encoded);
+					const res = yield* callbackFn(effectDb, encoded);
 					return yield* decode(decoder, res);
 				});
 
