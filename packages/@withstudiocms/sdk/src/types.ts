@@ -229,3 +229,31 @@ export interface StudioCMSTemplateConfig extends StudioCMSDynamicConfigBase {
 	userInvite?: string;
 	verifyEmail?: string;
 }
+
+/**
+ * JWT Header structure.
+ */
+export type JwtHeader = {
+	alg: string;
+	typ: string;
+};
+
+/**
+ * JWT Payload structure.
+ */
+export type JwtPayload = {
+	userId: string;
+	exp?: number;
+	iat?: number;
+};
+
+/**
+ * Represents the result of verifying a JWT (JSON Web Token).
+ *
+ * @property isValid - Indicates whether the JWT is valid.
+ * @property userId - The user ID extracted from the token, if available. This is optional and may be undefined if the token is invalid.
+ */
+export interface JwtVerificationResult {
+	isValid: boolean;
+	userId?: string; // Optional, as the userId might not be available if the token is invalid
+}

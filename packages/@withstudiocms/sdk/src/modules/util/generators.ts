@@ -1,12 +1,6 @@
 import * as crypto from 'node:crypto';
 import { Config, Data, Effect, Redacted } from '@withstudiocms/effect';
-import {
-	base64UrlDecode,
-	generateJwt,
-	type JwtHeader,
-	type JwtPayload,
-	type JwtVerificationResult,
-} from './js/jwt-generator.js';
+import type { JwtHeader, JwtPayload, JwtVerificationResult } from '../../types.js';
 
 /**
  * Represents errors that occur during generator operations.
@@ -92,6 +86,86 @@ export const SDKGenerators = Effect.gen(function* () {
 	 * The CMS encryption key used for JWT operations, with its value redacted.
 	 */
 	const cmsEncryptionKey = Redacted.value(redactedCMSEncryptionKey);
+
+	/**
+	 * Encodes a given string to a Base64URL format.
+	 *
+	 * This function converts the input string to Base64, then replaces characters
+	 * to make the output URL-safe according to the Base64URL specification:
+	 * - Replaces '+' with '-'
+	 * - Replaces '/' with '_'
+	 * - Removes any trailing '=' characters
+	 *
+	 * @param input - The string to encode.
+	 * @returns The Base64URL-encoded string.
+	 */
+	const base64UrlEncode = (input: string): string =>
+		Buffer.from(input)
+			.toString('base64') // convert to base64
+			.replace(/\+/g, '-') // replace '+' with '-'
+			.replace(/\//g, '_') // replace '/' with '_'
+			.replace(/=+$/, ''); // remove any trailing '='
+
+	/**
+	 * Decodes a Base64URL-encoded string into its original representation.
+	 *
+	 * This function replaces URL-safe Base64 characters with their standard equivalents,
+	 * adds necessary padding, and decodes the string using Node.js Buffer.
+	 *
+	 * @param input - The Base64URL-encoded string to decode.
+	 * @returns The decoded string.
+	 */
+	const base64UrlDecode = (input: string): string => {
+		let newInput = input.replace(/-/g, '+').replace(/_/g, '/');
+		while (newInput.length % 4 !== 0) {
+			newInput += '=';
+		}
+		return Buffer.from(newInput, 'base64').toString();
+	};
+
+	/**
+	 * Generates a JSON Web Token (JWT) using the provided secret and payload.
+	 *
+	 * The token is signed using the HS256 algorithm. The payload must include a `userId`.
+	 * The token's expiration (`exp`) is set to 24 hours from the current time by default,
+	 * or 30 years from today if `noExpire` is `true`.
+	 *
+	 * @param secret - The secret key used to sign the JWT.
+	 * @param payload - An object containing the JWT payload. Must include a `userId`.
+	 * @param noExpire - If `true`, sets the token expiration to 30 years from now; otherwise, 24 hours.
+	 * @returns The generated JWT as a string.
+	 */
+	const generateJwt = Effect.fn((secret: string, payload: { userId: string }, noExpire?: boolean) =>
+		useGeneratorError(() => {
+			const header = { alg: 'HS256', typ: 'JWT' };
+
+			const currentDate = new Date();
+			const thirtyYearsFromToday = Math.floor(
+				currentDate.setFullYear(currentDate.getFullYear() + 30) / 1000
+			);
+
+			const exp = noExpire ? thirtyYearsFromToday : Math.floor(Date.now() / 1000) + 86400; // 24 hours in seconds
+
+			const payloadObj = {
+				...payload,
+				iat: Math.floor(Date.now() / 1000), // Corrected iat
+				exp,
+			};
+
+			const encodedHeader = base64UrlEncode(JSON.stringify(header));
+			const encodedPayload = base64UrlEncode(JSON.stringify(payloadObj));
+
+			const signatureInput = `${encodedHeader}.${encodedPayload}`;
+			const signature = Buffer.from(
+				crypto
+					.createHmac('sha256', secret + secret)
+					.update(signatureInput)
+					.digest()
+			).toString('base64url');
+
+			return `${encodedHeader}.${encodedPayload}.${signature}`;
+		})
+	);
 
 	/**
 	 * Verifies a JWT (JSON Web Token) using the provided secret key.
@@ -199,7 +273,7 @@ export const SDKGenerators = Effect.gen(function* () {
 	 * @returns A signed JWT string that expires in 3 hours.
 	 */
 	const generateToken = Effect.fn((userId: string, noExpire?: boolean) =>
-		useGeneratorError(() => generateJwt(cmsEncryptionKey, { userId }, noExpire))
+		generateJwt(cmsEncryptionKey, { userId }, noExpire)
 	);
 
 	/**
