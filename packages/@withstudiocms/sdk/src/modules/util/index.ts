@@ -3,6 +3,7 @@ import { SDKFolderTree as FolderTree } from './folderTree.js';
 import { SDKGenerators as Generators } from './generators.js';
 import { GetVersionFromNPM } from './getVersionFromNPM.js';
 import { SDKParsers as Parsers } from './parsers.js';
+import { SDKUsers as Users } from './users.js';
 
 const placeholder = Effect.succeed({});
 
@@ -17,5 +18,5 @@ export const SDKUtilModule = Effect.all({
 	Generators,
 	GetVersionFromNPM,
 	Parsers,
-	Users: placeholder,
+	Users,
 });

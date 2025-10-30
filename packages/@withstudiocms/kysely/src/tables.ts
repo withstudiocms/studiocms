@@ -51,7 +51,7 @@ export const StudioCMSSessionTable = Table({
  */
 export const StudioCMSPermissions = Table({
 	user: Schema.String,
-	permissions: Schema.Literal('owner', 'admin', 'editor', 'visitor', 'unknown'),
+	rank: Schema.Literal('owner', 'admin', 'editor', 'visitor', 'unknown'),
 });
 
 /**

@@ -4,7 +4,7 @@ import { DBClientLive as dbService } from './context.js';
 import { SDKConfigModule as CONFIG } from './modules/config/index.js';
 import { SDKUtilModule as UTIL } from './modules/util/index.js';
 
-export * from './context.js';
+export { makeSDKContext } from './context.js';
 
 /**
  * SDK Dependencies Layer

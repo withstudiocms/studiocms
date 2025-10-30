@@ -23,7 +23,7 @@ Current Conversion Progress to new SDK
   - [x] getVersionFromNPM
   - [x] Parsers
   - [x] PluginUtils (now src/lib/pluginUtils)
-  - [ ] Users
+  - [x] Users
 
 ## License
 

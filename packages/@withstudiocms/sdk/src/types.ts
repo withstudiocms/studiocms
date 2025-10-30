@@ -312,3 +312,33 @@ export interface diffReturn extends Omit<diffItem, 'pageMetaData'> {
  * @returns `diffReturn` if `T` extends `diffItem`, otherwise `diffReturn[]`.
  */
 export type DiffReturnType<T> = T extends diffItem ? diffReturn : diffReturn[];
+
+/**
+ * Represents a single rank with an identifier and a name.
+ */
+export interface SingleRank {
+	id: string;
+	name: string;
+}
+
+/**
+ * Represents a combined rank with associated details.
+ *
+ * @property {string} rank - The rank of the entity.
+ * @property {string} id - The unique identifier for the rank.
+ * @property {string} name - The name associated with the rank.
+ */
+export interface CombinedRank extends SingleRank {
+	rank: string;
+}
+
+/**
+ * Represents the different types of user lists available in the system.
+ *
+ * - 'owners': List of owners.
+ * - 'admins': List of administrators.
+ * - 'editors': List of editors.
+ * - 'visitors': List of visitors.
+ * - 'all': List of all users.
+ */
+export type AvailableLists = 'owners' | 'admins' | 'editors' | 'visitors' | 'all';
