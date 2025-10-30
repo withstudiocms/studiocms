@@ -76,7 +76,7 @@ export class NpmRegistryResponseSchema extends Schema.Class<NpmRegistryResponseS
 /**
  * Helper to process and validate the HTTP response from the NPM registry.
  */
-const handleNpmRegistryResponse = Platform.HttpClientResponse.schemaBodyJson(
+const parseNpmRegistryResponse = Platform.HttpClientResponse.schemaBodyJson(
 	NpmRegistryResponseSchema,
 	{
 		exact: false,
@@ -115,7 +115,7 @@ export const GetFromNPM = Effect.gen(function* () {
 		memoize(
 			cacheKeyGetters.npmPackage(pkg, ver),
 			getter(`https://registry.npmjs.org/${pkg}/${ver}`).pipe(
-				Effect.flatMap(handleNpmRegistryResponse)
+				Effect.flatMap(parseNpmRegistryResponse)
 			),
 			{
 				tags: cacheTags.npmPackage,
