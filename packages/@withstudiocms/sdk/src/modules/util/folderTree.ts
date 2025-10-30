@@ -96,8 +96,8 @@ export const SDKFolderTree = Effect.gen(function* () {
 	 */
 	const _getCurrentFolders = withDecoder({
 		decoder: Schema.Array(StudioCMSPageFolderStructure.Select),
-		callbackFn: (db) =>
-			db((c) => c.selectFrom('StudioCMSPageFolderStructure').selectAll().execute()),
+		callbackFn: (query) =>
+			query((db) => db.selectFrom('StudioCMSPageFolderStructure').selectAll().execute()),
 	});
 
 	/**

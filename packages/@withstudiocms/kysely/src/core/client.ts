@@ -22,7 +22,7 @@ type DBCallback<Schema> = <T>(
 ) => Effect.Effect.AsEffect<Effect.Effect<T, NotFoundError | QueryError, never>>;
 
 type DBCallbackFn<Schema, I, O> = (
-	db: DBCallback<Schema>,
+	query: DBCallback<Schema>,
 	input: I
 ) => Effect.Effect<O, NotFoundError | QueryError, never>;
 
@@ -242,7 +242,7 @@ const dbClient = <Schema>(): KyselyDBClientRaw<Schema> =>
 				encoder,
 			}: {
 				encoder: Schema.Schema<IType, IEncoded>;
-				callbackFn: (db: typeof effectDb, input: IEncoded) => Effect.Effect<O, DatabaseError>;
+				callbackFn: (query: typeof effectDb, input: IEncoded) => Effect.Effect<O, DatabaseError>;
 			}) =>
 			(input: CIType) =>
 				Effect.gen(function* () {
@@ -279,7 +279,7 @@ const dbClient = <Schema>(): KyselyDBClientRaw<Schema> =>
 			}: {
 				decoder: Schema.Schema<OType, OEncoded>;
 				callbackFn: (
-					db: typeof effectDb,
+					query: typeof effectDb,
 					input: undefined
 				) => Effect.Effect<OEncoded, DatabaseError>;
 			}) =>
@@ -328,7 +328,7 @@ const dbClient = <Schema>(): KyselyDBClientRaw<Schema> =>
 				encoder: Schema.Schema<IType, IEncoded>;
 				decoder: Schema.Schema<OType, OEncoded>;
 				callbackFn: (
-					db: typeof effectDb,
+					query: typeof effectDb,
 					input: IEncoded
 				) => Effect.Effect<OEncoded, DatabaseError>;
 			}) =>

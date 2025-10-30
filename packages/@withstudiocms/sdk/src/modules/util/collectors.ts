@@ -118,9 +118,9 @@ export const SDKCollectors = Effect.gen(function* () {
 	const _getUserData = withCodec({
 		encoder: Schema.String,
 		decoder: Schema.UndefinedOr(StudioCMSUsersTable.Select),
-		callbackFn: (db, id) =>
-			db((c) =>
-				c.selectFrom('StudioCMSUsersTable').selectAll().where('id', '=', id).executeTakeFirst()
+		callbackFn: (query, id) =>
+			query((db) =>
+				db.selectFrom('StudioCMSUsersTable').selectAll().where('id', '=', id).executeTakeFirst()
 			),
 	});
 
@@ -133,8 +133,10 @@ export const SDKCollectors = Effect.gen(function* () {
 	const _getPageContent = withCodec({
 		encoder: Schema.String,
 		decoder: Schema.Array(StudioCMSPageContent.Select),
-		callbackFn: (db, id) =>
-			db((c) => c.selectFrom('StudioCMSPageContent').selectAll().where('id', '=', id).execute()),
+		callbackFn: (query, id) =>
+			query((db) =>
+				db.selectFrom('StudioCMSPageContent').selectAll().where('id', '=', id).execute()
+			),
 	});
 
 	/**
@@ -146,9 +148,9 @@ export const SDKCollectors = Effect.gen(function* () {
 	const _getOAuthAccountData = withCodec({
 		encoder: Schema.String,
 		decoder: Schema.Array(StudioCMSOAuthAccounts.Select),
-		callbackFn: (db, id) =>
-			db((c) =>
-				c.selectFrom('StudioCMSOAuthAccounts').selectAll().where('userId', '=', id).execute()
+		callbackFn: (query, id) =>
+			query((db) =>
+				db.selectFrom('StudioCMSOAuthAccounts').selectAll().where('userId', '=', id).execute()
 			),
 	});
 
@@ -161,9 +163,9 @@ export const SDKCollectors = Effect.gen(function* () {
 	const _getUserPermissionsData = withCodec({
 		encoder: Schema.String,
 		decoder: Schema.UndefinedOr(StudioCMSPermissions.Select),
-		callbackFn: (db, id) =>
-			db((c) =>
-				c.selectFrom('StudioCMSPermissions').selectAll().where('user', '=', id).executeTakeFirst()
+		callbackFn: (query, id) =>
+			query((db) =>
+				db.selectFrom('StudioCMSPermissions').selectAll().where('user', '=', id).executeTakeFirst()
 			),
 	});
 
