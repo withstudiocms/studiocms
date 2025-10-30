@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/suspicious/noExplicitAny: Allowed for scratchpad examples */
 import { Effect } from '@withstudiocms/effect';
 import { CacheService } from '../../src/cache';
 
@@ -28,7 +29,7 @@ const CacheTags = {
 };
 
 // Use in operations
-const updateArticle = (id: string, data: Partial<Article>) =>
+export const updateArticle = (id: string, data: Partial<Article>) =>
 	Effect.gen(function* () {
 		const cache = yield* CacheService;
 		const updated = yield* db.update('articles', id, data);

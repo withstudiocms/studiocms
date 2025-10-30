@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/suspicious/noExplicitAny: Allowed for scratchpad examples */
 import { Duration, Effect } from '@withstudiocms/effect';
 import { CacheService } from '../../src/cache';
 
@@ -24,14 +25,14 @@ export const memoizeQuery = <A, E, R>(
 	}).pipe(Effect.provide(CacheService.Default));
 
 // Usage
-const getArticle = (id: string) =>
+export const getArticle = (id: string) =>
 	memoizeQuery(`article:${id}`, db.query('SELECT * FROM articles WHERE id = ?', [id]), {
 		ttl: Duration.minutes(10),
 		tags: [`article:${id}`],
 	});
 
 // After update
-const updateArticle = (id: string, data: Partial<{ foo: string }>) =>
+export const updateArticle = (id: string, data: Partial<{ foo: string }>) =>
 	Effect.gen(function* () {
 		const cache = yield* CacheService;
 		const result = yield* db.update('articles', id, data);

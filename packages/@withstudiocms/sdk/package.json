@@ -46,6 +46,7 @@
   },
   "peerDependencies": {
 		"@withstudiocms/effect": "workspace:*",
-    "@withstudiocms/kysely": "workspace:*"
+    "@withstudiocms/kysely": "workspace:*",
+    "astro": "catalog:min"
   }
 }

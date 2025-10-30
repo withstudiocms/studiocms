@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/suspicious/noExplicitAny: Allowed for scratchpad examples */
 import { Context, Duration, Effect } from '@withstudiocms/effect';
 import { CacheService } from '../../src/cache';
 
@@ -11,18 +12,18 @@ interface Article {
 }
 
 interface ArticleRepository {
-	findById: (id: string) => Effect.Effect<Article | null, Error>;
-	findByAuthor: (authorId: string) => Effect.Effect<Article[], Error>;
-	findByCategory: (categoryId: string) => Effect.Effect<Article[], Error>;
-	insert: (article: Omit<Article, 'id'>) => Effect.Effect<Article, Error>;
-	update: (id: string, data: Partial<Article>) => Effect.Effect<Article, Error>;
-	delete: (id: string) => Effect.Effect<void, Error>;
+	findById: (id: string) => Effect.Effect<Article | null, unknown, unknown>;
+	findByAuthor: (authorId: string) => Effect.Effect<Article[], unknown, unknown>;
+	findByCategory: (categoryId: string) => Effect.Effect<Article[], unknown, unknown>;
+	insert: (article: Omit<Article, 'id'>) => Effect.Effect<Article, unknown, unknown>;
+	update: (id: string, data: Partial<Article>) => Effect.Effect<Article, unknown, unknown>;
+	delete: (id: string) => Effect.Effect<void, unknown, unknown>;
 }
 
 const ArticleRepository = Context.GenericTag<ArticleRepository>('ArticleRepository');
 
 // Implementation with cache
-const makeArticleRepository = (db: any) =>
+export const makeArticleRepository = (db: any) =>
 	Effect.gen(function* () {
 		const cache = yield* CacheService;
 
@@ -45,7 +46,7 @@ const makeArticleRepository = (db: any) =>
 					tags: [`article:${id}`, `author:${article.authorId}`, `category:${article.categoryId}`],
 				});
 
-				return article;
+				return article as Article;
 			});
 
 		const findByAuthor = (authorId: string) =>
@@ -62,7 +63,7 @@ const makeArticleRepository = (db: any) =>
 					tags: [`author:${authorId}`],
 				});
 
-				return articles;
+				return articles as Article[];
 			});
 
 		const findByCategory = (categoryId: string) =>
@@ -81,7 +82,7 @@ const makeArticleRepository = (db: any) =>
 					tags: [`category:${categoryId}`],
 				});
 
-				return articles;
+				return articles as Article[];
 			});
 
 		const insert = (data: Omit<Article, 'id'>) =>
@@ -94,7 +95,7 @@ const makeArticleRepository = (db: any) =>
 					`category:${article.categoryId}`,
 				]);
 
-				return article;
+				return article as Article;
 			});
 
 		const update = (id: string, data: Partial<Article>) =>
@@ -123,7 +124,7 @@ const makeArticleRepository = (db: any) =>
 
 				yield* cache.invalidateTags(tagsToInvalidate);
 
-				return updated;
+				return updated as Article;
 			});
 
 		const deleteArticle = (id: string) =>
@@ -141,12 +142,12 @@ const makeArticleRepository = (db: any) =>
 				}
 			});
 
-		// return ArticleRepository.of({
-		// 	findById,
-		// 	findByAuthor,
-		// 	findByCategory,
-		// 	insert,
-		// 	update,
-		// 	delete: deleteArticle,
-		// });
+		return ArticleRepository.of({
+			findById,
+			findByAuthor,
+			findByCategory,
+			insert,
+			update,
+			delete: deleteArticle,
+		});
 	});
