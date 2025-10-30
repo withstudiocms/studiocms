@@ -175,7 +175,14 @@ export class CacheService extends Effect.Service<CacheService>()(
 					tagIndex.clear();
 				});
 
-			// Helper for query memoization with tags
+			/**
+			 * Memoizes the result of an effect under a given key with optional TTL and tags.
+			 *
+			 * @param key - The cache key.
+			 * @param effect - The effect to memoize.
+			 * @param options - Optional settings including TTL and tags.
+			 * @returns An effect that yields the memoized result.
+			 */
 			const memoize = <A, E, R>(
 				key: string,
 				effect: Effect.Effect<A, E, R>,
