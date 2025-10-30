@@ -175,7 +175,29 @@ export class CacheService extends Effect.Service<CacheService>()(
 					tagIndex.clear();
 				});
 
-			return { get, set, delete: deleteKey, invalidateTags, clear };
+			// Helper for query memoization with tags
+			const memoize = <A, E, R>(
+				key: string,
+				effect: Effect.Effect<A, E, R>,
+				options?: {
+					ttl?: Duration.Duration;
+					tags?: string[];
+				}
+			): Effect.Effect<A, E, R> =>
+				Effect.gen(function* () {
+					// Check cache first
+					const cached = yield* get<A>(key);
+
+					// Return cached value if present
+					if (cached !== null) return cached;
+
+					// Otherwise run the effect and cache the result
+					const result = yield* effect;
+					yield* set(key, result, options);
+					return result;
+				});
+
+			return { get, set, delete: deleteKey, invalidateTags, clear, memoize };
 		}),
 	}
 ) {}

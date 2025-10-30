@@ -3,6 +3,7 @@
  */
 export const cacheTags = {
 	dynamicConfig: ['dynamic-config'],
+	npmPackage: ['npm-package'],
 };
 
 /**
@@ -10,4 +11,5 @@ export const cacheTags = {
  */
 export const cacheKeyGetters = {
 	dynamicConfig: (id: string) => `dynamic-config:${id}`,
+	npmPackage: (name: string, version: string) => `npm-package:${name.replace('/', '-')}:${version}`,
 };

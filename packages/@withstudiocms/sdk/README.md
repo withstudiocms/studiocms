@@ -20,7 +20,7 @@ Current Conversion Progress to new SDK
   - [ ] Collectors
   - [x] FolderTree
   - [x] Generators
-  - [x] getVersionFromNPM
+  - [x] getVersionFromNPM (renamed to getFromNPM and expanded)
   - [x] Parsers
   - [x] PluginUtils (now src/lib/pluginUtils)
   - [x] Users

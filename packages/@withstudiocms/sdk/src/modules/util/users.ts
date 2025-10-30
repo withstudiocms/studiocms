@@ -124,39 +124,47 @@ export const SDKUsers = Effect.gen(function* () {
 	 * @returns A boolean indicating whether the operation was successful.
 	 */
 	const clearUserReferences = Effect.fn(function* (userId: string) {
-		yield* effectDb((db) =>
-			db
-				.deleteFrom('StudioCMSUserResetTokens')
-				.where('userId', '=', userId)
-				.executeTakeFirstOrThrow()
-		);
-		yield* effectDb((db) =>
-			db.deleteFrom('StudioCMSOAuthAccounts').where('userId', '=', userId).executeTakeFirstOrThrow()
-		);
-		yield* effectDb((db) =>
-			db.deleteFrom('StudioCMSPermissions').where('user', '=', userId).executeTakeFirstOrThrow()
-		);
-		yield* effectDb((db) =>
-			db.deleteFrom('StudioCMSSessionTable').where('userId', '=', userId).executeTakeFirstOrThrow()
-		);
-		yield* effectDb((db) =>
-			db
-				.updateTable('StudioCMSDiffTracking')
-				.set({
-					userId: GhostUserDefaults.id,
-				})
-				.where('userId', '=', userId)
-				.executeTakeFirstOrThrow()
-		);
-		yield* effectDb((db) =>
-			db
-				.updateTable('StudioCMSPageData')
-				.set({
-					authorId: GhostUserDefaults.id,
-				})
-				.where('authorId', '=', userId)
-				.executeTakeFirstOrThrow()
-		);
+		// Execute all delete operations
+		yield* Effect.all([
+			...[
+				{
+					table: 'StudioCMSUserResetTokens' as const,
+					lhs: 'userId' as const,
+				},
+				{
+					table: 'StudioCMSOAuthAccounts' as const,
+					lhs: 'userId' as const,
+				},
+				{
+					table: 'StudioCMSPermissions' as const,
+					lhs: 'user' as const,
+				},
+				{
+					table: 'StudioCMSSessionTable' as const,
+					lhs: 'userId' as const,
+				},
+			].map(({ table, lhs }) =>
+				effectDb((db) => db.deleteFrom(table).where(lhs, '=', userId).executeTakeFirstOrThrow())
+			),
+			...[
+				{
+					table: 'StudioCMSDiffTracking' as const,
+					lhs: 'userId' as const,
+					update: { userId: GhostUserDefaults.id },
+				},
+				{
+					table: 'StudioCMSPageData' as const,
+					lhs: 'authorId' as const,
+					update: { authorId: GhostUserDefaults.id },
+				},
+			].map(({ table, lhs, update }) =>
+				effectDb((db) =>
+					db.updateTable(table).set(update).where(lhs, '=', userId).executeTakeFirstOrThrow()
+				)
+			),
+		]);
+
+		// Indicate successful completion
 		return true;
 	});
 
