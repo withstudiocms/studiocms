@@ -85,6 +85,16 @@ const parseNpmRegistryResponse = Platform.HttpClientResponse.schemaBodyJson(
 );
 
 /**
+ * Cache key for NPM package data.
+ */
+const cacheKey = cacheKeyGetters.npmPackage;
+
+/**
+ * Cache options for NPM package data.
+ */
+const cacheOpts = { tags: cacheTags.npmPackage };
+
+/**
  * An Effect service for retrieving the version of an NPM package from the NPM registry.
  *
  * @remarks
@@ -111,15 +121,13 @@ export const GetFromNPM = Effect.gen(function* () {
 	 * @param ver - The version tag or number (defaults to 'latest').
 	 * @returns An Effect that resolves to the NpmRegistryResponse of the specified package.
 	 */
-	const getDataFromNPM = Effect.fn((pkg: string, ver = 'latest') =>
+	const getDataFromNPM = Effect.fn((pkg: string, ver?: string) =>
 		memoize(
-			cacheKeyGetters.npmPackage(pkg, ver),
-			getter(`https://registry.npmjs.org/${pkg}/${ver}`).pipe(
+			cacheKey(pkg, ver || 'latest'),
+			getter(`https://registry.npmjs.org/${pkg}/${ver || 'latest'}`).pipe(
 				Effect.flatMap(parseNpmRegistryResponse)
 			),
-			{
-				tags: cacheTags.npmPackage,
-			}
+			cacheOpts
 		)
 	);
 
@@ -130,8 +138,9 @@ export const GetFromNPM = Effect.gen(function* () {
 	 * @param ver - The version tag or number (defaults to 'latest').
 	 * @returns An Effect that resolves to the version string of the specified package.
 	 */
-	const getVersion = (pkg: string, ver = 'latest') =>
-		getDataFromNPM(pkg, ver).pipe(Effect.map((data) => data.version));
+	const getVersion = Effect.fn((pkg: string, ver?: string) =>
+		getDataFromNPM(pkg, ver).pipe(Effect.map((data) => data.version))
+	);
 
 	return { getVersion, getDataFromNPM };
 }).pipe(Effect.provide(HTTPClient.Default));
