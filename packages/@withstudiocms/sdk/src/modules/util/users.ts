@@ -114,9 +114,7 @@ export const SDKUsers = Effect.gen(function* () {
 	 * @returns An array of combined ranks, where each element includes the given rank and the properties of a user rank.
 	 */
 	const combineRanks = Effect.fn((rank: string, users: SingleRank[]) =>
-		useUsersError(() => {
-			return users.map((user) => ({ ...user, rank })) as CombinedRank[];
-		})
+		useUsersError(() => users.map((user) => ({ ...user, rank })) as CombinedRank[])
 	);
 
 	/**
