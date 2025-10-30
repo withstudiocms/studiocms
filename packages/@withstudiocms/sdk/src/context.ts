@@ -52,12 +52,18 @@ export class SDKDefaults extends Context.Tag('@withstudiocms/sdk/context/SDKDefa
 }
 
 /**
+ * Interface representing the SDK context, combining the database client and default options.
+ */
+export interface SDKContext {
+	db: DBClientInterface<StudioCMSDatabaseSchema>;
+	defaults: SDKDefaultOpts;
+}
+
+/**
  * Combines the database client and SDK default options into a single SDK context layer.
  *
  * @param context - An object containing the database client and default SDK options.
  * @returns A merged layer that provides both the DBClient and SDKDefaults context tags.
  */
-export const makeSDKContext = (context: {
-	db: DBClientInterface<StudioCMSDatabaseSchema>;
-	defaults: SDKDefaultOpts;
-}) => Layer.mergeAll(DBClientLive.Live(context.db), SDKDefaults.live(context.defaults));
+export const makeSDKContext = (context: SDKContext) =>
+	Layer.mergeAll(DBClientLive.Live(context.db), SDKDefaults.live(context.defaults));
