@@ -19,6 +19,10 @@ import type {
 	StudioCMSUsersTable,
 } from '@withstudiocms/kysely/tables';
 
+// ===============================================================
+// Table Type Aliases
+// ===============================================================
+
 export type tsPageDataCategories = typeof StudioCMSPageDataCategories;
 export type tsPageDataTags = typeof StudioCMSPageDataTags;
 export type tsPageData = typeof StudioCMSPageData;
@@ -41,6 +45,10 @@ export type tsPageContentSelect = tsPageContent['Select']['Type'];
 export type tsUsersSelect = tsUsers['Select']['Type'];
 export type tsPageFolderSelect = tsPageFolder['Select']['Type'];
 export type tsPageDataSelect = tsPageData['Select']['Type'];
+
+// ===============================================================
+// SDK Types
+// ===============================================================
 
 /**
  * Represents a stripped-down version of the `tsPageDataSelect` type,
@@ -257,3 +265,50 @@ export interface JwtVerificationResult {
 	isValid: boolean;
 	userId?: string; // Optional, as the userId might not be available if the token is invalid
 }
+
+/**
+ * Represents a single difference item for a page, including metadata and content changes.
+ *
+ * @property id - Unique identifier for the diff item.
+ * @property userId - Identifier of the user who made the change.
+ * @property pageId - Identifier of the page associated with the diff.
+ * @property timestamp - The date and time when the diff was created, or null if not set.
+ * @property pageMetaData - Metadata associated with the page; type is unknown.
+ * @property pageContentStart - The initial content of the page before the diff.
+ * @property diff - The difference content as a string, or null if not available.
+ */
+export interface diffItem {
+	id: string;
+	userId: string;
+	pageId: string;
+	timestamp: Date | null;
+	pageMetaData: unknown;
+	pageContentStart: string;
+	diff: string | null;
+}
+
+/**
+ * Represents the result of a diff operation, extending {@link diffItem} but replacing the `pageMetaData` property.
+ *
+ * @remarks
+ * The `pageMetaData` property contains the starting and ending states of page metadata,
+ * each represented as a partial selection of {@link tsPageDataSelect}.
+ *
+ * @see diffItem
+ * @see tsPageDataSelect
+ */
+export interface diffReturn extends Omit<diffItem, 'pageMetaData'> {
+	pageMetaData: {
+		start: Partial<tsPageDataSelect>;
+		end: Partial<tsPageDataSelect>;
+	};
+}
+
+/**
+ * Determines the return type based on whether the generic type `T` extends `diffItem`.
+ * If `T` extends `diffItem`, returns `diffReturn`; otherwise, returns an array of `diffReturn`.
+ *
+ * @template T - The type to check against `diffItem`.
+ * @returns `diffReturn` if `T` extends `diffItem`, otherwise `diffReturn[]`.
+ */
+export type DiffReturnType<T> = T extends diffItem ? diffReturn : diffReturn[];

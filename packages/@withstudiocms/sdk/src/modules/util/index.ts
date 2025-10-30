@@ -2,6 +2,7 @@ import { Effect } from '@withstudiocms/effect';
 import { SDKFolderTree as FolderTree } from './folderTree.js';
 import { SDKGenerators as Generators } from './generators.js';
 import { GetVersionFromNPM } from './getVersionFromNPM.js';
+import { SDKParsers as Parsers } from './parsers.js';
 
 const placeholder = Effect.succeed({});
 
@@ -15,6 +16,6 @@ export const SDKUtilModule = Effect.all({
 	FolderTree,
 	Generators,
 	GetVersionFromNPM,
-	Parsers: placeholder,
+	Parsers,
 	Users: placeholder,
 });
