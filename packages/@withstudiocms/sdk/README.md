@@ -16,8 +16,8 @@ Current Conversion Progress to new SDK
 - [ ] RestAPI
 - [ ] Update
 - [x] Cache Service
-- [ ] Utils (previously sdk/effect)
-  - [ ] Collectors
+- [x] Utils (previously sdk/effect)
+  - [x] Collectors
   - [x] FolderTree
   - [x] Generators
   - [x] getVersionFromNPM (renamed to getFromNPM and expanded to include cache layer)

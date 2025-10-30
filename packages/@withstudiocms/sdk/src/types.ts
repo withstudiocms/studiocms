@@ -45,10 +45,29 @@ export type tsPageContentSelect = tsPageContent['Select']['Type'];
 export type tsUsersSelect = tsUsers['Select']['Type'];
 export type tsPageFolderSelect = tsPageFolder['Select']['Type'];
 export type tsPageDataSelect = tsPageData['Select']['Type'];
+export type tsOAuthAccountsSelect = tsOAuthAccounts['Select']['Type'];
+export type tsPermissionsSelect = tsPermissions['Select']['Type'];
 
 // ===============================================================
 // SDK Types
 // ===============================================================
+
+/**
+ * Interface representing combined user data.
+ *
+ * This interface extends `tsUsersSelect` and includes additional properties
+ * for OAuth data and permissions data.
+ *
+ * @interface CombinedUserData
+ * @extends {tsUsersSelect}
+ *
+ * @property {tsOAuthAccountsSelect[] | undefined} oAuthData - An array of OAuth account data or undefined.
+ * @property {tsPermissionsSelect | undefined} permissionsData - Permissions data or undefined.
+ */
+export interface CombinedUserData extends tsUsersSelect {
+	oAuthData: tsOAuthAccountsSelect[] | undefined;
+	permissionsData: tsPermissionsSelect | undefined;
+}
 
 /**
  * Represents a stripped-down version of the `tsPageDataSelect` type,
@@ -77,6 +96,24 @@ export interface CombinedPageData extends PageDataStripped {
 	authorData: tsUsersSelect | undefined;
 	contributorsData: tsUsersSelect[];
 }
+
+/**
+ * Represents page data containing only metadata fields, excluding multilingual and default content.
+ *
+ * This type omits the `multiLangContent` and `defaultContent` properties from `CombinedPageData`.
+ */
+export type MetaOnlyPageData = Omit<CombinedPageData, 'multiLangContent' | 'defaultContent'>;
+
+/**
+ * Conditional type that returns either `MetaOnlyPageData` or an array of `MetaOnlyPageData`
+ * based on whether the generic type `T` extends `CombinedPageData`.
+ *
+ * @template T - The type to check against `CombinedPageData`.
+ * @returns If `T` extends `CombinedPageData`, returns `MetaOnlyPageData`; otherwise, returns `MetaOnlyPageData[]`.
+ */
+export type PageDataReturnType<T> = T extends CombinedPageData
+	? MetaOnlyPageData
+	: MetaOnlyPageData[];
 
 /**
  * Represents a node in a folder structure, which may contain child nodes and page data.
