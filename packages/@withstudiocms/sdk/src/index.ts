@@ -14,7 +14,7 @@ export * from './context.js';
 const SDKDependencies = Layer.mergeAll(CacheService.Default, Deepmerge.Default);
 
 // TODO: Placeholder Effects for unimplemented modules
-const placeholder = Effect.succeed('hi');
+const placeholder = Effect.succeed('todo' as const);
 
 /**
  * StudioCMS SDK Core Layer
@@ -31,6 +31,9 @@ export const StudioCMSSDKCore = Effect.all({
 	MIDDLEWARES: placeholder,
 	notificationSettings: placeholder,
 	PLUGINS: placeholder,
+	POST: placeholder,
+	UPDATE: placeholder,
+	REST_API: placeholder,
 	UTIL,
 	resetTokenBucket: placeholder,
 }).pipe(Effect.provide(SDKDependencies));
