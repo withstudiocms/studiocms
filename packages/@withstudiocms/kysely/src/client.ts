@@ -1,6 +1,7 @@
 import { Context, Layer } from 'effect';
 import type { Dialect } from 'kysely';
 import {
+	DBCallbackFailure,
 	type DBClientInterface,
 	type KyselyDBClientLive,
 	makeDBClientLive,
@@ -9,6 +10,8 @@ import {
 export type { Dialect } from 'kysely';
 
 export type { KyselyDBClientLive, DBClientInterface };
+
+export { DBCallbackFailure };
 
 /**
  * Factory that creates a live database client configured for the specified SQL dialect.

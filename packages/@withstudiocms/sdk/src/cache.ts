@@ -18,6 +18,9 @@ export class CacheMissError {
 	readonly _tag = 'CacheMissError';
 }
 
+const returnNonNull = <A>(value: A | null): Effect.Effect<A, CacheMissError> =>
+	value !== null ? Effect.succeed(value) : Effect.fail(new CacheMissError());
+
 /**
  * In-memory caching service implemented as an Effect.Service.
  *
@@ -191,18 +194,12 @@ export class CacheService extends Effect.Service<CacheService>()(
 					tags?: string[];
 				}
 			): Effect.Effect<A, E, R> =>
-				Effect.gen(function* () {
-					// Check cache first
-					const cached = yield* get<A>(key);
-
-					// Return cached value if present
-					if (cached !== null) return cached;
-
-					// Otherwise run the effect and cache the result
-					const result = yield* effect;
-					yield* set(key, result, options);
-					return result;
-				});
+				get<A>(key).pipe(
+					Effect.flatMap(returnNonNull),
+					Effect.catchTag('CacheMissError', () =>
+						effect.pipe(Effect.tap((result) => set<A>(key, result, options)))
+					)
+				);
 
 			return { get, set, delete: deleteKey, invalidateTags, clear, memoize };
 		}),

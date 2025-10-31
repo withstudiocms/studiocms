@@ -1,5 +1,5 @@
 import type { Effect } from '@withstudiocms/effect';
-import type { OptionalNullable } from '@withstudiocms/kysely/core/client';
+import type { DBCallbackFailure, OptionalNullable } from '@withstudiocms/kysely/core/client';
 import type { DatabaseError } from '@withstudiocms/kysely/core/errors';
 import type {
 	StudioCMSAPIKeys,
@@ -167,7 +167,7 @@ export type DbQueryFn = (
 			readonly [x: string]: unknown;
 		};
 	},
-	DatabaseError,
+	DBCallbackFailure | DatabaseError,
 	never
 >;
 

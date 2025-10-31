@@ -868,9 +868,9 @@ importers:
       '@withstudiocms/kysely':
         specifier: workspace:*
         version: link:../kysely
-      astro:
-        specifier: catalog:min
-        version: 5.15.1(@types/node@22.18.12)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
+      zod:
+        specifier: ^3.25.76
+        version: 3.25.76
     devDependencies:
       '@types/node':
         specifier: 'catalog:'

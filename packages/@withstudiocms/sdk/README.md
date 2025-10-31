@@ -1,7 +1,7 @@
 # @withstudiocms/sdk
 
 Current Conversion Progress to new SDK
-- [ ] Auth
+- [x] Auth
 - [ ] Clear
 - [x] Config
 - [ ] Delete

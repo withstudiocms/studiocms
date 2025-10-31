@@ -1,4 +1,5 @@
 import { Deepmerge, Effect, Schema } from '@withstudiocms/effect';
+import type { DBCallbackFailure } from '@withstudiocms/kysely';
 import type { DatabaseError } from '@withstudiocms/kysely/core/errors';
 import { StudioCMSDynamicConfigSettings } from '@withstudiocms/kysely/tables';
 import { CacheMissError, CacheService } from '../../cache.js';
@@ -126,7 +127,7 @@ export const SDKConfigModule = Effect.gen(function* () {
 			<DataType>(id: string, data: DataType) =>
 				fn({ id, data: JSON.stringify(data) }).pipe(
 					Effect.tap(() => cache.set<DataType>(cacheKey(id), data, cacheOpts))
-				) as Effect.Effect<DynamicConfigEntry<DataType>, DatabaseError>
+				) as Effect.Effect<DynamicConfigEntry<DataType>, DBCallbackFailure | DatabaseError>
 		);
 
 	/**

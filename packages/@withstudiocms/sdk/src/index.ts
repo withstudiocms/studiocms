@@ -1,6 +1,7 @@
 import { Deepmerge, Effect, Layer } from '@withstudiocms/effect';
 import { CacheService } from './cache.js';
 import { DBClientLive as dbService, makeSDKContext, type SDKContext } from './context.js';
+import { SDKAuthModule as AUTH } from './modules/auth/index.js';
 import { SDKConfigModule as CONFIG } from './modules/config/index.js';
 import { SDKUtilModule as UTIL } from './modules/util/index.js';
 
@@ -16,6 +17,7 @@ const SDKDependencies = Layer.mergeAll(CacheService.Default, Deepmerge.Default);
  */
 export const StudioCMSSDKCore = Effect.all({
 	dbService,
+	AUTH,
 	CONFIG,
 	UTIL,
 }).pipe(Effect.provide(SDKDependencies));
