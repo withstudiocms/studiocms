@@ -456,33 +456,35 @@ export const SDKAuthModule = Effect.gen(function* () {
 	/**
 	 * Verifies the existence of the ghost user.
 	 */
-	const _verifyGhostUserExists = Effect.fn(function* () {
-		const ghostUser = yield* _getUserById(GhostUserDefaults.id);
-		if (!ghostUser) return false;
-		return true;
-	});
+	const _verifyGhostUserExists = Effect.fn(() =>
+		_getUserById(GhostUserDefaults.id).pipe(Effect.map((user) => !!user))
+	);
 
 	/**
 	 * Creates the ghost user if it does not already exist.
 	 */
-	const _createGhostUser = Effect.fn(function* () {
-		const ghostUser = yield* _getUserById(GhostUserDefaults.id);
-		if (ghostUser) return ghostUser;
-		return yield* _createNewUser({
-			...GhostUserDefaults,
-			updatedAt: new Date().toISOString(),
-			emailVerified: false,
-		});
-	});
+	const _createGhostUser = Effect.fn(() =>
+		_getUserById(GhostUserDefaults.id).pipe(
+			Effect.flatMap((user) =>
+				user
+					? Effect.succeed(user)
+					: _createNewUser({
+							...GhostUserDefaults,
+							updatedAt: new Date().toISOString(),
+							emailVerified: false,
+						})
+			)
+		)
+	);
 
 	/**
 	 * Retrieves the ghost user.
 	 */
-	const _getGhostUser = Effect.fn(function* () {
-		const ghostUser = yield* _getUserById(GhostUserDefaults.id);
-		if (ghostUser) return ghostUser;
-		return yield* _createGhostUser();
-	});
+	const _getGhostUser = Effect.fn(() =>
+		_getUserById(GhostUserDefaults.id).pipe(
+			Effect.flatMap((user) => (user ? Effect.succeed(user) : _createGhostUser()))
+		)
+	);
 
 	// ==============================================
 	// Auth Module Sub-Modules
