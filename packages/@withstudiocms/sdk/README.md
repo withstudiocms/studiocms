@@ -5,7 +5,7 @@ Current Conversion Progress to new SDK
 - [ ] Clear
 - [x] Config
 - [ ] Delete
-- [ ] DiffTracking
+- [x] DiffTracking
 - [ ] Get
 - [ ] Init
 - [ ] Middleware

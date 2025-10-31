@@ -336,8 +336,8 @@ export interface diffItem {
  */
 export interface diffReturn extends Omit<diffItem, 'pageMetaData'> {
 	pageMetaData: {
-		start: Partial<tsPageDataSelect>;
-		end: Partial<tsPageDataSelect>;
+		start: tsPageDataSelect;
+		end: tsPageDataSelect;
 	};
 }
 

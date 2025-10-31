@@ -48,6 +48,8 @@
   },
   "type": "module",
   "dependencies": {
+		"diff": "^8.0.2",
+		"diff2html": "^3.4.52",
     "zod": "^3.25.76"
   },
   "devDependencies": {
