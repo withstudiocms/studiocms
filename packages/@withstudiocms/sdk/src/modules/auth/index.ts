@@ -1,13 +1,21 @@
 import { Effect, Schema } from '@withstudiocms/effect';
 import {
+	type DBCallbackFailure,
 	StudioCMSEmailVerificationTokens,
 	StudioCMSOAuthAccounts,
 	StudioCMSPermissions,
 	StudioCMSSessionTable,
 	StudioCMSUsersTable,
 } from '@withstudiocms/kysely';
+import type { DatabaseError } from '@withstudiocms/kysely/core/errors';
 import { DBClientLive, SDKDefaults } from '../../context.js';
-import type { tsPermissions, tsUsers, tsUsersSelect } from '../../types.js';
+import type {
+	AuthDeletionResponse,
+	AuthErrorHandlers,
+	tsPermissions,
+	tsUsers,
+	tsUsersSelect,
+} from '../../types.js';
 import { SDKGenerators } from '../util/generators.js';
 
 /**
@@ -440,11 +448,13 @@ export const SDKAuthModule = Effect.gen(function* () {
 		const usernameSearch: tsUsersSelect[] = [];
 		const emailSearch: tsUsersSelect[] = [];
 
+		// Search by username if provided
 		if (username) {
 			const results = yield* _searchForUsername(username);
 			usernameSearch.push(...results);
 		}
 
+		// Search by email if provided
 		if (email) {
 			const results = yield* _searchForEmail(email);
 			emailSearch.push(...results);
@@ -485,6 +495,26 @@ export const SDKAuthModule = Effect.gen(function* () {
 			Effect.flatMap((user) => (user ? Effect.succeed(user) : _createGhostUser()))
 		)
 	);
+
+	/**
+	 * Catches common DB errors and maps them to structured status/message responses.
+	 */
+	const _CatchErrs = (capt: string) =>
+		Effect.catchTags<DBCallbackFailure | DatabaseError, AuthErrorHandlers>({
+			DBCallbackFailure: () =>
+				Effect.succeed({ status: 'error', message: `Failed to delete ${capt}` }),
+			NotFoundError: () => Effect.succeed({ status: 'error', message: `${capt} not found` }),
+			QueryError: () =>
+				Effect.succeed({
+					status: 'error',
+					message: `Query error occurred while deleting ${capt}`,
+				}),
+			QueryParseError: () =>
+				Effect.succeed({
+					status: 'error',
+					message: `Failed to parse query result while deleting ${capt}`,
+				}),
+		});
 
 	// ==============================================
 	// Auth Module Sub-Modules
@@ -535,37 +565,15 @@ export const SDKAuthModule = Effect.gen(function* () {
 		 * @param input - An object containing the userId and provider of the OAuth account to delete.
 		 * @returns A promise that resolves to a status and message indicating the result of the deletion.
 		 */
-		delete: (input: {
-			readonly userId: string;
-			readonly provider: string;
-		}): Effect.Effect<
-			{
-				status: string;
-				message: string;
-			},
-			never,
-			never
-		> =>
+		delete: (input: { readonly userId: string; readonly provider: string }): AuthDeletionResponse =>
 			_deleteOAuthUserAccount(input).pipe(
 				Effect.flatMap(() =>
-					Effect.succeed({ status: 'success', message: 'OAuth account deleted successfully' })
+					Effect.succeed({
+						status: 'success' as const,
+						message: 'OAuth account deleted successfully',
+					})
 				),
-				Effect.catchTags({
-					DBCallbackFailure: () =>
-						Effect.succeed({ status: 'error', message: 'Failed to delete OAuth account' }),
-					NotFoundError: () =>
-						Effect.succeed({ status: 'error', message: 'OAuth account not found' }),
-					QueryError: () =>
-						Effect.succeed({
-							status: 'error',
-							message: 'Query error occurred while deleting OAuth account',
-						}),
-					QueryParseError: () =>
-						Effect.succeed({
-							status: 'error',
-							message: 'Failed to parse query result while deleting OAuth account',
-						}),
-				})
+				_CatchErrs('OAuth account')
 			),
 
 		/**
@@ -624,35 +632,12 @@ export const SDKAuthModule = Effect.gen(function* () {
 		 * @param input - The ID of the session to delete.
 		 * @returns A promise that resolves to a status and message indicating the result of the deletion.
 		 */
-		delete: (
-			input: string
-		): Effect.Effect<
-			{
-				status: string;
-				message: string;
-			},
-			never,
-			never
-		> =>
+		delete: (input: string): AuthDeletionResponse =>
 			_deleteSession(input).pipe(
 				Effect.flatMap(() =>
-					Effect.succeed({ status: 'success', message: 'Session deleted successfully' })
+					Effect.succeed({ status: 'success' as const, message: 'Session deleted successfully' })
 				),
-				Effect.catchTags({
-					DBCallbackFailure: () =>
-						Effect.succeed({ status: 'error', message: 'Failed to delete Session' }),
-					NotFoundError: () => Effect.succeed({ status: 'error', message: 'Session not found' }),
-					QueryError: () =>
-						Effect.succeed({
-							status: 'error',
-							message: 'Query error occurred while deleting Session',
-						}),
-					QueryParseError: () =>
-						Effect.succeed({
-							status: 'error',
-							message: 'Failed to parse query result while deleting Session',
-						}),
-				})
+				_CatchErrs('Session')
 			),
 
 		/**

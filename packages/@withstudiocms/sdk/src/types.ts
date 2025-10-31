@@ -379,3 +379,34 @@ export interface CombinedRank extends SingleRank {
  * - 'all': List of all users.
  */
 export type AvailableLists = 'owners' | 'admins' | 'editors' | 'visitors' | 'all';
+
+/**
+ * Represents the different error tags that can occur during authentication operations.
+ */
+export type AuthErrorTags =
+	| 'DBCallbackFailure'
+	| 'NotFoundError'
+	| 'QueryError'
+	| 'QueryParseError';
+
+/**
+ * Represents the data returned after an authentication deletion operation.
+ */
+export type AuthDeletionData = {
+	status: 'success' | 'error';
+	message: string;
+};
+
+/**
+ * Represents the effect type for authentication deletion responses.
+ */
+export type AuthDeletionResponse = Effect.Effect<AuthDeletionData, never, never>;
+
+/**
+ * Represents a mapping of authentication error tags to their corresponding error handler functions.
+ *
+ * Each handler function returns an `AuthDeletionResponse`.
+ */
+export type AuthErrorHandlers = {
+	[K in AuthErrorTags]: () => AuthDeletionResponse;
+};
