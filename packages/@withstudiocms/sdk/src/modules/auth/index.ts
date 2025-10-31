@@ -9,12 +9,14 @@ import {
 } from '@withstudiocms/kysely';
 import type { DatabaseError } from '@withstudiocms/kysely/core/errors';
 import { DBClientLive, SDKDefaults } from '../../context.js';
-import type {
-	AuthDeletionResponse,
-	AuthErrorHandlers,
-	tsPermissions,
-	tsUsers,
-	tsUsersSelect,
+import {
+	type AuthDeletionResponse,
+	type AuthErrorHandlers,
+	type AuthErrorTags,
+	AuthErrorTagsEntries,
+	type tsPermissions,
+	type tsUsers,
+	type tsUsersSelect,
 } from '../../types.js';
 import { SDKGenerators } from '../util/generators.js';
 
@@ -500,21 +502,19 @@ export const SDKAuthModule = Effect.gen(function* () {
 	 * Catches common DB errors and maps them to structured status/message responses.
 	 */
 	const _CatchErrs = (capt: string) =>
-		Effect.catchTags<DBCallbackFailure | DatabaseError, AuthErrorHandlers>({
-			DBCallbackFailure: () =>
-				Effect.succeed({ status: 'error', message: `Failed to delete ${capt}` }),
-			NotFoundError: () => Effect.succeed({ status: 'error', message: `${capt} not found` }),
-			QueryError: () =>
-				Effect.succeed({
-					status: 'error',
-					message: `Query error occurred while deleting ${capt}`,
-				}),
-			QueryParseError: () =>
-				Effect.succeed({
-					status: 'error',
-					message: `Failed to parse query result while deleting ${capt}`,
-				}),
-		});
+		Effect.catchTags<DBCallbackFailure | DatabaseError, AuthErrorHandlers>(
+			AuthErrorTagsEntries.reduce(
+				(acc, tag) => {
+					acc[tag] = () =>
+						Effect.succeed({
+							status: 'error',
+							message: `An error occurred while deleting ${capt}`,
+						});
+					return acc;
+				},
+				{} as Record<AuthErrorTags, () => AuthDeletionResponse>
+			)
+		);
 
 	// ==============================================
 	// Auth Module Sub-Modules

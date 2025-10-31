@@ -381,13 +381,19 @@ export interface CombinedRank extends SingleRank {
 export type AvailableLists = 'owners' | 'admins' | 'editors' | 'visitors' | 'all';
 
 /**
+ * An array of authentication error tag entries.
+ */
+export const AuthErrorTagsEntries = [
+	'DBCallbackFailure',
+	'NotFoundError',
+	'QueryError',
+	'QueryParseError',
+] as const;
+
+/**
  * Represents the different error tags that can occur during authentication operations.
  */
-export type AuthErrorTags =
-	| 'DBCallbackFailure'
-	| 'NotFoundError'
-	| 'QueryError'
-	| 'QueryParseError';
+export type AuthErrorTags = (typeof AuthErrorTagsEntries)[number];
 
 /**
  * Represents the data returned after an authentication deletion operation.
