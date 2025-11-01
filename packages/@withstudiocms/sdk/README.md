@@ -12,7 +12,7 @@ Current Conversion Progress to new SDK
 - [ ] NotificationSettings
 - [ ] Plugins
 - [ ] Post
-- [ ] ResetTokenBucket
+- [x] ResetTokenBucket
 - [x] RestAPI
 - [ ] Update
 - [x] Cache Service
