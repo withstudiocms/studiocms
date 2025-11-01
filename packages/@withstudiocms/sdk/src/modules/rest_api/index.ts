@@ -223,3 +223,5 @@ export const SDKRestAPIModule = Effect.gen(function* () {
 
 	return { tokens };
 });
+
+export default SDKRestAPIModule;

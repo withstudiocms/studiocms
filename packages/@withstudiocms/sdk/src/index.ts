@@ -1,13 +1,13 @@
 import { Deepmerge, Effect, Layer } from '@withstudiocms/effect';
-import { CacheService } from './cache.js';
+import CacheService from './cache.js';
 import { DBClientLive as dbService, makeSDKContext, type SDKContext } from './context.js';
-import { SDKAuthModule as AUTH } from './modules/auth/index.js';
-import { SDKConfigModule as CONFIG } from './modules/config/index.js';
-import { SDKDiffTrackingModule as diffTracking } from './modules/diffTracking/index.js';
-import { SDKNotificationSettingsModule as notificationSettings } from './modules/notificationSettings/index.js';
-import { SDKResetTokenBucketModule as resetTokenBucket } from './modules/resetTokenBucket/index.js';
-import { SDKRestAPIModule as REST_API } from './modules/rest_api/index.js';
-import { SDKUtilModule as UTIL } from './modules/util/index.js';
+import AUTH from './modules/auth/index.js';
+import CONFIG from './modules/config/index.js';
+import diffTracking from './modules/diffTracking/index.js';
+import notificationSettings from './modules/notificationSettings/index.js';
+import resetTokenBucket from './modules/resetTokenBucket/index.js';
+import REST_API from './modules/rest_api/index.js';
+import UTIL from './modules/util/index.js';
 
 export * from './context.js';
 

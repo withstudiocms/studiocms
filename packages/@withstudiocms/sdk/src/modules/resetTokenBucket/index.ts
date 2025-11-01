@@ -246,3 +246,5 @@ export const SDKResetTokenBucketModule = Effect.gen(function* () {
 
 	return resetTokenBucket;
 });
+
+export default SDKResetTokenBucketModule;

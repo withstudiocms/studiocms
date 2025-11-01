@@ -578,3 +578,5 @@ export const SDKDiffTrackingModule = Effect.gen(function* () {
 		},
 	};
 });
+
+export default SDKDiffTrackingModule;

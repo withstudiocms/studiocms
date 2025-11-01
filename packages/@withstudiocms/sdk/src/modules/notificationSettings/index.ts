@@ -85,3 +85,5 @@ export const SDKNotificationSettingsModule = Effect.gen(function* () {
 		},
 	};
 });
+
+export default SDKNotificationSettingsModule;

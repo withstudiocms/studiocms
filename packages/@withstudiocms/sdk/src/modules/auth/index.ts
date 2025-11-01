@@ -716,3 +716,5 @@ export const SDKAuthModule = Effect.gen(function* () {
 		user,
 	};
 });
+
+export default SDKAuthModule;

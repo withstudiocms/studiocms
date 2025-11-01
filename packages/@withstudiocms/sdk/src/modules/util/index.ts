@@ -19,3 +19,5 @@ export const SDKUtilModule = Effect.all({
 	Parsers,
 	Users,
 });
+
+export default SDKUtilModule;

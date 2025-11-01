@@ -364,3 +364,5 @@ export const SDKConfigModule = Effect.gen(function* () {
 		templateConfig,
 	};
 });
+
+export default SDKConfigModule;

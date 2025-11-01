@@ -205,3 +205,5 @@ export class CacheService extends Effect.Service<CacheService>()(
 		}),
 	}
 ) {}
+
+export default CacheService;
