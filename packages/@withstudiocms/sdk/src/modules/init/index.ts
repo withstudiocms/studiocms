@@ -33,9 +33,13 @@ import SDKConfigModule from '../config';
  */
 export const SDKInitModule = Effect.gen(function* () {
 	const [
-		{ siteConfig: sdkSiteConfig },
 		{
-			user: { ghost },
+			siteConfig: { init: initSiteConfig },
+		},
+		{
+			user: {
+				ghost: { get: initGhostUser },
+			},
 		},
 	] = yield* Effect.all([SDKConfigModule, SDKAuthModule]);
 
@@ -49,7 +53,7 @@ export const SDKInitModule = Effect.gen(function* () {
 		 * @param config - The configuration to insert into the SiteConfig table.
 		 * @returns A promise that resolves to the inserted site configuration.
 		 */
-		siteConfig: sdkSiteConfig.init,
+		siteConfig: initSiteConfig,
 
 		/**
 		 * Initializes the StudioCMS Ghost User.
@@ -58,7 +62,7 @@ export const SDKInitModule = Effect.gen(function* () {
 		 *
 		 * @returns A promise that resolves to the ghost user record.
 		 */
-		ghostUser: ghost.get,
+		ghostUser: initGhostUser,
 	};
 
 	return INIT;
