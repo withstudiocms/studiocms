@@ -13,7 +13,7 @@ Current Conversion Progress to new SDK
 - [ ] Plugins
 - [ ] Post
 - [ ] ResetTokenBucket
-- [ ] RestAPI
+- [x] RestAPI
 - [ ] Update
 - [x] Cache Service
 - [x] Utils (previously sdk/effect)

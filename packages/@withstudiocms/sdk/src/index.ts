@@ -4,6 +4,7 @@ import { DBClientLive as dbService, makeSDKContext, type SDKContext } from './co
 import { SDKAuthModule as AUTH } from './modules/auth/index.js';
 import { SDKConfigModule as CONFIG } from './modules/config/index.js';
 import { SDKDiffTrackingModule as diffTracking } from './modules/diffTracking/index.js';
+import { SDKRestAPIModule as REST_API } from './modules/rest_api/index.js';
 import { SDKUtilModule as UTIL } from './modules/util/index.js';
 
 export * from './context.js';
@@ -33,7 +34,7 @@ export const StudioCMSSDKCore = Effect.all({
 	PLUGINS: placeholder,
 	POST: placeholder,
 	UPDATE: placeholder,
-	REST_API: placeholder,
+	REST_API,
 	UTIL,
 	resetTokenBucket: placeholder,
 }).pipe(Effect.provide(SDKDependencies));
