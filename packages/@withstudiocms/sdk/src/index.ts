@@ -1,45 +1,22 @@
 import { Deepmerge, Effect, Layer } from '@withstudiocms/effect';
 import CacheService from './cache.js';
-import { DBClientLive as dbService, makeSDKContext, type SDKContext } from './context.js';
-import AUTH from './modules/auth/index.js';
-import CONFIG from './modules/config/index.js';
-import diffTracking from './modules/diffTracking/index.js';
-import notificationSettings from './modules/notificationSettings/index.js';
-import resetTokenBucket from './modules/resetTokenBucket/index.js';
-import REST_API from './modules/rest_api/index.js';
-import UTIL from './modules/util/index.js';
+import { DBClientLive, makeSDKContext, type SDKContext } from './context.js';
+import SDKModules from './modules/index.js';
 
 export * from './context.js';
 
 /**
  * SDK Dependencies Layer
  */
-const SDKDependencies = Layer.mergeAll(CacheService.Default, Deepmerge.Default);
-
-// TODO: Placeholder Effects for unimplemented modules
-const placeholder = Effect.succeed('todo' as const);
+const SDKBaseDependencies = Layer.mergeAll(CacheService.Default, Deepmerge.Default);
 
 /**
  * StudioCMS SDK Core Layer
  */
 export const StudioCMSSDKCore = Effect.all({
-	dbService,
-	AUTH,
-	CLEAR: placeholder,
-	CONFIG,
-	DELETE: placeholder,
-	diffTracking,
-	GET: placeholder,
-	INIT: placeholder,
-	MIDDLEWARES: placeholder,
-	notificationSettings,
-	PLUGINS: placeholder,
-	POST: placeholder,
-	UPDATE: placeholder,
-	REST_API,
-	UTIL,
-	resetTokenBucket,
-}).pipe(Effect.provide(SDKDependencies));
+	dbService: DBClientLive,
+	...SDKModules,
+}).pipe(Effect.provide(SDKBaseDependencies));
 
 /**
  * Provides a live Effect for the StudioCMS SDK Core using the given SDK context.
