@@ -7,7 +7,7 @@ Current Conversion Progress to new SDK
 - [ ] Delete
 - [x] DiffTracking
 - [ ] Get
-- [ ] Init
+- [x] Init
 - [ ] Middleware
 - [x] NotificationSettings
 - [ ] Plugins
