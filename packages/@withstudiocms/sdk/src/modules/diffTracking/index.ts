@@ -323,10 +323,7 @@ export const SDKDiffTrackingModule = Effect.gen(function* () {
 	 * @returns An array of the latest diff tracking records with parsed metadata.
 	 */
 	const _getByPageIdLatest = Effect.fn((pageId: string, count: number) =>
-		_selectDiffByPageId(pageId).pipe(
-			Effect.map((diffs) => diffs.slice(0, count)),
-			Effect.flatMap((diffs) => fixDiff(diffs as diffItem[]))
-		)
+		_getByPageIdAll(pageId).pipe(Effect.map((diffs) => diffs.slice(0, count)))
 	);
 
 	/**
@@ -347,10 +344,7 @@ export const SDKDiffTrackingModule = Effect.gen(function* () {
 	 * @returns An array of the latest diff tracking records with parsed metadata.
 	 */
 	const _getByUserIdLatest = Effect.fn((userId: string, count: number) =>
-		_selectDiffByUserId(userId).pipe(
-			Effect.map((diffs) => diffs.slice(0, count)),
-			Effect.flatMap((diffs) => fixDiff(diffs as diffItem[]))
-		)
+		_getByUserIdAll(userId).pipe(Effect.map((diffs) => diffs.slice(0, count)))
 	);
 
 	/**
