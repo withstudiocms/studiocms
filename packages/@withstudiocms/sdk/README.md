@@ -9,7 +9,7 @@ Current Conversion Progress to new SDK
 - [ ] Get
 - [ ] Init
 - [ ] Middleware
-- [ ] NotificationSettings
+- [x] NotificationSettings
 - [ ] Plugins
 - [ ] Post
 - [x] ResetTokenBucket

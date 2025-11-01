@@ -30,6 +30,12 @@ interface SDKDefaultOpts {
 		username: string;
 		avatar: string;
 	};
+	NotificationSettingsDefaults: {
+		emailVerification: boolean;
+		oAuthBypassVerification: boolean;
+		requireEditorVerification: boolean;
+		requireAdminVerification: boolean;
+	};
 }
 
 /**
