@@ -2,6 +2,7 @@ import { Effect } from '@withstudiocms/effect';
 import AUTH from './auth/index.js';
 import CONFIG from './config/index.js';
 import diffTracking from './diffTracking/index.js';
+import GET from './get/index.js';
 import INIT from './init/index.js';
 import notificationSettings from './notificationSettings/index.js';
 import PLUGINS from './plugins/index.js';
@@ -27,7 +28,7 @@ export const SDKModules = {
 	resetTokenBucket,
 	REST_API,
 	UTIL,
-	GET: placeholder,
+	GET,
 	CLEAR: placeholder,
 	UPDATE: placeholder,
 	DELETE: placeholder,

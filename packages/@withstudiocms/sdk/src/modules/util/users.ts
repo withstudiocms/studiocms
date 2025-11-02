@@ -89,7 +89,11 @@ export const SDKUsers = Effect.gen(function* () {
 	 * @returns An array of objects containing the id and name of users with the specified rank.
 	 */
 	const verifyRank = Effect.fn(
-		(users: tsUsersSelect[], permissions: tsPermissions['Select']['Type'][], rank: string) =>
+		(
+			users: readonly tsUsersSelect[],
+			permissions: readonly tsPermissions['Select']['Type'][],
+			rank: string
+		) =>
 			useUsersError(() => {
 				const filteredUsers = permissions.filter((user) => user.rank === rank);
 				const permitted: SingleRank[] = [];
