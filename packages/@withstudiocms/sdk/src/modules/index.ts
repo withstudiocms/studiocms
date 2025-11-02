@@ -17,7 +17,8 @@ const placeholder = Effect.succeed('todo' as const);
 /**
  * Aggregated SDK Modules Index
  *
- * This module exports all individual SDK modules as a single object for easier import and management.
+ * This module exports all individual SDK modules as
+ * a single object for easier import and management.
  */
 export const SDKModules = {
 	AUTH,
