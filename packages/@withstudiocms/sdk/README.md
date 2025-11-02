@@ -10,7 +10,7 @@ Current Conversion Progress to new SDK
 - [x] Init
 - [ ] Middleware
 - [x] NotificationSettings
-- [ ] Plugins
+- [x] Plugins
 - [ ] Post
 - [x] ResetTokenBucket
 - [x] RestAPI

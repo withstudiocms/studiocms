@@ -4,6 +4,7 @@ import CONFIG from './config/index.js';
 import diffTracking from './diffTracking/index.js';
 import INIT from './init/index.js';
 import notificationSettings from './notificationSettings/index.js';
+import PLUGINS from './plugins/index.js';
 import resetTokenBucket from './resetTokenBucket/index.js';
 import REST_API from './rest_api/index.js';
 import UTIL from './util/index.js';
@@ -25,7 +26,7 @@ export const SDKModules = {
 	UTIL,
 	resetTokenBucket,
 	INIT,
-	PLUGINS: placeholder,
+	PLUGINS,
 	GET: placeholder,
 	CLEAR: placeholder,
 	UPDATE: placeholder,
