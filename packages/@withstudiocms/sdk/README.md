@@ -2,11 +2,11 @@
 
 Current Conversion Progress to new SDK
 - [x] Auth
-- [ ] Clear
+- [x] Clear
 - [x] Config
 - [ ] Delete
 - [x] DiffTracking
-- [ ] Get
+- [x] Get
 - [x] Init
 - [ ] Middleware
 - [x] NotificationSettings

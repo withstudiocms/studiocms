@@ -1,5 +1,6 @@
 import { Effect } from '@withstudiocms/effect';
 import AUTH from './auth/index.js';
+import CLEAR from './clear/index.js';
 import CONFIG from './config/index.js';
 import diffTracking from './diffTracking/index.js';
 import GET from './get/index.js';
@@ -20,16 +21,16 @@ const placeholder = Effect.succeed('todo' as const);
  */
 export const SDKModules = {
 	AUTH,
+	CLEAR,
 	CONFIG,
 	diffTracking,
+	GET,
 	INIT,
 	notificationSettings,
 	PLUGINS,
 	resetTokenBucket,
 	REST_API,
 	UTIL,
-	GET,
-	CLEAR: placeholder,
 	UPDATE: placeholder,
 	DELETE: placeholder,
 	MIDDLEWARES: placeholder,
