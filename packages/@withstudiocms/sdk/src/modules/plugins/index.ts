@@ -264,7 +264,7 @@ export const SDKPluginsModule = Effect.gen(function* () {
 	 *
 	 * @param BATCH_SIZE - The number of entries to fetch in each batch.
 	 */
-	const _initPluginDataCache = Effect.fn((BATCH_SIZE: number) =>
+	const _initPluginDataCache = Effect.fn((BATCH_SIZE?: number) =>
 		Effect.gen(function* () {
 			let batchSize = BATCH_SIZE || 100; // Default batch size if not provided
 			if (batchSize <= 0) {

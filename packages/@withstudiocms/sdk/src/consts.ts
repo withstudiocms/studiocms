@@ -10,6 +10,7 @@ export const cacheTags = {
 	folderList: ['folder-list'],
 	pages: ['pages'],
 	pageFolderTree: ['page-folder-tree'],
+	middleware: ['middleware'],
 };
 
 /**
@@ -24,4 +25,5 @@ export const cacheKeyGetters = {
 	folderList: () => 'folder-list',
 	page: (pageId: string) => `page:${pageId}`,
 	pageFolderTree: (hideDefaultIndex: boolean) => `page-folder-tree:${hideDefaultIndex}`,
+	middleware: () => 'middleware',
 };

@@ -6,6 +6,7 @@ import DELETE from './delete/index.js';
 import diffTracking from './diffTracking/index.js';
 import GET from './get/index.js';
 import INIT from './init/index.js';
+import MIDDLEWARES from './middleware/index.js';
 import notificationSettings from './notificationSettings/index.js';
 import PLUGINS from './plugins/index.js';
 import resetTokenBucket from './resetTokenBucket/index.js';
@@ -30,13 +31,13 @@ export const SDKModules = {
 	diffTracking,
 	GET,
 	INIT,
+	MIDDLEWARES,
 	notificationSettings,
 	PLUGINS,
 	resetTokenBucket,
 	REST_API,
 	UPDATE,
 	UTIL,
-	MIDDLEWARES: placeholder,
 	POST: placeholder,
 };
 

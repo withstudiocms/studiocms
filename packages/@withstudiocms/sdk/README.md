@@ -8,7 +8,7 @@ Current Conversion Progress to new SDK
 - [x] DiffTracking
 - [x] Get
 - [x] Init
-- [ ] Middleware
+- [x] Middleware
 - [x] NotificationSettings
 - [x] Plugins
 - [ ] Post
