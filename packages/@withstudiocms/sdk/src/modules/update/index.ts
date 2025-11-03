@@ -14,6 +14,63 @@ import SDKClearModule from '../clear/index.js';
 import SDKConfigModule from '../config/index.js';
 import SDKGetModule from '../get/index.js';
 
+/**
+ * CombinedPageUpdateData
+ *
+ * Type representing the combined data required to update both page data and page content.
+ */
+type CombinedPageUpdateData = {
+	pageData: (typeof StudioCMSPageData.Update)['Type'];
+	pageContent: (typeof StudioCMSPageContent.Update)['Type'];
+};
+
+/**
+ * SDKUpdateModule
+ *
+ * Effect generator that constructs and returns the SDK "UPDATE" module containing all update-related operations
+ * for the StudioCMS domain. Each operation is implemented as an Effect and typically combines:
+ * - a DB update operation (wrapped with a codec for runtime encode/decode/validation),
+ * - optional cache invalidation or cache refresh,
+ * - and retrieval of the fresh resource via the GET module when appropriate.
+ *
+ * @module SDKUpdateModule
+ *
+ * @remarks
+ * - Dependencies resolved by the generator: DBClientLive, CacheService, SDKClearModule, SDKGetModule, SDKConfigModule.
+ * - DB operations are created via withCodec with corresponding encoder/decoder codecs (e.g. StudioCMSPageContent, StudioCMSPageData, StudioCMSPermissions, etc.).
+ * - Cache-related operations include clearing/invalidation of folder tree/list caches, page-specific cache deletion, and npm package cache tag invalidation.
+ * - Composite helpers coordinate multi-step flows, e.g. updating page content + page data + deleting the page cache, then returning the fresh page via GET.
+ * - All operations are effectful and intended to be executed inside the Effect runtime; callers should compose and run them using the Effect primitives provided by the environment.
+ *
+ * @returns {{
+ *   pageContent: Effect, tags: Effect, categories: Effect, permissions: Effect,
+ *   folderTree: Effect, folderList: Effect, folder: Effect,
+ *   latestVersion: Effect, siteConfig: Effect,
+ *   page: { byId: Effect, bySlug: Effect }
+ * }}
+ * An object exposing update operations:
+ * - pageContent, tags, categories, permissions: DB update Effects returning the updated record.
+ * - folderTree, folderList: Effects that refresh corresponding caches.
+ * - folder: updates a folder entry and invalidates/refreshes folder caches.
+ * - latestVersion: invalidates npm package cache tags and fetches the latest package version.
+ * - siteConfig: forwards to CONFIG.siteConfig.update.
+ * - page.byId: updates page data and content, deletes the page cache, refreshes folder caches, then returns the updated page.
+ * - page.bySlug: resolves the page id by slug and delegates to page.byId.
+ *
+ * @example
+ * // Typical usage inside an Effect:
+ * // yield* Effect.flatMap(UPDATE.page.byId('pageId', combinedPageUpdateData))
+ *
+ * @threadSafety
+ * Effects encapsulate async side effects; callers should treat composite updates as atomic logical operations but not assume cross-operation DB transactions unless provided by the DB client.
+ *
+ * @errors
+ * - DB client errors (e.g. executeTakeFirstOrThrow) propagate as Effect failures.
+ * - Codec validation errors are raised if supplied data does not conform to the expected codec schemas.
+ *
+ * @see SDKGetModule for read operations
+ * @see SDKClearModule for explicit cache clearing operations
+ */
 export const SDKUpdateModule = Effect.gen(function* () {
 	const [{ withCodec }, CACHE, CLEAR, GET, CONFIG] = yield* Effect.all([
 		DBClientLive,
@@ -185,38 +242,35 @@ export const SDKUpdateModule = Effect.gen(function* () {
 	/**
 	 * Update Page by ID
 	 */
-	const _updatePageById = Effect.fn(
-		(
-			pageId: string,
-			data: {
-				pageData: (typeof StudioCMSPageData.Update)['Type'];
-				pageContent: (typeof StudioCMSPageContent.Update)['Type'];
-			}
-		) =>
-			Effect.all([
-				_updatePageDataEntry(data.pageData),
-				_updatePageContent(data.pageContent),
-				CACHE.delete(cacheKeyGetters.page(pageId)),
-			]).pipe(
-				Effect.tap(() => _updateFolderTreeAndList),
-				Effect.flatMap(() => GET.page.byId(pageId))
-			)
+	const _updatePageById = Effect.fn((pageId: string, data: CombinedPageUpdateData) =>
+		Effect.all([
+			_updatePageDataEntry(data.pageData),
+			_updatePageContent(data.pageContent),
+			CACHE.delete(cacheKeyGetters.page(pageId)),
+		]).pipe(
+			Effect.tap(() => _updateFolderTreeAndList),
+			Effect.flatMap(() => GET.page.byId(pageId))
+		)
 	);
+
+	/**
+	 * Find Page ID by Slug
+	 */
+	const _findPageIdBySlug = Effect.fn((slug: string) =>
+		_findPageDataBySlug(slug).pipe(Effect.map(({ id }) => id))
+	);
+
+	/**
+	 * Update Page by ID Piped Helper
+	 */
+	const _updatePageByIdPiped = (data: CombinedPageUpdateData) =>
+		Effect.fn((id: string) => _updatePageById(id, data));
 
 	/**
 	 * Update Page by Slug
 	 */
-	const _updatePageBySlug = Effect.fn(
-		(
-			slug: string,
-			data: {
-				pageData: (typeof StudioCMSPageData.Update)['Type'];
-				pageContent: (typeof StudioCMSPageContent.Update)['Type'];
-			}
-		) =>
-			_findPageDataBySlug(slug).pipe(
-				Effect.flatMap(({ id: pageId }) => _updatePageById(pageId, data))
-			)
+	const _updatePageBySlug = Effect.fn((slug: string, data: CombinedPageUpdateData) =>
+		_findPageIdBySlug(slug).pipe(Effect.flatMap(_updatePageByIdPiped(data)))
 	);
 
 	// =====================================
