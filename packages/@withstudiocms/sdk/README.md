@@ -14,7 +14,7 @@ Current Conversion Progress to new SDK
 - [ ] Post
 - [x] ResetTokenBucket
 - [x] RestAPI
-- [ ] Update
+- [x] Update
 - [x] Cache Service
 - [x] Utils (previously sdk/effect)
   - [x] Collectors

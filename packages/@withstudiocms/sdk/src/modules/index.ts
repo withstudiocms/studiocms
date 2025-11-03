@@ -9,6 +9,7 @@ import notificationSettings from './notificationSettings/index.js';
 import PLUGINS from './plugins/index.js';
 import resetTokenBucket from './resetTokenBucket/index.js';
 import REST_API from './rest_api/index.js';
+import UPDATE from './update/index.js';
 import UTIL from './util/index.js';
 
 // TODO: Placeholder Effects for unimplemented modules
@@ -31,8 +32,8 @@ export const SDKModules = {
 	PLUGINS,
 	resetTokenBucket,
 	REST_API,
+	UPDATE,
 	UTIL,
-	UPDATE: placeholder,
 	DELETE: placeholder,
 	MIDDLEWARES: placeholder,
 	POST: placeholder,
