@@ -4,7 +4,7 @@ Current Conversion Progress to new SDK
 - [x] Auth
 - [x] Clear
 - [x] Config
-- [ ] Delete
+- [x] Delete
 - [x] DiffTracking
 - [x] Get
 - [x] Init

@@ -2,6 +2,7 @@ import { Effect } from '@withstudiocms/effect';
 import AUTH from './auth/index.js';
 import CLEAR from './clear/index.js';
 import CONFIG from './config/index.js';
+import DELETE from './delete/index.js';
 import diffTracking from './diffTracking/index.js';
 import GET from './get/index.js';
 import INIT from './init/index.js';
@@ -25,6 +26,7 @@ export const SDKModules = {
 	AUTH,
 	CLEAR,
 	CONFIG,
+	DELETE,
 	diffTracking,
 	GET,
 	INIT,
@@ -34,7 +36,6 @@ export const SDKModules = {
 	REST_API,
 	UPDATE,
 	UTIL,
-	DELETE: placeholder,
 	MIDDLEWARES: placeholder,
 	POST: placeholder,
 };
