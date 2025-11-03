@@ -1,7 +1,7 @@
 {
   "name": "@withstudiocms/kysely",
   "version": "0.1.0-beta.0",
-  "description": "",
+  "description": "Type-safe database client and migration system for StudioCMS, built on top of Kysely",
   "author": {
     "name": "withstudiocms",
     "url": "https://studiocms.dev"
