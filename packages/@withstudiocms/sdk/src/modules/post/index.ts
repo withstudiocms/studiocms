@@ -278,57 +278,59 @@ export const SDKPostModule = Effect.gen(function* () {
 	// ==============================================
 
 	/**
+	 * Generate a random UUID string.
+	 *
+	 * @returns An effect that resolves to a random UUID string.
+	 */
+	const _randomUUIDString = Effect.fn(() => Effect.succeed(crypto.randomUUID().toString()));
+
+	/**
+	 * Picks the ID from the provided page data or generates a new one if not present.
+	 *
+	 * @param data - The page data which may or may not contain an ID.
+	 * @returns An effect that resolves to the page data with an ensured ID.
+	 */
+	const _pageDataIdOrGenerateUUID = Effect.fn(function* (
+		data: OptionalId<string, (typeof StudioCMSPageData)['Insert']['Type']>
+	) {
+		const id = data.id || (yield* _randomUUIDString());
+		return { id, ...data };
+	});
+
+	/**
 	 * Inserts a new page along with its content into the database.
 	 *
 	 * @param pageData - The data for the new page, excluding the ID.
 	 * @param pageContent - The content for the new page.
 	 * @returns An effect that resolves to an object containing the IDs of the newly inserted page data and content.
 	 */
-	const _insertNewPageWithContent = Effect.fn(function* (
-		pageData: OptionalId<string, (typeof StudioCMSPageData)['Insert']['Type']>,
-		pageContent: CombinedInsertContent
-	) {
-		// Generate a new page ID
-		const newPageId = crypto.randomUUID();
-
-		// Break down page data into its components
-		const {
-			id = newPageId,
-			authorId = '',
-			package: packageName = 'studiocms',
-			contentLang = 'default',
-			heroImage = '',
-			showOnNav = false,
-			showAuthor = false,
-			showContributors = false,
-			draft = false,
-			parentFolder = null,
-			...basePageData
-		} = pageData;
-
-		// Insert both page data and content, returning their IDs
-		return yield* Effect.all({
-			pageData: _insertPageData({
-				id,
-				authorId,
-				contentLang,
-				heroImage,
-				showAuthor,
-				showContributors,
-				showOnNav,
-				draft,
-				parentFolder,
-				package: packageName,
-				...basePageData,
-			}),
-			pageContent: _insertPageContent({
-				id: crypto.randomUUID().toString(),
-				contentId: newPageId,
-				contentLang: contentLang,
-				content: pageContent.content || '',
-			}),
-		}).pipe(Effect.tap(() => invalidateTags(cacheTags.pages)));
-	});
+	const _insertNewPageWithContent = Effect.fn(
+		(
+			pageData: OptionalId<string, (typeof StudioCMSPageData)['Insert']['Type']>,
+			pageContent: CombinedInsertContent
+		) =>
+			Effect.all({
+				pageData: _pageDataIdOrGenerateUUID(pageData),
+				pageContent: Effect.succeed(pageContent),
+			}).pipe(
+				Effect.flatMap(({ pageData: { id, contentLang, ...basePageData }, pageContent }) =>
+					Effect.all({
+						pageData: _insertPageData({
+							id,
+							contentLang,
+							...basePageData,
+						}),
+						pageContent: _insertPageContent({
+							id: crypto.randomUUID().toString(),
+							contentId: id,
+							contentLang: contentLang,
+							content: pageContent.content || '',
+						}),
+					})
+				),
+				Effect.tap(() => invalidateTags(cacheTags.pages))
+			)
+	);
 
 	/**
 	 * Inserts an array of new pages along with their content into the database.
@@ -432,13 +434,6 @@ export const SDKPostModule = Effect.gen(function* () {
 		(permissions: { userId: string; rank: (typeof StudioCMSPermissions.Insert.Type)['rank'] }[]) =>
 			Effect.all(permissions.map(({ userId, rank }) => _insertNewPermission(userId, rank)))
 	);
-
-	/**
-	 * Generate a random UUID string.
-	 *
-	 * @returns An effect that resolves to a random UUID string.
-	 */
-	const _randomUUIDString = Effect.fn(() => Effect.succeed(crypto.randomUUID().toString()));
 
 	/**
 	 * Inserts a new diff tracking entry into the database, ensuring it has an ID.
