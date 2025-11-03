@@ -53,6 +53,16 @@ export type tsPermissionsSelect = tsPermissions['Select']['Type'];
 // ===============================================================
 
 /**
+ * Represents a type that combines the properties of `tsPageContentInsert`
+ * excluding 'id' and 'contentId'.
+ *
+ * This type is useful when you need to insert content without specifying
+ * the 'id' and 'contentId' fields, which might be auto-generated or
+ * handled separately.
+ */
+export type CombinedInsertContent = Omit<tsPageContentSelect, 'id' | 'contentId'>;
+
+/**
  * Interface representing combined user data.
  *
  * This interface extends `tsUsersSelect` and includes additional properties

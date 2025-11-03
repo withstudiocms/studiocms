@@ -1,4 +1,3 @@
-import { Effect } from '@withstudiocms/effect';
 import AUTH from './auth/index.js';
 import CLEAR from './clear/index.js';
 import CONFIG from './config/index.js';
@@ -9,13 +8,11 @@ import INIT from './init/index.js';
 import MIDDLEWARES from './middleware/index.js';
 import notificationSettings from './notificationSettings/index.js';
 import PLUGINS from './plugins/index.js';
+import POST from './post/index.js';
 import resetTokenBucket from './resetTokenBucket/index.js';
 import REST_API from './rest_api/index.js';
 import UPDATE from './update/index.js';
 import UTIL from './util/index.js';
-
-// TODO: Placeholder Effects for unimplemented modules
-const placeholder = Effect.succeed('todo' as const);
 
 /**
  * Aggregated SDK Modules Index
@@ -34,11 +31,11 @@ export const SDKModules = {
 	MIDDLEWARES,
 	notificationSettings,
 	PLUGINS,
+	POST,
 	resetTokenBucket,
 	REST_API,
 	UPDATE,
 	UTIL,
-	POST: placeholder,
 };
 
 export default SDKModules;
