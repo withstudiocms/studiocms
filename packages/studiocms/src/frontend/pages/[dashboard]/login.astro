@@ -217,8 +217,8 @@ if (usernameAndPassword && SHOW_OAUTH) {
 
 <script>
     import { formListener } from '../../scripts/auth/formListener.js';
-    import { ModalHelper } from 'studiocms:ui/components/modal';
-    import { toast } from 'studiocms:ui/components/toaster';
+    import { ModalHelper } from 'studiocms:ui/components/modal/client';
+    import { toast } from 'studiocms:ui/components/toaster/client';
     
     const loginForm = document.getElementById('login-form') as HTMLFormElement | null;
     if (loginForm) {

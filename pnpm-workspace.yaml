@@ -39,7 +39,7 @@ catalogs:
     "react-dom": ^19.2.0
   studiocms:
     "@studiocms/markdown-remark-processor": ^1.2.0
-    "@studiocms/ui": ^1.0.0-beta.3
+    "@studiocms/ui": https://pkg.pr.new/@studiocms/ui@3109daf
     "@studiocms/web-vitals": ^4.5.3
     "@withstudiocms/cli-kit": ^0.1.0
 

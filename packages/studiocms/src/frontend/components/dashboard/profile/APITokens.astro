@@ -142,8 +142,8 @@ const t = useTranslations(lang, '@studiocms/dashboard:profile');
 </script>
 
 <script>
-    import { ModalHelper } from 'studiocms:ui/components/modal';
-    import { toast } from 'studiocms:ui/components/toaster';
+    import { ModalHelper } from 'studiocms:ui/components/modal/client';
+    import { toast } from 'studiocms:ui/components/toaster/client';
 
     const createAPITokenModal = new ModalHelper('create-api-token-modal', 'create-api-token');
     const createTokenResponseModal = new ModalHelper('create-token-response-modal');

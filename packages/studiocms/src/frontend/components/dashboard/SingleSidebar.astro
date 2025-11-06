@@ -14,7 +14,7 @@ const { currentUser } = Astro.props as Props;
 </Sidebar>
 
 <script>
-  import { SingleSidebarHelper } from "studiocms:ui/components/sidebar";
+  import { SingleSidebarHelper } from "studiocms:ui/components/sidebar/client";
 
   function setupSidebar() {
     if (!document.getElementById('sui-sidebar')) return;

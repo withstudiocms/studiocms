@@ -2,7 +2,7 @@
  * This tool is used by Auth Login pages
  */
 
-import { toast as uiToast } from 'studiocms:ui/components/toaster';
+import { toast as uiToast } from 'studiocms:ui/components/toaster/client';
 import type { ToastProps } from '@studiocms/ui/types';
 
 /**

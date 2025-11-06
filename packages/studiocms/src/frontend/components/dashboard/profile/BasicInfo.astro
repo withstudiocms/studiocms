@@ -84,7 +84,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:profile');
 
 
 <script>
-    import { toast } from "studiocms:ui/components/toaster";
+    import { toast } from "studiocms:ui/components/toaster/client";
 
     const syncAvatar = document.getElementById('refresh-avatar') as HTMLButtonElement;
     const syncUrl = syncAvatar.dataset.url as string;

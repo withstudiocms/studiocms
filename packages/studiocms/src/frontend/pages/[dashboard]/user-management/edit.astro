@@ -323,8 +323,8 @@ if (isAdmin) allowedRanks.unshift({ label: 'Administrator', value: 'admin' });
   </script>
 
   <script>
-    import { toast } from 'studiocms:ui/components/toaster';
-    import { ModalHelper } from 'studiocms:ui/components/modal';
+    import { toast } from 'studiocms:ui/components/toaster/client';
+    import { ModalHelper } from 'studiocms:ui/components/modal/client';
 
     const resetLinkModal = new ModalHelper('password-reset-link-modal');
 
