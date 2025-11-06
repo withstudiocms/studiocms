@@ -33,7 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 import { $i18n, baseTranslation, updateSelectOptions } from 'studiocms:i18n/client';
 import { ModalHelper } from 'studiocms:ui/components/modal/client';
 import { toast } from 'studiocms:ui/components/toaster/client';
-import ace from 'ace-builds';
+import * as ace from 'ace-builds';
 import modeHandlebars from 'ace-builds/src-noconflict/mode-handlebars?url';
 import themeLight from 'ace-builds/src-noconflict/theme-cloud_editor?url';
 import themeDark from 'ace-builds/src-noconflict/theme-cloud_editor_dark?url';
