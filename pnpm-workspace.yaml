@@ -1,4 +1,14 @@
+packages:
+  - packages/@studiocms/*
+  - packages/@withstudiocms/*
+  - packages/@withstudiocms/*/test/fixtures/*
+  - packages/*
+  - bundle-tests/*
+  - playground
+
 catalog:
+  "@codecov/astro-plugin": ^1.9.1
+  "@types/mdast": ^4.0.4
   "@types/node": ^22.0.0
   arctic: ^3.7.0
   astro-integration-kit: ^0.19.1
@@ -8,22 +18,20 @@ catalog:
   sharp: ^0.34.3
   tinyglobby: ^0.2.15
   typescript: ^5.9.3
-  "@types/mdast": ^4.0.4
-  "@codecov/astro-plugin": ^1.9.1
 
 catalogs:
   astrojs:
-    "@astrojs/db": ^0.18.2
-    "@astrojs/rss": ^4.0.13
     "@astrojs/check": ^0.9.5
+    "@astrojs/db": ^0.18.2
     "@astrojs/node": ^9.5.0
+    "@astrojs/rss": ^4.0.13
     astro: ^5.15.3
     vite: ^6.3.4
   effect:
-    "@effect/cli": ^0.71.0
-    "@effect/platform": ^0.92.1
-    "@effect/platform-node": ^0.98.4
-    effect: ^3.18.4
+    "@effect/cli": ^0.72.0
+    "@effect/platform": ^0.93.0
+    "@effect/platform-node": ^0.99.0
+    effect: ^3.19.0
   min:
     "@astrojs/markdown-remark": ^6.3.3
     "@libsql/client": ^0.15.10
@@ -36,20 +44,12 @@ catalogs:
     "@types/react": ^19.2.2
     "@types/react-dom": ^19.2.2
     react: ^19.2.0
-    "react-dom": ^19.2.0
+    react-dom: ^19.2.0
   studiocms:
     "@studiocms/markdown-remark-processor": ^1.2.0
     "@studiocms/ui": ^1.0.0-beta.4
     "@studiocms/web-vitals": ^4.5.3
     "@withstudiocms/cli-kit": ^0.1.0
-
-packages:
-  - "packages/@studiocms/*"
-  - "packages/@withstudiocms/*"
-  - "packages/@withstudiocms/*/test/fixtures/*"
-  - "packages/*"
-  - "bundle-tests/*"
-  - "playground"
 
 minimumReleaseAge: 4320
 
@@ -57,3 +57,10 @@ minimumReleaseAgeExclude:
   - studiocms
   - "@studiocms/*"
   - "@withstudiocms/*"
+
+onlyBuiltDependencies:
+  - "@parcel/watcher"
+  - canvas
+  - esbuild
+  - msgpackr-extract
+  - sharp
