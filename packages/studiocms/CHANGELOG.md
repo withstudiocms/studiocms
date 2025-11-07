@@ -1,5 +1,18 @@
 # studiocms
 
+## 0.1.0-beta.29
+
+### Patch Changes
+
+- [#969](https://github.com/withstudiocms/studiocms/pull/969) [`7dd17fa`](https://github.com/withstudiocms/studiocms/commit/7dd17fa085bd747b500f920c53184f5b6f509abd) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update studiocms dependencies
+
+- [#973](https://github.com/withstudiocms/studiocms/pull/973) [`76f30aa`](https://github.com/withstudiocms/studiocms/commit/76f30aab37bd5b94f418717788acd96f2e3cc62c) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Updates StudioCMS UI and related Astro files to resolve Astro picocolor bug resulting in broken dev environments
+
+- Updated dependencies [[`79286bf`](https://github.com/withstudiocms/studiocms/commit/79286bf1c914e9bcf4712c2165ccb978ad3118fe)]:
+  - @withstudiocms/effect@0.1.0-beta.5
+  - @withstudiocms/auth-kit@0.1.0-beta.4
+  - @withstudiocms/component-registry@0.1.0-beta.5
+
 ## 0.1.0-beta.28
 
 ### Patch Changes
