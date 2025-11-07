@@ -105,8 +105,8 @@ catalogs:
       specifier: ^1.2.0
       version: 1.2.0
     '@studiocms/ui':
-      specifier: ^1.0.0-beta.3
-      version: 1.0.0-beta.3
+      specifier: ^1.0.0-beta.4
+      version: 1.0.0-beta.4
     '@studiocms/web-vitals':
       specifier: ^4.5.3
       version: 4.5.3
@@ -613,7 +613,7 @@ importers:
     dependencies:
       '@studiocms/ui':
         specifier: catalog:studiocms
-        version: 1.0.0-beta.3(astro@5.15.1(@types/node@22.18.10)(jiti@2.6.1)(rollup@4.52.4)(typescript@5.9.3)(yaml@2.8.1))(vite@6.4.0(@types/node@22.18.10)(jiti@2.6.1)(yaml@2.8.1))
+        version: 1.0.0-beta.4(astro@5.15.1(@types/node@22.18.10)(jiti@2.6.1)(rollup@4.52.4)(typescript@5.9.3)(yaml@2.8.1))(vite@6.4.0(@types/node@22.18.10)(jiti@2.6.1)(yaml@2.8.1))
       '@withstudiocms/component-registry':
         specifier: workspace:*
         version: link:../../@withstudiocms/component-registry
@@ -863,7 +863,7 @@ importers:
         version: 1.2.0(nanostores@1.0.1)
       '@studiocms/ui':
         specifier: catalog:studiocms
-        version: 1.0.0-beta.3(astro@5.15.1(@types/node@22.18.10)(jiti@2.6.1)(rollup@4.52.4)(typescript@5.9.3)(yaml@2.8.1))(vite@6.4.0(@types/node@22.18.10)(jiti@2.6.1)(yaml@2.8.1))
+        version: 1.0.0-beta.4(astro@5.15.1(@types/node@22.18.10)(jiti@2.6.1)(rollup@4.52.4)(typescript@5.9.3)(yaml@2.8.1))(vite@6.4.0(@types/node@22.18.10)(jiti@2.6.1)(yaml@2.8.1))
       '@studiocms/web-vitals':
         specifier: catalog:min
         version: 4.5.3(@astrojs/db@0.18.1)
@@ -2671,8 +2671,8 @@ packages:
   '@studiocms/markdown-remark-processor@1.2.0':
     resolution: {integrity: sha512-3qOupRze2HKO2VdcrN0c5j9ZYoM8hlhFjrs4m5pg4w5Do5I1MTuDDTXmfRnZ+CwDrXyUaYr+DK1Csb7zMYjzyA==}
 
-  '@studiocms/ui@1.0.0-beta.3':
-    resolution: {integrity: sha512-rEvkU09I4cZvD/uKbx1U1OCFjWFIyL93PMsQz4NY6re+hOzlvUepE67FcmnyiM9454hmnOQ4gFBbrV3E/2gImQ==}
+  '@studiocms/ui@1.0.0-beta.4':
+    resolution: {integrity: sha512-dgn01uL7QEqtQulTP5bTwb2FKyxPdOJ14cNW8v6IFR74oh6tIiEF5P7wIBPOTZXa+zDH7QJWsDzKL/H2UkF7uA==}
     peerDependencies:
       astro: ^4.5 || ^5.0.0-beta.0
       vite: ^5.0.0 || ^6.0.0
@@ -7996,7 +7996,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@studiocms/ui@1.0.0-beta.3(astro@5.15.1(@types/node@22.18.10)(jiti@2.6.1)(rollup@4.52.4)(typescript@5.9.3)(yaml@2.8.1))(vite@6.4.0(@types/node@22.18.10)(jiti@2.6.1)(yaml@2.8.1))':
+  '@studiocms/ui@1.0.0-beta.4(astro@5.15.1(@types/node@22.18.10)(jiti@2.6.1)(rollup@4.52.4)(typescript@5.9.3)(yaml@2.8.1))(vite@6.4.0(@types/node@22.18.10)(jiti@2.6.1)(yaml@2.8.1))':
     dependencies:
       '@iconify-json/heroicons': 1.2.3
       '@iconify/types': 2.0.0

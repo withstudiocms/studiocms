@@ -142,9 +142,9 @@ const t = useTranslations(lang, '@studiocms/dashboard:user-mngmt-sidebar');
 </script>
 
 <script>
-    import { DropdownHelper } from 'studiocms:ui/components/dropdown';
-    import { ModalHelper } from 'studiocms:ui/components/modal';
-    import { toast } from 'studiocms:ui/components/toaster';
+    import { DropdownHelper } from 'studiocms:ui/components/dropdown/client';
+    import { ModalHelper } from 'studiocms:ui/components/modal/client';
+    import { toast } from 'studiocms:ui/components/toaster/client';
 
     const createNewDropdown = new DropdownHelper('create-user-dropdown');
     const createNewUserModal = new ModalHelper('create-new-user-modal');
