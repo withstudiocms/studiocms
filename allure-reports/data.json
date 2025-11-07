@@ -3,6 +3,10 @@
     "..",
     "adam_kysely-project",
     "main",
-    "renovate_devapps-@studiocms-integration-dependencies"
+    "renovate_all-minor-patch",
+    "renovate_devapps-@studiocms-integration-dependencies",
+    "renovate_devcontainer-mcr_microsoft_com-devcontainers-typescript-node-dev-22-bookworm",
+    "renovate_pnpm-workspace-dependencies",
+    "renovate_studiocms-studiocms-dependencies"
   ]
 }
