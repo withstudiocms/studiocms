@@ -3,6 +3,7 @@
     "..",
     "adam_kysely-project",
     "changeset-release_main",
-    "main"
+    "main",
+    "renovate_effect-dependencies"
   ]
 }
