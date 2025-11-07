@@ -64,8 +64,8 @@ export const SDKConfigModule = Effect.gen(function* () {
 		decoder: StudioCMSDynamicConfigSettings.Select,
 		encoder: StudioCMSDynamicConfigSettings.Insert,
 		callbackFn: (db, data) =>
-			db((c) =>
-				c
+			db((client) =>
+				client
 					.insertInto('StudioCMSDynamicConfigSettings')
 					.values(data)
 					.returning(['id', 'data'])
@@ -83,8 +83,8 @@ export const SDKConfigModule = Effect.gen(function* () {
 		decoder: Schema.UndefinedOr(StudioCMSDynamicConfigSettings.Select),
 		encoder: Schema.String,
 		callbackFn: (db, id) =>
-			db((c) =>
-				c
+			db((client) =>
+				client
 					.selectFrom('StudioCMSDynamicConfigSettings')
 					.selectAll()
 					.where('id', '=', id)
@@ -102,8 +102,8 @@ export const SDKConfigModule = Effect.gen(function* () {
 		decoder: StudioCMSDynamicConfigSettings.Select,
 		encoder: StudioCMSDynamicConfigSettings.Update,
 		callbackFn: (db, { id, data }) =>
-			db((c) =>
-				c
+			db((client) =>
+				client
 					.updateTable('StudioCMSDynamicConfigSettings')
 					.set({ data })
 					.where('id', '=', id)
