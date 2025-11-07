@@ -2,11 +2,11 @@
   "links": [
     "..",
     "adam_kysely-project",
+    "changeset-release_main",
     "main",
     "renovate_all-minor-patch",
     "renovate_devapps-@studiocms-integration-dependencies",
     "renovate_devcontainer-mcr_microsoft_com-devcontainers-typescript-node-dev-22-bookworm",
-    "renovate_pnpm-workspace-dependencies",
     "renovate_studiocms-studiocms-dependencies"
   ]
 }
