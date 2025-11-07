@@ -20,7 +20,7 @@ const { currentUser } = Astro.props as Props;
 </SuiDoubleSidebar>
 
 <script>
-  import { DoubleSidebarHelper } from "studiocms:ui/components/sidebar";
+  import { DoubleSidebarHelper } from "studiocms:ui/components/sidebar/client";
 
   if (document.getElementById('sui-sidebars')) {
     const sidebar = new DoubleSidebarHelper();

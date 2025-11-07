@@ -31,16 +31,18 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 import { $i18n, baseTranslation, updateSelectOptions } from 'studiocms:i18n/client';
-import { ModalHelper } from 'studiocms:ui/components/modal';
-import { toast } from 'studiocms:ui/components/toaster';
+import { ModalHelper } from 'studiocms:ui/components/modal/client';
+import { toast } from 'studiocms:ui/components/toaster/client';
 import * as ace from 'ace-builds';
-import 'ace-builds/esm-resolver';
-import 'ace-builds/src-noconflict/mode-handlebars';
-import 'ace-builds/src-noconflict/theme-cloud_editor';
-import 'ace-builds/src-noconflict/theme-cloud_editor_dark';
-import 'ace-builds/src-noconflict/ext-language_tools';
+import modeHandlebars from 'ace-builds/src-noconflict/mode-handlebars?url';
+import themeLight from 'ace-builds/src-noconflict/theme-cloud_editor?url';
+import themeDark from 'ace-builds/src-noconflict/theme-cloud_editor_dark?url';
 
 const { default: templateEngine } = await import('@withstudiocms/template-lang');
+
+ace.config.setModuleUrl('ace/mode/handlebars', modeHandlebars);
+ace.config.setModuleUrl('ace/theme/cloud_editor', themeLight);
+ace.config.setModuleUrl('ace/theme/cloud_editor_dark', themeDark);
 
 // --- TYPE DEFINITIONS ---
 type EngineContext = {
@@ -120,10 +122,6 @@ const editor = ace.edit('template-editor', {
 	wrap: true,
 	useWorker: false,
 	displayIndentGuides: true,
-	enableAutoIndent: true,
-	enableBasicAutocompletion: true,
-	enableLiveAutocompletion: true,
-	enableSnippets: true,
 });
 
 // --- FUNCTION UTILITIES ---

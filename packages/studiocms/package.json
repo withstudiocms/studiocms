@@ -151,7 +151,7 @@
 	"type": "module",
 	"dependencies": {
 		"@iconify-json/flat-color-icons": "^1.2.3",
-		"@iconify-json/simple-icons": "^1.2.55",
+		"@iconify-json/simple-icons": "^1.2.57",
 		"@iconify-json/circle-flags": "^1.2.10",
 		"@inox-tools/runtime-logger": "^0.7.0",
 		"@nanostores/i18n": "^1.2.2",
@@ -176,7 +176,7 @@
 		"jose": "^6.1.0",
 		"micromark": "^4.0.2",
 		"micromark-extension-gfm": "^3.0.0",
-		"magicast": "^0.3.5",
+		"magicast": "^0.5.1",
 		"mdast-util-to-markdown": "^2.1.2",
 		"mrmime": "^2.0.1",
 		"nanostores": "^1.0.1",

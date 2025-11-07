@@ -199,18 +199,38 @@ export const updateSelectElmLabel = (el: string, translation: string) => {
 export const updateTrueFalseSelectOptions = (el: string, t: { true: string; false: string }) => {
 	const ul = document.querySelector<HTMLUListElement>(`#${el}-dropdown`);
 	if (!ul) return;
-	const trueOption = ul.querySelector<HTMLLIElement>('li[data-value="true"]');
-	const falseOption = ul.querySelector<HTMLLIElement>('li[data-value="false"]');
+	const trueOption = ul.querySelector<HTMLLIElement>('li[value="true"]');
+	const falseOption = ul.querySelector<HTMLLIElement>('li[value="false"]');
 	if (trueOption) trueOption.textContent = t.true;
 	if (falseOption) falseOption.textContent = t.false;
+
+	// get currently selected option
+	const selected = ul.querySelector<HTMLLIElement>('li.selected');
+	const currentValueSpan = document.querySelector<HTMLSpanElement>(`#${el}-value-span`);
+
+	const selectedValue = selected?.getAttribute('value');
+
+	if (currentValueSpan && selectedValue) {
+		currentValueSpan.textContent = selectedValue === 'true' ? t.true : t.false;
+	}
 };
 
 export const updateSelectOptions = (el: string, t: { [key: string]: string }) => {
 	const ul = document.querySelector<HTMLUListElement>(`#${el}-dropdown`);
 	if (!ul) return;
 	for (const key in t) {
-		const option = ul.querySelector<HTMLLIElement>(`li[data-value="${key}"]`);
+		const option = ul.querySelector<HTMLLIElement>(`li[value="${key}"]`);
 		if (option) option.textContent = t[key];
+	}
+
+	// get currently selected option
+	const selected = ul.querySelector<HTMLLIElement>('li.selected');
+	const currentValueSpan = document.querySelector<HTMLSpanElement>(`#${el}-value-span`);
+
+	const selectedValue = selected?.getAttribute('value');
+
+	if (currentValueSpan && selectedValue) {
+		currentValueSpan.textContent = t[selectedValue];
 	}
 };
 
