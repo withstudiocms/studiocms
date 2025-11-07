@@ -1,0 +1,33 @@
+<!-- report-action -->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Redirect to latest</title>
+  </head>
+
+  <body>
+    <h1>Redirecting to the latest run...</h1>
+
+    <script>
+      fetch(`./lastRun.json?t=${Date.now()}`)
+        .then((response) => response.ok && response.json())
+        .then((json) => {
+          if (!json) {
+            return
+          }
+
+          const ending = window.location.pathname.endsWith('latest.html')
+            ? 'latest.html'
+            : window.location.pathname.endsWith('latest')
+              ? 'latest'
+              : null
+          if (ending) {
+            window.location.replace(window.location.pathname.replace(ending, `${json.runId}_${json.runTimestamp}`))
+          } else {
+            console.error('something went wrong')
+          }
+        })
+    </script>
+  </body>
+</html>
