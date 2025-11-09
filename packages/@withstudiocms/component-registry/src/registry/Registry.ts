@@ -86,9 +86,11 @@ export class ComponentRegistry extends Effect.Service<ComponentRegistry>()('Comp
 				Effect.flatMap(parser.parseComponentProps),
 				Effect.map((parsed) => {
 					const name = componentName || path.basename(filePath, path.extname(filePath));
-					if (parsed.length > 0) {
-						components.set(name, parsed[0]);
-					}
+					const component = parsed[0] ?? {
+						name,
+						props: [] as AstroComponentProps['props'],
+					};
+					components.set(name, component);
 				})
 			)
 		);
