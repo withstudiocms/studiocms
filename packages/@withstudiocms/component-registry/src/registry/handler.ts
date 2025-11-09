@@ -91,9 +91,7 @@ export const ComponentRegistryOptionsSchema = Schema.Struct({
  *   schema for the authoritative specification of each option.
  * - Because this type is derived from the schema, updating the schema will automatically update this type.
  */
-export type ComponentRegistryOptionsSchema = Schema.Schema.Type<
-	typeof ComponentRegistryOptionsSchema
->;
+export type ComponentRegistryOptions = Schema.Schema.Type<typeof ComponentRegistryOptionsSchema>;
 
 /* v8 ignore start */
 
@@ -144,7 +142,7 @@ export type ComponentRegistryOptionsSchema = Schema.Schema.Type<
  * // }
  */
 export const componentRegistryHandler = defineUtility('astro:config:setup')(
-	async (params, opts: ComponentRegistryOptionsSchema) =>
+	async (params, opts: ComponentRegistryOptions) =>
 		await runEffect(
 			Effect.gen(function* () {
 				// Decode and validate options using Effect's Schema
