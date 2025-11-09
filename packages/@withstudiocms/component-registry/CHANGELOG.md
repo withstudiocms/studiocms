@@ -1,5 +1,12 @@
 # @withstudiocms/component-registry
 
+## 0.1.0-beta.5
+
+### Patch Changes
+
+- Updated dependencies [[`79286bf`](https://github.com/withstudiocms/studiocms/commit/79286bf1c914e9bcf4712c2165ccb978ad3118fe)]:
+  - @withstudiocms/effect@0.1.0-beta.5
+
 ## 0.1.0-beta.4
 
 ### Patch Changes
