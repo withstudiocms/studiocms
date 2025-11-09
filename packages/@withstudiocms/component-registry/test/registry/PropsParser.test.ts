@@ -118,31 +118,24 @@ const { count } = Astro.props;
 		});
 	});
 
-	// TODO: Refactor registerComponentFromFile/PropsParser to NOT throw on no props, but register with empty props array
-	// it makes more sense for the registry to handle this gracefully
 	[
 		{
 			astro: '<h1>No frontmatter</h1>',
-			errorMessage: /No frontmatter/,
 		},
 		{
 			astro: '---\nconst foo = 1;\n---\n<h1>No Props</h1>',
-			errorMessage: /No Props interface or type/,
 		},
-	].forEach(({ astro, errorMessage }) => {
-		test('PropsParser - extractPropsFromAstroFile - error cases', async () => {
+	].forEach(({ astro }) => {
+		test('PropsParser - extractPropsFromAstroFile - empty frontmatter/props cases', async () => {
 			await allure.parentSuite(parentSuiteName);
 			await allure.suite(localSuiteName);
 			await allure.subSuite('extractPropsFromAstroFile Error Tests');
 			await allure.tags(...sharedTags);
 
-			await allure.step('Extract Props from Astro File and expect error', async () => {
-				const result = await runEffect(parser.extractPropsFromAstroFile(astro).pipe(Effect.either));
-				expect(result._tag).toBe('Left');
-				// @ts-expect-error
-				expect(result.left).toBeInstanceOf(Error);
-				// @ts-expect-error
-				expect(result.left.message).toMatch(errorMessage);
+			await allure.step('Extract Props from Astro File and expect empty result', async (ctx) => {
+				const result = await runEffect(parser.extractPropsFromAstroFile(astro));
+				expect(result).toEqual('');
+				await ctx.parameter('result', result === '' ? 'empty string' : result);
 			});
 		});
 	});
