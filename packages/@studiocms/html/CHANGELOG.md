@@ -1,5 +1,12 @@
 # @studiocms/html
 
+## 0.1.0-beta.30
+
+### Patch Changes
+
+- Updated dependencies [[`044f30e`](https://github.com/withstudiocms/studiocms/commit/044f30e510eedfcdf3917db1884be9c0656c1c67)]:
+  - studiocms@0.1.0-beta.30
+
 ## 0.1.0-beta.29
 
 ### Patch Changes

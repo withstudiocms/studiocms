@@ -1,5 +1,11 @@
 # @withstudiocms/effect
 
+## 0.1.0-beta.6
+
+### Patch Changes
+
+- [#981](https://github.com/withstudiocms/studiocms/pull/981) [`61091e1`](https://github.com/withstudiocms/studiocms/commit/61091e1e7633f1b4bf0fa3e0a09debb06b861fbe) Thanks [@renovate](https://github.com/apps/renovate)! - chore(deps): Updated Effect dependencies (PR: #981)
+
 ## 0.1.0-beta.5
 
 ### Patch Changes
