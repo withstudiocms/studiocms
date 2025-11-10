@@ -3,6 +3,8 @@
     "..",
     "adam_kysely-project",
     "main",
-    "renovate_effect-dependencies"
+    "renovate_all-minor-patch",
+    "renovate_effect-dependencies",
+    "renovate_pnpm-workspace-dependencies"
   ]
 }
