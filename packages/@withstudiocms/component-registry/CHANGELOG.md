@@ -1,5 +1,14 @@
 # @withstudiocms/component-registry
 
+## 0.1.0-beta.6
+
+### Patch Changes
+
+- [#978](https://github.com/withstudiocms/studiocms/pull/978) [`34e2c50`](https://github.com/withstudiocms/studiocms/commit/34e2c509914596d5e8bb75bceb6bf2b2cadeba3d) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Cleans up component registry code
+
+- Updated dependencies [[`61091e1`](https://github.com/withstudiocms/studiocms/commit/61091e1e7633f1b4bf0fa3e0a09debb06b861fbe)]:
+  - @withstudiocms/effect@0.1.0-beta.6
+
 ## 0.1.0-beta.5
 
 ### Patch Changes

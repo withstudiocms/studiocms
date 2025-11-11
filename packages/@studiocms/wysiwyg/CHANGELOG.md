@@ -1,5 +1,13 @@
 # @studiocms/wysiwyg
 
+## 0.1.0-beta.30
+
+### Patch Changes
+
+- Updated dependencies [[`34e2c50`](https://github.com/withstudiocms/studiocms/commit/34e2c509914596d5e8bb75bceb6bf2b2cadeba3d), [`044f30e`](https://github.com/withstudiocms/studiocms/commit/044f30e510eedfcdf3917db1884be9c0656c1c67)]:
+  - @withstudiocms/component-registry@0.1.0-beta.6
+  - studiocms@0.1.0-beta.30
+
 ## 0.1.0-beta.29
 
 ### Patch Changes

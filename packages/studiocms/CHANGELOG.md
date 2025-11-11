@@ -1,5 +1,16 @@
 # studiocms
 
+## 0.1.0-beta.30
+
+### Patch Changes
+
+- [#983](https://github.com/withstudiocms/studiocms/pull/983) [`044f30e`](https://github.com/withstudiocms/studiocms/commit/044f30e510eedfcdf3917db1884be9c0656c1c67) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Updates usage of Toaster on first-time setup pages
+
+- Updated dependencies [[`34e2c50`](https://github.com/withstudiocms/studiocms/commit/34e2c509914596d5e8bb75bceb6bf2b2cadeba3d), [`61091e1`](https://github.com/withstudiocms/studiocms/commit/61091e1e7633f1b4bf0fa3e0a09debb06b861fbe)]:
+  - @withstudiocms/component-registry@0.1.0-beta.6
+  - @withstudiocms/effect@0.1.0-beta.6
+  - @withstudiocms/auth-kit@0.1.0-beta.5
+
 ## 0.1.0-beta.29
 
 ### Patch Changes
