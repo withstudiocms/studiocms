@@ -2,7 +2,8 @@ import { internalMarkdownIntegration } from '@studiocms/md';
 import type { AstroIntegration } from 'astro';
 import { getViteConfig } from 'astro/config';
 import { addVirtualImports, createResolver } from 'astro-integration-kit';
-import { defineProject } from 'vitest/config';
+import { defineProject, mergeConfig } from 'vitest/config';
+import { configShared } from '../../../vitest.shared.js';
 import { internalBlogIntegration } from './src/index.js';
 
 const { resolve } = createResolver(import.meta.url);
@@ -41,13 +42,12 @@ const testIntegration: AstroIntegration = {
 
 export default defineProject(
 	getViteConfig(
-		{
+		mergeConfig(configShared, {
 			test: {
 				name: '@studiocms/blog',
-				environment: 'node',
 				include: ['**/*.test.ts'],
 			},
-		},
+		}),
 		{
 			integrations: [testIntegration, internalMarkdownIntegration(), internalBlogIntegration()],
 		}
