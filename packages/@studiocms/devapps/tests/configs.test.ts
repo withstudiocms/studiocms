@@ -304,36 +304,66 @@ describe(parentSuiteName, () => {
 	});
 
 	[
-		StringConfig.of({ str: 'test' }),
-		APIEndpointConfig.of({ endpoint: 'https://example.com', type: 'posts' as const }),
-		DownloadImageConfig.of({
-			imageUrl: 'https://example.com/image.jpg',
-			destination: '/public/images',
-		}),
-		DownloadPostImageConfig.of({ str: 'content', pathToFolder: '/public' }),
-		ImportEndpointConfig.of({ endpoint: 'https://example.com' }),
-		ImportPostsEndpointConfig.of({ endpoint: 'https://example.com', useBlogPkg: false }),
-		AstroAPIContextProvider.of({ context: {} as APIContext }),
-		RawPageData.of({ page: {} }),
-		FullPageData.of({ pageData: {} as PageData }),
-		UseBlogPkgConfig.of({ useBlogPkg: false }),
-		CategoryOrTagConfig.of({ value: [] as const }),
-	].forEach((config) => {
-		test(`should ensure config of type ${config.constructor.name} is defined`, async () => {
+		{
+			label: 'StringConfig',
+			config: StringConfig.of({ str: 'test' }),
+		},
+		{
+			label: 'APIEndpointConfig',
+			config: APIEndpointConfig.of({ endpoint: 'https://example.com', type: 'posts' as const }),
+		},
+		{
+			label: 'DownloadImageConfig',
+			config: DownloadImageConfig.of({
+				imageUrl: 'https://example.com/image.jpg',
+				destination: '/public/images',
+			}),
+		},
+		{
+			label: 'DownloadPostImageConfig',
+			config: DownloadPostImageConfig.of({ str: 'content', pathToFolder: '/public' }),
+		},
+		{
+			label: 'ImportEndpointConfig',
+			config: ImportEndpointConfig.of({ endpoint: 'https://example.com' }),
+		},
+		{
+			label: 'ImportPostsEndpointConfig',
+			config: ImportPostsEndpointConfig.of({ endpoint: 'https://example.com', useBlogPkg: false }),
+		},
+		{
+			label: 'AstroAPIContextProvider',
+			config: AstroAPIContextProvider.of({ context: {} as APIContext }),
+		},
+		{
+			label: 'RawPageData',
+			config: RawPageData.of({ page: {} }),
+		},
+		{
+			label: 'FullPageData',
+			config: FullPageData.of({ pageData: {} as PageData }),
+		},
+		{
+			label: 'UseBlogPkgConfig',
+			config: UseBlogPkgConfig.of({ useBlogPkg: false }),
+		},
+		{
+			label: 'CategoryOrTagConfig',
+			config: CategoryOrTagConfig.of({ value: [] as const }),
+		},
+	].forEach(({ label, config }) => {
+		test(`${label} - should ensure config is defined`, async () => {
 			await allure.parentSuite(parentSuiteName);
 			await allure.suite(localSuiteName);
 			await allure.subSuite('Configuration Validation Tests');
 			await allure.tags(...sharedTags);
 
-			await allure.step(
-				`Should ensure config of type ${config.constructor.name} is defined`,
-				async (ctx) => {
-					await ctx.parameter('config', JSON.stringify(config, null, 2));
+			await allure.step(`Should ensure ${label} is defined`, async (ctx) => {
+				await ctx.parameter('config', JSON.stringify(config, null, 2));
 
-					expect(config).toBeDefined();
-					expect(typeof config).toBe('object');
-				}
-			);
+				expect(config).toBeDefined();
+				expect(typeof config).toBe('object');
+			});
 		});
 	});
 });
