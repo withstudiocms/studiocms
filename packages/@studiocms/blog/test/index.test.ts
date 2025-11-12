@@ -46,7 +46,7 @@ describe(localSuiteName, () => {
 				await ctx.parameter('functionName', blogPlugin.name);
 
 				expect(typeof blogPlugin).toBe('function');
-				expect(blogPlugin.name).toBe('blogPlugin');
+				expect(blogPlugin.name).toBe('studioCMSBlogPlugin');
 			}
 		);
 
