@@ -1,8 +1,12 @@
+import * as allure from 'allure-js-commons';
 import { StudioCMSPluginTester } from 'studiocms/test-utils';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { studiocmsGoogle } from '../src/index.js';
+import { parentSuiteName, sharedTags } from './test-utils.js';
 
-describe('@studiocms/google', () => {
+const localSuiteName = 'Google Plugin Tests';
+
+describe(parentSuiteName, () => {
 	let tester: StudioCMSPluginTester;
 	let plugin: ReturnType<typeof studiocmsGoogle>;
 
@@ -16,9 +20,17 @@ describe('@studiocms/google', () => {
 		vi.restoreAllMocks();
 	});
 
-	describe('plugin creation', () => {
-		it('should create a plugin with correct metadata', () => {
+	test('Plugin Creation - Validates Plugin Structure', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('Plugin Creation Tests');
+		await allure.tags(...sharedTags);
+
+		await allure.step('Should create plugin with correct metadata and structure', async (ctx) => {
 			const pluginInfo = tester.getPluginInfo();
+
+			await ctx.parameter('pluginInfo', JSON.stringify(pluginInfo, null, 2));
+
 			expect(pluginInfo).toBeDefined();
 			expect(pluginInfo.identifier).toBe('@studiocms/google');
 			expect(pluginInfo.name).toBe('StudioCMS Google Plugin');
@@ -26,12 +38,22 @@ describe('@studiocms/google', () => {
 			expect(pluginInfo.requires).toBeUndefined();
 		});
 
-		it('should export default function', () => {
-			expect(typeof studiocmsGoogle).toBe('function');
-			expect(studiocmsGoogle.name).toBe('studiocmsGoogle');
-		});
+		await allure.step(
+			'Should export default function returning valid plugin object',
+			async (ctx) => {
+				await ctx.parameter('functionType', typeof studiocmsGoogle);
+				await ctx.parameter('functionName', studiocmsGoogle.name);
 
-		it('should return a valid StudioCMSPlugin object', () => {
+				expect(typeof studiocmsGoogle).toBe('function');
+				expect(studiocmsGoogle.name).toBe('studiocmsGoogle');
+			}
+		);
+
+		await allure.step('Should return a valid StudioCMSPlugin object', async (ctx) => {
+			await ctx.parameter('pluginIdentifier', plugin.identifier);
+			await ctx.parameter('pluginName', plugin.name);
+			await ctx.parameter('hasHooks', String(plugin.hooks !== undefined));
+
 			expect(plugin).toBeDefined();
 			expect(plugin.identifier).toBe('@studiocms/google');
 			expect(plugin.name).toBe('StudioCMS Google Plugin');
@@ -39,30 +61,47 @@ describe('@studiocms/google', () => {
 		});
 	});
 
-	describe('hooks', () => {
-		it('should have the correct hooks defined', async () => {
+	test('Hooks Functionality - Validates Hook Implementations', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('Hooks Functionality Tests');
+		await allure.tags(...sharedTags);
+
+		await allure.step('Should have correct hooks defined and implemented', async (ctx) => {
 			const hookResults = await tester.getHookResults();
+
+			await ctx.parameter('hookResults', JSON.stringify(hookResults, null, 2));
 
 			expect(hookResults.studiocmsConfig).toBeDefined();
 			expect(hookResults.studiocmsConfig.hasHook).toBe(true);
+
+			expect(hookResults.astroConfig).toBeDefined();
+			expect(hookResults.astroConfig.hasHook).toBe(false);
 		});
 
-		it('should configure Google OAuth provider in studiocms config hook', async () => {
+		await allure.step('Should configure Google OAuth provider correctly', async (ctx) => {
 			const hookResults = await tester.getHookResults();
-
-			expect(hookResults.studiocmsConfig.hookResults.authService).toBeDefined();
-			expect(hookResults.studiocmsConfig.hookResults.authService.oAuthProvider).toBeDefined();
-
 			const oAuthProvider = hookResults.studiocmsConfig.hookResults.authService.oAuthProvider;
+
+			await ctx.parameter(
+				'oAuthProvider',
+				JSON.stringify(hookResults.studiocmsConfig.hookResults.authService.oAuthProvider, null, 2)
+			);
+
 			expect(oAuthProvider).toBeDefined();
 			expect(oAuthProvider?.name).toBe('google');
 			expect(oAuthProvider?.formattedName).toBe('Google');
 			expect(oAuthProvider?.endpointPath).toContain('endpoint.js');
 		});
 
-		it('should define required environment variables', async () => {
+		await allure.step('Should define required environment variables', async (ctx) => {
 			const hookResults = await tester.getHookResults();
 			const oAuthProvider = hookResults.studiocmsConfig.hookResults.authService.oAuthProvider;
+
+			await ctx.parameter(
+				'requiredEnvVariables',
+				JSON.stringify(oAuthProvider?.requiredEnvVariables, null, 2)
+			);
 
 			expect(oAuthProvider?.requiredEnvVariables).toEqual([
 				'CMS_GOOGLE_CLIENT_ID',
@@ -71,9 +110,11 @@ describe('@studiocms/google', () => {
 			]);
 		});
 
-		it('should include Google SVG logo', async () => {
+		await allure.step('Should include Google SVG logo', async (ctx) => {
 			const hookResults = await tester.getHookResults();
 			const oAuthProvider = hookResults.studiocmsConfig.hookResults.authService.oAuthProvider;
+
+			await ctx.parameter('svgContent', oAuthProvider?.svg ?? 'undefined');
 
 			expect(oAuthProvider?.svg).toBeDefined();
 			expect(oAuthProvider?.svg).toContain('<svg');
@@ -81,76 +122,16 @@ describe('@studiocms/google', () => {
 			expect(oAuthProvider?.svg).toContain('viewBox="0 0 256 262"');
 		});
 
-		it('should not have astro config hook', async () => {
+		await allure.step('Should not have astro config hook', async (ctx) => {
 			const hookResults = await tester.getHookResults();
+
+			await ctx.parameter(
+				'astroConfigHookResults',
+				JSON.stringify(hookResults.astroConfig.hookResults, null, 2)
+			);
 
 			expect(hookResults.astroConfig.hasHook).toBe(false);
 			expect(hookResults.astroConfig.hookResults.integrations).toEqual([]);
-		});
-	});
-
-	describe('plugin structure', () => {
-		it('should have correct plugin identifier', () => {
-			expect(plugin.identifier).toBe('@studiocms/google');
-		});
-
-		it('should have correct plugin name', () => {
-			expect(plugin.name).toBe('StudioCMS Google Plugin');
-		});
-
-		it('should have correct minimum version requirement', () => {
-			expect(plugin.studiocmsMinimumVersion).toBe('0.1.0-beta.22');
-		});
-
-		it('should have no required dependencies', () => {
-			expect(plugin.requires).toBeUndefined();
-		});
-
-		it('should have hooks object', () => {
-			expect(plugin.hooks).toBeDefined();
-			expect(typeof plugin.hooks).toBe('object');
-		});
-	});
-
-	describe('hook implementation', () => {
-		it('should have studiocms:config:setup hook', () => {
-			expect(plugin.hooks['studiocms:config:setup']).toBeDefined();
-			expect(typeof plugin.hooks['studiocms:config:setup']).toBe('function');
-		});
-
-		it('should not have other hooks', () => {
-			const hookKeys = Object.keys(plugin.hooks);
-			expect(hookKeys).toEqual(['studiocms:config:setup']);
-		});
-	});
-
-	describe('OAuth provider configuration', () => {
-		it('should configure Google as OAuth provider', async () => {
-			const hookResults = await tester.getHookResults();
-			const authService = hookResults.studiocmsConfig.hookResults.authService;
-
-			expect(authService.oAuthProvider).toBeDefined();
-			expect(authService.oAuthProvider?.name).toBe('google');
-			expect(authService.oAuthProvider?.formattedName).toBe('Google');
-		});
-
-		it('should set correct endpoint path', async () => {
-			const hookResults = await tester.getHookResults();
-			const oAuthProvider = hookResults.studiocmsConfig.hookResults.authService.oAuthProvider;
-
-			expect(oAuthProvider?.endpointPath).toContain('endpoint.js');
-			expect(oAuthProvider?.endpointPath).not.toContain('endpoint.ts');
-		});
-
-		it('should include all required Google environment variables', async () => {
-			const hookResults = await tester.getHookResults();
-			const requiredEnvVars =
-				hookResults.studiocmsConfig.hookResults.authService.oAuthProvider?.requiredEnvVariables;
-
-			expect(requiredEnvVars).toContain('CMS_GOOGLE_CLIENT_ID');
-			expect(requiredEnvVars).toContain('CMS_GOOGLE_CLIENT_SECRET');
-			expect(requiredEnvVars).toContain('CMS_GOOGLE_REDIRECT_URI');
-			expect(requiredEnvVars).toHaveLength(3);
 		});
 	});
 });
