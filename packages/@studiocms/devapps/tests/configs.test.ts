@@ -223,8 +223,9 @@ describe('WordPress API Configs', () => {
 	describe('FullPageData', () => {
 		it('should create FullPageData with pageData', () => {
 			const pageData = {
-				id: 1,
+				id: '1',
 				title: 'Test Page',
+				description: 'A test page',
 				content: 'Test content',
 				slug: 'test-page',
 			} as PageData;
@@ -235,8 +236,9 @@ describe('WordPress API Configs', () => {
 
 		it('should create layer with makeLayer', () => {
 			const pageData = {
-				id: 1,
+				id: '1',
 				title: 'Test Page',
+				description: 'A test page',
 				content: 'Test content',
 				slug: 'test-page',
 			} as PageData;
