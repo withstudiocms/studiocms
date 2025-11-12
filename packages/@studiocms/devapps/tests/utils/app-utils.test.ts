@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it, test, vi } from '@effect/vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from '@effect/vitest';
 import * as allure from 'allure-js-commons';
 import { closeOnOutsideClick, createWindowElement } from '../../src/utils/app-utils';
 import { parentSuiteName, sharedTags } from '../test-utils.js';
