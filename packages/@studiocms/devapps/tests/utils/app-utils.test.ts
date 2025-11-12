@@ -1,5 +1,7 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from '@effect/vitest';
+import { afterEach, beforeEach, describe, expect, it, test, vi } from '@effect/vitest';
+import * as allure from 'allure-js-commons';
 import { closeOnOutsideClick, createWindowElement } from '../../src/utils/app-utils';
+import { parentSuiteName, sharedTags } from '../test-utils.js';
 
 // Mock DOM environment
 const mockDocument = {
@@ -45,7 +47,9 @@ Object.defineProperty(global, 'CustomEvent', {
 	writable: true,
 });
 
-describe('app-utils', () => {
+const localSuiteName = 'app-utils Utility Function Tests';
+
+describe(parentSuiteName, () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
 		mockDocument.createElement.mockReturnValue(mockElement);
@@ -55,85 +59,114 @@ describe('app-utils', () => {
 		vi.restoreAllMocks();
 	});
 
-	describe('createWindowElement', () => {
-		it('should create window element with correct properties', () => {
-			const content = '<div>Test content</div>';
-			const result = createWindowElement(content);
+	[
+		{
+			content: '<div>Test content</div>',
+		},
+		{
+			content: '',
+		},
+	].forEach(({ content }) => {
+		test('createWindowElement should create window element with correct properties', async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('createWindowElement Tests');
+			await allure.tags(...sharedTags);
 
-			expect(mockDocument.createElement).toHaveBeenCalledWith('astro-dev-toolbar-window');
-			expect(result.innerHTML).toBe(content);
-			expect(result.placement).toBe('bottom-center');
-		});
+			await allure.step('Should create window element with correct properties', async (ctx) => {
+				const result = createWindowElement(content);
 
-		it('should handle empty content', () => {
-			const result = createWindowElement('');
+				await ctx.parameter('content', content);
+				await ctx.parameter('result.innerHTML', result.innerHTML);
+				await ctx.parameter('result.placement', result.placement);
 
-			expect(mockDocument.createElement).toHaveBeenCalledWith('astro-dev-toolbar-window');
-			expect(result.innerHTML).toBe('');
-			expect(result.placement).toBe('bottom-center');
+				expect(mockDocument.createElement).toHaveBeenCalledWith('astro-dev-toolbar-window');
+				expect(result.innerHTML).toBe(content);
+				expect(result.placement).toBe('bottom-center');
+			});
 		});
 	});
 
-	describe('closeOnOutsideClick', () => {
-		it('should add app-toggled event listener', () => {
+	test('closeOnOutsideClick - should add app-toggled event listener', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('closeOnOutsideClick Tests');
+		await allure.tags(...sharedTags);
+
+		await allure.step('Should add app-toggled event listener', async (ctx) => {
 			const eventTarget = mockElement;
 			const additionalCheck = vi.fn();
 
 			closeOnOutsideClick(eventTarget, additionalCheck);
+
+			await ctx.parameter(
+				'eventListenersAdded',
+				JSON.stringify(eventTarget.addEventListener.mock.calls, null, 2)
+			);
 
 			expect(eventTarget.addEventListener).toHaveBeenCalledWith(
 				'app-toggled',
 				expect.any(Function)
 			);
 		});
+	});
 
-		it('should handle app-toggled event with state true', () => {
-			const eventTarget = mockElement;
-			const additionalCheck = vi.fn();
+	[
+		{
+			state: true,
+		},
+		{
+			state: false,
+		},
+	].forEach(({ state }) => {
+		test('closeOnOutsideClick - should handle app-toggled event', async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('closeOnOutsideClick Tests');
+			await allure.tags(...sharedTags);
 
-			closeOnOutsideClick(eventTarget, additionalCheck);
+			await allure.step('Should handle app-toggled event', async (ctx) => {
+				const eventTarget = mockElement;
+				const additionalCheck = vi.fn();
 
-			// Get the event listener function
-			const eventListener = eventTarget.addEventListener.mock.calls[0][1];
+				closeOnOutsideClick(eventTarget, additionalCheck);
 
-			// Simulate app-toggled event with state true
-			const event = {
-				detail: { state: true },
-			};
+				// Get the event listener function
+				const eventListener = eventTarget.addEventListener.mock.calls[0][1];
 
-			eventListener(event);
+				// Simulate app-toggled event
+				const event = {
+					detail: { state },
+				};
 
-			expect(mockDocument.addEventListener).toHaveBeenCalledWith(
-				'click',
-				expect.any(Function),
-				true
-			);
+				eventListener(event);
+
+				await ctx.parameter('appToggledState', String(state));
+				await ctx.parameter(
+					'documentEventListeners',
+					JSON.stringify(mockDocument.addEventListener.mock.calls, null, 2)
+				);
+				await ctx.parameter(
+					'documentRemovedEventListeners',
+					JSON.stringify(mockDocument.removeEventListener.mock.calls, null, 2)
+				);
+
+				expect(mockDocument.removeEventListener).toHaveBeenCalledWith(
+					'click',
+					expect.any(Function),
+					true
+				);
+			});
 		});
+	});
 
-		it('should handle app-toggled event with state false', () => {
-			const eventTarget = mockElement;
-			const additionalCheck = vi.fn();
+	test('closeOnOutsideClock - should dispatch toggle-app event on outside click', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('closeOnOutsideClick Tests');
+		await allure.tags(...sharedTags);
 
-			closeOnOutsideClick(eventTarget, additionalCheck);
-
-			// Get the event listener function
-			const eventListener = eventTarget.addEventListener.mock.calls[0][1];
-
-			// Simulate app-toggled event with state false
-			const event = {
-				detail: { state: false },
-			};
-
-			eventListener(event);
-
-			expect(mockDocument.removeEventListener).toHaveBeenCalledWith(
-				'click',
-				expect.any(Function),
-				true
-			);
-		});
-
-		it('should dispatch toggle-app event when clicking outside', () => {
+		await allure.step('Should dispatch toggle-app event on outside click', async (ctx) => {
 			const eventTarget = mockElement;
 			const additionalCheck = vi.fn();
 
@@ -159,6 +192,12 @@ describe('app-utils', () => {
 			};
 
 			clickListener(clickEvent);
+
+			await ctx.parameter('targetElementClosestCall', String(targetElement.closest.mock.calls));
+			await ctx.parameter(
+				'eventTargetDispatchEventCalls',
+				JSON.stringify(eventTarget.dispatchEvent.mock.calls, null, 2)
+			);
 
 			expect(eventTarget.dispatchEvent).toHaveBeenCalled();
 			const dispatchedEvent = eventTarget.dispatchEvent.mock.calls[0][0];
@@ -167,66 +206,53 @@ describe('app-utils', () => {
 				detail: { state: false },
 			});
 		});
+	});
 
-		it('should not dispatch toggle-app event when clicking inside astro-dev-toolbar', () => {
-			const eventTarget = mockElement;
-			const additionalCheck = vi.fn();
+	test('closeOnOutsideClick - should not dispatch toggle-app event when clicking inside astro-dev-toolbar or additionalCheck returns true', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('closeOnOutsideClick Tests');
+		await allure.tags(...sharedTags);
 
-			closeOnOutsideClick(eventTarget, additionalCheck);
+		await allure.step(
+			'should not dispatch toggle-app event when clicking inside astro-dev-toolbar or additionalCheck returns true',
+			async (ctx) => {
+				const eventTarget = mockElement;
+				const additionalCheck = vi.fn().mockReturnValue(true);
 
-			// Get the event listener function
-			const eventListener = eventTarget.addEventListener.mock.calls[0][1];
+				closeOnOutsideClick(eventTarget, additionalCheck);
 
-			// Simulate app-toggled event with state true
-			eventListener({ detail: { state: true } });
+				// Get the event listener function
+				const eventListener = eventTarget.addEventListener.mock.calls[0][1];
 
-			// Get the click event listener
-			const clickListener = mockDocument.addEventListener.mock.calls[0][1];
+				// Simulate app-toggled event with state true
+				eventListener({ detail: { state: true } });
 
-			// Mock target element inside astro-dev-toolbar
-			const targetElement = {
-				closest: vi.fn().mockReturnValue({}), // Inside astro-dev-toolbar
-			};
+				// Get the click event listener
+				const clickListener = mockDocument.addEventListener.mock.calls[0][1];
 
-			// Simulate click event
-			const clickEvent = {
-				target: targetElement,
-			};
+				// Mock target element
+				const targetElement = {
+					closest: vi.fn().mockReturnValue(null), // Not inside astro-dev-toolbar
+				};
 
-			clickListener(clickEvent);
+				// Simulate click event
+				const clickEvent = {
+					target: targetElement,
+				};
 
-			expect(eventTarget.dispatchEvent).not.toHaveBeenCalled();
-		});
+				clickListener(clickEvent);
 
-		it('should not dispatch toggle-app event when additionalCheck returns true', () => {
-			const eventTarget = mockElement;
-			const additionalCheck = vi.fn().mockReturnValue(true);
+				await ctx.parameter('targetElementClosestCall', String(targetElement.closest.mock.calls));
+				await ctx.parameter('additionalCheckCalls', String(additionalCheck.mock.calls));
+				await ctx.parameter(
+					'eventTargetDispatchEventCalls',
+					JSON.stringify(eventTarget.dispatchEvent.mock.calls, null, 2)
+				);
 
-			closeOnOutsideClick(eventTarget, additionalCheck);
-
-			// Get the event listener function
-			const eventListener = eventTarget.addEventListener.mock.calls[0][1];
-
-			// Simulate app-toggled event with state true
-			eventListener({ detail: { state: true } });
-
-			// Get the click event listener
-			const clickListener = mockDocument.addEventListener.mock.calls[0][1];
-
-			// Mock target element
-			const targetElement = {
-				closest: vi.fn().mockReturnValue(null), // Not inside astro-dev-toolbar
-			};
-
-			// Simulate click event
-			const clickEvent = {
-				target: targetElement,
-			};
-
-			clickListener(clickEvent);
-
-			expect(additionalCheck).toHaveBeenCalledWith(targetElement);
-			expect(eventTarget.dispatchEvent).not.toHaveBeenCalled();
-		});
+				expect(additionalCheck).toHaveBeenCalledWith(targetElement);
+				expect(eventTarget.dispatchEvent).not.toHaveBeenCalled();
+			}
+		);
 	});
 });
