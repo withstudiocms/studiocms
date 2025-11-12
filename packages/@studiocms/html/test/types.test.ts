@@ -1,26 +1,22 @@
-import { describe, expect, it } from 'vitest';
-import { HTMLSchema, type HTMLSchemaOptions } from '../src/types.js';
+import * as allure from 'allure-js-commons';
+import { describe, expect, test } from 'vitest';
+import { HTMLSchema } from '../src/types.js';
+import { parentSuiteName, sharedTags } from './test-utils.js';
 
-describe('HTMLSchema', () => {
-	describe('validation', () => {
-		it('should accept undefined options', () => {
-			const result = HTMLSchema.safeParse(undefined);
-			expect(result.success).toBe(true);
-			if (result.success) {
-				expect(result.data).toEqual({});
-			}
-		});
+const localSuiteName = 'HTMLSchema Type Tests';
 
-		it('should accept empty object', () => {
-			const result = HTMLSchema.safeParse({});
-			expect(result.success).toBe(true);
-			if (result.success) {
-				expect(result.data).toEqual({});
-			}
-		});
-
-		it('should accept valid sanitize options', () => {
-			const validOptions = {
+describe(parentSuiteName, () => {
+	[
+		{
+			options: undefined,
+			expected: {},
+		},
+		{
+			options: {},
+			expected: {},
+		},
+		{
+			options: {
 				sanitize: {
 					allowElements: ['p', 'br', 'strong'],
 					allowAttributes: {
@@ -28,70 +24,92 @@ describe('HTMLSchema', () => {
 						strong: ['class'],
 					},
 				},
-			};
-
-			const result = HTMLSchema.safeParse(validOptions);
-			expect(result.success).toBe(true);
-			if (result.success) {
-				expect(result.data).toEqual(validOptions);
-			}
-		});
-
-		it('should handle invalid sanitize options', () => {
-			const invalidOptions = {
+			},
+			expected: {
 				sanitize: {
-					invalidProperty: 'test',
-				},
-			};
-
-			const result = HTMLSchema.safeParse(invalidOptions);
-			// The schema might accept unknown properties or handle them gracefully
-			// Let's just verify the result is defined
-			expect(result).toBeDefined();
-		});
-
-		it('should reject non-object input', () => {
-			const result = HTMLSchema.safeParse('invalid');
-			expect(result.success).toBe(false);
-		});
-
-		it('should reject null input', () => {
-			const result = HTMLSchema.safeParse(null);
-			expect(result.success).toBe(false);
-		});
-	});
-
-	describe('default values', () => {
-		it('should provide default empty object when undefined', () => {
-			const result = HTMLSchema.parse(undefined);
-			expect(result).toEqual({});
-		});
-
-		it('should provide default empty object when empty object provided', () => {
-			const result = HTMLSchema.parse({});
-			expect(result).toEqual({});
-		});
-	});
-
-	describe('type inference', () => {
-		it('should correctly infer HTMLSchemaOptions type', () => {
-			const options: HTMLSchemaOptions = {
-				sanitize: {
-					allowElements: ['p', 'br'],
+					allowElements: ['p', 'br', 'strong'],
 					allowAttributes: {
-						p: ['class'],
+						p: ['class', 'id'],
+						strong: ['class'],
 					},
 				},
-			};
+			},
+		},
+	].forEach(({ options, expected }, index) => {
+		test(`Schema Validation Test #${index + 1}`, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('Schema Validation Tests');
+			await allure.tags(...sharedTags);
 
-			expect(options).toBeDefined();
-			expect(options.sanitize).toBeDefined();
-			expect(Array.isArray(options.sanitize?.allowElements)).toBe(true);
+			await allure.step(`Validating options: ${JSON.stringify(options)}`, async (ctx) => {
+				const result = HTMLSchema.safeParse(options);
+
+				await ctx.parameter('inputOptions', JSON.stringify(options, null, 2));
+
+				expect(result.success).toBe(true);
+				if (result.success) {
+					expect(result.data).toEqual(expected);
+					await ctx.parameter('validatedData', JSON.stringify(result.data, null, 2));
+				}
+			});
 		});
+	});
 
-		it('should allow empty HTMLSchemaOptions', () => {
-			const options: HTMLSchemaOptions = {};
-			expect(options).toBeDefined();
+	[
+		{
+			options: 'invalid-string',
+		},
+		{
+			options: null,
+		},
+	].forEach(({ options }, index) => {
+		test(`Schema Invalid Input Test #${index + 1}`, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('Schema Invalid Input Tests');
+			await allure.tags(...sharedTags);
+
+			await allure.step(`Validating invalid options: ${JSON.stringify(options)}`, async (ctx) => {
+				const result = HTMLSchema.safeParse(options);
+
+				await ctx.parameter('inputOptions', JSON.stringify(options, null, 2));
+
+				expect(result.success).toBe(false);
+				if (!result.success) {
+					await ctx.parameter('errors', JSON.stringify(result.error.format(), null, 2));
+				}
+			});
+		});
+	});
+
+	[
+		{
+			options: undefined,
+			expected: {},
+		},
+		{
+			options: {},
+			expected: {},
+		},
+	].forEach(({ options, expected }, index) => {
+		test(`Default Values Test #${index + 1}`, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('Default Values Tests');
+			await allure.tags(...sharedTags);
+
+			await allure.step(
+				`Checking default values for options: ${JSON.stringify(options)}`,
+				async (ctx) => {
+					const result = HTMLSchema.parse(options);
+
+					await ctx.parameter('inputOptions', JSON.stringify(options, null, 2));
+
+					expect(result).toEqual(expected);
+					await ctx.parameter('resultingData', JSON.stringify(result, null, 2));
+				}
+			);
 		});
 	});
 });

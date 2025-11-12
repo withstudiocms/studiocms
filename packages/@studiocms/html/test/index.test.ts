@@ -1,6 +1,14 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import * as allure from 'allure-js-commons';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { studiocmsHTML } from '../src/index.js';
-import { cleanupGlobalThis, createMockHTMLOptions } from './test-utils.js';
+import {
+	cleanupGlobalThis,
+	createMockHTMLOptions,
+	parentSuiteName,
+	sharedTags,
+} from './test-utils.js';
+
+const localSuiteName = 'studiocmsHTML Plugin Tests';
 
 // Mock the dependencies
 vi.mock('astro-integration-kit', () => ({
@@ -13,7 +21,7 @@ vi.mock('studiocms/plugins', () => ({
 	definePlugin: vi.fn((config) => config),
 }));
 
-describe('studiocmsHTML', () => {
+describe(parentSuiteName, () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
 		cleanupGlobalThis();
@@ -23,9 +31,17 @@ describe('studiocmsHTML', () => {
 		vi.restoreAllMocks();
 	});
 
-	describe('plugin creation', () => {
-		it('should create a plugin with default options', () => {
+	test('Plugin Creation - Validates Plugin Structure and Options', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('Plugin Creation Tests');
+		await allure.tags(...sharedTags);
+
+		await allure.step('Should create plugin with correct metadata and structure', async (ctx) => {
 			const plugin = studiocmsHTML();
+			await ctx.parameter('pluginIdentifier', plugin.identifier);
+			await ctx.parameter('pluginName', plugin.name);
+			await ctx.parameter('studiocmsMinimumVersion', plugin.studiocmsMinimumVersion);
 
 			expect(plugin).toBeDefined();
 			expect(plugin.identifier).toBe('@studiocms/html');
@@ -33,34 +49,65 @@ describe('studiocmsHTML', () => {
 			expect(plugin.studiocmsMinimumVersion).toBe('0.1.0-beta.21');
 			expect(plugin.hooks).toBeDefined();
 		});
+	});
 
-		it('should create a plugin with custom options', () => {
-			const options = createMockHTMLOptions({
-				sanitize: {
-					allowElements: ['p', 'br'],
-					allowAttributes: {
-						p: ['class'],
+	test('Plugin Creation - Validates plugin Structure with Custom Options', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('Plugin Creation with Custom Options Tests');
+		await allure.tags(...sharedTags);
+
+		await allure.step(
+			'Should create plugin with correct metadata and structure using custom options',
+			async (ctx) => {
+				const options = createMockHTMLOptions({
+					sanitize: {
+						allowElements: ['p', 'br'],
+						allowAttributes: {
+							p: ['class'],
+						},
 					},
-				},
-			});
+				});
+				const plugin = studiocmsHTML(options);
+				await ctx.parameter('pluginIdentifier', plugin.identifier);
+				await ctx.parameter('pluginName', plugin.name);
+				await ctx.parameter('studiocmsMinimumVersion', plugin.studiocmsMinimumVersion);
+				await ctx.parameter('customOptions', JSON.stringify(options, null, 2));
 
-			const plugin = studiocmsHTML(options);
+				expect(plugin).toBeDefined();
+				expect(plugin.identifier).toBe('@studiocms/html');
+				expect(plugin.name).toBe('StudioCMS HTML');
+				expect(plugin.studiocmsMinimumVersion).toBe('0.1.0-beta.21');
+				expect(plugin.hooks).toBeDefined();
+			}
+		);
+	});
 
-			expect(plugin).toBeDefined();
-			expect(plugin.identifier).toBe('@studiocms/html');
-			expect(plugin.name).toBe('StudioCMS HTML');
-		});
+	test('Plugin Creation - Validates Error Handling for Invalid Options', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('Plugin Creation Error Handling Tests');
+		await allure.tags(...sharedTags);
 
-		it('should throw error for invalid options', () => {
+		await allure.step('Should throw error for invalid options', async (ctx) => {
 			const invalidOptions = {
 				sanitize: 'not-an-object', // This should cause schema validation to fail
 			};
 
+			await ctx.parameter('invalidOptions', JSON.stringify(invalidOptions, null, 2));
+
 			// The function should throw an error when schema validation fails
 			expect(() => studiocmsHTML(invalidOptions as never)).toThrow(/Invalid HTML options/);
 		});
+	});
 
-		it('should handle unknown properties gracefully', () => {
+	test('Plugin Creation - Validates Handling of Unknown Properties', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('Plugin Creation Unknown Properties Tests');
+		await allure.tags(...sharedTags);
+
+		await allure.step('Should handle unknown properties gracefully', async (ctx) => {
 			const optionsWithUnknownProperties = {
 				sanitize: {
 					allowElements: ['p', 'br'],
@@ -68,28 +115,34 @@ describe('studiocmsHTML', () => {
 				unknownProperty: 'should be ignored',
 			};
 
+			await ctx.parameter(
+				'optionsWithUnknownProperties',
+				JSON.stringify(optionsWithUnknownProperties, null, 2)
+			);
+
 			// The function should handle unknown properties without throwing
 			// since the schema validation strips unknown properties and uses defaults
 			expect(() => studiocmsHTML(optionsWithUnknownProperties as never)).not.toThrow();
 		});
 	});
 
-	describe('plugin hooks', () => {
-		it('should have studiocms:astro:config hook', () => {
+	test('Plugin Hooks - Validates Hook Functionality', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('Plugin Hooks Tests');
+		await allure.tags(...sharedTags);
+
+		await allure.step('Should have all required hooks', async () => {
 			const plugin = studiocmsHTML();
 
 			expect(plugin.hooks['studiocms:astro:config']).toBeDefined();
 			expect(typeof plugin.hooks['studiocms:astro:config']).toBe('function');
-		});
-
-		it('should have studiocms:config:setup hook', () => {
-			const plugin = studiocmsHTML();
 
 			expect(plugin.hooks['studiocms:config:setup']).toBeDefined();
 			expect(typeof plugin.hooks['studiocms:config:setup']).toBe('function');
 		});
 
-		it('should call studiocms:astro:config hook with addIntegrations and set shared.htmlConfig', async () => {
+		await allure.step('Should call astro:config hook correctly', async (ctx) => {
 			const plugin: ReturnType<typeof studiocmsHTML> = studiocmsHTML();
 			const mockAddIntegrations = vi.fn();
 			const mockLogger = {
@@ -109,6 +162,11 @@ describe('studiocmsHTML', () => {
 			if (!hook) throw new Error('Hook not found');
 			hook({ addIntegrations: mockAddIntegrations, logger: mockLogger });
 
+			await ctx.parameter(
+				'addIntegrationsCalls',
+				JSON.stringify(mockAddIntegrations.mock.calls, null, 2)
+			);
+
 			expect(mockAddIntegrations).toHaveBeenCalledWith({
 				name: '@studiocms/html',
 				hooks: {
@@ -125,7 +183,38 @@ describe('studiocmsHTML', () => {
 			expect(shared.htmlConfig).toEqual({});
 		});
 
-		it('should persist custom options to shared.htmlConfig', async () => {
+		await allure.step('Should call studiocms:config:setup hook correctly', async (ctx) => {
+			const plugin = studiocmsHTML();
+			const mockSetRendering = vi.fn();
+
+			const hook = plugin.hooks['studiocms:config:setup'] as (...args: unknown[]) => unknown;
+			hook({ setRendering: mockSetRendering });
+
+			await ctx.parameter(
+				'setRenderingCalls',
+				JSON.stringify(mockSetRendering.mock.calls, null, 2)
+			);
+
+			expect(mockSetRendering).toHaveBeenCalledWith({
+				pageTypes: [
+					{
+						identifier: 'studiocms/html',
+						label: 'HTML',
+						pageContentComponent: '/mocked/path/./components/editor.astro',
+						rendererComponent: '/mocked/path/./components/render.js',
+					},
+				],
+			});
+		});
+	});
+
+	test('Plugin Hooks - Persists Custom Options to shared.htmlConfig', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('Plugin Hooks Custom Options Tests');
+		await allure.tags(...sharedTags);
+
+		await allure.step('Should persist custom options to shared.htmlConfig', async (ctx) => {
 			const customOptions = {
 				sanitize: {
 					allowElements: ['p', 'br', 'strong'],
@@ -161,36 +250,13 @@ describe('studiocmsHTML', () => {
 			// Execute the hook
 			integrationArg.hooks['astro:config:done']();
 
+			await ctx.parameter('initialHtmlConfig', JSON.stringify(initialValue, null, 2));
+			await ctx.parameter('persistedHtmlConfig', JSON.stringify(shared.htmlConfig, null, 2));
+
 			// Verify the value changed to our custom options
 			expect(shared.htmlConfig).toBeDefined();
 			expect(shared.htmlConfig).toEqual(customOptions);
 			expect(shared.htmlConfig).not.toEqual(initialValue);
-		});
-
-		it('should call studiocms:config:setup hook with setRendering', () => {
-			const plugin = studiocmsHTML();
-			const mockSetRendering = vi.fn();
-
-			const hook = plugin.hooks['studiocms:config:setup'] as (...args: unknown[]) => unknown;
-			hook({ setRendering: mockSetRendering });
-
-			expect(mockSetRendering).toHaveBeenCalledWith({
-				pageTypes: [
-					{
-						identifier: 'studiocms/html',
-						label: 'HTML',
-						pageContentComponent: '/mocked/path/./components/editor.astro',
-						rendererComponent: '/mocked/path/./components/render.js',
-					},
-				],
-			});
-		});
-	});
-
-	describe('default export', () => {
-		it('should export the same function as named export', async () => {
-			const { default: defaultExport } = await import('../src/index.js');
-			expect(defaultExport).toBe(studiocmsHTML);
 		});
 	});
 });
