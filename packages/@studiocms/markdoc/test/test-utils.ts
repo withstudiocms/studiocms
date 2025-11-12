@@ -1,4 +1,8 @@
+/** biome-ignore-all lint/suspicious/noExplicitAny: allowed for tests */
 import type { PluginPageTypeRendererProps } from 'studiocms/types';
+
+export const parentSuiteName = '@studiocms/markdoc Package Tests';
+export const sharedTags = ['package:@studiocms/markdoc', 'type:unit', 'scope:studiocms'];
 
 export interface MarkDocRendererProps extends PluginPageTypeRendererProps {}
 
@@ -6,7 +10,7 @@ export const createMockProps = (content?: string | null): MarkDocRendererProps =
 	data: {
 		defaultContent: {
 			content: content || null,
-		},
+		} as any,
 	},
 });
 
@@ -18,7 +22,7 @@ export const createNullContentProps = (): MarkDocRendererProps => ({
 	data: {
 		defaultContent: {
 			content: null,
-		},
+		} as any,
 	},
 });
 
@@ -26,7 +30,7 @@ export const createUndefinedContentProps = (): MarkDocRendererProps => ({
 	data: {
 		defaultContent: {
 			content: undefined,
-		},
+		} as any,
 	},
 });
 
@@ -34,7 +38,7 @@ export const createWhitespaceProps = (): MarkDocRendererProps => ({
 	data: {
 		defaultContent: {
 			content: '   \n\t   ',
-		},
+		} as any,
 	},
 });
 
