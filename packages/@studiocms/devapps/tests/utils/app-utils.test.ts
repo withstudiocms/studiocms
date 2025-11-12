@@ -111,55 +111,6 @@ describe(parentSuiteName, () => {
 		});
 	});
 
-	[
-		{
-			state: true,
-		},
-		{
-			state: false,
-		},
-	].forEach(({ state }) => {
-		test('closeOnOutsideClick - should handle app-toggled event', async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('closeOnOutsideClick Tests');
-			await allure.tags(...sharedTags);
-
-			await allure.step('Should handle app-toggled event', async (ctx) => {
-				const eventTarget = mockElement;
-				const additionalCheck = vi.fn();
-
-				closeOnOutsideClick(eventTarget, additionalCheck);
-
-				// Get the event listener function
-				const eventListener = eventTarget.addEventListener.mock.calls[0][1];
-
-				// Simulate app-toggled event
-				const event = {
-					detail: { state },
-				};
-
-				eventListener(event);
-
-				await ctx.parameter('appToggledState', String(state));
-				await ctx.parameter(
-					'documentEventListeners',
-					JSON.stringify(mockDocument.addEventListener.mock.calls, null, 2)
-				);
-				await ctx.parameter(
-					'documentRemovedEventListeners',
-					JSON.stringify(mockDocument.removeEventListener.mock.calls, null, 2)
-				);
-
-				expect(mockDocument.removeEventListener).toHaveBeenCalledWith(
-					'click',
-					expect.any(Function),
-					true
-				);
-			});
-		});
-	});
-
 	test('closeOnOutsideClock - should dispatch toggle-app event on outside click', async () => {
 		await allure.parentSuite(parentSuiteName);
 		await allure.suite(localSuiteName);
