@@ -1,145 +1,208 @@
-import { describe, expect, it } from '@effect/vitest';
+import { describe, expect, test } from '@effect/vitest';
+import * as allure from 'allure-js-commons';
 import { AppsConfigSchema, StudioCMSDevAppsSchema } from '../../src/schema/index';
+import { parentSuiteName, sharedTags } from '../test-utils.js';
 
-describe('schema', () => {
-	describe('AppsConfigSchema', () => {
-		it('should transform boolean config to object format', () => {
-			const inputConfig = {
+const localSuiteName = 'Schema Validation Tests';
+
+describe(parentSuiteName, () => {
+	[
+		{
+			input: {
 				libSQLViewer: true,
 				wpImporter: { endpoint: 'https://example.com/wp-json/wp/v2' },
-			};
-
-			const result = AppsConfigSchema.parse(inputConfig);
-
-			expect(result).toEqual({
+			},
+			expected: {
 				libSQLViewer: { enabled: true, endpoint: 'outerbase' },
 				wpImporter: { enabled: true, endpoint: 'https://example.com/wp-json/wp/v2' },
-			});
-		});
-
-		it('should transform boolean values to object format', () => {
-			const inputConfig = {
+			},
+		},
+		{
+			input: {
 				libSQLViewer: false,
 				wpImporter: true,
-			};
-
-			const result = AppsConfigSchema.parse(inputConfig);
-
-			expect(result).toEqual({
+			},
+			expected: {
 				libSQLViewer: { enabled: false, endpoint: 'outerbase' },
 				wpImporter: { enabled: true, endpoint: 'wp-api-importer' },
-			});
-		});
-
-		it('should transform object config to object format', () => {
-			const inputConfig = {
+			},
+		},
+		{
+			input: {
 				libSQLViewer: { endpoint: 'https://example.com/api' },
 				wpImporter: { endpoint: 'https://example.com/wp-json/wp/v2' },
-			};
-
-			const result = AppsConfigSchema.parse(inputConfig);
-
-			expect(result).toEqual({
+			},
+			expected: {
 				libSQLViewer: { enabled: true, endpoint: 'https://example.com/api' },
 				wpImporter: { enabled: true, endpoint: 'https://example.com/wp-json/wp/v2' },
-			});
-		});
-
-		it('should use default values when config is not provided', () => {
-			const result = AppsConfigSchema.parse(undefined);
-
-			expect(result).toEqual({
+			},
+		},
+		{
+			input: undefined,
+			expected: {
 				libSQLViewer: { enabled: true, endpoint: 'outerbase' },
 				wpImporter: { enabled: true, endpoint: 'wp-api-importer' },
-			});
-		});
+			},
+		},
+	].forEach(({ input, expected }) => {
+		test(`AppsConfigSchema should parse config: ${JSON.stringify(input)}`, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('AppsConfigSchema Tests');
+			await allure.tags(...sharedTags);
 
-		it('should reject invalid type for libSQLViewer', () => {
-			const invalidConfig = {
-				libSQLViewer: 'invalid',
-				wpImporter: true,
-			};
+			await allure.step(
+				`AppsConfigSchema should parse config: ${JSON.stringify(input)}`,
+				async (ctx) => {
+					const result = AppsConfigSchema.parse(input);
 
-			expect(() => AppsConfigSchema.parse(invalidConfig)).toThrow();
-		});
+					await ctx.parameter('input', JSON.stringify(input, null, 2));
+					await ctx.parameter('result', JSON.stringify(result, null, 2));
 
-		it('should reject invalid type for wpImporter', () => {
-			const invalidConfig = {
-				libSQLViewer: true,
-				wpImporter: 123,
-			};
-
-			expect(() => AppsConfigSchema.parse(invalidConfig)).toThrow();
+					expect(result).toEqual(expected);
+				}
+			);
 		});
 	});
 
-	describe('StudioCMSDevAppsSchema', () => {
-		it('should validate and transform dev apps config', () => {
-			const inputConfig = {
+	[
+		{
+			input: {
+				libSQLViewer: 'invalid',
+				wpImporter: true,
+			},
+		},
+		{
+			input: {
+				libSQLViewer: true,
+				wpImporter: 123,
+			},
+		},
+	].forEach(({ input }) => {
+		test(`AppsConfigSchema should reject invalid config: ${JSON.stringify(input)}`, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('AppsConfigSchema Tests');
+			await allure.tags(...sharedTags);
+
+			await allure.step(
+				`AppsConfigSchema should reject invalid config: ${JSON.stringify(input)}`,
+				async (ctx) => {
+					let threw = false;
+					try {
+						AppsConfigSchema.parse(input);
+					} catch (e) {
+						threw = true;
+					}
+
+					await ctx.parameter('input', JSON.stringify(input, null, 2));
+					await ctx.parameter('threw', String(threw));
+
+					expect(threw).toBe(true);
+				}
+			);
+		});
+	});
+
+	[
+		{
+			input: {
 				endpoint: 'https://example.com',
 				verbose: true,
 				appsConfig: {
 					libSQLViewer: true,
 					wpImporter: { endpoint: 'https://example.com/wp-json/wp/v2' },
 				},
-			};
-
-			const result = StudioCMSDevAppsSchema.parse(inputConfig);
-
-			expect(result).toEqual({
+			},
+			expected: {
 				endpoint: 'https://example.com',
 				verbose: true,
 				appsConfig: {
 					libSQLViewer: { enabled: true, endpoint: 'outerbase' },
 					wpImporter: { enabled: true, endpoint: 'https://example.com/wp-json/wp/v2' },
 				},
-			});
-		});
-
-		it('should use default values when config is not provided', () => {
-			const result = StudioCMSDevAppsSchema.parse(undefined);
-
-			expect(result).toEqual({
+			},
+		},
+		{
+			input: undefined,
+			expected: {
 				endpoint: '_studiocms-devapps',
 				verbose: false,
 				appsConfig: {
 					libSQLViewer: { enabled: true, endpoint: 'outerbase' },
 					wpImporter: { enabled: true, endpoint: 'wp-api-importer' },
 				},
-			});
-		});
-
-		it('should handle minimal config', () => {
-			const inputConfig = {
+			},
+		},
+		{
+			input: {
 				endpoint: 'custom-endpoint',
-			};
-
-			const result = StudioCMSDevAppsSchema.parse(inputConfig);
-
-			expect(result).toEqual({
+			},
+			expected: {
 				endpoint: 'custom-endpoint',
 				verbose: false,
 				appsConfig: {
 					libSQLViewer: { enabled: true, endpoint: 'outerbase' },
 					wpImporter: { enabled: true, endpoint: 'wp-api-importer' },
 				},
-			});
-		});
+			},
+		},
+	].forEach(({ input, expected }) => {
+		test(`StudioCMSDevAppsSchema should parse config: ${JSON.stringify(input)}`, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('StudioCMSDevAppsSchema Tests');
+			await allure.tags(...sharedTags);
 
-		it('should reject invalid endpoint type', () => {
-			const invalidConfig = {
+			await allure.step(
+				`StudioCMSDevAppsSchema should parse config: ${JSON.stringify(input)}`,
+				async (ctx) => {
+					const result = StudioCMSDevAppsSchema.parse(input);
+
+					await ctx.parameter('input', JSON.stringify(input, null, 2));
+					await ctx.parameter('result', JSON.stringify(result, null, 2));
+					expect(result).toEqual(expected);
+				}
+			);
+		});
+	});
+
+	[
+		{
+			input: {
 				endpoint: 123,
-			};
-
-			expect(() => StudioCMSDevAppsSchema.parse(invalidConfig)).toThrow();
-		});
-
-		it('should reject invalid verbose type', () => {
-			const invalidConfig = {
+			},
+		},
+		{
+			input: {
 				verbose: 'invalid',
-			};
+			},
+		},
+	].forEach(({ input }) => {
+		test(`StudioCMSDevAppsSchema should reject invalid config: ${JSON.stringify(
+			input
+		)}`, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('StudioCMSDevAppsSchema Tests');
+			await allure.tags(...sharedTags);
 
-			expect(() => StudioCMSDevAppsSchema.parse(invalidConfig)).toThrow();
+			await allure.step(
+				`StudioCMSDevAppsSchema should reject invalid config: ${JSON.stringify(input)}`,
+				async (ctx) => {
+					let threw = false;
+					try {
+						StudioCMSDevAppsSchema.parse(input);
+					} catch (e) {
+						threw = true;
+					}
+
+					await ctx.parameter('input', JSON.stringify(input, null, 2));
+					await ctx.parameter('threw', String(threw));
+
+					expect(threw).toBe(true);
+				}
+			);
 		});
 	});
 });
