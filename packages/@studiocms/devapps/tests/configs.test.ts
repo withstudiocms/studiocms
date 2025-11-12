@@ -1,4 +1,5 @@
-import { beforeEach, describe, expect, it } from '@effect/vitest';
+import { describe, expect, it, test } from '@effect/vitest';
+import * as allure from 'allure-js-commons';
 import type { APIContext } from 'astro';
 import { Effect } from 'studiocms/effect';
 import {
@@ -15,213 +16,231 @@ import {
 	UseBlogPkgConfig,
 } from '../src/effects/WordPressAPI/configs';
 import type { PageData } from '../src/effects/WordPressAPI/importers';
+import { parentSuiteName, sharedTags } from './test-utils.js';
 
-describe('WordPress API Configs', () => {
-	describe('StringConfig', () => {
-		it('should create StringConfig with correct structure', () => {
+const localSuiteName = 'WordPress API Config Tests';
+
+describe(parentSuiteName, () => {
+	test('StringConfig - should create config with correct structure', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('StringConfig Tests');
+		await allure.tags(...sharedTags);
+
+		await allure.step('Should create StringConfig with correct structure', async (ctx) => {
 			const str = 'test-string';
 			const config = StringConfig.of({ str });
+
+			await ctx.parameter('config', JSON.stringify(config, null, 2));
 
 			expect(config.str).toBe(str);
 			expect(config).toHaveProperty('str', str);
 		});
+	});
 
-		it.effect('should create layer with makeLayer', () =>
-			Effect.gen(function* () {
-				const str = 'test-string';
-				const layer = StringConfig.makeLayer(str);
+	it.effect('StringConfig - should create layer with makeLayer', () =>
+		Effect.gen(function* () {
+			yield* Effect.tryPromise(async () => {
+				await allure.parentSuite(parentSuiteName);
+				await allure.suite(localSuiteName);
+				await allure.subSuite('StringConfig Tests');
+				await allure.tags(...sharedTags);
+			});
 
-				// Test that the layer can be used to provide the config
-				const config = yield* StringConfig;
+			const str = 'test-string';
+			const layer = StringConfig.makeLayer(str);
+
+			yield* Effect.tryPromise(async () => {
+				await allure.parameter('str', str);
+				await allure.parameter('layer', JSON.stringify(layer, null, 2));
+			});
+
+			// Test that the layer can be used to provide the config
+			const config = yield* StringConfig;
+			expect(config.str).toBe(str);
+		}).pipe(Effect.provide(StringConfig.makeLayer('test-string')))
+	);
+
+	[
+		{
+			endpoint: 'https://example.com/wp-json/wp/v2',
+			type: 'posts' as const,
+			path: '/posts',
+		},
+		{
+			endpoint: 'https://example.com/wp-json/wp/v2',
+			type: 'posts' as const,
+		},
+		{
+			endpoint: 'https://example.com/wp-json/wp/v2',
+			type: 'pages' as const,
+		},
+	].forEach(({ endpoint, type, path }) => {
+		test(`APIEndpointConfig - should create config for type: ${type}`, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('APIEndpointConfig Tests');
+			await allure.tags(...sharedTags);
+
+			await allure.step(`Should create APIEndpointConfig for type: ${type}`, async (ctx) => {
+				const config = APIEndpointConfig.of({ endpoint, type, path });
+
+				await ctx.parameter('config', JSON.stringify(config, null, 2));
+
+				expect(config.endpoint).toBe(endpoint);
+				expect(config.type).toBe(type);
+				if (path) {
+					expect(config.path).toBe(path);
+				} else {
+					expect(config.path).toBeUndefined();
+				}
+			});
+		});
+	});
+
+	[
+		{
+			imageUrl: 'https://example.com/image.jpg',
+			destination: '/public/images/image.jpg',
+		},
+		{
+			imageUrl: new URL('https://example.com/image.jpg'),
+			destination: new URL('file:///public/images/image.jpg'),
+		},
+	].forEach(({ imageUrl, destination }) => {
+		test(`DownloadImageConfig - should create config with imageUrl: ${imageUrl.toString()}`, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('DownloadImageConfig Tests');
+			await allure.tags(...sharedTags);
+
+			await allure.step(
+				`Should create DownloadImageConfig with imageUrl: ${imageUrl.toString()}`,
+				async (ctx) => {
+					const config = DownloadImageConfig.of({ imageUrl, destination });
+
+					await ctx.parameter('config', JSON.stringify(config, null, 2));
+
+					expect(config.imageUrl).toBe(imageUrl);
+					expect(config.destination).toBe(destination);
+				}
+			);
+		});
+	});
+
+	test('DownloadPostImageConfig - should create config with correct structure', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('DownloadPostImageConfig Tests');
+		await allure.tags(...sharedTags);
+
+		await allure.step(
+			'Should create DownloadPostImageConfig with correct structure',
+			async (ctx) => {
+				const str = 'image-content';
+				const pathToFolder = '/public/images';
+				const config = DownloadPostImageConfig.of({ str, pathToFolder });
+
+				await ctx.parameter('config', JSON.stringify(config, null, 2));
+
 				expect(config.str).toBe(str);
-			}).pipe(Effect.provide(StringConfig.makeLayer('test-string')))
+				expect(config.pathToFolder).toBe(pathToFolder);
+			}
 		);
 	});
 
-	describe('APIEndpointConfig', () => {
-		const SUPPORTED_TYPES = ['posts', 'pages', 'media', 'categories', 'tags', 'settings'] as const;
+	test('ImageEndpointConfig - should validate all required fields are present', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('ImageEndpointConfig Tests');
+		await allure.tags(...sharedTags);
 
-		it('should create APIEndpointConfig with valid type', () => {
-			const endpoint = 'https://example.com/wp-json/wp/v2';
-			const type = 'posts' as const;
-			const path = '/posts';
-			const config = APIEndpointConfig.of({ endpoint, type, path });
-
-			expect(config.endpoint).toBe(endpoint);
-			expect(config.type).toBe(type);
-			expect(config.path).toBe(path);
-		});
-
-		it('should validate supported types', () => {
-			SUPPORTED_TYPES.forEach((type) => {
-				expect(SUPPORTED_TYPES.includes(type)).toBe(true);
-			});
-		});
-
-		it('should reject invalid types', () => {
-			const invalidType = 'invalid';
-			expect(SUPPORTED_TYPES.includes(invalidType as (typeof SUPPORTED_TYPES)[number])).toBe(false);
-		});
-
-		it('should create layer with makeLayer', () => {
-			const endpoint = 'https://example.com/wp-json/wp/v2';
-			const type = 'pages' as const;
-
-			const result = APIEndpointConfig.makeLayer(endpoint, type);
-			expect(result).toBeDefined();
-			expect(typeof result).toBe('object');
-		});
-
-		it('should handle optional path parameter', () => {
-			const endpoint = 'https://example.com/wp-json/wp/v2';
-			const type = 'posts' as const;
-			const config = APIEndpointConfig.of({ endpoint, type });
-
-			expect(config.endpoint).toBe(endpoint);
-			expect(config.type).toBe(type);
-			expect(config.path).toBeUndefined();
-		});
-	});
-
-	describe('DownloadImageConfig', () => {
-		it('should create DownloadImageConfig with string URLs', () => {
-			const imageUrl = 'https://example.com/image.jpg';
-			const destination = '/public/images/image.jpg';
-			const config = DownloadImageConfig.of({ imageUrl, destination });
-
-			expect(config.imageUrl).toBe(imageUrl);
-			expect(config.destination).toBe(destination);
-		});
-
-		it('should create DownloadImageConfig with URL objects', () => {
-			const imageUrl = new URL('https://example.com/image.jpg');
-			const destination = new URL('file:///public/images/image.jpg');
-			const config = DownloadImageConfig.of({ imageUrl, destination });
-
-			expect(config.imageUrl).toBe(imageUrl);
-			expect(config.destination).toBe(destination);
-		});
-
-		it('should create layer with makeLayer', () => {
-			const imageUrl = 'https://example.com/image.jpg';
-			const destination = '/public/images/image.jpg';
-
-			const result = DownloadImageConfig.makeLayer(imageUrl, destination);
-			expect(result).toBeDefined();
-			expect(typeof result).toBe('object');
-		});
-	});
-
-	describe('DownloadPostImageConfig', () => {
-		it('should create DownloadPostImageConfig', () => {
-			const str = 'image-content';
-			const pathToFolder = '/public/images';
-			const config = DownloadPostImageConfig.of({ str, pathToFolder });
-
-			expect(config.str).toBe(str);
-			expect(config.pathToFolder).toBe(pathToFolder);
-		});
-
-		it('should create layer with makeLayer', () => {
-			const str = 'image-content';
-			const pathToFolder = '/public/images';
-
-			const result = DownloadPostImageConfig.makeLayer(str, pathToFolder);
-			expect(result).toBeDefined();
-			expect(typeof result).toBe('object');
-		});
-	});
-
-	describe('ImportEndpointConfig', () => {
-		it('should create ImportEndpointConfig', () => {
+		await allure.step('should create config', async (ctx) => {
 			const endpoint = 'https://example.com/wp-json/wp/v2';
 			const config = ImportEndpointConfig.of({ endpoint });
 
+			await ctx.parameter('config', JSON.stringify(config, null, 2));
+
 			expect(config.endpoint).toBe(endpoint);
-		});
-
-		it('should create layer with makeLayer', () => {
-			const endpoint = 'https://example.com/wp-json/wp/v2';
-
-			const result = ImportEndpointConfig.makeLayer(endpoint);
-			expect(result).toBeDefined();
-			expect(typeof result).toBe('object');
 		});
 	});
 
-	describe('ImportPostsEndpointConfig', () => {
-		it('should create ImportPostsEndpointConfig with default useBlogPkg', () => {
-			const endpoint = 'https://example.com/wp-json/wp/v2';
-			const useBlogPkg = false;
-			const config = ImportPostsEndpointConfig.of({ endpoint, useBlogPkg });
+	[
+		{
+			endpoint: 'https://example.com/wp-json/wp/v2',
+			useBlogPkg: false,
+		},
+		{
+			endpoint: 'https://example.com/wp-json/wp/v2',
+			useBlogPkg: true,
+		},
+	].forEach(({ endpoint, useBlogPkg }) => {
+		test(`ImportPostsEndpointConfig - should create config with useBlogPkg: ${useBlogPkg}`, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('ImportPostsEndpointConfig Tests');
+			await allure.tags(...sharedTags);
 
-			expect(config.endpoint).toBe(endpoint);
-			expect(config.useBlogPkg).toBe(useBlogPkg);
-		});
+			await allure.step(
+				`Should create ImportPostsEndpointConfig with useBlogPkg: ${useBlogPkg}`,
+				async (ctx) => {
+					const config = ImportPostsEndpointConfig.of({ endpoint, useBlogPkg });
 
-		it('should create ImportPostsEndpointConfig with useBlogPkg true', () => {
-			const endpoint = 'https://example.com/wp-json/wp/v2';
-			const useBlogPkg = true;
-			const config = ImportPostsEndpointConfig.of({ endpoint, useBlogPkg });
+					await ctx.parameter('config', JSON.stringify(config, null, 2));
 
-			expect(config.endpoint).toBe(endpoint);
-			expect(config.useBlogPkg).toBe(useBlogPkg);
-		});
-
-		it('should create layer with makeLayer', () => {
-			const endpoint = 'https://example.com/wp-json/wp/v2';
-			const useBlogPkg = true;
-
-			const result = ImportPostsEndpointConfig.makeLayer(endpoint, useBlogPkg);
-			expect(result).toBeDefined();
-			expect(typeof result).toBe('object');
-		});
-	});
-
-	describe('AstroAPIContextProvider', () => {
-		it('should create AstroAPIContextProvider with context', () => {
-			const context = {
-				request: new Request('https://example.com'),
-				params: {},
-				props: {},
-			} as APIContext;
-			const provider = AstroAPIContextProvider.of({ context });
-
-			expect(provider.context).toBe(context);
-		});
-
-		it('should create layer with makeLayer', () => {
-			const context = {
-				request: new Request('https://example.com'),
-				params: {},
-				props: {},
-			} as APIContext;
-
-			const result = AstroAPIContextProvider.makeLayer(context);
-			expect(result).toBeDefined();
-			expect(typeof result).toBe('object');
+					expect(config.endpoint).toBe(endpoint);
+					expect(config.useBlogPkg).toBe(useBlogPkg);
+				}
+			);
 		});
 	});
 
-	describe('RawPageData', () => {
-		it('should create RawPageData with page data', () => {
+	test('AstroAPIContextProvider - should create config with correct structure', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('AstroAPIContextProvider Tests');
+		await allure.tags(...sharedTags);
+
+		await allure.step(
+			'Should create AstroAPIContextProvider with correct structure',
+			async (ctx) => {
+				const context = {
+					request: new Request('https://example.com'),
+					params: {},
+					props: {},
+				} as APIContext;
+				const config = AstroAPIContextProvider.of({ context });
+
+				await ctx.parameter('config', JSON.stringify(config, null, 2));
+
+				expect(config.context).toBe(context);
+			}
+		);
+	});
+
+	test('RawPageData - should validate all required fields are present', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('RawPageData Tests');
+		await allure.tags(...sharedTags);
+
+		await allure.step('should create config', async (ctx) => {
 			const page = { id: 1, title: 'Test Page' };
-			const rawData = RawPageData.of({ page });
+			const config = RawPageData.of({ page });
 
-			expect(rawData.page).toBe(page);
-		});
+			await ctx.parameter('config', JSON.stringify(config, null, 2));
 
-		it('should create layer with makeLayer', () => {
-			const page = { id: 1, title: 'Test Page' };
-
-			const result = RawPageData.makeLayer(page);
-			expect(result).toBeDefined();
-			expect(typeof result).toBe('object');
+			expect(config.page).toBe(page);
 		});
 	});
 
-	describe('FullPageData', () => {
-		it('should create FullPageData with pageData', () => {
+	test('FullPageData - should validate all required fields are present', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('FullPageData Tests');
+		await allure.tags(...sharedTags);
+
+		await allure.step('should create config', async (ctx) => {
 			const pageData = {
 				id: '1',
 				title: 'Test Page',
@@ -229,97 +248,92 @@ describe('WordPress API Configs', () => {
 				content: 'Test content',
 				slug: 'test-page',
 			} as PageData;
-			const fullData = FullPageData.of({ pageData });
+			const config = FullPageData.of({ pageData });
 
-			expect(fullData.pageData).toBe(pageData);
-		});
+			await ctx.parameter('config', JSON.stringify(config, null, 2));
 
-		it('should create layer with makeLayer', () => {
-			const pageData = {
-				id: '1',
-				title: 'Test Page',
-				description: 'A test page',
-				content: 'Test content',
-				slug: 'test-page',
-			} as PageData;
-
-			const result = FullPageData.makeLayer(pageData);
-			expect(result).toBeDefined();
-			expect(typeof result).toBe('object');
+			expect(config.pageData).toBe(pageData);
 		});
 	});
 
-	describe('UseBlogPkgConfig', () => {
-		it('should create UseBlogPkgConfig with useBlogPkg false', () => {
-			const useBlogPkg = false;
-			const config = UseBlogPkgConfig.of({ useBlogPkg });
+	[
+		{
+			useBlogPkg: false,
+		},
+		{
+			useBlogPkg: true,
+		},
+	].forEach(({ useBlogPkg }) => {
+		test(`UseBlogPkgConfig - should create config with useBlogPkg: ${useBlogPkg}`, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('UseBlogPkgConfig Tests');
+			await allure.tags(...sharedTags);
 
-			expect(config.useBlogPkg).toBe(useBlogPkg);
-		});
+			await allure.step(
+				`Should create UseBlogPkgConfig with useBlogPkg: ${useBlogPkg}`,
+				async (ctx) => {
+					const config = UseBlogPkgConfig.of({ useBlogPkg });
 
-		it('should create UseBlogPkgConfig with useBlogPkg true', () => {
-			const useBlogPkg = true;
-			const config = UseBlogPkgConfig.of({ useBlogPkg });
+					await ctx.parameter('config', JSON.stringify(config, null, 2));
 
-			expect(config.useBlogPkg).toBe(useBlogPkg);
-		});
-
-		it('should create layer with makeLayer', () => {
-			const useBlogPkg = true;
-
-			const result = UseBlogPkgConfig.makeLayer(useBlogPkg);
-			expect(result).toBeDefined();
-			expect(typeof result).toBe('object');
-		});
-	});
-
-	describe('CategoryOrTagConfig', () => {
-		it('should create CategoryOrTagConfig with number array', () => {
-			const value = [1, 2, 3] as const;
-			const config = CategoryOrTagConfig.of({ value });
-
-			expect(config.value).toBe(value);
-		});
-
-		it('should create CategoryOrTagConfig with empty array', () => {
-			const value = [] as const;
-			const config = CategoryOrTagConfig.of({ value });
-
-			expect(config.value).toBe(value);
-		});
-
-		it('should create layer with makeLayer', () => {
-			const value = [1, 2, 3] as const;
-
-			const result = CategoryOrTagConfig.makeLayer(value);
-			expect(result).toBeDefined();
-			expect(typeof result).toBe('object');
+					expect(config.useBlogPkg).toBe(useBlogPkg);
+				}
+			);
 		});
 	});
 
-	describe('Configuration Validation', () => {
-		it('should validate all required fields are present', () => {
-			const configs = [
-				StringConfig.of({ str: 'test' }),
-				APIEndpointConfig.of({ endpoint: 'https://example.com', type: 'posts' as const }),
-				DownloadImageConfig.of({
-					imageUrl: 'https://example.com/image.jpg',
-					destination: '/public/images',
-				}),
-				DownloadPostImageConfig.of({ str: 'content', pathToFolder: '/public' }),
-				ImportEndpointConfig.of({ endpoint: 'https://example.com' }),
-				ImportPostsEndpointConfig.of({ endpoint: 'https://example.com', useBlogPkg: false }),
-				AstroAPIContextProvider.of({ context: {} as APIContext }),
-				RawPageData.of({ page: {} }),
-				FullPageData.of({ pageData: {} as PageData }),
-				UseBlogPkgConfig.of({ useBlogPkg: false }),
-				CategoryOrTagConfig.of({ value: [] as const }),
-			];
+	[[1, 2, 3], []].forEach((value) => {
+		test(`CategoryOrTagConfig - should create config with value: [${value.join(', ')}]`, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('CategoryOrTagConfig Tests');
+			await allure.tags(...sharedTags);
 
-			configs.forEach((config) => {
-				expect(config).toBeDefined();
-				expect(typeof config).toBe('object');
-			});
+			await allure.step(
+				`Should create CategoryOrTagConfig with value: [${value.join(', ')}]`,
+				async (ctx) => {
+					const config = CategoryOrTagConfig.of({ value });
+
+					await ctx.parameter('config', JSON.stringify(config, null, 2));
+
+					expect(config.value).toEqual(value);
+				}
+			);
+		});
+	});
+
+	[
+		StringConfig.of({ str: 'test' }),
+		APIEndpointConfig.of({ endpoint: 'https://example.com', type: 'posts' as const }),
+		DownloadImageConfig.of({
+			imageUrl: 'https://example.com/image.jpg',
+			destination: '/public/images',
+		}),
+		DownloadPostImageConfig.of({ str: 'content', pathToFolder: '/public' }),
+		ImportEndpointConfig.of({ endpoint: 'https://example.com' }),
+		ImportPostsEndpointConfig.of({ endpoint: 'https://example.com', useBlogPkg: false }),
+		AstroAPIContextProvider.of({ context: {} as APIContext }),
+		RawPageData.of({ page: {} }),
+		FullPageData.of({ pageData: {} as PageData }),
+		UseBlogPkgConfig.of({ useBlogPkg: false }),
+		CategoryOrTagConfig.of({ value: [] as const }),
+	].forEach((config) => {
+		test(`should ensure config of type ${config.constructor.name} is defined`, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('Configuration Validation Tests');
+			await allure.tags(...sharedTags);
+
+			await allure.step(
+				`Should ensure config of type ${config.constructor.name} is defined`,
+				async (ctx) => {
+					await ctx.parameter('config', JSON.stringify(config, null, 2));
+
+					expect(config).toBeDefined();
+					expect(typeof config).toBe('object');
+				}
+			);
 		});
 	});
 });
