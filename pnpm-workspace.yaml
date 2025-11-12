@@ -25,13 +25,13 @@ catalogs:
     "@astrojs/db": ^0.18.2
     "@astrojs/node": ^9.5.0
     "@astrojs/rss": ^4.0.13
-    astro: ^5.15.3
+    astro: ^5.15.4
     vite: ^6.3.4
   effect:
     "@effect/cli": ^0.72.0
     "@effect/platform": ^0.93.0
-    "@effect/platform-node": ^0.99.0
-    effect: ^3.19.0
+    "@effect/platform-node": ^0.100.0
+    effect: ^3.19.2
   min:
     "@astrojs/markdown-remark": ^6.3.3
     "@libsql/client": ^0.15.10
@@ -40,7 +40,7 @@ catalogs:
     drizzle-orm: ^0.42.0
     vite: ^6.3.4
   react:
-    "@astrojs/react": ^4.4.1
+    "@astrojs/react": ^4.4.2
     "@types/react": ^19.2.2
     "@types/react-dom": ^19.2.2
     react: ^19.2.0

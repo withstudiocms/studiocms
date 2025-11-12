@@ -1,4 +1,6 @@
+import { Effect } from '@withstudiocms/effect';
 import type { AstroIntegrationLogger } from 'astro';
+import { createResolver } from 'astro-integration-kit';
 
 /**
  * Options for configuring the logger.
@@ -90,3 +92,28 @@ export function dedent(str: string): string {
 	if (indent.length === 0) return lns.join('\n');
 	return lns.map((ln) => (ln.startsWith(indent) ? ln.slice(indent.length) : ln)).join('\n');
 }
+
+/**
+ * Creates an Effect-based resolver function for resolving component paths.
+ *
+ * @param base - The base path used to initialize the resolver.
+ * @returns An Effect-wrapped function that accepts a callback. The callback receives a `resolve` function,
+ * which can be used to resolve component paths relative to the base. If an error occurs during resolution,
+ * it is caught, logged to the console, and an Error object is returned with the original error as its cause.
+ *
+ * @example
+ * const resolveEffect = resolver('/components');
+ * const result = yield* resolveEffect((resolve) => resolve('Button'));
+ */
+export const resolver = Effect.fn(function* (base: string) {
+	const { resolve: _resolve } = createResolver(base);
+	return Effect.fn((fn: (resolve: (...path: Array<string>) => string) => string) =>
+		Effect.try({
+			try: () => fn(_resolve),
+			catch: (error) => {
+				console.error('Error occurred while resolving component:', error);
+				return new Error('Failed to resolve component', { cause: error });
+			},
+		})
+	);
+});

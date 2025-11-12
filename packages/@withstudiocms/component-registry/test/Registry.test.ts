@@ -135,9 +135,7 @@ const { message } = Astro.props;
 		});
 	});
 
-	// TODO: Refactor registerComponentFromFile/PropsParser to NOT throw on no props, but register with empty props array
-	// it makes more sense for the registry to handle this gracefully
-	test('ComponentRegistry - registerComponentFromFile - error on no props', async () => {
+	test('ComponentRegistry - registerComponentFromFile - does not error on no props', async () => {
 		await allure.parentSuite(parentSuiteName);
 		await allure.suite(localSuiteName);
 		await allure.subSuite('registerComponentFromFile Tests');
@@ -161,7 +159,7 @@ const { message } = Astro.props;
 				)
 			);
 
-			expect(res instanceof Error).toBe(true);
+			expect(res instanceof Error).toBe(false);
 			await ctx.parameter('Error Message', res instanceof Error ? res.message : 'No error');
 		});
 	});

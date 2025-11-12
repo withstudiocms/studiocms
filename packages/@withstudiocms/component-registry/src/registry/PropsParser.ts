@@ -186,7 +186,7 @@ export class PropsParser extends Effect.Service<PropsParser>()('PropsParser', {
 					try: () => {
 						const frontmatterMatch = astroFileContent.match(/^---\s*\n([\s\S]*?)\n---/m);
 						if (!frontmatterMatch) {
-							throw new Error('No frontmatter found in Astro file');
+							return '';
 						}
 
 						const frontmatter = frontmatterMatch[1];
@@ -216,7 +216,7 @@ export class PropsParser extends Effect.Service<PropsParser>()('PropsParser', {
 							/(?:export\s+)?(?:interface|type)\s+Props\s*[={]/
 						);
 						if (propsStart === -1) {
-							throw new Error('No Props interface or type found in frontmatter');
+							return '';
 						}
 
 						/* v8 ignore start */

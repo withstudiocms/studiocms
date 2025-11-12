@@ -55,7 +55,7 @@
   },
   "devDependencies": {
     "@actions/core": "^1.11.1",
-    "@biomejs/biome": "^2.3.3",
+    "@biomejs/biome": "^2.3.4",
     "@changesets/changelog-github": "^0.5.1",
     "@changesets/cli": "^2.29.7",
     "@changesets/config": "^3.1.1",
@@ -71,7 +71,7 @@
     "allure-vitest": "^3.4.2",
     "allure-commandline": "^2.34.1",
     "execa": "^9.6.0",
-    "knip": "^5.67.1",
+    "knip": "^5.68.0",
     "pkg-pr-new": "^0.0.60",
     "studiocms": "workspace:*",
     "typescript": "catalog:",
