@@ -105,15 +105,23 @@ describe(parentSuiteName, () => {
 
 	['github' as const, 'obsidian' as const, 'vitepress' as const].forEach((theme) => {
 		test(`Should handle StudioCMS flavor with '${theme}' callout theme`, async () => {
-			const options = createMockMarkdownOptions({
-				flavor: 'studiocms',
-				callouts: theme,
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('Plugin Creation Tests');
+			await allure.tags(...sharedTags);
+
+			await allure.step(`Creating plugin with callout theme: ${theme}`, async (ctx) => {
+				await ctx.parameter('calloutTheme', theme);
+				const options = createMockMarkdownOptions({
+					flavor: 'studiocms',
+					callouts: theme,
+				});
+
+				const plugin = studiocmsMD(options);
+
+				expect(plugin).toBeDefined();
+				expect(plugin.identifier).toBe('@studiocms/md');
 			});
-
-			const plugin = studiocmsMD(options);
-
-			expect(plugin).toBeDefined();
-			expect(plugin.identifier).toBe('@studiocms/md');
 		});
 	});
 
