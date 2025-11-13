@@ -1,7 +1,8 @@
 import type { AstroIntegration } from 'astro';
 import { getViteConfig } from 'astro/config';
 import { addVirtualImports } from 'astro-integration-kit';
-import { defineProject } from 'vitest/config';
+import { defineProject, mergeConfig } from 'vitest/config';
+import { configShared } from '../../../vitest.shared.js';
 import { internalMDXIntegration } from './src/index.js';
 
 const testIntegration: AstroIntegration = {
@@ -22,13 +23,12 @@ const testIntegration: AstroIntegration = {
 
 export default defineProject(
 	getViteConfig(
-		{
+		mergeConfig(configShared, {
 			test: {
 				name: '@studiocms/mdx',
-				environment: 'node',
 				include: ['**/*.test.ts'],
 			},
-		},
+		}),
 		{
 			integrations: [testIntegration, internalMDXIntegration('@studiocms/mdx')],
 		}
