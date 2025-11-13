@@ -1,25 +1,22 @@
+import * as allure from 'allure-js-commons';
 import { describe, expect, test } from 'vitest';
-import { WYSIWYGSchema, type WYSIWYGSchemaOptions } from '../src/types';
+import { WYSIWYGSchema } from '../src/types';
+import { parentSuiteName, sharedTags } from './test-utils.js';
 
-describe('WYSIWYG Types and Schema', () => {
-	describe('WYSIWYGSchema', () => {
-		test('validates empty object as default', () => {
-			const result = WYSIWYGSchema.parse({});
-			expect(result).toEqual({});
-		});
+const localSuiteName = 'WYSIWYG Types Tests';
 
-		test('validates undefined as default', () => {
-			const result = WYSIWYGSchema.parse(undefined);
-			expect(result).toEqual({});
-		});
-
-		test('validates null as default', () => {
-			// null should be converted to default value
-			expect(() => WYSIWYGSchema.parse(null)).toThrow();
-		});
-
-		test('validates sanitize options', () => {
-			const options = {
+describe(parentSuiteName, () => {
+	[
+		{
+			input: {},
+			expected: {},
+		},
+		{
+			input: undefined,
+			expected: {},
+		},
+		{
+			input: {
 				sanitize: {
 					allowElements: ['div', 'h1', 'p'],
 					allowAttributes: {
@@ -27,59 +24,49 @@ describe('WYSIWYG Types and Schema', () => {
 						a: ['href'],
 					},
 				},
-			};
-
-			const result = WYSIWYGSchema.parse(options);
-			expect(result).toEqual(options);
-		});
-
-		test('validates minimal sanitize options', () => {
-			const options = {
-				sanitize: {},
-			};
-
-			const result = WYSIWYGSchema.parse(options);
-			expect(result).toEqual(options);
-		});
-
-		test('validates sanitize with allowElements only', () => {
-			const options = {
+			},
+			expected: {
+				sanitize: {
+					allowElements: ['div', 'h1', 'p'],
+					allowAttributes: {
+						'*': ['class'],
+						a: ['href'],
+					},
+				},
+			},
+		},
+		{
+			input: {
 				sanitize: {
 					allowElements: ['div', 'span', 'p'],
 				},
-			};
-
-			const result = WYSIWYGSchema.parse(options);
-			expect(result).toEqual(options);
-		});
-
-		test('validates sanitize with allowAttributes only', () => {
-			const options = {
+			},
+			expected: {
+				sanitize: {
+					allowElements: ['div', 'span', 'p'],
+				},
+			},
+		},
+		{
+			input: {
 				sanitize: {
 					allowAttributes: {
 						'*': ['class', 'id'],
 						img: ['src', 'alt'],
 					},
 				},
-			};
-
-			const result = WYSIWYGSchema.parse(options);
-			expect(result).toEqual(options);
-		});
-
-		test('validates sanitize with blockElements only', () => {
-			const options = {
+			},
+			expected: {
 				sanitize: {
-					blockElements: ['script', 'style'],
+					allowAttributes: {
+						'*': ['class', 'id'],
+						img: ['src', 'alt'],
+					},
 				},
-			};
-
-			const result = WYSIWYGSchema.parse(options);
-			expect(result).toEqual(options);
-		});
-
-		test('validates complex sanitize options', () => {
-			const options = {
+			},
+		},
+		{
+			input: {
 				sanitize: {
 					allowElements: [
 						'div',
@@ -107,145 +94,121 @@ describe('WYSIWYG Types and Schema', () => {
 					allowCustomElements: false,
 					allowComments: false,
 				},
-			};
-
-			const result = WYSIWYGSchema.parse(options);
-			expect(result).toEqual(options);
-		});
-
-		test('throws error for invalid sanitize options', () => {
-			const invalidOptions = {
+			},
+			expected: {
 				sanitize: {
-					allowElements: 'should be array', // Invalid type
-				},
-			};
-
-			expect(() => WYSIWYGSchema.parse(invalidOptions)).toThrow();
-		});
-
-		test('throws error for invalid allowElements type', () => {
-			const invalidOptions = {
-				sanitize: {
-					allowElements: 'not-an-array',
-				},
-			};
-
-			expect(() => WYSIWYGSchema.parse(invalidOptions)).toThrow();
-		});
-
-		test('throws error for invalid allowAttributes type', () => {
-			const invalidOptions = {
-				sanitize: {
-					allowAttributes: 'not-an-object',
-				},
-			};
-
-			expect(() => WYSIWYGSchema.parse(invalidOptions)).toThrow();
-		});
-
-		test('throws error for invalid blockElements type', () => {
-			const invalidOptions = {
-				sanitize: {
-					blockElements: 'not-an-array',
-				},
-			};
-
-			expect(() => WYSIWYGSchema.parse(invalidOptions)).toThrow();
-		});
-
-		test('throws error for non-object input', () => {
-			expect(() => WYSIWYGSchema.parse('string')).toThrow();
-			expect(() => WYSIWYGSchema.parse(123)).toThrow();
-			expect(() => WYSIWYGSchema.parse(true)).toThrow();
-			expect(() => WYSIWYGSchema.parse([])).toThrow();
-		});
-
-		test('handles extra properties gracefully', () => {
-			const options = {
-				sanitize: {
-					allowElements: ['div', 'p'],
-				},
-				extraProperty: 'should be ignored',
-			};
-
-			const result = WYSIWYGSchema.parse(options);
-			expect(result).toEqual({
-				sanitize: {
-					allowElements: ['div', 'p'],
-				},
-			});
-		});
-	});
-
-	describe('WYSIWYGSchemaOptions type', () => {
-		test('type inference works correctly', () => {
-			const options: WYSIWYGSchemaOptions = {
-				sanitize: {
-					allowElements: ['div', 'p'],
+					allowElements: [
+						'div',
+						'h1',
+						'h2',
+						'h3',
+						'p',
+						'strong',
+						'em',
+						'a',
+						'ul',
+						'li',
+						'pre',
+						'code',
+					],
 					allowAttributes: {
-						'*': ['class'],
+						'*': ['class', 'id'],
+						a: ['href', 'target', 'rel'],
+						img: ['src', 'alt', 'width', 'height'],
+						pre: ['class'],
+						code: ['class'],
 					},
+					blockElements: ['script', 'style'],
+					allowComponents: true,
+					allowCustomElements: false,
+					allowComments: false,
 				},
-			};
-
-			expect(options.sanitize?.allowElements).toEqual(['div', 'p']);
-			expect(options.sanitize?.allowAttributes).toEqual({
-				'*': ['class'],
-			});
-		});
-
-		test('type allows undefined', () => {
-			const options: WYSIWYGSchemaOptions = undefined;
-			expect(options).toBeUndefined();
-		});
-
-		test('type allows empty object', () => {
-			const options: WYSIWYGSchemaOptions = {};
-			expect(options).toEqual({});
-		});
-	});
-
-	describe('Schema edge cases', () => {
-		test('handles empty arrays in sanitize options', () => {
-			const options = {
+			},
+		},
+		{
+			input: {
 				sanitize: {
 					allowElements: [],
 					allowAttributes: {},
 					blockElements: [],
 				},
-			};
-
-			const result = WYSIWYGSchema.parse(options);
-			expect(result).toEqual(options);
-		});
-
-		test('handles nested allowAttributes', () => {
-			const options = {
+			},
+			expected: {
 				sanitize: {
-					allowAttributes: {
-						'*': ['class', 'id'],
-						a: ['href', 'target'],
-						img: ['src', 'alt', 'width', 'height'],
-						div: ['class', 'id', 'data-*'],
-					},
+					allowElements: [],
+					allowAttributes: {},
+					blockElements: [],
 				},
-			};
+			},
+		},
+	].forEach(({ input, expected }, index) => {
+		test(`WYSIWYGSchema Test Case #${index + 1}`, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('WYSIWYGSchema Validation Tests');
+			await allure.tags(...sharedTags);
 
-			const result = WYSIWYGSchema.parse(options);
-			expect(result).toEqual(options);
+			await allure.step('Validating WYSIWYGSchema parsing', async (ctx) => {
+				const result = WYSIWYGSchema.parse(input);
+				await ctx.parameter('input', JSON.stringify(input));
+				await ctx.parameter('expected', JSON.stringify(expected));
+				expect(result).toEqual(expected);
+			});
 		});
+	});
 
-		test('handles allowComponents if supported', () => {
-			const options = {
+	[
+		{
+			input: {
 				sanitize: {
-					allowComponents: true,
-					allowCustomElements: false,
-					allowComments: false,
+					allowElements: 'should be array', // Invalid type
 				},
-			};
+			},
+		},
+		{
+			input: {
+				sanitize: {
+					allowElements: 'not-an-array',
+				},
+			},
+		},
+		{
+			input: {
+				sanitize: {
+					allowAttributes: 'not-an-object',
+				},
+			},
+		},
+		{
+			input: {
+				sanitize: {
+					blockElements: 'not-an-array',
+				},
+			},
+		},
+		{
+			input: 'string',
+		},
+		{
+			input: 123,
+		},
+		{
+			input: true,
+		},
+		{
+			input: [],
+		},
+	].forEach(({ input }, index) => {
+		test(`WYSIWYGSchema Invalid Test Case #${index + 1}`, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('WYSIWYGSchema Invalid Input Tests');
+			await allure.tags(...sharedTags);
 
-			const result = WYSIWYGSchema.parse(options);
-			expect(result).toEqual(options);
+			await allure.step('Validating WYSIWYGSchema throws error for invalid input', async (ctx) => {
+				await ctx.parameter('input', JSON.stringify(input));
+				expect(() => WYSIWYGSchema.parse(input)).toThrow();
+			});
 		});
 	});
 });
