@@ -270,7 +270,7 @@ describe(parentSuiteName, () => {
 			expected: 'auth_session',
 		},
 	].forEach(({ name, actual, expected }) => {
-		test('should export the correct value for variable', async () => {
+		test(`Const: ${name}`, async () => {
 			await allure.parentSuite(parentSuiteName);
 			await allure.suite(localSuiteName);
 			await allure.subSuite(`Const: ${name}`);
