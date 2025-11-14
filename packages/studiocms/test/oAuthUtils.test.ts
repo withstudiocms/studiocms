@@ -1,70 +1,124 @@
 /** biome-ignore-all lint/suspicious/noExplicitAny: allowed for tests */
+import * as allure from 'allure-js-commons';
 import { AstroError } from 'astro/errors';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, test } from 'vitest';
 import { Effect, Exit } from '../src/effect.js';
 import { getCookie, getUrlParam, ValidateAuthCodeError } from '../src/oAuthUtils';
+import { parentSuiteName, sharedTags } from './test-utils';
 
-describe('ValidateAuthCodeError', () => {
-	it('should create an error with correct properties', () => {
-		const err = new ValidateAuthCodeError({ message: 'Invalid code', provider: 'github' });
-		expect(err._tag).toBe('ValidateAuthCodeError');
-		expect(err.message).toBe('Invalid code');
-		expect(err.provider).toBe('github');
-	});
-});
+const localSuiteName = 'oAuthUtils tests';
 
-describe('getUrlParam', () => {
-	it('should return the value of an existing query param', async () => {
-		const url = new URL('http://localhost/callback?code=1234');
-		const context = { url } as any;
-		const effect = getUrlParam(context, 'code');
-		const result = await Effect.runPromise(effect);
-		expect(result).toBe('1234');
-	});
+describe(parentSuiteName, () => {
+	test('ValidateAuthCodeError', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('ValidateAuthCodeError tests');
+		await allure.tags(...sharedTags, 'module:oAuthUtils');
 
-	it('should return null if param does not exist', async () => {
-		const url = new URL('http://localhost/callback');
-		const context = { url } as any;
-		const effect = getUrlParam(context, 'missing');
-		const result = await Effect.runPromise(effect);
-		expect(result).toBeNull();
+		await allure.step('should create an error with correct properties', async (ctx) => {
+			const err = new ValidateAuthCodeError({ message: 'Invalid code', provider: 'github' });
+			await ctx.parameter('errorMessage', err.message);
+			await ctx.parameter('errorProvider', err.provider);
+			expect(err._tag).toBe('ValidateAuthCodeError');
+			expect(err.message).toBe('Invalid code');
+			expect(err.provider).toBe('github');
+		});
 	});
 
-	it('should throw AstroError if url is malformed', async () => {
-		const context = { url: null } as any;
-		const effect = getUrlParam(context, 'code');
-		expect(await Effect.runPromiseExit(effect)).toStrictEqual(
-			Exit.fail(new AstroError('Failed to parse URL from Astro context'))
-		);
-	});
-});
+	[
+		{
+			url: 'http://localhost/callback?code=1234',
+			param: 'code',
+			expected: '1234',
+		},
+		{
+			url: 'http://localhost/callback',
+			param: 'missing',
+			expected: null,
+		},
+	].forEach(({ url, param, expected }) => {
+		test('getUrlParam should return correct value for param', async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('getUrlParam tests');
+			await allure.tags(...sharedTags, 'module:oAuthUtils', 'function:getUrlParam');
 
-describe('getCookie', () => {
-	it('should return the value of an existing cookie', async () => {
-		const cookies = {
-			get: (key: string) => (key === 'session' ? { value: 'abc123' } : undefined),
-		};
-		const context = { cookies } as any;
-		const effect = getCookie(context, 'session');
-		const result = await Effect.runPromise(effect);
-		expect(result).toBe('abc123');
+			await allure.step(`Getting URL param "${param}" from "${url}"`, async (ctx) => {
+				const urlObj = new URL(url);
+				const context = { url: urlObj } as any;
+				const effect = getUrlParam(context, param);
+				const result = await Effect.runPromise(effect);
+				await ctx.parameter('expected', String(expected));
+				await ctx.parameter('actual', String(result));
+				expect(result).toBe(expected);
+			});
+		});
 	});
 
-	it('should return null if cookie does not exist', async () => {
-		const cookies = {
-			get: (_: string) => undefined,
-		};
-		const context = { cookies } as any;
-		const effect = getCookie(context, 'missing');
-		const result = await Effect.runPromise(effect);
-		expect(result).toBeNull();
+	test('getUrlParam should throw AstroError for malformed URL', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('getUrlParam tests');
+		await allure.tags(...sharedTags, 'module:oAuthUtils', 'function:getUrlParam');
+
+		await allure.step('Getting URL param from malformed URL', async (ctx) => {
+			const context = { url: null } as any;
+			const effect = getUrlParam(context, 'code');
+			const exit = await Effect.runPromiseExit(effect);
+			await ctx.parameter('expectedError', 'AstroError');
+			expect(exit).toStrictEqual(
+				Exit.fail(new AstroError('Failed to parse URL from Astro context'))
+			);
+		});
 	});
 
-	it('should throw AstroError if cookies object is malformed', async () => {
-		const context = { cookies: null } as any;
-		const effect = getCookie(context, 'session');
-		expect(await Effect.runPromiseExit(effect)).toStrictEqual(
-			Exit.fail(new AstroError('Failed to parse get Cookies from Astro context'))
-		);
+	[
+		{
+			cookies: {
+				get: (key: string) => (key === 'session' ? { value: 'abc123' } : undefined),
+			},
+			cookieName: 'session',
+			expected: 'abc123',
+		},
+		{
+			cookies: {
+				get: (_: string) => undefined,
+			},
+			cookieName: 'missing',
+			expected: null,
+		},
+	].forEach(({ cookies, cookieName, expected }) => {
+		test('getCookie should return correct cookie value', async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('getCookie tests');
+			await allure.tags(...sharedTags, 'module:oAuthUtils', 'function:getCookie');
+
+			await allure.step(`Getting cookie "${cookieName}"`, async (ctx) => {
+				const context = { cookies } as any;
+				const effect = getCookie(context, cookieName);
+				const result = await Effect.runPromise(effect);
+				await ctx.parameter('expected', String(expected));
+				await ctx.parameter('actual', String(result));
+				expect(result).toBe(expected);
+			});
+		});
+	});
+
+	test('getCookie should throw AstroError for malformed cookies object', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('getCookie tests');
+		await allure.tags(...sharedTags, 'module:oAuthUtils', 'function:getCookie');
+
+		await allure.step('Getting cookie from malformed cookies object', async (ctx) => {
+			const context = { cookies: null } as any;
+			const effect = getCookie(context, 'session');
+			const exit = await Effect.runPromiseExit(effect);
+			await ctx.parameter('expectedError', 'AstroError');
+			expect(exit).toStrictEqual(
+				Exit.fail(new AstroError('Failed to parse get Cookies from Astro context'))
+			);
+		});
 	});
 });
