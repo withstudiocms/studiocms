@@ -277,8 +277,8 @@ describe(parentSuiteName, () => {
 			await allure.tags(...sharedTags, 'module:consts', `const:${name}`);
 
 			await allure.step(`Checking value of ${name}`, async (ctx) => {
-				await ctx.parameter('expected', String(expected));
-				await ctx.parameter('actual', String(actual));
+				await ctx.parameter('expected', JSON.stringify(expected));
+				await ctx.parameter('actual', JSON.stringify(actual));
 				expect(actual).toBe(expected);
 			});
 		});
