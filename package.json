@@ -16,6 +16,8 @@
     "lint:fix": "biome check --write .",
     "postinstall": "ts-patch install",
     "clean:node": "node ./scripts/clean-node-modules.mjs",
+    "clean:pnpm-lock": "pnpm clean:node && node ./scripts/clean-pnpm-lockfile.mjs",
+    "reset:pnpm": "pnpm clean:pnpm-lock && pnpm install",
 
     "allure:clean": "node -e \"require('fs').rmSync('allure-results', { recursive: true, force: true })\"",
     "allure:serve": "allure serve allure-results",

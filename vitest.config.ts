@@ -38,6 +38,8 @@ const projectsWithTests: { scope?: string; names: string[] }[] = [
 			'effect',
 			'internal_helpers',
 			'template-lang',
+			'kysely',
+			'sdk',
 		],
 	},
 	{

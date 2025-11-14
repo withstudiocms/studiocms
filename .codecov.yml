@@ -154,3 +154,11 @@ component_management:
       name: "@withstudiocms/template-lang"
       paths:
         - packages/@withstudiocms/template-lang/**
+    - component_id: withstudiocms_kysely
+      name: "@withstudiocms/kysely"
+      paths:
+        - packages/@withstudiocms/kysely/**
+    - component_id: withstudiocms_sdk
+      name: "@withstudiocms/sdk"
+      paths:
+        - packages/@withstudiocms/sdk/**
