@@ -1,7 +1,8 @@
 import type { AstroIntegration } from 'astro';
 import { getViteConfig } from 'astro/config';
 import { addVirtualImports } from 'astro-integration-kit';
-import { defineProject } from 'vitest/config';
+import { defineProject, mergeConfig } from 'vitest/config';
+import { configShared } from '../../../vitest.shared.js';
 import { internalMarkDocIntegration } from './src/index.js';
 
 const testIntegration: AstroIntegration = {
@@ -22,16 +23,15 @@ const testIntegration: AstroIntegration = {
 
 export default defineProject(
 	getViteConfig(
-		{
+		mergeConfig(configShared, {
 			test: {
 				name: '@studiocms/markdoc',
-				environment: 'node',
-				include: ['**/*.test.ts', '**/*.test.tsx'], // Added .tsx for React tests
+				include: ['**/*.test.ts'],
 			},
 			define: {
 				'import.meta.env.PROD': false,
 			},
-		},
+		}),
 		{
 			integrations: [testIntegration, internalMarkDocIntegration('@studiocms/markdoc')],
 		}

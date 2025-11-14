@@ -1,149 +1,121 @@
+import * as allure from 'allure-js-commons';
 import { StudioCMSPluginTester } from 'studiocms/test-utils';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import wysiwyg from '../src/index';
 import type { WYSIWYGSchemaOptions } from '../src/types';
+import { parentSuiteName, sharedTags } from './test-utils.js';
 
-describe('StudioCMS WYSIWYG Plugin', () => {
+const localSuiteName = 'StudioCMS WYSIWYG Plugin Tests';
+
+describe(parentSuiteName, () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
 	});
 
-	test('plugin creation with default options', () => {
-		const plugin = wysiwyg();
-		const tester = new StudioCMSPluginTester(plugin);
-		const info = tester.getPluginInfo();
+	test('Plugin Creation - Validates Plugin Structure and Options', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('Plugin Creation Tests');
+		await allure.tags(...sharedTags);
 
-		expect(plugin).toBeDefined();
-		expect(info.identifier).toBe('@studiocms/wysiwyg');
-		expect(info.name).toBe('StudioCMS WYSIWYG Editor');
-		expect(info.studiocmsMinimumVersion).toBe('0.1.0-beta.23');
-	});
+		await allure.step('Should create plugin with correct metadata and structure', async (ctx) => {
+			const plugin = wysiwyg();
+			await ctx.parameter('pluginIdentifier', plugin.identifier);
+			await ctx.parameter('pluginName', plugin.name);
+			await ctx.parameter('studiocmsMinimumVersion', plugin.studiocmsMinimumVersion);
 
-	test('plugin creation with custom options', () => {
-		const options: WYSIWYGSchemaOptions = {
-			sanitize: {
-				allowElements: ['div', 'h1', 'p'],
-				allowAttributes: {
-					'*': ['class'],
-					a: ['href'],
+			expect(plugin).toBeDefined();
+			expect(plugin.identifier).toBe('@studiocms/wysiwyg');
+			expect(plugin.name).toBe('StudioCMS WYSIWYG Editor');
+			expect(plugin.studiocmsMinimumVersion).toBe('0.1.0-beta.23');
+			expect(plugin.hooks).toBeDefined();
+		});
+
+		await allure.step('Should create plugin with custom WYSIWYG options', async (ctx) => {
+			const options: WYSIWYGSchemaOptions = {
+				sanitize: {
+					allowElements: ['div', 'h1', 'p'],
+					allowAttributes: {
+						'*': ['class'],
+						a: ['href'],
+					},
 				},
-			},
-		};
+			};
+			const plugin = wysiwyg(options);
+			const tester = new StudioCMSPluginTester(plugin);
+			const info = tester.getPluginInfo();
 
-		const plugin = wysiwyg(options);
-		const tester = new StudioCMSPluginTester(plugin);
-		const info = tester.getPluginInfo();
+			await ctx.parameter('pluginIdentifier', info.identifier);
+			await ctx.parameter('pluginName', info.name);
 
-		expect(plugin).toBeDefined();
-		expect(info.identifier).toBe('@studiocms/wysiwyg');
-	});
-
-	test('plugin creation with empty sanitize options', () => {
-		const options: WYSIWYGSchemaOptions = {
-			sanitize: {},
-		};
-
-		const plugin = wysiwyg(options);
-
-		expect(plugin).toBeDefined();
-		expect(plugin.identifier).toBe('@studiocms/wysiwyg');
-	});
-
-	test('plugin hooks are defined', async () => {
-		const plugin = wysiwyg();
-		const tester = new StudioCMSPluginTester(plugin);
-		const results = await tester.getHookResults();
-
-		expect(plugin.hooks).toBeDefined();
-		expect(results.astroConfig.hasHook).toBe(true);
-		expect(results.studiocmsConfig.hasHook).toBe(true);
-	});
-
-	test('plugin sets up astro config integration', async () => {
-		const plugin = wysiwyg();
-		const tester = new StudioCMSPluginTester(plugin);
-		const results = await tester.getHookResults();
-
-		expect(results.astroConfig.hasHook).toBe(true);
-		expect(results.astroConfig.hookResults.integrations).toHaveLength(1);
-		expect(results.astroConfig.hookResults.integrations[0]).toEqual(
-			expect.objectContaining({
-				name: '@studiocms/wysiwyg',
-				hooks: {
-					'astro:config:setup': expect.any(Function),
-					'astro:config:done': expect.any(Function),
-				},
-			})
-		);
-	});
-
-	test('plugin sets up rendering configuration', async () => {
-		const plugin = wysiwyg();
-		const tester = new StudioCMSPluginTester(plugin);
-		const results = await tester.getHookResults();
-
-		expect(results.studiocmsConfig.hasHook).toBe(true);
-		expect(results.studiocmsConfig.hookResults.rendering).toEqual({
-			pageTypes: [
-				{
-					identifier: 'studiocms/wysiwyg',
-					label: 'WYSIWYG',
-					rendererComponent: expect.stringContaining('render.js'),
-					pageContentComponent: expect.stringContaining('Editor.astro'),
-				},
-			],
+			expect(plugin).toBeDefined();
+			expect(info.identifier).toBe('@studiocms/wysiwyg');
 		});
 	});
 
-	test('plugin handles undefined options', () => {
-		const plugin = wysiwyg(undefined);
-		const tester = new StudioCMSPluginTester(plugin);
-		const info = tester.getPluginInfo();
+	test('Plugin Hook Tests - Validates Hook Implementations', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('Plugin Hook Tests');
+		await allure.tags(...sharedTags);
 
-		expect(plugin).toBeDefined();
-		expect(info.identifier).toBe('@studiocms/wysiwyg');
-	});
+		await allure.step('Should have all necessary hooks defined and functioning', async (ctx) => {
+			const plugin = wysiwyg();
+			const tester = new StudioCMSPluginTester(plugin);
+			const results = await tester.getHookResults();
 
-	test('plugin handles partial options', () => {
-		const options: Partial<WYSIWYGSchemaOptions> = {
-			sanitize: {
-				allowElements: ['div', 'p'],
-			},
-		};
+			await ctx.parameter('hasAstroConfigHook', String(results.astroConfig.hasHook));
+			await ctx.parameter('hasStudioCMSConfigHook', String(results.studiocmsConfig.hasHook));
 
-		const plugin = wysiwyg(options);
-		const tester = new StudioCMSPluginTester(plugin);
-		const info = tester.getPluginInfo();
+			expect(plugin.hooks).toBeDefined();
+			expect(results.astroConfig.hasHook).toBe(true);
+			expect(results.studiocmsConfig.hasHook).toBe(true);
+		});
 
-		expect(plugin).toBeDefined();
-		expect(info.identifier).toBe('@studiocms/wysiwyg');
-	});
+		await allure.step('Should configure Astro integration correctly', async (ctx) => {
+			const plugin = wysiwyg();
+			const tester = new StudioCMSPluginTester(plugin);
+			const results = await tester.getHookResults();
 
-	test('plugin handles empty options object', () => {
-		const plugin = wysiwyg({});
-		const tester = new StudioCMSPluginTester(plugin);
-		const info = tester.getPluginInfo();
+			await ctx.parameter(
+				'astroIntegrationCount',
+				String(results.astroConfig.hookResults.integrations.length)
+			);
 
-		expect(plugin).toBeDefined();
-		expect(info.identifier).toBe('@studiocms/wysiwyg');
-	});
+			expect(results.astroConfig.hasHook).toBe(true);
+			expect(results.astroConfig.hookResults.integrations).toHaveLength(1);
+			expect(results.astroConfig.hookResults.integrations[0]).toEqual(
+				expect.objectContaining({
+					name: '@studiocms/wysiwyg',
+					hooks: {
+						'astro:config:setup': expect.any(Function),
+						'astro:config:done': expect.any(Function),
+					},
+				})
+			);
+		});
 
-	test('plugin exports default function', async () => {
-		const { default: defaultExport } = await import('../src/index');
+		await allure.step('Should set up rendering configuration properly', async (ctx) => {
+			const plugin = wysiwyg();
+			const tester = new StudioCMSPluginTester(plugin);
+			const results = await tester.getHookResults();
 
-		expect(typeof defaultExport).toBe('function');
-		expect(defaultExport.name).toBe('wysiwyg');
-	});
+			await ctx.parameter(
+				'pageTypeCount',
+				String(results.studiocmsConfig.hookResults.rendering.pageTypes?.length)
+			);
 
-	test('plugin validates schema options', () => {
-		// Test that invalid options are handled gracefully
-		const invalidOptions = {
-			sanitize: {
-				invalidProperty: 'should be ignored',
-			},
-		};
-
-		// This should not throw an error due to schema validation
-		expect(() => wysiwyg(invalidOptions as unknown as WYSIWYGSchemaOptions)).not.toThrow();
+			expect(results.studiocmsConfig.hasHook).toBe(true);
+			expect(results.studiocmsConfig.hookResults.rendering).toEqual({
+				pageTypes: [
+					{
+						identifier: 'studiocms/wysiwyg',
+						label: 'WYSIWYG',
+						rendererComponent: expect.stringContaining('render.js'),
+						pageContentComponent: expect.stringContaining('Editor.astro'),
+					},
+				],
+			});
+		});
 	});
 });

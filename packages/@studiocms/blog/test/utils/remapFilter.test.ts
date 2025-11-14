@@ -1,5 +1,9 @@
-import { describe, expect, it, vi } from 'vitest';
+import * as allure from 'allure-js-commons';
+import { describe, expect, test, vi } from 'vitest';
 import * as remapFilterUtils from '../../src/utils/remapFilter.js';
+import { parentSuiteName, sharedTags } from '../test-utils.js';
+
+const localSuiteName = 'remapFilter Utility Tests';
 
 // Mock blogConfig.route for predictable output
 vi.mock('studiocms:blog/config', () => ({
@@ -8,27 +12,43 @@ vi.mock('studiocms:blog/config', () => ({
 	},
 }));
 
-describe('getBlogRoute', () => {
-	it('replaces [...slug] with provided slug', () => {
-		const slug = 'my-post';
-		// blogRouteFullPath = '/blog/[...slug]'
-		const result = remapFilterUtils.getBlogRoute(slug);
-		expect(result).toBe('/blog/my-post');
+describe(parentSuiteName, () => {
+	[
+		{
+			input: 'my-post',
+			expected: '/blog/my-post',
+		},
+		{
+			input: '',
+			expected: '/blog/',
+		},
+		{
+			input: 'foo/bar/baz',
+			expected: '/blog/foo/bar/baz',
+		},
+	].forEach(({ input, expected }) => {
+		test(`getBlogRoute('${input}') should return '${expected}'`, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('getBlogRoute Tests');
+			await allure.tags(...sharedTags);
+
+			await allure.parameter('Input Slug', input);
+
+			await allure.step(`Getting blog route for slug: ${input}`, async (ctx) => {
+				const result = remapFilterUtils.getBlogRoute(input);
+				await ctx.parameter('Resulting Route', result);
+				expect(result).toBe(expected);
+			});
+		});
 	});
 
-	it('handles empty slug', () => {
-		const slug = '';
-		const result = remapFilterUtils.getBlogRoute(slug);
-		expect(result).toBe('/blog/');
-	});
+	test('remapFilterSitemap should correctly map and filter sitemap entries', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('remapFilterSitemap Tests');
+		await allure.tags(...sharedTags);
 
-	it('correctly replaces slug with special characters', () => {
-		const slug = 'foo/bar/baz';
-		const result = remapFilterUtils.getBlogRoute(slug);
-		expect(result).toBe('/blog/foo/bar/baz');
-	});
-
-	it('remapFilterSitemap returns correct locations (curried)', () => {
 		const mockContext = {
 			url: 'https://example.com/',
 		} as unknown as remapFilterUtils.APIContext;
@@ -45,72 +65,78 @@ describe('getBlogRoute', () => {
 			},
 		] as remapFilterUtils.PageDataCacheObject[];
 
-		const result = remapFilterUtils.remapFilterSitemap('blog', mockContext, true)(array);
-		expect(result).toEqual([
-			{ location: 'https://example.com/blog/post-1' },
-			{ location: 'https://example.com/blog/post-2' },
-		]);
+		await allure.parameter('Input Array', JSON.stringify(array, null, 2));
+
+		await allure.step('Mapping sitemap entries for blog package', async (ctx) => {
+			const result = remapFilterUtils.remapFilterSitemap('blog', mockContext, true)(array);
+			await ctx.parameter('Mapped Result', JSON.stringify(result, null, 2));
+			expect(result).toEqual([
+				{ location: 'https://example.com/blog/post-1' },
+				{ location: 'https://example.com/blog/post-2' },
+			]);
+		});
 	});
 
-	it('remapFilterSitemap returns correct locations (uncurried)', () => {
-		const mockContext = {
-			url: 'https://example.com/',
-		} as unknown as remapFilterUtils.APIContext;
+	[
+		{
+			input: [
+				{
+					data: { slug: 'foo', package: 'docs' },
+				},
+				{
+					data: { slug: 'bar', package: 'docs' },
+				},
+			],
+			filter: 'docs',
+			expected: [{ location: 'https://example.com/foo' }, { location: 'https://example.com/bar' }],
+		},
+		{
+			input: [],
+			filter: 'blog',
+			expected: [],
+		},
+		{
+			input: [
+				{
+					data: { slug: 'foo', package: 'docs' },
+				},
+			],
+			filter: 'blog',
+			expected: [],
+		},
+		{
+			input: [
+				{
+					data: { slug: 'special-slug', package: 'blog' },
+				},
+			],
+			filter: 'blog',
+			expected: [{ location: 'https://example.com/blog/special-slug' }],
+		},
+	].forEach(({ input, filter, expected }) => {
+		test(`remapFilterSitemap should return correct locations for filter '${filter}'`, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('remapFilterSitemap Various Cases');
+			await allure.tags(...sharedTags);
 
-		const array = [
-			{
-				data: { slug: 'foo', package: 'docs' },
-			},
-			{
-				data: { slug: 'bar', package: 'docs' },
-			},
-		] as remapFilterUtils.PageDataCacheObject[];
+			const mockContext = {
+				url: 'https://example.com/',
+			} as unknown as remapFilterUtils.APIContext;
 
-		const result = remapFilterUtils.remapFilterSitemap(array, 'docs', mockContext, false);
-		expect(result).toEqual([
-			{ location: 'https://example.com/foo' },
-			{ location: 'https://example.com/bar' },
-		]);
-	});
+			await allure.parameter('Input Array', JSON.stringify(input, null, 2));
+			await allure.parameter('Filter Package', filter);
 
-	it('remapFilterSitemap filters by package and handles empty array', () => {
-		const mockContext = {
-			url: 'https://example.com/',
-		} as unknown as remapFilterUtils.APIContext;
-
-		const array = [] as remapFilterUtils.PageDataCacheObject[];
-
-		const result = remapFilterUtils.remapFilterSitemap(array, 'blog', mockContext, true);
-		expect(result).toEqual([]);
-	});
-
-	it('remapFilterSitemap returns empty if no matching package', () => {
-		const mockContext = {
-			url: 'https://example.com/',
-		} as unknown as remapFilterUtils.APIContext;
-
-		const array = [
-			{
-				data: { slug: 'foo', package: 'docs' },
-			},
-		] as remapFilterUtils.PageDataCacheObject[];
-
-		const result = remapFilterUtils.remapFilterSitemap(array, 'blog', mockContext, true);
-		expect(result).toEqual([]);
-	});
-
-	it('remapFilterSitemap uses blog route when blog=true', () => {
-		const mockContext = {
-			url: 'https://example.com/',
-		} as unknown as remapFilterUtils.APIContext;
-
-		const array = [
-			{
-				data: { slug: 'special-slug', package: 'blog' },
-			},
-		] as remapFilterUtils.PageDataCacheObject[];
-
-		const result = remapFilterUtils.remapFilterSitemap(array, 'blog', mockContext, true);
-		expect(result[0].location).toBe('https://example.com/blog/special-slug');
+			await allure.step(`Mapping sitemap entries for package: ${filter}`, async (ctx) => {
+				const result = remapFilterUtils.remapFilterSitemap(
+					input as remapFilterUtils.PageDataCacheObject[],
+					filter,
+					mockContext,
+					filter === 'blog'
+				);
+				await ctx.parameter('Mapped Result', JSON.stringify(result, null, 2));
+				expect(result).toEqual(expected);
+			});
+		});
 	});
 });

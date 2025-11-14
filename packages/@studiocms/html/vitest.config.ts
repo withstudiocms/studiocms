@@ -1,7 +1,8 @@
 import type { AstroIntegration } from 'astro';
 import { getViteConfig } from 'astro/config';
 import { addVirtualImports } from 'astro-integration-kit';
-import { defineProject } from 'vitest/config';
+import { defineProject, mergeConfig } from 'vitest/config';
+import { configShared } from '../../../vitest.shared.js';
 
 const testIntegration: AstroIntegration = {
 	name: 'test-integration',
@@ -21,13 +22,12 @@ const testIntegration: AstroIntegration = {
 
 export default defineProject(
 	getViteConfig(
-		{
+		mergeConfig(configShared, {
 			test: {
 				name: '@studiocms/html',
-				environment: 'node',
 				include: ['**/*.test.ts'],
 			},
-		},
+		}),
 		{
 			integrations: [testIntegration],
 		}

@@ -1,4 +1,5 @@
-import { describe, expect, it } from '@effect/vitest';
+import { describe, expect, test } from '@effect/vitest';
+import * as allure from 'allure-js-commons';
 import { Schema } from 'studiocms/effect';
 import {
 	Category,
@@ -14,102 +15,176 @@ import {
 	StatusSchema,
 	Tag,
 } from '../src/effects/WordPressAPI/schema';
+import { parentSuiteName, sharedTags } from './test-utils.js';
 
-describe('WordPress API Schema', () => {
-	describe('OpenClosedSchema', () => {
-		it('should validate open status', () => {
-			const validValues = ['open', 'closed', ''];
+const localSuiteName = 'WordPress API Schema Tests';
 
-			validValues.forEach((value) => {
+describe(parentSuiteName, () => {
+	['open', 'closed', ''].forEach((value) => {
+		test(`OpenClosedSchema should validate value: "${value}"`, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('OpenClosedSchema Tests');
+			await allure.tags(...sharedTags);
+
+			await allure.step(`Validating OpenClosedSchema with value: "${value}"`, async (ctx) => {
 				const result = Schema.decodeUnknownSync(OpenClosedSchema)(value);
+
+				await ctx.parameter('value', value);
+				await ctx.parameter('result', result);
+
 				expect(result).toBe(value);
 			});
 		});
+	});
 
-		it('should reject invalid status values', () => {
-			const invalidValues = ['invalid', 'active', 'inactive', null, undefined];
+	['invalid', 'active', 'inactive', null, undefined].forEach((value) => {
+		test(`OpenClosedSchema should reject invalid value: "${value}"`, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('OpenClosedSchema Tests');
+			await allure.tags(...sharedTags);
 
-			invalidValues.forEach((value) => {
+			await allure.step(
+				`Validating OpenClosedSchema with invalid value: "${value}"`,
+				async (ctx) => {
+					await ctx.parameter('value', String(value));
+
+					expect(() => {
+						Schema.decodeUnknownSync(OpenClosedSchema)(value);
+					}).toThrow();
+				}
+			);
+		});
+	});
+
+	['publish', 'future', 'draft', 'pending', 'private'].forEach((value) => {
+		test(`StatusSchema should validate value: "${value}"`, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('StatusSchema Tests');
+			await allure.tags(...sharedTags);
+
+			await allure.step(`Validating StatusSchema with value: "${value}"`, async (ctx) => {
+				const result = Schema.decodeUnknownSync(StatusSchema)(value);
+
+				await ctx.parameter('value', value);
+				await ctx.parameter('result', result);
+
+				expect(result).toBe(value);
+			});
+		});
+	});
+
+	['invalid', 'active', 'inactive', 'archived', null, undefined].forEach((value) => {
+		test(`StatusSchema should reject invalid value: "${value}"`, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('StatusSchema Tests');
+			await allure.tags(...sharedTags);
+
+			await allure.step(`Validating StatusSchema with invalid value: "${value}"`, async (ctx) => {
+				await ctx.parameter('value', String(value));
+
 				expect(() => {
-					Schema.decodeUnknownSync(OpenClosedSchema)(value);
+					Schema.decodeUnknownSync(StatusSchema)(value);
 				}).toThrow();
 			});
 		});
 	});
 
-	describe('StatusSchema', () => {
-		it('should validate status values', () => {
-			const validStatuses = ['publish', 'future', 'draft', 'pending', 'private'];
+	[
+		'standard',
+		'aside',
+		'chat',
+		'gallery',
+		'link',
+		'image',
+		'quote',
+		'status',
+		'video',
+		'audio',
+		'',
+	].forEach((value) => {
+		test(`PostFormatSchema should validate value: "${value}"`, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('PostFormatSchema Tests');
+			await allure.tags(...sharedTags);
 
-			validStatuses.forEach((status) => {
-				const result = Schema.decodeUnknownSync(StatusSchema)(status);
-				expect(result).toBe(status);
-			});
-		});
+			await allure.step(`Validating PostFormatSchema with value: "${value}"`, async (ctx) => {
+				const result = Schema.decodeUnknownSync(PostFormatSchema)(value);
 
-		it('should reject invalid status values', () => {
-			const invalidStatuses = ['invalid', 'active', 'inactive', 'archived', null, undefined];
+				await ctx.parameter('value', value);
+				await ctx.parameter('result', result);
 
-			invalidStatuses.forEach((status) => {
-				expect(() => {
-					Schema.decodeUnknownSync(StatusSchema)(status);
-				}).toThrow();
-			});
-		});
-	});
-
-	describe('PostFormatSchema', () => {
-		it('should validate post format values', () => {
-			const validFormats = [
-				'standard',
-				'aside',
-				'chat',
-				'gallery',
-				'link',
-				'image',
-				'quote',
-				'status',
-				'video',
-				'audio',
-				'',
-			];
-
-			validFormats.forEach((format) => {
-				const result = Schema.decodeUnknownSync(PostFormatSchema)(format);
-				expect(result).toBe(format);
-			});
-		});
-
-		it('should reject invalid post format values', () => {
-			const invalidFormats = ['invalid', 'custom', 'blog', null, undefined];
-
-			invalidFormats.forEach((format) => {
-				expect(() => {
-					Schema.decodeUnknownSync(PostFormatSchema)(format);
-				}).toThrow();
+				expect(result).toBe(value);
 			});
 		});
 	});
 
-	describe('MetaDataSchema', () => {
-		it('should validate array of metadata', () => {
-			const validMetadata = [
+	['invalid', 'custom', 'blog', null, undefined].forEach((value) => {
+		test(`PostFormatSchema should reject invalid value: "${value}"`, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('PostFormatSchema Tests');
+			await allure.tags(...sharedTags);
+
+			await allure.step(
+				`Validating PostFormatSchema with invalid value: "${value}"`,
+				async (ctx) => {
+					await ctx.parameter('value', String(value));
+
+					expect(() => {
+						Schema.decodeUnknownSync(PostFormatSchema)(value);
+					}).toThrow();
+				}
+			);
+		});
+	});
+
+	[
+		{
+			input: [
 				{ key: 'test', value: 'value' },
 				{ key: 'number', value: 123 },
 				{ key: 'boolean', value: true },
-			];
+			],
+		},
+		{
+			input: [],
+		},
+	].forEach(({ input }) => {
+		test(`MetaDataSchema should validate input: ${JSON.stringify(input)}`, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('MetaDataSchema Tests');
+			await allure.tags(...sharedTags);
 
-			const result = Schema.decodeUnknownSync(MetaDataSchema)(validMetadata);
-			expect(result).toEqual(validMetadata);
+			await allure.step(
+				`Validating MetaDataSchema with input: ${JSON.stringify(input)}`,
+				async (ctx) => {
+					const result = Schema.decodeUnknownSync(MetaDataSchema)(input);
+
+					await ctx.parameter('input', JSON.stringify(input, null, 2));
+					await ctx.parameter('result', JSON.stringify(result, null, 2));
+
+					expect(result).toEqual(input);
+				}
+			);
 		});
+	});
 
-		it('should validate empty metadata array', () => {
-			const result = Schema.decodeUnknownSync(MetaDataSchema)([]);
-			expect(result).toEqual([]);
-		});
+	test('MetaDataSchema should reject invalid inputs', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('MetaDataSchema Tests');
+		await allure.tags(...sharedTags);
 
-		it('should reject invalid metadata structure', () => {
+		await allure.step('Validating MetaDataSchema with invalid inputs', async (ctx) => {
 			const invalidMetadata = [{ invalid: 'structure' }, 'not an object', { key: 'missing value' }];
+
+			await ctx.parameter('invalidInputs', JSON.stringify(invalidMetadata, null, 2));
 
 			invalidMetadata.forEach((metadata) => {
 				expect(() => {
@@ -119,16 +194,34 @@ describe('WordPress API Schema', () => {
 		});
 	});
 
-	describe('RenderedData', () => {
-		it('should validate rendered data structure', () => {
+	test('RenderedData should validate rendered data structure', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('RenderedData Tests');
+		await allure.tags(...sharedTags);
+
+		await allure.step('Validating RenderedData with non-object inputs', async (ctx) => {
 			const validData = { rendered: 'Some HTML content' };
 
 			const result = Schema.decodeUnknownSync(RenderedData)(validData);
+
+			await ctx.parameter('input', JSON.stringify(validData, null, 2));
+			await ctx.parameter('result', JSON.stringify(result, null, 2));
+
 			expect(result).toEqual(validData);
 		});
+	});
 
-		it('should reject data without rendered field', () => {
+	test('RenderedData should reject data without rendered field', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('RenderedData Tests');
+		await allure.tags(...sharedTags);
+
+		await allure.step('Validating RenderedData with invalid inputs', async (ctx) => {
 			const invalidData = { content: 'Some content' };
+
+			await ctx.parameter('input', JSON.stringify(invalidData, null, 2));
 
 			expect(() => {
 				Schema.decodeUnknownSync(RenderedData)(invalidData);
@@ -136,19 +229,37 @@ describe('WordPress API Schema', () => {
 		});
 	});
 
-	describe('RenderedProtectData', () => {
-		it('should validate rendered protected data structure', () => {
+	test('RenderedProtectData should validate rendered protected data structure', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('RenderedProtectData Tests');
+		await allure.tags(...sharedTags);
+
+		await allure.step('Validating RenderedProtectData with valid inputs', async (ctx) => {
 			const validData = {
 				rendered: 'Some HTML content',
 				protected: true,
 			};
 
 			const result = Schema.decodeUnknownSync(RenderedProtectData)(validData);
+
+			await ctx.parameter('input', JSON.stringify(validData, null, 2));
+			await ctx.parameter('result', JSON.stringify(result, null, 2));
+
 			expect(result).toEqual(validData);
 		});
+	});
 
-		it('should reject data without required fields', () => {
+	test('RenderedProtectData should reject data without required fields', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('RenderedProtectData Tests');
+		await allure.tags(...sharedTags);
+
+		await allure.step('Validating RenderedProtectData with invalid inputs', async (ctx) => {
 			const invalidData = { rendered: 'Some content' }; // missing protected field
+
+			await ctx.parameter('input', JSON.stringify(invalidData, null, 2));
 
 			expect(() => {
 				Schema.decodeUnknownSync(RenderedProtectData)(invalidData);
@@ -156,30 +267,53 @@ describe('WordPress API Schema', () => {
 		});
 	});
 
-	describe('NumberArray', () => {
-		it('should validate array of numbers', () => {
-			const validNumbers = [1, 2, 3, 4, 5];
+	[[1, 2, 3, 4, 5], []].forEach((input) => {
+		test(`NumberArray should validate input: ${JSON.stringify(input)}`, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('NumberArray Tests');
+			await allure.tags(...sharedTags);
 
-			const result = Schema.decodeUnknownSync(NumberArray)(validNumbers);
-			expect(result).toEqual(validNumbers);
-		});
+			await allure.step(
+				`Validating NumberArray with input: ${JSON.stringify(input)}`,
+				async (ctx) => {
+					const result = Schema.decodeUnknownSync(NumberArray)(input);
 
-		it('should validate empty number array', () => {
-			const result = Schema.decodeUnknownSync(NumberArray)([]);
-			expect(result).toEqual([]);
-		});
+					await ctx.parameter('input', JSON.stringify(input, null, 2));
+					await ctx.parameter('result', JSON.stringify(result, null, 2));
 
-		it('should reject array with non-numbers', () => {
-			const invalidNumbers = [1, '2', 3, true, 5];
-
-			expect(() => {
-				Schema.decodeUnknownSync(NumberArray)(invalidNumbers);
-			}).toThrow();
+					expect(result).toEqual(input);
+				}
+			);
 		});
 	});
 
-	describe('Page', () => {
-		it('should validate complete page data', () => {
+	test('NumberArray should reject invalid inputs', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('NumberArray Tests');
+		await allure.tags(...sharedTags);
+
+		await allure.step('Validating NumberArray with invalid inputs', async (ctx) => {
+			const invalidArrays = [[1, '2', 3], [true, false], [1, 2, null], 'not an array', 123, {}];
+
+			await ctx.parameter('invalidInputs', JSON.stringify(invalidArrays, null, 2));
+
+			invalidArrays.forEach((input) => {
+				expect(() => {
+					Schema.decodeUnknownSync(NumberArray)(input);
+				}).toThrow();
+			});
+		});
+	});
+
+	test('Page - should validate complete page data', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('Page Schema Tests');
+		await allure.tags(...sharedTags);
+
+		await allure.step('Validating Page with complete data', async (ctx) => {
 			const validPage = {
 				id: 1,
 				date: '2023-01-01T00:00:00',
@@ -203,19 +337,33 @@ describe('WordPress API Schema', () => {
 				meta: [],
 			};
 
+			await ctx.parameter('input', JSON.stringify(validPage, null, 2));
+
 			const result = Schema.decodeUnknownSync(Page)(validPage);
+
+			await ctx.parameter('result', JSON.stringify(result, null, 2));
+
 			// Check that the result is a Page instance with correct data
 			expect(result).toBeInstanceOf(Page);
 			expect(result.id).toBe(1);
 			expect(result.slug).toBe('test-page');
 			expect(result.status).toBe('publish');
 		});
+	});
 
-		it('should reject page data with missing required fields', () => {
+	test('Page - should reject page data with missing required fields', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('Page Schema Tests');
+		await allure.tags(...sharedTags);
+
+		await allure.step('Validating Page with missing required fields', async (ctx) => {
 			const invalidPage = {
 				id: 1,
 				// missing required fields
 			};
+
+			await ctx.parameter('input', JSON.stringify(invalidPage, null, 2));
 
 			expect(() => {
 				Schema.decodeUnknownSync(Page)(invalidPage);
@@ -223,8 +371,13 @@ describe('WordPress API Schema', () => {
 		});
 	});
 
-	describe('Post', () => {
-		it('should validate complete post data', () => {
+	test('Post - should validate complete post data', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('Post Schema Tests');
+		await allure.tags(...sharedTags);
+
+		await allure.step('Validating Post with complete data', async (ctx) => {
 			const validPost = {
 				id: 1,
 				date: '2023-01-01T00:00:00',
@@ -251,14 +404,26 @@ describe('WordPress API Schema', () => {
 				tags: [3, 4],
 			};
 
+			await ctx.parameter('input', JSON.stringify(validPost, null, 2));
+
 			const result = Schema.decodeUnknownSync(Post)(validPost);
+
+			await ctx.parameter('result', JSON.stringify(result, null, 2));
+
 			expect(result).toBeInstanceOf(Post);
 			expect(result.id).toBe(1);
 			expect(result.slug).toBe('test-post');
 			expect(result.format).toBe('standard');
 		});
+	});
 
-		it('should reject post data with invalid format', () => {
+	test('Post - should reject post data with invalid format', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('Post Schema Tests');
+		await allure.tags(...sharedTags);
+
+		await allure.step('Validating Post with invalid format', async (ctx) => {
 			const invalidPost = {
 				id: 1,
 				date: '2023-01-01T00:00:00',
@@ -282,14 +447,21 @@ describe('WordPress API Schema', () => {
 				tags: [3, 4],
 			};
 
+			await ctx.parameter('input', JSON.stringify(invalidPost, null, 2));
+
 			expect(() => {
 				Schema.decodeUnknownSync(Post)(invalidPost);
 			}).toThrow();
 		});
 	});
 
-	describe('Category', () => {
-		it('should validate complete category data', () => {
+	test('Category - should validate complete category data', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('Category Schema Tests');
+		await allure.tags(...sharedTags);
+
+		await allure.step('Validating Category with complete data', async (ctx) => {
 			const validCategory = {
 				id: 1,
 				count: 5,
@@ -302,7 +474,12 @@ describe('WordPress API Schema', () => {
 				meta: [],
 			};
 
+			await ctx.parameter('input', JSON.stringify(validCategory, null, 2));
+
 			const result = Schema.decodeUnknownSync(Category)(validCategory);
+
+			await ctx.parameter('result', JSON.stringify(result, null, 2));
+
 			expect(result).toBeInstanceOf(Category);
 			expect(result.id).toBe(1);
 			expect(result.name).toBe('Test Category');
@@ -310,8 +487,13 @@ describe('WordPress API Schema', () => {
 		});
 	});
 
-	describe('Tag', () => {
-		it('should validate complete tag data', () => {
+	test('Tag - should validate complete tag data', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('Tag Schema Tests');
+		await allure.tags(...sharedTags);
+
+		await allure.step('Validating Tag with complete data', async (ctx) => {
 			const validTag = {
 				id: 1,
 				count: 3,
@@ -323,7 +505,12 @@ describe('WordPress API Schema', () => {
 				meta: [],
 			};
 
+			await ctx.parameter('input', JSON.stringify(validTag, null, 2));
+
 			const result = Schema.decodeUnknownSync(Tag)(validTag);
+
+			await ctx.parameter('result', JSON.stringify(result, null, 2));
+
 			expect(result).toBeInstanceOf(Tag);
 			expect(result.id).toBe(1);
 			expect(result.name).toBe('Test Tag');
@@ -331,8 +518,13 @@ describe('WordPress API Schema', () => {
 		});
 	});
 
-	describe('SiteSettings', () => {
-		it('should validate complete settings data', () => {
+	test('SiteSettings - should validate complete site settings data', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('SiteSettings Schema Tests');
+		await allure.tags(...sharedTags);
+
+		await allure.step('Validating SiteSettings with complete data', async (ctx) => {
 			const validSettings = {
 				name: 'Test Site',
 				description: 'A test WordPress site',
@@ -345,7 +537,12 @@ describe('WordPress API Schema', () => {
 				site_icon_url: 'http://example.com/icon.png',
 			};
 
+			await ctx.parameter('input', JSON.stringify(validSettings, null, 2));
+
 			const result = Schema.decodeUnknownSync(SiteSettings)(validSettings);
+
+			await ctx.parameter('result', JSON.stringify(result, null, 2));
+
 			expect(result).toBeInstanceOf(SiteSettings);
 			expect(result.name).toBe('Test Site');
 			expect(result.description).toBe('A test WordPress site');

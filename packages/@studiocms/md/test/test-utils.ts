@@ -1,6 +1,9 @@
 import { symbol as mdSymbol } from '../src/lib/shared.js';
 import type { AstroMarkdownOptions, StudioCMSMarkdownOptions } from '../src/types.js';
 
+export const parentSuiteName = '@studiocms/md Package Tests';
+export const sharedTags = ['package:@studiocms/md', 'type:unit', 'scope:studiocms'];
+
 /**
  * Mock StudioCMS Markdown schema options for testing
  */
