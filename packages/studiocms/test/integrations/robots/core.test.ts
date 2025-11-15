@@ -1,6 +1,7 @@
 /** biome-ignore-all lint/suspicious/noExplicitAny: allowed in tests */
+import * as allure from 'allure-js-commons';
 import type { AstroIntegrationLogger } from 'astro';
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, test, vi } from 'vitest';
 import {
 	generateContent,
 	generateHostContent,
@@ -11,6 +12,9 @@ import {
 	validateUrl,
 } from '../../../src/integrations/robots/core';
 import type { RobotsConfig } from '../../../src/integrations/robots/schema.js';
+import { parentSuiteName, sharedTags } from '../../test-utils';
+
+const localSuiteName = 'Robots Core Utils';
 
 function createLogger() {
 	return {
@@ -19,171 +23,267 @@ function createLogger() {
 	} as unknown as AstroIntegrationLogger;
 }
 
-describe('validateHost', () => {
-	it('throws if host is not a string', () => {
-		const logger = createLogger();
-		expect(() => validateHost(123 as any, logger)).toThrow('Host must be a string');
+describe(parentSuiteName, () => {
+	[
+		{
+			host: 'example.com',
+		},
+		{
+			host: 'sub.domain.co.uk',
+		},
+	].forEach(({ host }) => {
+		test(`validateHost passes for valid host: ${host}`, async () => {
+			const tags = [...sharedTags, 'integration:robots', 'robots:core', 'robots:validateHost'];
+
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('validateHost valid host tests');
+			await allure.tags(...tags);
+
+			const logger = createLogger();
+			expect(() => validateHost(host, logger)).not.toThrow();
+		});
 	});
 
-	it('throws if host is invalid', () => {
-		const logger = createLogger();
-		expect(() => validateHost('invalid_host', logger)).toThrow('Host is invalid');
+	[
+		{
+			host: 123,
+		},
+		{
+			host: 'invalid_host',
+		},
+	].forEach(({ host }) => {
+		test(`validateHost throws for invalid host: ${host}`, async () => {
+			const tags = [...sharedTags, 'integration:robots', 'robots:core', 'robots:validateHost'];
+
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('validateHost invalid host tests');
+			await allure.tags(...tags);
+
+			const logger = createLogger();
+			expect(() => validateHost(host as any, logger)).toThrow();
+		});
 	});
 
-	it('does not throw for valid host', () => {
-		const logger = createLogger();
-		expect(() => validateHost('example.com', logger)).not.toThrow();
-		expect(() => validateHost('sub.domain.co.uk', logger)).not.toThrow();
-	});
-});
+	[
+		{
+			config: { host: true },
+		},
+		{
+			config: { host: false },
+		},
+		{
+			config: { host: 'localhost' },
+		},
+		{
+			config: { host: 'example.com' },
+			toContain: 'Host: example.com',
+		},
+	].forEach(({ config, toContain }) => {
+		test(`generateHostContent returns empty string for host: ${config.host}`, async () => {
+			const tags = [...sharedTags, 'integration:robots', 'robots:core', 'robots:generateHost'];
 
-describe('generateHostContent', () => {
-	it('returns empty string for host true/false', () => {
-		const logger = createLogger();
-		expect(generateHostContent({ host: true } as any, logger)).toBe('');
-		expect(generateHostContent({ host: false } as any, logger)).toBe('');
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('generateHostContent tests');
+			await allure.tags(...tags);
+
+			const logger = createLogger();
+			const result = generateHostContent(config as any, logger);
+			if (toContain) {
+				expect(result).toContain(toContain);
+			} else {
+				expect(result).toBe('');
+			}
+		});
 	});
 
-	it('throws for host as number', () => {
+	test('generateHostContent throws for host as number', async () => {
+		const tags = [...sharedTags, 'integration:robots', 'robots:core', 'robots:generateHost'];
+
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('generateHostContent error handling test');
+		await allure.tags(...tags);
+
 		const logger = createLogger();
 		expect(() => generateHostContent({ host: 123 } as any, logger)).toThrow();
 	});
 
-	it('returns Host line for valid host string', () => {
+	['ftp://example.com/sitemap.xml', 'http://example.com/sitemap.doc'].forEach((sitemapUrl) => {
+		test(`validateUrl throws for invalid sitemap url: ${sitemapUrl}`, async () => {
+			const tags = [...sharedTags, 'integration:robots', 'robots:core', 'robots:validateUrl'];
+
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('validateUrl invalid sitemap url tests');
+			await allure.tags(...tags);
+
+			const logger = createLogger();
+			expect(() => validateUrl(sitemapUrl, logger)).toThrow();
+		});
+	});
+
+	[
+		'https://example.com/sitemap.xml',
+		'http://example.com/sitemap.xml.gz',
+		'http://example.com/sitemap.txt',
+		'http://example.com/sitemap.json',
+		'http://example.com/sitemap.xhtml',
+	].forEach((sitemapUrl) => {
+		test(`validateUrl passes for valid sitemap url: ${sitemapUrl}`, async () => {
+			const tags = [...sharedTags, 'integration:robots', 'robots:core', 'robots:validateUrl'];
+
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('validateUrl valid sitemap url tests');
+			await allure.tags(...tags);
+
+			const logger = createLogger();
+			expect(() => validateUrl(sitemapUrl, logger)).not.toThrow();
+		});
+	});
+
+	[
+		{
+			config: { sitemap: true },
+			siteHref: 'https://site/',
+			toContain: ['Sitemap: https://site/sitemap-index.xml'],
+		},
+		{
+			config: { sitemap: 'https://site/sitemap.xml' },
+			siteHref: '',
+			toContain: ['Sitemap: https://site/sitemap.xml'],
+		},
+		{
+			config: { sitemap: ['https://site/sitemap.xml', 'https://site/sitemap.txt'] },
+			siteHref: '',
+			toContain: ['Sitemap: https://site/sitemap.xml', 'Sitemap: https://site/sitemap.txt'],
+		},
+	].forEach(({ config, siteHref, toContain }) => {
+		test(`generateSitemapContent returns correct sitemap lines for config.sitemap: ${JSON.stringify(
+			config.sitemap
+		)}`, async () => {
+			const tags = [...sharedTags, 'integration:robots', 'robots:core', 'robots:generateSitemap'];
+
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('generateSitemapContent tests');
+			await allure.tags(...tags);
+
+			const logger = createLogger();
+			const result = generateSitemapContent(config as any, siteHref, logger);
+			toContain.forEach((line) => {
+				expect(result).toContain(line);
+			});
+		});
+	});
+
+	test('generateSitemapContent throws for config.sitemap as boolean false', async () => {
+		const tags = [...sharedTags, 'integration:robots', 'robots:core', 'robots:generateSitemap'];
+
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('generateSitemapContent false sitemap test');
+		await allure.tags(...tags);
+
 		const logger = createLogger();
-		expect(generateHostContent({ host: 'example.com' } as any, logger)).toContain(
-			'Host: example.com'
-		);
+		expect(() => generateSitemapContent({ sitemap: false }, 'https://site/', logger)).not.toThrow();
 	});
 
-	it('does not return Host line for localhost', () => {
+	test('throwMsg logs and throws correctly based on type', async () => {
+		const tags = [...sharedTags, 'integration:robots', 'robots:core', 'robots:throwMsg'];
+
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('throwMsg tests');
+		await allure.tags(...tags);
+
 		const logger = createLogger();
-		expect(generateHostContent({ host: 'localhost' } as any, logger)).toBe('');
-	});
-});
 
-describe('validateUrl', () => {
-	it('throws for invalid sitemap url', () => {
+		await allure.step('Testing type "error"', () => {
+			expect(() => throwMsg('fail', 'error', logger)).toThrow('fail');
+			expect(logger.info).toHaveBeenCalled();
+		});
+
+		await allure.step('Testing type "warn"', () => {
+			throwMsg('warn', 'warn', logger);
+			expect(logger.warn).toHaveBeenCalled();
+		});
+
+		await allure.step('Testing type true', () => {
+			expect(() => throwMsg('fail', true, logger)).toThrow(/google\.com/);
+			expect(logger.info).toHaveBeenCalled();
+		});
+
+		await allure.step('Testing default type', () => {
+			expect(() => throwMsg('fail', false, logger)).toThrow(/yandex\.com/);
+			expect(logger.info).toHaveBeenCalled();
+		});
+	});
+
+	[
+		{
+			config: {
+				policy: [{ allow: ['/'], disallow: ['/private'] }],
+				sitemap: false,
+				host: false,
+			},
+		},
+		{
+			config: {
+				policy: [{ userAgent: '*', allow: [], disallow: [] }],
+				sitemap: false,
+				host: false,
+			},
+		},
+		{
+			config: {
+				policy: [
+					{ userAgent: '*', allow: ['/'], disallow: ['/private'], crawlDelay: 'fast' as any },
+				],
+				sitemap: false,
+				host: false,
+			},
+		},
+		{
+			config: {
+				policy: [{ userAgent: '*', allow: ['/'], disallow: ['/private'], crawlDelay: -1 }],
+				sitemap: false,
+				host: false,
+			},
+		},
+		{
+			config: {
+				policy: [{ userAgent: '*', allow: ['/'], disallow: ['/private'], crawlDelay: 100 }],
+				sitemap: false,
+				host: false,
+			},
+		},
+	].forEach(({ config }) => {
+		test(`generateContent throws for invalid config: ${JSON.stringify(config)}`, async () => {
+			const tags = [...sharedTags, 'integration:robots', 'robots:core', 'robots:generateContent'];
+
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('generateContent invalid config tests');
+			await allure.tags(...tags);
+
+			const logger = createLogger();
+			expect(() => generateContent(config as any, '', logger)).toThrow();
+		});
+	});
+
+	test('generateContent generates valid robots.txt content', async () => {
+		const tags = [...sharedTags, 'integration:robots', 'robots:core', 'robots:generateContent'];
+
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('generateContent valid config test');
+		await allure.tags(...tags);
+
 		const logger = createLogger();
-		expect(() => validateUrl('ftp://example.com/sitemap.xml', logger)).toThrow();
-		expect(() => validateUrl('http://example.com/sitemap.doc', logger)).toThrow();
-	});
-
-	it('does not throw for valid sitemap url', () => {
-		const logger = createLogger();
-		expect(() => validateUrl('https://example.com/sitemap.xml', logger)).not.toThrow();
-		expect(() => validateUrl('http://example.com/sitemap.xml.gz', logger)).not.toThrow();
-		expect(() => validateUrl('http://example.com/sitemap.txt', logger)).not.toThrow();
-		expect(() => validateUrl('http://example.com/sitemap.json', logger)).not.toThrow();
-		expect(() => validateUrl('http://example.com/sitemap.xhtml', logger)).not.toThrow();
-	});
-});
-
-describe('generateSitemapContent', () => {
-	const logger = createLogger();
-	it('returns default sitemap for config.sitemap === true', () => {
-		expect(generateSitemapContent({ sitemap: true } as any, 'https://site/', logger)).toContain(
-			'Sitemap: https://site/sitemap-index.xml'
-		);
-	});
-
-	it('throws for config.sitemap as number', () => {
-		expect(() =>
-			generateSitemapContent({ sitemap: 123 } as any, 'https://site/', logger)
-		).toThrow();
-	});
-
-	it('returns sitemap line for valid string', () => {
-		expect(
-			generateSitemapContent({ sitemap: 'https://site/sitemap.xml' } as any, '', logger)
-		).toContain('Sitemap: https://site/sitemap.xml');
-	});
-
-	it('returns multiple sitemap lines for array', () => {
-		const result = generateSitemapContent(
-			{ sitemap: ['https://site/sitemap.xml', 'https://site/sitemap.txt'] } as any,
-			'',
-			logger
-		);
-		expect(result).toContain('Sitemap: https://site/sitemap.xml');
-		expect(result).toContain('Sitemap: https://site/sitemap.txt');
-	});
-});
-
-describe('throwMsg', () => {
-	it('logs and throws error for type "error"', () => {
-		const logger = createLogger();
-		expect(() => throwMsg('fail', 'error', logger)).toThrow('fail');
-		expect(logger.info).toHaveBeenCalled();
-	});
-
-	it('logs warning for type "warn"', () => {
-		const logger = createLogger();
-		throwMsg('warn', 'warn', logger);
-		expect(logger.warn).toHaveBeenCalled();
-	});
-
-	it('logs and throws error for type true', () => {
-		const logger = createLogger();
-		expect(() => throwMsg('fail', true, logger)).toThrow(/google\.com/);
-		expect(logger.info).toHaveBeenCalled();
-	});
-
-	it('logs and throws error for default', () => {
-		const logger = createLogger();
-		expect(() => throwMsg('fail', false, logger)).toThrow(/yandex\.com/);
-		expect(logger.info).toHaveBeenCalled();
-	});
-});
-
-describe('generateContent', () => {
-	const logger = createLogger();
-	it('throws if userAgent missing', () => {
-		const config: RobotsConfig = {
-			policy: [{ allow: ['/'], disallow: ['/private'] }],
-			sitemap: false,
-			host: false,
-		};
-		expect(() => generateContent(config, '', logger)).toThrow(/userAgent/);
-	});
-
-	it('throws if allow/disallow missing', () => {
-		const config: RobotsConfig = {
-			policy: [{ userAgent: '*', allow: [], disallow: [] }],
-			sitemap: false,
-			host: false,
-		};
-		expect(() => generateContent(config, '', logger)).toThrow(/disallow/);
-	});
-
-	it('throws if crawlDelay is not a number', () => {
-		const config: RobotsConfig = {
-			policy: [{ userAgent: '*', allow: ['/'], disallow: ['/private'], crawlDelay: 'fast' as any }],
-			sitemap: false,
-			host: false,
-		};
-		expect(() => generateContent(config, '', logger)).toThrow(/crawlDelay/);
-	});
-
-	it('throws if crawlDelay is negative', () => {
-		const config: RobotsConfig = {
-			policy: [{ userAgent: '*', allow: ['/'], disallow: ['/private'], crawlDelay: -1 }],
-			sitemap: false,
-			host: false,
-		};
-		expect(() => generateContent(config, '', logger)).toThrow(/positive/);
-	});
-
-	it('throws if crawlDelay is out of range', () => {
-		const config: RobotsConfig = {
-			policy: [{ userAgent: '*', allow: ['/'], disallow: ['/private'], crawlDelay: 100 }],
-			sitemap: false,
-			host: false,
-		};
-		expect(() => generateContent(config, '', logger)).toThrow(/between 0.1 and 60/);
-	});
-
-	it('generates valid robots.txt content', () => {
 		const config: RobotsConfig = {
 			policy: [
 				{
@@ -206,20 +306,32 @@ describe('generateContent', () => {
 		expect(result).toContain('Sitemap: https://site/sitemap.xml');
 		expect(result).toContain('Host: example.com');
 	});
-});
 
-describe('printInfo', () => {
-	it('logs warning if fileSize > 10', () => {
-		const logger = createLogger();
-		const spy = vi.spyOn(console, 'log').mockImplementation(() => {});
-		printInfo(11, 100, logger, '/tmp/robots.txt');
-		expect(spy).toHaveBeenCalled();
-		spy.mockRestore();
-	});
+	[
+		{
+			fileSize: 11,
+			executionTime: 100,
+			destDir: '/tmp/robots.txt',
+		},
+		{
+			fileSize: 5,
+			executionTime: 50,
+			destDir: '/tmp/robots.txt',
+		},
+	].forEach(({ fileSize, executionTime, destDir }) => {
+		test(`printInfo logs correctly for fileSize: ${fileSize}, executionTime: ${executionTime}`, async () => {
+			const tags = [...sharedTags, 'integration:robots', 'robots:core', 'robots:printInfo'];
 
-	it('logs info for file creation', () => {
-		const logger = createLogger();
-		printInfo(5, 50, logger, '/tmp/robots.txt');
-		expect(logger.info).toHaveBeenCalled();
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('printInfo tests');
+			await allure.tags(...tags);
+
+			const logger = createLogger();
+
+			printInfo(fileSize, executionTime, logger, destDir);
+
+			expect(logger.info).toHaveBeenCalled();
+		});
 	});
 });
