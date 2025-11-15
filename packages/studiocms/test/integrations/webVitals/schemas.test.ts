@@ -1,5 +1,4 @@
-import * as allure from 'allure-js-commons';
-import { describe, expect, test } from 'vitest';
+import { describe, expect } from 'vitest';
 import {
 	CoreWebVitalsMetricTypeSchema,
 	MetricSummaryRowSchema,
@@ -7,11 +6,17 @@ import {
 	WebVitalsMetricTypeSchema,
 	WebVitalsRatingSchema,
 } from '../../../src/integrations/webVitals/schemas';
+import { allureTester } from '../../fixtures/allureTester';
 import { parentSuiteName, sharedTags } from '../../test-utils';
 
 const localSuiteName = 'Web Vitals Schemas tests';
 
 describe(parentSuiteName, () => {
+	const test = allureTester({
+		suiteName: localSuiteName,
+		suiteParentName: parentSuiteName,
+	});
+
 	[
 		{
 			data: 'good',
@@ -29,30 +34,32 @@ describe(parentSuiteName, () => {
 		const testName = `WebVitalsRatingSchema valid case #${index + 1}`;
 		const tags = [...sharedTags, 'integration:webVitals', 'webVitals:schemas'];
 
-		test(testName, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('WebVitalsRatingSchema valid cases');
-			await allure.tags(...tags);
-
-			await allure.parameter('data', data);
+		test(testName, async ({ setupAllure }) => {
+			await setupAllure({
+				subSuiteName: 'WebVitalsRatingSchema valid cases',
+				tags,
+				parameters: {
+					data,
+				},
+			});
 
 			const result = WebVitalsRatingSchema.parse(data);
 			expect(result).toEqual(expected);
 		});
 	});
 
-	test('WebVitalsRatingSchema should throw on invalid rating', async () => {
+	test('WebVitalsRatingSchema should throw on invalid rating', async ({ setupAllure }) => {
 		const tags = [...sharedTags, 'integration:webVitals', 'webVitals:schemas'];
 
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('WebVitalsRatingSchema invalid case');
-		await allure.tags(...tags);
+		await setupAllure({
+			subSuiteName: 'WebVitalsRatingSchema invalid case',
+			tags,
+			parameters: {
+				data: 'excellent',
+			},
+		});
 
 		const data = 'excellent';
-
-		await allure.parameter('data', data);
 
 		expect(() => WebVitalsRatingSchema.parse(data)).toThrow();
 	});
@@ -74,30 +81,34 @@ describe(parentSuiteName, () => {
 		const testName = `CoreWebVitalsMetricTypeSchema valid case #${index + 1}`;
 		const tags = [...sharedTags, 'integration:webVitals', 'webVitals:schemas'];
 
-		test(testName, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('CoreWebVitalsMetricTypeSchema valid cases');
-			await allure.tags(...tags);
-
-			await allure.parameter('data', data);
+		test(testName, async ({ setupAllure }) => {
+			await setupAllure({
+				subSuiteName: 'CoreWebVitalsMetricTypeSchema valid cases',
+				tags,
+				parameters: {
+					data,
+				},
+			});
 
 			const result = CoreWebVitalsMetricTypeSchema.parse(data);
 			expect(result).toEqual(expected);
 		});
 	});
 
-	test('CoreWebVitalsMetricTypeSchema should throw on invalid core metric', async () => {
+	test('CoreWebVitalsMetricTypeSchema should throw on invalid core metric', async ({
+		setupAllure,
+	}) => {
 		const tags = [...sharedTags, 'integration:webVitals', 'webVitals:schemas'];
 
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('CoreWebVitalsMetricTypeSchema invalid case');
-		await allure.tags(...tags);
+		await setupAllure({
+			subSuiteName: 'CoreWebVitalsMetricTypeSchema invalid case',
+			tags,
+			parameters: {
+				data: 'FCP',
+			},
+		});
 
 		const data = 'FCP';
-
-		await allure.parameter('data', data);
 
 		expect(() => CoreWebVitalsMetricTypeSchema.parse(data)).toThrow();
 	});
@@ -131,43 +142,48 @@ describe(parentSuiteName, () => {
 		const testName = `WebVitalsMetricTypeSchema valid case #${index + 1}`;
 		const tags = [...sharedTags, 'integration:webVitals', 'webVitals:schemas'];
 
-		test(testName, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('WebVitalsMetricTypeSchema valid cases');
-			await allure.tags(...tags);
-
-			await allure.parameter('data', data);
+		test(testName, async ({ setupAllure }) => {
+			await setupAllure({
+				subSuiteName: 'WebVitalsMetricTypeSchema valid cases',
+				tags,
+				parameters: {
+					data,
+				},
+			});
 
 			const result = WebVitalsMetricTypeSchema.parse(data);
 			expect(result).toEqual(expected);
 		});
 	});
 
-	test('WebVitalsMetricTypeSchema should throw on invalid metric type', async () => {
+	test('WebVitalsMetricTypeSchema should throw on invalid metric type', async ({ setupAllure }) => {
 		const tags = [...sharedTags, 'integration:webVitals', 'webVitals:schemas'];
 
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('WebVitalsMetricTypeSchema invalid case');
-		await allure.tags(...tags);
+		await setupAllure({
+			subSuiteName: 'WebVitalsMetricTypeSchema invalid case',
+			tags,
+			parameters: {
+				data: 'XYZ',
+			},
+		});
 
 		const data = 'XYZ';
-
-		await allure.parameter('data', data);
 
 		expect(() => WebVitalsMetricTypeSchema.parse(data)).toThrow();
 	});
 
-	test('RouteSummaryRowSchema should parse a valid route summary row', async () => {
+	test('RouteSummaryRowSchema should parse a valid route summary row', async ({ setupAllure }) => {
 		const tags = [...sharedTags, 'integration:webVitals', 'webVitals:schemas'];
-
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('RouteSummaryRowSchema valid case');
-		await allure.tags(...tags);
-
 		const row = ['/home', 'CLS', 'good', 0.12, 100] as const;
+
+		await setupAllure({
+			subSuiteName: 'RouteSummaryRowSchema valid case',
+			tags,
+			parameters: {
+				data: JSON.stringify(row),
+			},
+		});
+
 		expect(RouteSummaryRowSchema.parse(row)).toEqual(row);
 	});
 
@@ -182,13 +198,14 @@ describe(parentSuiteName, () => {
 		const testName = `RouteSummaryRowSchema invalid case #${index + 1}`;
 		const tags = [...sharedTags, 'integration:webVitals', 'webVitals:schemas'];
 
-		test(testName, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('RouteSummaryRowSchema invalid cases');
-			await allure.tags(...tags);
-
-			await allure.parameter('data', JSON.stringify(data));
+		test(testName, async ({ setupAllure }) => {
+			await setupAllure({
+				subSuiteName: 'RouteSummaryRowSchema invalid cases',
+				tags,
+				parameters: {
+					data: JSON.stringify(data),
+				},
+			});
 
 			expect(() => RouteSummaryRowSchema.parse(data)).toThrow();
 		});
@@ -207,13 +224,14 @@ describe(parentSuiteName, () => {
 		const testName = `MetricSummaryRowSchema valid case #${index + 1}`;
 		const tags = [...sharedTags, 'integration:webVitals', 'webVitals:schemas'];
 
-		test(testName, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('MetricSummaryRowSchema valid cases');
-			await allure.tags(...tags);
-
-			await allure.parameter('data', JSON.stringify(data));
+		test(testName, async ({ setupAllure }) => {
+			await setupAllure({
+				subSuiteName: 'MetricSummaryRowSchema valid cases',
+				tags,
+				parameters: {
+					data: JSON.stringify(data),
+				},
+			});
 
 			const result = MetricSummaryRowSchema.parse(data);
 			expect(result).toEqual(expected);
@@ -231,13 +249,14 @@ describe(parentSuiteName, () => {
 		const testName = `MetricSummaryRowSchema invalid case #${index + 1}`;
 		const tags = [...sharedTags, 'integration:webVitals', 'webVitals:schemas'];
 
-		test(testName, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('MetricSummaryRowSchema invalid cases');
-			await allure.tags(...tags);
-
-			await allure.parameter('data', JSON.stringify(data));
+		test(testName, async ({ setupAllure }) => {
+			await setupAllure({
+				subSuiteName: 'MetricSummaryRowSchema invalid cases',
+				tags,
+				parameters: {
+					data: JSON.stringify(data),
+				},
+			});
 
 			expect(() => MetricSummaryRowSchema.parse(data)).toThrow();
 		});

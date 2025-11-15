@@ -1,6 +1,6 @@
-import * as allure from 'allure-js-commons';
-import { describe, expect, test } from 'vitest';
+import { describe, expect } from 'vitest';
 import { checkDate } from '../../../../src/integrations/webVitals/utils/checkDate';
+import { allureTester } from '../../../fixtures/allureTester';
 import { parentSuiteName, sharedTags } from '../../../test-utils';
 
 const localSuiteName = 'Web Vitals Utils - checkDate';
@@ -8,6 +8,10 @@ const localSuiteName = 'Web Vitals Utils - checkDate';
 describe(parentSuiteName, () => {
 	const now = new Date();
 	const future = new Date(now.getTime() + 1 * 24 * 60 * 60 * 1000); // 1 day in future
+	const test = allureTester({
+		suiteName: localSuiteName,
+		suiteParentName: parentSuiteName,
+	});
 
 	[
 		{
@@ -44,16 +48,18 @@ describe(parentSuiteName, () => {
 		const testName = `checkDate test case #${index + 1} for method ${method}`;
 		const tags = [...sharedTags, 'integration:webVitals', 'webVitals:utils', 'webVitals:checkDate'];
 
-		test(testName, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('checkDate detailed tests');
-			await allure.tags(...tags);
-
+		test(testName, async ({ setupAllure }) => {
 			const date = new Date(now.getTime() - calc);
-			await allure.parameter('date', date.toISOString());
-			await allure.parameter('method', method);
-			await allure.parameter('expected', String(expected));
+
+			await setupAllure({
+				subSuiteName: 'checkDate detailed tests',
+				tags,
+				parameters: {
+					date: date.toISOString(),
+					method,
+					expected: String(expected),
+				},
+			});
 
 			const result = checkDate(date)[method as keyof ReturnType<typeof checkDate>];
 			expect(result()).toBe(expected);
@@ -74,15 +80,16 @@ describe(parentSuiteName, () => {
 		const testName = `checkDate future date test case #${index + 1} for method ${method}`;
 		const tags = [...sharedTags, 'integration:webVitals', 'webVitals:utils', 'webVitals:checkDate'];
 
-		test(testName, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('checkDate future date tests');
-			await allure.tags(...tags);
-
-			await allure.parameter('date', future.toISOString());
-			await allure.parameter('method', method);
-			await allure.parameter('expected', 'false');
+		test(testName, async ({ setupAllure }) => {
+			await setupAllure({
+				subSuiteName: 'checkDate future date tests',
+				tags,
+				parameters: {
+					date: future.toISOString(),
+					method,
+					expected: 'false',
+				},
+			});
 
 			const result = checkDate(future)[method as keyof ReturnType<typeof checkDate>];
 			expect(result()).toBe(false);
@@ -103,15 +110,16 @@ describe(parentSuiteName, () => {
 		const testName = `checkDate current date test case #${index + 1} for method ${method}`;
 		const tags = [...sharedTags, 'integration:webVitals', 'webVitals:utils', 'webVitals:checkDate'];
 
-		test(testName, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('checkDate current date tests');
-			await allure.tags(...tags);
-
-			await allure.parameter('date', now.toISOString());
-			await allure.parameter('method', method);
-			await allure.parameter('expected', 'true');
+		test(testName, async ({ setupAllure }) => {
+			await setupAllure({
+				subSuiteName: 'checkDate current date tests',
+				tags,
+				parameters: {
+					date: now.toISOString(),
+					method,
+					expected: 'true',
+				},
+			});
 
 			const result = checkDate(now)[method as keyof ReturnType<typeof checkDate>];
 			expect(result()).toBe(true);

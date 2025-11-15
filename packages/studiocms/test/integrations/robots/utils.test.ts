@@ -1,16 +1,20 @@
 import fs from 'node:fs';
-import * as allure from 'allure-js-commons';
-import { afterEach, beforeEach, describe, expect, type Mock, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, type Mock, vi } from 'vitest';
 import {
 	getFileSizeInKilobytes,
 	measureExecutionTime,
 } from '../../../src/integrations/robots/utils';
+import { allureTester } from '../../fixtures/allureTester';
 import { parentSuiteName, sharedTags } from '../../test-utils';
 
 const localSuiteName = 'Robots Utils';
 
 describe(parentSuiteName, () => {
 	const mockStats = { size: 2048 }; // 2 KB
+	const test = allureTester({
+		suiteName: localSuiteName,
+		suiteParentName: parentSuiteName,
+	});
 
 	beforeEach(() => {
 		vi.spyOn(fs, 'statSync').mockImplementation(() => mockStats as fs.Stats);
@@ -20,26 +24,26 @@ describe(parentSuiteName, () => {
 		vi.restoreAllMocks();
 	});
 
-	test('getFileSizeInKilobytes returns correct size', async () => {
+	test('getFileSizeInKilobytes returns correct size', async ({ setupAllure }) => {
 		const tags = [...sharedTags, 'integration:robots', 'robots:utils'];
 
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('getFileSizeInKilobytes test');
-		await allure.tags(...tags);
+		await setupAllure({
+			subSuiteName: 'getFileSizeInKilobytes test',
+			tags: [...tags],
+		});
 
 		const fileUrl = new URL('file:///tmp/test.txt');
 		const size = getFileSizeInKilobytes(fileUrl);
 		expect(size).toBe(2);
 	});
 
-	test('getFileSizeInKilobytes returns fractional for non-exact sizes', async () => {
+	test('getFileSizeInKilobytes returns fractional for non-exact sizes', async ({ setupAllure }) => {
 		const tags = [...sharedTags, 'integration:robots', 'robots:utils'];
 
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('getFileSizeInKilobytes fractional size test');
-		await allure.tags(...tags);
+		await setupAllure({
+			subSuiteName: 'getFileSizeInKilobytes fractional size test',
+			tags: [...tags],
+		});
 
 		(fs.statSync as unknown as Mock).mockReturnValueOnce({ size: 1500 });
 		const fileUrl = new URL('file:///tmp/test.txt');
@@ -47,13 +51,13 @@ describe(parentSuiteName, () => {
 		expect(size).toBeCloseTo(1500 / 1024, 5);
 	});
 
-	test('getFileSizeInKilobytes throws if statSync fails', async () => {
+	test('getFileSizeInKilobytes throws if statSync fails', async ({ setupAllure }) => {
 		const tags = [...sharedTags, 'integration:robots', 'robots:utils'];
 
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('getFileSizeInKilobytes error handling test');
-		await allure.tags(...tags);
+		await setupAllure({
+			subSuiteName: 'getFileSizeInKilobytes error handling test',
+			tags: [...tags],
+		});
 
 		(fs.statSync as unknown as Mock).mockImplementationOnce(() => {
 			throw new Error('File not found');
@@ -91,11 +95,11 @@ describe(parentSuiteName, () => {
 		const testName = `measureExecutionTime test case #${index + 1}`;
 		const tags = [...sharedTags, 'integration:robots', 'robots:utils'];
 
-		test(testName, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('measureExecutionTime test cases');
-			await allure.tags(...tags);
+		test(testName, async ({ setupAllure }) => {
+			await setupAllure({
+				subSuiteName: 'measureExecutionTime test cases',
+				tags: [...tags],
+			});
 
 			const time = measureExecutionTime(callback);
 			expect(typeof time).toBe('number');

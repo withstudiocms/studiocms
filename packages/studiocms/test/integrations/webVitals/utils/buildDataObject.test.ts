@@ -1,8 +1,8 @@
-import * as allure from 'allure-js-commons';
-import { beforeEach, describe, expect, type Mock, test, vi } from 'vitest';
+import { beforeEach, describe, expect, type Mock, vi } from 'vitest';
 import type { WebVitalsResponseItem } from '../../../../src/integrations/webVitals/types';
 import { buildDataObject } from '../../../../src/integrations/webVitals/utils/buildDataObject';
 import { checkDate } from '../../../../src/integrations/webVitals/utils/checkDate';
+import { allureTester } from '../../../fixtures/allureTester';
 import { parentSuiteName, sharedTags } from '../../../test-utils';
 
 const localSuiteName = 'Web Vitals Utils - buildDataObject';
@@ -24,6 +24,10 @@ const mockCheckDate = (opts: {
 
 describe(parentSuiteName, () => {
 	const collect = 'LCP';
+	const test = allureTester({
+		suiteName: localSuiteName,
+		suiteParentName: parentSuiteName,
+	});
 
 	const baseItem = (overrides: Partial<WebVitalsResponseItem>): WebVitalsResponseItem => ({
 		name: collect,
@@ -37,7 +41,9 @@ describe(parentSuiteName, () => {
 		vi.clearAllMocks();
 	});
 
-	test('buildDataObject should return empty arrays when input is empty', async () => {
+	test('buildDataObject should return empty arrays when input is empty', async ({
+		setupAllure,
+	}) => {
 		const tags = [
 			...sharedTags,
 			'integration:webVitals',
@@ -45,10 +51,10 @@ describe(parentSuiteName, () => {
 			'webVitals:buildDataObject',
 		];
 
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('buildDataObject empty input test');
-		await allure.tags(...tags);
+		await setupAllure({
+			subSuiteName: 'buildDataObject empty input test',
+			tags,
+		});
 
 		const result = buildDataObject([], collect);
 		expect(result).toEqual({
@@ -59,7 +65,9 @@ describe(parentSuiteName, () => {
 		});
 	});
 
-	test('buildDataObject should add items to historicalData if name matches collect', async () => {
+	test('buildDataObject should add items to historicalData if name matches collect', async ({
+		setupAllure,
+	}) => {
 		const tags = [
 			...sharedTags,
 			'integration:webVitals',
@@ -67,10 +75,10 @@ describe(parentSuiteName, () => {
 			'webVitals:buildDataObject',
 		];
 
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('buildDataObject historicalData test');
-		await allure.tags(...tags);
+		await setupAllure({
+			subSuiteName: 'buildDataObject historicalData test',
+			tags,
+		});
 
 		(checkDate as unknown as Mock).mockImplementation(() => mockCheckDate({}));
 		const items: WebVitalsResponseItem[] = [baseItem({ name: collect }), baseItem({ name: 'FID' })];
@@ -79,7 +87,9 @@ describe(parentSuiteName, () => {
 		expect(result.historicalData[0].name).toBe(collect);
 	});
 
-	test('buildDataObject should add items to last24HoursData if isInLast24Hours is true', async () => {
+	test('buildDataObject should add items to last24HoursData if isInLast24Hours is true', async ({
+		setupAllure,
+	}) => {
 		const tags = [
 			...sharedTags,
 			'integration:webVitals',
@@ -87,10 +97,10 @@ describe(parentSuiteName, () => {
 			'webVitals:buildDataObject',
 		];
 
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('buildDataObject last24HoursData test');
-		await allure.tags(...tags);
+		await setupAllure({
+			subSuiteName: 'buildDataObject last24HoursData test',
+			tags,
+		});
 
 		(checkDate as unknown as Mock).mockImplementation(() =>
 			mockCheckDate({ isInLast24Hours: true })
@@ -101,7 +111,9 @@ describe(parentSuiteName, () => {
 		expect(result.last24HoursData[0].name).toBe(collect);
 	});
 
-	test('buildDataObject should add items to last7DaysData if isInLast7Days is true', async () => {
+	test('buildDataObject should add items to last7DaysData if isInLast7Days is true', async ({
+		setupAllure,
+	}) => {
 		const tags = [
 			...sharedTags,
 			'integration:webVitals',
@@ -109,10 +121,10 @@ describe(parentSuiteName, () => {
 			'webVitals:buildDataObject',
 		];
 
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('buildDataObject last7DaysData test');
-		await allure.tags(...tags);
+		await setupAllure({
+			subSuiteName: 'buildDataObject last7DaysData test',
+			tags,
+		});
 
 		(checkDate as unknown as Mock).mockImplementation(() => mockCheckDate({ isInLast7Days: true }));
 		const items: WebVitalsResponseItem[] = [baseItem({})];
@@ -121,7 +133,9 @@ describe(parentSuiteName, () => {
 		expect(result.last7DaysData[0].name).toBe(collect);
 	});
 
-	test('buildDataObject should add items to last30DaysData if isInLast30Days is true', async () => {
+	test('buildDataObject should add items to last30DaysData if isInLast30Days is true', async ({
+		setupAllure,
+	}) => {
 		const tags = [
 			...sharedTags,
 			'integration:webVitals',
@@ -129,10 +143,10 @@ describe(parentSuiteName, () => {
 			'webVitals:buildDataObject',
 		];
 
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('buildDataObject last30DaysData test');
-		await allure.tags(...tags);
+		await setupAllure({
+			subSuiteName: 'buildDataObject last30DaysData test',
+			tags,
+		});
 
 		(checkDate as unknown as Mock).mockImplementation(() =>
 			mockCheckDate({ isInLast30Days: true })
@@ -143,7 +157,9 @@ describe(parentSuiteName, () => {
 		expect(result.last30DaysData[0].name).toBe(collect);
 	});
 
-	test('buildDataObject should not add items to any array if name does not match collect', async () => {
+	test('buildDataObject should not add items to any array if name does not match collect', async ({
+		setupAllure,
+	}) => {
 		const tags = [
 			...sharedTags,
 			'integration:webVitals',
@@ -151,10 +167,10 @@ describe(parentSuiteName, () => {
 			'webVitals:buildDataObject',
 		];
 
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('buildDataObject name mismatch test');
-		await allure.tags(...tags);
+		await setupAllure({
+			subSuiteName: 'buildDataObject name mismatch test',
+			tags,
+		});
 
 		(checkDate as unknown as Mock).mockImplementation(() =>
 			mockCheckDate({ isInLast24Hours: true, isInLast7Days: true, isInLast30Days: true })
@@ -167,7 +183,9 @@ describe(parentSuiteName, () => {
 		expect(result.last30DaysData.length).toBe(0);
 	});
 
-	test('buildDataObject should add items to all arrays if all date checks are true', async () => {
+	test('buildDataObject should add items to all arrays if all date checks are true', async ({
+		setupAllure,
+	}) => {
 		const tags = [
 			...sharedTags,
 			'integration:webVitals',
@@ -175,10 +193,10 @@ describe(parentSuiteName, () => {
 			'webVitals:buildDataObject',
 		];
 
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('buildDataObject all date checks test');
-		await allure.tags(...tags);
+		await setupAllure({
+			subSuiteName: 'buildDataObject all date checks test',
+			tags,
+		});
 
 		(checkDate as unknown as Mock).mockImplementation(() =>
 			mockCheckDate({ isInLast24Hours: true, isInLast7Days: true, isInLast30Days: true })

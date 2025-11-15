@@ -1,8 +1,8 @@
-import * as allure from 'allure-js-commons';
-import { describe, expect, test } from 'vitest';
+import { describe, expect } from 'vitest';
 import type { WebVitalsRating } from '../../../src/integrations/webVitals/schemas';
 import type { WebVitalsResponseItem } from '../../../src/integrations/webVitals/types';
 import { processWebVitalsSummary } from '../../../src/integrations/webVitals/webVitalsSummary';
+import { allureTester } from '../../fixtures/allureTester';
 import { parentSuiteName, sharedTags } from '../../test-utils';
 
 const localSuiteName = 'Web Vitals Summary tests';
@@ -21,6 +21,11 @@ function createItem(name: string, value: number, rating: WebVitalsRating): WebVi
 }
 
 describe(parentSuiteName, () => {
+	const test = allureTester({
+		suiteName: localSuiteName,
+		suiteParentName: parentSuiteName,
+	});
+
 	[
 		{
 			data: [],
@@ -38,28 +43,32 @@ describe(parentSuiteName, () => {
 		const testName = `Web Vitals Summary edge case test case #${index + 1}`;
 		const tags = [...sharedTags, 'integration:webVitals', 'webVitals:summary'];
 
-		test(testName, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('processWebVitalsSummary edge cases');
-			await allure.tags(...tags);
-
-			await allure.parameter('data', JSON.stringify(data));
+		test(testName, async ({ setupAllure }) => {
+			await setupAllure({
+				subSuiteName: 'processWebVitalsSummary edge cases',
+				tags,
+				parameters: {
+					data: JSON.stringify(data),
+				},
+			});
 
 			const result = processWebVitalsSummary(data);
 			expect(result).toEqual(expected);
 		});
 	});
 
-	test('processWebVitalsSummary processes a metric group with 4+ items', async () => {
+	test('processWebVitalsSummary processes a metric group with 4+ items', async ({
+		setupAllure,
+		step,
+	}) => {
 		const tags = [...sharedTags, 'integration:webVitals', 'webVitals:summary'];
 
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('processWebVitalsSummary detailed test');
-		await allure.tags(...tags);
+		await setupAllure({
+			subSuiteName: 'processWebVitalsSummary detailed test',
+			tags,
+		});
 
-		await allure.step('Processing Web Vitals Summary with sample data', async () => {
+		await step('Processing Web Vitals Summary with sample data', async () => {
 			const data: WebVitalsResponseItem[] = [
 				createItem('LCP', 1000, 'good'),
 				createItem('LCP', 1100, 'good'),
@@ -91,15 +100,18 @@ describe(parentSuiteName, () => {
 		});
 	});
 
-	test('processWebVitalsSummary handles multiple metric names independently', async () => {
+	test('processWebVitalsSummary handles multiple metric names independently', async ({
+		setupAllure,
+		step,
+	}) => {
 		const tags = [...sharedTags, 'integration:webVitals', 'webVitals:summary'];
 
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('processWebVitalsSummary multiple metrics test');
-		await allure.tags(...tags);
+		await setupAllure({
+			subSuiteName: 'processWebVitalsSummary multiple metrics test',
+			tags,
+		});
 
-		await allure.step('Processing Web Vitals Summary with multiple metrics', async () => {
+		await step('Processing Web Vitals Summary with multiple metrics', async () => {
 			const data: WebVitalsResponseItem[] = [
 				createItem('CLS', 0.1, 'good'),
 				createItem('CLS', 0.2, 'good'),
@@ -120,15 +132,18 @@ describe(parentSuiteName, () => {
 		});
 	});
 
-	test('processWebVitalsSummary filters final metrics correctly (rating_end or quartile*25==75)', async () => {
+	test('processWebVitalsSummary filters final metrics correctly (rating_end or quartile*25==75)', async ({
+		setupAllure,
+		step,
+	}) => {
 		const tags = [...sharedTags, 'integration:webVitals', 'webVitals:summary'];
 
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('processWebVitalsSummary filtering test');
-		await allure.tags(...tags);
+		await setupAllure({
+			subSuiteName: 'processWebVitalsSummary filtering test',
+			tags,
+		});
 
-		await allure.step('Processing Web Vitals Summary with filtering criteria', async () => {
+		await step('Processing Web Vitals Summary with filtering criteria', async () => {
 			const data: WebVitalsResponseItem[] = [
 				createItem('LCP', 1000, 'good'),
 				createItem('LCP', 1100, 'good'),

@@ -1,7 +1,7 @@
-import * as allure from 'allure-js-commons';
-import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { beforeEach, describe, expect, vi } from 'vitest';
 import type { WebVitalsResponseItem } from '../../../../src/integrations/webVitals/types';
 import { buildPageRouteDataObject } from '../../../../src/integrations/webVitals/utils/buildPageRouteDataObject';
+import { allureTester } from '../../../fixtures/allureTester';
 import { parentSuiteName, sharedTags } from '../../../test-utils';
 
 const localSuiteName = 'Web Vitals Utils - buildPageRouteDataObject';
@@ -17,6 +17,10 @@ vi.mock('../../../../src/integrations/webVitals/utils/checkDate', () => ({
 
 describe(parentSuiteName, () => {
 	let webVitalData: WebVitalsResponseItem[];
+	const test = allureTester({
+		suiteName: localSuiteName,
+		suiteParentName: parentSuiteName,
+	});
 
 	beforeEach(() => {
 		// @ts-expect-error - testing mock data
@@ -88,30 +92,32 @@ describe(parentSuiteName, () => {
 			],
 		},
 	].forEach(({ type, expected }) => {
-		test(`should aggregate page views correctly for ${type}`, async () => {
+		test(`should aggregate page views correctly for ${type}`, async ({ setupAllure }) => {
 			const tags = [...sharedTags, 'integration:webVitals', `webVitals:utils:${type}`];
 
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite(`buildPageRouteDataObject - ${type}`);
-			await allure.tags(...tags);
+			await setupAllure({
+				subSuiteName: `buildPageRouteDataObject - ${type}`,
+				tags,
+				parameters: {
+					webVitalData: JSON.stringify(webVitalData),
+				},
+			});
 
 			const result = buildPageRouteDataObject(webVitalData);
-			await allure.parameter('webVitalData', JSON.stringify(webVitalData));
 
 			expect(result[type as keyof typeof result]).toEqual(expected);
 		});
 	});
 
-	test('buildPageRouteDataObject handles empty input', async () => {
+	test('buildPageRouteDataObject handles empty input', async ({ setupAllure, step }) => {
 		const tags = [...sharedTags, 'integration:webVitals', 'webVitals:buildPageRouteDataObject'];
 
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('buildPageRouteDataObject empty input test');
-		await allure.tags(...tags);
+		await setupAllure({
+			subSuiteName: 'buildPageRouteDataObject empty input test',
+			tags,
+		});
 
-		await allure.step('Aggregating with empty input', async () => {
+		await step('Aggregating with empty input', async () => {
 			const result = buildPageRouteDataObject([]);
 
 			expect(result.perRouteData).toEqual([]);

@@ -1,7 +1,6 @@
 /** biome-ignore-all lint/suspicious/noExplicitAny: allowed in tests */
-import * as allure from 'allure-js-commons';
 import type { AstroIntegrationLogger } from 'astro';
-import { describe, expect, test, vi } from 'vitest';
+import { describe, expect, vi } from 'vitest';
 import {
 	generateContent,
 	generateHostContent,
@@ -12,6 +11,7 @@ import {
 	validateUrl,
 } from '../../../src/integrations/robots/core';
 import type { RobotsConfig } from '../../../src/integrations/robots/schema.js';
+import { allureTester } from '../../fixtures/allureTester';
 import { parentSuiteName, sharedTags } from '../../test-utils';
 
 const localSuiteName = 'Robots Core Utils';
@@ -24,6 +24,11 @@ function createLogger() {
 }
 
 describe(parentSuiteName, () => {
+	const test = allureTester({
+		suiteName: localSuiteName,
+		suiteParentName: parentSuiteName,
+	});
+
 	[
 		{
 			host: 'example.com',
@@ -32,13 +37,13 @@ describe(parentSuiteName, () => {
 			host: 'sub.domain.co.uk',
 		},
 	].forEach(({ host }) => {
-		test(`validateHost passes for valid host: ${host}`, async () => {
+		test(`validateHost passes for valid host: ${host}`, async ({ setupAllure }) => {
 			const tags = [...sharedTags, 'integration:robots', 'robots:core', 'robots:validateHost'];
 
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('validateHost valid host tests');
-			await allure.tags(...tags);
+			await setupAllure({
+				subSuiteName: 'validateHost valid host tests',
+				tags: [...tags],
+			});
 
 			const logger = createLogger();
 			expect(() => validateHost(host, logger)).not.toThrow();
@@ -53,13 +58,13 @@ describe(parentSuiteName, () => {
 			host: 'invalid_host',
 		},
 	].forEach(({ host }) => {
-		test(`validateHost throws for invalid host: ${host}`, async () => {
+		test(`validateHost throws for invalid host: ${host}`, async ({ setupAllure }) => {
 			const tags = [...sharedTags, 'integration:robots', 'robots:core', 'robots:validateHost'];
 
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('validateHost invalid host tests');
-			await allure.tags(...tags);
+			await setupAllure({
+				subSuiteName: 'validateHost invalid host tests',
+				tags: [...tags],
+			});
 
 			const logger = createLogger();
 			expect(() => validateHost(host as any, logger)).toThrow();
@@ -81,13 +86,15 @@ describe(parentSuiteName, () => {
 			toContain: 'Host: example.com',
 		},
 	].forEach(({ config, toContain }) => {
-		test(`generateHostContent returns empty string for host: ${config.host}`, async () => {
+		test(`generateHostContent returns empty string for host: ${config.host}`, async ({
+			setupAllure,
+		}) => {
 			const tags = [...sharedTags, 'integration:robots', 'robots:core', 'robots:generateHost'];
 
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('generateHostContent tests');
-			await allure.tags(...tags);
+			await setupAllure({
+				subSuiteName: 'generateHostContent tests',
+				tags: [...tags],
+			});
 
 			const logger = createLogger();
 			const result = generateHostContent(config as any, logger);
@@ -99,26 +106,26 @@ describe(parentSuiteName, () => {
 		});
 	});
 
-	test('generateHostContent throws for host as number', async () => {
+	test('generateHostContent throws for host as number', async ({ setupAllure }) => {
 		const tags = [...sharedTags, 'integration:robots', 'robots:core', 'robots:generateHost'];
 
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('generateHostContent error handling test');
-		await allure.tags(...tags);
+		await setupAllure({
+			subSuiteName: 'generateHostContent error handling test',
+			tags: [...tags],
+		});
 
 		const logger = createLogger();
 		expect(() => generateHostContent({ host: 123 } as any, logger)).toThrow();
 	});
 
 	['ftp://example.com/sitemap.xml', 'http://example.com/sitemap.doc'].forEach((sitemapUrl) => {
-		test(`validateUrl throws for invalid sitemap url: ${sitemapUrl}`, async () => {
+		test(`validateUrl throws for invalid sitemap url: ${sitemapUrl}`, async ({ setupAllure }) => {
 			const tags = [...sharedTags, 'integration:robots', 'robots:core', 'robots:validateUrl'];
 
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('validateUrl invalid sitemap url tests');
-			await allure.tags(...tags);
+			await setupAllure({
+				subSuiteName: 'validateUrl invalid sitemap url tests',
+				tags: [...tags],
+			});
 
 			const logger = createLogger();
 			expect(() => validateUrl(sitemapUrl, logger)).toThrow();
@@ -132,13 +139,13 @@ describe(parentSuiteName, () => {
 		'http://example.com/sitemap.json',
 		'http://example.com/sitemap.xhtml',
 	].forEach((sitemapUrl) => {
-		test(`validateUrl passes for valid sitemap url: ${sitemapUrl}`, async () => {
+		test(`validateUrl passes for valid sitemap url: ${sitemapUrl}`, async ({ setupAllure }) => {
 			const tags = [...sharedTags, 'integration:robots', 'robots:core', 'robots:validateUrl'];
 
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('validateUrl valid sitemap url tests');
-			await allure.tags(...tags);
+			await setupAllure({
+				subSuiteName: 'validateUrl valid sitemap url tests',
+				tags: [...tags],
+			});
 
 			const logger = createLogger();
 			expect(() => validateUrl(sitemapUrl, logger)).not.toThrow();
@@ -164,13 +171,13 @@ describe(parentSuiteName, () => {
 	].forEach(({ config, siteHref, toContain }) => {
 		test(`generateSitemapContent returns correct sitemap lines for config.sitemap: ${JSON.stringify(
 			config.sitemap
-		)}`, async () => {
+		)}`, async ({ setupAllure }) => {
 			const tags = [...sharedTags, 'integration:robots', 'robots:core', 'robots:generateSitemap'];
 
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('generateSitemapContent tests');
-			await allure.tags(...tags);
+			await setupAllure({
+				subSuiteName: 'generateSitemapContent tests',
+				tags: [...tags],
+			});
 
 			const logger = createLogger();
 			const result = generateSitemapContent(config as any, siteHref, logger);
@@ -180,44 +187,46 @@ describe(parentSuiteName, () => {
 		});
 	});
 
-	test('generateSitemapContent throws for config.sitemap as boolean false', async () => {
+	test('generateSitemapContent throws for config.sitemap as boolean false', async ({
+		setupAllure,
+	}) => {
 		const tags = [...sharedTags, 'integration:robots', 'robots:core', 'robots:generateSitemap'];
 
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('generateSitemapContent false sitemap test');
-		await allure.tags(...tags);
+		await setupAllure({
+			subSuiteName: 'generateSitemapContent false sitemap test',
+			tags: [...tags],
+		});
 
 		const logger = createLogger();
 		expect(() => generateSitemapContent({ sitemap: false }, 'https://site/', logger)).not.toThrow();
 	});
 
-	test('throwMsg logs and throws correctly based on type', async () => {
+	test('throwMsg logs and throws correctly based on type', async ({ setupAllure, step }) => {
 		const tags = [...sharedTags, 'integration:robots', 'robots:core', 'robots:throwMsg'];
 
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('throwMsg tests');
-		await allure.tags(...tags);
+		await setupAllure({
+			subSuiteName: 'throwMsg tests',
+			tags: [...tags],
+		});
 
 		const logger = createLogger();
 
-		await allure.step('Testing type "error"', () => {
+		await step('Testing type "error"', () => {
 			expect(() => throwMsg('fail', 'error', logger)).toThrow('fail');
 			expect(logger.info).toHaveBeenCalled();
 		});
 
-		await allure.step('Testing type "warn"', () => {
+		await step('Testing type "warn"', () => {
 			throwMsg('warn', 'warn', logger);
 			expect(logger.warn).toHaveBeenCalled();
 		});
 
-		await allure.step('Testing type true', () => {
+		await step('Testing type true', () => {
 			expect(() => throwMsg('fail', true, logger)).toThrow(/google\.com/);
 			expect(logger.info).toHaveBeenCalled();
 		});
 
-		await allure.step('Testing default type', () => {
+		await step('Testing default type', () => {
 			expect(() => throwMsg('fail', false, logger)).toThrow(/yandex\.com/);
 			expect(logger.info).toHaveBeenCalled();
 		});
@@ -262,26 +271,28 @@ describe(parentSuiteName, () => {
 			},
 		},
 	].forEach(({ config }) => {
-		test(`generateContent throws for invalid config: ${JSON.stringify(config)}`, async () => {
+		test(`generateContent throws for invalid config: ${JSON.stringify(config)}`, async ({
+			setupAllure,
+		}) => {
 			const tags = [...sharedTags, 'integration:robots', 'robots:core', 'robots:generateContent'];
 
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('generateContent invalid config tests');
-			await allure.tags(...tags);
+			await setupAllure({
+				subSuiteName: 'generateContent invalid config tests',
+				tags: [...tags],
+			});
 
 			const logger = createLogger();
 			expect(() => generateContent(config as any, '', logger)).toThrow();
 		});
 	});
 
-	test('generateContent generates valid robots.txt content', async () => {
+	test('generateContent generates valid robots.txt content', async ({ setupAllure }) => {
 		const tags = [...sharedTags, 'integration:robots', 'robots:core', 'robots:generateContent'];
 
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('generateContent valid config test');
-		await allure.tags(...tags);
+		await setupAllure({
+			subSuiteName: 'generateContent valid config test',
+			tags: [...tags],
+		});
 
 		const logger = createLogger();
 		const config: RobotsConfig = {
@@ -319,13 +330,15 @@ describe(parentSuiteName, () => {
 			destDir: '/tmp/robots.txt',
 		},
 	].forEach(({ fileSize, executionTime, destDir }) => {
-		test(`printInfo logs correctly for fileSize: ${fileSize}, executionTime: ${executionTime}`, async () => {
+		test(`printInfo logs correctly for fileSize: ${fileSize}, executionTime: ${executionTime}`, async ({
+			setupAllure,
+		}) => {
 			const tags = [...sharedTags, 'integration:robots', 'robots:core', 'robots:printInfo'];
 
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('printInfo tests');
-			await allure.tags(...tags);
+			await setupAllure({
+				subSuiteName: 'printInfo tests',
+				tags: [...tags],
+			});
 
 			const logger = createLogger();
 

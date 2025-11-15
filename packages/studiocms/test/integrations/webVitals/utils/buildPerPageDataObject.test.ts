@@ -1,7 +1,7 @@
-import * as allure from 'allure-js-commons';
-import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { beforeEach, describe, expect, vi } from 'vitest';
 import type { WebVitalsResponseItem } from '../../../../src/integrations/webVitals/types';
 import { buildPerPageRouteDataObject } from '../../../../src/integrations/webVitals/utils/buildPerPageDataObject';
+import { allureTester } from '../../../fixtures/allureTester';
 import { parentSuiteName, sharedTags } from '../../../test-utils';
 
 const localSuiteName = 'Web Vitals Utils - buildPerPageRouteDataObject';
@@ -32,6 +32,10 @@ vi.mock('../../../../src/integrations/webVitals/utils/webVitalsUtils', () => ({
 
 describe(parentSuiteName, () => {
 	let sampleData: WebVitalsResponseItem[];
+	const test = allureTester({
+		suiteName: localSuiteName,
+		suiteParentName: parentSuiteName,
+	});
 
 	beforeEach(() => {
 		sampleData = [
@@ -143,19 +147,19 @@ describe(parentSuiteName, () => {
 			],
 		},
 	].forEach(({ type, expected }) => {
-		test(`should aggregate ${type} correctly`, async () => {
+		test(`should aggregate ${type} correctly`, async ({ setupAllure, step }) => {
 			const tags = [
 				...sharedTags,
 				'integration:webVitals',
 				'webVitals:buildPerPageRouteDataObject',
 			];
 
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite(`buildPerPageRouteDataObject - ${type} test`);
-			await allure.tags(...tags);
+			await setupAllure({
+				subSuiteName: `buildPerPageRouteDataObject - ${type} test`,
+				tags,
+			});
 
-			await allure.step(`Aggregating ${type}`, async () => {
+			await step(`Aggregating ${type}`, async () => {
 				const result = buildPerPageRouteDataObject(sampleData);
 
 				expect(result[type as keyof typeof result]).toEqual(expected);
@@ -163,15 +167,15 @@ describe(parentSuiteName, () => {
 		});
 	});
 
-	test('buildPerPageRouteDataObject handles empty input', async () => {
+	test('buildPerPageRouteDataObject handles empty input', async ({ setupAllure, step }) => {
 		const tags = [...sharedTags, 'integration:webVitals', 'webVitals:buildPerPageRouteDataObject'];
 
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('buildPerPageRouteDataObject empty input test');
-		await allure.tags(...tags);
+		await setupAllure({
+			subSuiteName: 'buildPerPageRouteDataObject empty input test',
+			tags,
+		});
 
-		await allure.step('Aggregating with empty input', async () => {
+		await step('Aggregating with empty input', async () => {
 			const result = buildPerPageRouteDataObject([]);
 
 			expect(result.historicalData).toEqual([]);

@@ -1,12 +1,17 @@
-import * as allure from 'allure-js-commons';
 import type { AstroIntegration } from 'astro';
-import { describe, expect, expectTypeOf, test } from 'vitest';
+import { describe, expect, expectTypeOf } from 'vitest';
 import { dynamicSitemap, safeString } from '../../../src/integrations/dynamic-sitemap/index';
+import { allureTester } from '../../fixtures/allureTester';
 import { parentSuiteName, sharedTags } from '../../test-utils';
 
 const localSuiteName = 'Dynamic Sitemap Integration and Utils';
 
 describe(parentSuiteName, () => {
+	const test = allureTester({
+		suiteName: localSuiteName,
+		suiteParentName: parentSuiteName,
+	});
+
 	[
 		{
 			input: '_test_',
@@ -41,26 +46,27 @@ describe(parentSuiteName, () => {
 			'dynamicSitemap:safeString',
 		];
 
-		test(testName, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('safeString tests');
-			await allure.tags(...tags);
-
-			await allure.parameter('input', input);
+		test(testName, async ({ setupAllure }) => {
+			await setupAllure({
+				subSuiteName: 'safeString tests',
+				tags: [...tags],
+				parameters: {
+					input,
+				},
+			});
 
 			const result = safeString(input);
 			expect(result).toBe(expected);
 		});
 	});
 
-	test('dynamicSitemap returns an AstroIntegration object', async () => {
+	test('dynamicSitemap returns an AstroIntegration object', async ({ setupAllure }) => {
 		const tags = [...sharedTags, 'integration:dynamicSitemap', 'dynamicSitemap:integrationObject'];
 
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('dynamicSitemap integration object test');
-		await allure.tags(...tags);
+		await setupAllure({
+			subSuiteName: 'dynamicSitemap integration object test',
+			tags: [...tags],
+		});
 
 		const integration = dynamicSitemap({ sitemaps: [] });
 		expect(integration).toBeDefined();

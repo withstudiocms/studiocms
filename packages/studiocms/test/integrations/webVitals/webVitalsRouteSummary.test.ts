@@ -1,5 +1,4 @@
-import * as allure from 'allure-js-commons';
-import { describe, expect, test } from 'vitest';
+import { describe, expect } from 'vitest';
 import type { WebVitalsRating } from '../../../src/integrations/webVitals/schemas';
 import type { WebVitalsResponseItem } from '../../../src/integrations/webVitals/types';
 import {
@@ -8,6 +7,7 @@ import {
 	simpleScore,
 	weighting,
 } from '../../../src/integrations/webVitals/webVitalsRouteSummary';
+import { allureTester } from '../../fixtures/allureTester';
 import { parentSuiteName, sharedTags } from '../../test-utils';
 
 const localSuiteName = 'Web Vitals Route Summary tests';
@@ -29,6 +29,11 @@ function createItem(
 }
 
 describe(parentSuiteName, () => {
+	const test = allureTester({
+		suiteName: localSuiteName,
+		suiteParentName: parentSuiteName,
+	});
+
 	[
 		{
 			data: [],
@@ -46,28 +51,32 @@ describe(parentSuiteName, () => {
 		const testName = `Web Vitals Route Summary edge case test case #${index + 1}`;
 		const tags = [...sharedTags, 'integration:webVitals', 'webVitals:routeSummary'];
 
-		test(testName, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('processWebVitalsRouteSummary edge cases');
-			await allure.tags(...tags);
-
-			await allure.parameter('data', JSON.stringify(data));
+		test(testName, async ({ setupAllure }) => {
+			await setupAllure({
+				subSuiteName: 'processWebVitalsRouteSummary edge cases',
+				tags,
+				parameters: {
+					data: JSON.stringify(data),
+				},
+			});
 
 			const result = processWebVitalsRouteSummary(data);
 			expect(result).toEqual(expected);
 		});
 	});
 
-	test('processWebVitalsRouteSummary processes a metric group with 4+ items', async () => {
+	test('processWebVitalsRouteSummary processes a metric group with 4+ items', async ({
+		setupAllure,
+		step,
+	}) => {
 		const tags = [...sharedTags, 'integration:webVitals', 'webVitals:routeSummary'];
 
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('processWebVitalsRouteSummary detailed test');
-		await allure.tags(...tags);
+		await setupAllure({
+			subSuiteName: 'processWebVitalsRouteSummary detailed test',
+			tags,
+		});
 
-		await allure.step('Processing Web Vitals Route Summary with sample data', async () => {
+		await step('Processing Web Vitals Route Summary with sample data', async () => {
 			const data: WebVitalsResponseItem[] = [
 				// LCP samples for /home
 				createItem('/home', 'LCP', 'good', 100),
@@ -97,13 +106,13 @@ describe(parentSuiteName, () => {
 		});
 	});
 
-	test('simpleScore calculates correct weighted score', async () => {
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('simpleScore function test');
-		await allure.tags(...sharedTags, 'integration:webVitals', 'webVitals:routeSummary');
+	test('simpleScore calculates correct weighted score', async ({ setupAllure, step }) => {
+		await setupAllure({
+			subSuiteName: 'simpleScore function test',
+			tags: [...sharedTags, 'integration:webVitals', 'webVitals:routeSummary'],
+		});
 
-		await allure.step('Calculating simple score with sample ratings', async () => {
+		await step('Calculating simple score with sample ratings', async () => {
 			const score = simpleScore('good', 'needs-improvement', 'poor');
 			const expectedScore =
 				scoring['good'] * weighting.LCP +
@@ -114,15 +123,18 @@ describe(parentSuiteName, () => {
 		});
 	});
 
-	test('processWebVitalsRouteSummary sorts summaries by score ascending', async () => {
+	test('processWebVitalsRouteSummary sorts summaries by score ascending', async ({
+		setupAllure,
+		step,
+	}) => {
 		const tags = [...sharedTags, 'integration:webVitals', 'webVitals:routeSummary'];
 
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('processWebVitalsRouteSummary sorting test');
-		await allure.tags(...tags);
+		await setupAllure({
+			subSuiteName: 'processWebVitalsRouteSummary sorting test',
+			tags,
+		});
 
-		await allure.step('Processing Web Vitals Route Summary with multiple routes', async () => {
+		await step('Processing Web Vitals Route Summary with multiple routes', async () => {
 			const data: WebVitalsResponseItem[] = [
 				// Route A - all good
 				...['LCP', 'CLS', 'INP'].flatMap((name) =>
@@ -145,34 +157,34 @@ describe(parentSuiteName, () => {
 		});
 	});
 
-	test('processWebVitalsRouteSummary handles multiple routes and metrics', async () => {
+	test('processWebVitalsRouteSummary handles multiple routes and metrics', async ({
+		setupAllure,
+		step,
+	}) => {
 		const tags = [...sharedTags, 'integration:webVitals', 'webVitals:routeSummary'];
 
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('processWebVitalsRouteSummary multiple routes and metrics test');
-		await allure.tags(...tags);
+		await setupAllure({
+			subSuiteName: 'processWebVitalsRouteSummary multiple routes and metrics test',
+			tags,
+		});
 
-		await allure.step(
-			'Processing Web Vitals Route Summary with multiple routes and metrics',
-			async () => {
-				const data: WebVitalsResponseItem[] = [
-					...['LCP', 'CLS', 'INP'].flatMap((name) =>
-						Array.from({ length: 4 }, (_, i) =>
-							createItem('/x', name as 'LCP' | 'CLS' | 'INP', 'good', i + 1)
-						)
-					),
-					...['LCP', 'CLS', 'INP'].flatMap((name) =>
-						Array.from({ length: 4 }, (_, i) =>
-							createItem('/y', name as 'LCP' | 'CLS' | 'INP', 'needs-improvement', i + 1)
-						)
-					),
-				];
-				const result = processWebVitalsRouteSummary(data);
-				expect(result.map((r) => r.route).sort()).toEqual(['/x', '/y']);
-				expect(result[0].metrics.LCP).toBeDefined();
-				expect(result[1].metrics.LCP).toBeDefined();
-			}
-		);
+		await step('Processing Web Vitals Route Summary with multiple routes and metrics', async () => {
+			const data: WebVitalsResponseItem[] = [
+				...['LCP', 'CLS', 'INP'].flatMap((name) =>
+					Array.from({ length: 4 }, (_, i) =>
+						createItem('/x', name as 'LCP' | 'CLS' | 'INP', 'good', i + 1)
+					)
+				),
+				...['LCP', 'CLS', 'INP'].flatMap((name) =>
+					Array.from({ length: 4 }, (_, i) =>
+						createItem('/y', name as 'LCP' | 'CLS' | 'INP', 'needs-improvement', i + 1)
+					)
+				),
+			];
+			const result = processWebVitalsRouteSummary(data);
+			expect(result.map((r) => r.route).sort()).toEqual(['/x', '/y']);
+			expect(result[0].metrics.LCP).toBeDefined();
+			expect(result[1].metrics.LCP).toBeDefined();
+		});
 	});
 });

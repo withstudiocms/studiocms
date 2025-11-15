@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
-import * as allure from 'allure-js-commons';
-import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { beforeEach, describe, expect, vi } from 'vitest';
 import { formListener } from '../../src/frontend/scripts/auth/formListener';
+import { allureTesterJsDom } from '../fixtures/allureTester-jsdom';
 import { parentSuiteName, sharedTags } from '../test-utils';
 
 const localSuiteName = 'Form Listener tests';
@@ -17,6 +17,10 @@ beforeEach(() => {
 describe(parentSuiteName, () => {
 	let form: HTMLFormElement;
 	let event: SubmitEvent;
+	const test = allureTesterJsDom({
+		suiteName: localSuiteName,
+		suiteParentName: parentSuiteName,
+	});
 
 	beforeEach(() => {
 		document.body.innerHTML = `
@@ -29,13 +33,11 @@ describe(parentSuiteName, () => {
 		event = new SubmitEvent('submit', { bubbles: true, cancelable: true });
 	});
 
-	test('shows toast and returns if passwords do not match on register', async () => {
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('formListener password mismatch test');
-		await allure.tags(
-			...[...sharedTags, 'component:form-listener', 'formListener:password-mismatch']
-		);
+	test('shows toast and returns if passwords do not match on register', async ({ setupAllure }) => {
+		await setupAllure({
+			subSuiteName: 'formListener password mismatch test',
+			tags: [...sharedTags, 'component:form-listener', 'formListener:password-mismatch'],
+		});
 
 		// biome-ignore lint/style/noNonNullAssertion: allowed in tests
 		form.querySelector<HTMLInputElement>('input[name="confirm-password"]')!.value = 'different';
@@ -49,11 +51,11 @@ describe(parentSuiteName, () => {
 		);
 	});
 
-	test('shows error toast if response is not ok', async () => {
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('formListener error response test');
-		await allure.tags(...[...sharedTags, 'component:form-listener', 'formListener:error-response']);
+	test('shows error toast if response is not ok', async ({ setupAllure }) => {
+		await setupAllure({
+			subSuiteName: 'formListener error response test',
+			tags: [...sharedTags, 'component:form-listener', 'formListener:error-response'],
+		});
 
 		(global.fetch as any).mockResolvedValueOnce({
 			ok: false,
@@ -75,11 +77,13 @@ describe(parentSuiteName, () => {
 		);
 	});
 
-	test('calls fetch with correct arguments and shows success toast on login', async () => {
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('formListener login success test');
-		await allure.tags(...[...sharedTags, 'component:form-listener', 'formListener:login-success']);
+	test('calls fetch with correct arguments and shows success toast on login', async ({
+		setupAllure,
+	}) => {
+		await setupAllure({
+			subSuiteName: 'formListener login success test',
+			tags: [...sharedTags, 'component:form-listener', 'formListener:login-success'],
+		});
 
 		const toast = vi.fn();
 		const reload = vi.fn();
@@ -98,13 +102,13 @@ describe(parentSuiteName, () => {
 		expect(reload).toHaveBeenCalled();
 	});
 
-	test('calls fetch with correct arguments and shows success toast on register', async () => {
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('formListener register success test');
-		await allure.tags(
-			...[...sharedTags, 'component:form-listener', 'formListener:register-success']
-		);
+	test('calls fetch with correct arguments and shows success toast on register', async ({
+		setupAllure,
+	}) => {
+		await setupAllure({
+			subSuiteName: 'formListener register success test',
+			tags: [...sharedTags, 'component:form-listener', 'formListener:register-success'],
+		});
 
 		const toast = vi.fn();
 		const reload = vi.fn();
@@ -123,13 +127,11 @@ describe(parentSuiteName, () => {
 		expect(reload).toHaveBeenCalled();
 	});
 
-	test('prevents default event behavior', async () => {
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('formListener prevent default test');
-		await allure.tags(
-			...[...sharedTags, 'component:form-listener', 'formListener:prevent-default']
-		);
+	test('prevents default event behavior', async ({ setupAllure }) => {
+		await setupAllure({
+			subSuiteName: 'formListener prevent default test',
+			tags: [...sharedTags, 'component:form-listener', 'formListener:prevent-default'],
+		});
 
 		const preventDefault = vi.fn();
 		const reload = vi.fn();

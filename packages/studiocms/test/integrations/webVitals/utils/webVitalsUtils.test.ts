@@ -1,5 +1,4 @@
-import * as allure from 'allure-js-commons';
-import { describe, expect, test } from 'vitest';
+import { describe, expect } from 'vitest';
 import type { WebVitalsResponseItem } from '../../../../src/integrations/webVitals/types';
 import {
 	calculateClsAverage,
@@ -25,11 +24,17 @@ import {
 	progressBarLcpColor,
 	progressBarLcpTrackColor,
 } from '../../../../src/integrations/webVitals/utils/webVitalsUtils';
+import { allureTester } from '../../../fixtures/allureTester';
 import { parentSuiteName, sharedTags } from '../../../test-utils';
 
 const localSuiteName = 'Web Vitals Utils tests';
 
 describe(parentSuiteName, () => {
+	const test = allureTester({
+		suiteName: localSuiteName,
+		suiteParentName: parentSuiteName,
+	});
+
 	[
 		{
 			data: 1000,
@@ -43,13 +48,14 @@ describe(parentSuiteName, () => {
 		const testName = `msToSeconds test case #${index + 1}`;
 		const tags = [...sharedTags, 'integration:webVitals', 'webVitals:utils'];
 
-		test(testName, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('msToSeconds tests');
-			await allure.tags(...tags);
-
-			await allure.parameter('data', String(data));
+		test(testName, async ({ setupAllure }) => {
+			await setupAllure({
+				subSuiteName: 'msToSeconds tests',
+				tags,
+				parameters: {
+					data: String(data),
+				},
+			});
 
 			const result = msToSeconds(data);
 			expect(result).toBe(expected);
@@ -73,13 +79,14 @@ describe(parentSuiteName, () => {
 		const testName = `calculateClsAverage test case #${index + 1}`;
 		const tags = [...sharedTags, 'integration:webVitals', 'webVitals:utils'];
 
-		test(testName, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('calculateClsAverage tests');
-			await allure.tags(...tags);
-
-			await allure.parameter('data', JSON.stringify(data));
+		test(testName, async ({ setupAllure }) => {
+			await setupAllure({
+				subSuiteName: 'calculateClsAverage tests',
+				tags,
+				parameters: {
+					data: JSON.stringify(data),
+				},
+			});
 
 			const result = calculateClsAverage(data);
 			expect(result).toBe(expected);
@@ -103,13 +110,14 @@ describe(parentSuiteName, () => {
 		const testName = `clsDataAverage test case #${index + 1}`;
 		const tags = [...sharedTags, 'integration:webVitals', 'webVitals:utils'];
 
-		test(testName, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('clsDataAverage tests');
-			await allure.tags(...tags);
-
-			await allure.parameter('data', JSON.stringify(data));
+		test(testName, async ({ setupAllure }) => {
+			await setupAllure({
+				subSuiteName: 'clsDataAverage tests',
+				tags,
+				parameters: {
+					data: JSON.stringify(data),
+				},
+			});
 
 			const result = clsDataAverage(data as WebVitalsResponseItem[]);
 			expect(result).toBe(expected);
@@ -137,13 +145,14 @@ describe(parentSuiteName, () => {
 		const testName = `calculateClsScoreText test case #${index + 1}`;
 		const tags = [...sharedTags, 'integration:webVitals', 'webVitals:utils'];
 
-		test(testName, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('calculateClsScoreText tests');
-			await allure.tags(...tags);
-
-			await allure.parameter('data', String(data));
+		test(testName, async ({ setupAllure }) => {
+			await setupAllure({
+				subSuiteName: 'calculateClsScoreText tests',
+				tags,
+				parameters: {
+					data: String(data),
+				},
+			});
 
 			const result = calculateClsScoreText(data);
 			expect(result).toBe(expected);
@@ -171,13 +180,14 @@ describe(parentSuiteName, () => {
 		const testName = `calculateClsScorePercent test case #${index + 1}`;
 		const tags = [...sharedTags, 'integration:webVitals', 'webVitals:utils'];
 
-		test(testName, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('calculateClsScorePercent tests');
-			await allure.tags(...tags);
-
-			await allure.parameter('data', String(data));
+		test(testName, async ({ setupAllure }) => {
+			await setupAllure({
+				subSuiteName: 'calculateClsScorePercent tests',
+				tags,
+				parameters: {
+					data: String(data),
+				},
+			});
 
 			const result = calculateClsScorePercent(data);
 			expect(result).toBe(expected);
@@ -201,13 +211,14 @@ describe(parentSuiteName, () => {
 		const testName = `clsTextColor test case #${index + 1}`;
 		const tags = [...sharedTags, 'integration:webVitals', 'webVitals:utils'];
 
-		test(testName, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('clsTextColor tests');
-			await allure.tags(...tags);
-
-			await allure.parameter('data', String(data));
+		test(testName, async ({ setupAllure }) => {
+			await setupAllure({
+				subSuiteName: 'clsTextColor tests',
+				tags,
+				parameters: {
+					data: String(data),
+				},
+			});
 
 			const result = clsTextColor(data);
 			expect(result).toBe(expected);
@@ -227,13 +238,14 @@ describe(parentSuiteName, () => {
 		const testName = `progressBarClsTrackColor test case #${index + 1}`;
 		const tags = [...sharedTags, 'integration:webVitals', 'webVitals:utils'];
 
-		test(testName, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('progressBarClsTrackColor tests');
-			await allure.tags(...tags);
-
-			await allure.parameter('data', String(data));
+		test(testName, async ({ setupAllure }) => {
+			await setupAllure({
+				subSuiteName: 'progressBarClsTrackColor tests',
+				tags,
+				parameters: {
+					data: String(data),
+				},
+			});
 
 			const result = progressBarClsTrackColor(data);
 			expect(result).toBe(expected);
@@ -257,13 +269,14 @@ describe(parentSuiteName, () => {
 		const testName = `clsTextColor test case #${index + 1}`;
 		const tags = [...sharedTags, 'integration:webVitals', 'webVitals:utils'];
 
-		test(testName, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('clsTextColor tests');
-			await allure.tags(...tags);
-
-			await allure.parameter('data', String(data));
+		test(testName, async ({ setupAllure }) => {
+			await setupAllure({
+				subSuiteName: 'clsTextColor tests',
+				tags,
+				parameters: {
+					data: String(data),
+				},
+			});
 
 			const result = clsTextColor(data);
 			expect(result).toBe(expected);
@@ -287,13 +300,14 @@ describe(parentSuiteName, () => {
 		const testName = `calculateLcpAverage test case #${index + 1}`;
 		const tags = [...sharedTags, 'integration:webVitals', 'webVitals:utils'];
 
-		test(testName, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('calculateLcpAverage tests');
-			await allure.tags(...tags);
-
-			await allure.parameter('data', JSON.stringify(data));
+		test(testName, async ({ setupAllure }) => {
+			await setupAllure({
+				subSuiteName: 'calculateLcpAverage tests',
+				tags,
+				parameters: {
+					data: JSON.stringify(data),
+				},
+			});
 
 			const result = calculateLcpAverage(data);
 			expect(result).toBe(expected);
@@ -317,13 +331,14 @@ describe(parentSuiteName, () => {
 		const testName = `lcpDataAverage test case #${index + 1}`;
 		const tags = [...sharedTags, 'integration:webVitals', 'webVitals:utils'];
 
-		test(testName, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('lcpDataAverage tests');
-			await allure.tags(...tags);
-
-			await allure.parameter('data', JSON.stringify(data));
+		test(testName, async ({ setupAllure }) => {
+			await setupAllure({
+				subSuiteName: 'lcpDataAverage tests',
+				tags,
+				parameters: {
+					data: JSON.stringify(data),
+				},
+			});
 
 			const result = lcpDataAverage(data as WebVitalsResponseItem[]);
 			expect(result).toBe(expected);
@@ -351,13 +366,14 @@ describe(parentSuiteName, () => {
 		const testName = `calculateLcpScoreText test case #${index + 1}`;
 		const tags = [...sharedTags, 'integration:webVitals', 'webVitals:utils'];
 
-		test(testName, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('calculateLcpScoreText tests');
-			await allure.tags(...tags);
-
-			await allure.parameter('data', String(data));
+		test(testName, async ({ setupAllure }) => {
+			await setupAllure({
+				subSuiteName: 'calculateLcpScoreText tests',
+				tags,
+				parameters: {
+					data: String(data),
+				},
+			});
 
 			const result = calculateLcpScoreText(data);
 			expect(result).toBe(expected);
@@ -385,13 +401,14 @@ describe(parentSuiteName, () => {
 		const testName = `calculateLcpScorePercent test case #${index + 1}`;
 		const tags = [...sharedTags, 'integration:webVitals', 'webVitals:utils'];
 
-		test(testName, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('calculateLcpScorePercent tests');
-			await allure.tags(...tags);
-
-			await allure.parameter('data', String(data));
+		test(testName, async ({ setupAllure }) => {
+			await setupAllure({
+				subSuiteName: 'calculateLcpScorePercent tests',
+				tags,
+				parameters: {
+					data: String(data),
+				},
+			});
 
 			const result = calculateLcpScorePercent(data);
 			expect(result).toBe(expected);
@@ -415,13 +432,14 @@ describe(parentSuiteName, () => {
 		const testName = `progressBarLcpColor test case #${index + 1}`;
 		const tags = [...sharedTags, 'integration:webVitals', 'webVitals:utils'];
 
-		test(testName, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('progressBarLcpColor tests');
-			await allure.tags(...tags);
-
-			await allure.parameter('data', String(data));
+		test(testName, async ({ setupAllure }) => {
+			await setupAllure({
+				subSuiteName: 'progressBarLcpColor tests',
+				tags,
+				parameters: {
+					data: String(data),
+				},
+			});
 
 			const result = progressBarLcpColor(data);
 			expect(result).toBe(expected);
@@ -441,13 +459,14 @@ describe(parentSuiteName, () => {
 		const testName = `progressBarLcpTrackColor test case #${index + 1}`;
 		const tags = [...sharedTags, 'integration:webVitals', 'webVitals:utils'];
 
-		test(testName, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('progressBarLcpTrackColor tests');
-			await allure.tags(...tags);
-
-			await allure.parameter('data', String(data));
+		test(testName, async ({ setupAllure }) => {
+			await setupAllure({
+				subSuiteName: 'progressBarLcpTrackColor tests',
+				tags,
+				parameters: {
+					data: String(data),
+				},
+			});
 
 			const result = progressBarLcpTrackColor(data);
 			expect(result).toBe(expected);
@@ -471,13 +490,14 @@ describe(parentSuiteName, () => {
 		const testName = `lcpTextColor test case #${index + 1}`;
 		const tags = [...sharedTags, 'integration:webVitals', 'webVitals:utils'];
 
-		test(testName, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('lcpTextColor tests');
-			await allure.tags(...tags);
-
-			await allure.parameter('data', String(data));
+		test(testName, async ({ setupAllure }) => {
+			await setupAllure({
+				subSuiteName: 'lcpTextColor tests',
+				tags,
+				parameters: {
+					data: String(data),
+				},
+			});
 
 			const result = lcpTextColor(data);
 			expect(result).toBe(expected);
@@ -501,13 +521,14 @@ describe(parentSuiteName, () => {
 		const testName = `calculateInpAverage test case #${index + 1}`;
 		const tags = [...sharedTags, 'integration:webVitals', 'webVitals:utils'];
 
-		test(testName, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('calculateInpAverage tests');
-			await allure.tags(...tags);
-
-			await allure.parameter('data', JSON.stringify(data));
+		test(testName, async ({ setupAllure }) => {
+			await setupAllure({
+				subSuiteName: 'calculateInpAverage tests',
+				tags,
+				parameters: {
+					data: JSON.stringify(data),
+				},
+			});
 
 			const result = calculateInpAverage(data);
 			expect(result).toBe(expected);
@@ -531,13 +552,14 @@ describe(parentSuiteName, () => {
 		const testName = `inpDataAverage test case #${index + 1}`;
 		const tags = [...sharedTags, 'integration:webVitals', 'webVitals:utils'];
 
-		test(testName, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('inpDataAverage tests');
-			await allure.tags(...tags);
-
-			await allure.parameter('data', JSON.stringify(data));
+		test(testName, async ({ setupAllure }) => {
+			await setupAllure({
+				subSuiteName: 'inpDataAverage tests',
+				tags,
+				parameters: {
+					data: JSON.stringify(data),
+				},
+			});
 
 			const result = inpDataAverage(data as WebVitalsResponseItem[]);
 			expect(result).toBe(expected);
@@ -565,13 +587,14 @@ describe(parentSuiteName, () => {
 		const testName = `calculateInpScoreText test case #${index + 1}`;
 		const tags = [...sharedTags, 'integration:webVitals', 'webVitals:utils'];
 
-		test(testName, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('calculateInpScoreText tests');
-			await allure.tags(...tags);
-
-			await allure.parameter('data', String(data));
+		test(testName, async ({ setupAllure }) => {
+			await setupAllure({
+				subSuiteName: 'calculateInpScoreText tests',
+				tags,
+				parameters: {
+					data: String(data),
+				},
+			});
 
 			const result = calculateInpScoreText(data);
 			expect(result).toBe(expected);
@@ -599,13 +622,14 @@ describe(parentSuiteName, () => {
 		const testName = `calculateInpScorePercent test case #${index + 1}`;
 		const tags = [...sharedTags, 'integration:webVitals', 'webVitals:utils'];
 
-		test(testName, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('calculateInpScorePercent tests');
-			await allure.tags(...tags);
-
-			await allure.parameter('data', String(data));
+		test(testName, async ({ setupAllure }) => {
+			await setupAllure({
+				subSuiteName: 'calculateInpScorePercent tests',
+				tags,
+				parameters: {
+					data: String(data),
+				},
+			});
 
 			const result = calculateInpScorePercent(data);
 			expect(result).toBe(expected);
@@ -629,13 +653,14 @@ describe(parentSuiteName, () => {
 		const testName = `progressBarInpColor test case #${index + 1}`;
 		const tags = [...sharedTags, 'integration:webVitals', 'webVitals:utils'];
 
-		test(testName, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('progressBarInpColor tests');
-			await allure.tags(...tags);
-
-			await allure.parameter('data', String(data));
+		test(testName, async ({ setupAllure }) => {
+			await setupAllure({
+				subSuiteName: 'progressBarInpColor tests',
+				tags,
+				parameters: {
+					data: String(data),
+				},
+			});
 
 			const result = progressBarInpColor(data);
 			expect(result).toBe(expected);
@@ -655,13 +680,14 @@ describe(parentSuiteName, () => {
 		const testName = `progressBarInpTrackColor test case #${index + 1}`;
 		const tags = [...sharedTags, 'integration:webVitals', 'webVitals:utils'];
 
-		test(testName, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('progressBarInpTrackColor tests');
-			await allure.tags(...tags);
-
-			await allure.parameter('data', String(data));
+		test(testName, async ({ setupAllure }) => {
+			await setupAllure({
+				subSuiteName: 'progressBarInpTrackColor tests',
+				tags,
+				parameters: {
+					data: String(data),
+				},
+			});
 
 			const result = progressBarInpTrackColor(data);
 			expect(result).toBe(expected);
@@ -685,13 +711,14 @@ describe(parentSuiteName, () => {
 		const testName = `inpTextColor test case #${index + 1}`;
 		const tags = [...sharedTags, 'integration:webVitals', 'webVitals:utils'];
 
-		test(testName, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('inpTextColor tests');
-			await allure.tags(...tags);
-
-			await allure.parameter('data', String(data));
+		test(testName, async ({ setupAllure }) => {
+			await setupAllure({
+				subSuiteName: 'inpTextColor tests',
+				tags,
+				parameters: {
+					data: String(data),
+				},
+			});
 
 			const result = inpTextColor(data);
 			expect(result).toBe(expected);
@@ -730,14 +757,15 @@ describe(parentSuiteName, () => {
 		const testName = `generateLighthouseFetchUrl test case #${index + 1}`;
 		const tags = [...sharedTags, 'integration:webVitals', 'webVitals:utils'];
 
-		test(testName, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('generateLighthouseFetchUrl tests');
-			await allure.tags(...tags);
-
-			await allure.parameter('url', url);
-			await allure.parameter('strategy', strategy ?? 'mobile (default)');
+		test(testName, async ({ setupAllure }) => {
+			await setupAllure({
+				subSuiteName: 'generateLighthouseFetchUrl tests',
+				tags,
+				parameters: {
+					url,
+					strategy: strategy ?? 'mobile (default)',
+				},
+			});
 
 			const result = generateLighthouseFetchUrl(
 				url,
