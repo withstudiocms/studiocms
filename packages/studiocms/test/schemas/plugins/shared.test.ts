@@ -14,7 +14,7 @@ import {
 } from '../../../src/schemas/plugins/shared';
 import { parentSuiteName, sharedTags } from '../../../test/test-utils';
 
-const localSuiteName = 'Shared Plugins Schemas tests';
+const localSuiteName = 'Plugins Schemas tests (Shared)';
 
 describe(parentSuiteName, () => {
 	[
@@ -213,13 +213,13 @@ describe(parentSuiteName, () => {
 			shouldThrow: false,
 		},
 	].forEach(({ fn, data, shouldThrow, schemaName }, index) => {
-		const testName = `Schema test case #${index + 1}`;
+		const testName = `Schema test case #${index + 1} | Current Schema: ${schemaName}`;
 		const tags = [...sharedTags, `schema:${schemaName}`];
 
 		test(testName, async () => {
 			await allure.parentSuite(parentSuiteName);
 			await allure.suite(localSuiteName);
-			await allure.subSuite(testName);
+			await allure.subSuite('Schema Tests');
 			await allure.tags(...tags);
 
 			await allure.parameter('data', JSON.stringify(data));
