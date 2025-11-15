@@ -1,4 +1,5 @@
-import { describe, expect, it } from 'vitest';
+import * as allure from 'allure-js-commons';
+import { describe, expect, it, test } from 'vitest';
 import {
 	apiRoute,
 	makeAPIRoute,
@@ -6,50 +7,169 @@ import {
 	sdkRouteResolver,
 	v1RestRoute,
 } from '../../../src/virtuals/lib/makeAPIRoute';
+import { parentSuiteName, sharedTags } from '../../test-utils.js';
 
-describe('makeAPIRoute', () => {
-	it('should return a function that generates correct API route', () => {
-		const userRoute = makeAPIRoute('users');
-		expect(userRoute('profile')).toBe('/studiocms_api/users/profile');
-		expect(userRoute('settings')).toBe('/studiocms_api/users/settings');
+const localSuiteName = 'Make API Route Virtual tests';
+
+describe(parentSuiteName, () => {
+	[
+		{
+			input: 'users',
+			cases: [
+				{
+					input: 'profile',
+					expected: '/studiocms_api/users/profile',
+				},
+				{
+					input: 'settings',
+					expected: '/studiocms_api/users/settings',
+				},
+			],
+		},
+		{
+			input: 'base',
+			cases: [
+				{
+					input: '',
+					expected: '/studiocms_api/base/',
+				},
+			],
+		},
+		{
+			input: '',
+			cases: [
+				{
+					input: 'test',
+					expected: '/studiocms_api//test',
+				},
+			],
+		},
+	].forEach(({ input, cases }) => {
+		cases.forEach(({ input: pathInput, expected }) => {
+			const testName = `makeAPIRoute('${input}')('${pathInput}') should return '${expected}'`;
+			const tags = [...sharedTags, 'lib:virtuals', 'function:makeAPIRoute'];
+			test(testName, async () => {
+				await allure.parentSuite(parentSuiteName);
+				await allure.suite(localSuiteName);
+				await allure.subSuite('makeAPIRoute test');
+				await allure.tags(...tags);
+
+				await allure.step(
+					`Testing makeAPIRoute with route: '${input}' and path: '${pathInput}'`,
+					async () => {
+						const routeFunction = makeAPIRoute(input);
+						const result = routeFunction(pathInput);
+						expect(result).toBe(expected);
+					}
+				);
+			});
+		});
 	});
 
-	it('should handle empty route string', () => {
-		const baseRoute = makeAPIRoute('base');
-		expect(baseRoute('')).toBe('/studiocms_api/base/');
+	[
+		{
+			input: 'init',
+			expected: '/studiocms_api/sdk/init',
+		},
+		{
+			input: 'status',
+			expected: '/studiocms_api/sdk/status',
+		},
+	].forEach(({ input, expected }) => {
+		const testName = `sdkRouteResolver('${input}') should return '${expected}'`;
+		const tags = [...sharedTags, 'lib:virtuals', 'function:sdkRouteResolver'];
+		test(testName, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('sdkRouteResolver test');
+			await allure.tags(...tags);
+
+			await allure.step(`Testing sdkRouteResolver with input: '${input}'`, async () => {
+				const result = sdkRouteResolver(input);
+				expect(result).toBe(expected);
+			});
+		});
 	});
 
-	it('should handle empty path string', () => {
-		const emptyPathRoute = makeAPIRoute('');
-		expect(emptyPathRoute('test')).toBe('/studiocms_api//test');
-	});
-});
+	[
+		{
+			input: 'render',
+			expected: '/studiocms_api/renderer/render',
+		},
+		{
+			input: 'preview',
+			expected: '/studiocms_api/renderer/preview',
+		},
+	].forEach(({ input, expected }) => {
+		const testName = `apiRoute('${input}') should return '${expected}'`;
+		const tags = [...sharedTags, 'lib:virtuals', 'function:apiRoute'];
+		test(testName, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('apiRoute test');
+			await allure.tags(...tags);
 
-describe('sdkRouteResolver', () => {
-	it('should generate SDK API route', () => {
-		expect(sdkRouteResolver('init')).toBe('/studiocms_api/sdk/init');
-		expect(sdkRouteResolver('status')).toBe('/studiocms_api/sdk/status');
+			await allure.step(`Testing apiRoute with input: '${input}'`, async () => {
+				const result = apiRoute(input);
+				expect(result).toBe(expected);
+			});
+		});
 	});
-});
 
-describe('apiRoute', () => {
-	it('should generate renderer API route', () => {
-		expect(apiRoute('render')).toBe('/studiocms_api/renderer/render');
-		expect(apiRoute('preview')).toBe('/studiocms_api/renderer/preview');
+	[
+		{
+			version: 'v1',
+			route: 'users',
+			expected: '/studiocms_api/rest/v1/users',
+		},
+		{
+			version: 'v2',
+			route: 'posts',
+			expected: '/studiocms_api/rest/v2/posts',
+		},
+	].forEach(({ version, route, expected }) => {
+		const testName = `restRoute('${version}')('${route}') should return '${expected}'`;
+		const tags = [...sharedTags, 'lib:virtuals', 'function:restRoute'];
+		test(testName, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('restRoute test');
+			await allure.tags(...tags);
+
+			await allure.step(
+				`Testing restRoute with version: '${version}' and route: '${route}'`,
+				async () => {
+					// @ts-expect-error testing invalid version
+					const routeFunction = restRoute(version);
+					const result = routeFunction(route);
+					expect(result).toBe(expected);
+				}
+			);
+		});
 	});
-});
 
-describe('restRoute', () => {
-	it('should generate REST API route for given version', () => {
-		expect(restRoute('v1')('users')).toBe('/studiocms_api/rest/v1/users');
-		// @ts-expect-error testing invalid version
-		expect(restRoute('v2')('posts')).toBe('/studiocms_api/rest/v2/posts');
-	});
-});
+	[
+		{
+			input: 'comments',
+			expected: '/studiocms_api/rest/v1/comments',
+		},
+		{
+			input: 'likes',
+			expected: '/studiocms_api/rest/v1/likes',
+		},
+	].forEach(({ input, expected }) => {
+		const testName = `v1RestRoute('${input}') should return '${expected}'`;
+		const tags = [...sharedTags, 'lib:virtuals', 'function:v1RestRoute'];
+		test(testName, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('v1RestRoute test');
+			await allure.tags(...tags);
 
-describe('v1RestRoute', () => {
-	it('should generate REST API route for v1', () => {
-		expect(v1RestRoute('comments')).toBe('/studiocms_api/rest/v1/comments');
-		expect(v1RestRoute('likes')).toBe('/studiocms_api/rest/v1/likes');
+			await allure.step(`Testing v1RestRoute with input: '${input}'`, async () => {
+				const result = v1RestRoute(input);
+				expect(result).toBe(expected);
+			});
+		});
 	});
 });

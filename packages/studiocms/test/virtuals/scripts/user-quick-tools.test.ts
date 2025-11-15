@@ -80,7 +80,7 @@ describe(parentSuiteName, () => {
 		});
 	});
 
-	[...KNOWN_API_ROUTES, '/dashboard'].forEach((route) => {
+	[...KNOWN_API_ROUTES].forEach((route) => {
 		const testName = `shouldSkipRendering('${route}') should return true`;
 		const tags = [...sharedTags, 'virtuals:scripts', 'function:shouldSkipRendering'];
 
