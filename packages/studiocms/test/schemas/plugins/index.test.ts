@@ -1,5 +1,5 @@
 import * as allure from 'allure-js-commons';
-import { describe, expect, test } from 'vitest';
+import { describe, expect } from 'vitest';
 import {
 	definePlugin,
 	SafePluginListItemSchema,
@@ -7,6 +7,7 @@ import {
 	type StudioCMSImageService,
 	StudioCMSSanitizeOptionsSchema,
 } from '../../../src/schemas/plugins/index';
+import { allureTester } from '../../fixtures/allureTester';
 import { parentSuiteName, sharedTags } from '../../test-utils';
 
 const localSuiteName = 'Plugins Schemas tests';
@@ -17,6 +18,11 @@ const mockFrontendNavigationLinks = [{ label: 'Home', href: '/' }];
 const mockPageTypes = [{ type: 'blog', label: 'Blog', identifier: 'mock/block' }];
 
 describe(parentSuiteName, () => {
+	const test = allureTester({
+		suiteName: localSuiteName,
+		suiteParentName: parentSuiteName,
+	});
+
 	[
 		{
 			data: {
@@ -43,13 +49,14 @@ describe(parentSuiteName, () => {
 		const testName = `StudioCMSSanitizeOptionsSchema test case #${index + 1}`;
 		const tags = [...sharedTags, 'schema:plugins', 'schema:StudioCMSSanitizeOptionsSchema'];
 
-		test(testName, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('StudioCMSSanitizeOptionsSchema tests');
-			await allure.tags(...tags);
-
-			await allure.parameter('data', JSON.stringify(data));
+		test(testName, async ({ setupAllure }) => {
+			await setupAllure({
+				subSuiteName: 'StudioCMSSanitizeOptionsSchema tests',
+				tags: [...tags],
+				parameters: {
+					data: JSON.stringify(data),
+				},
+			});
 
 			const result = StudioCMSSanitizeOptionsSchema.safeParse(data);
 			if (expected) {
@@ -79,13 +86,14 @@ describe(parentSuiteName, () => {
 		const testName = `SafePluginListItemSchema test case #${index + 1}`;
 		const tags = [...sharedTags, 'schema:plugins', 'schema:SafePluginListItemSchema'];
 
-		test(testName, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('SafePluginListItemSchema tests');
-			await allure.tags(...tags);
-
-			await allure.parameter('data', JSON.stringify(data));
+		test(testName, async ({ setupAllure }) => {
+			await setupAllure({
+				subSuiteName: 'SafePluginListItemSchema tests',
+				tags: [...tags],
+				parameters: {
+					data: JSON.stringify(data),
+				},
+			});
 
 			const result = SafePluginListItemSchema.safeParse(data);
 			if (expected) {
@@ -122,13 +130,14 @@ describe(parentSuiteName, () => {
 		const testName = `SafePluginListSchema test case #${index + 1}`;
 		const tags = [...sharedTags, 'schema:plugins', 'schema:SafePluginListSchema'];
 
-		test(testName, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('SafePluginListSchema tests');
-			await allure.tags(...tags);
-
-			await allure.parameter('data', JSON.stringify(data));
+		test(testName, async ({ setupAllure }) => {
+			await setupAllure({
+				subSuiteName: 'SafePluginListSchema tests',
+				tags: [...tags],
+				parameters: {
+					data: JSON.stringify(data),
+				},
+			});
 
 			const result = SafePluginListSchema.safeParse(data);
 			if (expected) {
@@ -139,13 +148,13 @@ describe(parentSuiteName, () => {
 		});
 	});
 
-	test('definePlugin returns correct plugin object', async () => {
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('definePlugin returns correct plugin object');
-		await allure.tags(...sharedTags, 'schema:plugins', 'function:definePlugin');
+	test('definePlugin returns correct plugin object', async ({ setupAllure, step }) => {
+		await setupAllure({
+			subSuiteName: 'definePlugin returns correct plugin object',
+			tags: [...sharedTags, 'schema:plugins', 'function:definePlugin'],
+		});
 
-		await allure.step('Defining a sample plugin', async () => {
+		await step('Defining a sample plugin', async () => {
 			const plugin = definePlugin({
 				identifier: '@studiocms/sample-plugin',
 				name: 'Sample Plugin',
@@ -159,13 +168,16 @@ describe(parentSuiteName, () => {
 		});
 	});
 
-	test('StudioCMSImageService accepts valid props and returns a string', async () => {
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('StudioCMSImageService accepts valid props and returns a string');
-		await allure.tags(...sharedTags, 'schema:plugins', 'type:StudioCMSImageService');
+	test('StudioCMSImageService accepts valid props and returns a string', async ({
+		setupAllure,
+		step,
+	}) => {
+		await setupAllure({
+			subSuiteName: 'StudioCMSImageService accepts valid props and returns a string',
+			tags: [...sharedTags, 'schema:plugins', 'type:StudioCMSImageService'],
+		});
 
-		await allure.step('Testing StudioCMSImageService function', async () => {
+		await step('Testing StudioCMSImageService function', async () => {
 			const service: StudioCMSImageService = (src, props) => {
 				return `${src}?w=${props.width}&h=${props.height}&alt=${props.alt}`;
 			};

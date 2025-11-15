@@ -1,12 +1,17 @@
-import * as allure from 'allure-js-commons';
-import { describe, expect, test } from 'vitest';
+import { describe, expect } from 'vitest';
 import { StudioCMSCoreError } from '../../../src/errors.js';
 import { headDefaults } from '../../../src/virtuals/lib/headDefaults';
+import { allureTester } from '../../fixtures/allureTester.js';
 import { parentSuiteName, sharedTags } from '../../test-utils.js';
 
 const localSuiteName = 'Head Defaults Virtual tests';
 
 describe(parentSuiteName, () => {
+	const test = allureTester({
+		suiteName: localSuiteName,
+		suiteParentName: parentSuiteName,
+	});
+
 	const AstroMock = { generator: 'Astro v3.0' };
 	const title = 'Test Title';
 	const description = 'Test Description';
@@ -15,14 +20,13 @@ describe(parentSuiteName, () => {
 	const ogImage = 'https://example.com/og-image.png';
 	const canonical = new URL('https://example.com');
 
-	test('should generate default head tags with required fields', async () => {
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('headDefaults test');
-		const tags = [...sharedTags, 'lib:virtuals', 'function:headDefaults'];
-		await allure.tags(...tags);
+	test('should generate default head tags with required fields', async ({ setupAllure, step }) => {
+		await setupAllure({
+			subSuiteName: 'headDefaults test',
+			tags: [...sharedTags, 'lib:virtuals', 'function:headDefaults'],
+		});
 
-		await allure.step('Testing headDefaults with required fields', async () => {
+		await step('Testing headDefaults with required fields', async () => {
 			// @ts-expect-error testing with mock
 			const result = headDefaults(title, description, lang, AstroMock, favicon, ogImage, canonical);
 
@@ -63,14 +67,16 @@ describe(parentSuiteName, () => {
 		});
 	});
 
-	test('should generate default head tags without optional ogImage and canonical', async () => {
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('headDefaults test');
-		const tags = [...sharedTags, 'lib:virtuals', 'function:headDefaults'];
-		await allure.tags(...tags);
+	test('should generate default head tags without optional ogImage and canonical', async ({
+		setupAllure,
+		step,
+	}) => {
+		await setupAllure({
+			subSuiteName: 'headDefaults test',
+			tags: [...sharedTags, 'lib:virtuals', 'function:headDefaults'],
+		});
 
-		await allure.step('Testing headDefaults without optional ogImage and canonical', async () => {
+		await step('Testing headDefaults without optional ogImage and canonical', async () => {
 			const result = headDefaults(
 				title,
 				description,
@@ -102,14 +108,13 @@ describe(parentSuiteName, () => {
 		});
 	});
 
-	test('should set correct favicon type for .png', async () => {
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('headDefaults test');
-		const tags = [...sharedTags, 'lib:virtuals', 'function:headDefaults'];
-		await allure.tags(...tags);
+	test('should set correct favicon type for .png', async ({ setupAllure, step }) => {
+		await setupAllure({
+			subSuiteName: 'headDefaults test',
+			tags: [...sharedTags, 'lib:virtuals', 'function:headDefaults'],
+		});
 
-		await allure.step('Testing favicon type for .png', async () => {
+		await step('Testing favicon type for .png', async () => {
 			const result = headDefaults(
 				title,
 				description,
@@ -128,14 +133,16 @@ describe(parentSuiteName, () => {
 		});
 	});
 
-	test('should throw StudioCMSCoreError for unsupported favicon extension', async () => {
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('headDefaults test');
-		const tags = [...sharedTags, 'lib:virtuals', 'function:headDefaults'];
-		await allure.tags(...tags);
+	test('should throw StudioCMSCoreError for unsupported favicon extension', async ({
+		setupAllure,
+		step,
+	}) => {
+		await setupAllure({
+			subSuiteName: 'headDefaults test',
+			tags: [...sharedTags, 'lib:virtuals', 'function:headDefaults'],
+		});
 
-		await allure.step('Testing unsupported favicon extension', async () => {
+		await step('Testing unsupported favicon extension', async () => {
 			expect(() =>
 				// @ts-expect-error testing with mock
 				headDefaults(title, description, lang, AstroMock, '/favicon.bmp', ogImage, canonical)

@@ -1,5 +1,4 @@
-import * as allure from 'allure-js-commons';
-import { describe, expect, it, test } from 'vitest';
+import { describe, expect } from 'vitest';
 import {
 	apiRoute,
 	makeAPIRoute,
@@ -7,11 +6,17 @@ import {
 	sdkRouteResolver,
 	v1RestRoute,
 } from '../../../src/virtuals/lib/makeAPIRoute';
+import { allureTester } from '../../fixtures/allureTester';
 import { parentSuiteName, sharedTags } from '../../test-utils.js';
 
 const localSuiteName = 'Make API Route Virtual tests';
 
 describe(parentSuiteName, () => {
+	const test = allureTester({
+		suiteName: localSuiteName,
+		suiteParentName: parentSuiteName,
+	});
+
 	[
 		{
 			input: 'users',
@@ -48,13 +53,13 @@ describe(parentSuiteName, () => {
 		cases.forEach(({ input: pathInput, expected }) => {
 			const testName = `makeAPIRoute('${input}')('${pathInput}') should return '${expected}'`;
 			const tags = [...sharedTags, 'lib:virtuals', 'function:makeAPIRoute'];
-			test(testName, async () => {
-				await allure.parentSuite(parentSuiteName);
-				await allure.suite(localSuiteName);
-				await allure.subSuite('makeAPIRoute test');
-				await allure.tags(...tags);
+			test(testName, async ({ setupAllure, step }) => {
+				await setupAllure({
+					subSuiteName: 'makeAPIRoute test',
+					tags: [...tags],
+				});
 
-				await allure.step(
+				await step(
 					`Testing makeAPIRoute with route: '${input}' and path: '${pathInput}'`,
 					async () => {
 						const routeFunction = makeAPIRoute(input);
@@ -78,13 +83,13 @@ describe(parentSuiteName, () => {
 	].forEach(({ input, expected }) => {
 		const testName = `sdkRouteResolver('${input}') should return '${expected}'`;
 		const tags = [...sharedTags, 'lib:virtuals', 'function:sdkRouteResolver'];
-		test(testName, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('sdkRouteResolver test');
-			await allure.tags(...tags);
+		test(testName, async ({ setupAllure, step }) => {
+			await setupAllure({
+				subSuiteName: 'sdkRouteResolver test',
+				tags: [...tags],
+			});
 
-			await allure.step(`Testing sdkRouteResolver with input: '${input}'`, async () => {
+			await step(`Testing sdkRouteResolver with input: '${input}'`, async () => {
 				const result = sdkRouteResolver(input);
 				expect(result).toBe(expected);
 			});
@@ -103,13 +108,13 @@ describe(parentSuiteName, () => {
 	].forEach(({ input, expected }) => {
 		const testName = `apiRoute('${input}') should return '${expected}'`;
 		const tags = [...sharedTags, 'lib:virtuals', 'function:apiRoute'];
-		test(testName, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('apiRoute test');
-			await allure.tags(...tags);
+		test(testName, async ({ setupAllure, step }) => {
+			await setupAllure({
+				subSuiteName: 'apiRoute test',
+				tags: [...tags],
+			});
 
-			await allure.step(`Testing apiRoute with input: '${input}'`, async () => {
+			await step(`Testing apiRoute with input: '${input}'`, async () => {
 				const result = apiRoute(input);
 				expect(result).toBe(expected);
 			});
@@ -130,21 +135,18 @@ describe(parentSuiteName, () => {
 	].forEach(({ version, route, expected }) => {
 		const testName = `restRoute('${version}')('${route}') should return '${expected}'`;
 		const tags = [...sharedTags, 'lib:virtuals', 'function:restRoute'];
-		test(testName, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('restRoute test');
-			await allure.tags(...tags);
+		test(testName, async ({ setupAllure, step }) => {
+			await setupAllure({
+				subSuiteName: 'restRoute test',
+				tags: [...tags],
+			});
 
-			await allure.step(
-				`Testing restRoute with version: '${version}' and route: '${route}'`,
-				async () => {
-					// @ts-expect-error testing invalid version
-					const routeFunction = restRoute(version);
-					const result = routeFunction(route);
-					expect(result).toBe(expected);
-				}
-			);
+			await step(`Testing restRoute with version: '${version}' and route: '${route}'`, async () => {
+				// @ts-expect-error testing invalid version
+				const routeFunction = restRoute(version);
+				const result = routeFunction(route);
+				expect(result).toBe(expected);
+			});
 		});
 	});
 
@@ -160,13 +162,13 @@ describe(parentSuiteName, () => {
 	].forEach(({ input, expected }) => {
 		const testName = `v1RestRoute('${input}') should return '${expected}'`;
 		const tags = [...sharedTags, 'lib:virtuals', 'function:v1RestRoute'];
-		test(testName, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('v1RestRoute test');
-			await allure.tags(...tags);
+		test(testName, async ({ setupAllure, step }) => {
+			await setupAllure({
+				subSuiteName: 'v1RestRoute test',
+				tags: [...tags],
+			});
 
-			await allure.step(`Testing v1RestRoute with input: '${input}'`, async () => {
+			await step(`Testing v1RestRoute with input: '${input}'`, async () => {
 				const result = v1RestRoute(input);
 				expect(result).toBe(expected);
 			});

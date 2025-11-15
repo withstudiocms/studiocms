@@ -1,5 +1,4 @@
-import * as allure from 'allure-js-commons';
-import { describe, expect, it, test } from 'vitest';
+import { describe, expect } from 'vitest';
 import {
 	getDeleteRoute,
 	getEditRoute,
@@ -8,19 +7,24 @@ import {
 	makeNonDashboardRoute,
 	StudioCMSRoutes,
 } from '../../../src/virtuals/lib/routeMap';
+import { allureTester } from '../../fixtures/allureTester';
 import { parentSuiteName, sharedTags } from '../../test-utils.js';
 
 const localSuiteName = 'Route Map Virtual tests';
 
 describe(parentSuiteName, () => {
-	test('getSluggedRoute - should return correct slugged route', async () => {
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('getSluggedRoute test');
-		const tags = [...sharedTags, 'routeMap:virtuals', 'function:getSluggedRoute'];
-		await allure.tags(...tags);
+	const test = allureTester({
+		suiteName: localSuiteName,
+		suiteParentName: parentSuiteName,
+	});
 
-		await allure.step('Testing getSluggedRoute function', async () => {
+	test('getSluggedRoute - should return correct slugged route', async ({ setupAllure, step }) => {
+		await setupAllure({
+			subSuiteName: 'getSluggedRoute test',
+			tags: [...sharedTags, 'routeMap:virtuals', 'function:getSluggedRoute'],
+		});
+
+		await step('Testing getSluggedRoute function', async () => {
 			const url = 'edit/pages/';
 			const slug = 'my-slug';
 			const route = getSluggedRoute(url, slug);
@@ -29,14 +33,13 @@ describe(parentSuiteName, () => {
 		});
 	});
 
-	test('getEditRoute - should return correct edit route', async () => {
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('getEditRoute test');
-		const tags = [...sharedTags, 'routeMap:virtuals', 'function:getEditRoute'];
-		await allure.tags(...tags);
+	test('getEditRoute - should return correct edit route', async ({ setupAllure, step }) => {
+		await setupAllure({
+			subSuiteName: 'getEditRoute test',
+			tags: [...sharedTags, 'routeMap:virtuals', 'function:getEditRoute'],
+		});
 
-		await allure.step('Testing getEditRoute function', async () => {
+		await step('Testing getEditRoute function', async () => {
 			const slug = 'page-123';
 			const route = getEditRoute(slug);
 			expect(typeof route).toBe('string');
@@ -44,14 +47,13 @@ describe(parentSuiteName, () => {
 		});
 	});
 
-	test('getDeleteRoute - should return correct delete route', async () => {
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('getDeleteRoute test');
-		const tags = [...sharedTags, 'routeMap:virtuals', 'function:getDeleteRoute'];
-		await allure.tags(...tags);
+	test('getDeleteRoute - should return correct delete route', async ({ setupAllure, step }) => {
+		await setupAllure({
+			subSuiteName: 'getDeleteRoute test',
+			tags: [...sharedTags, 'routeMap:virtuals', 'function:getDeleteRoute'],
+		});
 
-		await allure.step('Testing getDeleteRoute function', async () => {
+		await step('Testing getDeleteRoute function', async () => {
 			const slug = 'page-456';
 			const route = getDeleteRoute(slug);
 			expect(typeof route).toBe('string');
@@ -59,28 +61,26 @@ describe(parentSuiteName, () => {
 		});
 	});
 
-	test('makeNonDashboardRoute - should return correct route', async () => {
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('makeNonDashboardRoute test');
-		const tags = [...sharedTags, 'routeMap:virtuals', 'function:makeNonDashboardRoute'];
-		await allure.tags(...tags);
+	test('makeNonDashboardRoute - should return correct route', async ({ setupAllure, step }) => {
+		await setupAllure({
+			subSuiteName: 'makeNonDashboardRoute test',
+			tags: [...sharedTags, 'routeMap:virtuals', 'function:makeNonDashboardRoute'],
+		});
 
-		await allure.step('Testing makeNonDashboardRoute function', async () => {
+		await step('Testing makeNonDashboardRoute function', async () => {
 			const route = makeNonDashboardRoute('about');
 			expect(typeof route).toBe('string');
 			expect(route).toContain('about');
 		});
 	});
 
-	test('makeDashboardRoute - should return correct route', async () => {
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('makeDashboardRoute test');
-		const tags = [...sharedTags, 'routeMap:virtuals', 'function:makeDashboardRoute'];
-		await allure.tags(...tags);
+	test('makeDashboardRoute - should return correct route', async ({ setupAllure, step }) => {
+		await setupAllure({
+			subSuiteName: 'makeDashboardRoute test',
+			tags: [...sharedTags, 'routeMap:virtuals', 'function:makeDashboardRoute'],
+		});
 
-		await allure.step('Testing makeDashboardRoute function', async () => {
+		await step('Testing makeDashboardRoute function', async () => {
 			const route = makeDashboardRoute('profile');
 			expect(typeof route).toBe('string');
 			expect(route).toContain('profile');
@@ -108,14 +108,13 @@ describe(parentSuiteName, () => {
 			'passwordReset',
 		] as const
 	).forEach((key) => {
-		test(`StudioCMSRoutes.mainLinks.${key} should be defined`, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite(`StudioCMSRoutes.mainLinks.${key} test`);
-			const tags = [...sharedTags, 'routeMap:virtuals', `StudioCMSRoutes.mainLinks:${key}`];
-			await allure.tags(...tags);
+		test(`StudioCMSRoutes.mainLinks.${key} should be defined`, async ({ setupAllure, step }) => {
+			await setupAllure({
+				subSuiteName: `StudioCMSRoutes.mainLinks.${key} test`,
+				tags: [...sharedTags, 'routeMap:virtuals', `StudioCMSRoutes.mainLinks:${key}`],
+			});
 
-			await allure.step(`Checking StudioCMSRoutes.mainLinks.${key} existence`, async () => {
+			await step(`Checking StudioCMSRoutes.mainLinks.${key} existence`, async () => {
 				expect(StudioCMSRoutes.mainLinks[key]).toBeDefined();
 				expect(typeof StudioCMSRoutes.mainLinks[key]).toBe('string');
 			});
@@ -133,14 +132,13 @@ describe(parentSuiteName, () => {
 			'forgotPasswordAPI',
 		] as const
 	).forEach((key) => {
-		test(`StudioCMSRoutes.authLinks.${key} should be defined`, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite(`StudioCMSRoutes.authLinks.${key} test`);
-			const tags = [...sharedTags, 'routeMap:virtuals', `StudioCMSRoutes.authLinks:${key}`];
-			await allure.tags(...tags);
+		test(`StudioCMSRoutes.authLinks.${key} should be defined`, async ({ setupAllure, step }) => {
+			await setupAllure({
+				subSuiteName: `StudioCMSRoutes.authLinks.${key} test`,
+				tags: [...sharedTags, 'routeMap:virtuals', `StudioCMSRoutes.authLinks:${key}`],
+			});
 
-			await allure.step(`Checking StudioCMSRoutes.authLinks.${key} existence`, async () => {
+			await step(`Checking StudioCMSRoutes.authLinks.${key} existence`, async () => {
 				expect(StudioCMSRoutes.authLinks[key]).toBeDefined();
 				expect(typeof StudioCMSRoutes.authLinks[key]).toBe('string');
 			});
@@ -148,14 +146,13 @@ describe(parentSuiteName, () => {
 	});
 
 	(['oAuthIndex', 'oAuthCallback'] as const).forEach((key) => {
-		test(`StudioCMSRoutes.authLinks.${key} should be defined`, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite(`StudioCMSRoutes.authLinks.${key} test`);
-			const tags = [...sharedTags, 'routeMap:virtuals', `StudioCMSRoutes.authLinks:${key}`];
-			await allure.tags(...tags);
+		test(`StudioCMSRoutes.authLinks.${key} should be defined`, async ({ setupAllure, step }) => {
+			await setupAllure({
+				subSuiteName: `StudioCMSRoutes.authLinks.${key} test`,
+				tags: [...sharedTags, 'routeMap:virtuals', `StudioCMSRoutes.authLinks:${key}`],
+			});
 
-			await allure.step(`Checking StudioCMSRoutes.authLinks.${key} existence`, async () => {
+			await step(`Checking StudioCMSRoutes.authLinks.${key} existence`, async () => {
 				expect(StudioCMSRoutes.authLinks[key]).toBeDefined();
 				expect(typeof StudioCMSRoutes.authLinks[key]).toBe('function');
 			});

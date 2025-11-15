@@ -1,9 +1,7 @@
 /** biome-ignore-all lint/style/noNonNullAssertion: allowed for tests */
-import * as allure from 'allure-js-commons';
 import type { AstroConfig } from 'astro';
-import { describe, expect, test } from 'vitest';
+import { describe, expect } from 'vitest';
 import {
-	AstroConfigImageSettings,
 	AstroConfigViteSettings,
 	AuthSessionCookieName,
 	CMSMailerConfigId,
@@ -28,11 +26,17 @@ import {
 	studioCMSSocials,
 	versionCacheLifetime,
 } from '../src/consts';
+import { allureTester } from './fixtures/allureTester';
 import { parentSuiteName, sharedTags } from './test-utils';
 
 const localSuiteName = 'consts.ts tests';
 
 describe(parentSuiteName, () => {
+	const test = allureTester({
+		suiteName: localSuiteName,
+		suiteParentName: parentSuiteName,
+	});
+
 	[
 		{
 			name: 'CMSSiteConfigId',
@@ -270,13 +274,13 @@ describe(parentSuiteName, () => {
 			expected: 'auth_session',
 		},
 	].forEach(({ name, actual, expected }) => {
-		test(`Const: ${name}`, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite(`Const: ${name}`);
-			await allure.tags(...sharedTags, 'module:consts', `const:${name}`);
+		test(`Const: ${name}`, async ({ setupAllure, step }) => {
+			await setupAllure({
+				subSuiteName: `Const: ${name}`,
+				tags: [...sharedTags, 'module:consts', `const:${name}`],
+			});
 
-			await allure.step(`Checking value of ${name}`, async (ctx) => {
+			await step(`Checking value of ${name}`, async (ctx) => {
 				await ctx.parameter('expected', JSON.stringify(expected));
 				await ctx.parameter('actual', JSON.stringify(actual));
 				expect(actual).toBe(expected);
@@ -284,13 +288,13 @@ describe(parentSuiteName, () => {
 		});
 	});
 
-	test('StudioCMSDefaultRobotsConfig', async () => {
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('Function: StudioCMSDefaultRobotsConfig');
-		await allure.tags(...sharedTags, 'module:consts', 'function:StudioCMSDefaultRobotsConfig');
+	test('StudioCMSDefaultRobotsConfig', async ({ setupAllure, step }) => {
+		await setupAllure({
+			subSuiteName: 'Function: StudioCMSDefaultRobotsConfig',
+			tags: [...sharedTags, 'module:consts', 'function:StudioCMSDefaultRobotsConfig'],
+		});
 
-		await allure.step('Generating default robots config', async (ctx) => {
+		await step('Generating default robots config', async (ctx) => {
 			const config: AstroConfig = { site: 'https://example.com' } as AstroConfig;
 			const robots = StudioCMSDefaultRobotsConfig({
 				config,

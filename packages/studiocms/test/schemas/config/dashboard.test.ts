@@ -1,11 +1,16 @@
-import * as allure from 'allure-js-commons';
-import { describe, expect, test } from 'vitest';
+import { describe, expect } from 'vitest';
 import { dashboardConfigSchema } from '../../../src/schemas/config/dashboard';
+import { allureTester } from '../../fixtures/allureTester';
 import { parentSuiteName, sharedTags } from '../../test-utils';
 
 const localSuiteName = 'Config Schemas tests (Dashboard)';
 
 describe(parentSuiteName, () => {
+	const test = allureTester({
+		suiteName: localSuiteName,
+		suiteParentName: parentSuiteName,
+	});
+
 	const _dashboardConfigSchemaExpectedResult = {
 		dashboardEnabled: true,
 		inject404Route: true,
@@ -54,13 +59,14 @@ describe(parentSuiteName, () => {
 		const testName = `dashboardConfigSchema optional test case #${index + 1}`;
 		const tags = [...sharedTags, 'schema:config', 'schema:dashboardConfigSchema'];
 
-		test(testName, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('dashboardConfigSchema tests');
-			await allure.tags(...tags);
-
-			await allure.parameter('data', JSON.stringify(opts));
+		test(testName, async ({ setupAllure }) => {
+			await setupAllure({
+				subSuiteName: 'dashboardConfigSchema tests',
+				tags: [...tags],
+				parameters: {
+					data: JSON.stringify(opts),
+				},
+			});
 
 			const result = dashboardConfigSchema.parse(opts);
 			expect(result).toBeDefined();
@@ -92,13 +98,14 @@ describe(parentSuiteName, () => {
 		const testName = `dashboardConfigSchema invalid data test case #${index + 1}`;
 		const tags = [...sharedTags, 'schema:config', 'schema:dashboardConfigSchema'];
 
-		test(testName, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('dashboardConfigSchema tests');
-			await allure.tags(...tags);
-
-			await allure.parameter('data', JSON.stringify(opts));
+		test(testName, async ({ setupAllure }) => {
+			await setupAllure({
+				subSuiteName: 'dashboardConfigSchema tests',
+				tags: [...tags],
+				parameters: {
+					data: JSON.stringify(opts),
+				},
+			});
 
 			expect(() => dashboardConfigSchema.parse(opts)).toThrow();
 		});

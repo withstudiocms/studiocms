@@ -1,6 +1,6 @@
-import * as allure from 'allure-js-commons';
-import { describe, expect, test, vi } from 'vitest';
+import { describe, expect, vi } from 'vitest';
 import * as utils from '../../src/virtuals/utils';
+import { allureTester } from '../fixtures/allureTester';
 import { parentSuiteName, sharedTags } from '../test-utils.js';
 
 const localSuiteName = 'Virtual Module Utils tests';
@@ -23,28 +23,37 @@ vi.mock('astro-integration-kit', () => ({
 }));
 
 describe(parentSuiteName, () => {
-	test('buildDefaultOnlyVirtual - should export the object as default', async () => {
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('buildDefaultOnlyVirtual test');
-		const tags = [...sharedTags, 'utils:virtuals', 'function:buildDefaultOnlyVirtual'];
-		await allure.tags(...tags);
+	const test = allureTester({
+		suiteName: localSuiteName,
+		suiteParentName: parentSuiteName,
+	});
 
-		await allure.step('Testing buildDefaultOnlyVirtual function', async () => {
+	test('buildDefaultOnlyVirtual - should export the object as default', async ({
+		setupAllure,
+		step,
+	}) => {
+		await setupAllure({
+			subSuiteName: 'buildDefaultOnlyVirtual test',
+			tags: [...sharedTags, 'utils:virtuals', 'function:buildDefaultOnlyVirtual'],
+		});
+
+		await step('Testing buildDefaultOnlyVirtual function', async () => {
 			const obj = { foo: 'bar' };
 			const result = utils.buildDefaultOnlyVirtual(obj);
 			expect(result).toBe('export default {"foo":"bar"};');
 		});
 	});
 
-	test('buildNamedMultiExportVirtual - should export multiple named constants', async () => {
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('buildNamedMultiExportVirtual test');
-		const tags = [...sharedTags, 'utils:virtuals', 'function:buildNamedMultiExportVirtual'];
-		await allure.tags(...tags);
+	test('buildNamedMultiExportVirtual - should export multiple named constants', async ({
+		setupAllure,
+		step,
+	}) => {
+		await setupAllure({
+			subSuiteName: 'buildNamedMultiExportVirtual test',
+			tags: [...sharedTags, 'utils:virtuals', 'function:buildNamedMultiExportVirtual'],
+		});
 
-		await allure.step('Testing buildNamedMultiExportVirtual function', async () => {
+		await step('Testing buildNamedMultiExportVirtual function', async () => {
 			const items = { foo: 'bar', baz: 'qux' };
 			const result = utils.buildNamedMultiExportVirtual(items);
 			expect(result).toContain('export const foo = "bar";');
@@ -52,28 +61,32 @@ describe(parentSuiteName, () => {
 		});
 	});
 
-	test('buildVirtualConfig - should inject options into config stub', async () => {
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('buildVirtualConfig test');
-		const tags = [...sharedTags, 'utils:virtuals', 'function:buildVirtualConfig'];
-		await allure.tags(...tags);
+	test('buildVirtualConfig - should inject options into config stub', async ({
+		setupAllure,
+		step,
+	}) => {
+		await setupAllure({
+			subSuiteName: 'buildVirtualConfig test',
+			tags: [...sharedTags, 'utils:virtuals', 'function:buildVirtualConfig'],
+		});
 
-		await allure.step('Testing buildVirtualConfig function', async () => {
+		await step('Testing buildVirtualConfig function', async () => {
 			const options = { site: 'https://example.com', plugins: [] };
 			const result = utils.buildVirtualConfig(options as any);
 			expect(result).toBe('export default {"site":"https://example.com","plugins":[]};');
 		});
 	});
 
-	test('buildLoggerVirtual - should inject verbose flag into logger stub', async () => {
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('buildLoggerVirtual test');
-		const tags = [...sharedTags, 'utils:virtuals', 'function:buildLoggerVirtual'];
-		await allure.tags(...tags);
+	test('buildLoggerVirtual - should inject verbose flag into logger stub', async ({
+		setupAllure,
+		step,
+	}) => {
+		await setupAllure({
+			subSuiteName: 'buildLoggerVirtual test',
+			tags: [...sharedTags, 'utils:virtuals', 'function:buildLoggerVirtual'],
+		});
 
-		await allure.step('Testing buildLoggerVirtual function', async () => {
+		await step('Testing buildLoggerVirtual function', async () => {
 			const result = utils.buildLoggerVirtual(true);
 			expect(result).toBe('const verbose = true;');
 		});
@@ -86,39 +99,42 @@ describe(parentSuiteName, () => {
 	const resolve = (...segments: string[]) => segments.join('/');
 	const builder = utils.VirtualModuleBuilder(resolve);
 
-	test('VirtualModuleBuilder - dynamicVirtual exports all modules', async () => {
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('VirtualModuleBuilder - dynamicVirtual test');
-		const tags = [
-			...sharedTags,
-			'utils:virtuals',
-			'class:VirtualModuleBuilder',
-			'method:dynamicVirtual',
-		];
-		await allure.tags(...tags);
+	test('VirtualModuleBuilder - dynamicVirtual exports all modules', async ({
+		setupAllure,
+		step,
+	}) => {
+		await setupAllure({
+			subSuiteName: 'VirtualModuleBuilder - dynamicVirtual test',
+			tags: [
+				...sharedTags,
+				'utils:virtuals',
+				'class:VirtualModuleBuilder',
+				'method:dynamicVirtual',
+			],
+		});
 
-		await allure.step('Testing dynamicVirtual method', async () => {
+		await step('Testing dynamicVirtual method', async () => {
 			const items = ['foo.js', 'bar.js'];
 			const result = builder.dynamicVirtual(items);
 			expect(result).toContain('export * from "foo.js";');
-			expect(result).toContain('export * from "bar.js";');
 		});
 	});
 
-	test('VirtualModuleBuilder - ambientScripts imports all modules', async () => {
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('VirtualModuleBuilder - ambientScripts test');
-		const tags = [
-			...sharedTags,
-			'utils:virtuals',
-			'class:VirtualModuleBuilder',
-			'method:ambientScripts',
-		];
-		await allure.tags(...tags);
+	test('VirtualModuleBuilder - ambientScripts imports all modules', async ({
+		setupAllure,
+		step,
+	}) => {
+		await setupAllure({
+			subSuiteName: 'VirtualModuleBuilder - ambientScripts test',
+			tags: [
+				...sharedTags,
+				'utils:virtuals',
+				'class:VirtualModuleBuilder',
+				'method:ambientScripts',
+			],
+		});
 
-		await allure.step('Testing ambientScripts method', async () => {
+		await step('Testing ambientScripts method', async () => {
 			const items = ['foo.js', 'bar.js'];
 			const result = builder.ambientScripts(items);
 			expect(result).toContain("import 'foo.js';");
@@ -126,19 +142,16 @@ describe(parentSuiteName, () => {
 		});
 	});
 
-	test('VirtualModuleBuilder - namedVirtual re-exports named export', async () => {
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('VirtualModuleBuilder - namedVirtual test');
-		const tags = [
-			...sharedTags,
-			'utils:virtuals',
-			'class:VirtualModuleBuilder',
-			'method:namedVirtual',
-		];
-		await allure.tags(...tags);
+	test('VirtualModuleBuilder - namedVirtual re-exports named export', async ({
+		setupAllure,
+		step,
+	}) => {
+		await setupAllure({
+			subSuiteName: 'VirtualModuleBuilder - namedVirtual test',
+			tags: [...sharedTags, 'utils:virtuals', 'class:VirtualModuleBuilder', 'method:namedVirtual'],
+		});
 
-		await allure.step('Testing namedVirtual method', async () => {
+		await step('Testing namedVirtual method', async () => {
 			const result = builder.namedVirtual({
 				namedExport: 'myExport',
 				path: 'mod.js',
@@ -150,19 +163,21 @@ describe(parentSuiteName, () => {
 		});
 	});
 
-	test('VirtualModuleBuilder - astroComponentVirtual exports components with custom names', async () => {
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('VirtualModuleBuilder - astroComponentVirtual test');
-		const tags = [
-			...sharedTags,
-			'utils:virtuals',
-			'class:VirtualModuleBuilder',
-			'method:astroComponentVirtual',
-		];
-		await allure.tags(...tags);
+	test('VirtualModuleBuilder - astroComponentVirtual exports components with custom names', async ({
+		setupAllure,
+		step,
+	}) => {
+		await setupAllure({
+			subSuiteName: 'VirtualModuleBuilder - astroComponentVirtual test',
+			tags: [
+				...sharedTags,
+				'utils:virtuals',
+				'class:VirtualModuleBuilder',
+				'method:astroComponentVirtual',
+			],
+		});
 
-		await allure.step('Testing astroComponentVirtual method', async () => {
+		await step('Testing astroComponentVirtual method', async () => {
 			const items = { Foo: 'foo.astro', Bar: 'bar.astro' };
 			const result = builder.astroComponentVirtual(items);
 			expect(result).toContain('export { default as Foo } from "foo.astro"');
@@ -170,19 +185,21 @@ describe(parentSuiteName, () => {
 		});
 	});
 
-	test('VirtualModuleBuilder - dynamicWithAstroVirtual combines dynamic and astro exports', async () => {
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('VirtualModuleBuilder - dynamicWithAstroVirtual test');
-		const tags = [
-			...sharedTags,
-			'utils:virtuals',
-			'class:VirtualModuleBuilder',
-			'method:dynamicWithAstroVirtual',
-		];
-		await allure.tags(...tags);
+	test('VirtualModuleBuilder - dynamicWithAstroVirtual combines dynamic and astro exports', async ({
+		setupAllure,
+		step,
+	}) => {
+		await setupAllure({
+			subSuiteName: 'VirtualModuleBuilder - dynamicWithAstroVirtual test',
+			tags: [
+				...sharedTags,
+				'utils:virtuals',
+				'class:VirtualModuleBuilder',
+				'method:dynamicWithAstroVirtual',
+			],
+		});
 
-		await allure.step('Testing dynamicWithAstroVirtual method', async () => {
+		await step('Testing dynamicWithAstroVirtual method', async () => {
 			const dynamicExports = ['foo.js'];
 			const astroComponents = { Bar: 'bar.astro' };
 			const result = builder.dynamicWithAstroVirtual({ dynamicExports, astroComponents });

@@ -1,5 +1,4 @@
-import * as allure from 'allure-js-commons';
-import { describe, expect, test } from 'vitest';
+import { describe, expect } from 'vitest';
 import {
 	getCurrentURLPath,
 	getLangFromUrl,
@@ -8,6 +7,7 @@ import {
 	useTranslatedPath,
 	useTranslations,
 } from '../../../src/virtuals/i18n/server';
+import { allureTester } from '../../fixtures/allureTester';
 import { parentSuiteName, sharedTags } from '../../test-utils';
 
 const localSuiteName = 'i18n Server Virtuals tests';
@@ -25,6 +25,11 @@ function createAstroGlobal(pathname: string, referer?: string): any {
 }
 
 describe(parentSuiteName, () => {
+	const test = allureTester({
+		suiteName: localSuiteName,
+		suiteParentName: parentSuiteName,
+	});
+
 	[
 		{
 			key: 'title',
@@ -46,15 +51,16 @@ describe(parentSuiteName, () => {
 		const testName = `useTranslations returns correct translation for key "${key}"`;
 		const tags = [...sharedTags, 'virtual:i18n', 'function:useTranslations'];
 
-		test(testName, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('useTranslations tests');
-			await allure.tags(...tags);
+		test(testName, async ({ setupAllure, step }) => {
+			await setupAllure({
+				subSuiteName: 'useTranslations tests',
+				tags: [...tags],
+				parameters: {
+					key,
+				},
+			});
 
-			await allure.parameter('key', key);
-
-			await allure.step(`Calling useTranslations with key "${key}"`, async () => {
+			await step(`Calling useTranslations with key "${key}"`, async () => {
 				const t = useTranslations('en', '@studiocms/auth:login');
 				// @ts-expect-error dynamic key
 				const result = t(key);
@@ -63,17 +69,21 @@ describe(parentSuiteName, () => {
 		});
 	});
 
-	test('useTranslatedPath returns path without lang prefix for English when showDefaultLang is false', async () => {
+	test('useTranslatedPath returns path without lang prefix for English when showDefaultLang is false', async ({
+		setupAllure,
+		step,
+	}) => {
 		const tags = [...sharedTags, 'virtual:i18n', 'function:useTranslatedPath'];
 
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('useTranslatedPath tests');
-		await allure.tags(...tags);
+		await setupAllure({
+			subSuiteName: 'useTranslatedPath tests',
+			tags: [...tags],
+			parameters: {
+				language: 'en',
+			},
+		});
 
-		await allure.parameter('language', 'en');
-
-		await allure.step('Calling useTranslatedPath with "en"', async () => {
+		await step('Calling useTranslatedPath with "en"', async () => {
 			const translatePath = useTranslatedPath('en');
 			const result = translatePath('/dashboard');
 			expect(result).toBe('/dashboard');
@@ -95,15 +105,16 @@ describe(parentSuiteName, () => {
 		const expectedLang = url.includes('/en/') || url === 'http://localhost/dashboard' ? 'en' : 'en';
 		const tags = [...sharedTags, 'virtual:i18n', 'function:getLangFromUrl'];
 
-		test(testName, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('getLangFromUrl tests');
-			await allure.tags(...tags);
+		test(testName, async ({ setupAllure, step }) => {
+			await setupAllure({
+				subSuiteName: 'getLangFromUrl tests',
+				tags: [...tags],
+				parameters: {
+					url,
+				},
+			});
 
-			await allure.parameter('url', url);
-
-			await allure.step(`Calling getLangFromUrl with URL "${url}"`, async () => {
+			await step(`Calling getLangFromUrl with URL "${url}"`, async () => {
 				const result = getLangFromUrl(new URL(url));
 				expect(result).toBe(expectedLang);
 			});
@@ -130,16 +141,17 @@ describe(parentSuiteName, () => {
 		const testName = `getCurrentURLPath returns correct path for pathname "${pathname}" and referer "${referer}"`;
 		const tags = [...sharedTags, 'virtual:i18n', 'function:getCurrentURLPath'];
 
-		test(testName, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('getCurrentURLPath tests');
-			await allure.tags(...tags);
+		test(testName, async ({ setupAllure, step }) => {
+			await setupAllure({
+				subSuiteName: 'getCurrentURLPath tests',
+				tags: [...tags],
+				parameters: {
+					pathname,
+					referer: String(referer),
+				},
+			});
 
-			await allure.parameter('pathname', pathname);
-			await allure.parameter('referer', String(referer));
-
-			await allure.step(
+			await step(
 				`Calling getCurrentURLPath with pathname "${pathname}" and referer "${referer}"`,
 				async () => {
 					const Astro = createAstroGlobal(pathname, referer);
@@ -150,18 +162,19 @@ describe(parentSuiteName, () => {
 		});
 	});
 
-	test('switchLanguage switches path to selected language', async () => {
+	test('switchLanguage switches path to selected language', async ({ setupAllure, step }) => {
 		const tags = [...sharedTags, 'virtual:i18n', 'function:switchLanguage'];
 
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('switchLanguage tests');
-		await allure.tags(...tags);
+		await setupAllure({
+			subSuiteName: 'switchLanguage tests',
+			tags: [...tags],
+			parameters: {
+				currentPath: '/dashboard',
+				targetLanguage: 'en',
+			},
+		});
 
-		await allure.parameter('currentPath', '/dashboard');
-		await allure.parameter('targetLanguage', 'en');
-
-		await allure.step('Calling switchLanguage to switch to "en"', async () => {
+		await step('Calling switchLanguage to switch to "en"', async () => {
 			const Astro = createAstroGlobal('/dashboard');
 			const switcher = switchLanguage(Astro);
 			const result = switcher('en');
@@ -169,15 +182,15 @@ describe(parentSuiteName, () => {
 		});
 	});
 
-	test('staticPaths generates correct paths', async () => {
+	test('staticPaths generates correct paths', async ({ setupAllure, step }) => {
 		const tags = [...sharedTags, 'virtual:i18n', 'function:staticPaths'];
 
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('staticPaths tests');
-		await allure.tags(...tags);
+		await setupAllure({
+			subSuiteName: 'staticPaths tests',
+			tags: [...tags],
+		});
 
-		await allure.step('Calling staticPaths', async () => {
+		await step('Calling staticPaths', async () => {
 			const paths = staticPaths();
 			expect(paths).toContainEqual({ params: { locale: undefined } });
 			expect(paths).not.toContainEqual({ params: { locale: 'en' } });

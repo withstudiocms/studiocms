@@ -8,8 +8,6 @@ import type { AstroComponentFactory } from 'astro/runtime/server/index.js';
 import { test as baseTest } from 'vitest';
 import { cleanAstroAttributes, MockAstroLocals } from '../test-utils';
 
-// TODO: Implement new allureTester for tests for both component rendering and allure setup
-
 /**
  * Creates a test fixture extension that augments `baseTest` with utilities for rendering
  * Astro components and configuring Allure test reporting.

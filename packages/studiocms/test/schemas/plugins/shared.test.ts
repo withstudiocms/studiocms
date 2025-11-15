@@ -1,5 +1,4 @@
-import * as allure from 'allure-js-commons';
-import { describe, expect, test } from 'vitest';
+import { describe, expect } from 'vitest';
 import {
 	AvailableDashboardPagesSchema,
 	DashboardPageSchema,
@@ -12,11 +11,17 @@ import {
 	SettingsPageSchema,
 	StudioCMSColorway,
 } from '../../../src/schemas/plugins/shared';
+import { allureTester } from '../../fixtures/allureTester';
 import { parentSuiteName, sharedTags } from '../../test-utils';
 
 const localSuiteName = 'Plugins Schemas tests (Shared)';
 
 describe(parentSuiteName, () => {
+	const test = allureTester({
+		suiteName: localSuiteName,
+		suiteParentName: parentSuiteName,
+	});
+
 	[
 		{
 			schemaName: 'StudioCMSColorway',
@@ -216,15 +221,16 @@ describe(parentSuiteName, () => {
 		const testName = `Schema test case #${index + 1} | Current Schema: ${schemaName}`;
 		const tags = [...sharedTags, `schema:${schemaName}`];
 
-		test(testName, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('Schema Tests');
-			await allure.tags(...tags);
+		test(testName, async ({ setupAllure, step }) => {
+			await setupAllure({
+				subSuiteName: 'Schema Tests',
+				tags: [...tags],
+				parameters: {
+					data: JSON.stringify(data),
+				},
+			});
 
-			await allure.parameter('data', JSON.stringify(data));
-
-			await allure.step(`Validating ${schemaName} with data: ${data}`, async () => {
+			await step(`Validating ${schemaName} with data: ${data}`, async () => {
 				if (shouldThrow) {
 					expect(() => fn(data)).toThrow();
 				} else {

@@ -1,6 +1,6 @@
-import * as allure from 'allure-js-commons';
-import { describe, expect, test } from 'vitest';
+import { describe, expect } from 'vitest';
 import { makePublicRoute } from '../../../src/virtuals/lib/makePublicRoute';
+import { allureTester } from '../../fixtures/allureTester';
 import { parentSuiteName, sharedTags } from '../../test-utils.js';
 
 const localSuiteName = 'Make Public Route Virtual tests';
@@ -30,13 +30,16 @@ describe(parentSuiteName, () => {
 	].forEach(({ input, expected }) => {
 		const testName = `makePublicRoute('${input}') should return '${expected}'`;
 		const tags = [...sharedTags, 'lib:virtuals', 'function:makePublicRoute'];
-		test(testName, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('makePublicRoute test');
-			await allure.tags(...tags);
+		allureTester({
+			suiteName: localSuiteName,
+			suiteParentName: parentSuiteName,
+		})(testName, async ({ setupAllure, step }) => {
+			await setupAllure({
+				subSuiteName: 'makePublicRoute test',
+				tags: [...tags],
+			});
 
-			await allure.step(`Testing makePublicRoute with input: '${input}'`, async () => {
+			await step(`Testing makePublicRoute with input: '${input}'`, async () => {
 				const result = makePublicRoute(input);
 				expect(result).toBe(expected);
 			});

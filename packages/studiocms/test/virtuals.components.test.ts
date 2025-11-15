@@ -1,11 +1,10 @@
 /// <reference types="astro/client" />
-import * as allure from 'allure-js-commons';
 import { describe, expect } from 'vitest';
 import CustomImage from '../src/virtuals/components/CustomImage.astro';
 import FormattedDate from '../src/virtuals/components/FormattedDate.astro';
 import Generator from '../src/virtuals/components/Generator.astro';
 import Renderer from '../src/virtuals/components/Renderer.astro';
-import { test } from './fixtures/AstroContainer';
+import { allureTester } from './fixtures/allureTester';
 import { MockAstroLocals, makeRendererProps, parentSuiteName, sharedTags } from './test-utils';
 
 const localSuiteName = 'Virtual Components Container tests';
@@ -49,15 +48,17 @@ describe(parentSuiteName, () => {
 		const testName = `${localSuiteName} - ${name} component`;
 		const tags = [...sharedTags, 'component:virtuals', `component:${name}`];
 
-		test(testName, async ({ renderComponent }) => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite('Virtual Components Container tests');
-			await allure.subSuite(testName);
-			await allure.tags(...tags);
+		allureTester({
+			suiteName: localSuiteName,
+			suiteParentName: parentSuiteName,
+		})(testName, async ({ setupAllure, renderComponent, step }) => {
+			await setupAllure({
+				subSuiteName: testName,
+				tags: tags,
+				parameters: { component: name },
+			});
 
-			await allure.parameter('component', name);
-
-			await allure.step(`Rendering ${name} component`, async (ctx) => {
+			await step(`Rendering ${name} component`, async (ctx) => {
 				await ctx.parameter('props', JSON.stringify(opts.props, null, 2));
 
 				const result = await renderComponent(component, name, opts);

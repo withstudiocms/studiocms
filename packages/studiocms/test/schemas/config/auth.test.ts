@@ -1,15 +1,20 @@
-import * as allure from 'allure-js-commons';
-import { describe, expect, test } from 'vitest';
+import { describe, expect } from 'vitest';
 import {
 	authConfigSchema,
 	authProviderSchema,
 	localUsernameAndPasswordConfig,
 } from '../../../src/schemas/config/auth';
+import { allureTester } from '../../fixtures/allureTester';
 import { parentSuiteName, sharedTags } from '../../test-utils';
 
 const localSuiteName = 'Config Schemas tests (Auth)';
 
 describe(parentSuiteName, () => {
+	const test = allureTester({
+		suiteName: localSuiteName,
+		suiteParentName: parentSuiteName,
+	});
+
 	[
 		{
 			data: {},
@@ -27,13 +32,14 @@ describe(parentSuiteName, () => {
 		const testName = `localUsernameAndPasswordConfig test case #${index + 1}`;
 		const tags = [...sharedTags, 'schema:config', 'schema:localUsernameAndPasswordConfig'];
 
-		test(testName, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('localUsernameAndPasswordConfig tests');
-			await allure.tags(...tags);
-
-			await allure.parameter('data', JSON.stringify(data));
+		test(testName, async ({ setupAllure }) => {
+			await setupAllure({
+				subSuiteName: 'localUsernameAndPasswordConfig tests',
+				tags: [...tags],
+				parameters: {
+					data: JSON.stringify(data),
+				},
+			});
 
 			const result = localUsernameAndPasswordConfig.parse(data);
 			expect(result.allowUserRegistration).toBe(expected);
@@ -73,13 +79,14 @@ describe(parentSuiteName, () => {
 		const testName = `authProviderSchema test case #${index + 1}`;
 		const tags = [...sharedTags, 'schema:config', 'schema:authProviderSchema'];
 
-		test(testName, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('authProviderSchema tests');
-			await allure.tags(...tags);
-
-			await allure.parameter('data', JSON.stringify(data));
+		test(testName, async ({ setupAllure }) => {
+			await setupAllure({
+				subSuiteName: 'authProviderSchema tests',
+				tags: [...tags],
+				parameters: {
+					data: JSON.stringify(data),
+				},
+			});
 
 			const result = authProviderSchema.parse(data);
 			expect(result).toEqual(expected);
@@ -137,13 +144,14 @@ describe(parentSuiteName, () => {
 		const testName = `authConfigSchema test case #${index + 1}`;
 		const tags = [...sharedTags, 'schema:config', 'schema:authConfigSchema'];
 
-		test(testName, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('authConfigSchema tests');
-			await allure.tags(...tags);
-
-			await allure.parameter('data', JSON.stringify(data));
+		test(testName, async ({ setupAllure }) => {
+			await setupAllure({
+				subSuiteName: 'authConfigSchema tests',
+				tags: [...tags],
+				parameters: {
+					data: JSON.stringify(data),
+				},
+			});
 
 			const result = authConfigSchema.parse(data);
 			expect(result).toEqual(expected);

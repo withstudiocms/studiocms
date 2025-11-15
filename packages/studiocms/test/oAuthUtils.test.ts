@@ -1,21 +1,26 @@
 /** biome-ignore-all lint/suspicious/noExplicitAny: allowed for tests */
-import * as allure from 'allure-js-commons';
 import { AstroError } from 'astro/errors';
-import { describe, expect, test } from 'vitest';
+import { describe, expect } from 'vitest';
 import { Effect, Exit } from '../src/effect.js';
 import { getCookie, getUrlParam, ValidateAuthCodeError } from '../src/oAuthUtils';
+import { allureTester } from './fixtures/allureTester.js';
 import { parentSuiteName, sharedTags } from './test-utils';
 
 const localSuiteName = 'oAuthUtils tests';
 
 describe(parentSuiteName, () => {
-	test('ValidateAuthCodeError', async () => {
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('ValidateAuthCodeError tests');
-		await allure.tags(...sharedTags, 'module:oAuthUtils');
+	const test = allureTester({
+		suiteName: localSuiteName,
+		suiteParentName: parentSuiteName,
+	});
 
-		await allure.step('should create an error with correct properties', async (ctx) => {
+	test('ValidateAuthCodeError', async ({ setupAllure, step }) => {
+		await setupAllure({
+			subSuiteName: 'ValidateAuthCodeError tests',
+			tags: [...sharedTags, 'module:oAuthUtils'],
+		});
+
+		await step('should create an error with correct properties', async (ctx) => {
 			const err = new ValidateAuthCodeError({ message: 'Invalid code', provider: 'github' });
 			await ctx.parameter('errorMessage', err.message);
 			await ctx.parameter('errorProvider', err.provider);
@@ -37,13 +42,13 @@ describe(parentSuiteName, () => {
 			expected: null,
 		},
 	].forEach(({ url, param, expected }) => {
-		test('getUrlParam should return correct value for param', async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('getUrlParam tests');
-			await allure.tags(...sharedTags, 'module:oAuthUtils', 'function:getUrlParam');
+		test('getUrlParam should return correct value for param', async ({ setupAllure, step }) => {
+			await setupAllure({
+				subSuiteName: 'getUrlParam tests',
+				tags: [...sharedTags, 'module:oAuthUtils', 'function:getUrlParam'],
+			});
 
-			await allure.step(`Getting URL param "${param}" from "${url}"`, async (ctx) => {
+			await step(`Getting URL param "${param}" from "${url}"`, async (ctx) => {
 				const urlObj = new URL(url);
 				const context = { url: urlObj } as any;
 				const effect = getUrlParam(context, param);
@@ -55,13 +60,13 @@ describe(parentSuiteName, () => {
 		});
 	});
 
-	test('getUrlParam should throw AstroError for malformed URL', async () => {
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('getUrlParam tests');
-		await allure.tags(...sharedTags, 'module:oAuthUtils', 'function:getUrlParam');
+	test('getUrlParam should throw AstroError for malformed URL', async ({ setupAllure, step }) => {
+		await setupAllure({
+			subSuiteName: 'getUrlParam tests',
+			tags: [...sharedTags, 'module:oAuthUtils', 'function:getUrlParam'],
+		});
 
-		await allure.step('Getting URL param from malformed URL', async (ctx) => {
+		await step('Getting URL param from malformed URL', async (ctx) => {
 			const context = { url: null } as any;
 			const effect = getUrlParam(context, 'code');
 			const exit = await Effect.runPromiseExit(effect);
@@ -88,13 +93,13 @@ describe(parentSuiteName, () => {
 			expected: null,
 		},
 	].forEach(({ cookies, cookieName, expected }) => {
-		test('getCookie should return correct cookie value', async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('getCookie tests');
-			await allure.tags(...sharedTags, 'module:oAuthUtils', 'function:getCookie');
+		test('getCookie should return correct cookie value', async ({ setupAllure, step }) => {
+			await setupAllure({
+				subSuiteName: 'getCookie tests',
+				tags: [...sharedTags, 'module:oAuthUtils', 'function:getCookie'],
+			});
 
-			await allure.step(`Getting cookie "${cookieName}"`, async (ctx) => {
+			await step(`Getting cookie "${cookieName}"`, async (ctx) => {
 				const context = { cookies } as any;
 				const effect = getCookie(context, cookieName);
 				const result = await Effect.runPromise(effect);
@@ -105,13 +110,16 @@ describe(parentSuiteName, () => {
 		});
 	});
 
-	test('getCookie should throw AstroError for malformed cookies object', async () => {
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('getCookie tests');
-		await allure.tags(...sharedTags, 'module:oAuthUtils', 'function:getCookie');
+	test('getCookie should throw AstroError for malformed cookies object', async ({
+		setupAllure,
+		step,
+	}) => {
+		await setupAllure({
+			subSuiteName: 'getCookie tests',
+			tags: [...sharedTags, 'module:oAuthUtils', 'function:getCookie'],
+		});
 
-		await allure.step('Getting cookie from malformed cookies object', async (ctx) => {
+		await step('Getting cookie from malformed cookies object', async (ctx) => {
 			const context = { cookies: null } as any;
 			const effect = getCookie(context, 'session');
 			const exit = await Effect.runPromiseExit(effect);

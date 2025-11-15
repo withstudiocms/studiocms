@@ -1,11 +1,16 @@
-import * as allure from 'allure-js-commons';
-import { describe, expect, test } from 'vitest';
+import { describe, expect } from 'vitest';
 import { parseMarkdown } from '../../src/utils/tinyMDParser';
+import { allureTester } from '../fixtures/allureTester';
 import { parentSuiteName, sharedTags } from '../test-utils';
 
 const localSuiteName = 'tinyMDParser Utility tests';
 
 describe(parentSuiteName, () => {
+	const test = allureTester({
+		suiteName: localSuiteName,
+		suiteParentName: parentSuiteName,
+	});
+
 	[
 		{
 			input: '# Hello World',
@@ -34,15 +39,14 @@ describe(parentSuiteName, () => {
 		const testName = 'parses markdown input correctly';
 		const tags = [...sharedTags, 'utility:tinyMDParser', 'function:parseMarkdown'];
 
-		test(testName, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite(testName);
-			await allure.tags(...tags);
+		test(testName, async ({ setupAllure, step }) => {
+			await setupAllure({
+				subSuiteName: testName,
+				tags: [...tags],
+				parameters: { input },
+			});
 
-			await allure.parameter('input', input);
-
-			await allure.step('Parsing markdown input', async () => {
+			await step('Parsing markdown input', async () => {
 				const html = parseMarkdown(input);
 				for (const snippet of toContain) {
 					expect(html).toContain(snippet);
@@ -51,16 +55,16 @@ describe(parentSuiteName, () => {
 		});
 	});
 
-	test('returns empty string for empty input', async () => {
+	test('returns empty string for empty input', async ({ setupAllure, step }) => {
 		const testName = 'returns empty string for empty input';
 		const tags = [...sharedTags, 'utility:tinyMDParser', 'function:parseMarkdown'];
 
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite(testName);
-		await allure.tags(...tags);
+		await setupAllure({
+			subSuiteName: testName,
+			tags: [...tags],
+		});
 
-		await allure.step('Parsing empty markdown input', async () => {
+		await step('Parsing empty markdown input', async () => {
 			const html = parseMarkdown('');
 			expect(html).toBe('');
 		});

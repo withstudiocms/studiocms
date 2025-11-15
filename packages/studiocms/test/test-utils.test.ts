@@ -1,8 +1,8 @@
-import * as allure from 'allure-js-commons';
 import type { AstroIntegration } from 'astro';
-import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { beforeEach, describe, expect, vi } from 'vitest';
 import type { StudioCMSPlugin } from '../src/schemas/index.js';
 import { StudioCMSPluginTester } from '../src/test-utils.js';
+import { allureTester } from './fixtures/allureTester.js';
 import { parentSuiteName, sharedTags } from './test-utils.js';
 
 const localSuiteName = 'StudioCMSPluginTester tests';
@@ -21,24 +21,29 @@ describe(parentSuiteName, () => {
 	let plugin: StudioCMSPlugin;
 	let tester: StudioCMSPluginTester;
 
+	const test = allureTester({
+		suiteName: localSuiteName,
+		suiteParentName: parentSuiteName,
+	});
+
 	beforeEach(() => {
 		plugin = makePluginWithHooks({});
 		tester = new StudioCMSPluginTester(plugin);
 	});
 
-	test('PluginTester initializes correctly', async () => {
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('PluginTester initializes correctly');
-		await allure.tags(...sharedTags, 'class:StudioCMSPluginTester', 'method:constructor');
+	test('PluginTester initializes correctly', async ({ setupAllure, step }) => {
+		await setupAllure({
+			subSuiteName: 'PluginTester initializes correctly',
+			tags: [...sharedTags, 'class:StudioCMSPluginTester', 'method:constructor'],
+		});
 
-		await allure.step('Creating StudioCMSPluginTester instance', async (ctx) => {
+		await step('Creating StudioCMSPluginTester instance', async (ctx) => {
 			await ctx.parameter('pluginIdentifier', plugin.identifier);
 			expect(tester).toBeInstanceOf(StudioCMSPluginTester);
 			expect(tester['plugin']).toBe(plugin);
 		});
 
-		await allure.step('Returns correct plugin info', async (ctx) => {
+		await step('Returns correct plugin info', async (ctx) => {
 			const info = tester.getPluginInfo();
 			await ctx.parameter('pluginInfo', JSON.stringify(info));
 			expect(info).toEqual({
@@ -49,7 +54,7 @@ describe(parentSuiteName, () => {
 			});
 		});
 
-		await allure.step('createMockLogger works as expected', async (ctx) => {
+		await step('createMockLogger works as expected', async (ctx) => {
 			const logger = tester['createMockLogger']();
 			await ctx.parameter('loggerMethods', 'info, warn, error, debug, fork');
 			expect(typeof logger.info).toBe('function');
@@ -62,13 +67,13 @@ describe(parentSuiteName, () => {
 		});
 	});
 
-	test('getHookResults handles no hooks gracefully', async () => {
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('getHookResults handles no hooks gracefully');
-		await allure.tags(...sharedTags, 'class:StudioCMSPluginTester', 'method:getHookResults');
+	test('getHookResults handles no hooks gracefully', async ({ setupAllure, step }) => {
+		await setupAllure({
+			subSuiteName: 'getHookResults handles no hooks gracefully',
+			tags: [...sharedTags, 'class:StudioCMSPluginTester', 'method:getHookResults'],
+		});
 
-		await allure.step('Getting hook results with no hooks defined', async (ctx) => {
+		await step('Getting hook results with no hooks defined', async (ctx) => {
 			const results = await tester.getHookResults();
 			await ctx.parameter('hookResults', JSON.stringify(results));
 			expect(results.astroConfig.hasHook).toBe(false);
@@ -85,11 +90,11 @@ describe(parentSuiteName, () => {
 		});
 	});
 
-	test('getHookResults runs astro:config hook correctly', async () => {
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('getHookResults runs astro:config hook correctly');
-		await allure.tags(...sharedTags, 'class:StudioCMSPluginTester', 'method:getHookResults');
+	test('getHookResults runs astro:config hook correctly', async ({ setupAllure, step }) => {
+		await setupAllure({
+			subSuiteName: 'getHookResults runs astro:config hook correctly',
+			tags: [...sharedTags, 'class:StudioCMSPluginTester', 'method:getHookResults'],
+		});
 
 		const integration: AstroIntegration = { name: 'test', hooks: {} };
 		const astroConfigHook = vi.fn(async ({ addIntegrations }) => {
@@ -101,7 +106,7 @@ describe(parentSuiteName, () => {
 		});
 		tester = new StudioCMSPluginTester(plugin);
 
-		await allure.step('Getting hook results with astro:config hook defined', async (ctx) => {
+		await step('Getting hook results with astro:config hook defined', async (ctx) => {
 			const results = await tester.getHookResults();
 			await ctx.parameter('hookResults', JSON.stringify(results));
 			expect(results.astroConfig.hasHook).toBe(true);
@@ -110,11 +115,11 @@ describe(parentSuiteName, () => {
 		});
 	});
 
-	test('getHookResults runs studiocms:config hook correctly', async () => {
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('getHookResults runs studiocms:config hook correctly');
-		await allure.tags(...sharedTags, 'class:StudioCMSPluginTester', 'method:getHookResults');
+	test('getHookResults runs studiocms:config hook correctly', async ({ setupAllure, step }) => {
+		await setupAllure({
+			subSuiteName: 'getHookResults runs studiocms:config hook correctly',
+			tags: [...sharedTags, 'class:StudioCMSPluginTester', 'method:getHookResults'],
+		});
 
 		const configHook = vi.fn(async (ctx) => {
 			ctx.setAuthService({ oAuthProvider: 'github' });
@@ -130,7 +135,7 @@ describe(parentSuiteName, () => {
 		});
 		tester = new StudioCMSPluginTester(plugin);
 
-		await allure.step('Getting hook results with studiocms:config hook defined', async (ctx) => {
+		await step('Getting hook results with studiocms:config hook defined', async (ctx) => {
 			const results = await tester.getHookResults();
 			await ctx.parameter('hookResults', JSON.stringify(results));
 			expect(results.studiocmsConfig.hasHook).toBe(true);

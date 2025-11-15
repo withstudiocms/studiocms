@@ -1,24 +1,31 @@
-import * as allure from 'allure-js-commons';
-import { describe, expect, test } from 'vitest';
+import { describe, expect } from 'vitest';
 import {
 	formatNotificationOptions,
 	getEnabledNotificationCheckboxes,
 	notificationOptions,
 	type UserNotificationOptions,
 } from '../../../src/virtuals/notifier/client';
+import { allureTester } from '../../fixtures/allureTester';
 import { parentSuiteName, sharedTags } from '../../test-utils.js';
 
 const localSuiteName = 'Notifier Client Virtual tests';
 
 describe(parentSuiteName, () => {
-	test('Notifier Client Virtual - notificationOptions contains expected values', async () => {
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('notificationOptions test');
-		const tags = [...sharedTags, 'notifier:virtuals', 'constant:notificationOptions'];
-		await allure.tags(...tags);
+	const test = allureTester({
+		suiteName: localSuiteName,
+		suiteParentName: parentSuiteName,
+	});
 
-		await allure.step('Checking notificationOptions contents', async () => {
+	test('Notifier Client Virtual - notificationOptions contains expected values', async ({
+		setupAllure,
+		step,
+	}) => {
+		await setupAllure({
+			subSuiteName: 'notificationOptions test',
+			tags: [...sharedTags, 'notifier:virtuals', 'constant:notificationOptions'],
+		});
+
+		await step('Checking notificationOptions contents', async () => {
 			const expectedOptions: UserNotificationOptions[] = [
 				'account_updated',
 				'page_updated',
@@ -35,14 +42,16 @@ describe(parentSuiteName, () => {
 		});
 	});
 
-	test('getEnabledNotificationCheckboxes - should return enabled options from FormData', async () => {
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('getEnabledNotificationCheckboxes test');
-		const tags = [...sharedTags, 'notifier:virtuals', 'function:getEnabledNotificationCheckboxes'];
-		await allure.tags(...tags);
+	test('getEnabledNotificationCheckboxes - should return enabled options from FormData', async ({
+		setupAllure,
+		step,
+	}) => {
+		await setupAllure({
+			subSuiteName: 'getEnabledNotificationCheckboxes test',
+			tags: [...sharedTags, 'notifier:virtuals', 'function:getEnabledNotificationCheckboxes'],
+		});
 
-		await allure.step('Testing getEnabledNotificationCheckboxes function', async () => {
+		await step('Testing getEnabledNotificationCheckboxes function', async () => {
 			const formData = new FormData();
 			formData.set('account_updated', 'on');
 			formData.set('page_updated', 'off');
@@ -55,35 +64,36 @@ describe(parentSuiteName, () => {
 		});
 	});
 
-	test('getEnabledNotificationCheckboxes - should return empty array for no enabled options', async () => {
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('getEnabledNotificationCheckboxes empty test');
-		const tags = [...sharedTags, 'notifier:virtuals', 'function:getEnabledNotificationCheckboxes'];
-		await allure.tags(...tags);
+	test('getEnabledNotificationCheckboxes - should return empty array for no enabled options', async ({
+		setupAllure,
+		step,
+	}) => {
+		await setupAllure({
+			subSuiteName: 'getEnabledNotificationCheckboxes empty test',
+			tags: [...sharedTags, 'notifier:virtuals', 'function:getEnabledNotificationCheckboxes'],
+		});
 
-		await allure.step(
-			'Testing getEnabledNotificationCheckboxes with no enabled options',
-			async () => {
-				const formData = new FormData();
-				notificationOptions.forEach((option) => {
-					formData.set(option, 'off');
-				});
+		await step('Testing getEnabledNotificationCheckboxes with no enabled options', async () => {
+			const formData = new FormData();
+			notificationOptions.forEach((option) => {
+				formData.set(option, 'off');
+			});
 
-				const result = getEnabledNotificationCheckboxes(formData);
-				expect(result).toEqual([]);
-			}
-		);
+			const result = getEnabledNotificationCheckboxes(formData);
+			expect(result).toEqual([]);
+		});
 	});
 
-	test('getEnabledNotificationCheckboxes - should ignore unknown keys in FormData', async () => {
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('getEnabledNotificationCheckboxes ignore unknown keys test');
-		const tags = [...sharedTags, 'notifier:virtuals', 'function:getEnabledNotificationCheckboxes'];
-		await allure.tags(...tags);
+	test('getEnabledNotificationCheckboxes - should ignore unknown keys in FormData', async ({
+		setupAllure,
+		step,
+	}) => {
+		await setupAllure({
+			subSuiteName: 'getEnabledNotificationCheckboxes ignore unknown keys test',
+			tags: [...sharedTags, 'notifier:virtuals', 'function:getEnabledNotificationCheckboxes'],
+		});
 
-		await allure.step('Testing getEnabledNotificationCheckboxes with unknown keys', async () => {
+		await step('Testing getEnabledNotificationCheckboxes with unknown keys', async () => {
 			const formData = new FormData();
 			formData.set('account_updated', 'on');
 			formData.set('unknown_option', 'on');
@@ -108,16 +118,17 @@ describe(parentSuiteName, () => {
 		)}] as "${expected}"`;
 		const tags = [...sharedTags, 'notifier:virtuals', 'function:formatNotificationOptions'];
 
-		test(testName, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite(testName);
-			await allure.tags(...tags);
+		test(testName, async ({ setupAllure, step }) => {
+			await setupAllure({
+				subSuiteName: testName,
+				tags,
+				parameters: {
+					options: options.join(', '),
+					expected: expected,
+				},
+			});
 
-			await allure.parameter('options', JSON.stringify(options));
-			await allure.parameter('expected', expected);
-
-			await allure.step(
+			await step(
 				`Testing formatNotificationOptions with options [${options.join(', ')}]`,
 				async () => {
 					const result = formatNotificationOptions(options);

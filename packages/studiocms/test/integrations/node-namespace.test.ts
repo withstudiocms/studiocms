@@ -1,22 +1,27 @@
 /** biome-ignore-all lint/suspicious/noExplicitAny: allowed in tests */
-import * as allure from 'allure-js-commons';
 import type { AstroIntegration } from 'astro';
-import { describe, expect, expectTypeOf, test } from 'vitest';
+import { describe, expect, expectTypeOf } from 'vitest';
 import { nodeNamespaceBuiltinsAstro, resolveBuiltIns } from '../../src/integrations/node-namespace';
+import { allureTester } from '../fixtures/allureTester';
 import { parentSuiteName, sharedTags } from '../test-utils';
 
 const localSuiteName = 'Integrations tests (Node Namespace Built-ins)';
 
 describe(parentSuiteName, () => {
-	test('nodeNamespaceBuiltinsAstro integration existence', async () => {
+	const test = allureTester({
+		suiteName: localSuiteName,
+		suiteParentName: parentSuiteName,
+	});
+
+	test('nodeNamespaceBuiltinsAstro integration existence', async ({ setupAllure, step }) => {
 		const tags = [...sharedTags, 'integration:node-namespace-builtins'];
 
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('nodeNamespaceBuiltinsAstro tests');
-		await allure.tags(...tags);
+		await setupAllure({
+			subSuiteName: 'nodeNamespaceBuiltinsAstro tests',
+			tags: [...tags],
+		});
 
-		await allure.step('Check integration creation', async () => {
+		await step('Check integration creation', async () => {
 			const integration = nodeNamespaceBuiltinsAstro();
 			expect(integration).toBeDefined();
 			expect(integration.name).toBe('vite-namespace-builtins');
@@ -70,15 +75,16 @@ describe(parentSuiteName, () => {
 		const testName = `resolveBuiltIns test case #${index + 1}`;
 		const tags = [...sharedTags, 'integration:node-namespace-builtins', 'function:resolveBuiltIns'];
 
-		test(testName, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('resolveBuiltIns tests');
-			await allure.tags(...tags);
+		test(testName, async ({ setupAllure, step }) => {
+			await setupAllure({
+				subSuiteName: 'resolveBuiltIns tests',
+				tags: [...tags],
+				parameters: {
+					id: id,
+				},
+			});
 
-			await allure.parameter('id', id);
-
-			await allure.step(`Resolve built-in for id: ${id}`, async () => {
+			await step(`Resolve built-in for id: ${id}`, async () => {
 				const result = resolveBuiltIns(id);
 				expect(result).toEqual(expected);
 			});

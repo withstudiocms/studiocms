@@ -1,10 +1,9 @@
 /** biome-ignore-all lint/suspicious/noExplicitAny: allowed in tests */
 
 import { UserPermissionLevel } from '@withstudiocms/auth-kit/types';
-import * as allure from 'allure-js-commons';
 import type { APIContext } from 'astro';
 import { Effect } from 'effect';
-import { describe, expect, test } from 'vitest';
+import { describe, expect } from 'vitest';
 import {
 	getUserPermissionLevel,
 	getUserPermissions,
@@ -12,6 +11,7 @@ import {
 	SetLocal,
 	setLocals,
 } from '../../src/frontend/middleware/utils';
+import { allureTester } from '../fixtures/allureTester';
 import { parentSuiteName, sharedTags } from '../test-utils';
 
 const localSuiteName = 'Middleware Utils tests';
@@ -25,6 +25,11 @@ function makeContext(initial: any = {}) {
 }
 
 describe(parentSuiteName, () => {
+	const test = allureTester({
+		suiteName: localSuiteName,
+		suiteParentName: parentSuiteName,
+	});
+
 	[
 		{ permissionLevel: 'owner' as const, expected: UserPermissionLevel.owner },
 		{ permissionLevel: 'admin' as const, expected: UserPermissionLevel.admin },
@@ -35,13 +40,14 @@ describe(parentSuiteName, () => {
 		const testName = `getUserPermissionLevel test case #${index + 1}`;
 		const tags = [...sharedTags, 'middleware:utils', 'middleware:getUserPermissionLevel'];
 
-		test(testName, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('getUserPermissionLevel tests');
-			await allure.tags(...tags);
-
-			await allure.parameter('data', JSON.stringify({ permissionLevel }));
+		test(testName, async ({ setupAllure }) => {
+			await setupAllure({
+				subSuiteName: 'getUserPermissionLevel tests',
+				tags: [...tags],
+				parameters: {
+					data: JSON.stringify({ permissionLevel }),
+				},
+			});
 
 			const userData = { permissionLevel } as any;
 			const result = await Effect.runPromise(getUserPermissionLevel(userData));
@@ -61,13 +67,14 @@ describe(parentSuiteName, () => {
 		const testName = `getUserPermissions test case #${index + 1}`;
 		const tags = [...sharedTags, 'middleware:utils', 'middleware:getUserPermissions'];
 
-		test(testName, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('getUserPermissions tests');
-			await allure.tags(...tags);
-
-			await allure.parameter('data', JSON.stringify({ permissionLevel }));
+		test(testName, async ({ setupAllure }) => {
+			await setupAllure({
+				subSuiteName: 'getUserPermissions tests',
+				tags: [...tags],
+				parameters: {
+					data: JSON.stringify({ permissionLevel }),
+				},
+			});
 
 			const userData = { permissionLevel } as any;
 			const result = await Effect.runPromise(getUserPermissions(userData));
@@ -75,13 +82,13 @@ describe(parentSuiteName, () => {
 		});
 	});
 
-	test('makeFallbackSiteConfig returns valid config', async () => {
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('makeFallbackSiteConfig tests');
-		await allure.tags(...sharedTags, 'middleware:utils', 'middleware:makeFallbackSiteConfig');
+	test('makeFallbackSiteConfig returns valid config', async ({ setupAllure, step }) => {
+		await setupAllure({
+			subSuiteName: 'makeFallbackSiteConfig tests',
+			tags: [...sharedTags, 'middleware:utils', 'middleware:makeFallbackSiteConfig'],
+		});
 
-		await allure.step('Generate fallback site config', () => {
+		await step('Generate fallback site config', () => {
 			const config = makeFallbackSiteConfig();
 			expect(config).toHaveProperty('lastCacheUpdate');
 			expect(config.data).toMatchObject({
@@ -101,11 +108,13 @@ describe(parentSuiteName, () => {
 		});
 	});
 
-	test('setLocals - merges general values without overwriting security/plugins', async () => {
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('setLocals tests - GENERAL');
-		await allure.tags(...sharedTags, 'middleware:utils', 'middleware:setLocals');
+	test('setLocals - merges general values without overwriting security/plugins', async ({
+		setupAllure,
+	}) => {
+		await setupAllure({
+			subSuiteName: 'setLocals tests - GENERAL',
+			tags: [...sharedTags, 'middleware:utils', 'middleware:setLocals'],
+		});
 
 		const context = makeContext({
 			foo: 1,
@@ -122,11 +131,13 @@ describe(parentSuiteName, () => {
 		});
 	});
 
-	test('setLocals - merges security values without overwriting general/plugins', async () => {
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('setLocals tests - SECURITY');
-		await allure.tags(...sharedTags, 'middleware:utils', 'middleware:setLocals');
+	test('setLocals - merges security values without overwriting general/plugins', async ({
+		setupAllure,
+	}) => {
+		await setupAllure({
+			subSuiteName: 'setLocals tests - SECURITY',
+			tags: [...sharedTags, 'middleware:utils', 'middleware:setLocals'],
+		});
 
 		const context = makeContext({
 			foo: 1,
@@ -141,11 +152,13 @@ describe(parentSuiteName, () => {
 		expect(context.locals.StudioCMS.foo).toBe(1);
 	});
 
-	test('setLocals - merges plugins values without overwriting general/security', async () => {
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('setLocals tests - PLUGINS');
-		await allure.tags(...sharedTags, 'middleware:utils', 'middleware:setLocals');
+	test('setLocals - merges plugins values without overwriting general/security', async ({
+		setupAllure,
+	}) => {
+		await setupAllure({
+			subSuiteName: 'setLocals tests - PLUGINS',
+			tags: [...sharedTags, 'middleware:utils', 'middleware:setLocals'],
+		});
 
 		const context = makeContext({
 			foo: 1,
@@ -160,11 +173,11 @@ describe(parentSuiteName, () => {
 		expect(context.locals.StudioCMS.foo).toBe(1);
 	});
 
-	test('setLocals - throws error for unknown key', async () => {
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('setLocals tests - UNKNOWN KEY');
-		await allure.tags(...sharedTags, 'middleware:utils', 'middleware:setLocals');
+	test('setLocals - throws error for unknown key', async ({ setupAllure }) => {
+		await setupAllure({
+			subSuiteName: 'setLocals tests - UNKNOWN KEY',
+			tags: [...sharedTags, 'middleware:utils', 'middleware:setLocals'],
+		});
 
 		const context = makeContext({});
 		await expect(Effect.runPromise(setLocals(context, 'notakey' as any, {}))).rejects.toThrow(

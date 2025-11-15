@@ -1,6 +1,5 @@
 // @vitest-environment jsdom
-import * as allure from 'allure-js-commons';
-import { beforeEach, describe, expect, test } from 'vitest';
+import { beforeEach, describe, expect } from 'vitest';
 import {
 	baseTranslation,
 	documentUpdater,
@@ -11,18 +10,27 @@ import {
 	updateSelectElmLabel,
 	updateToggleElmLabel,
 } from '../../../src/virtuals/i18n/client';
+import { allureTester } from '../../fixtures/allureTester';
 import { parentSuiteName, sharedTags } from '../../test-utils';
 
 const localSuiteName = 'i18n Client Virtuals tests';
 
 describe(parentSuiteName, () => {
-	test('makeTranslation - updates text content when translation changes', async () => {
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('makeTranslation tests');
-		await allure.tags(...[...sharedTags, 'virtual:i18n', 'function:makeTranslation']);
+	const test = allureTester({
+		suiteName: localSuiteName,
+		suiteParentName: parentSuiteName,
+	});
 
-		await allure.step('Creating translation element and updating text', async () => {
+	test('makeTranslation - updates text content when translation changes', async ({
+		setupAllure,
+		step,
+	}) => {
+		await setupAllure({
+			subSuiteName: 'makeTranslation tests',
+			tags: [...sharedTags, 'virtual:i18n', 'function:makeTranslation'],
+		});
+
+		await step('Creating translation element and updating text', async () => {
 			const key = Object.keys(baseTranslation)[0] as keyof typeof baseTranslation;
 			const messages = {
 				subscribe: (fn: (comp: any) => void) => fn({ [key]: 'Translated Text' }),
@@ -39,6 +47,11 @@ describe(parentSuiteName, () => {
 });
 
 describe(parentSuiteName, () => {
+	const test = allureTester({
+		suiteName: localSuiteName,
+		suiteParentName: parentSuiteName,
+	});
+
 	beforeEach(() => {
 		document.body.innerHTML = `
             <meta name="description" content="">
@@ -47,13 +60,13 @@ describe(parentSuiteName, () => {
 		document.documentElement.lang = '';
 	});
 
-	test('updates document title, meta description, and lang', async () => {
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('documentUpdater tests');
-		await allure.tags(...[...sharedTags, 'virtual:i18n', 'function:documentUpdater']);
+	test('updates document title, meta description, and lang', async ({ setupAllure, step }) => {
+		await setupAllure({
+			subSuiteName: 'documentUpdater tests',
+			tags: [...sharedTags, 'virtual:i18n', 'function:documentUpdater'],
+		});
 
-		await allure.step('Updating document properties', async () => {
+		await step('Updating document properties', async () => {
 			const comp = { title: 'My Title', description: 'My Description' };
 			documentUpdater(comp, 'fr');
 			expect(document.title).toBe('My Title');
@@ -66,6 +79,11 @@ describe(parentSuiteName, () => {
 });
 
 describe(parentSuiteName, () => {
+	const test = allureTester({
+		suiteName: localSuiteName,
+		suiteParentName: parentSuiteName,
+	});
+
 	beforeEach(() => {
 		document.body.innerHTML = `
             <label for="foo"><span class="label">Old Label</span></label>
@@ -90,16 +108,17 @@ describe(parentSuiteName, () => {
 		const testName = `updateElmLabel updates label for "${el}" correctly`;
 		const tags = [...sharedTags, 'virtual:i18n', 'function:updateElmLabel'];
 
-		test(testName, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('updateElmLabel tests');
-			await allure.tags(...tags);
+		test(testName, async ({ setupAllure, step }) => {
+			await setupAllure({
+				subSuiteName: 'updateElmLabel tests',
+				tags: [...tags],
+				parameters: {
+					elementId: el,
+					translation,
+				},
+			});
 
-			await allure.parameter('elementId', el);
-			await allure.parameter('translation', translation);
-
-			await allure.step(`Updating label for element "${el}"`, async () => {
+			await step(`Updating label for element "${el}"`, async () => {
 				updateElmLabel(el, translation);
 				const label = document.querySelector(querySelector) as HTMLSpanElement;
 				expect(label.innerHTML).toBe(expected);
@@ -109,20 +128,26 @@ describe(parentSuiteName, () => {
 });
 
 describe(parentSuiteName, () => {
+	const test = allureTester({
+		suiteName: localSuiteName,
+		suiteParentName: parentSuiteName,
+	});
+
 	beforeEach(() => {
 		document.body.innerHTML = `<input id="baz" placeholder="Old Placeholder">`;
 	});
 
-	test('updateElmPlaceholder updates input placeholder', async () => {
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('updateElmPlaceholder tests');
-		await allure.tags(...[...sharedTags, 'virtual:i18n', 'function:updateElmPlaceholder']);
+	test('updateElmPlaceholder updates input placeholder', async ({ setupAllure, step }) => {
+		await setupAllure({
+			subSuiteName: 'updateElmPlaceholder tests',
+			tags: [...sharedTags, 'virtual:i18n', 'function:updateElmPlaceholder'],
+			parameters: {
+				elementId: 'baz',
+				newPlaceholder: 'New Placeholder',
+			},
+		});
 
-		await allure.parameter('elementId', 'baz');
-		await allure.parameter('newPlaceholder', 'New Placeholder');
-
-		await allure.step('Updating input placeholder', async () => {
+		await step('Updating input placeholder', async () => {
 			updateElmPlaceholder('baz', 'New Placeholder');
 			// biome-ignore lint/style/noNonNullAssertion: allowed for tests
 			const input = document.querySelector<HTMLInputElement>('#baz')!;
@@ -132,6 +157,11 @@ describe(parentSuiteName, () => {
 });
 
 describe(parentSuiteName, () => {
+	const test = allureTester({
+		suiteName: localSuiteName,
+		suiteParentName: parentSuiteName,
+	});
+
 	beforeEach(() => {
 		document.body.innerHTML = `
             <label for="qux-select-btn">Old Select Label</label>
@@ -156,16 +186,17 @@ describe(parentSuiteName, () => {
 		const testName = `updateSelectElmLabel updates select label for "${el}" correctly`;
 		const tags = [...sharedTags, 'virtual:i18n', 'function:updateSelectElmLabel'];
 
-		test(testName, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('updateSelectElmLabel tests');
-			await allure.tags(...tags);
+		test(testName, async ({ setupAllure, step }) => {
+			await setupAllure({
+				subSuiteName: 'updateSelectElmLabel tests',
+				tags: [...tags],
+				parameters: {
+					elementId: el,
+					translation,
+				},
+			});
 
-			await allure.parameter('elementId', el);
-			await allure.parameter('translation', translation);
-
-			await allure.step(`Updating select label for element "${el}"`, async () => {
+			await step(`Updating select label for element "${el}"`, async () => {
 				updateSelectElmLabel(el, translation);
 				const label = document.querySelector(querySelector) as HTMLLabelElement;
 				expect(label.innerHTML).toBe(expected);
@@ -175,6 +206,11 @@ describe(parentSuiteName, () => {
 });
 
 describe(parentSuiteName, () => {
+	const test = allureTester({
+		suiteName: localSuiteName,
+		suiteParentName: parentSuiteName,
+	});
+
 	beforeEach(() => {
 		document.body.innerHTML = `
             <label for="toggle1"><span id="label-toggle1">Old Toggle Label</span></label>
@@ -199,16 +235,17 @@ describe(parentSuiteName, () => {
 		const testName = `updateToggleElmLabel updates toggle label for "${el}" correctly`;
 		const tags = [...sharedTags, 'virtual:i18n', 'function:updateToggleElmLabel'];
 
-		test(testName, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('updateToggleElmLabel tests');
-			await allure.tags(...tags);
+		test(testName, async ({ setupAllure, step }) => {
+			await setupAllure({
+				subSuiteName: 'updateToggleElmLabel tests',
+				tags: [...tags],
+				parameters: {
+					elementId: el,
+					translation,
+				},
+			});
 
-			await allure.parameter('elementId', el);
-			await allure.parameter('translation', translation);
-
-			await allure.step(`Updating toggle label for element "${el}"`, async () => {
+			await step(`Updating toggle label for element "${el}"`, async () => {
 				updateToggleElmLabel(el, translation);
 				const label = document.querySelector(querySelector) as HTMLSpanElement;
 				expect(label.innerHTML).toBe(expected);
@@ -218,6 +255,11 @@ describe(parentSuiteName, () => {
 });
 
 describe(parentSuiteName, () => {
+	const test = allureTester({
+		suiteName: localSuiteName,
+		suiteParentName: parentSuiteName,
+	});
+
 	beforeEach(() => {
 		document.body.innerHTML = `
             <div class="page-header">
@@ -226,15 +268,16 @@ describe(parentSuiteName, () => {
         `;
 	});
 
-	test('pageHeaderUpdater updates page header title', async () => {
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('pageHeaderUpdater tests');
-		await allure.tags(...[...sharedTags, 'virtual:i18n', 'function:pageHeaderUpdater']);
+	test('pageHeaderUpdater updates page header title', async ({ setupAllure, step }) => {
+		await setupAllure({
+			subSuiteName: 'pageHeaderUpdater tests',
+			tags: [...[...sharedTags, 'virtual:i18n', 'function:pageHeaderUpdater']],
+			parameters: {
+				newTitle: 'New Page Title',
+			},
+		});
 
-		await allure.parameter('newTitle', 'New Page Title');
-
-		await allure.step('Updating page header title', async () => {
+		await step('Updating page header title', async () => {
 			pageHeaderUpdater('New Page Title');
 			const header = document.querySelector('.page-header .page-title') as HTMLElement;
 			expect(header.textContent).toBe('New Page Title');

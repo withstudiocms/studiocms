@@ -1,21 +1,29 @@
 /** biome-ignore-all lint/suspicious/noExplicitAny: allowed in tests */
-import * as allure from 'allure-js-commons';
-import { describe, expect, test } from 'vitest';
+import { describe, expect } from 'vitest';
 import { StudioCMSOptionsSchema } from '../../../src/schemas/config/index';
+import { allureTester } from '../../fixtures/allureTester';
 import { parentSuiteName, sharedTags } from '../../test-utils';
 
 const localSuiteName = 'Config Schemas tests (Index)';
 
 describe(parentSuiteName, () => {
-	test('StudioCMSOptionsSchema - should parse empty config and apply defaults', async () => {
+	const test = allureTester({
+		suiteName: localSuiteName,
+		suiteParentName: parentSuiteName,
+	});
+
+	test('StudioCMSOptionsSchema - should parse empty config and apply defaults', async ({
+		setupAllure,
+		step,
+	}) => {
 		const tags = [...sharedTags, 'schema:config', 'schema:StudioCMSOptionsSchema'];
 
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('StudioCMSOptionsSchema tests');
-		await allure.tags(...tags);
+		await setupAllure({
+			subSuiteName: 'StudioCMSOptionsSchema tests',
+			tags: [...tags],
+		});
 
-		await allure.step('Parsing empty config', async () => {
+		await step('Parsing empty config', async () => {
 			const result = StudioCMSOptionsSchema.parse({});
 			expect(result.dbStartPage).toBe(true);
 			expect(result.verbose).toBe(false);
@@ -95,13 +103,14 @@ describe(parentSuiteName, () => {
 		const testName = `StudioCMSOptionsSchema specific field test case #${index + 1}`;
 		const tags = [...sharedTags, 'schema:config', 'schema:StudioCMSOptionsSchema'];
 
-		test(testName, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('StudioCMSOptionsSchema tests');
-			await allure.tags(...tags);
-
-			await allure.parameter('data', JSON.stringify(data));
+		test(testName, async ({ setupAllure }) => {
+			await setupAllure({
+				subSuiteName: 'StudioCMSOptionsSchema tests',
+				tags: [...tags],
+				parameters: {
+					data: JSON.stringify(data),
+				},
+			});
 
 			const result = StudioCMSOptionsSchema.parse(data);
 			if (Array.isArray(expected)) {
@@ -140,13 +149,14 @@ describe(parentSuiteName, () => {
 		const testName = `StudioCMSOptionsSchema invalid data test case #${index + 1}`;
 		const tags = [...sharedTags, 'schema:config', 'schema:StudioCMSOptionsSchema'];
 
-		test(testName, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('StudioCMSOptionsSchema tests');
-			await allure.tags(...tags);
-
-			await allure.parameter('data', JSON.stringify(data));
+		test(testName, async ({ setupAllure }) => {
+			await setupAllure({
+				subSuiteName: 'StudioCMSOptionsSchema tests',
+				tags: [...tags],
+				parameters: {
+					data: JSON.stringify(data),
+				},
+			});
 
 			expect(() => StudioCMSOptionsSchema.parse(data)).toThrow();
 		});

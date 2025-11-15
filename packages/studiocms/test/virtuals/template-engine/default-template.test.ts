@@ -1,11 +1,16 @@
-import * as allure from 'allure-js-commons';
-import { describe, expect, test } from 'vitest';
+import { describe, expect } from 'vitest';
 import defaultTemplates from '../../../src/virtuals/template-engine/default-templates.js';
+import { allureTester } from '../../fixtures/allureTester.js';
 import { parentSuiteName, sharedTags } from '../../test-utils.js';
 
 const localSuiteName = 'Default Template Engine tests';
 
 describe(parentSuiteName, () => {
+	const test = allureTester({
+		suiteName: localSuiteName,
+		suiteParentName: parentSuiteName,
+	});
+
 	[
 		{ prop: 'notifications' },
 		{ prop: 'passwordReset' },
@@ -15,15 +20,13 @@ describe(parentSuiteName, () => {
 		const testName = `${localSuiteName} - ${prop} template`;
 		const tags = [...sharedTags, 'template-engine:virtuals', `template:${prop}`];
 
-		test(testName, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite(testName);
-			await allure.tags(...tags);
-
-			await allure.parameter('template', prop);
-
-			await allure.step(`Checking ${prop} template existence`, async () => {
+		test(testName, async ({ setupAllure, step }) => {
+			await setupAllure({
+				subSuiteName: testName,
+				tags,
+				parameters: { template: prop },
+			});
+			await step(`Checking ${prop} template existence`, async () => {
 				expect(defaultTemplates).toHaveProperty(prop);
 			});
 		});
@@ -50,13 +53,13 @@ describe(parentSuiteName, () => {
 		const testName = `${localSuiteName} - template content validation`;
 		const tags = [...sharedTags, 'template-engine:virtuals', 'template:content-validation'];
 
-		test(testName, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite(testName);
-			await allure.tags(...tags);
+		test(testName, async ({ setupAllure, step }) => {
+			await setupAllure({
+				subSuiteName: testName,
+				tags,
+			});
 
-			await allure.step('Validating template content', async () => {
+			await step('Validating template content', async () => {
 				toContain.forEach((str) => {
 					expect(template).toContain(str);
 				});

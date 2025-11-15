@@ -1,23 +1,28 @@
-import * as allure from 'allure-js-commons';
-import { describe, expect, test } from 'vitest';
+import { describe, expect } from 'vitest';
 import { providerData, showOAuth } from '../../src/frontend/components/shared/oAuthButtonProviders';
 import {
 	allowedIdentifiers,
 	sortByDate,
 	withinLast30Days,
 } from '../../src/handlers/plugin-components/utils';
+import { allureTester } from '../fixtures/allureTester';
 import { parentSuiteName, sharedTags } from '../test-utils';
 
 const localSuiteName = 'Components Utils tests';
 
 describe(parentSuiteName, () => {
-	test('allowedIdentifiers matches expected values', async () => {
+	const test = allureTester({
+		suiteName: localSuiteName,
+		suiteParentName: parentSuiteName,
+	});
+
+	test('allowedIdentifiers matches expected values', async ({ setupAllure }) => {
 		const tags = [...sharedTags, 'component:default-grid-items', 'utils:allowedIdentifiers'];
 
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('allowedIdentifiers test');
-		await allure.tags(...tags);
+		await setupAllure({
+			subSuiteName: 'allowedIdentifiers test',
+			tags: [...tags],
+		});
 
 		const result = allowedIdentifiers;
 		const expected = [
@@ -46,13 +51,13 @@ describe(parentSuiteName, () => {
 		},
 	].forEach(({ subtract, add, expected }, index) => {
 		const testName = `withinLast30Days test case #${index + 1}`;
-		test(testName, async () => {
+		test(testName, async ({ setupAllure }) => {
 			const tags = [...sharedTags, 'component:default-grid-items', 'utils:withinLast30Days'];
 
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('withinLast30Days test');
-			await allure.tags(...tags);
+			await setupAllure({
+				subSuiteName: 'withinLast30Days test',
+				tags: [...tags],
+			});
 
 			const testDate = new Date();
 			if (subtract) {
@@ -122,13 +127,13 @@ describe(parentSuiteName, () => {
 	].forEach(({ a, b, desc, expected }, index) => {
 		const testName = `sortByDate test case #${index + 1}`;
 
-		test(testName, async () => {
+		test(testName, async ({ setupAllure }) => {
 			const tags = [...sharedTags, 'component:default-grid-items', 'utils:sortByDate'];
 
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('sortByDate test');
-			await allure.tags(...tags);
+			await setupAllure({
+				subSuiteName: 'sortByDate test',
+				tags: [...tags],
+			});
 
 			const result = sortByDate(a, b, desc);
 			if (expected === 'greaterThan') {
@@ -141,13 +146,15 @@ describe(parentSuiteName, () => {
 		});
 	});
 
-	test('oAuthButtonProviders should map oAuthButtons to providerData correctly', async () => {
+	test('oAuthButtonProviders should map oAuthButtons to providerData correctly', async ({
+		setupAllure,
+	}) => {
 		const tags = [...sharedTags, 'component:oAuthButtonProviders', 'utils:providerData'];
 
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('oAuthButtonProviders - providerData test');
-		await allure.tags(...tags);
+		await setupAllure({
+			subSuiteName: 'oAuthButtonProviders - providerData test',
+			tags: [...tags],
+		});
 
 		expect(providerData).toEqual([
 			{
@@ -165,13 +172,15 @@ describe(parentSuiteName, () => {
 		]);
 	});
 
-	test('oAuthButtonProviders should set showOAuth to true if any provider is enabled', async () => {
+	test('oAuthButtonProviders should set showOAuth to true if any provider is enabled', async ({
+		setupAllure,
+	}) => {
 		const tags = [...sharedTags, 'component:oAuthButtonProviders', 'utils:showOAuth'];
 
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('oAuthButtonProviders - showOAuth test');
-		await allure.tags(...tags);
+		await setupAllure({
+			subSuiteName: 'oAuthButtonProviders - showOAuth test',
+			tags: [...tags],
+		});
 
 		expect(showOAuth).toBe(true);
 	});

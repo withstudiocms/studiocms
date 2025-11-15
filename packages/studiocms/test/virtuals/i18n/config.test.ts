@@ -1,11 +1,16 @@
-import * as allure from 'allure-js-commons';
-import { describe, expect, test } from 'vitest';
+import { describe, expect } from 'vitest';
 import * as i18nConfig from '../../../src/virtuals/i18n/config';
+import { allureTester } from '../../fixtures/allureTester';
 import { parentSuiteName, sharedTags } from '../../test-utils';
 
 const localSuiteName = 'i18n Config tests';
 
 describe(parentSuiteName, () => {
+	const test = allureTester({
+		suiteName: localSuiteName,
+		suiteParentName: parentSuiteName,
+	});
+
 	[
 		{
 			object: i18nConfig.baseServerTranslations,
@@ -21,15 +26,16 @@ describe(parentSuiteName, () => {
 		const testName = `baseServerTranslations has property ${Array.isArray(toHave) ? toHave.join('.') : toHave}`;
 		const tags = [...sharedTags, 'virtual:i18n', 'config:baseServerTranslations'];
 
-		test(testName, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('baseServerTranslations tests');
-			await allure.tags(...tags);
+		test(testName, async ({ setupAllure, step }) => {
+			await setupAllure({
+				subSuiteName: 'baseServerTranslations tests',
+				tags: [...tags],
+				parameters: {
+					property: Array.isArray(toHave) ? toHave.join('.') : toHave,
+				},
+			});
 
-			await allure.parameter('property', Array.isArray(toHave) ? toHave.join('.') : toHave);
-
-			await allure.step(
+			await step(
 				`Checking property ${Array.isArray(toHave) ? toHave.join('.') : toHave}`,
 				async () => {
 					expect(object).toHaveProperty(toHave, expected);
@@ -38,59 +44,65 @@ describe(parentSuiteName, () => {
 		});
 	});
 
-	test('should include correct properties in serverUiTranslations', async () => {
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('serverUiTranslations tests');
-		await allure.tags(...[...sharedTags, 'virtual:i18n', 'config:serverUiTranslations']);
+	test('should include correct properties in serverUiTranslations', async ({
+		setupAllure,
+		step,
+	}) => {
+		await setupAllure({
+			subSuiteName: 'serverUiTranslations tests',
+			tags: [...sharedTags, 'virtual:i18n', 'config:serverUiTranslations'],
+		});
 
-		await allure.step('Checking serverUiTranslations properties', async () => {
+		await step('Checking serverUiTranslations properties', async () => {
 			expect(i18nConfig.serverUiTranslations).toHaveProperty('en');
 		});
 	});
 
-	test('should list available UI translations', async () => {
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('uiTranslationsAvailable tests');
-		await allure.tags(...[...sharedTags, 'virtual:i18n', 'config:uiTranslationsAvailable']);
+	test('should list available UI translations', async ({ setupAllure, step }) => {
+		await setupAllure({
+			subSuiteName: 'uiTranslationsAvailable tests',
+			tags: [...sharedTags, 'virtual:i18n', 'config:uiTranslationsAvailable'],
+		});
 
-		await allure.step('Checking uiTranslationsAvailable contents', async () => {
+		await step('Checking uiTranslationsAvailable contents', async () => {
 			expect(i18nConfig.uiTranslationsAvailable).toContain('en');
 		});
 	});
 
-	test('should transform serverUiTranslations to clientUiTranslations', async () => {
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('clientUiTranslations tests');
-		await allure.tags(...[...sharedTags, 'virtual:i18n', 'config:clientUiTranslations']);
+	test('should transform serverUiTranslations to clientUiTranslations', async ({
+		setupAllure,
+		step,
+	}) => {
+		await setupAllure({
+			subSuiteName: 'clientUiTranslations tests',
+			tags: [...sharedTags, 'virtual:i18n', 'config:clientUiTranslations'],
+		});
 
-		await allure.step('Checking clientUiTranslations contents', async () => {
+		await step('Checking clientUiTranslations contents', async () => {
 			expect(i18nConfig.clientUiTranslations.en).toEqual(
 				i18nConfig.serverUiTranslations.en.translations
 			);
 		});
 	});
 
-	test('should set defaultLang to "en"', async () => {
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('defaultLang tests');
-		await allure.tags(...[...sharedTags, 'virtual:i18n', 'config:defaultLang']);
+	test('should set defaultLang to "en"', async ({ setupAllure, step }) => {
+		await setupAllure({
+			subSuiteName: 'defaultLang tests',
+			tags: [...sharedTags, 'virtual:i18n', 'config:defaultLang'],
+		});
 
-		await allure.step('Checking defaultLang value', async () => {
+		await step('Checking defaultLang value', async () => {
 			expect(i18nConfig.defaultLang).toBe('en');
 		});
 	});
 
-	test('should generate sorted languageSelectorOptions', async () => {
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('languageSelectorOptions tests');
-		await allure.tags(...[...sharedTags, 'virtual:i18n', 'config:languageSelectorOptions']);
+	test('should generate sorted languageSelectorOptions', async ({ setupAllure, step }) => {
+		await setupAllure({
+			subSuiteName: 'languageSelectorOptions tests',
+			tags: [...sharedTags, 'virtual:i18n', 'config:languageSelectorOptions'],
+		});
 
-		await allure.step('Checking languageSelectorOptions contents', async () => {
+		await step('Checking languageSelectorOptions contents', async () => {
 			const options = i18nConfig.languageSelectorOptions;
 			expect(options).toContainEqual({
 				key: 'en',

@@ -1,11 +1,16 @@
-import * as allure from 'allure-js-commons';
-import { describe, expect, test } from 'vitest';
+import { describe, expect } from 'vitest';
 import { StudioCMSCoreError, StudioCMSError } from '../src/errors';
+import { allureTester } from './fixtures/allureTester';
 import { parentSuiteName, sharedTags } from './test-utils';
 
 const localSuiteName = 'StudioCMS Error tests';
 
 describe(parentSuiteName, () => {
+	const test = allureTester({
+		suiteName: localSuiteName,
+		suiteParentName: parentSuiteName,
+	});
+
 	[
 		{
 			message: 'Test message',
@@ -26,13 +31,16 @@ describe(parentSuiteName, () => {
 			},
 		},
 	].forEach(({ message, hint, expected }) => {
-		test('StudioCMSError should create an error with the correct properties', async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('StudioCMSError tests');
-			await allure.tags(...sharedTags, 'class:StudioCMSError', 'constructor');
+		test('StudioCMSError should create an error with the correct properties', async ({
+			setupAllure,
+			step,
+		}) => {
+			await setupAllure({
+				subSuiteName: 'StudioCMSError tests',
+				tags: [...sharedTags, 'class:StudioCMSError', 'constructor'],
+			});
 
-			await allure.step(
+			await step(
 				`Creating StudioCMSError with message="${message}" and hint="${hint}"`,
 				async (ctx) => {
 					const error = new StudioCMSError(message, hint);
@@ -67,13 +75,16 @@ describe(parentSuiteName, () => {
 			},
 		},
 	].forEach(({ message, hint, expected }) => {
-		test('StudioCMSCoreError should create an error with the correct properties', async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('StudioCMSCoreError tests');
-			await allure.tags(...sharedTags, 'class:StudioCMSCoreError', 'constructor');
+		test('StudioCMSCoreError should create an error with the correct properties', async ({
+			setupAllure,
+			step,
+		}) => {
+			await setupAllure({
+				subSuiteName: 'StudioCMSCoreError tests',
+				tags: [...sharedTags, 'class:StudioCMSCoreError', 'constructor'],
+			});
 
-			await allure.step(
+			await step(
 				`Creating StudioCMSCoreError with message="${message}" and hint="${hint}"`,
 				async (ctx) => {
 					const error = new StudioCMSCoreError(message, hint);

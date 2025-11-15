@@ -1,18 +1,23 @@
-import * as allure from 'allure-js-commons';
-import { describe, expect, test } from 'vitest';
+import { describe, expect } from 'vitest';
 import { validImages } from '../../../../src/virtuals/auth/validImages';
+import { allureTester } from '../../../fixtures/allureTester';
 import { parentSuiteName, sharedTags } from '../../../test-utils';
 
 const localSuiteName = 'validImages Virtual tests';
 
 describe(parentSuiteName, () => {
-	test('validImages exports correct array structure', async () => {
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('validImages tests');
-		await allure.tags(...[...sharedTags, 'virtual:auth', 'function:validImages']);
+	const test = allureTester({
+		suiteName: localSuiteName,
+		suiteParentName: parentSuiteName,
+	});
 
-		await allure.step('Checking validImages array structure and contents', async () => {
+	test('validImages exports correct array structure', async ({ setupAllure, step }) => {
+		await setupAllure({
+			subSuiteName: 'validImages tests',
+			tags: [...sharedTags, 'virtual:auth', 'function:validImages'],
+		});
+
+		await step('Checking validImages array structure and contents', async () => {
 			expect(Array.isArray(validImages)).toBe(true);
 			expect(validImages.length).toBeGreaterThan(0);
 
@@ -28,13 +33,13 @@ describe(parentSuiteName, () => {
 	});
 
 	validImages.forEach(({ name }) => {
-		test(`should have a valid entry for image name: ${name}`, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('validImages individual entry tests');
-			await allure.tags(...[...sharedTags, 'virtual:auth', 'function:validImages']);
+		test(`should have a valid entry for image name: ${name}`, async ({ setupAllure, step }) => {
+			await setupAllure({
+				subSuiteName: 'validImages individual entry tests',
+				tags: [...sharedTags, 'virtual:auth', 'function:validImages'],
+			});
 
-			await allure.step(`Validating entry for image name: ${name}`, async () => {
+			await step(`Validating entry for image name: ${name}`, async () => {
 				expect(name).toBeOneOf([
 					'studiocms-blobs',
 					'studiocms-blocks',
@@ -45,13 +50,13 @@ describe(parentSuiteName, () => {
 		});
 	});
 
-	test('validImage should have "custom" image with format "web"', async () => {
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('validImages custom image tests');
-		await allure.tags(...[...sharedTags, 'virtual:auth', 'function:validImages']);
+	test('validImage should have "custom" image with format "web"', async ({ setupAllure, step }) => {
+		await setupAllure({
+			subSuiteName: 'validImages custom image tests',
+			tags: [...sharedTags, 'virtual:auth', 'function:validImages'],
+		});
 
-		await allure.step('Checking "custom" image entry', async () => {
+		await step('Checking "custom" image entry', async () => {
 			const customImage = validImages.find((img) => img.name === 'custom');
 			expect(customImage).toBeDefined();
 			expect(customImage?.format).toBe('web');
@@ -63,13 +68,16 @@ describe(parentSuiteName, () => {
 	validImages
 		.filter((img) => img.format === 'local')
 		.forEach((img) => {
-			test(`validImage "${img.name}" should have non-null light and dark properties`, async () => {
-				await allure.parentSuite(parentSuiteName);
-				await allure.suite(localSuiteName);
-				await allure.subSuite('validImages local image light/dark tests');
-				await allure.tags(...[...sharedTags, 'virtual:auth', 'function:validImages']);
+			test(`validImage "${img.name}" should have non-null light and dark properties`, async ({
+				setupAllure,
+				step,
+			}) => {
+				await setupAllure({
+					subSuiteName: 'validImages local image light/dark tests',
+					tags: [...sharedTags, 'virtual:auth', 'function:validImages'],
+				});
 
-				await allure.step(`Checking light/dark properties for image: ${img.name}`, async () => {
+				await step(`Checking light/dark properties for image: ${img.name}`, async () => {
 					expect(img.light).not.toBeNull();
 					expect(img.dark).not.toBeNull();
 				});

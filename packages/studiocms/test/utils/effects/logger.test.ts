@@ -1,9 +1,9 @@
 /** biome-ignore-all lint/suspicious/noExplicitAny: allowed for tests */
 
 import { Effect, LogLevel } from '@withstudiocms/effect';
-import * as allure from 'allure-js-commons';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, vi } from 'vitest';
 import * as loggerModule from '../../../src/utils/effects/logger';
+import { allureTester } from '../../fixtures/allureTester';
 import { parentSuiteName, sharedTags } from '../../test-utils';
 
 const localSuiteName = 'S48Logger Utility tests';
@@ -14,6 +14,10 @@ describe(parentSuiteName, () => {
 	let consoleWarn: any;
 	let consoleError: any;
 	let consoleDebug: any;
+	const test = allureTester({
+		suiteName: localSuiteName,
+		suiteParentName: parentSuiteName,
+	});
 
 	beforeEach(() => {
 		s48Logger = new loggerModule.S48Logger({ level: 'info' }, 'test-label');
@@ -27,76 +31,79 @@ describe(parentSuiteName, () => {
 		vi.restoreAllMocks();
 	});
 
-	test('should log info messages', async () => {
+	test('should log info messages', async ({ setupAllure, step }) => {
 		const testName = 'should log info messages';
 		const tags = [...sharedTags, 'utility:S48Logger', 'method:info'];
 
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite(testName);
-		await allure.tags(...tags);
+		await setupAllure({
+			subSuiteName: testName,
+			tags: [...tags],
+		});
 
-		await allure.step('Logging info message', async () => {
+		await step('Logging info message', async () => {
 			s48Logger.info('info message');
 			expect(consoleLog).toHaveBeenCalledWith(expect.stringContaining('info message'));
 		});
 	});
 
-	test('should log warn messages', async () => {
+	test('should log warn messages', async ({ setupAllure, step }) => {
 		const testName = 'should log warn messages';
 		const tags = [...sharedTags, 'utility:S48Logger', 'method:warn'];
 
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite(testName);
-		await allure.tags(...tags);
+		await setupAllure({
+			subSuiteName: testName,
+			tags: [...tags],
+		});
 
-		await allure.step('Logging warn message', async () => {
+		await step('Logging warn message', async () => {
 			s48Logger.warn('warn message');
 			expect(consoleWarn).toHaveBeenCalledWith(expect.stringContaining('warn message'));
 		});
 	});
 
-	test('should log error messages', async () => {
+	test('should log error messages', async ({ setupAllure, step }) => {
 		const testName = 'should log error messages';
 		const tags = [...sharedTags, 'utility:S48Logger', 'method:error'];
 
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite(testName);
-		await allure.tags(...tags);
+		await setupAllure({
+			subSuiteName: testName,
+			tags: [...tags],
+		});
 
-		await allure.step('Logging error message', async () => {
+		await step('Logging error message', async () => {
 			s48Logger.error('error message');
 			expect(consoleError).toHaveBeenCalledWith(expect.stringContaining('error message'));
 		});
 	});
 
-	test('should log debug messages', async () => {
+	test('should log debug messages', async ({ setupAllure, step }) => {
 		const testName = 'should log debug messages';
 		const tags = [...sharedTags, 'utility:S48Logger', 'method:debug'];
 
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite(testName);
-		await allure.tags(...tags);
+		await setupAllure({
+			subSuiteName: testName,
+			tags: [...tags],
+		});
 
-		await allure.step('Logging debug message', async () => {
+		await step('Logging debug message', async () => {
 			s48Logger.debug('debug message');
 			expect(consoleDebug).toHaveBeenCalledWith(expect.stringContaining('debug message'));
 		});
 	});
 
-	test('fork should create a new logger with same options and new label', async () => {
+	test('fork should create a new logger with same options and new label', async ({
+		setupAllure,
+		step,
+	}) => {
 		const testName = 'fork should create a new logger with same options and new label';
 		const tags = [...sharedTags, 'utility:S48Logger', 'method:fork'];
 
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite(testName);
-		await allure.tags(...tags);
+		await setupAllure({
+			subSuiteName: testName,
+			tags: [...tags],
+		});
 
-		await allure.step('Forking logger', async () => {
+		await step('Forking logger', async () => {
 			const forked = s48Logger.fork('new-label');
 			expect(forked.label).toBe('new-label');
 			expect(forked.options).toEqual(s48Logger.options);
@@ -113,16 +120,16 @@ describe(parentSuiteName, () => {
 			expected: 'bar',
 		},
 	].forEach(({ label, expected }) => {
-		test(`stripNameFromLabel should strip prefix from ${label}`, async () => {
+		test(`stripNameFromLabel should strip prefix from ${label}`, async ({ setupAllure, step }) => {
 			const testName = `stripNameFromLabel should strip prefix from ${label}`;
 			const tags = [...sharedTags, 'utility:S48Logger', 'method:stripNameFromLabel'];
 
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite(testName);
-			await allure.tags(...tags);
+			await setupAllure({
+				subSuiteName: testName,
+				tags: [...tags],
+			});
 
-			await allure.step(`Stripping prefix from ${label}`, async () => {
+			await step(`Stripping prefix from ${label}`, async () => {
 				const result = loggerModule.stripNameFromLabel(label);
 				expect(result).toBe(expected);
 			});
@@ -151,32 +158,38 @@ describe(parentSuiteName, () => {
 			toContain: 'label',
 		},
 	].forEach(({ level, label, toContain }) => {
-		test(`getEventPrefix should format ${level} prefix correctly`, async () => {
+		test(`getEventPrefix should format ${level} prefix correctly`, async ({
+			setupAllure,
+			step,
+		}) => {
 			const testName = `getEventPrefix should format ${level} prefix correctly`;
 			const tags = [...sharedTags, 'utility:S48Logger', 'method:getEventPrefix'];
 
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite(testName);
-			await allure.tags(...tags);
+			await setupAllure({
+				subSuiteName: testName,
+				tags: [...tags],
+			});
 
-			await allure.step(`Formatting ${level} prefix`, async () => {
+			await step(`Formatting ${level} prefix`, async () => {
 				const prefix = loggerModule.getEventPrefix(level as any, label);
 				expect(prefix).toContain(toContain);
 			});
 		});
 	});
 
-	test('makeLogger should create a Logger instance and log at correct level', async () => {
+	test('makeLogger should create a Logger instance and log at correct level', async ({
+		setupAllure,
+		step,
+	}) => {
 		const testName = 'makeLogger should create a Logger instance and log at correct level';
 		const tags = [...sharedTags, 'utility:S48Logger', 'function:makeLogger'];
 
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite(testName);
-		await allure.tags(...tags);
+		await setupAllure({
+			subSuiteName: testName,
+			tags: [...tags],
+		});
 
-		await allure.step('Creating logger and logging info message', async () => {
+		await step('Creating logger and logging info message', async () => {
 			const log = loggerModule.makeLogger('test');
 			const spy = vi.spyOn(loggerModule.loggerCache, 'set');
 			log.log({
@@ -189,48 +202,51 @@ describe(parentSuiteName, () => {
 		});
 	});
 
-	test('runtimeLogger should apply logger and log span to Effect', async () => {
+	test('runtimeLogger should apply logger and log span to Effect', async ({
+		setupAllure,
+		step,
+	}) => {
 		const testName = 'runtimeLogger should apply logger and log span to Effect';
 		const tags = [...sharedTags, 'utility:S48Logger', 'function:runtimeLogger'];
 
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite(testName);
-		await allure.tags(...tags);
+		await setupAllure({
+			subSuiteName: testName,
+			tags: [...tags],
+		});
 
-		await allure.step('Applying runtimeLogger to Effect', async () => {
+		await step('Applying runtimeLogger to Effect', async () => {
 			const effect = Effect.succeed('ok');
 			const result = await Effect.runPromise(loggerModule.runtimeLogger(effect, 'test-label'));
 			expect(result).toBe('ok');
 		});
 	});
 
-	test('pipeLogger should apply runtimeLogger and log span', async () => {
+	test('pipeLogger should apply runtimeLogger and log span', async ({ setupAllure, step }) => {
 		const testName = 'pipeLogger should apply runtimeLogger and log span';
 		const tags = [...sharedTags, 'utility:S48Logger', 'function:pipeLogger'];
 
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite(testName);
-		await allure.tags(...tags);
+		await setupAllure({
+			subSuiteName: testName,
+			tags: [...tags],
+		});
 
-		await allure.step('Applying pipeLogger to Effect', async () => {
+		await step('Applying pipeLogger to Effect', async () => {
 			const effect = Effect.succeed('ok');
 			const result = await Effect.runPromise(loggerModule.pipeLogger(effect, 'test-label'));
 			expect(result).toBe('ok');
 		});
 	});
 
-	test('genLogger should wrap generator function with logging', async () => {
+	test('genLogger should wrap generator function with logging', async ({ setupAllure, step }) => {
 		const testName = 'genLogger should wrap generator function with logging';
 		const tags = [...sharedTags, 'utility:S48Logger', 'function:genLogger'];
 
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite(testName);
-		await allure.tags(...tags);
+		await setupAllure({
+			subSuiteName: testName,
+			tags: [...tags],
+		});
 
-		await allure.step('Wrapping generator function with genLogger', async () => {
+		await step('Wrapping generator function with genLogger', async () => {
 			const gen = loggerModule.genLogger('gen-label')(function* () {
 				yield* Effect.log('start');
 				return 42;

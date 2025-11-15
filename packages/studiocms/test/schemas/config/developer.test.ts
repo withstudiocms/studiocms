@@ -1,11 +1,16 @@
-import * as allure from 'allure-js-commons';
-import { describe, expect, test } from 'vitest';
+import { describe, expect } from 'vitest';
 import { developerConfigSchema } from '../../../src/schemas/config/developer';
+import { allureTester } from '../../fixtures/allureTester';
 import { parentSuiteName, sharedTags } from '../../test-utils';
 
 const localSuiteName = 'Config Schemas tests (Developer)';
 
 describe(parentSuiteName, () => {
+	const test = allureTester({
+		suiteName: localSuiteName,
+		suiteParentName: parentSuiteName,
+	});
+
 	[
 		{
 			data: undefined,
@@ -27,13 +32,14 @@ describe(parentSuiteName, () => {
 		const testName = `developerConfigSchema test case #${index + 1}`;
 		const tags = [...sharedTags, 'schema:config', 'schema:developerConfigSchema'];
 
-		test(testName, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('developerConfigSchema tests');
-			await allure.tags(...tags);
-
-			await allure.parameter('data', JSON.stringify(data));
+		test(testName, async ({ setupAllure }) => {
+			await setupAllure({
+				subSuiteName: 'developerConfigSchema tests',
+				tags: [...tags],
+				parameters: {
+					data: JSON.stringify(data),
+				},
+			});
 
 			const result = developerConfigSchema.parse(data);
 			expect(result).toEqual(expected);
@@ -54,13 +60,14 @@ describe(parentSuiteName, () => {
 		const testName = `developerConfigSchema invalid data test case #${index + 1}`;
 		const tags = [...sharedTags, 'schema:config', 'schema:developerConfigSchema'];
 
-		test(testName, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('developerConfigSchema tests');
-			await allure.tags(...tags);
-
-			await allure.parameter('data', JSON.stringify(data));
+		test(testName, async ({ setupAllure }) => {
+			await setupAllure({
+				subSuiteName: 'developerConfigSchema tests',
+				tags: [...tags],
+				parameters: {
+					data: JSON.stringify(data),
+				},
+			});
 
 			expect(() => developerConfigSchema.parse(data)).toThrow();
 		});

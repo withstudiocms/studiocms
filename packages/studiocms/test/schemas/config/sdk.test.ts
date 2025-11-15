@@ -1,5 +1,4 @@
-import * as allure from 'allure-js-commons';
-import { describe, expect, test } from 'vitest';
+import { describe, expect } from 'vitest';
 import { defaultCacheLifeTime } from '../../../src/consts';
 import {
 	CacheConfigSchema,
@@ -9,11 +8,17 @@ import {
 	SDKSchema,
 	TimeStringSchema,
 } from '../../../src/schemas/config/sdk';
+import { allureTester } from '../../fixtures/allureTester';
 import { parentSuiteName, sharedTags } from '../../test-utils';
 
 const localSuiteName = 'Config Schemas tests (SDK)';
 
 describe(parentSuiteName, () => {
+	const test = allureTester({
+		suiteName: localSuiteName,
+		suiteParentName: parentSuiteName,
+	});
+
 	[
 		{
 			data: '5m',
@@ -27,13 +32,14 @@ describe(parentSuiteName, () => {
 		const testName = `TimeStringSchema test case #${index + 1}`;
 		const tags = [...sharedTags, 'schema:config', 'schema:TimeStringSchema'];
 
-		test(testName, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('TimeStringSchema tests');
-			await allure.tags(...tags);
-
-			await allure.parameter('data', data);
+		test(testName, async ({ setupAllure }) => {
+			await setupAllure({
+				subSuiteName: 'TimeStringSchema tests',
+				tags: [...tags],
+				parameters: {
+					data: data,
+				},
+			});
 
 			const result = TimeStringSchema.parse(data);
 			expect(result).toBe(expected);
@@ -54,13 +60,14 @@ describe(parentSuiteName, () => {
 		const testName = `TimeStringSchema invalid format test case #${index + 1}`;
 		const tags = [...sharedTags, 'schema:config', 'schema:TimeStringSchema'];
 
-		test(testName, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('TimeStringSchema tests');
-			await allure.tags(...tags);
-
-			await allure.parameter('data', data);
+		test(testName, async ({ setupAllure }) => {
+			await setupAllure({
+				subSuiteName: 'TimeStringSchema tests',
+				tags: [...tags],
+				parameters: {
+					data: data,
+				},
+			});
 
 			expect(() => TimeStringSchema.parse(data)).toThrow();
 		});
@@ -79,13 +86,14 @@ describe(parentSuiteName, () => {
 		const testName = `CacheConfigSchema test case #${index + 1}`;
 		const tags = [...sharedTags, 'schema:config', 'schema:CacheConfigSchema'];
 
-		test(testName, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('CacheConfigSchema tests');
-			await allure.tags(...tags);
-
-			await allure.parameter('data', JSON.stringify(data));
+		test(testName, async ({ setupAllure }) => {
+			await setupAllure({
+				subSuiteName: 'CacheConfigSchema tests',
+				tags: [...tags],
+				parameters: {
+					data: JSON.stringify(data),
+				},
+			});
 
 			const result = CacheConfigSchema.parse(data);
 			expect(result.lifetime).toBe(expected);
@@ -105,13 +113,14 @@ describe(parentSuiteName, () => {
 		const testName = `ProcessedCacheConfigSchema test case #${index + 1}`;
 		const tags = [...sharedTags, 'schema:config', 'schema:ProcessedCacheConfigSchema'];
 
-		test(testName, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('ProcessedCacheConfigSchema tests');
-			await allure.tags(...tags);
-
-			await allure.parameter('data', JSON.stringify(data));
+		test(testName, async ({ setupAllure }) => {
+			await setupAllure({
+				subSuiteName: 'ProcessedCacheConfigSchema tests',
+				tags: [...tags],
+				parameters: {
+					data: JSON.stringify(data),
+				},
+			});
 
 			const result = ProcessedCacheConfigSchema.parse(data);
 			expect(result).toEqual(expected);
@@ -141,13 +150,14 @@ describe(parentSuiteName, () => {
 		const testName = `SDKCacheSchema test case #${index + 1}`;
 		const tags = [...sharedTags, 'schema:config', 'schema:SDKCacheSchema'];
 
-		test(testName, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('SDKCacheSchema tests');
-			await allure.tags(...tags);
-
-			await allure.parameter('data', JSON.stringify(data));
+		test(testName, async ({ setupAllure }) => {
+			await setupAllure({
+				subSuiteName: 'SDKCacheSchema tests',
+				tags: [...tags],
+				parameters: {
+					data: JSON.stringify(data),
+				},
+			});
 
 			const result = SDKCacheSchema.parse(data);
 			expect(result).toEqual(expected);
@@ -179,13 +189,14 @@ describe(parentSuiteName, () => {
 		const testName = `SDKSchema test case #${index + 1}`;
 		const tags = [...sharedTags, 'schema:config', 'schema:SDKSchema'];
 
-		test(testName, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('SDKSchema tests');
-			await allure.tags(...tags);
-
-			await allure.parameter('data', JSON.stringify(data));
+		test(testName, async ({ setupAllure }) => {
+			await setupAllure({
+				subSuiteName: 'SDKSchema tests',
+				tags: [...tags],
+				parameters: {
+					data: JSON.stringify(data),
+				},
+			});
 
 			const result = SDKSchema.parse(data);
 			expect(result).toEqual(expected);
@@ -205,13 +216,14 @@ describe(parentSuiteName, () => {
 		const testName = `ProcessedSDKSchema test case #${index + 1}`;
 		const tags = [...sharedTags, 'schema:config', 'schema:ProcessedSDKSchema'];
 
-		test(testName, async () => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite(localSuiteName);
-			await allure.subSuite('ProcessedSDKSchema tests');
-			await allure.tags(...tags);
-
-			await allure.parameter('data', JSON.stringify(data));
+		test(testName, async ({ setupAllure }) => {
+			await setupAllure({
+				subSuiteName: 'ProcessedSDKSchema tests',
+				tags: [...tags],
+				parameters: {
+					data: JSON.stringify(data),
+				},
+			});
 
 			const result = ProcessedSDKSchema.parse(data);
 			expect(result).toEqual(expected);
