@@ -14,7 +14,7 @@ import { MockAstroLocals, parentSuiteName, sharedTags } from '../test-utils.js';
 
 const localSuiteName = 'Component Tests';
 
-describe(localSuiteName, () => {
+describe(parentSuiteName, () => {
 	test('RSSIcon renders correctly', async () => {
 		await allure.parentSuite(parentSuiteName);
 		await allure.suite(localSuiteName);

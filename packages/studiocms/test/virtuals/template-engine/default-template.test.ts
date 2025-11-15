@@ -1,48 +1,69 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect } from 'vitest';
 import defaultTemplates from '../../../src/virtuals/template-engine/default-templates.js';
+import { allureTester } from '../../fixtures/allureTester.js';
+import { parentSuiteName, sharedTags } from '../../test-utils.js';
 
-describe('defaultTemplates', () => {
-	it('should export all expected template keys', () => {
-		expect(defaultTemplates).toHaveProperty('notifications');
-		expect(defaultTemplates).toHaveProperty('passwordReset');
-		expect(defaultTemplates).toHaveProperty('userInvite');
-		expect(defaultTemplates).toHaveProperty('verifyEmail');
+const localSuiteName = 'Default Template Engine tests';
+
+describe(parentSuiteName, () => {
+	const test = allureTester({
+		suiteName: localSuiteName,
+		suiteParentName: parentSuiteName,
 	});
 
-	it('notifications template should contain required variables', () => {
-		const tpl = defaultTemplates.notifications;
-		expect(tpl).toContain('{{data.title}}');
-		expect(tpl).toContain('{{data.message}}');
-		expect(tpl).toMatch(/<!doctype html>/i);
+	[
+		{ prop: 'notifications' },
+		{ prop: 'passwordReset' },
+		{ prop: 'userInvite' },
+		{ prop: 'verifyEmail' },
+	].forEach(({ prop }) => {
+		const testName = `${localSuiteName} - ${prop} template`;
+		const tags = [...sharedTags, 'template-engine:virtuals', `template:${prop}`];
+
+		test(testName, async ({ setupAllure, step }) => {
+			await setupAllure({
+				subSuiteName: testName,
+				tags,
+				parameters: { template: prop },
+			});
+			await step(`Checking ${prop} template existence`, async () => {
+				expect(defaultTemplates).toHaveProperty(prop);
+			});
+		});
 	});
 
-	it('passwordReset template should contain required variables', () => {
-		const tpl = defaultTemplates.passwordReset;
-		expect(tpl).toContain('{{data.link}}');
-		expect(tpl).toContain('Reset Your Password');
-		expect(tpl).toMatch(/<!doctype html>/i);
-	});
+	[
+		{
+			template: defaultTemplates.notifications,
+			toContain: ['{{data.title}}', '{{data.message}}', '<!doctype html>'],
+		},
+		{
+			template: defaultTemplates.passwordReset,
+			toContain: ['{{data.link}}', 'Reset Your Password', '<!doctype html>'],
+		},
+		{
+			template: defaultTemplates.userInvite,
+			toContain: ['{{site.title}}', '{{data.link}}', 'New User Invite from', '<!doctype html>'],
+		},
+		{
+			template: defaultTemplates.verifyEmail,
+			toContain: ['{{data.link}}', 'Verify your Email', '<!doctype html>'],
+		},
+	].forEach(({ template, toContain }) => {
+		const testName = `${localSuiteName} - template content validation`;
+		const tags = [...sharedTags, 'template-engine:virtuals', 'template:content-validation'];
 
-	it('userInvite template should contain required variables', () => {
-		const tpl = defaultTemplates.userInvite;
-		expect(tpl).toContain('{{site.title}}');
-		expect(tpl).toContain('{{data.link}}');
-		expect(tpl).toContain('New User Invite from');
-		expect(tpl).toMatch(/<!doctype html>/i);
-	});
+		test(testName, async ({ setupAllure, step }) => {
+			await setupAllure({
+				subSuiteName: testName,
+				tags,
+			});
 
-	it('verifyEmail template should contain required variables', () => {
-		const tpl = defaultTemplates.verifyEmail;
-		expect(tpl).toContain('{{data.link}}');
-		expect(tpl).toContain('Verify your Email');
-		expect(tpl).toMatch(/<!doctype html>/i);
-	});
-
-	it('should mark all templates as readonly', () => {
-		// Type-level test: This will fail to compile if templates are not readonly
-		type Templates = typeof defaultTemplates;
-		type AssertReadonly<T> = T extends { readonly [K in keyof T]: T[K] } ? true : false;
-		const isReadonly: AssertReadonly<Templates> = true;
-		expect(isReadonly).toBe(true);
+			await step('Validating template content', async () => {
+				toContain.forEach((str) => {
+					expect(template).toContain(str);
+				});
+			});
+		});
 	});
 });

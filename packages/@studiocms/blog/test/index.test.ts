@@ -7,7 +7,7 @@ import { parentSuiteName, sharedTags } from './test-utils.js';
 
 const localSuiteName = 'Blog Plugin Tests';
 
-describe(localSuiteName, () => {
+describe(parentSuiteName, () => {
 	let tester: StudioCMSPluginTester;
 	let plugin: ReturnType<typeof blogPlugin>;
 

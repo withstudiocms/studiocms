@@ -1,6 +1,10 @@
-import { describe, expect, expectTypeOf, it } from 'vitest';
+import { describe, expect, expectTypeOf } from 'vitest';
 import { defineStudioCMSConfig } from '../src/config';
 import type { StudioCMSOptions } from '../src/schemas';
+import { allureTester } from './fixtures/allureTester';
+import { parentSuiteName, sharedTags } from './test-utils';
+
+const localSuiteName = 'config.ts tests';
 
 // Mock minimal StudioCMSOptions for testing
 const minimalConfig: StudioCMSOptions = {
@@ -19,19 +23,51 @@ const fullConfig: StudioCMSOptions = {
 	},
 };
 
-describe('defineStudioCMSConfig', () => {
-	it('should return the config object unchanged', () => {
-		const result = defineStudioCMSConfig(minimalConfig);
-		expect(result).toBe(minimalConfig);
+describe(parentSuiteName, () => {
+	const test = allureTester({
+		suiteName: localSuiteName,
+		suiteParentName: parentSuiteName,
 	});
 
-	it('should preserve all properties of the config object', () => {
-		const result = defineStudioCMSConfig(fullConfig);
-		expect(result).toEqual(fullConfig);
+	[
+		{
+			input: minimalConfig,
+			expected: minimalConfig,
+		},
+		{
+			input: fullConfig,
+			expected: fullConfig,
+		},
+	].forEach(({ input, expected }) => {
+		test('defineStudioCMSConfig should return the config object unchanged', async ({
+			setupAllure,
+			step,
+		}) => {
+			await setupAllure({
+				subSuiteName: 'defineStudioCMSConfig tests',
+				tags: [...sharedTags, 'function:defineStudioCMSConfig'],
+			});
+
+			await step('Defining StudioCMS config', async (ctx) => {
+				const result = defineStudioCMSConfig(input);
+				await ctx.parameter('inputConfig', JSON.stringify(input));
+				await ctx.parameter('expectedConfig', JSON.stringify(expected));
+				await ctx.parameter('actualConfig', JSON.stringify(result));
+				expect(result).toEqual(expected);
+			});
+		});
 	});
 
-	it('should return StudioCMSOptions type', () => {
-		const config = defineStudioCMSConfig({ dbStartPage: true });
-		expectTypeOf(config).toEqualTypeOf<StudioCMSOptions>();
+	test('defineStudioCMSConfig should infer the correct type', async ({ setupAllure, step }) => {
+		await setupAllure({
+			subSuiteName: 'defineStudioCMSConfig tests',
+			tags: [...sharedTags, 'function:defineStudioCMSConfig', 'type-inference'],
+		});
+
+		await step('Checking type inference of defineStudioCMSConfig', async (ctx) => {
+			const config = defineStudioCMSConfig(fullConfig);
+			await ctx.parameter('configType', typeof config);
+			expectTypeOf(config).toEqualTypeOf<StudioCMSOptions>();
+		});
 	});
 });

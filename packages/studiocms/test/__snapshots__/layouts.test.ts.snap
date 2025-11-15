@@ -1,6 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Layout Container tests > AuthLayout Container > render component 1`] = `
+exports[`studiocms Package Tests > Layout Container tests - AuthLayout component 1`] = `
 "<html lang="en"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="generator" content="Astro v0.0.0-test"><meta name="generator" content="StudioCMS v0.0.0-test"><meta name="generator" content="StudioCMS UI v0.0.0-test"><link rel="icon" href="https://cdn.studiocms.dev/favicon.svg" type="image/svg+xml"><link rel="icon" href="https://cdn.studiocms.dev/favicon-light.png" type="image/png" media="(prefers-color-scheme: dark)"><link rel="icon" href="https://cdn.studiocms.dev/favicon-dark.png" type="image/png" media="(prefers-color-scheme: light)"><title>Test Title</title><meta name="title" content="Test Title"><meta name="description" content="Test Description"><meta name="theme-color" content="#a581f3"><script>
     window.theme ??= (() => {
         const defaultTheme = "system";
@@ -51,7 +51,7 @@ exports[`Layout Container tests > AuthLayout Container > render component 1`] = 
     <div class="button-stack"><a tabindex="0" as="a" href="/studiocms_api/auth/github" class="sui-button full lg default solid">   github.png <span>GitHub</span>   </a> </div><script type="module" src="/mock/path/AuthLayout.astro?astro&type=script&index=0&lang.ts"></script> <div class="form-footer">  </div> </div> </main>  <div style="display: none;" id="auth-pages-config" data-config_background="studiocms-curves"></div> <script type="module" src="/mock/path/AuthLayout.astro?astro&type=script&index=0&lang.ts"></script> </body></html>"
 `;
 
-exports[`Layout Container tests > FirstTimeSetupLayout Container > render component 1`] = `
+exports[`studiocms Package Tests > Layout Container tests - FirstTimeSetupLayout component 1`] = `
 "<html lang="en-us"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" href="https://cdn.studiocms.dev/favicon.svg" type="image/svg+xml"><link rel="icon" href="https://cdn.studiocms.dev/favicon-light.png" type="image/png" media="(prefers-color-scheme: dark)"><link rel="icon" href="https://cdn.studiocms.dev/favicon-dark.png" type="image/png" media="(prefers-color-scheme: light)"><title>Test Title</title><meta name="title" content="Test Title"><meta name="description" content="Test Description"><meta name="theme-color" content="#a581f3"><script>
     window.theme ??= (() => {
         const defaultTheme = "system";

@@ -1,70 +1,113 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect } from 'vitest';
 import { dashboardConfigSchema } from '../../../src/schemas/config/dashboard';
+import { allureTester } from '../../fixtures/allureTester';
+import { parentSuiteName, sharedTags } from '../../test-utils';
 
-describe('dashboardConfigSchema', () => {
-	it('should use defaults when no config is provided', () => {
-		const result = dashboardConfigSchema.parse({});
-		expect(result.dashboardEnabled).toBe(true);
-		expect(result.inject404Route).toBe(true);
-		expect(result.faviconURL).toBe('/favicon.svg');
-		expect(result.dashboardRouteOverride).toBeUndefined();
-		expect(result.versionCheck).toBe(true);
+const localSuiteName = 'Config Schemas tests (Dashboard)';
+
+describe(parentSuiteName, () => {
+	const test = allureTester({
+		suiteName: localSuiteName,
+		suiteParentName: parentSuiteName,
 	});
 
-	it('should allow overriding all values', () => {
-		const config = {
-			dashboardEnabled: false,
-			inject404Route: false,
-			faviconURL: '/custom.ico',
-			dashboardRouteOverride: 'admin',
-			versionCheck: false,
-		};
-		const result = dashboardConfigSchema.parse(config);
-		expect(result.dashboardEnabled).toBe(false);
-		expect(result.inject404Route).toBe(false);
-		expect(result.faviconURL).toBe('/custom.ico');
-		expect(result.dashboardRouteOverride).toBe('admin');
-		expect(result.versionCheck).toBe(false);
+	const _dashboardConfigSchemaExpectedResult = {
+		dashboardEnabled: true,
+		inject404Route: true,
+		faviconURL: '/favicon.svg',
+		dashboardRouteOverride: undefined,
+		versionCheck: true,
+	};
+
+	[
+		{
+			opts: {},
+			expectedResult: _dashboardConfigSchemaExpectedResult,
+		},
+		{
+			opts: {
+				dashboardEnabled: false,
+				inject404Route: false,
+				faviconURL: '/custom.ico',
+				dashboardRouteOverride: 'admin',
+				versionCheck: false,
+			},
+			expectedResult: {
+				dashboardEnabled: false,
+				inject404Route: false,
+				faviconURL: '/custom.ico',
+				dashboardRouteOverride: 'admin',
+				versionCheck: false,
+			},
+		},
+		{
+			opts: {
+				dashboardEnabled: false,
+				faviconURL: '/custom.svg',
+			},
+			expectedResult: {
+				..._dashboardConfigSchemaExpectedResult,
+				dashboardEnabled: false,
+				faviconURL: '/custom.svg',
+			},
+		},
+		{
+			opts: undefined,
+			expectedResult: _dashboardConfigSchemaExpectedResult,
+		},
+	].forEach(({ opts, expectedResult }, index) => {
+		const testName = `dashboardConfigSchema optional test case #${index + 1}`;
+		const tags = [...sharedTags, 'schema:config', 'schema:dashboardConfigSchema'];
+
+		test(testName, async ({ setupAllure }) => {
+			await setupAllure({
+				subSuiteName: 'dashboardConfigSchema tests',
+				tags: [...tags],
+				parameters: {
+					data: JSON.stringify(opts),
+				},
+			});
+
+			const result = dashboardConfigSchema.parse(opts);
+			expect(result).toBeDefined();
+			expect(result.dashboardEnabled).toBe(expectedResult.dashboardEnabled);
+			expect(result.inject404Route).toBe(expectedResult.inject404Route);
+			expect(result.faviconURL).toBe(expectedResult.faviconURL);
+			expect(result.dashboardRouteOverride).toBe(expectedResult.dashboardRouteOverride);
+			expect(result.versionCheck).toBe(expectedResult.versionCheck);
+		});
 	});
 
-	it('should allow partial overrides and use defaults for missing values', () => {
-		const config = {
-			dashboardEnabled: false,
-			faviconURL: '/custom.svg',
-		};
-		const result = dashboardConfigSchema.parse(config);
-		expect(result.dashboardEnabled).toBe(false);
-		expect(result.inject404Route).toBe(true);
-		expect(result.faviconURL).toBe('/custom.svg');
-		expect(result.dashboardRouteOverride).toBeUndefined();
-		expect(result.versionCheck).toBe(true);
-	});
-
-	it('should reject invalid types', () => {
-		expect(() =>
-			dashboardConfigSchema.parse({
+	[
+		{
+			opts: {
 				dashboardEnabled: 'yes',
-			})
-		).toThrow();
-		expect(() =>
-			dashboardConfigSchema.parse({
+			},
+		},
+		{
+			opts: {
 				faviconURL: 123,
-			})
-		).toThrow();
-		expect(() =>
-			dashboardConfigSchema.parse({
+			},
+		},
+		{
+			opts: {
 				inject404Route: 'no',
-			})
-		).toThrow();
-	});
+			},
+		},
+	].forEach(({ opts }, index) => {
+		const testName = `dashboardConfigSchema invalid data test case #${index + 1}`;
+		const tags = [...sharedTags, 'schema:config', 'schema:dashboardConfigSchema'];
 
-	it('should allow undefined (optional schema)', () => {
-		expect(() => dashboardConfigSchema.parse(undefined)).not.toThrow();
-		const result = dashboardConfigSchema.parse(undefined);
-		expect(result.dashboardEnabled).toBe(true);
-		expect(result.inject404Route).toBe(true);
-		expect(result.faviconURL).toBe('/favicon.svg');
-		expect(result.dashboardRouteOverride).toBeUndefined();
-		expect(result.versionCheck).toBe(true);
+		test(testName, async ({ setupAllure }) => {
+			await setupAllure({
+				subSuiteName: 'dashboardConfigSchema tests',
+				tags: [...tags],
+				parameters: {
+					data: JSON.stringify(opts),
+				},
+			});
+
+			expect(() => dashboardConfigSchema.parse(opts)).toThrow();
+		});
 	});
 });

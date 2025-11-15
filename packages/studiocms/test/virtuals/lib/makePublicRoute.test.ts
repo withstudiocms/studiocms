@@ -1,34 +1,48 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect } from 'vitest';
 import { makePublicRoute } from '../../../src/virtuals/lib/makePublicRoute';
+import { allureTester } from '../../fixtures/allureTester';
+import { parentSuiteName, sharedTags } from '../../test-utils.js';
 
-describe('makePublicRoute', () => {
-	it('should construct the correct public route for a simple string', () => {
-		const route = 'images';
-		const result = makePublicRoute(route);
-		expect(result).toBe('public/studiocms-resources/images/');
-	});
+const localSuiteName = 'Make Public Route Virtual tests';
 
-	it('should handle route with leading slash', () => {
-		const route = '/assets';
-		const result = makePublicRoute(route);
-		expect(result).toBe('public/studiocms-resources//assets/');
-	});
+describe(parentSuiteName, () => {
+	[
+		{
+			input: 'images',
+			expected: 'public/studiocms-resources/images/',
+		},
+		{
+			input: '/assets',
+			expected: 'public/studiocms-resources//assets/',
+		},
+		{
+			input: 'files/',
+			expected: 'public/studiocms-resources/files//',
+		},
+		{
+			input: '',
+			expected: 'public/studiocms-resources//',
+		},
+		{
+			input: 'foo/bar?baz=qux',
+			expected: 'public/studiocms-resources/foo/bar?baz=qux/',
+		},
+	].forEach(({ input, expected }) => {
+		const testName = `makePublicRoute('${input}') should return '${expected}'`;
+		const tags = [...sharedTags, 'lib:virtuals', 'function:makePublicRoute'];
+		allureTester({
+			suiteName: localSuiteName,
+			suiteParentName: parentSuiteName,
+		})(testName, async ({ setupAllure, step }) => {
+			await setupAllure({
+				subSuiteName: 'makePublicRoute test',
+				tags: [...tags],
+			});
 
-	it('should handle route with trailing slash', () => {
-		const route = 'files/';
-		const result = makePublicRoute(route);
-		expect(result).toBe('public/studiocms-resources/files//');
-	});
-
-	it('should handle empty route string', () => {
-		const route = '';
-		const result = makePublicRoute(route);
-		expect(result).toBe('public/studiocms-resources//');
-	});
-
-	it('should handle route with special characters', () => {
-		const route = 'foo/bar?baz=qux';
-		const result = makePublicRoute(route);
-		expect(result).toBe('public/studiocms-resources/foo/bar?baz=qux/');
+			await step(`Testing makePublicRoute with input: '${input}'`, async () => {
+				const result = makePublicRoute(input);
+				expect(result).toBe(expected);
+			});
+		});
 	});
 });

@@ -1,5 +1,8 @@
 import { StudioCMSRoutes } from '../src/virtuals/lib/routeMap';
 
+export const parentSuiteName = 'studiocms Package Tests';
+export const sharedTags = ['package:studiocms', 'type:unit'];
+
 export function cleanAstroAttributes(str: string, mockPath: string): string {
 	const regex1 = /\s*data-astro-[a-zA-Z0-9-]*(?:="[^"]*")?/g;
 	const replacer1 = '';
