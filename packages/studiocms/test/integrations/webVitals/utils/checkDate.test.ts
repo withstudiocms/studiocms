@@ -1,49 +1,120 @@
-import { describe, expect, it } from 'vitest';
+import * as allure from 'allure-js-commons';
+import { describe, expect, test } from 'vitest';
 import { checkDate } from '../../../../src/integrations/webVitals/utils/checkDate';
+import { parentSuiteName, sharedTags } from '../../../test-utils';
 
-describe('checkDate', () => {
+const localSuiteName = 'Web Vitals Utils - checkDate';
+
+describe(parentSuiteName, () => {
 	const now = new Date();
+	const future = new Date(now.getTime() + 1 * 24 * 60 * 60 * 1000); // 1 day in future
 
-	it('should return true for a date within the last 24 hours', () => {
-		const date = new Date(now.getTime() - 2 * 60 * 60 * 1000); // 2 hours ago
-		expect(checkDate(date).isInLast24Hours()).toBe(true);
+	[
+		{
+			calc: 2 * 60 * 60 * 1000, // 2 hours ago
+			method: 'isInLast24Hours',
+			expected: true,
+		},
+		{
+			calc: 25 * 60 * 60 * 1000, // 25 hours ago
+			method: 'isInLast24Hours',
+			expected: false,
+		},
+		{
+			calc: 3 * 24 * 60 * 60 * 1000, // 3 days ago
+			method: 'isInLast7Days',
+			expected: true,
+		},
+		{
+			calc: 8 * 24 * 60 * 60 * 1000, // 8 days ago
+			method: 'isInLast7Days',
+			expected: false,
+		},
+		{
+			calc: 15 * 24 * 60 * 60 * 1000, // 15 days ago
+			method: 'isInLast30Days',
+			expected: true,
+		},
+		{
+			calc: 31 * 24 * 60 * 60 * 1000, // 31 days ago
+			method: 'isInLast30Days',
+			expected: false,
+		},
+	].forEach(({ calc, method, expected }, index) => {
+		const testName = `checkDate test case #${index + 1} for method ${method}`;
+		const tags = [...sharedTags, 'integration:webVitals', 'webVitals:utils', 'webVitals:checkDate'];
+
+		test(testName, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('checkDate detailed tests');
+			await allure.tags(...tags);
+
+			const date = new Date(now.getTime() - calc);
+			await allure.parameter('date', date.toISOString());
+			await allure.parameter('method', method);
+			await allure.parameter('expected', String(expected));
+
+			const result = checkDate(date)[method as keyof ReturnType<typeof checkDate>];
+			expect(result()).toBe(expected);
+		});
 	});
 
-	it('should return false for a date older than 24 hours', () => {
-		const date = new Date(now.getTime() - 25 * 60 * 60 * 1000); // 25 hours ago
-		expect(checkDate(date).isInLast24Hours()).toBe(false);
+	[
+		{
+			method: 'isInLast24Hours',
+		},
+		{
+			method: 'isInLast7Days',
+		},
+		{
+			method: 'isInLast30Days',
+		},
+	].forEach(({ method }, index) => {
+		const testName = `checkDate future date test case #${index + 1} for method ${method}`;
+		const tags = [...sharedTags, 'integration:webVitals', 'webVitals:utils', 'webVitals:checkDate'];
+
+		test(testName, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('checkDate future date tests');
+			await allure.tags(...tags);
+
+			await allure.parameter('date', future.toISOString());
+			await allure.parameter('method', method);
+			await allure.parameter('expected', 'false');
+
+			const result = checkDate(future)[method as keyof ReturnType<typeof checkDate>];
+			expect(result()).toBe(false);
+		});
 	});
 
-	it('should return true for a date within the last 7 days', () => {
-		const date = new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000); // 3 days ago
-		expect(checkDate(date).isInLast7Days()).toBe(true);
-	});
+	[
+		{
+			method: 'isInLast24Hours',
+		},
+		{
+			method: 'isInLast7Days',
+		},
+		{
+			method: 'isInLast30Days',
+		},
+	].forEach(({ method }, index) => {
+		const testName = `checkDate current date test case #${index + 1} for method ${method}`;
+		const tags = [...sharedTags, 'integration:webVitals', 'webVitals:utils', 'webVitals:checkDate'];
 
-	it('should return false for a date older than 7 days', () => {
-		const date = new Date(now.getTime() - 8 * 24 * 60 * 60 * 1000); // 8 days ago
-		expect(checkDate(date).isInLast7Days()).toBe(false);
-	});
+		test(testName, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('checkDate current date tests');
+			await allure.tags(...tags);
 
-	it('should return true for a date within the last 30 days', () => {
-		const date = new Date(now.getTime() - 15 * 24 * 60 * 60 * 1000); // 15 days ago
-		expect(checkDate(date).isInLast30Days()).toBe(true);
-	});
+			await allure.parameter('date', now.toISOString());
+			await allure.parameter('method', method);
+			await allure.parameter('expected', 'true');
 
-	it('should return false for a date older than 30 days', () => {
-		const date = new Date(now.getTime() - 31 * 24 * 60 * 60 * 1000); // 31 days ago
-		expect(checkDate(date).isInLast30Days()).toBe(false);
-	});
-
-	it('should return true for current date in all checks', () => {
-		expect(checkDate(now).isInLast24Hours()).toBe(true);
-		expect(checkDate(now).isInLast7Days()).toBe(true);
-		expect(checkDate(now).isInLast30Days()).toBe(true);
-	});
-
-	it('should return false for a future date in all checks', () => {
-		const futureDate = new Date(now.getTime() + 1 * 24 * 60 * 60 * 1000); // 1 day in future
-		expect(checkDate(futureDate).isInLast24Hours()).toBe(false);
-		expect(checkDate(futureDate).isInLast7Days()).toBe(false);
-		expect(checkDate(futureDate).isInLast30Days()).toBe(false);
+			const result = checkDate(now)[method as keyof ReturnType<typeof checkDate>];
+			expect(result()).toBe(true);
+		});
 	});
 });
