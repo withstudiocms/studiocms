@@ -1,103 +1,152 @@
-import { describe, expect, it } from 'vitest';
+import * as allure from 'allure-js-commons';
+import { describe, expect, test } from 'vitest';
 import {
 	authConfigSchema,
 	authProviderSchema,
 	localUsernameAndPasswordConfig,
 } from '../../../src/schemas/config/auth';
+import { parentSuiteName, sharedTags } from '../../test-utils';
 
-describe('localUsernameAndPasswordConfig', () => {
-	it('should default allowUserRegistration to true', () => {
-		const result = localUsernameAndPasswordConfig.parse({});
-		expect(result.allowUserRegistration).toBe(true);
-	});
+const localSuiteName = 'Config Schemas tests (Auth)';
 
-	it('should accept allowUserRegistration as false', () => {
-		const result = localUsernameAndPasswordConfig.parse({ allowUserRegistration: false });
-		expect(result.allowUserRegistration).toBe(false);
-	});
+describe(parentSuiteName, () => {
+	[
+		{
+			data: {},
+			expected: true,
+		},
+		{
+			data: { allowUserRegistration: false },
+			expected: false,
+		},
+		{
+			data: { allowUserRegistration: true },
+			expected: true,
+		},
+	].forEach(({ data, expected }, index) => {
+		const testName = `localUsernameAndPasswordConfig test case #${index + 1}`;
+		const tags = [...sharedTags, 'schema:config', 'schema:localUsernameAndPasswordConfig'];
 
-	it('should allow undefined input and default to {}', () => {
-		const result = localUsernameAndPasswordConfig.parse(undefined);
-		expect(result).toEqual({
-			allowUserRegistration: true,
-		});
-	});
-});
+		test(testName, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('localUsernameAndPasswordConfig tests');
+			await allure.tags(...tags);
 
-describe('authProviderSchema', () => {
-	it('should default usernameAndPassword to true', () => {
-		const result = authProviderSchema.parse({});
-		expect(result.usernameAndPassword).toBe(true);
-	});
+			await allure.parameter('data', JSON.stringify(data));
 
-	it('should accept usernameAndPassword as false', () => {
-		const result = authProviderSchema.parse({ usernameAndPassword: false });
-		expect(result.usernameAndPassword).toBe(false);
-	});
-
-	it('should default usernameAndPasswordConfig to {}', () => {
-		const result = authProviderSchema.parse({});
-		expect(result.usernameAndPasswordConfig).toEqual({
-			allowUserRegistration: true,
+			const result = localUsernameAndPasswordConfig.parse(data);
+			expect(result.allowUserRegistration).toBe(expected);
 		});
 	});
 
-	it('should allow undefined input and default to {}', () => {
-		const result = authProviderSchema.parse(undefined);
-		expect(result).toEqual({
-			usernameAndPassword: true,
-			usernameAndPasswordConfig: {
-				allowUserRegistration: true,
-			},
-		});
-	});
-});
-
-describe('authConfigSchema', () => {
-	it('should default enabled to true', () => {
-		const result = authConfigSchema.parse({});
-		expect(result.enabled).toBe(true);
-	});
-
-	it('should accept enabled as false', () => {
-		const result = authConfigSchema.parse({ enabled: false });
-		expect(result.enabled).toBe(false);
-	});
-
-	it('should default providers to {}', () => {
-		const result = authConfigSchema.parse({});
-		expect(result.providers).toEqual({
-			usernameAndPassword: true,
-			usernameAndPasswordConfig: {
-				allowUserRegistration: true,
-			},
-		});
-	});
-
-	it('should allow undefined input and default to {}', () => {
-		const result = authConfigSchema.parse(undefined);
-		expect(result).toEqual({
-			enabled: true,
-			providers: {
+	[
+		{
+			data: {},
+			expected: {
 				usernameAndPassword: true,
-				usernameAndPasswordConfig: {
-					allowUserRegistration: true,
+				usernameAndPasswordConfig: { allowUserRegistration: true },
+			},
+		},
+		{
+			data: { usernameAndPassword: false },
+			expected: {
+				usernameAndPassword: false,
+				usernameAndPasswordConfig: { allowUserRegistration: true },
+			},
+		},
+		{
+			data: { usernameAndPassword: true },
+			expected: {
+				usernameAndPassword: true,
+				usernameAndPasswordConfig: { allowUserRegistration: true },
+			},
+		},
+		{
+			data: undefined,
+			expected: {
+				usernameAndPassword: true,
+				usernameAndPasswordConfig: { allowUserRegistration: true },
+			},
+		},
+	].forEach(({ data, expected }, index) => {
+		const testName = `authProviderSchema test case #${index + 1}`;
+		const tags = [...sharedTags, 'schema:config', 'schema:authProviderSchema'];
+
+		test(testName, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('authProviderSchema tests');
+			await allure.tags(...tags);
+
+			await allure.parameter('data', JSON.stringify(data));
+
+			const result = authProviderSchema.parse(data);
+			expect(result).toEqual(expected);
+		});
+	});
+
+	[
+		{
+			data: {},
+			expected: {
+				enabled: true,
+				providers: {
+					usernameAndPassword: true,
+					usernameAndPasswordConfig: { allowUserRegistration: true },
 				},
 			},
-		});
-	});
-
-	it('should accept full config', () => {
-		const input = {
-			enabled: false,
-			providers: {
-				usernameAndPassword: false,
-				usernameAndPasswordConfig: { allowUserRegistration: false },
+		},
+		{
+			data: undefined,
+			expected: {
+				enabled: true,
+				providers: {
+					usernameAndPassword: true,
+					usernameAndPasswordConfig: { allowUserRegistration: true },
+				},
 			},
-		};
-		const result = authConfigSchema.parse(input);
-		expect(result.enabled).toBe(false);
-		expect(result.providers.usernameAndPassword).toBe(false);
-		expect(result.providers.usernameAndPasswordConfig.allowUserRegistration).toBe(false);
+		},
+		{
+			data: { enabled: false },
+			expected: {
+				enabled: false,
+				providers: {
+					usernameAndPassword: true,
+					usernameAndPasswordConfig: { allowUserRegistration: true },
+				},
+			},
+		},
+		{
+			data: {
+				enabled: false,
+				providers: {
+					usernameAndPassword: false,
+					usernameAndPasswordConfig: { allowUserRegistration: false },
+				},
+			},
+			expected: {
+				enabled: false,
+				providers: {
+					usernameAndPassword: false,
+					usernameAndPasswordConfig: { allowUserRegistration: false },
+				},
+			},
+		},
+	].forEach(({ data, expected }, index) => {
+		const testName = `authConfigSchema test case #${index + 1}`;
+		const tags = [...sharedTags, 'schema:config', 'schema:authConfigSchema'];
+
+		test(testName, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('authConfigSchema tests');
+			await allure.tags(...tags);
+
+			await allure.parameter('data', JSON.stringify(data));
+
+			const result = authConfigSchema.parse(data);
+			expect(result).toEqual(expected);
+		});
 	});
 });
