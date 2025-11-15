@@ -51,6 +51,7 @@ export const allureTester = (allureMeta: { suiteParentName: string; suiteName: s
 			parameters?: Record<string, string>;
 			description?: string;
 		}) => Promise<void>;
+		step: typeof allure.step;
 	}>({
 		/**
 		 * AstroContainer-based component renderer.
@@ -94,7 +95,7 @@ export const allureTester = (allureMeta: { suiteParentName: string; suiteName: s
 		 * and parameters provided. This helps in organizing and categorizing
 		 * test results in Allure reports.
 		 */
-		setupAllure: async (_, use) => {
+		setupAllure: async ({ _local }, use) => {
 			await use(async ({ subSuiteName, tags, parameters, description }) => {
 				// Configure Allure context for the test
 				await allure.parentSuite(allureMeta.suiteParentName);
@@ -113,4 +114,13 @@ export const allureTester = (allureMeta: { suiteParentName: string; suiteName: s
 				}
 			});
 		},
+
+		/**
+		 * Proxy to Allure's step function for use in tests.
+		 *
+		 * @remarks
+		 * This fixture exposes Allure's step function directly,
+		 * allowing tests to create nested steps in the Allure report.
+		 */
+		step: async ({ _local }, use) => await use(allure.step),
 	});

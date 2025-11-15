@@ -14,7 +14,7 @@ import Global from '../src/frontend/components/shared/head/Global.astro';
 import TitleTags from '../src/frontend/components/shared/head/TitleTags.astro';
 import SSRUser from '../src/frontend/components/shared/SSRUser.astro';
 import ThemeManager from '../src/frontend/components/shared/ThemeManager.astro';
-import { test } from './fixtures/AstroContainer';
+import { allureTester } from './fixtures/allureTester.ts';
 import { parentSuiteName, sharedTags } from './test-utils';
 
 const localSuiteName = 'Components Container tests';
@@ -148,15 +148,17 @@ describe(parentSuiteName, () => {
 		const testName = `${localSuiteName} - ${name} component`;
 		const tags = [...sharedTags, 'component:shared', `component:${name}`];
 
-		test(testName, async ({ renderComponent }) => {
-			await allure.parentSuite(parentSuiteName);
-			await allure.suite('Components Container tests');
-			await allure.subSuite(testName);
-			await allure.tags(...tags);
+		allureTester({
+			suiteName: localSuiteName,
+			suiteParentName: parentSuiteName,
+		})(testName, async ({ setupAllure, renderComponent, step }) => {
+			await setupAllure({
+				subSuiteName: testName,
+				tags: tags,
+				parameters: { component: name },
+			});
 
-			await allure.parameter('component', name);
-
-			await allure.step(`Rendering ${name} component`, async (ctx) => {
+			await step(`Rendering ${name} component`, async (ctx) => {
 				const result = await renderComponent(component, name, opts);
 				await ctx.parameter('renderedOutput', result);
 				expect(result).toMatchSnapshot();
