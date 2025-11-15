@@ -1,6 +1,10 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import * as allure from 'allure-js-commons';
+import { beforeEach, describe, expect, test, vi } from 'vitest';
 import type { WebVitalsResponseItem } from '../../../../src/integrations/webVitals/types';
 import { buildPageRouteDataObject } from '../../../../src/integrations/webVitals/utils/buildPageRouteDataObject';
+import { parentSuiteName, sharedTags } from '../../../test-utils';
+
+const localSuiteName = 'Web Vitals Utils - buildPageRouteDataObject';
 
 // Mock checkDate to control time-based logic
 vi.mock('../../../../src/integrations/webVitals/utils/checkDate', () => ({
@@ -11,7 +15,7 @@ vi.mock('../../../../src/integrations/webVitals/utils/checkDate', () => ({
 	}),
 }));
 
-describe('buildPageRouteDataObject', () => {
+describe(parentSuiteName, () => {
 	let webVitalData: WebVitalsResponseItem[];
 
 	beforeEach(() => {
@@ -26,71 +30,94 @@ describe('buildPageRouteDataObject', () => {
 		] as WebVitalsResponseItem[];
 	});
 
-	it('should aggregate page views correctly for perRouteData', () => {
-		const result = buildPageRouteDataObject(webVitalData);
-		expect(result.perRouteData).toEqual([
-			{
-				pagePathname: '/home',
-				analyticData: { pageRoute: 'home', pageViews: 3 },
-			},
-			{
-				pagePathname: '/about',
-				analyticData: { pageRoute: 'about', pageViews: 2 },
-			},
-			{
-				pagePathname: '/contact',
-				analyticData: { pageRoute: 'contact', pageViews: 1 },
-			},
-		]);
+	[
+		{
+			type: 'perRouteData',
+			expected: [
+				{
+					pagePathname: '/home',
+					analyticData: { pageRoute: 'home', pageViews: 3 },
+				},
+				{
+					pagePathname: '/about',
+					analyticData: { pageRoute: 'about', pageViews: 2 },
+				},
+				{
+					pagePathname: '/contact',
+					analyticData: { pageRoute: 'contact', pageViews: 1 },
+				},
+			],
+		},
+		{
+			type: 'last24HoursData',
+			expected: [
+				{
+					pagePathname: '/home',
+					analyticData: { pageRoute: 'home', pageViews: 1 },
+				},
+			],
+		},
+		{
+			type: 'last7DaysData',
+			expected: [
+				{
+					pagePathname: '/home',
+					analyticData: { pageRoute: 'home', pageViews: 2 },
+				},
+				{
+					pagePathname: '/about',
+					analyticData: { pageRoute: 'about', pageViews: 1 },
+				},
+			],
+		},
+		{
+			type: 'last30DaysData',
+			expected: [
+				{
+					pagePathname: '/home',
+					analyticData: { pageRoute: 'home', pageViews: 3 },
+				},
+				{
+					pagePathname: '/about',
+					analyticData: { pageRoute: 'about', pageViews: 1 },
+				},
+				{
+					pagePathname: '/contact',
+					analyticData: { pageRoute: 'contact', pageViews: 1 },
+				},
+			],
+		},
+	].forEach(({ type, expected }) => {
+		test(`should aggregate page views correctly for ${type}`, async () => {
+			const tags = [...sharedTags, 'integration:webVitals', `webVitals:utils:${type}`];
+
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite(`buildPageRouteDataObject - ${type}`);
+			await allure.tags(...tags);
+
+			const result = buildPageRouteDataObject(webVitalData);
+			await allure.parameter('webVitalData', JSON.stringify(webVitalData));
+
+			expect(result[type as keyof typeof result]).toEqual(expected);
+		});
 	});
 
-	it('should aggregate page views for last24HoursData', () => {
-		const result = buildPageRouteDataObject(webVitalData);
-		expect(result.last24HoursData).toEqual([
-			{
-				pagePathname: '/home',
-				analyticData: { pageRoute: 'home', pageViews: 1 },
-			},
-		]);
-	});
+	test('buildPageRouteDataObject handles empty input', async () => {
+		const tags = [...sharedTags, 'integration:webVitals', 'webVitals:buildPageRouteDataObject'];
 
-	it('should aggregate page views for last7DaysData', () => {
-		const result = buildPageRouteDataObject(webVitalData);
-		expect(result.last7DaysData).toEqual([
-			{
-				pagePathname: '/home',
-				analyticData: { pageRoute: 'home', pageViews: 2 },
-			},
-			{
-				pagePathname: '/about',
-				analyticData: { pageRoute: 'about', pageViews: 1 },
-			},
-		]);
-	});
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('buildPageRouteDataObject empty input test');
+		await allure.tags(...tags);
 
-	it('should aggregate page views for last30DaysData', () => {
-		const result = buildPageRouteDataObject(webVitalData);
-		expect(result.last30DaysData).toEqual([
-			{
-				pagePathname: '/home',
-				analyticData: { pageRoute: 'home', pageViews: 3 },
-			},
-			{
-				pagePathname: '/about',
-				analyticData: { pageRoute: 'about', pageViews: 1 },
-			},
-			{
-				pagePathname: '/contact',
-				analyticData: { pageRoute: 'contact', pageViews: 1 },
-			},
-		]);
-	});
+		await allure.step('Aggregating with empty input', async () => {
+			const result = buildPageRouteDataObject([]);
 
-	it('should return empty arrays if input is empty', () => {
-		const result = buildPageRouteDataObject([]);
-		expect(result.last24HoursData).toEqual([]);
-		expect(result.last7DaysData).toEqual([]);
-		expect(result.last30DaysData).toEqual([]);
-		expect(result.perRouteData).toEqual([]);
+			expect(result.perRouteData).toEqual([]);
+			expect(result.last24HoursData).toEqual([]);
+			expect(result.last7DaysData).toEqual([]);
+			expect(result.last30DaysData).toEqual([]);
+		});
 	});
 });

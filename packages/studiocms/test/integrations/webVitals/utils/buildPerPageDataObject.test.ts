@@ -1,6 +1,10 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import * as allure from 'allure-js-commons';
+import { beforeEach, describe, expect, test, vi } from 'vitest';
 import type { WebVitalsResponseItem } from '../../../../src/integrations/webVitals/types';
 import { buildPerPageRouteDataObject } from '../../../../src/integrations/webVitals/utils/buildPerPageDataObject';
+import { parentSuiteName, sharedTags } from '../../../test-utils';
+
+const localSuiteName = 'Web Vitals Utils - buildPerPageRouteDataObject';
 
 // Mock dependencies
 vi.mock('../../../../src/integrations/webVitals/utils/checkDate', () => ({
@@ -26,7 +30,7 @@ vi.mock('../../../../src/integrations/webVitals/utils/webVitalsUtils', () => ({
 		avg < 200 ? 'good' : avg < 500 ? 'needs improvement' : 'poor',
 }));
 
-describe('buildPerPageRouteDataObject', () => {
+describe(parentSuiteName, () => {
 	let sampleData: WebVitalsResponseItem[];
 
 	beforeEach(() => {
@@ -52,104 +56,128 @@ describe('buildPerPageRouteDataObject', () => {
 		];
 	});
 
-	it('should aggregate historical data correctly', () => {
-		const result = buildPerPageRouteDataObject(sampleData);
-
-		expect(result.historicalData).toEqual([
-			{
-				pageRoute: '/home',
-				sampleSize: 6,
-				CLS: { average: (0.05 + 0.08) / 2, rating: 'good' },
-				LCP: { average: (2.0 + 2.8) / 2, rating: 'good' },
-				INP: { average: (180 + 220) / 2, rating: 'needs improvement' },
-			},
-			{
-				pageRoute: '/about',
-				sampleSize: 3,
-				CLS: { average: 0.2, rating: 'needs improvement' },
-				LCP: { average: 3.5, rating: 'needs improvement' },
-				INP: { average: 300, rating: 'needs improvement' },
-			},
-		]);
-	});
-
-	it('should aggregate last24HoursData correctly', () => {
-		const result = buildPerPageRouteDataObject(sampleData);
-
-		expect(result.last24HoursData).toEqual([
-			{
-				pageRoute: '/home',
-				sampleSize: 3,
-				CLS: { average: 0.05, rating: 'good' },
-				LCP: { average: 2.0, rating: 'good' },
-				INP: { average: 180, rating: 'good' },
-			},
-			{
-				pageRoute: '/about',
-				sampleSize: 3,
-				CLS: { average: 0.2, rating: 'needs improvement' },
-				LCP: { average: 3.5, rating: 'needs improvement' },
-				INP: { average: 300, rating: 'needs improvement' },
-			},
-		]);
-	});
-
-	it('should aggregate last7DaysData correctly', () => {
-		const result = buildPerPageRouteDataObject(sampleData);
-
-		expect(result.last7DaysData).toEqual([
-			{
-				pageRoute: '/home',
-				sampleSize: 3,
-				CLS: { average: 0.05, rating: 'good' },
-				LCP: { average: 2.0, rating: 'good' },
-				INP: { average: 180, rating: 'good' },
-			},
-			{
-				pageRoute: '/about',
-				sampleSize: 3,
-				CLS: { average: 0.2, rating: 'needs improvement' },
-				LCP: { average: 3.5, rating: 'needs improvement' },
-				INP: { average: 300, rating: 'needs improvement' },
-			},
-		]);
-	});
-
-	it('should aggregate last30DaysData correctly', () => {
-		const result = buildPerPageRouteDataObject(sampleData);
-
-		expect(result.last30DaysData).toEqual([
-			{
-				pageRoute: '/home',
-				sampleSize: 6,
-				CLS: { average: 0.065, rating: 'good' },
-				LCP: { average: 2.4, rating: 'good' },
-				INP: { average: 200, rating: 'needs improvement' },
-			},
-			{
-				CLS: {
-					average: 0.2,
-					rating: 'needs improvement',
+	[
+		{
+			type: 'historicalData',
+			expected: [
+				{
+					pageRoute: '/home',
+					sampleSize: 6,
+					CLS: { average: (0.05 + 0.08) / 2, rating: 'good' },
+					LCP: { average: (2.0 + 2.8) / 2, rating: 'good' },
+					INP: { average: (180 + 220) / 2, rating: 'needs improvement' },
 				},
-				INP: {
-					average: 300,
-					rating: 'needs improvement',
+				{
+					pageRoute: '/about',
+					sampleSize: 3,
+					CLS: { average: 0.2, rating: 'needs improvement' },
+					LCP: { average: 3.5, rating: 'needs improvement' },
+					INP: { average: 300, rating: 'needs improvement' },
 				},
-				LCP: {
-					average: 3.5,
-					rating: 'needs improvement',
+			],
+		},
+		{
+			type: 'last24HoursData',
+			expected: [
+				{
+					pageRoute: '/home',
+					sampleSize: 3,
+					CLS: { average: 0.05, rating: 'good' },
+					LCP: { average: 2.0, rating: 'good' },
+					INP: { average: 180, rating: 'good' },
 				},
-				pageRoute: '/about',
-				sampleSize: 3,
-			},
-		]);
+				{
+					pageRoute: '/about',
+					sampleSize: 3,
+					CLS: { average: 0.2, rating: 'needs improvement' },
+					LCP: { average: 3.5, rating: 'needs improvement' },
+					INP: { average: 300, rating: 'needs improvement' },
+				},
+			],
+		},
+		{
+			type: 'last7DaysData',
+			expected: [
+				{
+					pageRoute: '/home',
+					sampleSize: 3,
+					CLS: { average: 0.05, rating: 'good' },
+					LCP: { average: 2.0, rating: 'good' },
+					INP: { average: 180, rating: 'good' },
+				},
+				{
+					pageRoute: '/about',
+					sampleSize: 3,
+					CLS: { average: 0.2, rating: 'needs improvement' },
+					LCP: { average: 3.5, rating: 'needs improvement' },
+					INP: { average: 300, rating: 'needs improvement' },
+				},
+			],
+		},
+		{
+			type: 'last30DaysData',
+			expected: [
+				{
+					pageRoute: '/home',
+					sampleSize: 6,
+					CLS: { average: 0.065, rating: 'good' },
+					LCP: { average: 2.4, rating: 'good' },
+					INP: { average: 200, rating: 'needs improvement' },
+				},
+				{
+					CLS: {
+						average: 0.2,
+						rating: 'needs improvement',
+					},
+					INP: {
+						average: 300,
+						rating: 'needs improvement',
+					},
+					LCP: {
+						average: 3.5,
+						rating: 'needs improvement',
+					},
+					pageRoute: '/about',
+					sampleSize: 3,
+				},
+			],
+		},
+	].forEach(({ type, expected }) => {
+		test(`should aggregate ${type} correctly`, async () => {
+			const tags = [
+				...sharedTags,
+				'integration:webVitals',
+				'webVitals:buildPerPageRouteDataObject',
+			];
+
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite(`buildPerPageRouteDataObject - ${type} test`);
+			await allure.tags(...tags);
+
+			await allure.step(`Aggregating ${type}`, async () => {
+				const result = buildPerPageRouteDataObject(sampleData);
+
+				expect(result[type as keyof typeof result]).toEqual(expected);
+			});
+		});
 	});
 
-	it('should handle empty input', () => {
-		const result = buildPerPageRouteDataObject([]);
-		expect(result.historicalData).toEqual([]);
-		expect(result.last24HoursData).toEqual([]);
-		expect(result.last7DaysData).toEqual([]);
-		expect(result.last30DaysData).toEqual([]);
+	test('buildPerPageRouteDataObject handles empty input', async () => {
+		const tags = [...sharedTags, 'integration:webVitals', 'webVitals:buildPerPageRouteDataObject'];
+
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('buildPerPageRouteDataObject empty input test');
+		await allure.tags(...tags);
+
+		await allure.step('Aggregating with empty input', async () => {
+			const result = buildPerPageRouteDataObject([]);
+
+			expect(result.historicalData).toEqual([]);
+			expect(result.last24HoursData).toEqual([]);
+			expect(result.last7DaysData).toEqual([]);
+			expect(result.last30DaysData).toEqual([]);
+		});
 	});
 });
