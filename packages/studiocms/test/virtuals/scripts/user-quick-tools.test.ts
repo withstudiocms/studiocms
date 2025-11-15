@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
-import { beforeEach, describe, expect } from 'vitest';
+import * as allure from 'allure-js-commons';
+import { beforeEach, describe, expect, test } from 'vitest';
 import {
 	ConfigurableUserQuickTools,
 	initializeWhenReady,
@@ -9,17 +10,11 @@ import {
 	type UserQuickTools,
 	verifyUserPermissionLevel,
 } from '../../../src/virtuals/scripts/user-quick-tools';
-import { allureTester } from '../../fixtures/allureTester';
 import { parentSuiteName, sharedTags } from '../../test-utils.js';
 
 const localSuiteName = 'UserQuickTools Virtual Script tests';
 
 describe(parentSuiteName, () => {
-	const test = allureTester({
-		suiteName: localSuiteName,
-		suiteParentName: parentSuiteName,
-	});
-
 	[
 		{
 			userLevel: 'owner',
@@ -65,18 +60,17 @@ describe(parentSuiteName, () => {
 		const testName = `verifyUserPermissionLevel('${userLevel}', '${requiredLevel}') should return ${expected}`;
 		const tags = [...sharedTags, 'virtuals:scripts', 'function:verifyUserPermissionLevel'];
 
-		test(testName, async ({ setupAllure, step }) => {
-			await setupAllure({
-				subSuiteName: testName,
-				tags,
-				parameters: {
-					userLevel: userLevel,
-					requiredLevel: requiredLevel,
-					expected: String(expected),
-				},
-			});
+		test(testName, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite(testName);
+			await allure.tags(...tags);
 
-			await step(
+			await allure.parameter('userLevel', userLevel);
+			await allure.parameter('requiredLevel', requiredLevel);
+			await allure.parameter('expected', String(expected));
+
+			await allure.step(
 				`Testing verifyUserPermissionLevel with userLevel='${userLevel}' and requiredLevel='${requiredLevel}'`,
 				async () => {
 					const result = verifyUserPermissionLevel(userLevel as any, requiredLevel as any);
@@ -90,14 +84,16 @@ describe(parentSuiteName, () => {
 		const testName = `shouldSkipRendering('${route}') should return true`;
 		const tags = [...sharedTags, 'virtuals:scripts', 'function:shouldSkipRendering'];
 
-		test(testName, async ({ setupAllure, step }) => {
-			await setupAllure({
-				subSuiteName: testName,
-				tags,
-				parameters: { route: route, expected: 'true' },
-			});
+		test(testName, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite(testName);
+			await allure.tags(...tags);
 
-			await step(`Testing shouldSkipRendering with route='${route}'`, async () => {
+			await allure.parameter('route', route);
+			await allure.parameter('expected', 'true');
+
+			await allure.step(`Testing shouldSkipRendering with route='${route}'`, async () => {
 				const result = shouldSkipRendering(route);
 				expect(result).toBe(true);
 			});
@@ -124,18 +120,17 @@ describe(parentSuiteName, () => {
 		const testName = `isDashboardRoute('${pathname}', '${dashboardRoute}') should return ${expected}`;
 		const tags = [...sharedTags, 'virtuals:scripts', 'function:isDashboardRoute'];
 
-		test(testName, async ({ setupAllure, step }) => {
-			await setupAllure({
-				subSuiteName: testName,
-				tags,
-				parameters: {
-					pathname: pathname,
-					dashboardRoute: dashboardRoute,
-					expected: String(expected),
-				},
-			});
+		test(testName, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite(testName);
+			await allure.tags(...tags);
 
-			await step(
+			await allure.parameter('pathname', pathname);
+			await allure.parameter('dashboardRoute', dashboardRoute);
+			await allure.parameter('expected', String(expected));
+
+			await allure.step(
 				`Testing isDashboardRoute with pathname='${pathname}' and dashboardRoute='${dashboardRoute}'`,
 				async () => {
 					const result = isDashboardRoute(pathname, dashboardRoute);
@@ -147,11 +142,6 @@ describe(parentSuiteName, () => {
 });
 
 describe(parentSuiteName, () => {
-	const test = allureTester({
-		suiteName: localSuiteName,
-		suiteParentName: parentSuiteName,
-	});
-
 	beforeEach(() => {
 		document.body.innerHTML = '';
 		if (!customElements.get('user-quick-tools')) {
@@ -159,30 +149,30 @@ describe(parentSuiteName, () => {
 		}
 	});
 
-	test('UserQuickTools custom element registration', async ({ setupAllure, step }) => {
+	test('UserQuickTools custom element registration', async () => {
 		const testName = 'custom element registration';
 		const tags = [...sharedTags, 'virtuals:scripts', 'custom-element:UserQuickTools'];
 
-		await setupAllure({
-			subSuiteName: testName,
-			tags,
-		});
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite(testName);
+		await allure.tags(...tags);
 
-		await step('Checking custom element registration', async () => {
+		await allure.step('Checking custom element registration', async () => {
 			expect(customElements.get('user-quick-tools')).toBeDefined();
 		});
 	});
 
-	test('UserQuickTools custom element instantiation', async ({ setupAllure, step }) => {
+	test('UserQuickTools custom element instantiation', async () => {
 		const testName = 'custom element instantiation';
 		const tags = [...sharedTags, 'virtuals:scripts', 'custom-element:UserQuickTools'];
 
-		await setupAllure({
-			subSuiteName: testName,
-			tags,
-		});
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite(testName);
+		await allure.tags(...tags);
 
-		await step('Instantiating UserQuickTools element', async () => {
+		await allure.step('Instantiating UserQuickTools element', async () => {
 			document.body.innerHTML = '';
 			initializeWhenReady();
 			await new Promise((r) => setTimeout(r, 20));
@@ -190,19 +180,16 @@ describe(parentSuiteName, () => {
 		});
 	});
 
-	test('UserQuickTools does not render menu if shouldSkipRendering returns true', async ({
-		setupAllure,
-		step,
-	}) => {
+	test('UserQuickTools does not render menu if shouldSkipRendering returns true', async () => {
 		const testName = 'menu not rendered when shouldSkipRendering is true';
 		const tags = [...sharedTags, 'virtuals:scripts', 'custom-element:UserQuickTools'];
 
-		await setupAllure({
-			subSuiteName: testName,
-			tags,
-		});
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite(testName);
+		await allure.tags(...tags);
 
-		await step('Testing menu absence when shouldSkipRendering is true', async () => {
+		await allure.step('Testing menu absence when shouldSkipRendering is true', async () => {
 			document.body.innerHTML = '';
 			Object.defineProperty(window, 'location', {
 				value: { pathname: KNOWN_API_ROUTES[0] },
@@ -215,16 +202,16 @@ describe(parentSuiteName, () => {
 		});
 	});
 
-	test('UserQuickTools toggles menu open/close on click', async ({ setupAllure, step }) => {
+	test('UserQuickTools toggles menu open/close on click', async () => {
 		const testName = 'menu toggles open/close on click';
 		const tags = [...sharedTags, 'virtuals:scripts', 'custom-element:UserQuickTools'];
 
-		await setupAllure({
-			subSuiteName: testName,
-			tags,
-		});
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite(testName);
+		await allure.tags(...tags);
 
-		await step('Testing menu toggle on click', async () => {
+		await allure.step('Testing menu toggle on click', async () => {
 			document.body.innerHTML = '';
 			const el = document.createElement('user-quick-tools') as UserQuickTools;
 			document.body.appendChild(el);
