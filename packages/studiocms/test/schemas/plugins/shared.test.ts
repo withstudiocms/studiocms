@@ -12,7 +12,7 @@ import {
 	SettingsPageSchema,
 	StudioCMSColorway,
 } from '../../../src/schemas/plugins/shared';
-import { parentSuiteName, sharedTags } from '../../../test/test-utils';
+import { parentSuiteName, sharedTags } from '../../test-utils';
 
 const localSuiteName = 'Plugins Schemas tests (Shared)';
 

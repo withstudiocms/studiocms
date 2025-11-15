@@ -7,7 +7,7 @@ import {
 	type StudioCMSImageService,
 	StudioCMSSanitizeOptionsSchema,
 } from '../../../src/schemas/plugins/index';
-import { parentSuiteName, sharedTags } from '../../../test/test-utils';
+import { parentSuiteName, sharedTags } from '../../test-utils';
 
 const localSuiteName = 'Plugins Schemas tests';
 
@@ -46,7 +46,7 @@ describe(parentSuiteName, () => {
 		test(testName, async () => {
 			await allure.parentSuite(parentSuiteName);
 			await allure.suite(localSuiteName);
-			await allure.subSuite(testName);
+			await allure.subSuite('StudioCMSSanitizeOptionsSchema tests');
 			await allure.tags(...tags);
 
 			await allure.parameter('data', JSON.stringify(data));
@@ -82,7 +82,7 @@ describe(parentSuiteName, () => {
 		test(testName, async () => {
 			await allure.parentSuite(parentSuiteName);
 			await allure.suite(localSuiteName);
-			await allure.subSuite(testName);
+			await allure.subSuite('SafePluginListItemSchema tests');
 			await allure.tags(...tags);
 
 			await allure.parameter('data', JSON.stringify(data));
@@ -125,7 +125,7 @@ describe(parentSuiteName, () => {
 		test(testName, async () => {
 			await allure.parentSuite(parentSuiteName);
 			await allure.suite(localSuiteName);
-			await allure.subSuite(testName);
+			await allure.subSuite('SafePluginListSchema tests');
 			await allure.tags(...tags);
 
 			await allure.parameter('data', JSON.stringify(data));
