@@ -1,5 +1,4 @@
 /// <reference types="astro/client" />
-import * as allure from 'allure-js-commons';
 import { describe, expect } from 'vitest';
 import FallbackCanvas from '../src/frontend/components/auth/FallbackCanvas.astro';
 import OAuthButton from '../src/frontend/components/auth/OAuthButton.astro';
@@ -14,7 +13,7 @@ import Global from '../src/frontend/components/shared/head/Global.astro';
 import TitleTags from '../src/frontend/components/shared/head/TitleTags.astro';
 import SSRUser from '../src/frontend/components/shared/SSRUser.astro';
 import ThemeManager from '../src/frontend/components/shared/ThemeManager.astro';
-import { allureTester } from './fixtures/allureTester.ts';
+import { allureTester } from './fixtures/allureTester';
 import { parentSuiteName, sharedTags } from './test-utils';
 
 const localSuiteName = 'Components Container tests';
