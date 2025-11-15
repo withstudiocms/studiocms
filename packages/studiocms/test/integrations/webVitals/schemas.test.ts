@@ -159,7 +159,14 @@ describe(parentSuiteName, () => {
 		expect(() => WebVitalsMetricTypeSchema.parse(data)).toThrow();
 	});
 
-	test('RouteSummaryRowSchema should parse a valid route summary row', () => {
+	test('RouteSummaryRowSchema should parse a valid route summary row', async () => {
+		const tags = [...sharedTags, 'integration:webVitals', 'webVitals:schemas'];
+
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('RouteSummaryRowSchema valid case');
+		await allure.tags(...tags);
+
 		const row = ['/home', 'CLS', 'good', 0.12, 100] as const;
 		expect(RouteSummaryRowSchema.parse(row)).toEqual(row);
 	});
