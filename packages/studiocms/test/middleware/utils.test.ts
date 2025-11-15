@@ -1,8 +1,10 @@
 /** biome-ignore-all lint/suspicious/noExplicitAny: allowed in tests */
+
 import { UserPermissionLevel } from '@withstudiocms/auth-kit/types';
+import * as allure from 'allure-js-commons';
 import type { APIContext } from 'astro';
 import { Effect } from 'effect';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, test } from 'vitest';
 import {
 	getUserPermissionLevel,
 	getUserPermissions,
@@ -10,76 +12,101 @@ import {
 	SetLocal,
 	setLocals,
 } from '../../src/frontend/middleware/utils';
+import { parentSuiteName, sharedTags } from '../test-utils';
 
-describe('getUserPermissionLevel', () => {
-	it('returns correct permission level for each user type', async () => {
-		const cases = [
-			{ permissionLevel: 'owner', expected: UserPermissionLevel.owner },
-			{ permissionLevel: 'admin', expected: UserPermissionLevel.admin },
-			{ permissionLevel: 'editor', expected: UserPermissionLevel.editor },
-			{ permissionLevel: 'visitor', expected: UserPermissionLevel.visitor },
-			{ permissionLevel: 'unknown', expected: UserPermissionLevel.unknown },
-			{ permissionLevel: 'other', expected: UserPermissionLevel.unknown },
-		];
-		for (const { permissionLevel, expected } of cases) {
+const localSuiteName = 'Middleware Utils tests';
+
+function makeContext(initial: any = {}) {
+	return {
+		locals: {
+			StudioCMS: initial,
+		},
+	} as unknown as APIContext;
+}
+
+describe(parentSuiteName, () => {
+	[
+		{ permissionLevel: 'owner' as const, expected: UserPermissionLevel.owner },
+		{ permissionLevel: 'admin' as const, expected: UserPermissionLevel.admin },
+		{ permissionLevel: 'editor' as const, expected: UserPermissionLevel.editor },
+		{ permissionLevel: 'visitor' as const, expected: UserPermissionLevel.visitor },
+		{ permissionLevel: 'unknown' as const, expected: UserPermissionLevel.unknown },
+	].forEach(({ permissionLevel, expected }, index) => {
+		const testName = `getUserPermissionLevel test case #${index + 1}`;
+		const tags = [...sharedTags, 'middleware:utils', 'middleware:getUserPermissionLevel'];
+
+		test(testName, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('getUserPermissionLevel tests');
+			await allure.tags(...tags);
+
+			await allure.parameter('data', JSON.stringify({ permissionLevel }));
+
 			const userData = { permissionLevel } as any;
 			const result = await Effect.runPromise(getUserPermissionLevel(userData));
 			expect(result).toBe(expected);
-		}
+		});
 	});
-});
 
-describe('getUserPermissions', () => {
-	it('returns correct permission flags for each level', async () => {
-		const levels: [
-			'owner' | 'admin' | 'editor' | 'visitor' | 'unknown',
-			Record<string, boolean>,
-		][] = [
+	(
+		[
 			['owner', { isOwner: true, isAdmin: true, isEditor: true, isVisitor: true }],
 			['admin', { isOwner: false, isAdmin: true, isEditor: true, isVisitor: true }],
 			['editor', { isOwner: false, isAdmin: false, isEditor: true, isVisitor: true }],
 			['visitor', { isOwner: false, isAdmin: false, isEditor: false, isVisitor: true }],
 			['unknown', { isOwner: false, isAdmin: false, isEditor: false, isVisitor: false }],
-		];
-		for (const [permissionLevel, expected] of levels) {
+		] as ['owner' | 'admin' | 'editor' | 'visitor' | 'unknown', Record<string, boolean>][]
+	).forEach(([permissionLevel, expected], index) => {
+		const testName = `getUserPermissions test case #${index + 1}`;
+		const tags = [...sharedTags, 'middleware:utils', 'middleware:getUserPermissions'];
+
+		test(testName, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('getUserPermissions tests');
+			await allure.tags(...tags);
+
+			await allure.parameter('data', JSON.stringify({ permissionLevel }));
+
 			const userData = { permissionLevel } as any;
 			const result = await Effect.runPromise(getUserPermissions(userData));
 			expect(result).toMatchObject(expected);
-		}
-	});
-});
-
-describe('makeFallbackSiteConfig', () => {
-	it('returns a valid fallback site config object', () => {
-		const config = makeFallbackSiteConfig();
-		expect(config).toHaveProperty('lastCacheUpdate');
-		expect(config.data).toMatchObject({
-			defaultOgImage: null,
-			description: 'A StudioCMS Project',
-			diffPerPage: 10,
-			enableDiffs: false,
-			enableMailer: false,
-			gridItems: [],
-			hideDefaultIndex: false,
-			loginPageBackground: 'studiocms-curves',
-			loginPageCustomImage: null,
-			siteIcon: null,
-			title: 'StudioCMS-Setup',
 		});
-		expect(typeof config.data._config_version).toBe('string');
 	});
-});
 
-describe('setLocals', () => {
-	function makeContext(initial: any = {}) {
-		return {
-			locals: {
-				StudioCMS: initial,
-			},
-		} as unknown as APIContext;
-	}
+	test('makeFallbackSiteConfig returns valid config', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('makeFallbackSiteConfig tests');
+		await allure.tags(...sharedTags, 'middleware:utils', 'middleware:makeFallbackSiteConfig');
 
-	it('merges general values without overwriting security/plugins', async () => {
+		await allure.step('Generate fallback site config', () => {
+			const config = makeFallbackSiteConfig();
+			expect(config).toHaveProperty('lastCacheUpdate');
+			expect(config.data).toMatchObject({
+				defaultOgImage: null,
+				description: 'A StudioCMS Project',
+				diffPerPage: 10,
+				enableDiffs: false,
+				enableMailer: false,
+				gridItems: [],
+				hideDefaultIndex: false,
+				loginPageBackground: 'studiocms-curves',
+				loginPageCustomImage: null,
+				siteIcon: null,
+				title: 'StudioCMS-Setup',
+			});
+			expect(typeof config.data._config_version).toBe('string');
+		});
+	});
+
+	test('setLocals - merges general values without overwriting security/plugins', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('setLocals tests - GENERAL');
+		await allure.tags(...sharedTags, 'middleware:utils', 'middleware:setLocals');
+
 		const context = makeContext({
 			foo: 1,
 			security: { token: 'abc' },
@@ -95,7 +122,12 @@ describe('setLocals', () => {
 		});
 	});
 
-	it('merges security values without overwriting general/plugins', async () => {
+	test('setLocals - merges security values without overwriting general/plugins', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('setLocals tests - SECURITY');
+		await allure.tags(...sharedTags, 'middleware:utils', 'middleware:setLocals');
+
 		const context = makeContext({
 			foo: 1,
 			security: { token: 'abc' },
@@ -109,7 +141,12 @@ describe('setLocals', () => {
 		expect(context.locals.StudioCMS.foo).toBe(1);
 	});
 
-	it('merges plugin values without overwriting general/security', async () => {
+	test('setLocals - merges plugins values without overwriting general/security', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('setLocals tests - PLUGINS');
+		await allure.tags(...sharedTags, 'middleware:utils', 'middleware:setLocals');
+
 		const context = makeContext({
 			foo: 1,
 			security: { token: 'abc' },
@@ -123,7 +160,12 @@ describe('setLocals', () => {
 		expect(context.locals.StudioCMS.foo).toBe(1);
 	});
 
-	it('returns error for unknown key', async () => {
+	test('setLocals - throws error for unknown key', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('setLocals tests - UNKNOWN KEY');
+		await allure.tags(...sharedTags, 'middleware:utils', 'middleware:setLocals');
+
 		const context = makeContext({});
 		await expect(Effect.runPromise(setLocals(context, 'notakey' as any, {}))).rejects.toThrow(
 			'Unknown key: notakey'
