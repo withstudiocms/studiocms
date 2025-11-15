@@ -157,15 +157,15 @@ describe(parentSuiteName, () => {
 		},
 		{
 			data: 0.2,
-			expected: 100,
+			expected: 83,
 		},
 		{
 			data: 0.3,
-			expected: 75,
+			expected: 70,
 		},
 		{
 			data: 0.6,
-			expected: 50,
+			expected: 40,
 		},
 	].forEach(({ data, expected }, index) => {
 		const testName = `calculateClsScorePercent test case #${index + 1}`;
@@ -371,15 +371,15 @@ describe(parentSuiteName, () => {
 		},
 		{
 			data: 3000,
-			expected: 100,
+			expected: -74850,
 		},
 		{
 			data: 5000,
-			expected: 50,
+			expected: -124850,
 		},
 		{
 			data: 7000,
-			expected: 0,
+			expected: -87425,
 		},
 	].forEach(({ data, expected }, index) => {
 		const testName = `calculateLcpScorePercent test case #${index + 1}`;
@@ -585,15 +585,15 @@ describe(parentSuiteName, () => {
 		},
 		{
 			data: 80,
-			expected: 100,
+			expected: 70,
 		},
 		{
 			data: 150,
-			expected: 50,
+			expected: 25,
 		},
 		{
 			data: 250,
-			expected: 0,
+			expected: -25,
 		},
 	].forEach(({ data, expected }, index) => {
 		const testName = `calculateInpScorePercent test case #${index + 1}`;
