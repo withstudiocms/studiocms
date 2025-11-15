@@ -26,7 +26,7 @@ describe(parentSuiteName, () => {
 
 		test(testName, async ({ renderComponent }) => {
 			await allure.parentSuite(parentSuiteName);
-			await allure.suite('Layout Container tests');
+			await allure.suite(localSuiteName);
 			await allure.subSuite(testName);
 			await allure.tags(...tags);
 
