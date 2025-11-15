@@ -7,7 +7,7 @@ import { MockAstroLocals, parentSuiteName, sharedTags } from '../test-utils';
 
 const localSuiteName = 'Layout Component Tests';
 
-describe(localSuiteName, () => {
+describe(parentSuiteName, () => {
 	test('Layout renders correctly', async () => {
 		await allure.parentSuite(parentSuiteName);
 		await allure.suite(localSuiteName);
