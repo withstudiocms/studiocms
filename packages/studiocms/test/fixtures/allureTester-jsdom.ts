@@ -2,31 +2,42 @@ import * as allure from 'allure-js-commons';
 import { test as baseTest } from 'vitest';
 
 /**
- * Creates a test fixture extension that augments `baseTest` with utilities for rendering
- * Astro components and configuring Allure test reporting.
+ * Extends the base test fixture with Allure helpers tailored for jsdom-based tests.
  *
- * @param allureMeta - Metadata used to initialize Allure suite context for each test that uses the fixture.
- * @param allureMeta.suiteParentName - The parent suite name to set on the Allure report.
- * @param allureMeta.suiteName - The suite name to set on the Allure report.
+ * @param allureMeta - Metadata used to initialize the Allure reporting context.
+ * @param allureMeta.suiteParentName - The parent suite name applied to every test configured with this fixture.
+ * @param allureMeta.suiteName - The suite name applied to every test configured with this fixture.
+ *
+ * @returns An object of test fixtures that includes:
+ *  - setupAllure: async function to configure Allure context for an individual test.
+ *  - step: a direct proxy to Allure's `step` function for creating nested steps.
+ *
+ * setupAllure(opts):
+ * @param opts.subSuiteName - The sub-suite name to assign to the current test within the configured suite.
+ * @param opts.tags - An array of tags to associate with the test (spread onto Allure).
+ * @param opts.parameters - Optional key/value mapping of parameters to attach to the test in Allure.
+ * @param opts.description - Optional textual description for the test in Allure.
  *
  * @remarks
- * The produced fixture adds the following properties to tests:
- * - `astroContainerOptions?: AstroContainerOptions` — optional configuration used when creating an `AstroContainer`.
- * - `renderComponent` — an async helper that:
- *     - accepts an `AstroComponentFactory`, a component `name`, and optional render options (excluding `locals`),
- *     - creates an `AstroContainer` using `astroContainerOptions`,
- *     - renders the component to a string with mocked Astro locals,
- *     - returns the rendered HTML with Astro-specific attributes cleaned/normalized for deterministic testing.
- * - `setupAllure` — an async helper to configure Allure context for the current test. It accepts:
- *     - `subSuiteName` to set a sub-suite on Allure,
- *     - `tags` to attach to the test,
- *     - optional `parameters` (a record of key/value strings) to add to the Allure entry,
- *     - optional `description` to annotate the test.
+ * Calling `setupAllure` will set the Allure parent suite and suite using the provided `allureMeta`,
+ * then set the provided sub-suite name and attach the supplied tags. If a description is provided,
+ * it will be set on the Allure test; any provided parameters will be added as Allure parameters.
  *
- * Use this fixture when you need deterministic server-side rendering of Astro components in tests
- * and structured Allure metadata (suite/sub-suite/tags/parameters/description) for reporting.
+ * The exported `step` fixture is a convenience proxy to `allure.step`, enabling creation of
+ * nested steps directly from tests while preserving typing.
  *
- * @returns A `baseTest` extension exposing the described fixtures for use in tests.
+ * @example
+ * // Usage in a test
+ * await setupAllure({
+ *   subSuiteName: 'MyComponent',
+ *   tags: ['e2e', 'critical'],
+ *   parameters: { browser: 'jsdom' },
+ *   description: 'Verifies core behavior of MyComponent'
+ * });
+ *
+ * await step('perform action', async () => {
+ *   // test actions and assertions
+ * });
  */
 export const allureTesterJsDom = (allureMeta: { suiteParentName: string; suiteName: string }) =>
 	baseTest.extend<{
