@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect } from 'vitest';
 import {
 	getCurrentURLPath,
 	getLangFromUrl,
@@ -7,6 +7,10 @@ import {
 	useTranslatedPath,
 	useTranslations,
 } from '../../../src/virtuals/i18n/server';
+import { allureTester } from '../../fixtures/allureTester';
+import { parentSuiteName, sharedTags } from '../../test-utils';
+
+const localSuiteName = 'i18n Server Virtuals tests';
 
 // Mock AstroGlobal
 function createAstroGlobal(pathname: string, referer?: string): any {
@@ -20,73 +24,173 @@ function createAstroGlobal(pathname: string, referer?: string): any {
 	};
 }
 
-describe('i18n/server', () => {
-	describe('useTranslations', () => {
-		it('returns translation for given key and language', () => {
-			const t = useTranslations('en', '@studiocms/auth:login');
-			expect(t('title')).toBe('Login Page');
-			expect(t('description')).toBe('Login Page');
-		});
+describe(parentSuiteName, () => {
+	const test = allureTester({
+		suiteName: localSuiteName,
+		suiteParentName: parentSuiteName,
+	});
 
-		it('falls back to default language if translation missing', () => {
-			const t = useTranslations('en', '@studiocms/auth:login');
-			// @ts-expect-error fake key
-			expect(t('nonexistent')).toBe('nonexistent');
-		});
+	[
+		{
+			key: 'title',
+			expected: 'Login Page',
+		},
+		{
+			key: 'description',
+			expected: 'Login Page',
+		},
+		{
+			key: 'nonexistent',
+			expected: 'nonexistent',
+		},
+		{
+			key: 'unknown',
+			expected: 'unknown',
+		},
+	].forEach(({ key, expected }) => {
+		const testName = `useTranslations returns correct translation for key "${key}"`;
+		const tags = [...sharedTags, 'virtual:i18n', 'function:useTranslations'];
 
-		it('returns key as string if missing in all languages', () => {
-			const t = useTranslations('en', '@studiocms/auth:login');
-			// @ts-expect-error fake key
-			expect(t('unknown')).toBe('unknown');
+		test(testName, async ({ setupAllure, step }) => {
+			await setupAllure({
+				subSuiteName: 'useTranslations tests',
+				tags: [...tags],
+				parameters: {
+					key,
+				},
+			});
+
+			await step(`Calling useTranslations with key "${key}"`, async () => {
+				const t = useTranslations('en', '@studiocms/auth:login');
+				// @ts-expect-error dynamic key
+				const result = t(key);
+				expect(result).toBe(expected);
+			});
 		});
 	});
 
-	describe('useTranslatedPath', () => {
-		it('returns path without lang prefix for English when showDefaultLang is false', () => {
+	test('useTranslatedPath returns path without lang prefix for English when showDefaultLang is false', async ({
+		setupAllure,
+		step,
+	}) => {
+		const tags = [...sharedTags, 'virtual:i18n', 'function:useTranslatedPath'];
+
+		await setupAllure({
+			subSuiteName: 'useTranslatedPath tests',
+			tags: [...tags],
+			parameters: {
+				language: 'en',
+			},
+		});
+
+		await step('Calling useTranslatedPath with "en"', async () => {
 			const translatePath = useTranslatedPath('en');
-			expect(translatePath('/dashboard')).toBe('/dashboard');
+			const result = translatePath('/dashboard');
+			expect(result).toBe('/dashboard');
 		});
 	});
 
-	describe('getLangFromUrl', () => {
-		it('extracts language from URL pathname', () => {
-			expect(getLangFromUrl(new URL('http://localhost/en/dashboard'))).toBe('en');
-			expect(getLangFromUrl(new URL('http://localhost/dashboard'))).toBe('en');
-		});
+	[
+		{
+			url: 'http://localhost/en/dashboard',
+		},
+		{
+			url: 'http://localhost/dashboard',
+		},
+		{
+			url: 'http://localhost/su/dashboard',
+		},
+	].forEach(({ url }) => {
+		const testName = `getLangFromUrl extracts correct language from URL "${url}"`;
+		const expectedLang = url.includes('/en/') || url === 'http://localhost/dashboard' ? 'en' : 'en';
+		const tags = [...sharedTags, 'virtual:i18n', 'function:getLangFromUrl'];
 
-		it('returns defaultLang if language not found', () => {
-			expect(getLangFromUrl(new URL('http://localhost/su/dashboard'))).toBe('en');
-			expect(getLangFromUrl(new URL('http://localhost/dashboard'))).toBe('en');
+		test(testName, async ({ setupAllure, step }) => {
+			await setupAllure({
+				subSuiteName: 'getLangFromUrl tests',
+				tags: [...tags],
+				parameters: {
+					url,
+				},
+			});
+
+			await step(`Calling getLangFromUrl with URL "${url}"`, async () => {
+				const result = getLangFromUrl(new URL(url));
+				expect(result).toBe(expectedLang);
+			});
 		});
 	});
 
-	describe('getCurrentURLPath', () => {
-		it('returns pathname without lang prefix for English paths', () => {
-			const Astro = createAstroGlobal('/en/dashboard');
-			expect(getCurrentURLPath(Astro)).toBe('/dashboard');
-		});
+	[
+		{
+			pathname: '/en/dashboard',
+			referer: undefined,
+			expected: '/dashboard',
+		},
+		{
+			pathname: '/_server-islands',
+			referer: 'http://localhost/en/dashboard',
+			expected: '/dashboard',
+		},
+		{
+			pathname: '/_server-islands',
+			referer: 'http://localhost/dashboard',
+			expected: '/dashboard',
+		},
+	].forEach(({ pathname, referer, expected }) => {
+		const testName = `getCurrentURLPath returns correct path for pathname "${pathname}" and referer "${referer}"`;
+		const tags = [...sharedTags, 'virtual:i18n', 'function:getCurrentURLPath'];
 
-		it('handles /_server-islands with explicit English', () => {
-			const Astro = createAstroGlobal('/_server-islands', 'http://localhost/en/dashboard');
-			expect(getCurrentURLPath(Astro)).toBe('/dashboard');
-		});
+		test(testName, async ({ setupAllure, step }) => {
+			await setupAllure({
+				subSuiteName: 'getCurrentURLPath tests',
+				tags: [...tags],
+				parameters: {
+					pathname,
+					referer: String(referer),
+				},
+			});
 
-		it('handles /_server-islands with default (no prefix)', () => {
-			const Astro = createAstroGlobal('/_server-islands', 'http://localhost/dashboard');
-			expect(getCurrentURLPath(Astro)).toBe('/dashboard');
+			await step(
+				`Calling getCurrentURLPath with pathname "${pathname}" and referer "${referer}"`,
+				async () => {
+					const Astro = createAstroGlobal(pathname, referer);
+					const result = getCurrentURLPath(Astro);
+					expect(result).toBe(expected);
+				}
+			);
 		});
 	});
 
-	describe('switchLanguage', () => {
-		it('switches path to selected language', () => {
+	test('switchLanguage switches path to selected language', async ({ setupAllure, step }) => {
+		const tags = [...sharedTags, 'virtual:i18n', 'function:switchLanguage'];
+
+		await setupAllure({
+			subSuiteName: 'switchLanguage tests',
+			tags: [...tags],
+			parameters: {
+				currentPath: '/dashboard',
+				targetLanguage: 'en',
+			},
+		});
+
+		await step('Calling switchLanguage to switch to "en"', async () => {
 			const Astro = createAstroGlobal('/dashboard');
 			const switcher = switchLanguage(Astro);
-			expect(switcher('en')).toBe('/dashboard');
+			const result = switcher('en');
+			expect(result).toBe('/dashboard');
 		});
 	});
 
-	describe('staticPaths', () => {
-		it('generates paths for English, omitting defaultLang prefix when showDefaultLang is false', () => {
+	test('staticPaths generates correct paths', async ({ setupAllure, step }) => {
+		const tags = [...sharedTags, 'virtual:i18n', 'function:staticPaths'];
+
+		await setupAllure({
+			subSuiteName: 'staticPaths tests',
+			tags: [...tags],
+		});
+
+		await step('Calling staticPaths', async () => {
 			const paths = staticPaths();
 			expect(paths).toContainEqual({ params: { locale: undefined } });
 			expect(paths).not.toContainEqual({ params: { locale: 'en' } });

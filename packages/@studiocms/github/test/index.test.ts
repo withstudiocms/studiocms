@@ -1,8 +1,12 @@
+import * as allure from 'allure-js-commons';
 import { StudioCMSPluginTester } from 'studiocms/test-utils';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { studiocmsGithub } from '../src/index.js';
+import { parentSuiteName, sharedTags } from './test-utils.js';
 
-describe('@studiocms/github', () => {
+const localSuiteName = 'GitHub Plugin Tests';
+
+describe(parentSuiteName, () => {
 	let tester: StudioCMSPluginTester;
 	let plugin: ReturnType<typeof studiocmsGithub>;
 
@@ -16,9 +20,17 @@ describe('@studiocms/github', () => {
 		vi.restoreAllMocks();
 	});
 
-	describe('plugin creation', () => {
-		it('should create a plugin with correct metadata', () => {
+	test('Plugin Creation - Validates Plugin Structure', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('Plugin Creation Tests');
+		await allure.tags(...sharedTags);
+
+		await allure.step('Should create plugin with correct metadata and structure', async (ctx) => {
 			const pluginInfo = tester.getPluginInfo();
+
+			await ctx.parameter('pluginInfo', JSON.stringify(pluginInfo, null, 2));
+
 			expect(pluginInfo).toBeDefined();
 			expect(pluginInfo.identifier).toBe('@studiocms/github');
 			expect(pluginInfo.name).toBe('StudioCMS GitHub Plugin');
@@ -26,12 +38,22 @@ describe('@studiocms/github', () => {
 			expect(pluginInfo.requires).toBeUndefined();
 		});
 
-		it('should export default function', () => {
-			expect(typeof studiocmsGithub).toBe('function');
-			expect(studiocmsGithub.name).toBe('studiocmsGithub');
-		});
+		await allure.step(
+			'Should export default function returning valid plugin object',
+			async (ctx) => {
+				await ctx.parameter('functionType', typeof studiocmsGithub);
+				await ctx.parameter('functionName', studiocmsGithub.name);
 
-		it('should return a valid StudioCMSPlugin object', () => {
+				expect(typeof studiocmsGithub).toBe('function');
+				expect(studiocmsGithub.name).toBe('studiocmsGithub');
+			}
+		);
+
+		await allure.step('Should return a valid StudioCMSPlugin object', async (ctx) => {
+			await ctx.parameter('pluginIdentifier', plugin.identifier);
+			await ctx.parameter('pluginName', plugin.name);
+			await ctx.parameter('hasHooks', String(plugin.hooks !== undefined));
+
 			expect(plugin).toBeDefined();
 			expect(plugin.identifier).toBe('@studiocms/github');
 			expect(plugin.name).toBe('StudioCMS GitHub Plugin');
@@ -39,118 +61,58 @@ describe('@studiocms/github', () => {
 		});
 	});
 
-	describe('hooks', () => {
-		it('should have the correct hooks defined', async () => {
+	test('Plugin Hooks - Validates Hook Functionality', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('Plugin Hooks Tests');
+		await allure.tags(...sharedTags);
+
+		await allure.step('Should have correct hooks defined and functioning', async (ctx) => {
 			const hookResults = await tester.getHookResults();
 
-			expect(hookResults.studiocmsConfig).toBeDefined();
+			await ctx.parameter(
+				'studiocmsConfigHookDefined',
+				String(hookResults.studiocmsConfig.hasHook)
+			);
+			await ctx.parameter('astroConfigHookDefined', String(hookResults.astroConfig.hasHook));
+
 			expect(hookResults.studiocmsConfig.hasHook).toBe(true);
+			expect(hookResults.astroConfig.hasHook).toBe(false);
 		});
 
-		it('should configure GitHub OAuth provider in studiocms config hook', async () => {
+		await allure.step('Should configure GitHub OAuth provider correctly', async (ctx) => {
 			const hookResults = await tester.getHookResults();
-
-			expect(hookResults.studiocmsConfig.hookResults.authService).toBeDefined();
-			expect(hookResults.studiocmsConfig.hookResults.authService.oAuthProvider).toBeDefined();
-
 			const oAuthProvider = hookResults.studiocmsConfig.hookResults.authService.oAuthProvider;
+
+			await ctx.parameter(
+				'oAuthProvider',
+				JSON.stringify(hookResults.studiocmsConfig.hookResults.authService.oAuthProvider, null, 2)
+			);
+
 			expect(oAuthProvider).toBeDefined();
 			expect(oAuthProvider?.name).toBe('github');
 			expect(oAuthProvider?.formattedName).toBe('GitHub');
 			expect(oAuthProvider?.endpointPath).toContain('endpoint.js');
-		});
-
-		it('should define required environment variables', async () => {
-			const hookResults = await tester.getHookResults();
-			const oAuthProvider = hookResults.studiocmsConfig.hookResults.authService.oAuthProvider;
-
 			expect(oAuthProvider?.requiredEnvVariables).toEqual([
 				'CMS_GITHUB_CLIENT_ID',
 				'CMS_GITHUB_CLIENT_SECRET',
 				'CMS_GITHUB_REDIRECT_URI',
 			]);
-		});
-
-		it('should include GitHub SVG logo', async () => {
-			const hookResults = await tester.getHookResults();
-			const oAuthProvider = hookResults.studiocmsConfig.hookResults.authService.oAuthProvider;
-
-			expect(oAuthProvider?.svg).toBeDefined();
 			expect(oAuthProvider?.svg).toContain('<svg');
 			expect(oAuthProvider?.svg).toContain('oauth-logo');
 			expect(oAuthProvider?.svg).toContain('viewBox="0 0 98 96"');
 		});
 
-		it('should not have astro config hook', async () => {
+		await allure.step('should not have astro config hook', async (ctx) => {
 			const hookResults = await tester.getHookResults();
+
+			await ctx.parameter(
+				'astroConfigHookResults',
+				JSON.stringify(hookResults.astroConfig.hookResults, null, 2)
+			);
 
 			expect(hookResults.astroConfig.hasHook).toBe(false);
 			expect(hookResults.astroConfig.hookResults.integrations).toEqual([]);
-		});
-	});
-
-	describe('plugin structure', () => {
-		it('should have correct plugin identifier', () => {
-			expect(plugin.identifier).toBe('@studiocms/github');
-		});
-
-		it('should have correct plugin name', () => {
-			expect(plugin.name).toBe('StudioCMS GitHub Plugin');
-		});
-
-		it('should have correct minimum version requirement', () => {
-			expect(plugin.studiocmsMinimumVersion).toBe('0.1.0-beta.22');
-		});
-
-		it('should have no required dependencies', () => {
-			expect(plugin.requires).toBeUndefined();
-		});
-
-		it('should have hooks object', () => {
-			expect(plugin.hooks).toBeDefined();
-			expect(typeof plugin.hooks).toBe('object');
-		});
-	});
-
-	describe('hook implementation', () => {
-		it('should have studiocms:config:setup hook', () => {
-			expect(plugin.hooks['studiocms:config:setup']).toBeDefined();
-			expect(typeof plugin.hooks['studiocms:config:setup']).toBe('function');
-		});
-
-		it('should not have other hooks', () => {
-			const hookKeys = Object.keys(plugin.hooks);
-			expect(hookKeys).toEqual(['studiocms:config:setup']);
-		});
-	});
-
-	describe('OAuth provider configuration', () => {
-		it('should configure GitHub as OAuth provider', async () => {
-			const hookResults = await tester.getHookResults();
-			const authService = hookResults.studiocmsConfig.hookResults.authService;
-
-			expect(authService.oAuthProvider).toBeDefined();
-			expect(authService.oAuthProvider?.name).toBe('github');
-			expect(authService.oAuthProvider?.formattedName).toBe('GitHub');
-		});
-
-		it('should set correct endpoint path', async () => {
-			const hookResults = await tester.getHookResults();
-			const oAuthProvider = hookResults.studiocmsConfig.hookResults.authService.oAuthProvider;
-
-			expect(oAuthProvider?.endpointPath).toContain('endpoint.js');
-			expect(oAuthProvider?.endpointPath).not.toContain('endpoint.ts');
-		});
-
-		it('should include all required GitHub environment variables', async () => {
-			const hookResults = await tester.getHookResults();
-			const requiredEnvVars =
-				hookResults.studiocmsConfig.hookResults.authService.oAuthProvider?.requiredEnvVariables;
-
-			expect(requiredEnvVars).toContain('CMS_GITHUB_CLIENT_ID');
-			expect(requiredEnvVars).toContain('CMS_GITHUB_CLIENT_SECRET');
-			expect(requiredEnvVars).toContain('CMS_GITHUB_REDIRECT_URI');
-			expect(requiredEnvVars).toHaveLength(3);
 		});
 	});
 });

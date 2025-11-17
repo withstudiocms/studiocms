@@ -1,71 +1,164 @@
 /** biome-ignore-all lint/suspicious/noExplicitAny: allowed in tests */
-import { describe, expect, it } from 'vitest';
+import { describe, expect } from 'vitest';
 import { StudioCMSOptionsSchema } from '../../../src/schemas/config/index';
+import { allureTester } from '../../fixtures/allureTester';
+import { parentSuiteName, sharedTags } from '../../test-utils';
 
-describe('StudioCMSOptionsSchema', () => {
-	it('should parse empty config and apply defaults', () => {
-		const result = StudioCMSOptionsSchema.parse({});
-		expect(result.dbStartPage).toBe(true);
-		expect(result.verbose).toBe(false);
-		expect(result.logLevel).toBe('Info');
-		expect(result.features.injectQuickActionsMenu).toBe(true);
-		expect(result.features.robotsTXT).toBe(true);
-		expect(result.locale.dateLocale).toBe('en-us');
-		expect(result.locale.dateTimeFormat).toEqual({
-			year: 'numeric',
-			month: 'short',
-			day: 'numeric',
+const localSuiteName = 'Config Schemas tests (Index)';
+
+describe(parentSuiteName, () => {
+	const test = allureTester({
+		suiteName: localSuiteName,
+		suiteParentName: parentSuiteName,
+	});
+
+	test('StudioCMSOptionsSchema - should parse empty config and apply defaults', async ({
+		setupAllure,
+		step,
+	}) => {
+		const tags = [...sharedTags, 'schema:config', 'schema:StudioCMSOptionsSchema'];
+
+		await setupAllure({
+			subSuiteName: 'StudioCMSOptionsSchema tests',
+			tags: [...tags],
+		});
+
+		await step('Parsing empty config', async () => {
+			const result = StudioCMSOptionsSchema.parse({});
+			expect(result.dbStartPage).toBe(true);
+			expect(result.verbose).toBe(false);
+			expect(result.logLevel).toBe('Info');
+			expect(result.features.injectQuickActionsMenu).toBe(true);
+			expect(result.features.robotsTXT).toBe(true);
+			expect(result.locale.dateLocale).toBe('en-us');
+			expect(result.locale.dateTimeFormat).toEqual({
+				year: 'numeric',
+				month: 'short',
+				day: 'numeric',
+			});
 		});
 	});
 
-	it('should accept custom logLevel', () => {
-		const result = StudioCMSOptionsSchema.parse({ logLevel: 'Debug' });
-		expect(result.logLevel).toBe('Debug');
+	[
+		{
+			data: { logLevel: 'Debug' },
+			expected: {
+				actualKey: 'logLevel',
+				actualValue: 'Debug',
+			},
+		},
+		{
+			data: { plugins: [{ name: 'test-plugin', hooks: {} }] },
+			expected: {
+				actualKey: 'plugins',
+				actualValue: [{ name: 'test-plugin', hooks: {} }],
+			},
+		},
+		{
+			data: { componentRegistry: { header: 'HeaderComponent', footer: 'FooterComponent' } },
+			expected: {
+				actualKey: 'componentRegistry',
+				actualValue: { header: 'HeaderComponent', footer: 'FooterComponent' },
+			},
+		},
+		{
+			data: {
+				locale: {
+					dateLocale: 'fr-FR',
+					dateTimeFormat: { year: '2-digit', month: 'long', day: '2-digit' },
+				},
+			},
+			expected: {
+				actualKey: 'locale',
+				actualValue: {
+					dateLocale: 'fr-FR',
+					dateTimeFormat: { year: '2-digit', month: 'long', day: '2-digit' },
+				},
+			},
+		},
+		{
+			data: {
+				features: {
+					robotsTXT: false,
+					injectQuickActionsMenu: false,
+					preferredImageService: 'cloudinary-js',
+				},
+			},
+			expected: [
+				{
+					actualKey: 'features.robotsTXT',
+					actualValue: false,
+				},
+				{
+					actualKey: 'features.injectQuickActionsMenu',
+					actualValue: false,
+				},
+				{
+					actualKey: 'features.preferredImageService',
+					actualValue: 'cloudinary-js',
+				},
+			],
+		},
+	].forEach(({ data, expected }, index) => {
+		const testName = `StudioCMSOptionsSchema specific field test case #${index + 1}`;
+		const tags = [...sharedTags, 'schema:config', 'schema:StudioCMSOptionsSchema'];
+
+		test(testName, async ({ setupAllure }) => {
+			await setupAllure({
+				subSuiteName: 'StudioCMSOptionsSchema tests',
+				tags: [...tags],
+				parameters: {
+					data: JSON.stringify(data),
+				},
+			});
+
+			const result = StudioCMSOptionsSchema.parse(data);
+			if (Array.isArray(expected)) {
+				for (let i = 0; i < expected.length; i++) {
+					const { actualKey, actualValue } = expected[i];
+					const keys = actualKey.split('.');
+					let current: any = result;
+					for (const key of keys) {
+						current = current[key];
+					}
+					expect(current).toEqual(actualValue);
+				}
+			} else {
+				const { actualKey, actualValue } = expected;
+				const keys = actualKey.split('.');
+				let current: any = result;
+				for (const key of keys) {
+					current = current[key];
+				}
+				expect(current).toEqual(actualValue);
+			}
+		});
 	});
 
-	it('should accept plugins array', () => {
-		const plugins = [{ name: 'test-plugin', hooks: {} }];
-		const result = StudioCMSOptionsSchema.parse({ plugins });
-		expect(result.plugins).toEqual(plugins);
-	});
+	[
+		{
+			data: { logLevel: 'INVALID' as any },
+		},
+		{
+			data: { locale: 'en-US' as any },
+		},
+		{
+			data: { features: 'invalid' as any },
+		},
+	].forEach(({ data }, index) => {
+		const testName = `StudioCMSOptionsSchema invalid data test case #${index + 1}`;
+		const tags = [...sharedTags, 'schema:config', 'schema:StudioCMSOptionsSchema'];
 
-	it('should accept custom componentRegistry', () => {
-		const registry = { header: 'HeaderComponent', footer: 'FooterComponent' };
-		const result = StudioCMSOptionsSchema.parse({ componentRegistry: registry });
-		expect(result.componentRegistry).toEqual(registry);
-	});
+		test(testName, async ({ setupAllure }) => {
+			await setupAllure({
+				subSuiteName: 'StudioCMSOptionsSchema tests',
+				tags: [...tags],
+				parameters: {
+					data: JSON.stringify(data),
+				},
+			});
 
-	it('should allow overriding locale settings', () => {
-		const locale = {
-			dateLocale: 'fr-FR',
-			dateTimeFormat: { year: '2-digit', month: 'long', day: '2-digit' },
-		};
-		const result = StudioCMSOptionsSchema.parse({ locale });
-		expect(result.locale.dateLocale).toBe('fr-FR');
-		expect(result.locale.dateTimeFormat).toEqual(locale.dateTimeFormat);
-	});
-
-	it('should allow overriding features', () => {
-		const features = {
-			robotsTXT: false,
-			injectQuickActionsMenu: false,
-			preferredImageService: 'cloudinary-js',
-		};
-		const result = StudioCMSOptionsSchema.parse({ features });
-		expect(result.features.robotsTXT).toBe(false);
-		expect(result.features.injectQuickActionsMenu).toBe(false);
-		expect(result.features.preferredImageService).toBe('cloudinary-js');
-	});
-
-	it('should reject invalid logLevel', () => {
-		expect(() => StudioCMSOptionsSchema.parse({ logLevel: 'INVALID' as any })).toThrow();
-	});
-
-	it('should reject non-object locale', () => {
-		expect(() => StudioCMSOptionsSchema.parse({ locale: 'en-US' as any })).toThrow();
-	});
-
-	it('should reject non-object features', () => {
-		expect(() => StudioCMSOptionsSchema.parse({ features: 'invalid' as any })).toThrow();
+			expect(() => StudioCMSOptionsSchema.parse(data)).toThrow();
+		});
 	});
 });

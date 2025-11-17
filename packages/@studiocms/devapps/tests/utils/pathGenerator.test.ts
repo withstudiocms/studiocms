@@ -1,4 +1,5 @@
-import { describe, expect, it } from '@effect/vitest';
+import { describe, expect, it, test } from '@effect/vitest';
+import * as allure from 'allure-js-commons';
 import {
 	ensureLeadingSlash,
 	pathGenerator,
@@ -6,98 +7,231 @@ import {
 	stripLeadingSlash,
 	stripTrailingSlash,
 } from '../../src/utils/pathGenerator';
+import { parentSuiteName, sharedTags } from '../test-utils.js';
 
-describe('pathGenerator utilities', () => {
-	describe('stripLeadingSlash', () => {
-		it('should remove leading slash from path', () => {
-			expect(stripLeadingSlash('/hello')).toBe('hello');
-			expect(stripLeadingSlash('/hello/world')).toBe('hello/world');
-		});
+const localSuiteName = 'pathGenerator Utility Function Tests';
 
-		it('should return path unchanged if no leading slash', () => {
-			expect(stripLeadingSlash('hello')).toBe('hello');
-			expect(stripLeadingSlash('hello/world')).toBe('hello/world');
-		});
+describe(parentSuiteName, () => {
+	[
+		{
+			input: '/hello',
+			expected: 'hello',
+		},
+		{
+			input: '/hello/world',
+			expected: 'hello/world',
+		},
+		{
+			input: 'hello',
+			expected: 'hello',
+		},
+		{
+			input: 'hello/world',
+			expected: 'hello/world',
+		},
+		{
+			input: '',
+			expected: '',
+		},
+	].forEach(({ input, expected }) => {
+		it(`stripLeadingSlash('${input}') should return '${expected}'`, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('stripLeadingSlash Tests');
+			await allure.tags(...sharedTags);
 
-		it('should handle empty string', () => {
-			expect(stripLeadingSlash('')).toBe('');
-		});
-	});
-
-	describe('stripTrailingSlash', () => {
-		it('should remove trailing slash from path', () => {
-			expect(stripTrailingSlash('hello/')).toBe('hello');
-			expect(stripTrailingSlash('hello/world/')).toBe('hello/world');
-		});
-
-		it('should return path unchanged if no trailing slash', () => {
-			expect(stripTrailingSlash('hello')).toBe('hello');
-			expect(stripTrailingSlash('hello/world')).toBe('hello/world');
-		});
-
-		it('should handle empty string', () => {
-			expect(stripTrailingSlash('')).toBe('');
-		});
-	});
-
-	describe('ensureLeadingSlash', () => {
-		it('should add leading slash if missing', () => {
-			expect(ensureLeadingSlash('hello')).toBe('/hello');
-			expect(ensureLeadingSlash('hello/world')).toBe('/hello/world');
-		});
-
-		it('should return path unchanged if leading slash exists', () => {
-			expect(ensureLeadingSlash('/hello')).toBe('/hello');
-			expect(ensureLeadingSlash('/hello/world')).toBe('/hello/world');
-		});
-
-		it('should handle empty string', () => {
-			expect(ensureLeadingSlash('')).toBe('/');
-		});
-	});
-
-	describe('pathWithBase', () => {
-		it('should combine base and path correctly', () => {
-			expect(pathWithBase('hello', 'https://example.com')).toBe('https://example.com/hello');
-			expect(pathWithBase('hello/world', 'https://example.com')).toBe(
-				'https://example.com/hello/world'
+			await allure.step(
+				`stripLeadingSlash('${input}') should return '${expected}'`,
+				async (ctx) => {
+					const result = stripLeadingSlash(input);
+					await ctx.parameter('input', input);
+					await ctx.parameter('result', result);
+					expect(result).toBe(expected);
+				}
 			);
 		});
+	});
 
-		it('should handle empty path', () => {
-			expect(pathWithBase('', 'https://example.com')).toBe('https://example.com/');
-		});
+	[
+		{
+			input: 'hello/',
+			expected: 'hello',
+		},
+		{
+			input: 'hello/world/',
+			expected: 'hello/world',
+		},
+		{
+			input: 'hello',
+			expected: 'hello',
+		},
+		{
+			input: 'hello/world',
+			expected: 'hello/world',
+		},
+		{
+			input: '',
+			expected: '',
+		},
+	].forEach(({ input, expected }) => {
+		it(`stripTrailingSlash('${input}') should return '${expected}'`, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('stripTrailingSlash Tests');
+			await allure.tags(...sharedTags);
 
-		it('should strip leading slash from path', () => {
-			expect(pathWithBase('/hello', 'https://example.com')).toBe('https://example.com/hello');
-		});
-
-		it('should strip trailing slash from base', () => {
-			expect(pathWithBase('hello', 'https://example.com/')).toBe('https://example.com/hello');
+			await allure.step(
+				`stripTrailingSlash('${input}') should return '${expected}'`,
+				async (ctx) => {
+					const result = stripTrailingSlash(input);
+					await ctx.parameter('input', input);
+					await ctx.parameter('result', result);
+					expect(result).toBe(expected);
+				}
+			);
 		});
 	});
 
-	describe('pathGenerator', () => {
-		it('should create path builder function', () => {
-			const builder = pathGenerator('/api', 'https://example.com');
+	[
+		{
+			input: 'hello',
+			expected: '/hello',
+		},
+		{
+			input: 'hello/world',
+			expected: '/hello/world',
+		},
+		{
+			input: '/hello',
+			expected: '/hello',
+		},
+		{
+			input: '/hello/world',
+			expected: '/hello/world',
+		},
+		{
+			input: '',
+			expected: '/',
+		},
+	].forEach(({ input, expected }) => {
+		it(`ensureLeadingSlash('${input}') should return '${expected}'`, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('ensureLeadingSlash Tests');
+			await allure.tags(...sharedTags);
 
-			expect(builder('test')).toBe('https://example.com/api/test');
-			expect(builder('/test')).toBe('https://example.com/api/test');
-			expect(builder('test/endpoint')).toBe('https://example.com/api/test/endpoint');
+			await allure.step(
+				`ensureLeadingSlash('${input}') should return '${expected}'`,
+				async (ctx) => {
+					const result = ensureLeadingSlash(input);
+					await ctx.parameter('input', input);
+					await ctx.parameter('result', result);
+					expect(result).toBe(expected);
+				}
+			);
 		});
+	});
 
-		it('should handle base with trailing slash', () => {
-			const builder = pathGenerator('/api/', 'https://example.com/');
+	[
+		{
+			path: 'hello',
+			base: 'https://example.com',
+			expected: 'https://example.com/hello',
+		},
+		{
+			path: 'hello/world',
+			base: 'https://example.com',
+			expected: 'https://example.com/hello/world',
+		},
+		{
+			path: '',
+			base: 'https://example.com',
+			expected: 'https://example.com/',
+		},
+	].forEach(({ path, base, expected }) => {
+		it(`pathWithBase('${path}', '${base}') should return '${expected}'`, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('pathWithBase Tests');
+			await allure.tags(...sharedTags);
 
-			expect(builder('test')).toBe('https://example.com/api/test');
-			expect(builder('/test')).toBe('https://example.com/api/test');
+			await allure.step(
+				`pathWithBase('${path}', '${base}') should return '${expected}'`,
+				async (ctx) => {
+					const result = pathWithBase(path, base);
+					await ctx.parameter('path', path);
+					await ctx.parameter('base', base);
+					await ctx.parameter('result', result);
+					expect(result).toBe(expected);
+				}
+			);
 		});
+	});
 
-		it('should handle empty endpoint path', () => {
-			const builder = pathGenerator('', 'https://example.com');
+	[
+		{
+			endpointPath: '/api',
+			base: 'https://example.com',
+			cases: [
+				{
+					input: 'test',
+					expected: 'https://example.com/api/test',
+				},
+				{
+					input: '/test',
+					expected: 'https://example.com/api/test',
+				},
+				{
+					input: 'test/endpoint',
+					expected: 'https://example.com/api/test/endpoint',
+				},
+			],
+		},
+		{
+			endpointPath: '/api/',
+			base: 'https://example.com/',
+			cases: [
+				{
+					input: 'test',
+					expected: 'https://example.com/api/test',
+				},
+				{
+					input: '/test',
+					expected: 'https://example.com/api/test',
+				},
+			],
+		},
+		{
+			endpointPath: '',
+			base: 'https://example.com',
+			cases: [
+				{
+					input: 'test',
+					expected: 'https://example.com/test',
+				},
+				{
+					input: '/test',
+					expected: 'https://example.com/test',
+				},
+			],
+		},
+	].forEach(({ endpointPath, base, cases }) => {
+		test(`pathGenerator('${endpointPath}', '${base}') should create correct path builder`, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('pathGenerator Tests');
+			await allure.tags(...sharedTags);
 
-			expect(builder('test')).toBe('https://example.com/test');
-			expect(builder('/test')).toBe('https://example.com/test');
+			const builder = pathGenerator(endpointPath, base);
+
+			for (const { input, expected } of cases) {
+				await allure.step(`builder('${input}') should return '${expected}'`, async (ctx) => {
+					const result = builder(input);
+					await ctx.parameter('input', input);
+					await ctx.parameter('result', result);
+					expect(result).toBe(expected);
+				});
+			}
 		});
 	});
 });

@@ -1,44 +1,72 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect } from 'vitest';
 import { parseMarkdown } from '../../src/utils/tinyMDParser';
+import { allureTester } from '../fixtures/allureTester';
+import { parentSuiteName, sharedTags } from '../test-utils';
 
-describe('parseMarkdown', () => {
-	it('renders basic markdown to HTML', () => {
-		const md = '# Hello World';
-		const html = parseMarkdown(md);
-		expect(html).toContain('<h1>Hello World</h1>');
+const localSuiteName = 'tinyMDParser Utility tests';
+
+describe(parentSuiteName, () => {
+	const test = allureTester({
+		suiteName: localSuiteName,
+		suiteParentName: parentSuiteName,
 	});
 
-	it('renders GFM tables', () => {
-		const md = `
+	[
+		{
+			input: '# Hello World',
+			toContain: ['<h1>Hello World</h1>'],
+		},
+		{
+			input: `
 | Foo | Bar |
 | --- | --- |
 | baz | qux |
-`;
-		const html = parseMarkdown(md);
-		expect(html).toContain('<table>');
-		expect(html).toContain('<td>baz</td>');
-		expect(html).toContain('<td>qux</td>');
-	});
-
-	it('renders GFM task lists', () => {
-		const md = `
+`,
+			toContain: ['<table>', '<td>baz</td>', '<td>qux</td>'],
+		},
+		{
+			input: `
 - [x] Done
 - [ ] Not done
-`;
-		const html = parseMarkdown(md);
-		expect(html).toContain('type="checkbox"');
-		expect(html).toContain('checked');
+`,
+			toContain: ['type="checkbox"', 'checked'],
+		},
+		{
+			input: '[StudioCMS](https://studiocms.dev) is *awesome*!',
+			toContain: ['<a href="https://studiocms.dev">StudioCMS</a>', '<em>awesome</em>'],
+		},
+	].forEach(({ input, toContain }) => {
+		const testName = 'parses markdown input correctly';
+		const tags = [...sharedTags, 'utility:tinyMDParser', 'function:parseMarkdown'];
+
+		test(testName, async ({ setupAllure, step }) => {
+			await setupAllure({
+				subSuiteName: testName,
+				tags: [...tags],
+				parameters: { input },
+			});
+
+			await step('Parsing markdown input', async () => {
+				const html = parseMarkdown(input);
+				for (const snippet of toContain) {
+					expect(html).toContain(snippet);
+				}
+			});
+		});
 	});
 
-	it('renders links and emphasis', () => {
-		const md = '[StudioCMS](https://studiocms.dev) is *awesome*!';
-		const html = parseMarkdown(md);
-		expect(html).toContain('<a href="https://studiocms.dev">StudioCMS</a>');
-		expect(html).toContain('<em>awesome</em>');
-	});
+	test('returns empty string for empty input', async ({ setupAllure, step }) => {
+		const testName = 'returns empty string for empty input';
+		const tags = [...sharedTags, 'utility:tinyMDParser', 'function:parseMarkdown'];
 
-	it('returns empty string for empty input', () => {
-		const html = parseMarkdown('');
-		expect(html).toBe('');
+		await setupAllure({
+			subSuiteName: testName,
+			tags: [...tags],
+		});
+
+		await step('Parsing empty markdown input', async () => {
+			const html = parseMarkdown('');
+			expect(html).toBe('');
+		});
 	});
 });

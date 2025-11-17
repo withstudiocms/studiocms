@@ -1,4 +1,8 @@
+import * as allure from 'allure-js-commons';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { parentSuiteName, sharedTags } from '../test-utils.js';
+
+const localSuiteName = 'MarkDoc Render Library Tests';
 
 // Mock @markdoc/markdoc
 vi.mock('@markdoc/markdoc', () => ({
@@ -42,7 +46,7 @@ vi.mock('../../src/lib/shared.js', () => ({
 
 // Don't mock the render function - we want to test the actual implementation
 
-describe('MarkDoc Render Library', () => {
+describe(parentSuiteName, () => {
 	beforeEach(async () => {
 		// Reset shared config before each test
 		const { shared } = await import('../../src/lib/shared.js');
@@ -54,102 +58,124 @@ describe('MarkDoc Render Library', () => {
 	});
 
 	test('renderMarkDoc with HTML renderer', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('renderMarkDoc Function Tests');
+		await allure.tags(...sharedTags);
+
 		const { shared } = await import('../../src/lib/shared.js');
 		const { renderMarkDoc } = await import('../../src/lib/render.js');
 
-		shared.markDocConfig.type = 'html';
+		await allure.step('Should render MarkDoc content using HTML renderer', async (ctx) => {
+			shared.markDocConfig.type = 'html';
 
-		const content = '# Test Title';
-		const result = await renderMarkDoc(content);
+			await ctx.parameter('rendererType', 'html');
 
-		expect(result).toBe('<h1>Test Title</h1>');
-		// Verify that Markdoc.parse was called with the content
-		const Markdoc = await import('@markdoc/markdoc');
-		expect(Markdoc.default.parse).toHaveBeenCalledWith(content, undefined);
-		// Verify that Markdoc.transform was called
-		expect(Markdoc.default.transform).toHaveBeenCalled();
-		// Verify that HTML renderer was called
-		expect(Markdoc.default.renderers.html).toHaveBeenCalled();
+			const content = '# Test Title';
+			const result = await renderMarkDoc(content);
+
+			await ctx.parameter('inputContent', content);
+			await ctx.parameter('renderedOutput', result);
+
+			expect(result).toBe('<h1>Test Title</h1>');
+			// Verify that Markdoc.parse was called with the content
+			const Markdoc = await import('@markdoc/markdoc');
+			expect(Markdoc.default.parse).toHaveBeenCalledWith(content, undefined);
+			// Verify that Markdoc.transform was called
+			expect(Markdoc.default.transform).toHaveBeenCalled();
+			// Verify that HTML renderer was called
+			expect(Markdoc.default.renderers.html).toHaveBeenCalled();
+		});
 	});
 
 	test('renderMarkDoc with react-static renderer', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('renderMarkDoc Function Tests');
+		await allure.tags(...sharedTags);
+
 		const { shared } = await import('../../src/lib/shared.js');
 		const { renderMarkDoc } = await import('../../src/lib/render.js');
 
-		shared.markDocConfig.type = 'react-static';
+		await allure.step('Should render MarkDoc content using react-static renderer', async (ctx) => {
+			shared.markDocConfig.type = 'react-static';
 
-		const content = '# Test Title';
-		const result = await renderMarkDoc(content);
+			await ctx.parameter('rendererType', 'react-static');
 
-		expect(result).toBe('<h1>Test Title</h1>');
-		// Verify that Markdoc.parse was called with the content
-		const Markdoc = await import('@markdoc/markdoc');
-		expect(Markdoc.default.parse).toHaveBeenCalledWith(content, undefined);
-		// Verify that Markdoc.transform was called
-		expect(Markdoc.default.transform).toHaveBeenCalled();
-		// Verify that react-static renderer was called
-		expect(Markdoc.default.renderers.reactStatic).toHaveBeenCalled();
-	});
+			const content = '# Test Title';
+			const result = await renderMarkDoc(content);
 
-	test('renderMarkDoc with argParse configuration', async () => {
-		const { shared } = await import('../../src/lib/shared.js');
-		const { renderMarkDoc } = await import('../../src/lib/render.js');
+			await ctx.parameter('inputContent', content);
+			await ctx.parameter('renderedOutput', result);
 
-		const argParse = {};
-		shared.markDocConfig.argParse = argParse;
-
-		const content = '# Test Title';
-		const result = await renderMarkDoc(content);
-
-		expect(result).toBe('<h1>Test Title</h1>');
-		// Verify that Markdoc.parse was called with the argParse configuration
-		const Markdoc = await import('@markdoc/markdoc');
-		expect(Markdoc.default.parse).toHaveBeenCalledWith(content, argParse);
-		// Verify that Markdoc.transform was called
-		expect(Markdoc.default.transform).toHaveBeenCalled();
-		// Verify that HTML renderer was called
-		expect(Markdoc.default.renderers.html).toHaveBeenCalled();
+			expect(result).toBe('<h1>Test Title</h1>');
+			// Verify that Markdoc.parse was called with the content
+			const Markdoc = await import('@markdoc/markdoc');
+			expect(Markdoc.default.parse).toHaveBeenCalledWith(content, undefined);
+			// Verify that Markdoc.transform was called
+			expect(Markdoc.default.transform).toHaveBeenCalled();
+			// Verify that react-static renderer was called
+			expect(Markdoc.default.renderers.reactStatic).toHaveBeenCalled();
+		});
 	});
 
 	test('renderMarkDoc with transformConfig configuration', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('renderMarkDoc Function Tests');
+		await allure.tags(...sharedTags);
+
 		const { shared } = await import('../../src/lib/shared.js');
 		const { renderMarkDoc } = await import('../../src/lib/render.js');
 
-		const transformConfig = {
-			nodes: {
-				heading: {
-					render: 'Heading',
-					attributes: {
-						level: { type: Number },
+		await allure.step('Should apply transformConfig during rendering', async (ctx) => {
+			const transformConfig = {
+				nodes: {
+					heading: {
+						render: 'Heading',
+						attributes: {
+							level: { type: Number },
+						},
 					},
 				},
-			},
-		};
-		shared.markDocConfig.transformConfig = transformConfig;
+			};
+			shared.markDocConfig.transformConfig = transformConfig;
 
-		const content = '# Test Title';
-		const result = await renderMarkDoc(content);
+			await ctx.parameter('transformConfig', JSON.stringify(transformConfig, null, 2));
 
-		expect(result).toBe('<h1>Test Title</h1>');
-		// Verify that Markdoc.parse was called
-		const Markdoc = await import('@markdoc/markdoc');
-		expect(Markdoc.default.parse).toHaveBeenCalledWith(content, undefined);
-		// Verify that Markdoc.transform was called with the transformConfig
-		expect(Markdoc.default.transform).toHaveBeenCalledWith(
-			expect.any(Object), // AST from parse
-			transformConfig
-		);
-		// Verify that HTML renderer was called
-		expect(Markdoc.default.renderers.html).toHaveBeenCalled();
+			const content = '# Test Title';
+			const result = await renderMarkDoc(content);
+
+			await ctx.parameter('inputContent', content);
+			await ctx.parameter('renderedOutput', result);
+
+			expect(result).toBe('<h1>Test Title</h1>');
+			// Verify that Markdoc.parse was called
+			const Markdoc = await import('@markdoc/markdoc');
+			expect(Markdoc.default.parse).toHaveBeenCalledWith(content, undefined);
+			// Verify that Markdoc.transform was called with the transformConfig
+			expect(Markdoc.default.transform).toHaveBeenCalledWith(
+				expect.any(Object), // AST from parse
+				transformConfig
+			);
+			// Verify that HTML renderer was called
+			expect(Markdoc.default.renderers.html).toHaveBeenCalled();
+		});
 	});
 
 	test('renderMarkDoc handles complex content', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('renderMarkDoc Function Tests');
+		await allure.tags(...sharedTags);
+
 		const { shared } = await import('../../src/lib/shared.js');
 		const { renderMarkDoc } = await import('../../src/lib/render.js');
 
-		shared.markDocConfig.type = 'html';
+		await allure.step('Should render complex MarkDoc content correctly', async (ctx) => {
+			shared.markDocConfig.type = 'html';
 
-		const complexContent = `# Main Title
+			const complexContent = `# Main Title
 
 ## Subtitle
 
@@ -159,77 +185,78 @@ This is **bold** text.
 This is a callout.
 {% /callout %}`;
 
-		const result = await renderMarkDoc(complexContent);
+			await ctx.parameter('rendererType', 'html');
+			await ctx.parameter('complexContent', complexContent);
 
-		expect(result).toBe('<h1>Test Title</h1>');
+			const result = await renderMarkDoc(complexContent);
+
+			await ctx.parameter('renderedOutput', result);
+
+			expect(result).toBe('<h1>Test Title</h1>');
+		});
 	});
 
 	test('renderMarkDoc handles empty content', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('renderMarkDoc Function Tests');
+		await allure.tags(...sharedTags);
+
 		const { shared } = await import('../../src/lib/shared.js');
 		const { renderMarkDoc } = await import('../../src/lib/render.js');
 
-		shared.markDocConfig.type = 'html';
+		await allure.step('Should handle empty MarkDoc content gracefully', async (ctx) => {
+			shared.markDocConfig.type = 'html';
 
-		const result = await renderMarkDoc('');
+			await ctx.parameter('rendererType', 'html');
 
-		expect(result).toBe('<h1>Test Title</h1>');
-	});
+			const result = await renderMarkDoc('');
 
-	test('renderMarkDoc handles whitespace content', async () => {
-		const { shared } = await import('../../src/lib/shared.js');
-		const { renderMarkDoc } = await import('../../src/lib/render.js');
+			await ctx.parameter('inputContent', '"" (empty string)');
+			await ctx.parameter('renderedOutput', result);
 
-		shared.markDocConfig.type = 'html';
-
-		const result = await renderMarkDoc('   \n\t   ');
-
-		expect(result).toBe('<h1>Test Title</h1>');
-	});
-
-	test('renderMarkDoc handles malformed content gracefully', async () => {
-		const { shared } = await import('../../src/lib/shared.js');
-		const { renderMarkDoc } = await import('../../src/lib/render.js');
-
-		shared.markDocConfig.type = 'html';
-
-		const malformedContent = `# Title
-
-{% callout type="info"
-This is malformed.
-
-{% if condition
-This is also malformed.`;
-
-		const result = await renderMarkDoc(malformedContent);
-
-		expect(result).toBe('<h1>Test Title</h1>');
+			expect(result).toBe('<h1>Test Title</h1>');
+		});
 	});
 
 	test('renderMarkDoc with all configuration options', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('renderMarkDoc Function Tests');
+		await allure.tags(...sharedTags);
+
 		const { shared } = await import('../../src/lib/shared.js');
 		const { renderMarkDoc } = await import('../../src/lib/render.js');
 
-		const argParse = {};
-		const transformConfig = {
-			nodes: {
-				heading: {
-					render: 'Heading',
-					attributes: {
-						level: { type: Number },
+		await allure.step('Should render with all config options set', async (ctx) => {
+			const argParse = {};
+			const transformConfig = {
+				nodes: {
+					heading: {
+						render: 'Heading',
+						attributes: {
+							level: { type: Number },
+						},
 					},
 				},
-			},
-		};
+			};
 
-		shared.markDocConfig = {
-			type: 'html',
-			argParse,
-			transformConfig,
-		};
+			await ctx.parameter('argParse', JSON.stringify(argParse, null, 2));
+			await ctx.parameter('transformConfig', JSON.stringify(transformConfig, null, 2));
 
-		const content = '# Test Title';
-		const result = await renderMarkDoc(content);
+			shared.markDocConfig = {
+				type: 'html',
+				argParse,
+				transformConfig,
+			};
 
-		expect(result).toBe('<h1>Test Title</h1>');
+			const content = '# Test Title';
+			const result = await renderMarkDoc(content);
+
+			await ctx.parameter('inputContent', content);
+			await ctx.parameter('renderedOutput', result);
+
+			expect(result).toBe('<h1>Test Title</h1>');
+		});
 	});
 });

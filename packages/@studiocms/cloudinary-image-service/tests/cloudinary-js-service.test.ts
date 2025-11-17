@@ -1,5 +1,7 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import * as allure from 'allure-js-commons';
+import { beforeEach, describe, expect, test, vi } from 'vitest';
 import cloudinaryImageService from '../src/cloudinary-js-service.js';
+import { parentSuiteName, sharedTags } from './test-utils.js';
 
 // Mock Astro environment
 vi.mock('astro:env/server', () => ({
@@ -28,7 +30,9 @@ import { getSecret } from 'astro:env/server';
 import { Cloudinary } from '@cloudinary/url-gen';
 import { fill } from '@cloudinary/url-gen/actions/resize';
 
-describe('cloudinaryImageService', () => {
+const localSuiteName = 'Cloudinary Image Service - Image URL Generation Tests';
+
+describe(parentSuiteName, () => {
 	const mockCloudName = 'test-cloud';
 	const mockImageUrl =
 		'https://res.cloudinary.com/test-cloud/image/upload/v1234567890/test-image.jpg';
@@ -81,11 +85,20 @@ describe('cloudinaryImageService', () => {
 		vi.mocked(getSecret).mockReturnValue(mockCloudName);
 	});
 
-	describe('successful image generation', () => {
-		it('should generate Cloudinary URL for local image', () => {
+	test('should generate Cloudinary URL for local image', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('Image URL Generation Tests');
+		await allure.tags(...sharedTags);
+
+		await allure.step('Generating Cloudinary URL for local image', async (ctx) => {
 			const src = 'test-image.jpg';
 			const props = { width: 100, height: 100, alt: 'Test image' };
 			const result = cloudinaryImageService(src, props);
+
+			await ctx.parameter('Image Source', src);
+			await ctx.parameter('Image Properties', JSON.stringify(props, null, 2));
+			await ctx.parameter('Generated URL', await result);
 
 			expect(getSecret).toHaveBeenCalledWith('CMS_CLOUDINARY_CLOUDNAME');
 			expect(Cloudinary).toHaveBeenCalledWith({
@@ -103,111 +116,218 @@ describe('cloudinaryImageService', () => {
 			expect(mockImageInstance.toURL).toHaveBeenCalled();
 			expect(result).toBe(mockImageUrl);
 		});
+	});
 
-		it('should generate Cloudinary URL for external HTTPS image', () => {
-			const src = 'https://example.com/external-image.jpg';
-			const props = { width: 100, height: 100, alt: 'External image' };
-			const result = cloudinaryImageService(src, props);
+	[
+		{
+			input: 'https://example.com/external-image.jpg',
+			description: 'external HTTPS image',
+		},
+		{
+			input: 'http://example.com/external-image.jpg',
+			description: 'external HTTP image',
+		},
+	].forEach(({ input, description }) => {
+		test(`should generate Cloudinary URL for ${description}`, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('Image URL Generation Tests');
+			await allure.tags(...sharedTags);
 
-			expect(mockCldInstance.image).toHaveBeenCalledWith(src);
-			expect(mockImageInstance.setDeliveryType).toHaveBeenCalledWith('fetch');
-			expect(result).toBe(mockImageUrl);
+			await allure.step(`Generating Cloudinary URL for ${description}`, async (ctx) => {
+				const src = input;
+				const props = { width: 100, height: 100, alt: 'Test image' };
+				const result = cloudinaryImageService(src, props);
+
+				await ctx.parameter('Image Source', src);
+				await ctx.parameter('Image Properties', JSON.stringify(props, null, 2));
+				await ctx.parameter('Generated URL', await result);
+
+				expect(mockCldInstance.image).toHaveBeenCalledWith(src);
+				expect(mockImageInstance.setDeliveryType).toHaveBeenCalledWith('fetch');
+				expect(result).toBe(mockImageUrl);
+			});
 		});
+	});
 
-		it('should generate Cloudinary URL for external HTTP image', () => {
-			const src = 'http://example.com/external-image.jpg';
-			const props = { width: 100, height: 100, alt: 'HTTP image' };
-			const result = cloudinaryImageService(src, props);
+	test('should handle different image dimensions', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('Image URL Generation Tests');
+		await allure.tags(...sharedTags);
 
-			expect(mockCldInstance.image).toHaveBeenCalledWith(src);
-			expect(mockImageInstance.setDeliveryType).toHaveBeenCalledWith('fetch');
-			expect(result).toBe(mockImageUrl);
-		});
-
-		it('should handle different image dimensions', () => {
+		await allure.step('Generating Cloudinary URL with different dimensions', async (ctx) => {
 			const src = 'test-image.jpg';
 			const props = { width: 200, height: 300, alt: 'Different dimensions' };
-			cloudinaryImageService(src, props);
+			const result = cloudinaryImageService(src, props);
 
+			await ctx.parameter('Image Source', src);
+			await ctx.parameter('Image Properties', JSON.stringify(props, null, 2));
+			await ctx.parameter('Generated URL', await result);
+
+			expect(result).toBe(mockImageUrl);
 			expect(mockFillAction.width).toHaveBeenCalledWith(200);
 			expect(mockFillAction.height).toHaveBeenCalledWith(300);
 		});
 	});
 
-	describe('error handling', () => {
-		it('should return original src when CMS_CLOUDINARY_CLOUDNAME is not set', () => {
+	test('Should return original src if CMS_CLOUDINARY_CLOUDNAME is not set', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('Image URL Generation Tests');
+		await allure.tags(...sharedTags);
+
+		await allure.step('Generating Cloudinary URL without cloud name set', async (ctx) => {
 			vi.mocked(getSecret).mockReturnValue(undefined);
+
 			const src = 'test-image.jpg';
 			const props = { width: 100, height: 100, alt: 'Test image' };
 			const result = cloudinaryImageService(src, props);
 
-			expect(result).toBe(src);
-		});
+			await ctx.parameter('Image Source', src);
+			await ctx.parameter('Image Properties', JSON.stringify(props, null, 2));
+			await ctx.parameter('Generated URL', await result);
 
-		it('should return original src when CMS_CLOUDINARY_CLOUDNAME is empty string', () => {
-			vi.mocked(getSecret).mockReturnValue('');
-			const src = 'test-image.jpg';
-			const props = { width: 100, height: 100, alt: 'Test image' };
-			const result = cloudinaryImageService(src, props);
-
-			expect(result).toBe(src);
-		});
-
-		it('should return original src when Cloudinary throws error', () => {
-			vi.mocked(Cloudinary).mockImplementation(() => {
-				throw new Error('Cloudinary init error');
-			});
-			const src = 'test-image.jpg';
-			const props = { width: 100, height: 100, alt: 'Test image' };
-			const result = cloudinaryImageService(src, props);
-
-			expect(result).toBe(src);
-		});
-
-		it('should return original src when image processing throws error', () => {
-			mockImageInstance.toURL.mockImplementation(() => {
-				throw new Error('Image processing error');
-			});
-			const src = 'test-image.jpg';
-			const props = { width: 100, height: 100, alt: 'Test image' };
-			const result = cloudinaryImageService(src, props);
-
+			expect(getSecret).toHaveBeenCalledWith('CMS_CLOUDINARY_CLOUDNAME');
 			expect(result).toBe(src);
 		});
 	});
 
-	describe('edge cases', () => {
-		it('should handle zero dimensions', () => {
+	test('Should return original src when cloud name is empty string', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('Image URL Generation Tests');
+		await allure.tags(...sharedTags);
+
+		await allure.step('Generating Cloudinary URL with empty cloud name', async (ctx) => {
+			vi.mocked(getSecret).mockReturnValue('');
+
 			const src = 'test-image.jpg';
-			const props = { width: 0, height: 0, alt: 'Zero dimensions' };
+			const props = { width: 100, height: 100, alt: 'Test image' };
 			const result = cloudinaryImageService(src, props);
 
-			expect(result).toBe(mockImageUrl);
-			expect(fill).toHaveBeenCalledWith('auto');
-		});
+			await ctx.parameter('Image Source', src);
+			await ctx.parameter('Image Properties', JSON.stringify(props, null, 2));
+			await ctx.parameter('Generated URL', await result);
 
-		it('should handle very large dimensions', () => {
+			expect(getSecret).toHaveBeenCalledWith('CMS_CLOUDINARY_CLOUDNAME');
+			expect(result).toBe(src);
+		});
+	});
+
+	test('Should return original src when Cloudinary throws an error', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('Image URL Generation Tests');
+		await allure.tags(...sharedTags);
+
+		await allure.step('Generating Cloudinary URL with Cloudinary error', async (ctx) => {
+			vi.mocked(Cloudinary).mockImplementation(() => {
+				throw new Error('Cloudinary init error');
+			});
+
 			const src = 'test-image.jpg';
-			const props = { width: 10000, height: 10000, alt: 'Large dimensions' };
+			const props = { width: 100, height: 100, alt: 'Test image' };
 			const result = cloudinaryImageService(src, props);
 
-			expect(result).toBe(mockImageUrl);
-			expect(fill).toHaveBeenCalledWith('auto');
-		});
+			await ctx.parameter('Image Source', src);
+			await ctx.parameter('Image Properties', JSON.stringify(props, null, 2));
+			await ctx.parameter('Generated URL', await result);
 
-		it('should handle special characters in image source', () => {
-			const src = 'test-image with spaces & symbols!.jpg';
-			const props = { width: 100, height: 100, alt: 'Special chars' };
+			expect(getSecret).toHaveBeenCalledWith('CMS_CLOUDINARY_CLOUDNAME');
+			expect(result).toBe(src);
+		});
+	});
+
+	test('Should return original src when image processing throws an error', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('Image URL Generation Tests');
+		await allure.tags(...sharedTags);
+
+		await allure.step('Generating Cloudinary URL with image processing error', async (ctx) => {
+			mockImageInstance.toURL.mockImplementation(() => {
+				throw new Error('Image processing error');
+			});
+
+			const src = 'test-image.jpg';
+			const props = { width: 100, height: 100, alt: 'Test image' };
 			const result = cloudinaryImageService(src, props);
 
-			expect(mockCldInstance.image).toHaveBeenCalledWith(src);
-			expect(result).toBe(mockImageUrl);
-		});
+			await ctx.parameter('Image Source', src);
+			await ctx.parameter('Image Properties', JSON.stringify(props, null, 2));
+			await ctx.parameter('Generated URL', await result);
 
-		it('should handle very long URLs', () => {
+			expect(getSecret).toHaveBeenCalledWith('CMS_CLOUDINARY_CLOUDNAME');
+			expect(result).toBe(src);
+		});
+	});
+
+	[
+		{
+			props: { width: 0, height: 0, alt: 'Zero dimensions' },
+		},
+		{
+			props: { width: 10000, height: 10000, alt: 'Large dimensions' },
+		},
+	].forEach(({ props }) => {
+		test(`should handle edge case dimensions: width=${props.width}, height=${props.height}`, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('Image URL Generation Tests');
+			await allure.tags(...sharedTags);
+
+			await allure.step('Generating Cloudinary URL with edge case dimensions', async (ctx) => {
+				const src = 'test-image.jpg';
+				const result = cloudinaryImageService(src, props);
+
+				await ctx.parameter('Image Source', src);
+				await ctx.parameter('Image Properties', JSON.stringify(props, null, 2));
+				await ctx.parameter('Generated URL', await result);
+
+				expect(result).toBe(mockImageUrl);
+				expect(fill).toHaveBeenCalledWith('auto');
+			});
+		});
+	});
+
+	test('should handle special characters in image source', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('Image URL Generation Tests');
+		await allure.tags(...sharedTags);
+
+		await allure.step(
+			'Generating Cloudinary URL with special characters in source',
+			async (ctx) => {
+				const src = 'test-image with spaces & symbols!.jpg';
+				const props = { width: 100, height: 100, alt: 'Special chars' };
+				const result = cloudinaryImageService(src, props);
+
+				await ctx.parameter('Image Source', src);
+				await ctx.parameter('Image Properties', JSON.stringify(props, null, 2));
+				await ctx.parameter('Generated URL', await result);
+
+				expect(mockCldInstance.image).toHaveBeenCalledWith(src);
+				expect(result).toBe(mockImageUrl);
+			}
+		);
+	});
+
+	test('should handle very long URLs', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('Image URL Generation Tests');
+		await allure.tags(...sharedTags);
+
+		await allure.step('Generating Cloudinary URL with very long URL', async (ctx) => {
 			const longUrl = `https://example.com/${'a'.repeat(1000)}.jpg`;
 			const props = { width: 100, height: 100, alt: 'Long URL' };
 			const result = cloudinaryImageService(longUrl, props);
+
+			await ctx.parameter('Image Source', longUrl);
+			await ctx.parameter('Image Properties', JSON.stringify(props, null, 2));
+			await ctx.parameter('Generated URL', await result);
 
 			expect(mockCldInstance.image).toHaveBeenCalledWith(longUrl);
 			expect(mockImageInstance.setDeliveryType).toHaveBeenCalledWith('fetch');

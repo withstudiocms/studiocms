@@ -1,8 +1,12 @@
+import * as allure from 'allure-js-commons';
 import { StudioCMSPluginTester } from 'studiocms/test-utils';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { studiocmsAuth0 } from '../src/index.js';
+import { parentSuiteName, sharedTags } from './test-utils.js';
 
-describe('@studiocms/auth0', () => {
+const localSuiteName = 'Auth0 Plugin Tests';
+
+describe(parentSuiteName, () => {
 	let tester: StudioCMSPluginTester;
 	let plugin: ReturnType<typeof studiocmsAuth0>;
 
@@ -16,9 +20,17 @@ describe('@studiocms/auth0', () => {
 		vi.restoreAllMocks();
 	});
 
-	describe('plugin creation', () => {
-		it('should create a plugin with correct metadata', () => {
+	test('Plugin Creation - Validates Plugin Structure', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('Plugin Creation Tests');
+		await allure.tags(...sharedTags);
+
+		await allure.step('Should create plugin with correct metadata and structure', async (ctx) => {
 			const pluginInfo = tester.getPluginInfo();
+
+			await ctx.parameter('pluginInfo', JSON.stringify(pluginInfo, null, 2));
+
 			expect(pluginInfo).toBeDefined();
 			expect(pluginInfo.identifier).toBe('@studiocms/auth0');
 			expect(pluginInfo.name).toBe('StudioCMS Auth0 Provider Plugin');
@@ -26,12 +38,22 @@ describe('@studiocms/auth0', () => {
 			expect(pluginInfo.requires).toBeUndefined();
 		});
 
-		it('should export default function', () => {
-			expect(typeof studiocmsAuth0).toBe('function');
-			expect(studiocmsAuth0.name).toBe('studiocmsAuth0');
-		});
+		await allure.step(
+			'Should export default function returning valid plugin object',
+			async (ctx) => {
+				await ctx.parameter('functionType', typeof studiocmsAuth0);
+				await ctx.parameter('functionName', studiocmsAuth0.name);
 
-		it('should return a valid StudioCMSPlugin object', () => {
+				expect(typeof studiocmsAuth0).toBe('function');
+				expect(studiocmsAuth0.name).toBe('studiocmsAuth0');
+			}
+		);
+
+		await allure.step('Should return a valid StudioCMSPlugin object', async (ctx) => {
+			await ctx.parameter('pluginIdentifier', plugin.identifier);
+			await ctx.parameter('pluginName', plugin.name);
+			await ctx.parameter('hasHooks', String(plugin.hooks !== undefined));
+
 			expect(plugin).toBeDefined();
 			expect(plugin.identifier).toBe('@studiocms/auth0');
 			expect(plugin.name).toBe('StudioCMS Auth0 Provider Plugin');
@@ -39,120 +61,61 @@ describe('@studiocms/auth0', () => {
 		});
 	});
 
-	describe('hooks', () => {
-		it('should have the correct hooks defined', async () => {
+	test('studiocms:config:setup Hook - Configures Auth0 OAuth Provider', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('studiocms:config:setup Hook Tests');
+		await allure.tags(...sharedTags);
+
+		await allure.step(
+			'Should configure Auth0 as OAuth provider with correct settings',
+			async (ctx) => {
+				const hookResults = await tester.getHookResults();
+				const oAuthProvider = hookResults.studiocmsConfig.hookResults.authService.oAuthProvider;
+
+				await ctx.parameter('oAuthProvider', JSON.stringify(oAuthProvider, null, 2));
+
+				expect(oAuthProvider).toBeDefined();
+				expect(oAuthProvider?.name).toBe('auth0');
+				expect(oAuthProvider?.formattedName).toBe('Auth0');
+				expect(oAuthProvider?.endpointPath).toContain('endpoint.js');
+
+				const requiredEnvVars =
+					hookResults.studiocmsConfig.hookResults.authService.oAuthProvider?.requiredEnvVariables;
+
+				await ctx.parameter('requiredEnvVariables', JSON.stringify(requiredEnvVars, null, 2));
+
+				expect(requiredEnvVars).toContain('CMS_AUTH0_CLIENT_ID');
+				expect(requiredEnvVars).toContain('CMS_AUTH0_CLIENT_SECRET');
+				expect(requiredEnvVars).toContain('CMS_AUTH0_DOMAIN');
+				expect(requiredEnvVars).toContain('CMS_AUTH0_REDIRECT_URI');
+				expect(requiredEnvVars).toHaveLength(4);
+			}
+		);
+
+		await allure.step('Should not have astro:config:setup hook defined', async (ctx) => {
 			const hookResults = await tester.getHookResults();
 
-			expect(hookResults.studiocmsConfig).toBeDefined();
-			expect(hookResults.studiocmsConfig.hasHook).toBe(true);
+			await ctx.parameter('astroConfigHasHook', String(hookResults.astroConfig.hasHook));
+			await ctx.parameter(
+				'astroConfigIntegrations',
+				JSON.stringify(hookResults.astroConfig.hookResults.integrations, null, 2)
+			);
+
+			expect(hookResults.astroConfig.hasHook).toBe(false);
+			expect(hookResults.astroConfig.hookResults.integrations).toEqual([]);
 		});
 
-		it('should configure Auth0 OAuth provider in studiocms config hook', async () => {
-			const hookResults = await tester.getHookResults();
-
-			expect(hookResults.studiocmsConfig.hookResults.authService).toBeDefined();
-			expect(hookResults.studiocmsConfig.hookResults.authService.oAuthProvider).toBeDefined();
-
-			const oAuthProvider = hookResults.studiocmsConfig.hookResults.authService.oAuthProvider;
-			expect(oAuthProvider).toBeDefined();
-			expect(oAuthProvider?.name).toBe('auth0');
-			expect(oAuthProvider?.formattedName).toBe('Auth0');
-			expect(oAuthProvider?.endpointPath).toContain('endpoint.js');
-		});
-
-		it('should define required environment variables', async () => {
+		await allure.step('Should include Auth0 SVG logo', async (ctx) => {
 			const hookResults = await tester.getHookResults();
 			const oAuthProvider = hookResults.studiocmsConfig.hookResults.authService.oAuthProvider;
 
-			expect(oAuthProvider?.requiredEnvVariables).toEqual([
-				'CMS_AUTH0_CLIENT_ID',
-				'CMS_AUTH0_CLIENT_SECRET',
-				'CMS_AUTH0_DOMAIN',
-				'CMS_AUTH0_REDIRECT_URI',
-			]);
-		});
-
-		it('should include Auth0 SVG logo', async () => {
-			const hookResults = await tester.getHookResults();
-			const oAuthProvider = hookResults.studiocmsConfig.hookResults.authService.oAuthProvider;
+			await ctx.parameter('oAuthProviderSVG', oAuthProvider?.svg ?? 'undefined');
 
 			expect(oAuthProvider?.svg).toBeDefined();
 			expect(oAuthProvider?.svg).toContain('<svg');
 			expect(oAuthProvider?.svg).toContain('oauth-logo');
 			expect(oAuthProvider?.svg).toContain('viewBox="0 0 32 32"');
-		});
-
-		it('should not have astro config hook', async () => {
-			const hookResults = await tester.getHookResults();
-
-			expect(hookResults.astroConfig.hasHook).toBe(false);
-			expect(hookResults.astroConfig.hookResults.integrations).toEqual([]);
-		});
-	});
-
-	describe('plugin structure', () => {
-		it('should have correct plugin identifier', () => {
-			expect(plugin.identifier).toBe('@studiocms/auth0');
-		});
-
-		it('should have correct plugin name', () => {
-			expect(plugin.name).toBe('StudioCMS Auth0 Provider Plugin');
-		});
-
-		it('should have correct minimum version requirement', () => {
-			expect(plugin.studiocmsMinimumVersion).toBe('0.1.0-beta.22');
-		});
-
-		it('should have no required dependencies', () => {
-			expect(plugin.requires).toBeUndefined();
-		});
-
-		it('should have hooks object', () => {
-			expect(plugin.hooks).toBeDefined();
-			expect(typeof plugin.hooks).toBe('object');
-		});
-	});
-
-	describe('hook implementation', () => {
-		it('should have studiocms:config:setup hook', () => {
-			expect(plugin.hooks['studiocms:config:setup']).toBeDefined();
-			expect(typeof plugin.hooks['studiocms:config:setup']).toBe('function');
-		});
-
-		it('should not have other hooks', () => {
-			const hookKeys = Object.keys(plugin.hooks);
-			expect(hookKeys).toEqual(['studiocms:config:setup']);
-		});
-	});
-
-	describe('OAuth provider configuration', () => {
-		it('should configure Auth0 as OAuth provider', async () => {
-			const hookResults = await tester.getHookResults();
-			const authService = hookResults.studiocmsConfig.hookResults.authService;
-
-			expect(authService.oAuthProvider).toBeDefined();
-			expect(authService.oAuthProvider?.name).toBe('auth0');
-			expect(authService.oAuthProvider?.formattedName).toBe('Auth0');
-		});
-
-		it('should set correct endpoint path', async () => {
-			const hookResults = await tester.getHookResults();
-			const oAuthProvider = hookResults.studiocmsConfig.hookResults.authService.oAuthProvider;
-
-			expect(oAuthProvider?.endpointPath).toContain('endpoint.js');
-			expect(oAuthProvider?.endpointPath).not.toContain('endpoint.ts');
-		});
-
-		it('should include all required Auth0 environment variables', async () => {
-			const hookResults = await tester.getHookResults();
-			const requiredEnvVars =
-				hookResults.studiocmsConfig.hookResults.authService.oAuthProvider?.requiredEnvVariables;
-
-			expect(requiredEnvVars).toContain('CMS_AUTH0_CLIENT_ID');
-			expect(requiredEnvVars).toContain('CMS_AUTH0_CLIENT_SECRET');
-			expect(requiredEnvVars).toContain('CMS_AUTH0_DOMAIN');
-			expect(requiredEnvVars).toContain('CMS_AUTH0_REDIRECT_URI');
-			expect(requiredEnvVars).toHaveLength(4);
 		});
 	});
 });

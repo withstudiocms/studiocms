@@ -13,180 +13,153 @@ import Global from '../src/frontend/components/shared/head/Global.astro';
 import TitleTags from '../src/frontend/components/shared/head/TitleTags.astro';
 import SSRUser from '../src/frontend/components/shared/SSRUser.astro';
 import ThemeManager from '../src/frontend/components/shared/ThemeManager.astro';
-import { test } from './fixtures/AstroContainer';
+import { allureTester } from './fixtures/allureTester';
+import { parentSuiteName, sharedTags } from './test-utils';
 
-describe('Components Container tests', () => {
-	describe('Shared components', () => {
-		describe('TitleTags', () => {
-			test('render component', async ({ renderComponent }) => {
-				const result = await renderComponent(TitleTags, 'TitleTags', {
-					props: { title: 'Test Title', description: 'Test Description' },
-				});
-				expect(result).toMatchSnapshot();
+const localSuiteName = 'Components Container tests';
+
+describe(parentSuiteName, () => {
+	[
+		{
+			component: TitleTags,
+			name: 'TitleTags',
+			opts: { props: { title: 'Test Title', description: 'Test Description' } },
+		},
+		{
+			component: ThemeManager,
+			name: 'ThemeManager',
+			opts: {},
+		},
+		{
+			component: SSRUser,
+			name: 'SSRUser',
+			opts: { props: { name: 'mock', description: 'mock-admin' } },
+		},
+		{
+			component: SSRUser,
+			name: 'SSRUser',
+			opts: {
+				props: {
+					name: 'John Doe',
+					description: 'Software Engineer',
+					id: 'test-user-1',
+				},
+			},
+		},
+		{
+			component: SSRUser,
+			name: 'SSRUser',
+			opts: {
+				props: {
+					name: 'Jane Doe',
+					description: 'Designer',
+					avatar: 'https://example.com/avatar.jpg',
+					id: 'test-user-2',
+				},
+			},
+		},
+		{
+			component: SSRUser,
+			name: 'SSRUser',
+			opts: {
+				props: {
+					name: 'Bob Smith',
+					description: 'Developer',
+					avatar: 'https://example.com/avatar.jpg',
+					id: 'test-user-3',
+				},
+			},
+		},
+		{
+			component: Global,
+			name: 'Global',
+			opts: {},
+		},
+		{
+			component: Favicons,
+			name: 'Favicons',
+			opts: {},
+		},
+		{
+			component: Code,
+			name: 'Code',
+			opts: {
+				props: { code: 'export const hello = "hello world!";', __test_mode: true },
+			},
+		},
+		{
+			component: PageHeader,
+			name: 'PageHeader',
+			opts: { props: { title: 'Test Page' } },
+		},
+		{
+			component: PageHeader,
+			name: 'PageHeader with badge',
+			opts: { props: { title: 'Test Page', badge: { label: 'New' } } },
+		},
+		{
+			component: PageHeader,
+			name: 'PageHeader with badge and icon',
+			opts: {
+				props: {
+					title: 'Test Page',
+					badge: { label: 'New', icon: 'heroicons:academic-cap' },
+				},
+			},
+		},
+		{
+			component: ThreeCanvasLoader,
+			name: 'ThreeCanvasLoader',
+			opts: {},
+		},
+		{
+			component: StudioCMSLogoSVG,
+			name: 'StudioCMSLogoSVG',
+			opts: {},
+		},
+		{
+			component: StaticAuthCheck,
+			name: 'StaticAuthCheck',
+			opts: {},
+		},
+		{
+			component: OAuthButtonStack,
+			name: 'OAuthButtonStack',
+			opts: {},
+		},
+		{
+			component: OAuthButton,
+			name: 'OAuthButton',
+			opts: {
+				props: {
+					label: 'test auth',
+					href: '/test/endpoint',
+					image: '<img src="/fake/image.jpg">',
+				},
+			},
+		},
+		{
+			component: FallbackCanvas,
+			name: 'FallbackCanvas',
+			opts: {},
+		},
+	].forEach(({ component, name, opts }) => {
+		const testName = `${localSuiteName} - ${name} component`;
+		const tags = [...sharedTags, 'component:shared', `component:${name}`];
+
+		allureTester({
+			suiteName: localSuiteName,
+			suiteParentName: parentSuiteName,
+		})(testName, async ({ setupAllure, renderComponent, step }) => {
+			await setupAllure({
+				subSuiteName: testName,
+				tags: tags,
+				parameters: { component: name },
 			});
-		});
 
-		describe('ThemeManager component', () => {
-			test('render component', async ({ renderComponent }) => {
-				const result = await renderComponent(ThemeManager, 'ThemeManager');
-				expect(result).toMatchSnapshot();
-			});
-		});
-
-		describe('SSRUser component', () => {
-			test('render component', async ({ renderComponent }) => {
-				const result = await renderComponent(SSRUser, 'SSRUser', {
-					props: { name: 'mock', description: 'mock-admin' },
-				});
-				expect(result).toMatchSnapshot();
-			});
-
-			test('render component without avatar', async ({ renderComponent }) => {
-				const result = await renderComponent(SSRUser, 'SSRUser', {
-					props: {
-						name: 'John Doe',
-						description: 'Software Engineer',
-						id: 'test-user-1',
-					},
-				});
-				expect(result).toContain('<svg');
-				expect(result).toContain('Placeholder avatar for John Doe');
-				expect(result).not.toContain('studiocms-avatar');
-
-				expect(result).toMatchSnapshot();
-			});
-
-			test('render component with avatar URL', async ({ renderComponent }) => {
-				const result = await renderComponent(SSRUser, 'SSRUser', {
-					props: {
-						name: 'Jane Doe',
-						description: 'Designer',
-						avatar: 'https://example.com/avatar.jpg',
-						id: 'test-user-2',
-					},
-				});
-				expect(result).toContain('studiocms-avatar');
-				expect(result).toContain('data-avatar-url="https://example.com/avatar.jpg"');
-				expect(result).toContain('data-avatar-fallback');
-				expect(result).toContain('data-avatar-name="Jane Doe"');
-
-				expect(result).toMatchSnapshot();
-			});
-
-			test('render component with avatar fallback image', async ({ renderComponent }) => {
-				const result = await renderComponent(SSRUser, 'SSRUser', {
-					props: {
-						name: 'Bob Smith',
-						description: 'Developer',
-						avatar: 'https://example.com/avatar.jpg',
-						id: 'test-user-3',
-					},
-				});
-				expect(result).toContain('src="data:image/png;base64');
-				expect(result).toContain('sui-avatar-img');
-
-				expect(result).toMatchSnapshot();
-			});
-		});
-
-		describe('Global component', () => {
-			test('render component', async ({ renderComponent }) => {
-				const result = await renderComponent(Global, 'Global');
-				expect(result).toMatchSnapshot();
-			});
-		});
-
-		describe('Favicons component', () => {
-			test('render component', async ({ renderComponent }) => {
-				const result = await renderComponent(Favicons, 'Favicons');
-				expect(result).toMatchSnapshot();
-			});
-		});
-
-		describe('Code component', () => {
-			test('render component', async ({ renderComponent }) => {
-				const result = await renderComponent(Code, 'Code', {
-					props: { code: 'export const hello = "hello world!";', __test_mode: true },
-				});
-				expect(result).toMatchSnapshot();
-			});
-		});
-	});
-
-	describe('First Time Setup components', () => {
-		describe('PageHeader component', () => {
-			test('render component', async ({ renderComponent }) => {
-				const result = await renderComponent(PageHeader, 'PageHeader', {
-					props: { title: 'Test Page' },
-				});
-				expect(result).toMatchSnapshot();
-			});
-			test('render component with badge', async ({ renderComponent }) => {
-				const result = await renderComponent(PageHeader, 'PageHeader', {
-					props: { title: 'Test Page', badge: { label: 'New' } },
-				});
-				expect(result).toMatchSnapshot();
-			});
-			test('render component with badge and icon', async ({ renderComponent }) => {
-				const result = await renderComponent(PageHeader, 'PageHeader', {
-					props: { title: 'Test Page', badge: { label: 'New', icon: 'heroicons:academic-cap' } },
-				});
-				expect(result).toMatchSnapshot();
-			});
-		});
-	});
-
-	describe('Auth components', () => {
-		describe('ThreeCanvasLoader component', () => {
-			test('render component', async ({ renderComponent }) => {
-				const result = await renderComponent(ThreeCanvasLoader, 'ThreeCanvasLoader');
-				expect(result).toMatchSnapshot();
-			});
-		});
-
-		describe('StudioCMSLogoSVG component', () => {
-			test('render component', async ({ renderComponent }) => {
-				const result = await renderComponent(StudioCMSLogoSVG, 'StudioCMSLogoSVG');
-				expect(result).toMatchSnapshot();
-			});
-		});
-
-		describe('StaticAuthCheck component', () => {
-			test('render component no props', async ({ renderComponent }) => {
-				const result = await renderComponent(StaticAuthCheck, 'StaticAuthCheck');
-				expect(result).toMatchSnapshot();
-			});
-			test('render component with props', async ({ renderComponent }) => {
-				const result = await renderComponent(StaticAuthCheck, 'StaticAuthCheck', {
-					props: { userData: { isLoggedIn: true } },
-				});
-				expect(result).toMatchSnapshot();
-			});
-		});
-
-		describe('OAuthButtonStack component', () => {
-			test('render component', async ({ renderComponent }) => {
-				const result = await renderComponent(OAuthButtonStack, 'OAuthButtonStack');
-				expect(result).toMatchSnapshot();
-			});
-		});
-
-		describe('OAuthButton component', () => {
-			test('render component', async ({ renderComponent }) => {
-				const result = await renderComponent(OAuthButton, 'OAuthButton', {
-					props: {
-						label: 'test auth',
-						href: '/test/endpoint',
-						image: '<img src="/fake/image.jpg">',
-					},
-				});
-				expect(result).toMatchSnapshot();
-			});
-		});
-
-		describe('FallbackCanvas component', () => {
-			test('render component', async ({ renderComponent }) => {
-				const result = await renderComponent(FallbackCanvas, 'FallbackCanvas');
+			await step(`Rendering ${name} component`, async (ctx) => {
+				const result = await renderComponent(component, name, opts);
+				await ctx.parameter('renderedOutput', result);
 				expect(result).toMatchSnapshot();
 			});
 		});

@@ -1,37 +1,75 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect } from 'vitest';
 import { developerConfigSchema } from '../../../src/schemas/config/developer';
+import { allureTester } from '../../fixtures/allureTester';
+import { parentSuiteName, sharedTags } from '../../test-utils';
 
-describe('developerConfigSchema', () => {
-	it('should default to { demoMode: false } when undefined', () => {
-		const result = developerConfigSchema.parse(undefined);
-		expect(result).toEqual({ demoMode: false });
+const localSuiteName = 'Config Schemas tests (Developer)';
+
+describe(parentSuiteName, () => {
+	const test = allureTester({
+		suiteName: localSuiteName,
+		suiteParentName: parentSuiteName,
 	});
 
-	it('should accept demoMode: false', () => {
-		const result = developerConfigSchema.parse({ demoMode: false });
-		expect(result).toEqual({ demoMode: false });
+	[
+		{
+			data: undefined,
+			expected: { demoMode: false },
+		},
+		{
+			data: { demoMode: false },
+			expected: { demoMode: false },
+		},
+		{
+			data: { demoMode: { username: 'demo_user', password: 'demo_pass' } },
+			expected: { demoMode: { username: 'demo_user', password: 'demo_pass' } },
+		},
+		{
+			data: {},
+			expected: { demoMode: false },
+		},
+	].forEach(({ data, expected }, index) => {
+		const testName = `developerConfigSchema test case #${index + 1}`;
+		const tags = [...sharedTags, 'schema:config', 'schema:developerConfigSchema'];
+
+		test(testName, async ({ setupAllure }) => {
+			await setupAllure({
+				subSuiteName: 'developerConfigSchema tests',
+				tags: [...tags],
+				parameters: {
+					data: JSON.stringify(data),
+				},
+			});
+
+			const result = developerConfigSchema.parse(data);
+			expect(result).toEqual(expected);
+		});
 	});
 
-	it('should accept demoMode as an object with username and password', () => {
-		const demo = { username: 'demo_user', password: 'demo_pass' };
-		const result = developerConfigSchema.parse({ demoMode: demo });
-		expect(result).toEqual({ demoMode: demo });
-	});
+	[
+		{
+			data: { demoMode: { password: 'demo_pass' } },
+		},
+		{
+			data: { demoMode: { username: 'demo_user' } },
+		},
+		{
+			data: { demoMode: 'invalid' as any },
+		},
+	].forEach(({ data }, index) => {
+		const testName = `developerConfigSchema invalid data test case #${index + 1}`;
+		const tags = [...sharedTags, 'schema:config', 'schema:developerConfigSchema'];
 
-	it('should fail if demoMode object is missing username', () => {
-		expect(() => developerConfigSchema.parse({ demoMode: { password: 'demo_pass' } })).toThrow();
-	});
+		test(testName, async ({ setupAllure }) => {
+			await setupAllure({
+				subSuiteName: 'developerConfigSchema tests',
+				tags: [...tags],
+				parameters: {
+					data: JSON.stringify(data),
+				},
+			});
 
-	it('should fail if demoMode object is missing password', () => {
-		expect(() => developerConfigSchema.parse({ demoMode: { username: 'demo_user' } })).toThrow();
-	});
-
-	it('should fail if demoMode is a string', () => {
-		expect(() => developerConfigSchema.parse({ demoMode: 'invalid' as any })).toThrow();
-	});
-
-	it('should default demoMode to false if not provided', () => {
-		const result = developerConfigSchema.parse({});
-		expect(result).toEqual({ demoMode: false });
+			expect(() => developerConfigSchema.parse(data)).toThrow();
+		});
 	});
 });

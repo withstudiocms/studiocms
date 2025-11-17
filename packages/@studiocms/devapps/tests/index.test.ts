@@ -1,10 +1,21 @@
-import { describe, expect, it } from '@effect/vitest';
+import { describe, expect, test } from '@effect/vitest';
+import * as allure from 'allure-js-commons';
 import { studioCMSDevApps } from '../src/index';
+import { parentSuiteName, sharedTags } from './test-utils.js';
 
-describe('StudioCMS DevApps Integration', () => {
-	describe('studioCMSDevApps', () => {
-		it('should create integration with default options', () => {
+const localSuiteName = 'StudioCMS DevApps Integration Tests';
+
+describe(parentSuiteName, () => {
+	test('should create integration with default options', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('Integration Creation Tests');
+		await allure.tags(...sharedTags);
+
+		await allure.step('Should create integration with default options', async (ctx) => {
 			const integration = studioCMSDevApps();
+
+			await ctx.parameter('integration', JSON.stringify(integration, null, 2));
 
 			expect(integration).toEqual({
 				name: '@studiocms/devapps',
@@ -13,8 +24,15 @@ describe('StudioCMS DevApps Integration', () => {
 				}),
 			});
 		});
+	});
 
-		it('should create integration with custom options', () => {
+	test('should create integration with custom options', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('Integration Creation Tests');
+		await allure.tags(...sharedTags);
+
+		await allure.step('Should create integration with custom options', async (ctx) => {
 			const options = {
 				endpoint: '/custom-api',
 				appsConfig: {
@@ -28,6 +46,9 @@ describe('StudioCMS DevApps Integration', () => {
 
 			const integration = studioCMSDevApps(options);
 
+			await ctx.parameter('options', JSON.stringify(options, null, 2));
+			await ctx.parameter('integration', JSON.stringify(integration, null, 2));
+
 			expect(integration).toEqual({
 				name: '@studiocms/devapps',
 				hooks: expect.objectContaining({
@@ -35,8 +56,15 @@ describe('StudioCMS DevApps Integration', () => {
 				}),
 			});
 		});
+	});
 
-		it('should handle invalid options gracefully', () => {
+	test('should handle invalid options gracefully', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('Integration Creation Tests');
+		await allure.tags(...sharedTags);
+
+		await allure.step('Should handle invalid options gracefully', async () => {
 			// This should not throw, but use defaults
 			expect(() => {
 				studioCMSDevApps({

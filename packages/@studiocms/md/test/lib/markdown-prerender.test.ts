@@ -1,5 +1,9 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import * as allure from 'allure-js-commons';
+import { beforeEach, describe, expect, test, vi } from 'vitest';
 import * as markdownPrerender from '../../src/lib/markdown-prerender.js';
+import { parentSuiteName, sharedTags } from '../test-utils.js';
+
+const localSuiteName = 'markdown-prerender Module Tests';
 
 // Mock dependencies
 vi.mock('studiocms:md/config', () => ({
@@ -33,63 +37,72 @@ vi.mock('./shared.js', () => ({
 
 // Import after mocks
 
-describe('preRender', () => {
+describe(parentSuiteName, () => {
 	beforeEach(() => {
 		vi.resetModules();
 	});
 
-	it('renders markdown using StudioCMS processor by default', async () => {
-		const render = markdownPrerender.preRender();
-		const result = await render('Hello **world**');
-		expect(result).toBe('<studiocms>Hello **world**</studiocms>');
+	[
+		{
+			flavor: 'studiocms',
+			input: 'Hello **world**',
+			expect: '<studiocms>Hello **world**</studiocms>',
+		},
+		{
+			flavor: 'astro',
+			input: 'Hello **astro**',
+			expect: '<astro>Hello **astro**</astro>',
+		},
+		{
+			flavor: 'unknown',
+			input: 'Hello **unknown**',
+			expect: '<studiocms>Hello **unknown**</studiocms>',
+		},
+	].forEach(({ flavor, input, expect: expected }) => {
+		test(`renders markdown correctly for flavor: ${flavor}`, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('Markdown Rendering Tests');
+			await allure.tags(...sharedTags);
+
+			// Mock the config flavor
+			vi.doMock('studiocms:md/config', () => ({
+				default: { flavor },
+			}));
+			// Re-import to apply new mock
+			const { preRender } = await import('../../src/lib/markdown-prerender.js');
+			const render = preRender();
+			const result = await render(input);
+
+			await allure.step(`Should render markdown for flavor: ${flavor}`, async (ctx) => {
+				await ctx.parameter('flavor', flavor);
+				await ctx.parameter('input', input);
+				await ctx.parameter('expectedOutput', expected);
+				expect(result).toBe(expected);
+			});
+		});
 	});
 
-	it('renders markdown using Astro processor when flavor is astro', async () => {
-		// Change flavor to astro
-		vi.doMock('studiocms:md/config', () => ({
-			default: { flavor: 'astro' },
-		}));
-		// Re-import to apply new mock
-		const { preRender } = await import('../../src/lib/markdown-prerender.js');
-		const render = preRender();
-		const result = await render('Hello **astro**');
-		expect(result).toBe('<astro>Hello **astro**</astro>');
-	});
+	[
+		{ opt: false as false, expect: false },
+		{ opt: undefined, expect: undefined },
+		{ opt: 'obsidian' as const, expect: { theme: 'obsidian' } },
+		{ opt: 'github' as const, expect: { theme: 'github' } },
+		{ opt: 'vitepress' as const, expect: { theme: 'vitepress' } },
+	].forEach(({ opt, expect: expected }) => {
+		test(`parseCallouts returns correct value for opt: ${String(opt)}`, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('parseCallouts Tests');
+			await allure.tags(...sharedTags);
 
-	it('renders markdown using StudioCMS processor for unknown flavor', async () => {
-		vi.doMock('studiocms:md/config', () => ({
-			default: { flavor: 'unknown' },
-		}));
-		const { preRender } = await import('../../src/lib/markdown-prerender.js');
-		const render = preRender();
-		const result = await render('Hello **unknown**');
-		expect(result).toBe('<studiocms>Hello **unknown**</studiocms>');
-	});
+			const result = markdownPrerender.parseCallouts(opt);
 
-	describe('parseCallouts', () => {
-		it('returns false when opt is false', () => {
-			expect(markdownPrerender.parseCallouts(false)).toBe(false);
-		});
-
-		it('returns undefined when opt is undefined', () => {
-			expect(markdownPrerender.parseCallouts(undefined)).toBeUndefined();
-		});
-
-		it('returns undefined when opt is null', () => {
-			// @ts-expect-error: null is not a valid type but test robustness
-			expect(markdownPrerender.parseCallouts(null)).toBeUndefined();
-		});
-
-		it('returns { theme: "obsidian" } when opt is "obsidian"', () => {
-			expect(markdownPrerender.parseCallouts('obsidian')).toEqual({ theme: 'obsidian' });
-		});
-
-		it('returns { theme: "github" } when opt is "github"', () => {
-			expect(markdownPrerender.parseCallouts('github')).toEqual({ theme: 'github' });
-		});
-
-		it('returns { theme: "vitepress" } when opt is "vitepress"', () => {
-			expect(markdownPrerender.parseCallouts('vitepress')).toEqual({ theme: 'vitepress' });
+			await allure.step(`Should parse callouts option: ${String(opt)}`, async (ctx) => {
+				await ctx.parameter('inputOption', String(opt));
+				await ctx.parameter('expectedOutput', JSON.stringify(expected));
+				expect(result).toEqual(expected);
+			});
 		});
 	});
 });
