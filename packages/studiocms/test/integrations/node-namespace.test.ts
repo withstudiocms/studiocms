@@ -1,53 +1,93 @@
 /** biome-ignore-all lint/suspicious/noExplicitAny: allowed in tests */
 import type { AstroIntegration } from 'astro';
-import { describe, expect, expectTypeOf, it } from 'vitest';
+import { describe, expect, expectTypeOf } from 'vitest';
 import { nodeNamespaceBuiltinsAstro, resolveBuiltIns } from '../../src/integrations/node-namespace';
+import { allureTester } from '../fixtures/allureTester';
+import { parentSuiteName, sharedTags } from '../test-utils';
 
-describe('nodeNamespaceBuiltinsAstro', () => {
-	it('should return an AstroIntegration object with correct name', () => {
-		const integration = nodeNamespaceBuiltinsAstro();
-		expect(integration).toBeDefined();
-		expect(integration.name).toBe('vite-namespace-builtins');
-		expect(typeof integration.hooks['astro:config:setup']).toBe('function');
-		expectTypeOf(integration).toEqualTypeOf<AstroIntegration>();
+const localSuiteName = 'Integrations tests (Node Namespace Built-ins)';
+
+describe(parentSuiteName, () => {
+	const test = allureTester({
+		suiteName: localSuiteName,
+		suiteParentName: parentSuiteName,
 	});
 
-	describe('resolveBuiltIns', () => {
-		it('should return undefined for relative paths', () => {
-			expect(resolveBuiltIns('./fs')).toBeUndefined();
-			expect(resolveBuiltIns('../path')).toBeUndefined();
-			expect(resolveBuiltIns('/fs')).toBeUndefined();
+	test('nodeNamespaceBuiltinsAstro integration existence', async ({ setupAllure, step }) => {
+		const tags = [...sharedTags, 'integration:node-namespace-builtins'];
+
+		await setupAllure({
+			subSuiteName: 'nodeNamespaceBuiltinsAstro tests',
+			tags: [...tags],
 		});
 
-		it('should return undefined for empty or falsy id', () => {
-			expect(resolveBuiltIns('')).toBeUndefined();
-			expect(resolveBuiltIns(undefined as any)).toBeUndefined();
-			expect(resolveBuiltIns(null as any)).toBeUndefined();
+		await step('Check integration creation', async () => {
+			const integration = nodeNamespaceBuiltinsAstro();
+			expect(integration).toBeDefined();
+			expect(integration.name).toBe('vite-namespace-builtins');
+			expect(typeof integration.hooks['astro:config:setup']).toBe('function');
+			expectTypeOf(integration).toEqualTypeOf<AstroIntegration>();
 		});
+	});
 
-		it('should resolve plain built-in modules', () => {
-			const result = resolveBuiltIns('fs');
-			expect(result).toEqual({ id: 'node:fs', external: true });
-		});
+	[
+		{
+			id: './fs',
+			expected: undefined,
+		},
+		{
+			id: '../path',
+			expected: undefined,
+		},
+		{
+			id: '/fs',
+			expected: undefined,
+		},
+		{
+			id: '',
+			expected: undefined,
+		},
+		{
+			id: 'some-nonexistent-module',
+			expected: undefined,
+		},
+		{
+			id: 'astro',
+			expected: undefined,
+		},
+		{
+			id: 'fs',
+			expected: { id: 'node:fs', external: true },
+		},
+		{
+			id: 'node:path',
+			expected: { id: 'node:path', external: true },
+		},
+		{
+			id: 'fs/promises',
+			expected: { id: 'node:fs/promises', external: true },
+		},
+		{
+			id: 'node:fs/promises',
+			expected: { id: 'node:fs/promises', external: true },
+		},
+	].forEach(({ id, expected }, index) => {
+		const testName = `resolveBuiltIns test case #${index + 1}`;
+		const tags = [...sharedTags, 'integration:node-namespace-builtins', 'function:resolveBuiltIns'];
 
-		it('should resolve namespaced built-in modules', () => {
-			const result = resolveBuiltIns('node:path');
-			expect(result).toEqual({ id: 'node:path', external: true });
-		});
+		test(testName, async ({ setupAllure, step }) => {
+			await setupAllure({
+				subSuiteName: 'resolveBuiltIns tests',
+				tags: [...tags],
+				parameters: {
+					id: id,
+				},
+			});
 
-		it('should resolve built-in subpaths', () => {
-			const result = resolveBuiltIns('fs/promises');
-			expect(result).toEqual({ id: 'node:fs/promises', external: true });
-		});
-
-		it('should resolve namespaced built-in subpaths', () => {
-			const result = resolveBuiltIns('node:fs/promises');
-			expect(result).toEqual({ id: 'node:fs/promises', external: true });
-		});
-
-		it('should return undefined for non-built-in modules', () => {
-			expect(resolveBuiltIns('some-nonexistent-module')).toBeUndefined();
-			expect(resolveBuiltIns('astro')).toBeUndefined();
+			await step(`Resolve built-in for id: ${id}`, async () => {
+				const result = resolveBuiltIns(id);
+				expect(result).toEqual(expected);
+			});
 		});
 	});
 });

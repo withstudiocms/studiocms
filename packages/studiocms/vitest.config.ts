@@ -6,7 +6,8 @@ import { convertToSafeString, rendererComponentFilter } from '@withstudiocms/int
 import type { AstroIntegration } from 'astro';
 import { getViteConfig } from 'astro/config';
 import { addVirtualImports, createResolver } from 'astro-integration-kit';
-import { defineProject } from 'vitest/config';
+import { defineProject, mergeConfig } from 'vitest/config';
+import { configShared } from '../../vitest.shared.js';
 import { type StudioCMSOptions, StudioCMSOptionsSchema } from './src/schemas/config/index.js';
 import {
 	availableTranslationFileKeys,
@@ -94,13 +95,12 @@ const testIntegration: AstroIntegration = {
 
 export default defineProject(
 	getViteConfig(
-		{
+		mergeConfig(configShared, {
 			test: {
 				name: 'studiocms',
-				environment: 'node',
 				include: ['**/*.test.ts'],
 			},
-		},
+		}),
 		{
 			integrations: [
 				testIntegration,

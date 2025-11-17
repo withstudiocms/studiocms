@@ -1,6 +1,10 @@
 // @vitest-environment jsdom
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { formListener } from '../../../../src/frontend/scripts/auth/formListener';
+import { beforeEach, describe, expect, vi } from 'vitest';
+import { formListener } from '../../src/frontend/scripts/auth/formListener';
+import { allureTesterJsDom } from '../fixtures/allureTester-jsdom';
+import { parentSuiteName, sharedTags } from '../test-utils';
+
+const localSuiteName = 'Form Listener tests';
 
 // mock global fetch
 beforeEach(() => {
@@ -10,9 +14,13 @@ beforeEach(() => {
 	});
 });
 
-describe('formListener', () => {
+describe(parentSuiteName, () => {
 	let form: HTMLFormElement;
 	let event: SubmitEvent;
+	const test = allureTesterJsDom({
+		suiteName: localSuiteName,
+		suiteParentName: parentSuiteName,
+	});
 
 	beforeEach(() => {
 		document.body.innerHTML = `
@@ -25,7 +33,12 @@ describe('formListener', () => {
 		event = new SubmitEvent('submit', { bubbles: true, cancelable: true });
 	});
 
-	it('shows toast and returns if passwords do not match on register', async () => {
+	test('shows toast and returns if passwords do not match on register', async ({ setupAllure }) => {
+		await setupAllure({
+			subSuiteName: 'formListener password mismatch test',
+			tags: [...sharedTags, 'component:form-listener', 'formListener:password-mismatch'],
+		});
+
 		// biome-ignore lint/style/noNonNullAssertion: allowed in tests
 		form.querySelector<HTMLInputElement>('input[name="confirm-password"]')!.value = 'different';
 		const toast = vi.fn();
@@ -38,7 +51,12 @@ describe('formListener', () => {
 		);
 	});
 
-	it('shows error toast if response is not ok', async () => {
+	test('shows error toast if response is not ok', async ({ setupAllure }) => {
+		await setupAllure({
+			subSuiteName: 'formListener error response test',
+			tags: [...sharedTags, 'component:form-listener', 'formListener:error-response'],
+		});
+
 		(global.fetch as any).mockResolvedValueOnce({
 			ok: false,
 			json: async () => ({
@@ -59,7 +77,14 @@ describe('formListener', () => {
 		);
 	});
 
-	it('calls fetch with correct arguments and shows success toast on login', async () => {
+	test('calls fetch with correct arguments and shows success toast on login', async ({
+		setupAllure,
+	}) => {
+		await setupAllure({
+			subSuiteName: 'formListener login success test',
+			tags: [...sharedTags, 'component:form-listener', 'formListener:login-success'],
+		});
+
 		const toast = vi.fn();
 		const reload = vi.fn();
 		await formListener(event, form, 'login', toast, reload);
@@ -77,7 +102,14 @@ describe('formListener', () => {
 		expect(reload).toHaveBeenCalled();
 	});
 
-	it('calls fetch with correct arguments and shows success toast on register', async () => {
+	test('calls fetch with correct arguments and shows success toast on register', async ({
+		setupAllure,
+	}) => {
+		await setupAllure({
+			subSuiteName: 'formListener register success test',
+			tags: [...sharedTags, 'component:form-listener', 'formListener:register-success'],
+		});
+
 		const toast = vi.fn();
 		const reload = vi.fn();
 		await formListener(event, form, 'register', toast, reload);
@@ -95,7 +127,12 @@ describe('formListener', () => {
 		expect(reload).toHaveBeenCalled();
 	});
 
-	it('prevents default event behavior', async () => {
+	test('prevents default event behavior', async ({ setupAllure }) => {
+		await setupAllure({
+			subSuiteName: 'formListener prevent default test',
+			tags: [...sharedTags, 'component:form-listener', 'formListener:prevent-default'],
+		});
+
 		const preventDefault = vi.fn();
 		const reload = vi.fn();
 		const customEvent = { ...event, preventDefault } as SubmitEvent;
