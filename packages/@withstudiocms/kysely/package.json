@@ -1,0 +1,85 @@
+{
+  "name": "@withstudiocms/kysely",
+  "version": "0.1.0-beta.0",
+  "description": "Type-safe database client and migration system for StudioCMS, built on top of Kysely",
+  "author": {
+    "name": "withstudiocms",
+    "url": "https://studiocms.dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/withstudiocms/studiocms.git",
+    "directory": "packages/@withstudiocms/kysely"
+  },
+  "contributors": [
+    "Adammatthiesen",
+    "jdtjenkins",
+    "dreyfus92",
+    "code.spirit"
+  ],
+  "license": "MIT",
+  "homepage": "https://studiocms.dev",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "pnpm buildkit build 'src/**/*.{ts,json}'",
+    "dev": "pnpm buildkit dev 'src/**/*.{ts,json}'",
+    "typecheck": "tspc -p tsconfig.tspc.json",
+    "create-migration": "tsx scripts/create-migration.ts"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./client": {
+      "types": "./dist/client.d.ts",
+      "default": "./dist/client.js"
+    },
+    "./migrator": {
+      "types": "./dist/migrator.d.ts",
+      "default": "./dist/migrator.js"
+    },
+    "./schema": {
+      "types": "./dist/schema.d.ts",
+      "default": "./dist/schema.js"
+    },
+    "./tables": {
+      "types": "./dist/tables.d.ts",
+      "default": "./dist/tables.js"
+    },
+    "./core/*": {
+      "types": "./dist/core/*.d.ts",
+      "default": "./dist/core/*.js"
+    },
+    "./drivers/*": {
+      "types": "./dist/drivers/*.d.ts",
+      "default": "./dist/drivers/*.js"
+    },
+    "./schemas/*": {
+      "default": "./dist/schemas/*.json"
+    }
+  },
+  "type": "module",
+  "dependencies": {
+    "@libsql/client": "^0.15.15",
+    "@libsql/kysely-libsql": "^0.4.1",
+    "kysely": "^0.28.8",
+    "pg": "^8.16.3",
+    "mysql2": "^3.15.3"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "@types/pg": "^8.15.5",
+    "tsx": "^4.20.6"
+  },
+  "peerDependencies": {
+		"effect": "catalog:effect"
+  }
+}

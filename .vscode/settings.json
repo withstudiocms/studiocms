@@ -23,5 +23,6 @@
   },
   "[yaml]": {
     "editor.defaultFormatter": "redhat.vscode-yaml"
-  }
+  },
+  "vitest.disableWorkspaceWarning": true
 }
