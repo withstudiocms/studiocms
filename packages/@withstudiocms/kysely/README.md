@@ -13,6 +13,7 @@ A type-safe database client and migration system for StudioCMS, built on top of 
 - 🗄️ **Multi-Database Support** - Works with libSQL (Turso), MySQL, and PostgreSQL
 - 🔄 **Runtime Schema Management** - Dynamic schema creation and validation
 - 🛡️ **Error Handling** - Custom error types for better debugging
+- 🚀 **TypeScript-Based Migrations** - File-based migrations with automatic tracking
 - 🔍 **Schema Introspection** - Inspect and validate database schemas at runtime
 - ⚡ **Effect-ts Integration** - Functional programming patterns with Effect-ts
 
