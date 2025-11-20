@@ -4,4 +4,4 @@
 "@studiocms/google": patch
 ---
 
-Fixes environement variable loading
+Fixes environment variable loading
