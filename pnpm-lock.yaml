@@ -875,8 +875,8 @@ importers:
         specifier: ^3.4.52
         version: 3.4.52
       zod:
-        specifier: ^3.25.76
-        version: 3.25.76
+        specifier: ^4.1.12
+        version: 4.1.12
     devDependencies:
       '@types/node':
         specifier: 'catalog:'
