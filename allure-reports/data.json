@@ -3,7 +3,6 @@
     "..",
     "changeset-release_main",
     "main",
-    "renovate_effect-dependencies",
-    "renovate_pnpm-workspace-dependencies"
+    "renovate_effect-dependencies"
   ]
 }
