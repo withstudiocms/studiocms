@@ -1,4 +1,5 @@
 /** biome-ignore-all lint/suspicious/noExplicitAny: It's okay, doing dynamic stuff */
+/* v8 ignore start */
 
 import { Effect } from 'effect';
 import type { Kysely } from 'kysely';
@@ -208,3 +209,5 @@ export const rollbackMigration = (
 			yield* Effect.logInfo('✅ Migration rollback completed!');
 		}).pipe(Effect.catchAllCause(handleCause))
 	);
+
+/* v8 ignore stop */

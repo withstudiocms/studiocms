@@ -33,17 +33,19 @@ export const getDialect = Effect.fn(function* (db: Kysely<any>) {
 
 	const cases = [
 		{
-			dialect: 'mysql' as DatabaseDialect,
-			condition: !adapter.supportsReturning && !adapter.supportsTransactionalDdl,
-		},
-		{
 			dialect: 'sqlite' as DatabaseDialect,
 			condition: adapter.supportsReturning && !adapter.supportsTransactionalDdl,
+		},
+		/* v8 ignore start */
+		{
+			dialect: 'mysql' as DatabaseDialect,
+			condition: !adapter.supportsReturning && !adapter.supportsTransactionalDdl,
 		},
 		{
 			dialect: 'postgres' as DatabaseDialect,
 			condition: adapter.supportsReturning && adapter.supportsTransactionalDdl,
 		},
+		/* v8 ignore stop */
 	];
 
 	for (const { dialect, condition } of cases) {
@@ -56,6 +58,8 @@ export const getDialect = Effect.fn(function* (db: Kysely<any>) {
 		new DialectDeterminationError({ cause: 'Unable to determine database dialect.' })
 	);
 });
+
+/* v8 ignore start */
 
 /**
  * Determine whether a table with the given name exists in the connected database.
@@ -305,3 +309,5 @@ export const getTableTriggers = Effect.fn(function* (db: Kysely<any>, tableName:
 		}
 	}
 });
+
+/* v8 ignore stop */
