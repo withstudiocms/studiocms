@@ -1,7 +1,6 @@
 {
   "links": [
     "..",
-    "adam_kysely-cleanup",
     "changeset-release_main",
     "main",
     "renovate_npm-astro-vulnerability"
