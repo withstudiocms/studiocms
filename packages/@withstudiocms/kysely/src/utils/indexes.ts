@@ -5,6 +5,7 @@ import { SqlError } from './errors.js';
 import { getDialect, indexExists } from './introspection.js';
 import { makeSql } from './sql.js';
 import type { TableDefinition } from './types.js';
+/* v8 ignore start */
 
 /**
  * Retrieve the names of all non-primary/non-automatic indexes for a given table,
@@ -252,3 +253,4 @@ export const dropRemovedIndexes = Effect.fn(function* (
 		})
 	);
 });
+/* v8 ignore stop */

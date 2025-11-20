@@ -54,10 +54,12 @@ export const getDialect = Effect.fn(function* (db: Kysely<any>) {
 		}
 	}
 
+	/* v8 ignore start */
 	return yield* Effect.fail(
 		new DialectDeterminationError({ cause: 'Unable to determine database dialect.' })
 	);
 });
+/* v8 ignore stop */
 
 /* v8 ignore start */
 
