@@ -4,7 +4,6 @@
     "adam_kysely-cleanup",
     "changeset-release_main",
     "main",
-    "renovate_coverage-report-github-actions",
     "renovate_npm-astro-vulnerability"
   ]
 }
