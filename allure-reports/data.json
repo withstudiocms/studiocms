@@ -4,6 +4,7 @@
     "adam_kysely-cleanup",
     "changeset-release_main",
     "main",
+    "renovate_kysely-@withstudiocms-dependencies",
     "renovate_npm-astro-vulnerability"
   ]
 }
