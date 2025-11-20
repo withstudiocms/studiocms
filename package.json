@@ -64,7 +64,7 @@
     "@effect/language-service": "^0.56.0",
     "@effect/vitest": "^0.27.0",
     "@types/node": "catalog:",
-    "@vitest/coverage-v8": "^3.2.4",
+    "@vitest/coverage-v8": "^4.0.9",
     "@withstudiocms/buildkit": "workspace:*",
     "@inox-tools/astro-tests": "^0.8.0",
     "allure-js-commons": "^3.4.2",
@@ -77,7 +77,7 @@
     "typescript": "catalog:",
     "ts-patch": "^3.3.0",
     "vite": "catalog:astrojs",
-    "vitest": "^3.2.4",
+    "vitest": "^4.0.9",
     "jsdom": "^27.2.0"
   }
 }
