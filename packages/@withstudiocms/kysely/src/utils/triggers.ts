@@ -197,6 +197,8 @@ EXECUTE FUNCTION ${quoteIdent('postgres', fnName)}();`;
 	return { fnSQL, trgSQL };
 }
 
+/* v8 ignore start */
+
 /**
  * Ensure that all triggers declared on a table are present in the database, creating any that are missing.
  *
@@ -345,3 +347,5 @@ export const dropRemovedTriggersForTable = Effect.fn(function* (
 		})
 	);
 });
+
+/* v8 ignore stop */
