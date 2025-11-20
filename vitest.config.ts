@@ -122,6 +122,7 @@ export default defineConfig({
 				'**/**/@withstudiocms/kysely/src/migrations/**',
 				'**/**/@withstudiocms/kysely/scripts/**',
 				'**/**/@withstudiocms/kysely/src/{tables,schema,migrator,index,client}.ts',
+				'**/**/@withstudiocms/kysely/src/drivers/**',
 				'**/**/scratchpad/**',
 				'**/**/test/fixtures/**',
 				'**/**/test/test-utils.ts',
