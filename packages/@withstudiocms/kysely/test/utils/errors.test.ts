@@ -3,12 +3,12 @@ import { describe, expect } from 'vitest';
 import { DialectDeterminationError, handleCause, SqlError } from '../../src/utils/errors';
 import { allureTester, parentSuiteName, sharedTags } from '../test-utils';
 
-const suiteName = 'Error Utilities';
+const localSuiteName = 'Error Utilities';
 
 describe('handleCause', () => {
 	const test = allureTester({
 		suiteParentName: parentSuiteName,
-		suiteName,
+		suiteName: localSuiteName,
 	});
 
 	[
