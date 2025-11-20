@@ -12,212 +12,199 @@ import type { TableDefinition } from './types.js';
 export * from './types.js';
 
 /**
- * Synchronize the database schema with a provided schema definition.
+ * Synchronize the live database schema with a provided schema definition.
  *
- * This function compares the current database schema (queried via the provided
- * Kysely instance) with a new schema definition and an optional previous schema
- * definition. It performs the following high-level steps as an Effectful
- * operation:
+ * This function:
+ * - Logs progress and status messages throughout the synchronization process.
+ * - Detects tables that existed in the previous schema but are not present in
+ *   the current schema and drops them from the database (if they exist).
+ * - Iterates over each table in the provided `schemaDefinition` and:
+ *   - If the table is marked `deprecated: true`, drops the table if it exists.
+ *   - If the table is not deprecated:
+ *     - Creates the table if it does not exist.
+ *     - If the table exists, inspects its current columns, indexes and triggers,
+ *       then adds any missing columns, indexes and triggers and removes any that
+ *       have been removed from the definition.
+ * - Wraps SQL-level failures in SqlError and delegates error handling to the
+ *   configured `handleCause` handler (via Effect.catchAllCause).
  *
- * 1. Logs the start of synchronization.
- * 2. Detects tables that existed in the previous schema but are absent from
- *    the new schema and attempts to drop them (if they exist in the database).
- * 3. Iterates over the tables in the current schema definition and for each:
- *    - If the table is marked as deprecated (tableDef.deprecated === true),
- *      attempts to drop the table (if it exists).
- *    - Otherwise:
- *      - Creates the table if it does not exist.
- *      - If the table exists, fetches current columns, indexes, and triggers
- *        from the database and:
- *          - Adds any missing columns.
- *          - Adds missing indexes and drops indexes removed from the definition.
- *          - Adds missing triggers and drops triggers removed from the
- *            definition.
- * 4. Logs completion of synchronization.
- * 5. Catches and handles error causes via the configured cause handler.
+ * Important notes:
+ * - This operation performs destructive changes (drops tables/indexes/triggers)
+ *   when the schema indicates removal or deprecation — ensure you have backups
+ *   and appropriate permissions before running.
+ * - The function relies on helper utilities such as `tableExists`, `createTable`,
+ *   `getTableColumns`, `addMissingColumns`, `getTableIndexes`, `addMissingIndexes`,
+ *   `dropRemovedIndexes`, `getTableTriggers`, `addMissingTriggersForTable`, and
+ *   `dropRemovedTriggersForTable`.
+ * - The function logs informational messages for each major step so progress can
+ *   be observed.
  *
- * Important behavior & side effects:
- * - This routine may drop tables, indexes, and triggers; use with caution in
- *   production environments and ensure backups/migrations as needed.
- * - Columns are only added if missing; existing columns are not modified or
- *   dropped by this process.
- * - All database operations are executed through the provided Kysely instance.
- * - Informational logging is emitted throughout to trace progress.
+ * @param db - An active Kysely database instance to operate against.
+ * @param schemaDefinition - The desired current schema description as an array
+ *   of TableDefinition entries.
+ * @param previousSchemaDefinition - The prior schema description used to detect
+ *   removed tables.
+ * @returns A Promise that resolves when the synchronization completes. The
+ *   promise may reject or resolve according to the configured error handling
+ *   behavior for underlying SQL/Effect failures.
  *
- * @param db - A Kysely instance for the target database (typed to the project
- *   database schema).
- * @param schemaDefinition - The desired/current schema definition as an array
- *   of TableDefinition objects. Each TableDefinition must describe the table
- *   name, columns, indexes, triggers, and an optional `deprecated` flag.
- * @param previousSchemaDefinition - The previously-applied schema definition
- *   used to detect and remove tables that were removed between schema versions.
- *
- * @returns An Effect that, when run, performs the synchronization and resolves
- *   when complete. The Effect will log progress and may fail with database or
- *   SQL-related errors (wrapped as SqlError or other effect causes).
- *
- * @throws Will surface SQL/database errors encountered while creating, dropping,
- *   or altering database objects via the Effect failure channel.
- *
- * @remarks
- * - This function is intended to be run as part of an application startup or a
- *   migration routine. It is not transactional across all operations; individual
- *   DDL operations are executed independently.
- *
- * @example
- * // Typical usage:
- * // await Effect.runPromise(syncDatabaseSchema(db, currentSchema, previousSchema));
+ * @throws SqlError - SQL execution errors are wrapped in SqlError when they
+ *   originate from direct DB operations.
  */
 export const syncDatabaseSchema = (
 	db: Kysely<any>,
 	schemaDefinition: TableDefinition[],
 	previousSchemaDefinition: TableDefinition[]
 ) =>
-	Effect.gen(function* () {
-		yield* Effect.logInfo('Starting database schema synchronization...');
+	Effect.runPromise(
+		Effect.gen(function* () {
+			yield* Effect.logInfo('Starting database schema synchronization...');
 
-		const removedTables = yield* detectRemovedTables(schemaDefinition, previousSchemaDefinition);
+			const removedTables = yield* detectRemovedTables(schemaDefinition, previousSchemaDefinition);
 
-		// Drop removed tables
-		if (removedTables.length > 0) {
-			yield* Effect.logInfo(
-				`🗑️  Dropping ${removedTables.length} removed table(s) from previous schema:`
-			);
+			// Drop removed tables
+			if (removedTables.length > 0) {
+				yield* Effect.logInfo(
+					`🗑️  Dropping ${removedTables.length} removed table(s) from previous schema:`
+				);
 
+				yield* Effect.forEach(
+					removedTables,
+					Effect.fn(function* (tableName) {
+						const exists = yield* tableExists(db, tableName);
+						if (exists) {
+							yield* Effect.logInfo(`  Dropping removed table: ${tableName}...`);
+							yield* Effect.tryPromise({
+								try: () => db.schema.dropTable(tableName).execute(),
+								catch: (cause) => new SqlError({ cause }),
+							});
+							yield* Effect.logInfo(`  ✓ Dropped: ${tableName}`);
+						} else {
+							yield* Effect.logInfo(`  ℹ Table ${tableName} already doesn't exist, skipping.`);
+						}
+					})
+				);
+				yield* Effect.logInfo('');
+			}
+
+			// Sync current schema
 			yield* Effect.forEach(
-				removedTables,
-				Effect.fn(function* (tableName) {
-					const exists = yield* tableExists(db, tableName);
-					if (exists) {
-						yield* Effect.logInfo(`  Dropping removed table: ${tableName}...`);
-						yield* Effect.tryPromise({
-							try: () => db.schema.dropTable(tableName).execute(),
-							catch: (cause) => new SqlError({ cause }),
-						});
-						yield* Effect.logInfo(`  ✓ Dropped: ${tableName}`);
-					} else {
-						yield* Effect.logInfo(`  ℹ Table ${tableName} already doesn't exist, skipping.`);
+				schemaDefinition,
+				Effect.fn(function* (tableDef) {
+					const exists = yield* tableExists(db, tableDef.name);
+
+					switch (tableDef.deprecated) {
+						case true: {
+							if (exists) {
+								yield* Effect.logInfo(`Table ${tableDef.name} is deprecated. Dropping...`);
+								yield* Effect.tryPromise({
+									try: () => db.schema.dropTable(tableDef.name).execute(),
+									catch: (cause) => new SqlError({ cause }),
+								});
+								yield* Effect.logInfo(`Table ${tableDef.name} dropped.`);
+							} else {
+								yield* Effect.logInfo(
+									`Deprecated table ${tableDef.name} does not exist. Skipping drop.`
+								);
+							}
+							break;
+						}
+						case false:
+						case undefined: {
+							if (!exists) {
+								yield* createTable(db, tableDef);
+							} else {
+								const existingColumns = yield* getTableColumns(db, tableDef.name);
+								yield* addMissingColumns(db, tableDef, existingColumns);
+
+								const existingIndexes = yield* getTableIndexes(db, tableDef.name);
+								yield* Effect.all([
+									addMissingIndexes(db, tableDef, existingIndexes),
+									dropRemovedIndexes(db, tableDef, existingIndexes),
+								]);
+
+								const existingTriggers = yield* getTableTriggers(db, tableDef.name);
+								yield* Effect.all([
+									addMissingTriggersForTable(db, tableDef, existingTriggers),
+									dropRemovedTriggersForTable(db, tableDef, existingTriggers),
+								]);
+							}
+							break;
+						}
 					}
 				})
 			);
-			yield* Effect.logInfo('');
-		}
 
-		// Sync current schema
-		yield* Effect.forEach(
-			schemaDefinition,
-			Effect.fn(function* (tableDef) {
-				const exists = yield* tableExists(db, tableDef.name);
-
-				switch (tableDef.deprecated) {
-					case true: {
-						if (exists) {
-							yield* Effect.logInfo(`Table ${tableDef.name} is deprecated. Dropping...`);
-							yield* Effect.tryPromise({
-								try: () => db.schema.dropTable(tableDef.name).execute(),
-								catch: (cause) => new SqlError({ cause }),
-							});
-							yield* Effect.logInfo(`Table ${tableDef.name} dropped.`);
-						} else {
-							yield* Effect.logInfo(
-								`Deprecated table ${tableDef.name} does not exist. Skipping drop.`
-							);
-						}
-						break;
-					}
-					case false:
-					case undefined: {
-						if (!exists) {
-							yield* createTable(db, tableDef);
-						} else {
-							const existingColumns = yield* getTableColumns(db, tableDef.name);
-							yield* addMissingColumns(db, tableDef, existingColumns);
-
-							const existingIndexes = yield* getTableIndexes(db, tableDef.name);
-							yield* Effect.all([
-								addMissingIndexes(db, tableDef, existingIndexes),
-								dropRemovedIndexes(db, tableDef, existingIndexes),
-							]);
-
-							const existingTriggers = yield* getTableTriggers(db, tableDef.name);
-							yield* Effect.all([
-								addMissingTriggersForTable(db, tableDef, existingTriggers),
-								dropRemovedTriggersForTable(db, tableDef, existingTriggers),
-							]);
-						}
-						break;
-					}
-				}
-			})
-		);
-
-		yield* Effect.logInfo('✅ Database schema synchronization complete.');
-	}).pipe(Effect.catchAllCause(handleCause));
+			yield* Effect.logInfo('✅ Database schema synchronization complete.');
+		}).pipe(Effect.catchAllCause(handleCause))
+	);
 
 /**
- * Roll back database schema changes by removing tables that exist in the provided
- * current schema definition but are not present in the previous schema snapshot.
+ * Roll back database schema changes by removing tables that are present in the
+ * current schema definition but absent from a provided previous schema.
  *
- * The function returns an Effect which, when executed, will:
- * - Log the start of the rollback process.
- * - For each table in `schemaDefinition`:
- *   - If the table name is not present in `previousSchema`, check whether the table
- *     exists in the database.
- *   - If the table exists, attempt to drop it (wrapping any database error as `SqlError`)
- *     and log success; if it does not exist, log that the drop was skipped.
- * - Log completion of the rollback.
- * - All errors/causes are routed through the configured `handleCause` catcher.
+ * This function performs an asynchronous, best-effort rollback:
+ * - Iterates over `schemaDefinition` and for each table not present in `previousSchema`
+ *   it checks whether the table exists in the connected database and, if so, drops it.
+ * - Logs progress and outcomes for each table and for the overall rollback procedure.
+ * - Uses the provided `db` Kysely instance's schema API to perform table existence checks
+ *   and drops.
  *
- * @param db - A configured Kysely database instance for the target database.
- * @param schemaDefinition - The array of table definitions representing the current/target schema.
- * @param previousSchema - The array of table definitions representing the previous/desired schema state;
- *                         tables present here will be preserved, tables absent here may be dropped.
+ * Notes and guarantees:
+ * - The operation is executed asynchronously and returns a promise that resolves
+ *   when processing completes.
+ * - Drops are executed individually; there is no implicit transactional guarantee
+ *   across multiple table drops (i.e., partial rollbacks are possible if an error occurs).
+ * - Existence of a table is checked before attempting to drop it, so attempting to
+ *   rollback a table that does not exist is safe and will be logged and skipped.
+ * - Errors raised during individual drop attempts are wrapped and propagated via
+ *   the effect/error handling mechanism used by the implementation.
  *
- * @returns An Effect representing the asynchronous rollback operation. Executing the Effect performs
- *          the described checks and DDL operations and resolves when complete.
+ * @param db - A Kysely database instance used to query and modify the DB schema.
+ * @param schemaDefinition - The current schema definition (array of table definitions)
+ *                           from which tables will be compared and possibly dropped.
+ * @param previousSchema - The previous/target schema definition; any table present in
+ *                         `schemaDefinition` but missing from `previousSchema` is a
+ *                         candidate for removal.
  *
- * @throws SqlError - If a table drop operation fails, the underlying error is wrapped as `SqlError`.
- *                    Other runtime causes may be handled by the `handleCause` error handler.
+ * @returns A promise that resolves when the rollback process completes. The promise
+ *          rejects if an unrecoverable error occurs while inspecting or dropping tables.
  *
- * @remarks
- * - This operation is destructive for tables that exist in the current schema but not in the previous schema.
- *   Use with caution and ensure you have backups or other safeguards if needed.
- * - Idempotent in the sense that attempting to drop a non-existent table is detected and skipped (logged).
- *
- * @example
- * // Execute the rollback Effect (example API; adapt to your Effect runtime)
- * // await runEffect(rollbackMigration(db, currentSchema, prevSchema));
+ * @throws {SqlError|Error} If a database operation fails, the function will propagate
+ *         an error (typically wrapped as a SqlError) describing the failure cause.
  */
 export const rollbackMigration = (
 	db: Kysely<any>,
 	schemaDefinition: TableDefinition[],
 	previousSchema: TableDefinition[]
 ) =>
-	Effect.gen(function* () {
-		yield* Effect.logInfo('Starting database schema rollback...');
+	Effect.runPromise(
+		Effect.gen(function* () {
+			yield* Effect.logInfo('Starting database schema rollback...');
 
-		const previousTableNames = new Set(previousSchema.map((table) => table.name));
+			const previousTableNames = new Set(previousSchema.map((table) => table.name));
 
-		yield* Effect.forEach(
-			schemaDefinition,
-			Effect.fn(function* (tableDef) {
-				if (!previousTableNames.has(tableDef.name)) {
-					const exists = yield* tableExists(db, tableDef.name);
-					if (exists) {
-						yield* Effect.logInfo(
-							`Rolling back: Dropping table not present in previous schema: ${tableDef.name}...`
-						);
-						yield* Effect.tryPromise({
-							try: () => db.schema.dropTable(tableDef.name).execute(),
-							catch: (cause) => new SqlError({ cause }),
-						});
-						yield* Effect.logInfo(`✓ Dropped table: ${tableDef.name}`);
-					} else {
-						yield* Effect.logInfo(`Table ${tableDef.name} does not exist. Skipping drop.`);
+			yield* Effect.forEach(
+				schemaDefinition,
+				Effect.fn(function* (tableDef) {
+					if (!previousTableNames.has(tableDef.name)) {
+						const exists = yield* tableExists(db, tableDef.name);
+						if (exists) {
+							yield* Effect.logInfo(
+								`Rolling back: Dropping table not present in previous schema: ${tableDef.name}...`
+							);
+							yield* Effect.tryPromise({
+								try: () => db.schema.dropTable(tableDef.name).execute(),
+								catch: (cause) => new SqlError({ cause }),
+							});
+							yield* Effect.logInfo(`✓ Dropped table: ${tableDef.name}`);
+						} else {
+							yield* Effect.logInfo(`Table ${tableDef.name} does not exist. Skipping drop.`);
+						}
 					}
-				}
-			})
-		);
+				})
+			);
 
-		yield* Effect.logInfo('✅ Migration rollback completed!');
-	}).pipe(Effect.catchAllCause(handleCause));
+			yield* Effect.logInfo('✅ Migration rollback completed!');
+		}).pipe(Effect.catchAllCause(handleCause))
+	);

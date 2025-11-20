@@ -90,6 +90,12 @@ export class NotFoundError extends Data.TaggedError('NotFoundError') {}
  */
 export type DatabaseError = QueryParseError | QueryError | NotFoundError;
 
+/**
+ * Error thrown when a migration operation fails.
+ *
+ * This class is a tagged error named "MigratorError" that includes a `cause` property
+ * to hold the underlying reason for the migration failure.
+ */
 export class MigratorError extends Data.TaggedError('MigratorError')<{
 	cause: unknown;
 }> {}
