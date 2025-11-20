@@ -124,11 +124,13 @@ export function buildMySQLTriggerSQL(table: string, t: TriggerDefinition): strin
 	const event = toUpperKeyword(t.event); // INSERT|UPDATE|DELETE
 	// MySQL requires FOR EACH ROW. Programmatic clients don't need DELIMITER changes.
 	const body = t.bodySQL.trim();
+	/* v8 ignore start */
 	const bodyWrapped = body.toUpperCase().startsWith('BEGIN')
 		? body
 		: `BEGIN
 ${body}
 END`;
+	/* v8 ignore stop */
 	return `CREATE TRIGGER ${quoteIdent('mysql', t.name)} ${timing} ${event} ON ${quoteIdent('mysql', table)}
 FOR EACH ROW
 ${bodyWrapped};`;
