@@ -76,6 +76,8 @@ describe(parentSuiteName, () => {
 			const generatedColumn = Generated(Schema.String);
 
 			expect(generatedColumn.Select).toBe(Schema.String);
+			// Insert should be UndefinedOr wrapper around the schema
+			expect(Schema.isSchema(generatedColumn.Insert)).toBe(true);
 			expect(generatedColumn.Update).toBe(Schema.String);
 		});
 	});
