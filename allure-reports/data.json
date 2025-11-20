@@ -1,6 +1,7 @@
 {
   "links": [
     "..",
+    "adam_auth-plugins-fix",
     "adam_kysely-cleanup",
     "changeset-release_main",
     "main",
