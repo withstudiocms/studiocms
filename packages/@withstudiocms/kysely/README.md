@@ -1,5 +1,8 @@
 # @withstudiocms/kysely
 
+[![codecov](https://codecov.io/github/withstudiocms/studiocms/graph/badge.svg?token=RN8LT1O5E2&component=withstudiocms_kysely)](https://codecov.io/github/withstudiocms/studiocms)
+
+
 A type-safe database client and migration system for StudioCMS, built on top of [Kysely](https://kysely.dev/). Provides a unified interface for working with libSQL, MySQL, and PostgreSQL databases with runtime schema management and migrations.
 
 **Note:** This is an internal StudioCMS package. It is not intended to be used directly outside of the StudioCMS ecosystem.
