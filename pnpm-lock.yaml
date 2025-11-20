@@ -10,13 +10,13 @@ catalogs:
       specifier: ^0.18.2
       version: 0.18.2
     '@astrojs/node':
-      specifier: ^9.5.0
-      version: 9.5.0
+      specifier: ^9.5.1
+      version: 9.5.1
     '@astrojs/rss':
       specifier: ^4.0.13
       version: 4.0.13
     astro:
-      specifier: ^5.15.4
+      specifier: ^5.15.9
       version: 5.15.9
     vite:
       specifier: ^6.3.4
@@ -201,7 +201,7 @@ importers:
         version: 0.18.2(@types/pg@8.15.6)(kysely@0.28.8)(mysql2@3.15.3)(pg@8.16.3)
       '@astrojs/node':
         specifier: catalog:astrojs
-        version: 9.5.0(astro@5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
+        version: 9.5.1(astro@5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
       '@codecov/astro-plugin':
         specifier: 'catalog:'
         version: 1.9.1(astro@5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))(vite@6.4.1(@types/node@22.19.0)(jiti@2.6.1)(tsx@4.20.6)(yaml@2.8.1))
@@ -238,7 +238,7 @@ importers:
         version: 0.18.2(@types/pg@8.15.6)(kysely@0.28.8)(mysql2@3.15.3)(pg@8.16.3)
       '@astrojs/node':
         specifier: catalog:astrojs
-        version: 9.5.0(astro@5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
+        version: 9.5.1(astro@5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
       '@codecov/astro-plugin':
         specifier: 'catalog:'
         version: 1.9.1(astro@5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))(vite@6.4.1(@types/node@22.19.0)(jiti@2.6.1)(tsx@4.20.6)(yaml@2.8.1))
@@ -1040,7 +1040,7 @@ importers:
         version: 0.18.2(@types/pg@8.15.6)(kysely@0.28.8)(mysql2@3.15.3)(pg@8.16.3)
       '@astrojs/node':
         specifier: catalog:astrojs
-        version: 9.5.0(astro@5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
+        version: 9.5.1(astro@5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
       '@studiocms/blog':
         specifier: workspace:*
         version: link:../packages/@studiocms/blog
@@ -1115,17 +1115,14 @@ packages:
   '@astrojs/internal-helpers@0.6.1':
     resolution: {integrity: sha512-l5Pqf6uZu31aG+3Lv8nl/3s4DbUzdlxTWDof4pEpto6GUJNhhCbelVi9dEyurOVyqaelwmS9oSyOWOENSfgo9A==}
 
-  '@astrojs/internal-helpers@0.7.4':
-    resolution: {integrity: sha512-lDA9MqE8WGi7T/t2BMi+EAXhs4Vcvr94Gqx3q15cFEz8oFZMO4/SFBqYr/UcmNlvW+35alowkVj+w9VhLvs5Cw==}
-
   '@astrojs/internal-helpers@0.7.5':
     resolution: {integrity: sha512-vreGnYSSKhAjFJCWAwe/CNhONvoc5lokxtRoZims+0wa3KbHBdPHSSthJsKxPd8d/aic6lWKpRTYGY/hsgK6EA==}
 
   '@astrojs/markdown-remark@6.3.9':
     resolution: {integrity: sha512-hX2cLC/KW74Io1zIbn92kI482j9J7LleBLGCVU9EP3BeH5MVrnFawOnqD0t/q6D1Z+ZNeQG2gNKMslCcO36wng==}
 
-  '@astrojs/node@9.5.0':
-    resolution: {integrity: sha512-x1whLIatmCefaqJA8FjfI+P6FStF+bqmmrib0OUGM1M3cZhAXKLgPx6UF2AzQ3JgpXgCWYM24MHtraPvZhhyLQ==}
+  '@astrojs/node@9.5.1':
+    resolution: {integrity: sha512-7k+SU877OUQylPr0mFcWrGvNuC78Lp9w+GInY8Rwc+LkHyDP9xls+nZAioK0WDWd+fyeQnlHbpDGURO3ZHuDVg==}
     peerDependencies:
       astro: ^5.14.3
 
@@ -6268,8 +6265,6 @@ snapshots:
 
   '@astrojs/internal-helpers@0.6.1': {}
 
-  '@astrojs/internal-helpers@0.7.4': {}
-
   '@astrojs/internal-helpers@0.7.5': {}
 
   '@astrojs/markdown-remark@6.3.9':
@@ -6298,9 +6293,9 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@astrojs/node@9.5.0(astro@5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))':
+  '@astrojs/node@9.5.1(astro@5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))':
     dependencies:
-      '@astrojs/internal-helpers': 0.7.4
+      '@astrojs/internal-helpers': 0.7.5
       astro: 5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
       send: 1.2.0
       server-destroy: 1.0.1
