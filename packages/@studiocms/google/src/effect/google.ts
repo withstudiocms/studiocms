@@ -25,9 +25,9 @@ export class GoogleUser extends Schema.Class<GoogleUser>('GoogleUser')({
 }) {}
 
 const GOOGLE = {
-	CLIENT_ID: getSecret('GOOGLE_CLIENT_ID') ?? '',
-	CLIENT_SECRET: getSecret('GOOGLE_CLIENT_SECRET') ?? '',
-	REDIRECT_URI: getSecret('GOOGLE_REDIRECT_URI') ?? '',
+	CLIENT_ID: getSecret('CMS_GOOGLE_CLIENT_ID') ?? '',
+	CLIENT_SECRET: getSecret('CMS_GOOGLE_CLIENT_SECRET') ?? '',
+	REDIRECT_URI: getSecret('CMS_GOOGLE_REDIRECT_URI') ?? '',
 };
 
 /**

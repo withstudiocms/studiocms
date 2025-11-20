@@ -31,9 +31,9 @@ export class GitHubUser extends Schema.Class<GitHubUser>('GitHubUser')({
 }) {}
 
 const GITHUB = {
-	CLIENT_ID: getSecret('GITHUB_CLIENT_ID') ?? '',
-	CLIENT_SECRET: getSecret('GITHUB_CLIENT_SECRET') ?? '',
-	REDIRECT_URI: getSecret('GITHUB_REDIRECT_URI') ?? null,
+	CLIENT_ID: getSecret('CMS_GITHUB_CLIENT_ID') ?? '',
+	CLIENT_SECRET: getSecret('CMS_GITHUB_CLIENT_SECRET') ?? '',
+	REDIRECT_URI: getSecret('CMS_GITHUB_REDIRECT_URI') ?? null,
 };
 
 /**

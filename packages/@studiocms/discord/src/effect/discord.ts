@@ -27,9 +27,9 @@ export class DiscordUser extends Schema.Class<DiscordUser>('DiscordUser')({
 }) {}
 
 const DISCORD = {
-	CLIENT_ID: getSecret('DISCORD_CLIENT_ID') ?? '',
-	CLIENT_SECRET: getSecret('DISCORD_CLIENT_SECRET') ?? '',
-	REDIRECT_URI: getSecret('DISCORD_REDIRECT_URI') ?? '',
+	CLIENT_ID: getSecret('CMS_DISCORD_CLIENT_ID') ?? '',
+	CLIENT_SECRET: getSecret('CMS_DISCORD_CLIENT_SECRET') ?? '',
+	REDIRECT_URI: getSecret('CMS_DISCORD_REDIRECT_URI') ?? '',
 };
 
 /**
