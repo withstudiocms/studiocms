@@ -5,7 +5,7 @@ import { allureTester, parentSuiteName, sharedTags } from '../test-utils';
 
 const localSuiteName = 'Error Utilities';
 
-describe('handleCause', () => {
+describe(parentSuiteName, () => {
 	const test = allureTester({
 		suiteParentName: parentSuiteName,
 		suiteName: localSuiteName,
