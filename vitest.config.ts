@@ -121,6 +121,7 @@ export default defineConfig({
 				'**/**/@withstudiocms/auth-kit/scripts/**',
 				'**/**/@withstudiocms/kysely/src/migrations/**',
 				'**/**/@withstudiocms/kysely/scripts/**',
+				'**/**/@withstudiocms/kysely/src/{tables,schema,migrator,index,client}.ts',
 				'**/**/scratchpad/**',
 				'**/**/test/fixtures/**',
 				'**/**/test/test-utils.ts',
