@@ -120,6 +120,7 @@ export default defineConfig({
 				'**/**/vitest.config.ts',
 				'**/**/@withstudiocms/auth-kit/scripts/**',
 				'**/**/@withstudiocms/kysely/src/migrations/**',
+				'**/**/@withstudiocms/kysely/scripts/**',
 				'**/**/scratchpad/**',
 				'**/**/test/fixtures/**',
 				'**/**/test/test-utils.ts',

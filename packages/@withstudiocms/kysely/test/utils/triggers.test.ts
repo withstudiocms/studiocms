@@ -113,6 +113,45 @@ END;`;
 		});
 	});
 
+	test('buildSQLiteTriggerSQL builds correct SQL', async ({ setupAllure, step }) => {
+		await setupAllure({
+			subSuiteName: 'buildSQLiteTriggerSQL Utility',
+			tags: [...sharedTags, 'dialect:sqlite'],
+		});
+
+		await step('should build correct SQLite trigger SQL', async (ctx) => {
+			const triggerName = 'my_trigger';
+			const tableName = 'my_table';
+			const timing = 'before';
+			const event = 'insert';
+			const body = "SELECT RAISE(ABORT, 'triggered');";
+
+			ctx.parameter('triggerName', triggerName);
+			ctx.parameter('tableName', tableName);
+			ctx.parameter('timing', timing);
+			ctx.parameter('event', event);
+			ctx.parameter('body', body);
+
+			const result = buildSQLiteTriggerSQL(triggerName, {
+				bodySQL: body,
+				event,
+				name: triggerName,
+				timing,
+			});
+			ctx.parameter('result', result);
+
+			const expectedSQL = `CREATE TRIGGER IF NOT EXISTS ${quoteIdent('sqlite', triggerName)} ${timing.toUpperCase()} ${event.toUpperCase()} ON ${quoteIdent(
+				'sqlite',
+				triggerName
+			)}
+FOR EACH ROW
+BEGIN
+${body}
+END;`;
+			expect(result).toBe(expectedSQL);
+		});
+	});
+
 	test('buildMySQLTriggerSQL builds correct SQL', async ({ setupAllure, step }) => {
 		await setupAllure({
 			subSuiteName: 'buildMySQLTriggerSQL Utility',
