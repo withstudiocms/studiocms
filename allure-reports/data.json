@@ -1,7 +1,6 @@
 {
   "links": [
     "..",
-    "adam_kysely-project",
     "main",
     "renovate_all-minor-patch",
     "renovate_coverage-report-github-actions",
