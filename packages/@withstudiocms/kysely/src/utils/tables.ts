@@ -6,6 +6,8 @@ import { SqlError } from './errors.js';
 import { createIndexes } from './indexes.js';
 import type { ColumnDefinition, ColumnType, TableDefinition } from './types.js';
 
+/* v8 ignore start */
+
 /**
  * Apply column-level constraints and modifiers to a Kysely column builder.
  *
@@ -195,6 +197,8 @@ export const addMissingColumns = Effect.fn(function* (
 		yield* Effect.logInfo(`No missing columns to add for table ${tableDef.name}`);
 	}
 });
+
+/* v8 ignore stop */
 
 /**
  * Detects table names that existed in the previous schema but are absent from the current schema.

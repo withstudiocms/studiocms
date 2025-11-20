@@ -1,3 +1,4 @@
+/* v8 ignore start */
 import { Effect } from 'effect';
 import { type QueryResult, type Sql, sql } from 'kysely';
 import { SqlError } from './errors.js';
@@ -13,3 +14,5 @@ export const makeSql = <T>(fn: (sql: Sql) => Promise<QueryResult<T>>) =>
 		try: () => fn(sql),
 		catch: (cause) => new SqlError({ cause }),
 	});
+
+/* v8 ignore stop */

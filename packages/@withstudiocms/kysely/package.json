@@ -31,7 +31,8 @@
     "build": "pnpm buildkit build 'src/**/*.{ts,json}'",
     "dev": "pnpm buildkit dev 'src/**/*.{ts,json}'",
     "typecheck": "tspc -p tsconfig.tspc.json",
-    "create-migration": "tsx scripts/create-migration.ts"
+    "create-migration": "tsx scripts/create-migration.ts",
+    "test": "vitest"
   },
   "exports": {
     ".": {

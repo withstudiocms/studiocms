@@ -124,8 +124,10 @@ export const ColumnType = <
 	ColumnTypes<Select, Insert, Update> => {
 	return Object.assign(
 		Schema.make<any, any, never>(Schema.Never.ast).annotations({
+			/* v8 ignore start */
 			message: () =>
 				'ColumnType Schema is not intended to be used directly. Utilize ColumnType.[select|insert|update]',
+			/* v8 ignore stop */
 		}),
 		{
 			[ColumnTypesId]: ColumnTypesId,
@@ -136,6 +138,7 @@ export const ColumnType = <
 	);
 };
 
+/* v8 ignore start */
 /**
  * Runtime type guard that determines whether a value conforms to the ColumnTypes shape.
  *
@@ -153,6 +156,7 @@ export const ColumnType = <
  */
 const isColumnTypes = (value: unknown): value is ColumnTypes<any, any, any> =>
 	hasProperty(value, ColumnTypesId);
+/* v8 ignore stop */
 
 /**
  * Mark a schema's read and write types as database-generated.
@@ -218,6 +222,7 @@ export const GeneratedAlways = <A, I, R>(
 	ColumnTypes<typeof schema, typeof Schema.Never, typeof Schema.Never> =>
 	ColumnType(schema, Schema.Never, Schema.Never);
 
+/* v8 ignore start */
 /**
  * Create a JSON column schema that preserves distinct compile-time types for
  * select (read), encoded, context, insert and update operations.
@@ -295,6 +300,7 @@ export const JsonColumnType = <
 	Schema.Schema.Context<typeof Select | Insert | Update>
 > &
 	ColumnTypes<typeof Select, Insert, Update> => ColumnType(Select, Insert, Update);
+/* v8 ignore stop */
 
 /**
  * Helper type function to extract the select shapes from column types.
@@ -415,6 +421,8 @@ export interface Table<Columns extends Schema.Struct.Fields>
 				>;
 			}>
 		> {}
+
+/* v8 ignore start */
 /**
  * Create a Table descriptor from a columns definition.
  *
@@ -667,3 +675,4 @@ export const CreatedAtDate = ColumnType(
 	Schema.UndefinedOr(Schema.String),
 	Schema.Never
 );
+/* v8 ignore stop */

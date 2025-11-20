@@ -3,15 +3,38 @@ import * as Schema from 'effect/Schema';
 import { type Dialect, Kysely, NoResultError } from 'kysely';
 import { type DatabaseError, NotFoundError, QueryError, QueryParseError } from './errors.js';
 
+/**
+ * Utility type to determine if a type includes null or undefined.
+ */
 type HasNullOrUndefined<T> = null extends T ? true : undefined extends T ? true : false;
 
+/**
+ * Utility type to make properties of T that can be null or undefined optional.
+ */
 export type OptionalNullable<T> = {
 	[K in keyof T as HasNullOrUndefined<T[K]> extends true ? K : never]?: T[K];
 } & {
 	[K in keyof T as HasNullOrUndefined<T[K]> extends true ? never : K]: T[K];
 };
 
-type EffectDb<Schema> = <T>(
+/**
+ * Type alias for an Effect-wrapped database operation that accepts a Kysely instance and returns a result.
+ *
+ * This type represents a higher-order function that takes a callback function as an argument.
+ * The callback function receives a Kysely<Schema> instance and returns a Promise of type T.
+ * The outer function returns an Effect that, when executed, yields another Effect.
+ * The inner Effect resolves to the result of type T or fails with one of the specified error types.
+ *
+ * Type Parameters:
+ * - Schema: The Kysely schema type representing the database structure.
+ * - T: The type of the result produced by the callback function.
+ *
+ * Error Types:
+ * - NotFoundError: Indicates that a requested resource was not found in the database.
+ * - QueryError: Represents errors that occur during query execution.
+ * - DBCallbackFailure: Represents failures that occur within the database callback function.
+ */
+export type EffectDb<Schema> = <T>(
 	fn: (db: Kysely<Schema>) => Promise<T>
 ) => Effect.Effect.AsEffect<
 	Effect.Effect<
@@ -21,65 +44,204 @@ type EffectDb<Schema> = <T>(
 	>
 >;
 
+/**
+ * Type alias for an asynchronous query function that accepts input and returns a Promise of output.
+ *
+ * This type represents a function that takes an input of type I and returns a Promise
+ * that resolves to a value of type O. It is commonly used to define database query functions
+ * that perform asynchronous operations.
+ *
+ * Type Parameters:
+ * - I: The type of the input parameter accepted by the query function.
+ * - O: The type of the output value produced by the query function.
+ */
 export type QueryFn<I, O> = (input: I) => Promise<O>;
 
+/**
+ * Custom error class representing a failure that occurs within a database callback function.
+ *
+ * This error is tagged with 'DBCallbackFailure' and includes a cause property
+ * that holds the underlying reason for the failure.
+ */
 export class DBCallbackFailure extends Data.TaggedError('DBCallbackFailure')<{ cause: unknown }> {}
 
+/**
+ * Type alias for an Effect-wrapped database operation that accepts a Kysely instance and returns a result.
+ *
+ * This type represents a higher-order function that takes a callback function as an argument.
+ * The callback function receives a Kysely<Schema> instance and returns a Promise of type T.
+ * The outer function returns an Effect that, when executed, yields another Effect.
+ * The inner Effect resolves to the result of type T or fails with one of the specified error types.
+ *
+ * Type Parameters:
+ * - Schema: The Kysely schema type representing the database structure.
+ * - T: The type of the result produced by the callback function.
+ *
+ * Error Types:
+ * - NotFoundError: Indicates that a requested resource was not found in the database.
+ * - QueryError: Represents errors that occur during query execution.
+ * - DBCallbackFailure: Represents failures that occur within the database callback function.
+ */
 type DBCallback<Schema> = <T>(
 	fn: (db: Kysely<Schema>) => Promise<T>
 ) => Effect.Effect.AsEffect<
 	Effect.Effect<T, NotFoundError | QueryError | DBCallbackFailure, never>
 >;
 
+/**
+ * Type alias for a function that performs a database operation using a Kysely instance and input data.
+ *
+ * This type represents a higher-order function that takes a DBCallback and an input of type I,
+ * and returns an Effect that, when executed, yields a result of type O or fails with one of the specified error types.
+ *
+ * Type Parameters:
+ * - Schema: The Kysely schema type representing the database structure.
+ * - I: The type of the input parameter accepted by the function.
+ * - O: The type of the output value produced by the function.
+ *
+ * Error Types:
+ * - NotFoundError: Indicates that a requested resource was not found in the database.
+ * - QueryError: Represents errors that occur during query execution.
+ * - DBCallbackFailure: Represents failures that occur within the database callback function.
+ */
 type DBCallbackFn<Schema, I, O> = (
 	query: DBCallback<Schema>,
 	input: I
 ) => Effect.Effect<O, NotFoundError | QueryError | DBCallbackFailure, never>;
 
-type WithEncoder<Schema> = <IEncoded, IType, O, CIType = OptionalNullable<IType>>({
-	callbackFn,
-	encoder,
-}: {
-	encoder: Schema.Schema<IType, IEncoded>;
-	callbackFn: DBCallbackFn<Schema, IEncoded, O>;
-}) => (
-	input: CIType
-) => Effect.Effect<O, DatabaseError | NotFoundError | QueryError | DBCallbackFailure, never>;
+/**
+ * Base interface for a database client providing access to the Kysely instance and effectful operations.
+ *
+ * Type Parameters:
+ * - Schema: The Kysely schema type representing the database structure.
+ */
+interface DBClientBase<Schema> {
+	readonly db: Kysely<Schema>;
+	readonly effectDb: DBCallback<Schema>;
+}
 
-type WithDecoder<Schema> = <OEncoded, OType>({
-	decoder,
-	callbackFn,
-}: {
-	decoder: Schema.Schema<OType, OEncoded, never>;
-	callbackFn: DBCallbackFn<Schema, undefined, OEncoded>;
-}) => () => Effect.Effect<
-	OType,
-	DatabaseError | NotFoundError | QueryError | DBCallbackFailure,
-	never
+/**
+ * Interface defining codec-based helpers for database operations.
+ *
+ * This interface provides methods to create Effect-wrapped database operations that
+ * utilize encoding and decoding schemas for input and output data transformations.
+ *
+ * Type Parameters:
+ * - Schema: The Kysely schema type representing the database structure.
+ *
+ * Methods:
+ * - withEncoder: Creates a function that encodes input data before executing a database operation.
+ * - withDecoder: Creates a function that decodes output data after executing a database operation.
+ * - withCodec: Creates a function that both encodes input data and decodes output data around a database operation.
+ */
+interface DBCodecs<Schema> {
+	/**
+	 * Creates a function that encodes input data before executing a database operation.
+	 *
+	 * @typeParam IEncoded - The encoded representation produced by the encoder schema.
+	 * @typeParam IType - The input value type accepted by the encoder schema.
+	 * @typeParam O - The output type produced by the database operation.
+	 * @typeParam CIType - The cleaned input type with `never` properties stripped (optional).
+	 *
+	 * @param params.encoder - A schema capable of encoding IType to IEncoded.
+	 * @param params.callbackFn - A function that performs the database operation using the encoded input.
+	 *
+	 * @returns A function that accepts input of type CIType and returns an Effect yielding O or failing with DatabaseError.
+	 */
+	readonly withEncoder: <IEncoded, IType, O, CIType = OptionalNullable<IType>>({
+		callbackFn,
+		encoder,
+	}: {
+		encoder: Schema.Schema<IType, IEncoded>;
+		callbackFn: DBCallbackFn<Schema, IEncoded, O>;
+	}) => (
+		input: CIType
+	) => Effect.Effect<O, DatabaseError | NotFoundError | QueryError | DBCallbackFailure, never>;
+
+	/**
+	 * Creates a function that decodes output data after executing a database operation.
+	 *
+	 * @typeParam OEncoded - The encoded/input representation accepted by the decoder schema.
+	 * @typeParam OType - The target/decoded output type produced by the decoder schema.
+	 *
+	 * @param params.decoder - A schema used to decode OEncoded into OType.
+	 * @param params.callbackFn - A function that performs the database operation and returns encoded output.
+	 *
+	 * @returns A zero-argument function that returns an Effect yielding OType or failing with DatabaseError.
+	 */
+	readonly withDecoder: <OEncoded, OType>({
+		decoder,
+		callbackFn,
+	}: {
+		decoder: Schema.Schema<OType, OEncoded, never>;
+		callbackFn: DBCallbackFn<Schema, undefined, OEncoded>;
+	}) => () => Effect.Effect<
+		OType,
+		DatabaseError | NotFoundError | QueryError | DBCallbackFailure,
+		never
+	>;
+
+	/**
+	 * Creates a function that both encodes input data and decodes output data around a database operation.
+	 *
+	 * @typeParam IEncoded - The encoded representation produced by the encoder schema.
+	 * @typeParam IType - The input value type accepted by the encoder schema.
+	 * @typeParam OEncoded - The encoded/input representation accepted by the decoder schema.
+	 * @typeParam OType - The target/decoded output type produced by the decoder schema.
+	 * @typeParam CIType - The cleaned input type with `never` properties stripped (optional).
+	 *
+	 * @param params.encoder - A schema capable of encoding IType to IEncoded.
+	 * @param params.decoder - A schema used to decode OEncoded into OType.
+	 * @param params.callbackFn - A function that performs the database operation using the encoded input and returns encoded output.
+	 *
+	 * @returns A function that accepts input of type CIType and returns an Effect yielding OType or failing with DatabaseError.
+	 */
+	readonly withCodec: <IEncoded, IType, OEncoded, OType, CIType = OptionalNullable<IType>>({
+		encoder,
+		decoder,
+		callbackFn,
+	}: {
+		encoder: Schema.Schema<IType, IEncoded, never>;
+		decoder: Schema.Schema<OType, OEncoded, never>;
+		callbackFn: DBCallbackFn<Schema, IEncoded, OEncoded>;
+	}) => (
+		input: CIType
+	) => Effect.Effect<OType, DatabaseError | NotFoundError | QueryError | DBCallbackFailure, never>;
+}
+
+/**
+ * Comprehensive interface for a database client combining base functionality and codec-based helpers.
+ *
+ * Type Parameters:
+ * - Schema: The Kysely schema type representing the database structure.
+ */
+export interface DBClientInterface<Schema> extends DBClientBase<Schema>, DBCodecs<Schema> {}
+
+/**
+ * Type alias for an Effect that yields a Kysely database client for the specified schema.
+ *
+ * This type represents an Effect that, when executed, provides a Kysely<Schema> instance.
+ * The Effect requires a DBClientInterface<Schema> as its environment and does not fail.
+ *
+ * Type Parameters:
+ * - Schema: The Kysely schema type representing the database structure.
+ */
+export type KyselyDBClientRaw<Schema> = Effect.Effect<
+	DBClientInterface<Schema>,
+	never,
+	Kysely<Schema>
 >;
 
-type WithCodec<Schema> = <IEncoded, IType, OEncoded, OType, CIType = OptionalNullable<IType>>({
-	encoder,
-	decoder,
-	callbackFn,
-}: {
-	encoder: Schema.Schema<IType, IEncoded, never>;
-	decoder: Schema.Schema<OType, OEncoded, never>;
-	callbackFn: DBCallbackFn<Schema, IEncoded, OEncoded>;
-}) => (
-	input: CIType
-) => Effect.Effect<OType, DatabaseError | NotFoundError | QueryError | DBCallbackFailure, never>;
-
-export type DBClientInterface<Schema> = {
-	readonly db: Kysely<Schema>;
-	readonly effectDb: EffectDb<Schema>;
-	readonly withEncoder: WithEncoder<Schema>;
-	readonly withDecoder: WithDecoder<Schema>;
-	readonly withCodec: WithCodec<Schema>;
-};
-
-type KyselyDBClientRaw<Schema> = Effect.Effect<DBClientInterface<Schema>, never, Kysely<Schema>>;
-
+/**
+ * Type alias for an Effect that provides a live Kysely database client for the specified schema.
+ *
+ * This type represents an Effect that, when executed, yields no value but requires
+ * a DBClientInterface<Schema> as its environment. It is used to set up and provide
+ * a live Kysely client instance in the Effect context.
+ *
+ * Type Parameters:
+ * - Schema: The Kysely schema type representing the database structure.
+ */
 export type KyselyDBClientLive<Schema> = Effect.Effect<DBClientInterface<Schema>, never, never>;
 
 /**
@@ -256,7 +418,7 @@ const dbClient = <Schema>(): KyselyDBClientRaw<Schema> =>
 		 *
 		 * @returns A function that accepts input: CIType and returns Effect.Effect<O, DatabaseError>. The effect encodes the input and runs the query inside the Effect runtime.
 		 */
-		const withEncoder: WithEncoder<Schema> =
+		const withEncoder: DBCodecs<Schema>['withEncoder'] =
 			<IEncoded, IType, O, CIType = OptionalNullable<IType>>({
 				callbackFn,
 				encoder,
@@ -295,7 +457,7 @@ const dbClient = <Schema>(): KyselyDBClientRaw<Schema> =>
 		 * const run = withDecoder({ decoder: userSchema, query: fetchUserRow });
 		 * const effect = run(); // Effect< userType, DatabaseError >
 		 */
-		const withDecoder: WithDecoder<Schema> =
+		const withDecoder: DBCodecs<Schema>['withDecoder'] =
 			<OEncoded, OType>({
 				decoder,
 				callbackFn,
@@ -345,7 +507,7 @@ const dbClient = <Schema>(): KyselyDBClientRaw<Schema> =>
 		 * // getUser returns Effect<User, DatabaseError>
 		 * const effect = getUser({ id: 'abc' });
 		 */
-		const withCodec: WithCodec<Schema> =
+		const withCodec: DBCodecs<Schema>['withCodec'] =
 			<IEncoded, IType, OEncoded, OType, CIType = OptionalNullable<IType>>({
 				encoder,
 				decoder,
@@ -373,9 +535,9 @@ const dbClient = <Schema>(): KyselyDBClientRaw<Schema> =>
 		return {
 			db,
 			effectDb,
-			withEncoder,
-			withDecoder,
 			withCodec,
+			withDecoder,
+			withEncoder,
 		} as DBClientInterface<Schema>;
 	});
 
