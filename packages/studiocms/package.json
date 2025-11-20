@@ -151,7 +151,7 @@
 	"type": "module",
 	"dependencies": {
 		"@iconify-json/flat-color-icons": "^1.2.3",
-		"@iconify-json/simple-icons": "^1.2.57",
+		"@iconify-json/simple-icons": "^1.2.59",
 		"@iconify-json/circle-flags": "^1.2.10",
 		"@inox-tools/runtime-logger": "^0.7.0",
 		"@nanostores/i18n": "^1.2.2",
@@ -173,7 +173,7 @@
 		"dompurify": "^3.3.0",
 		"dotenv": "^17.2.3",
 		"fuse.js": "^7.1.0",
-		"jose": "^6.1.0",
+		"jose": "^6.1.2",
 		"micromark": "^4.0.2",
 		"micromark-extension-gfm": "^3.0.0",
 		"magicast": "^0.5.1",
