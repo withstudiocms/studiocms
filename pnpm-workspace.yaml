@@ -41,8 +41,8 @@ catalogs:
     vite: ^6.3.4
   react:
     "@astrojs/react": ^4.4.2
-    "@types/react": ^19.2.2
-    "@types/react-dom": ^19.2.2
+    "@types/react": ^19.2.5
+    "@types/react-dom": ^19.2.3
     react: ^19.2.0
     react-dom: ^19.2.0
   studiocms:
