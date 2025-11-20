@@ -1,8 +1,8 @@
 {
   "links": [
     "..",
+    "changeset-release_main",
     "main",
-    "renovate_all-minor-patch",
     "renovate_coverage-report-github-actions",
     "renovate_devcontainer-mcr_microsoft_com-devcontainers-typescript-node-dev-22-bookworm",
     "renovate_npm-astro-vulnerability"
