@@ -1,22 +1,22 @@
 const en = ({
   overview: {
-    title: false,
-    'total-pages': false,
-    'draft-pages': false,
-    'total-users': false
+    title: "概览",
+    'total-pages': "页面总数",
+    'draft-pages': "草稿页",
+    'total-users': "用户总数"
   },
   'recently-updated-pages': {
-    title: false,
-    edited: false,
-    'no-pages-found': false
+    title: "最近更新页面",
+    edited: "编辑于：",
+    'no-pages-found': "未找到最近更新的页面。"
   },
   'recently-created-pages': {
-    title: false,
-    created: false,
-    'no-pages-found': false
+    title: "最近创建页面",
+    created: "创建于：",
+    'no-pages-found': "未找到最近创建的页面。"
   },
   'recently-signed-up-users': {
-    title: false
+    title: "最近注册用户"
   }
 } as const);
 export default en;
