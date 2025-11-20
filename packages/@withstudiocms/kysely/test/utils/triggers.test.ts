@@ -93,7 +93,7 @@ describe(parentSuiteName, () => {
 			ctx.parameter('event', event);
 			ctx.parameter('body', body);
 
-			const result = buildSQLiteTriggerSQL(triggerName, {
+			const result = buildSQLiteTriggerSQL(tableName, {
 				bodySQL: body,
 				event,
 				name: triggerName,
@@ -103,7 +103,7 @@ describe(parentSuiteName, () => {
 
 			const expectedSQL = `CREATE TRIGGER IF NOT EXISTS ${quoteIdent('sqlite', triggerName)} ${timing.toUpperCase()} ${event.toUpperCase()} ON ${quoteIdent(
 				'sqlite',
-				triggerName
+				tableName
 			)}
 FOR EACH ROW
 BEGIN
@@ -132,7 +132,7 @@ END;`;
 			ctx.parameter('event', event);
 			ctx.parameter('body', body);
 
-			const result = buildSQLiteTriggerSQL(triggerName, {
+			const result = buildSQLiteTriggerSQL(tableName, {
 				bodySQL: body,
 				event,
 				name: triggerName,
@@ -142,7 +142,7 @@ END;`;
 
 			const expectedSQL = `CREATE TRIGGER IF NOT EXISTS ${quoteIdent('sqlite', triggerName)} ${timing.toUpperCase()} ${event.toUpperCase()} ON ${quoteIdent(
 				'sqlite',
-				triggerName
+				tableName
 			)}
 FOR EACH ROW
 BEGIN
@@ -171,7 +171,7 @@ END;`;
 			ctx.parameter('event', event);
 			ctx.parameter('body', body);
 
-			const result = buildMySQLTriggerSQL(triggerName, {
+			const result = buildMySQLTriggerSQL(tableName, {
 				bodySQL: body,
 				event,
 				name: triggerName,
@@ -181,7 +181,7 @@ END;`;
 
 			const expectedSQL = `CREATE TRIGGER ${quoteIdent('mysql', triggerName)} ${timing.toUpperCase()} ${event.toUpperCase()} ON ${quoteIdent(
 				'mysql',
-				triggerName
+				tableName
 			)}
 FOR EACH ROW
 ${body};`;

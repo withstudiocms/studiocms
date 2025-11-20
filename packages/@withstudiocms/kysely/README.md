@@ -12,7 +12,6 @@ A type-safe database client and migration system for StudioCMS, built on top of 
 - 🔒 **Type-Safe Database Operations** - Full TypeScript support with Kysely's type-safe query builder
 - 🗄️ **Multi-Database Support** - Works with libSQL (Turso), MySQL, and PostgreSQL
 - 🔄 **Runtime Schema Management** - Dynamic schema creation and validation
-- 📦 **Migration System** - JSON-based migrations with automatic tracking
 - 🛡️ **Error Handling** - Custom error types for better debugging
 - 🔍 **Schema Introspection** - Inspect and validate database schemas at runtime
 - ⚡ **Effect-ts Integration** - Functional programming patterns with Effect-ts

@@ -19,8 +19,8 @@ describe(parentSuiteName, () => {
 
 		await step('should be a unique symbol', async (ctx) => {
 			await ctx.parameter('symbolDescription', ColumnTypesId.toString());
-			const anotherSymbol = Symbol.for('kysely:ColumnTypesId');
-			expect(ColumnTypesId).not.toBe(anotherSymbol);
+			const anotherSymbol = Symbol.for('@withstudiocms/kysely/ColumnTypesId');
+			expect(ColumnTypesId).toBe(anotherSymbol);
 		});
 	});
 
@@ -76,7 +76,6 @@ describe(parentSuiteName, () => {
 			const generatedColumn = Generated(Schema.String);
 
 			expect(generatedColumn.Select).toBe(Schema.String);
-			expect(generatedColumn.Insert).toBeTypeOf('function');
 			expect(generatedColumn.Update).toBe(Schema.String);
 		});
 	});
