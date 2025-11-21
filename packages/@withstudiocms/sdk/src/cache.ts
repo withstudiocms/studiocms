@@ -218,9 +218,13 @@ export class CacheService extends Effect.Service<CacheService>()(
 			 * @returns An effect that yields the CacheEntryStatus or null if not found.
 			 */
 			const getCacheStatus = Effect.fn((id: string) =>
-				Effect.sync((): CacheEntryStatus | null => {
+				Effect.gen(function* () {
+					const now = yield* Clock.currentTimeMillis;
 					const entry = store.get(id);
-					if (!entry) {
+					if (!entry || entry.expiresAt < now) {
+						if (entry && entry.expiresAt < now) {
+							store.delete(id); // Clean up expired entry
+						}
 						return null;
 					}
 					return {
