@@ -4,7 +4,7 @@ import { LibsqlDialect } from '@libsql/kysely-libsql';
 import * as allure from 'allure-js-commons';
 import { Effect } from 'effect';
 import { test as baseTest } from 'vitest';
-import { getDBClientLive, type StudioCMSDatabaseSchema } from '../src';
+import { getDBClientLive } from '../src';
 
 export const parentSuiteName = '@withstudiocms/kysely Package Tests';
 export const sharedTags = ['package:@withstudiocms/kysely', 'type:unit', 'scope:withstudiocms'];
@@ -116,7 +116,7 @@ export const allureTester = (allureMeta: { suiteParentName: string; suiteName: s
  * await cleanup(); // remove test.db after tests
  * ```
  */
-export const DBClientFixture = (suite: string) => {
+export const DBClientFixture = <Schema>(suite: string) => {
 	/**
 	 * Normalizes a string to be filesystem-friendly by replacing non-alphanumeric characters.
 	 *
@@ -183,7 +183,7 @@ export const DBClientFixture = (suite: string) => {
 		 *
 		 * @returns A Kysely client instance for interacting with the test database.
 		 */
-		getClient: () => getDBClientLive<StudioCMSDatabaseSchema>(new LibsqlDialect({ url })),
+		getClient: () => getDBClientLive<Schema>(new LibsqlDialect({ url })),
 	};
 
 	// ============================================
