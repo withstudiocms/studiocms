@@ -150,6 +150,11 @@ export const DBClientFixture = <Schema>(suite: string) => {
 	 */
 	const url = dbFile.toString();
 
+	/**
+	 * LibsqlDialect instance configured to connect to the test database file.
+	 */
+	const dialect = new LibsqlDialect({ url });
+
 	// ============================================
 	// Primary Effect-based fixture implementations
 	// ============================================
@@ -183,7 +188,7 @@ export const DBClientFixture = <Schema>(suite: string) => {
 		 *
 		 * @returns A Kysely client instance for interacting with the test database.
 		 */
-		getClient: () => getDBClientLive<Schema>(new LibsqlDialect({ url })),
+		getClient: () => getDBClientLive<Schema>(dialect),
 	};
 
 	// ============================================
@@ -222,6 +227,7 @@ export const DBClientFixture = <Schema>(suite: string) => {
 	// ============================================
 
 	return {
+		dialect,
 		effect,
 		js,
 	};
