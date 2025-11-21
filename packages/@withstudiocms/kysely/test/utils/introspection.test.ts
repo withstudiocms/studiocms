@@ -1,5 +1,5 @@
 import { Effect } from 'effect';
-import { afterAll, beforeEach, describe, expect } from 'vitest';
+import { afterEach, beforeEach, describe, expect } from 'vitest';
 import { getDialect } from '../../src/utils/introspection';
 import { allureTester, DBClientFixture, parentSuiteName, sharedTags } from '../test-utils';
 
@@ -17,7 +17,7 @@ describe(parentSuiteName, () => {
 		await dbFixture.cleanup();
 	});
 
-	afterAll(async () => {
+	afterEach(async () => {
 		await dbFixture.cleanup();
 	});
 
