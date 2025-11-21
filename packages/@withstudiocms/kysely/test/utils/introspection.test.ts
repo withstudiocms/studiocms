@@ -1,9 +1,7 @@
-import { LibsqlDialect } from '@libsql/kysely-libsql';
 import { Effect } from 'effect';
-import { Kysely } from 'kysely';
-import { describe, expect } from 'vitest';
+import { afterAll, beforeEach, describe, expect } from 'vitest';
 import { getDialect } from '../../src/utils/introspection';
-import { allureTester, parentSuiteName, sharedTags } from '../test-utils';
+import { allureTester, DBClientFixture, parentSuiteName, sharedTags } from '../test-utils';
 
 const localSuiteName = 'Introspection Utilities';
 
@@ -13,6 +11,16 @@ describe(parentSuiteName, () => {
 		suiteName: localSuiteName,
 	});
 
+	const { js: dbFixture } = DBClientFixture(localSuiteName);
+
+	beforeEach(async () => {
+		await dbFixture.cleanup();
+	});
+
+	afterAll(async () => {
+		await dbFixture.cleanup();
+	});
+
 	test('getDialect identifies SQL dialect correctly sqlite', async ({ setupAllure, step }) => {
 		await setupAllure({
 			subSuiteName: 'getDialect identifies SQL dialect correctly sqlite',
@@ -20,11 +28,7 @@ describe(parentSuiteName, () => {
 		});
 
 		await step('should identify dialects accurately', async () => {
-			const db = new Kysely({
-				dialect: new LibsqlDialect({
-					url: 'file:./test.db',
-				}),
-			});
+			const { db } = await dbFixture.getClient();
 
 			const dialect = await Effect.runPromise(getDialect(db));
 			expect(dialect).toBe('sqlite');
