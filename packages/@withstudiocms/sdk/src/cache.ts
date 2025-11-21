@@ -8,7 +8,17 @@ import { Clock, Duration, Effect } from '@withstudiocms/effect';
 export interface CacheEntry<A> {
 	value: A;
 	expiresAt: number;
+	lastUpdatedAt: number; // Timestamp of last update
 	tags: Set<string>; // For tag-based invalidation
+}
+
+/**
+ * Represents the status of a cache entry, including expiration and tags.
+ */
+export interface CacheEntryStatus {
+	expiresAt: Date;
+	lastUpdatedAt: Date;
+	tags: Set<string>;
 }
 
 /**
@@ -119,7 +129,7 @@ export class CacheService extends Effect.Service<CacheService>()(
 					const tags = new Set(options?.tags ?? []);
 
 					const expiresAt = now + Duration.toMillis(ttl);
-					store.set(key, { value, expiresAt, tags });
+					store.set(key, { value, expiresAt, tags, lastUpdatedAt: now });
 
 					// Update tag index
 					for (const tag of tags) {
@@ -201,7 +211,27 @@ export class CacheService extends Effect.Service<CacheService>()(
 					)
 				);
 
-			return { get, set, delete: deleteKey, invalidateTags, clear, memoize };
+			/**
+			 * Retrieves the status of a cache entry by key.
+			 *
+			 * @param id - The cache key.
+			 * @returns An effect that yields the CacheEntryStatus or null if not found.
+			 */
+			const getCacheStatus = Effect.fn((id: string) =>
+				Effect.sync((): CacheEntryStatus | null => {
+					const entry = store.get(id);
+					if (!entry) {
+						return null;
+					}
+					return {
+						expiresAt: new Date(entry.expiresAt),
+						lastUpdatedAt: new Date(entry.lastUpdatedAt),
+						tags: entry.tags,
+					};
+				})
+			);
+
+			return { get, set, delete: deleteKey, invalidateTags, clear, memoize, getCacheStatus };
 		}),
 	}
 ) {}
