@@ -1,14 +1,23 @@
 import { existsSync } from 'node:fs';
 import { unlink } from 'node:fs/promises';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { LibsqlDialect } from '@libsql/kysely-libsql';
 import * as allure from 'allure-js-commons';
 import { Effect } from 'effect';
 import { test as baseTest } from 'vitest';
-import { getMigratorLive } from '../dist/migrator';
 import { getDBClientLive } from '../src';
+import { getMigratorLive } from '../src/migrator';
 
 export const parentSuiteName = '@withstudiocms/kysely Package Tests';
 export const sharedTags = ['package:@withstudiocms/kysely', 'type:unit', 'scope:withstudiocms'];
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Path to the migrations folder for tests
+// This ensures that the migrator in tests uses the compiled migrations preventing issues with missing files while allowing correct coverage reporting.
+const migrationFolder = path.join(__dirname, '../dist/migrations');
 
 /**
  * Extends the base test fixture with Allure helpers tailored for tests.
@@ -199,7 +208,7 @@ export const DBClientFixture = <Schema>(suite: string) => {
 		 *
 		 * @returns A migrator instance for managing migrations on the test database.
 		 */
-		getMigrator: () => getMigratorLive(dialect),
+		getMigrator: () => getMigratorLive(dialect, migrationFolder),
 	};
 
 	// ============================================
