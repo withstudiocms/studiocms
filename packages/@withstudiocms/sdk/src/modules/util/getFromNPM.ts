@@ -133,11 +133,11 @@ export const GetFromNPM = Effect.gen(function* () {
 	 * @returns An Effect that yields an object with version and lastCacheUpdate date.
 	 */
 	const _remapData =
-		(srcVer?: string | undefined) =>
-		({ version, name }: NpmRegistryResponseSchema) =>
+		(pkg: string, srcVer?: string | undefined) =>
+		({ version }: NpmRegistryResponseSchema) =>
 			Effect.all({
 				version: Effect.succeed(version),
-				lastCacheUpdate: getCacheStatus(cacheKey(name, srcVer || 'latest')).pipe(
+				lastCacheUpdate: getCacheStatus(cacheKey(pkg, srcVer || 'latest')).pipe(
 					Effect.map(_remapCacheStatusData)
 				),
 			});
@@ -167,7 +167,7 @@ export const GetFromNPM = Effect.gen(function* () {
 	 * @returns An Effect that resolves to an object containing the version string and last cache update date.
 	 */
 	const getVersion = Effect.fn((pkg: string, ver?: string) =>
-		getDataFromNPM(pkg, ver).pipe(Effect.flatMap(_remapData(ver)))
+		getDataFromNPM(pkg, ver).pipe(Effect.flatMap(_remapData(pkg, ver)))
 	);
 
 	return { getVersion, getDataFromNPM };
