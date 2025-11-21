@@ -4,6 +4,7 @@ import { LibsqlDialect } from '@libsql/kysely-libsql';
 import * as allure from 'allure-js-commons';
 import { Effect } from 'effect';
 import { test as baseTest } from 'vitest';
+import { getMigratorLive } from '../dist/migrator';
 import { getDBClientLive } from '../src';
 
 export const parentSuiteName = '@withstudiocms/kysely Package Tests';
@@ -189,6 +190,16 @@ export const DBClientFixture = <Schema>(suite: string) => {
 		 * @returns A Kysely client instance for interacting with the test database.
 		 */
 		getClient: () => getDBClientLive<Schema>(dialect),
+
+		/**
+		 * Creates and returns a migrator instance configured for the test database.
+		 *
+		 * @remarks
+		 * The returned migrator is configured to use the LibSQL dialect pointed at the fixture database file.
+		 *
+		 * @returns A migrator instance for managing migrations on the test database.
+		 */
+		getMigrator: () => getMigratorLive(dialect),
 	};
 
 	// ============================================
@@ -220,6 +231,16 @@ export const DBClientFixture = <Schema>(suite: string) => {
 		 * @returns A Kysely client instance for interacting with the test database.
 		 */
 		getClient: () => Effect.runPromise(effect.getClient()),
+
+		/**
+		 * Creates and returns a migrator instance configured for the test database.
+		 *
+		 * @remarks
+		 * The returned migrator is configured to use the LibSQL dialect pointed at the fixture database file.
+		 *
+		 * @returns A migrator instance for managing migrations on the test database.
+		 */
+		getMigrator: () => Effect.runPromise(effect.getMigrator()),
 	};
 
 	// ============================================
@@ -230,5 +251,6 @@ export const DBClientFixture = <Schema>(suite: string) => {
 		dialect,
 		effect,
 		js,
+		run: Effect.runPromise,
 	};
 };
