@@ -1,6 +1,6 @@
 import { constants } from 'node:fs';
 import { access, unlink, writeFile } from 'node:fs/promises';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { build as esbuild } from 'esbuild';
 import type {
 	ImportBundledFileArgs,
@@ -52,10 +52,12 @@ export async function importBundledFile({
 	label = 'bundled-tmp.config',
 }: ImportBundledFileArgs): Promise<{ default?: unknown }> {
 	// Write it to disk, load it with native Node ESM, then delete the file.
-	const tmpFileUrl = new URL(
-		`./${label}.timestamp-${Date.now()}-${Math.random().toString(36).substring(2, 9)}.mjs`,
-		root
-	);
+	// Convert root URL to file path first, then back to URL for Windows compatibility
+	const rootPath = fileURLToPath(root);
+	const tmpFileName = `${label}.timestamp-${Date.now()}-${Math.random().toString(36).substring(2, 9)}.mjs`;
+	const tmpFilePath = new URL(tmpFileName, pathToFileURL(`${rootPath}/`)).pathname;
+	const tmpFileUrl = pathToFileURL(tmpFilePath);
+
 	await writeFile(tmpFileUrl, code, { encoding: 'utf8' });
 	try {
 		return await import(/* @vite-ignore */ tmpFileUrl.toString());
