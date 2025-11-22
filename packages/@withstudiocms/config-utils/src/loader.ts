@@ -124,7 +124,7 @@ export async function loadConfigFile<R>(
 	for (const path of configPaths) {
 		const fileUrl = new URL(path, root);
 		try {
-			await access(fileUrl, constants.F_OK);
+			await access(fileURLToPath(fileUrl), constants.F_OK);
 			configFileUrl = fileUrl;
 			break;
 		} catch {
