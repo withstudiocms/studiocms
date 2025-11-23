@@ -1,5 +1,5 @@
 import { Effect, HTTPClient, Platform, Schema } from '@withstudiocms/effect';
-import { CacheService } from '../../cache.js';
+import { type CacheEntryStatus, CacheService } from '../../cache.js';
 import { cacheKeyGetters, cacheTags } from '../../consts.js';
 
 /**
@@ -112,7 +112,35 @@ const cacheOpts = { tags: cacheTags.npmPackage };
  * @returns An Effect that resolves to the version string of the specified package.
  */
 export const GetFromNPM = Effect.gen(function* () {
-	const [{ get: getter }, { memoize }] = yield* Effect.all([HTTPClient, CacheService]);
+	const [{ get: getter }, { memoize, getCacheStatus }] = yield* Effect.all([
+		HTTPClient,
+		CacheService,
+	]);
+
+	/**
+	 * Remaps the cache status data to just the last updated date.
+	 *
+	 * @param status - The cache entry status.
+	 * @returns The last updated date or current date if status is null.
+	 */
+	const _remapCacheStatusData = (status: CacheEntryStatus | null) =>
+		status ? status.lastUpdatedAt : new Date();
+
+	/**
+	 * Remaps the full NPM registry response to just the version and last cache update date.
+	 *
+	 * @param srcVer - The source version tag or number.
+	 * @returns An Effect that yields an object with version and lastCacheUpdate date.
+	 */
+	const _remapData =
+		(pkg: string, srcVer?: string | undefined) =>
+		({ version }: NpmRegistryResponseSchema) =>
+			Effect.all({
+				version: Effect.succeed(version),
+				lastCacheUpdate: getCacheStatus(cacheKey(pkg, srcVer || 'latest')).pipe(
+					Effect.map(_remapCacheStatusData)
+				),
+			});
 
 	/**
 	 * Retrieves the full data of an NPM package from the NPM registry.
@@ -132,14 +160,14 @@ export const GetFromNPM = Effect.gen(function* () {
 	);
 
 	/**
-	 * Retrieves the version of an NPM package.
+	 * Retrieves the version information of an NPM package from the NPM registry.
 	 *
 	 * @param pkg - The name of the NPM package.
 	 * @param ver - The version tag or number (defaults to 'latest').
-	 * @returns An Effect that resolves to the version string of the specified package.
+	 * @returns An Effect that resolves to an object containing the version string and last cache update date.
 	 */
 	const getVersion = Effect.fn((pkg: string, ver?: string) =>
-		getDataFromNPM(pkg, ver).pipe(Effect.map((data) => data.version))
+		getDataFromNPM(pkg, ver).pipe(Effect.flatMap(_remapData(pkg, ver)))
 	);
 
 	return { getVersion, getDataFromNPM };
