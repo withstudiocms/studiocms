@@ -1,5 +1,14 @@
 # @studiocms/github
 
+## 0.1.0-beta.31
+
+### Patch Changes
+
+- [#1000](https://github.com/withstudiocms/studiocms/pull/1000) [`97461b7`](https://github.com/withstudiocms/studiocms/commit/97461b7e5f986e611ae77113c35f39d899eaf38a) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Fixes environment variable loading
+
+- Updated dependencies [[`25d5f6e`](https://github.com/withstudiocms/studiocms/commit/25d5f6ef79c39f4d69418b1dd0cae87f8d646dd1), [`a0f45c5`](https://github.com/withstudiocms/studiocms/commit/a0f45c5d9c034cf63d0d36a1c4c1eef598533bb6)]:
+  - studiocms@0.1.0-beta.31
+
 ## 0.1.0-beta.30
 
 ### Patch Changes

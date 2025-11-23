@@ -1,5 +1,18 @@
 # studiocms
 
+## 0.1.0-beta.31
+
+### Patch Changes
+
+- [#998](https://github.com/withstudiocms/studiocms/pull/998) [`25d5f6e`](https://github.com/withstudiocms/studiocms/commit/25d5f6ef79c39f4d69418b1dd0cae87f8d646dd1) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update studiocms dependencies
+
+- [#1001](https://github.com/withstudiocms/studiocms/pull/1001) [`a0f45c5`](https://github.com/withstudiocms/studiocms/commit/a0f45c5d9c034cf63d0d36a1c4c1eef598533bb6) Thanks [@apollo-git-bot](https://github.com/apps/apollo-git-bot)! - Translation Updated (PR: #1001)
+
+- Updated dependencies [[`97c7847`](https://github.com/withstudiocms/studiocms/commit/97c7847c0cdd41998e0a6d8c61ab6f3c4ac4474e), [`675b7d5`](https://github.com/withstudiocms/studiocms/commit/675b7d5bbb2c40e6a204d3c7227812923e37289f)]:
+  - @withstudiocms/effect@0.1.0-beta.7
+  - @withstudiocms/auth-kit@0.1.0-beta.6
+  - @withstudiocms/component-registry@0.1.0-beta.7
+
 ## 0.1.0-beta.30
 
 ### Patch Changes
