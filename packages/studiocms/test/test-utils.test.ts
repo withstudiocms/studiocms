@@ -102,7 +102,7 @@ describe(parentSuiteName, () => {
 		});
 
 		plugin = makePluginWithHooks({
-			'studiocms:astro:config': astroConfigHook,
+			'studiocms:astro-config': astroConfigHook,
 		});
 		tester = new StudioCMSPluginTester(plugin);
 
@@ -131,7 +131,12 @@ describe(parentSuiteName, () => {
 		});
 
 		plugin = makePluginWithHooks({
-			'studiocms:config:setup': configHook,
+			'studiocms:auth': configHook,
+			'studiocms:dashboard': configHook,
+			'studiocms:frontend': configHook,
+			'studiocms:image': configHook,
+			'studiocms:rendering': configHook,
+			'studiocms:sitemap': configHook,
 		});
 		tester = new StudioCMSPluginTester(plugin);
 

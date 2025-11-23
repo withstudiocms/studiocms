@@ -158,7 +158,7 @@ describe(parentSuiteName, () => {
 				debug: vi.fn(),
 			} as any;
 
-			const hook = plugin.hooks['studiocms:astro:config'];
+			const hook = plugin.hooks['studiocms:astro-config'];
 			if (!hook) throw new Error('Hook not found');
 			hook({ addIntegrations: mockAddIntegrations, logger: mockLogger });
 
@@ -236,7 +236,7 @@ describe(parentSuiteName, () => {
 				debug: vi.fn(),
 			} as any;
 
-			const hook = plugin.hooks['studiocms:astro:config'];
+			const hook = plugin.hooks['studiocms:astro-config'];
 			if (!hook) throw new Error('Hook not found');
 			hook({ addIntegrations: mockAddIntegrations, logger: mockLogger });
 

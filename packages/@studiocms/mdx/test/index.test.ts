@@ -103,8 +103,8 @@ describe(parentSuiteName, () => {
 			const mockAddIntegrations = vi.fn();
 			const mockSetRendering = vi.fn();
 
-			// Test 'studiocms:astro:config' hook
-			const astroConfigHook = plugin.hooks['studiocms:astro:config'];
+			// Test 'studiocms:astro-config' hook
+			const astroConfigHook = plugin.hooks['studiocms:astro-config'];
 			if (!astroConfigHook) throw new Error('Hook not found');
 			astroConfigHook({ addIntegrations: mockAddIntegrations } as any);
 
@@ -121,7 +121,7 @@ describe(parentSuiteName, () => {
 			});
 
 			// Test 'studiocms:config:setup' hook
-			const configSetupHook = plugin.hooks['studiocms:config:setup'];
+			const configSetupHook = plugin.hooks['studiocms:rendering'];
 			if (!configSetupHook) throw new Error('Hook not found');
 			configSetupHook({ setRendering: mockSetRendering } as any);
 
@@ -151,7 +151,7 @@ describe(parentSuiteName, () => {
 			const plugin: ReturnType<typeof studiocmsMDX> = studiocmsMDX(customOptions);
 			const mockAddIntegrations = vi.fn();
 
-			const astroConfigHook = plugin.hooks['studiocms:astro:config'];
+			const astroConfigHook = plugin.hooks['studiocms:astro-config'];
 			if (!astroConfigHook) throw new Error('Hook not found');
 			astroConfigHook({ addIntegrations: mockAddIntegrations } as any);
 

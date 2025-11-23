@@ -132,7 +132,7 @@ describe(parentSuiteName, () => {
 		await allure.step('Should have studiocms:config:setup hook defined', async (ctx) => {
 			await ctx.parameter('pluginHooks', JSON.stringify(plugin.hooks, null, 2));
 
-			const hook = plugin.hooks['studiocms:config:setup'];
+			const hook = plugin.hooks['studiocms:image-service'];
 			expect(hook).toBeDefined();
 
 			await ctx.parameter('studiocms:config:setup Hook', String(!!hook));
@@ -140,12 +140,7 @@ describe(parentSuiteName, () => {
 			if (hook) {
 				hook({
 					logger: mockLogger,
-					setSitemap: vi.fn().mockImplementation((_args: unknown) => {}),
-					setDashboard: vi.fn().mockImplementation((_args: unknown) => {}),
-					setFrontend: vi.fn().mockImplementation((_args: unknown) => {}),
-					setRendering: vi.fn().mockImplementation((_args: unknown) => {}),
 					setImageService: mockSetImageService,
-					setAuthService: vi.fn().mockImplementation((_args: unknown) => {}),
 				});
 			}
 
@@ -169,7 +164,7 @@ describe(parentSuiteName, () => {
 		await allure.step('Should add CloudinaryENVIntegration', async (ctx) => {
 			await ctx.parameter('pluginHooks', JSON.stringify(plugin.hooks, null, 2));
 
-			const hook = plugin.hooks['studiocms:astro:config'];
+			const hook = plugin.hooks['studiocms:astro-config'];
 			expect(hook).toBeDefined();
 
 			if (hook) {

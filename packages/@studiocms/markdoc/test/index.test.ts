@@ -80,15 +80,15 @@ describe(parentSuiteName, () => {
 			await ctx.parameter('definedHooks', String(Object.keys(plugin.hooks || {})));
 
 			expect(plugin.hooks).toBeDefined();
-			expect(plugin.hooks['studiocms:astro:config']).toBeDefined();
-			expect(plugin.hooks['studiocms:config:setup']).toBeDefined();
+			expect(plugin.hooks['studiocms:astro-config']).toBeDefined();
+			expect(plugin.hooks['studiocms:rendering']).toBeDefined();
 		});
 
 		await allure.step('Should set up Astro page type configuration', async (ctx) => {
 			const plugin = studiocmsMarkDoc();
 			const setRendering = vi.fn();
 
-			const configSetupHook = plugin.hooks['studiocms:config:setup']!;
+			const configSetupHook = plugin.hooks['studiocms:rendering']!;
 			// @ts-expect-error - testing hook invocation
 			configSetupHook({ setRendering });
 
