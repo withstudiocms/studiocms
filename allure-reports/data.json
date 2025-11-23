@@ -1,6 +1,8 @@
 {
   "links": [
     "..",
+    "adam_fix-config-loader",
+    "adam_tweak-sdk-cache",
     "changeset-release_main",
     "main"
   ]
