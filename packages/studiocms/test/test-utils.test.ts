@@ -121,22 +121,37 @@ describe(parentSuiteName, () => {
 			tags: [...sharedTags, 'class:StudioCMSPluginTester', 'method:getHookResults'],
 		});
 
-		const configHook = vi.fn(async (ctx) => {
+		const authConfigHook = vi.fn(async (ctx) => {
 			ctx.setAuthService({ oAuthProvider: 'github' });
+		});
+
+		const dashboardConfigHook = vi.fn(async (ctx) => {
 			ctx.setDashboard({ dashboardGridItems: ['item1'], dashboardPages: ['page1'] });
+		});
+
+		const frontendConfigHook = vi.fn(async (ctx) => {
 			ctx.setFrontend({ frontendNavigationLinks: ['link1'] });
+		});
+
+		const imageConfigHook = vi.fn(async (ctx) => {
 			ctx.setImageService({ imageService: 'imgService' });
+		});
+
+		const renderingConfigHook = vi.fn(async (ctx) => {
 			ctx.setRendering({ pageTypes: ['type1'] });
+		});
+
+		const sitemapConfigHook = vi.fn(async (ctx) => {
 			ctx.setSitemap({ sitemaps: ['sitemap1'], triggerSitemap: true });
 		});
 
 		plugin = makePluginWithHooks({
-			'studiocms:auth': configHook,
-			'studiocms:dashboard': configHook,
-			'studiocms:frontend': configHook,
-			'studiocms:image': configHook,
-			'studiocms:rendering': configHook,
-			'studiocms:sitemap': configHook,
+			'studiocms:auth': authConfigHook,
+			'studiocms:dashboard': dashboardConfigHook,
+			'studiocms:frontend': frontendConfigHook,
+			'studiocms:image': imageConfigHook,
+			'studiocms:rendering': renderingConfigHook,
+			'studiocms:sitemap': sitemapConfigHook,
 		});
 		tester = new StudioCMSPluginTester(plugin);
 
@@ -152,7 +167,6 @@ describe(parentSuiteName, () => {
 				rendering: { pageTypes: ['type1'] },
 				sitemap: { sitemaps: ['sitemap1'], triggerSitemap: true },
 			});
-			expect(configHook).toHaveBeenCalled();
 		});
 	});
 });

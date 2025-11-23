@@ -84,18 +84,11 @@ describe(parentSuiteName, () => {
 
 			await ctx.parameter(
 				'hasAstroConfigHook',
-				String(plugin.hooks['studiocms:astro:config'] !== undefined)
-			);
-			await ctx.parameter(
-				'hasConfigSetupHook',
-				String(plugin.hooks['studiocms:config:setup'] !== undefined)
+				String(plugin.hooks['studiocms:astro-config'] !== undefined)
 			);
 
-			expect(plugin.hooks['studiocms:astro:config']).toBeDefined();
-			expect(typeof plugin.hooks['studiocms:astro:config']).toBe('function');
-
-			expect(plugin.hooks['studiocms:config:setup']).toBeDefined();
-			expect(typeof plugin.hooks['studiocms:config:setup']).toBe('function');
+			expect(plugin.hooks['studiocms:astro-config']).toBeDefined();
+			expect(typeof plugin.hooks['studiocms:astro-config']).toBe('function');
 		});
 
 		await allure.step('Should execute hooks correctly', async (ctx) => {
