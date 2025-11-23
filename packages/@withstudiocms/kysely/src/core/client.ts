@@ -313,6 +313,7 @@ const decode = <OEncoded, OType>(outputSchema: Schema.Schema<OType, OEncoded>, e
 const toEffect = <I, O>(query: QueryFn<I, O>, input: I) =>
 	Effect.tryPromise({
 		try: () => query(input),
+		/* v8 ignore start */
 		catch: (error) => {
 			if (error instanceof NoResultError) {
 				return new NotFoundError();
@@ -324,6 +325,7 @@ const toEffect = <I, O>(query: QueryFn<I, O>, input: I) =>
 
 			return new QueryError({ message: String(error) });
 		},
+		/* v8 ignore stop */
 	});
 
 /**

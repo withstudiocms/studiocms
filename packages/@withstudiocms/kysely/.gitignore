@@ -23,3 +23,6 @@ pnpm-debug.log*
 dist/
 
 test.db
+**/test.db
+test-*.db
+**/test-*.db
