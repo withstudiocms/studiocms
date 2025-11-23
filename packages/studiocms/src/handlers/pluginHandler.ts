@@ -72,7 +72,7 @@ export const defaultPlugin: StudioCMSPlugin = {
 	identifier: 'studiocms',
 	studiocmsMinimumVersion: pkgVersion,
 	hooks: {
-		'studiocms:config:setup': ({ setDashboard }) => {
+		'studiocms:dashboard': ({ setDashboard }) => {
 			setDashboard({
 				translations,
 				dashboardGridItems: [
@@ -428,7 +428,7 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 			return {
 				hooks,
 				requires,
-				...safeData,
+				safeData,
 			};
 		}
 
@@ -571,41 +571,11 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 			const pluginsToProcess = getPlugins();
 
 			for (const plugin of pluginsToProcess) {
-				const { hooks, requires, ...safeData } = getPluginData(plugin);
+				const { hooks, requires, safeData } = getPluginData(plugin);
 
-				if (typeof hooks['studiocms:astro:config'] === 'function') {
-					await hooks['studiocms:astro:config']({
+				if (typeof hooks['studiocms:auth'] === 'function') {
+					await hooks['studiocms:auth']({
 						logger: pluginLogger(safeData.identifier, logger),
-						addIntegrations() {
-							return void 0;
-						},
-					});
-				}
-
-				if (typeof hooks['studiocms:config:setup'] === 'function') {
-					await hooks['studiocms:config:setup']({
-						logger: pluginLogger(safeData.identifier, logger),
-
-						setDashboard() {
-							return void 0;
-						},
-
-						setSitemap() {
-							return void 0;
-						},
-
-						setFrontend() {
-							return void 0;
-						},
-
-						setRendering() {
-							return void 0;
-						},
-
-						setImageService() {
-							return void 0;
-						},
-
 						setAuthService({ oAuthProvider }) {
 							if (oAuthProvider)
 								registerOAuthProvider(oAuthProvider, messages, unInjectedAuthProviders);
@@ -668,14 +638,14 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 
 			// Resolve StudioCMS Plugins
 			for (const plugin of pluginsToProcess) {
-				const { hooks, requires, ...safeData } = getPluginData(plugin);
+				const { hooks, requires, safeData } = getPluginData(plugin);
 
 				let foundSettingsPage: SafePluginListItemType['settingsPage'];
 				let foundFrontendNavigationLinks: SafePluginListItemType['frontendNavigationLinks'];
 				let foundPageTypes: SafePluginListItemType['pageTypes'];
 
-				if (typeof hooks['studiocms:astro:config'] === 'function') {
-					await hooks['studiocms:astro:config']({
+				if (typeof hooks['studiocms:astro-config'] === 'function') {
+					await hooks['studiocms:astro-config']({
 						logger: pluginLogger(safeData.identifier, logger),
 						// Add the plugin Integration to the Astro config
 						addIntegrations(integration) {
@@ -690,8 +660,19 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 					});
 				}
 
-				if (typeof hooks['studiocms:config:setup'] === 'function') {
-					await hooks['studiocms:config:setup']({
+				if (typeof hooks['studiocms:auth'] === 'function') {
+					await hooks['studiocms:auth']({
+						logger: pluginLogger(safeData.identifier, logger),
+
+						setAuthService({ oAuthProvider }) {
+							if (oAuthProvider)
+								registerOAuthProvider(oAuthProvider, messages, unInjectedAuthProviders);
+						},
+					});
+				}
+
+				if (typeof hooks['studiocms:dashboard'] === 'function') {
+					await hooks['studiocms:dashboard']({
 						logger: pluginLogger(safeData.identifier, logger),
 
 						async setDashboard({ dashboardGridItems, dashboardPages, settingsPage, translations }) {
@@ -757,6 +738,12 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 								foundSettingsPage = settingsPage;
 							}
 						},
+					});
+				}
+
+				if (typeof hooks['studiocms:sitemap'] === 'function') {
+					await hooks['studiocms:sitemap']({
+						logger: pluginLogger(safeData.identifier, logger),
 
 						setSitemap({ sitemaps: pluginSitemaps, triggerSitemap }) {
 							if (triggerSitemap) sitemapEnabled = triggerSitemap;
@@ -765,12 +752,24 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 								sitemaps.push(...pluginSitemaps);
 							}
 						},
+					});
+				}
+
+				if (typeof hooks['studiocms:frontend'] === 'function') {
+					await hooks['studiocms:frontend']({
+						logger: pluginLogger(safeData.identifier, logger),
 
 						setFrontend({ frontendNavigationLinks }) {
 							if (frontendNavigationLinks) {
 								foundFrontendNavigationLinks = frontendNavigationLinks;
 							}
 						},
+					});
+				}
+
+				if (typeof hooks['studiocms:rendering'] === 'function') {
+					await hooks['studiocms:rendering']({
+						logger: pluginLogger(safeData.identifier, logger),
 
 						setRendering({ pageTypes, augments }) {
 							for (const { apiEndpoint, identifier, rendererComponent } of pageTypes || []) {
@@ -809,6 +808,12 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 								pluginAugments.push(runtimeAugment);
 							}
 						},
+					});
+				}
+
+				if (typeof hooks['studiocms:image-service'] === 'function') {
+					await hooks['studiocms:image-service']({
+						logger: pluginLogger(safeData.identifier, logger),
 
 						setImageService({ imageService }) {
 							if (imageService) {
@@ -821,11 +826,6 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 									`export { default as ${convertToSafeString(imageService.identifier)} } from '${imageService.servicePath}';`
 								);
 							}
-						},
-
-						setAuthService({ oAuthProvider }) {
-							if (oAuthProvider)
-								registerOAuthProvider(oAuthProvider, messages, unInjectedAuthProviders);
 						},
 					});
 				}
