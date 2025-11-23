@@ -377,17 +377,26 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 		 * @param hooks - An object containing the plugin hooks.
 		 * @returns A function that takes a hook name and arguments, and executes the corresponding hook if it exists.
 		 */
-		function runHook({ hooks }: Pick<ReturnType<typeof getPluginData>, 'hooks'>) {
+		function runHook({
+			hooks,
+			safeData,
+		}: Pick<ReturnType<typeof getPluginData>, 'hooks' | 'safeData'>) {
 			/**
 			 * Executes a specified hook with the given arguments.
 			 *
 			 * @param hook - The name of the hook to execute.
 			 * @param args - The arguments to pass to the hook function.
 			 */
-			return async <H extends keyof BasePluginHooks>(hook: H, args: HookParameters<H>) => {
+			return async <H extends keyof BasePluginHooks>(
+				hook: H,
+				args: Omit<HookParameters<H>, 'logger'>
+			) => {
 				if (typeof hooks[hook] === 'function') {
-					// biome-ignore lint/suspicious/noExplicitAny: needed for dynamic hook args
-					return await hooks[hook](args as any);
+					return await hooks[hook]({
+						// biome-ignore lint/suspicious/noExplicitAny: needed for dynamic hook args
+						...(args as any),
+						logger: pluginLogger(safeData.identifier, logger),
+					});
 				}
 			};
 		}
@@ -596,10 +605,9 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 			for (const plugin of pluginsToProcess) {
 				const { hooks, requires, safeData } = getPluginData(plugin);
 
-				const hookRunner = runHook({ hooks });
+				const hookRunner = runHook({ hooks, safeData });
 
 				await hookRunner('studiocms:auth', {
-					logger: pluginLogger(safeData.identifier, logger),
 					setAuthService({ oAuthProvider }) {
 						if (oAuthProvider)
 							registerOAuthProvider(oAuthProvider, messages, unInjectedAuthProviders);
@@ -667,10 +675,9 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 				let foundFrontendNavigationLinks: SafePluginListItemType['frontendNavigationLinks'];
 				let foundPageTypes: SafePluginListItemType['pageTypes'];
 
-				const hookRunner = runHook({ hooks });
+				const hookRunner = runHook({ hooks, safeData });
 
 				await hookRunner('studiocms:astro-config', {
-					logger: pluginLogger(safeData.identifier, logger),
 					addIntegrations(integration) {
 						if (integration) {
 							if (Array.isArray(integration)) {
@@ -683,8 +690,6 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 				});
 
 				await hookRunner('studiocms:auth', {
-					logger: pluginLogger(safeData.identifier, logger),
-
 					setAuthService({ oAuthProvider }) {
 						if (oAuthProvider)
 							registerOAuthProvider(oAuthProvider, messages, unInjectedAuthProviders);
@@ -692,8 +697,6 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 				});
 
 				await hookRunner('studiocms:dashboard', {
-					logger: pluginLogger(safeData.identifier, logger),
-
 					async setDashboard({ dashboardGridItems, dashboardPages, settingsPage, translations }) {
 						if (translations) {
 							pluginsTranslations[convertToSafeString(safeData.identifier)] = translations;
@@ -760,8 +763,6 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 				});
 
 				await hookRunner('studiocms:sitemap', {
-					logger: pluginLogger(safeData.identifier, logger),
-
 					setSitemap({ sitemaps: pluginSitemaps, triggerSitemap }) {
 						if (triggerSitemap) sitemapEnabled = triggerSitemap;
 
@@ -772,8 +773,6 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 				});
 
 				await hookRunner('studiocms:frontend', {
-					logger: pluginLogger(safeData.identifier, logger),
-
 					setFrontend({ frontendNavigationLinks }) {
 						if (frontendNavigationLinks) {
 							foundFrontendNavigationLinks = frontendNavigationLinks;
@@ -782,8 +781,6 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 				});
 
 				await hookRunner('studiocms:rendering', {
-					logger: pluginLogger(safeData.identifier, logger),
-
 					setRendering({ pageTypes, augments }) {
 						for (const { apiEndpoint, identifier, rendererComponent } of pageTypes || []) {
 							if (apiEndpoint) {
@@ -824,8 +821,6 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 				});
 
 				await hookRunner('studiocms:image-service', {
-					logger: pluginLogger(safeData.identifier, logger),
-
 					setImageService({ imageService }) {
 						if (imageService) {
 							imageServiceKeys.push({
