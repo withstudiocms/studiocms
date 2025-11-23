@@ -1,5 +1,6 @@
 ---
+"@withstudiocms/internal_helpers": patch
 "@withstudiocms/config-utils": patch
 ---
 
-Improves windows support for Config loading
+Improves windows support
