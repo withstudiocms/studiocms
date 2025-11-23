@@ -381,6 +381,7 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 			hooks,
 			safeData,
 		}: Pick<ReturnType<typeof getPluginData>, 'hooks' | 'safeData'>) {
+			const pLogger = pluginLogger(safeData.identifier, logger);
 			/**
 			 * Executes a specified hook with the given arguments.
 			 *
@@ -395,7 +396,7 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 					return await hooks[hook]({
 						// biome-ignore lint/suspicious/noExplicitAny: needed for dynamic hook args
 						...(args as any),
-						logger: pluginLogger(safeData.identifier, logger),
+						logger: pLogger,
 					});
 				}
 			};
