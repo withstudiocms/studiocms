@@ -1,4 +1,4 @@
-import { deepmerge, runEffect } from '@withstudiocms/effect';
+import { Cause, deepmerge, Effect, runEffect } from '@withstudiocms/effect';
 import {
 	integrationLogger,
 	type Messages,
@@ -393,11 +393,22 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 				args: Omit<HookParameters<H>, 'logger'>
 			) => {
 				if (typeof hooks[hook] === 'function') {
-					return await hooks[hook]({
-						// biome-ignore lint/suspicious/noExplicitAny: needed for dynamic hook args
-						...(args as any),
-						logger: pLogger,
-					});
+					return await runEffect(
+						Effect.tryPromise(
+							async () =>
+								await hooks[hook]?.({
+									// biome-ignore lint/suspicious/noExplicitAny: needed for dynamic hook args
+									...(args as any),
+									logger: pLogger,
+								})
+						).pipe(
+							Effect.catchAllCause((cause) =>
+								Effect.sync(() => {
+									pLogger.error(`Error in plugin hook '${hook}': ${Cause.pretty(cause)}`);
+								})
+							)
+						)
+					);
 				}
 			};
 		}
