@@ -27,6 +27,8 @@ import {
 } from '../integrations/plugins.js';
 import type {
 	AvailableDashboardPages,
+	BasePluginHooks,
+	HookParameters,
 	RenderAugmentSchema,
 	SafePluginListItemType,
 	SafePluginListType,
@@ -369,6 +371,27 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 
 		/////
 
+		/**
+		 * Runs a specified hook from the provided plugin hooks.
+		 *
+		 * @param hooks - An object containing the plugin hooks.
+		 * @returns A function that takes a hook name and arguments, and executes the corresponding hook if it exists.
+		 */
+		function runHook({ hooks }: Pick<ReturnType<typeof getPluginData>, 'hooks'>) {
+			/**
+			 * Executes a specified hook with the given arguments.
+			 *
+			 * @param hook - The name of the hook to execute.
+			 * @param args - The arguments to pass to the hook function.
+			 */
+			return async <H extends keyof BasePluginHooks>(hook: H, args: HookParameters<H>) => {
+				if (typeof hooks[hook] === 'function') {
+					// biome-ignore lint/suspicious/noExplicitAny: needed for dynamic hook args
+					return await hooks[hook](args as any);
+				}
+			};
+		}
+
 		function getAugmentTranslationsForAllLangs(translations: PluginTranslations) {
 			const augmentCollection: PluginAugmentsTranslationCollection = {};
 
@@ -573,15 +596,15 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 			for (const plugin of pluginsToProcess) {
 				const { hooks, requires, safeData } = getPluginData(plugin);
 
-				if (typeof hooks['studiocms:auth'] === 'function') {
-					await hooks['studiocms:auth']({
-						logger: pluginLogger(safeData.identifier, logger),
-						setAuthService({ oAuthProvider }) {
-							if (oAuthProvider)
-								registerOAuthProvider(oAuthProvider, messages, unInjectedAuthProviders);
-						},
-					});
-				}
+				const hookRunner = runHook({ hooks });
+
+				await hookRunner('studiocms:auth', {
+					logger: pluginLogger(safeData.identifier, logger),
+					setAuthService({ oAuthProvider }) {
+						if (oAuthProvider)
+							registerOAuthProvider(oAuthProvider, messages, unInjectedAuthProviders);
+					},
+				});
 
 				if (requires) {
 					pluginRequires.push({
@@ -644,191 +667,178 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 				let foundFrontendNavigationLinks: SafePluginListItemType['frontendNavigationLinks'];
 				let foundPageTypes: SafePluginListItemType['pageTypes'];
 
-				if (typeof hooks['studiocms:astro-config'] === 'function') {
-					await hooks['studiocms:astro-config']({
-						logger: pluginLogger(safeData.identifier, logger),
-						// Add the plugin Integration to the Astro config
-						addIntegrations(integration) {
-							if (integration) {
-								if (Array.isArray(integration)) {
-									integrations.push(...integration.map((integration) => ({ integration })));
-									return;
-								}
-								integrations.push({ integration });
+				const hookRunner = runHook({ hooks });
+
+				await hookRunner('studiocms:astro-config', {
+					logger: pluginLogger(safeData.identifier, logger),
+					addIntegrations(integration) {
+						if (integration) {
+							if (Array.isArray(integration)) {
+								integrations.push(...integration.map((integration) => ({ integration })));
+								return;
 							}
-						},
-					});
-				}
+							integrations.push({ integration });
+						}
+					},
+				});
 
-				if (typeof hooks['studiocms:auth'] === 'function') {
-					await hooks['studiocms:auth']({
-						logger: pluginLogger(safeData.identifier, logger),
+				await hookRunner('studiocms:auth', {
+					logger: pluginLogger(safeData.identifier, logger),
 
-						setAuthService({ oAuthProvider }) {
-							if (oAuthProvider)
-								registerOAuthProvider(oAuthProvider, messages, unInjectedAuthProviders);
-						},
-					});
-				}
+					setAuthService({ oAuthProvider }) {
+						if (oAuthProvider)
+							registerOAuthProvider(oAuthProvider, messages, unInjectedAuthProviders);
+					},
+				});
 
-				if (typeof hooks['studiocms:dashboard'] === 'function') {
-					await hooks['studiocms:dashboard']({
-						logger: pluginLogger(safeData.identifier, logger),
+				await hookRunner('studiocms:dashboard', {
+					logger: pluginLogger(safeData.identifier, logger),
 
-						async setDashboard({ dashboardGridItems, dashboardPages, settingsPage, translations }) {
-							if (translations) {
-								pluginsTranslations[convertToSafeString(safeData.identifier)] = translations;
+					async setDashboard({ dashboardGridItems, dashboardPages, settingsPage, translations }) {
+						if (translations) {
+							pluginsTranslations[convertToSafeString(safeData.identifier)] = translations;
 
-								if (translations.en.augments) {
-									const augmentTrans = getAugmentTranslationsForAllLangs(translations);
+							if (translations.en.augments) {
+								const augmentTrans = getAugmentTranslationsForAllLangs(translations);
 
-									for (const [lang, langData] of Object.entries(augmentTrans)) {
-										if (!augmentTranslations[lang]) {
-											augmentTranslations[lang] = { augments: {} };
-										}
-
-										augmentTranslations[lang] = await runEffect(
-											deepmerge((merge) => merge(augmentTranslations[lang], langData))
-										);
+								for (const [lang, langData] of Object.entries(augmentTrans)) {
+									if (!augmentTranslations[lang]) {
+										augmentTranslations[lang] = { augments: {} };
 									}
+
+									augmentTranslations[lang] = await runEffect(
+										deepmerge((merge) => merge(augmentTranslations[lang], langData))
+									);
 								}
 							}
+						}
 
-							if (dashboardGridItems) {
-								availableDashboardGridItems.push(
-									...dashboardGridItems.map((item) => ({
-										...item,
-										name: `${convertToSafeString(safeData.identifier)}/${convertToSafeString(item.name)}`,
+						if (dashboardGridItems) {
+							availableDashboardGridItems.push(
+								...dashboardGridItems.map((item) => ({
+									...item,
+									name: `${convertToSafeString(safeData.identifier)}/${convertToSafeString(item.name)}`,
+								}))
+							);
+						}
+
+						if (dashboardPages) {
+							if (dashboardPages.user) {
+								availableDashboardPages.user?.push(
+									...dashboardPages.user.map((page) => ({
+										...page,
+										slug: `${convertToSafeString(safeData.identifier)}/${convertToSafeString(page.route)}`,
 									}))
 								);
 							}
-
-							if (dashboardPages) {
-								if (dashboardPages.user) {
-									availableDashboardPages.user?.push(
-										...dashboardPages.user.map((page) => ({
-											...page,
-											slug: `${convertToSafeString(safeData.identifier)}/${convertToSafeString(page.route)}`,
-										}))
-									);
-								}
-								if (dashboardPages.admin) {
-									availableDashboardPages.admin?.push(
-										...dashboardPages.admin.map((page) => ({
-											...page,
-											slug: `${convertToSafeString(safeData.identifier)}/${convertToSafeString(page.route)}`,
-										}))
-									);
-								}
+							if (dashboardPages.admin) {
+								availableDashboardPages.admin?.push(
+									...dashboardPages.admin.map((page) => ({
+										...page,
+										slug: `${convertToSafeString(safeData.identifier)}/${convertToSafeString(page.route)}`,
+									}))
+								);
 							}
+						}
 
-							if (settingsPage) {
-								const { endpoint } = settingsPage;
+						if (settingsPage) {
+							const { endpoint } = settingsPage;
 
-								if (endpoint) {
-									pluginSettingsEndpoints.push({
-										identifier: safeData.identifier,
-										safeIdentifier: convertToSafeString(safeData.identifier),
-										apiEndpoint: `
+							if (endpoint) {
+								pluginSettingsEndpoints.push({
+									identifier: safeData.identifier,
+									safeIdentifier: convertToSafeString(safeData.identifier),
+									apiEndpoint: `
 											export { onSave as ${convertToSafeString(safeData.identifier)}_onSave } from '${endpoint}';
 										`,
-									});
-								}
-
-								foundSettingsPage = settingsPage;
+								});
 							}
-						},
-					});
-				}
 
-				if (typeof hooks['studiocms:sitemap'] === 'function') {
-					await hooks['studiocms:sitemap']({
-						logger: pluginLogger(safeData.identifier, logger),
+							foundSettingsPage = settingsPage;
+						}
+					},
+				});
 
-						setSitemap({ sitemaps: pluginSitemaps, triggerSitemap }) {
-							if (triggerSitemap) sitemapEnabled = triggerSitemap;
+				await hookRunner('studiocms:sitemap', {
+					logger: pluginLogger(safeData.identifier, logger),
 
-							if (pluginSitemaps) {
-								sitemaps.push(...pluginSitemaps);
-							}
-						},
-					});
-				}
+					setSitemap({ sitemaps: pluginSitemaps, triggerSitemap }) {
+						if (triggerSitemap) sitemapEnabled = triggerSitemap;
 
-				if (typeof hooks['studiocms:frontend'] === 'function') {
-					await hooks['studiocms:frontend']({
-						logger: pluginLogger(safeData.identifier, logger),
+						if (pluginSitemaps) {
+							sitemaps.push(...pluginSitemaps);
+						}
+					},
+				});
 
-						setFrontend({ frontendNavigationLinks }) {
-							if (frontendNavigationLinks) {
-								foundFrontendNavigationLinks = frontendNavigationLinks;
-							}
-						},
-					});
-				}
+				await hookRunner('studiocms:frontend', {
+					logger: pluginLogger(safeData.identifier, logger),
 
-				if (typeof hooks['studiocms:rendering'] === 'function') {
-					await hooks['studiocms:rendering']({
-						logger: pluginLogger(safeData.identifier, logger),
+					setFrontend({ frontendNavigationLinks }) {
+						if (frontendNavigationLinks) {
+							foundFrontendNavigationLinks = frontendNavigationLinks;
+						}
+					},
+				});
 
-						setRendering({ pageTypes, augments }) {
-							for (const { apiEndpoint, identifier, rendererComponent } of pageTypes || []) {
-								if (apiEndpoint) {
-									pluginEndpoints.push({
-										identifier: identifier,
-										safeIdentifier: convertToSafeString(identifier),
-										apiEndpoint: `
+				await hookRunner('studiocms:rendering', {
+					logger: pluginLogger(safeData.identifier, logger),
+
+					setRendering({ pageTypes, augments }) {
+						for (const { apiEndpoint, identifier, rendererComponent } of pageTypes || []) {
+							if (apiEndpoint) {
+								pluginEndpoints.push({
+									identifier: identifier,
+									safeIdentifier: convertToSafeString(identifier),
+									apiEndpoint: `
 											export { onCreate as ${convertToSafeString(identifier)}_onCreate } from '${apiEndpoint}';
 											export { onEdit as ${convertToSafeString(identifier)}_onEdit } from '${apiEndpoint}';
 											export { onDelete as ${convertToSafeString(identifier)}_onDelete } from '${apiEndpoint}';
 										`,
-									});
-								}
-
-								if (rendererComponent) {
-									const builtIns = rendererComponentFilter(
-										rendererComponent,
-										convertToSafeString(identifier)
-									);
-									pluginRenderers.push({
-										pageType: identifier,
-										safePageType: convertToSafeString(identifier),
-										content: builtIns,
-									});
-
-									renderingPluginCount++;
-								}
+								});
 							}
 
-							foundPageTypes = pageTypes;
-
-							// Handle Augments
-							for (const augment of augments || []) {
-								const runtimeAugment = convertToRuntimeAugment(augment);
-								pluginAugments.push(runtimeAugment);
-							}
-						},
-					});
-				}
-
-				if (typeof hooks['studiocms:image-service'] === 'function') {
-					await hooks['studiocms:image-service']({
-						logger: pluginLogger(safeData.identifier, logger),
-
-						setImageService({ imageService }) {
-							if (imageService) {
-								imageServiceKeys.push({
-									identifier: imageService.identifier,
-									safe: convertToSafeString(imageService.identifier),
+							if (rendererComponent) {
+								const builtIns = rendererComponentFilter(
+									rendererComponent,
+									convertToSafeString(identifier)
+								);
+								pluginRenderers.push({
+									pageType: identifier,
+									safePageType: convertToSafeString(identifier),
+									content: builtIns,
 								});
 
-								imageServiceEndpoints.push(
-									`export { default as ${convertToSafeString(imageService.identifier)} } from '${imageService.servicePath}';`
-								);
+								renderingPluginCount++;
 							}
-						},
-					});
-				}
+						}
+
+						foundPageTypes = pageTypes;
+
+						// Handle Augments
+						for (const augment of augments || []) {
+							const runtimeAugment = convertToRuntimeAugment(augment);
+							pluginAugments.push(runtimeAugment);
+						}
+					},
+				});
+
+				await hookRunner('studiocms:image-service', {
+					logger: pluginLogger(safeData.identifier, logger),
+
+					setImageService({ imageService }) {
+						if (imageService) {
+							imageServiceKeys.push({
+								identifier: imageService.identifier,
+								safe: convertToSafeString(imageService.identifier),
+							});
+
+							imageServiceEndpoints.push(
+								`export { default as ${convertToSafeString(imageService.identifier)} } from '${imageService.servicePath}';`
+							);
+						}
+					},
+				});
 
 				if (requires) {
 					pluginRequires.push({
