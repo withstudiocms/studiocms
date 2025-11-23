@@ -1,5 +1,12 @@
 # @withstudiocms/auth-kit
 
+## 0.1.0-beta.6
+
+### Patch Changes
+
+- Updated dependencies [[`97c7847`](https://github.com/withstudiocms/studiocms/commit/97c7847c0cdd41998e0a6d8c61ab6f3c4ac4474e), [`675b7d5`](https://github.com/withstudiocms/studiocms/commit/675b7d5bbb2c40e6a204d3c7227812923e37289f)]:
+  - @withstudiocms/effect@0.1.0-beta.7
+
 ## 0.1.0-beta.5
 
 ### Patch Changes
