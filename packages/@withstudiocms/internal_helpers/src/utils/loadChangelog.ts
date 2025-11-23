@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import type { List } from 'mdast';
 import { fromMarkdown } from 'mdast-util-from-markdown';
 import { toString as ToString } from 'mdast-util-to-string';
@@ -92,10 +93,15 @@ export function loadChangelog(src: ChangeLogSrc): Changelog {
 	let markdown: string;
 
 	if ('path' in src) {
-		markdown = fs.readFileSync(src.path, 'utf8');
+		// Handle both file URLs and regular file paths for cross-platform compatibility
+		const filePath = src.path.startsWith('file://') ? fileURLToPath(src.path) : src.path;
+		markdown = fs.readFileSync(filePath, 'utf8');
 	} else {
 		markdown = src.raw;
 	}
+
+	// Normalize line endings to LF for consistent processing across platforms
+	markdown = markdown.replace(/\r\n/g, '\n');
 
 	// Convert GitHub usernames in "Thanks ..." sentences to links
 	markdown = markdown.replace(
