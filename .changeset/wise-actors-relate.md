@@ -1,4 +1,5 @@
 ---
+"studiocms": patch
 "@withstudiocms/internal_helpers": patch
 "@withstudiocms/config-utils": patch
 ---

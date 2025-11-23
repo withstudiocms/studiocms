@@ -10,6 +10,7 @@
 /// <reference types="./theme.d.ts" preserve="true" />
 
 import { promises as fsP, writeFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import { runtimeLogger } from '@inox-tools/runtime-logger';
 import studiocmsUi from '@studiocms/ui';
 import { componentRegistryHandler } from '@withstudiocms/component-registry';
@@ -369,8 +370,11 @@ export const studiocms = defineIntegration({
 					const codegenDir = createCodegenDir();
 					cacheJsonFile = new URL('cache.json', codegenDir);
 
-					if (!exists(cacheJsonFile.href)) {
-						writeFileSync(cacheJsonFile, '{}', 'utf-8');
+					// Convert URL to file path for cross-platform compatibility
+					const cacheJsonPath = fileURLToPath(cacheJsonFile);
+
+					if (!exists(cacheJsonPath)) {
+						writeFileSync(cacheJsonPath, '{}', 'utf-8');
 					}
 				},
 				'astro:config:done': ({ config }) => {
