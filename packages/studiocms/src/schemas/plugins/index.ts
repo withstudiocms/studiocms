@@ -394,6 +394,13 @@ const studiocms_AuthHookSchema = baseHookSchema.extend({
 	setAuthService: z.function(z.tuple([AuthServiceConfigSchema]), z.void()),
 });
 
+export type SCMSSiteMapFnOpts = z.infer<typeof SitemapConfigSchema>;
+export type SCMSDashboardFnOpts = z.infer<typeof DashboardConfigSchema>;
+export type SCMSFrontendFnOpts = z.infer<typeof FrontendConfigSchema>;
+export type SCMSRenderingFnOpts = z.infer<typeof RenderingConfigSchema>;
+export type SCMSImageServiceFnOpts = z.infer<typeof ImageServiceConfigSchema>;
+export type SCMSAuthServiceFnOpts = z.infer<typeof AuthServiceConfigSchema>;
+
 type StudioCMSAuthServiceHook = z.infer<typeof studiocms_AuthHookSchema>;
 
 type PluginHook<OPT> = (options: OPT) => void | Promise<void>;

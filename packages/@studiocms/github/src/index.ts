@@ -35,7 +35,7 @@ export function studiocmsGithub(): StudioCMSPlugin {
 		name: 'StudioCMS GitHub Plugin',
 		studiocmsMinimumVersion: '0.1.0-beta.22',
 		hooks: {
-			'studiocms:config:setup': ({ setAuthService }) => {
+			'studiocms:auth': ({ setAuthService }) => {
 				setAuthService({
 					oAuthProvider: {
 						name: 'github',

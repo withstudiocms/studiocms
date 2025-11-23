@@ -134,14 +134,15 @@ export function studioCMSBlogPlugin(options?: StudioCMSBlogOptions): StudioCMSPl
 		studiocmsMinimumVersion: '0.1.0-beta.21',
 		requires: ['@studiocms/md'],
 		hooks: {
-			'studiocms:astro:config': ({ addIntegrations }) => {
+			'studiocms:astro-config': ({ addIntegrations }) => {
 				addIntegrations(internalBlogIntegration(resolvedOptions));
 			},
-			'studiocms:config:setup': ({ setFrontend, setRendering, setSitemap }) => {
+			'studiocms:frontend': ({ setFrontend }) => {
 				setFrontend({
 					frontendNavigationLinks: [{ label: title, href: route }],
 				});
-
+			},
+			'studiocms:rendering': ({ setRendering }) => {
 				setRendering({
 					pageTypes: [
 						{
@@ -152,7 +153,8 @@ export function studioCMSBlogPlugin(options?: StudioCMSBlogOptions): StudioCMSPl
 						},
 					],
 				});
-
+			},
+			'studiocms:sitemap': ({ setSitemap }) => {
 				setSitemap({
 					triggerSitemap: sitemap,
 					sitemaps: [

@@ -37,7 +37,7 @@ export function studiocmsDiscord(): StudioCMSPlugin {
 		name: 'StudioCMS Discord Provider Plugin',
 		studiocmsMinimumVersion: '0.1.0-beta.22',
 		hooks: {
-			'studiocms:config:setup': ({ setAuthService }) => {
+			'studiocms:auth': ({ setAuthService }) => {
 				setAuthService({
 					oAuthProvider: {
 						name: 'discord',

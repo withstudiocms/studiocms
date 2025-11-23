@@ -91,11 +91,8 @@ export class StudioCMSPluginTester {
 	 */
 	private async runAstroConfigHook(): Promise<{ integrations: AstroIntegration[] }> {
 		const integrations: AstroIntegration[] = [];
-		if (
-			this.plugin.hooks['studiocms:astro:config'] &&
-			typeof this.plugin.hooks['studiocms:astro:config'] === 'function'
-		) {
-			await this.plugin.hooks['studiocms:astro:config']({
+		if (typeof this.plugin.hooks['studiocms:astro-config'] === 'function') {
+			await this.plugin.hooks['studiocms:astro-config']({
 				logger: this.createMockLogger(),
 				addIntegrations: (newIntegrations) => {
 					const toAdd = Array.isArray(newIntegrations) ? newIntegrations : [newIntegrations];
@@ -138,17 +135,24 @@ export class StudioCMSPluginTester {
 		const rendering: Partial<SCMSRenderingFnOpts> = {};
 		const sitemap: Partial<SCMSSiteMapFnOpts> = {};
 
-		if (
-			this.plugin.hooks['studiocms:config:setup'] &&
-			typeof this.plugin.hooks['studiocms:config:setup'] === 'function'
-		) {
-			await this.plugin.hooks['studiocms:config:setup']({
-				logger: this.createMockLogger(),
+		const hooks = this.plugin.hooks;
+
+		const logger = this.createMockLogger();
+
+		if (typeof hooks['studiocms:auth'] === 'function') {
+			await hooks['studiocms:auth']({
+				logger,
 				setAuthService: ({ oAuthProvider }) => {
 					if (oAuthProvider !== undefined) {
 						authService.oAuthProvider = oAuthProvider;
 					}
 				},
+			});
+		}
+
+		if (typeof hooks['studiocms:dashboard'] === 'function') {
+			await hooks['studiocms:dashboard']({
+				logger,
 				setDashboard: ({ dashboardGridItems, dashboardPages }) => {
 					if (dashboardGridItems !== undefined) {
 						dashboard.dashboardGridItems = dashboardGridItems;
@@ -157,21 +161,45 @@ export class StudioCMSPluginTester {
 						dashboard.dashboardPages = dashboardPages;
 					}
 				},
+			});
+		}
+
+		if (typeof hooks['studiocms:frontend'] === 'function') {
+			await hooks['studiocms:frontend']({
+				logger,
 				setFrontend: ({ frontendNavigationLinks }) => {
 					if (frontendNavigationLinks !== undefined) {
 						frontend.frontendNavigationLinks = frontendNavigationLinks;
 					}
 				},
+			});
+		}
+
+		if (typeof hooks['studiocms:image-service'] === 'function') {
+			await hooks['studiocms:image-service']({
+				logger,
 				setImageService: ({ imageService: imgService }) => {
 					if (imgService !== undefined) {
 						imageService.imageService = imgService;
 					}
 				},
+			});
+		}
+
+		if (typeof hooks['studiocms:rendering'] === 'function') {
+			await hooks['studiocms:rendering']({
+				logger,
 				setRendering: ({ pageTypes }) => {
 					if (pageTypes !== undefined) {
 						rendering.pageTypes = pageTypes;
 					}
 				},
+			});
+		}
+
+		if (typeof hooks['studiocms:sitemap'] === 'function') {
+			await hooks['studiocms:sitemap']({
+				logger,
 				setSitemap: ({ sitemaps, triggerSitemap }) => {
 					if (sitemaps !== undefined) {
 						sitemap.sitemaps = sitemaps;
@@ -182,7 +210,6 @@ export class StudioCMSPluginTester {
 				},
 			});
 		}
-
 		return {
 			authService,
 			dashboard,
@@ -207,21 +234,34 @@ export class StudioCMSPluginTester {
 		};
 	}
 
+	private hasStudioCMSHooks(): boolean {
+		if (!this.plugin.hooks) return false;
+		const hookKeys = [
+			'studiocms:auth',
+			'studiocms:dashboard',
+			'studiocms:frontend',
+			'studiocms:image-service',
+			'studiocms:rendering',
+			'studiocms:sitemap',
+		];
+		return hookKeys.some((key) => typeof this.plugin.hooks[key] === 'function');
+	}
+
 	/**
 	 * Asynchronously retrieves the results of configured plugin hooks.
 	 *
 	 * @returns An object containing the presence and results of the 'studiocms:astro:config' and 'studiocms:config:setup' hooks.
 	 * - `astroConfig`: Indicates if the 'studiocms:astro:config' hook exists and provides its execution results.
-	 * - `studiocmsConfig`: Indicates if the 'studiocms:config:setup' hook exists and provides its execution results.
+	 * - `studiocmsConfig`: Indicates if the hooks exists and provides its execution results.
 	 */
 	public async getHookResults(): Promise<PluginHookResults> {
 		return {
 			astroConfig: {
-				hasHook: typeof this.plugin.hooks['studiocms:astro:config'] === 'function',
+				hasHook: typeof this.plugin.hooks['studiocms:astro-config'] === 'function',
 				hookResults: await this.runAstroConfigHook(),
 			},
 			studiocmsConfig: {
-				hasHook: typeof this.plugin.hooks['studiocms:config:setup'] === 'function',
+				hasHook: this.hasStudioCMSHooks(),
 				hookResults: await this.runStudioCMSConfigHook(),
 			},
 		};

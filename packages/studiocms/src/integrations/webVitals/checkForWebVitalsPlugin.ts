@@ -80,7 +80,7 @@ export const checkForWebVitals = defineUtility('astro:config:setup')(
 			identifier: '@studiocms/web-vitals',
 			studiocmsMinimumVersion: opts.version,
 			hooks: {
-				'studiocms:config:setup': ({ setDashboard }) => {
+				'studiocms:dashboard': ({ setDashboard }) => {
 					setDashboard({
 						translations,
 						dashboardGridItems: [
