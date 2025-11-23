@@ -149,7 +149,7 @@ describe(parentSuiteName, () => {
 			'studiocms:auth': authConfigHook,
 			'studiocms:dashboard': dashboardConfigHook,
 			'studiocms:frontend': frontendConfigHook,
-			'studiocms:image': imageConfigHook,
+			'studiocms:image-service': imageConfigHook,
 			'studiocms:rendering': renderingConfigHook,
 			'studiocms:sitemap': sitemapConfigHook,
 		});
