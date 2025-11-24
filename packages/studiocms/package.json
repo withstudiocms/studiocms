@@ -179,7 +179,7 @@
 		"magicast": "^0.5.1",
 		"mdast-util-to-markdown": "^2.1.2",
 		"mrmime": "^2.0.1",
-		"nanostores": "^1.0.1",
+		"nanostores": "^1.1.0",
 		"package-manager-detector": "^1.5.0",
 		"semver": "^7.7.3",
 		"three": "0.170.0",
