@@ -7,17 +7,17 @@ settings:
 catalogs:
   astrojs:
     '@astrojs/db':
-      specifier: ^0.18.2
-      version: 0.18.2
+      specifier: ^0.18.3
+      version: 0.18.3
     '@astrojs/node':
       specifier: ^9.5.1
       version: 9.5.1
     '@astrojs/rss':
-      specifier: ^4.0.13
-      version: 4.0.13
+      specifier: ^4.0.14
+      version: 4.0.14
     astro:
-      specifier: ^5.15.9
-      version: 5.15.9
+      specifier: ^5.16.0
+      version: 5.16.0
     vite:
       specifier: ^6.3.4
       version: 6.4.1
@@ -63,11 +63,11 @@ catalogs:
       specifier: ^0.93.3
       version: 0.93.3
     '@effect/platform-node':
-      specifier: ^0.100.0
-      version: 0.100.0
+      specifier: ^0.101.0
+      version: 0.101.0
     effect:
-      specifier: ^3.19.4
-      version: 3.19.4
+      specifier: ^3.19.6
+      version: 3.19.6
   min:
     '@astrojs/markdown-remark':
       specifier: ^6.3.3
@@ -80,7 +80,7 @@ catalogs:
       version: 4.5.3
     astro:
       specifier: ^5.12.9
-      version: 5.15.9
+      version: 5.16.0
     drizzle-orm:
       specifier: ^0.42.0
       version: 0.42.0
@@ -89,8 +89,8 @@ catalogs:
       version: 6.4.1
   react:
     '@types/react':
-      specifier: ^19.2.5
-      version: 19.2.5
+      specifier: ^19.2.6
+      version: 19.2.6
     '@types/react-dom':
       specifier: ^19.2.3
       version: 19.2.3
@@ -144,10 +144,10 @@ importers:
         version: 0.56.0
       '@effect/vitest':
         specifier: ^0.27.0
-        version: 0.27.0(effect@3.19.4)(vitest@3.2.4(@types/debug@4.1.12)(@types/node@22.19.0)(jiti@2.6.1)(jsdom@27.2.0)(tsx@4.20.6)(yaml@2.8.1))
+        version: 0.27.0(effect@3.19.6)(vitest@3.2.4(@types/debug@4.1.12)(@types/node@22.19.0)(jiti@2.6.1)(jsdom@27.2.0)(tsx@4.20.6)(yaml@2.8.1))
       '@inox-tools/astro-tests':
         specifier: ^0.8.0
-        version: 0.8.0(astro@5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
+        version: 0.8.0(astro@5.16.0(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
       '@types/node':
         specifier: 'catalog:'
         version: 22.19.0
@@ -173,8 +173,8 @@ importers:
         specifier: ^27.2.0
         version: 27.2.0
       knip:
-        specifier: ^5.69.1
-        version: 5.69.1(@types/node@22.19.0)(typescript@5.9.3)
+        specifier: ^5.70.1
+        version: 5.70.1(@types/node@22.19.0)(typescript@5.9.3)
       pkg-pr-new:
         specifier: ^0.0.60
         version: 0.0.60
@@ -198,13 +198,13 @@ importers:
     dependencies:
       '@astrojs/db':
         specifier: catalog:astrojs
-        version: 0.18.2(@types/pg@8.15.6)(kysely@0.28.8)(mysql2@3.15.3)(pg@8.16.3)
+        version: 0.18.3(@types/pg@8.15.6)(kysely@0.28.8)(mysql2@3.15.3)(pg@8.16.3)
       '@astrojs/node':
         specifier: catalog:astrojs
-        version: 9.5.1(astro@5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
+        version: 9.5.1(astro@5.16.0(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
       '@codecov/astro-plugin':
         specifier: 'catalog:'
-        version: 1.9.1(astro@5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))(vite@6.4.1(@types/node@22.19.0)(jiti@2.6.1)(tsx@4.20.6)(yaml@2.8.1))
+        version: 1.9.1(astro@5.16.0(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))(vite@6.4.1(@types/node@22.19.0)(jiti@2.6.1)(tsx@4.20.6)(yaml@2.8.1))
       '@studiocms/blog':
         specifier: workspace:*
         version: link:../../packages/@studiocms/blog
@@ -213,7 +213,7 @@ importers:
         version: link:../../packages/@studiocms/md
       astro:
         specifier: catalog:astrojs
-        version: 5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
+        version: 5.16.0(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
       sharp:
         specifier: 'catalog:'
         version: 0.34.4
@@ -235,19 +235,19 @@ importers:
     dependencies:
       '@astrojs/db':
         specifier: catalog:astrojs
-        version: 0.18.2(@types/pg@8.15.6)(kysely@0.28.8)(mysql2@3.15.3)(pg@8.16.3)
+        version: 0.18.3(@types/pg@8.15.6)(kysely@0.28.8)(mysql2@3.15.3)(pg@8.16.3)
       '@astrojs/node':
         specifier: catalog:astrojs
-        version: 9.5.1(astro@5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
+        version: 9.5.1(astro@5.16.0(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
       '@codecov/astro-plugin':
         specifier: 'catalog:'
-        version: 1.9.1(astro@5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))(vite@6.4.1(@types/node@22.19.0)(jiti@2.6.1)(tsx@4.20.6)(yaml@2.8.1))
+        version: 1.9.1(astro@5.16.0(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))(vite@6.4.1(@types/node@22.19.0)(jiti@2.6.1)(tsx@4.20.6)(yaml@2.8.1))
       '@studiocms/md':
         specifier: workspace:*
         version: link:../../packages/@studiocms/md
       astro:
         specifier: catalog:astrojs
-        version: 5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
+        version: 5.16.0(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
       sharp:
         specifier: 'catalog:'
         version: 0.34.4
@@ -272,13 +272,13 @@ importers:
         version: 3.7.0
       astro:
         specifier: catalog:min
-        version: 5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
+        version: 5.16.0(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
       astro-integration-kit:
         specifier: 'catalog:'
-        version: 0.19.1(astro@5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
+        version: 0.19.1(astro@5.16.0(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
       effect:
         specifier: catalog:effect
-        version: 3.19.4
+        version: 3.19.6
       studiocms:
         specifier: workspace:*
         version: link:../../studiocms
@@ -294,19 +294,19 @@ importers:
     dependencies:
       '@astrojs/rss':
         specifier: catalog:astrojs
-        version: 4.0.13
+        version: 4.0.14
       '@studiocms/md':
         specifier: workspace:*
         version: link:../md
       astro:
         specifier: catalog:min
-        version: 5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
+        version: 5.16.0(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
       astro-integration-kit:
         specifier: 'catalog:'
-        version: 0.19.1(astro@5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
+        version: 0.19.1(astro@5.16.0(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
       effect:
         specifier: catalog:effect
-        version: 3.19.4
+        version: 3.19.6
       studiocms:
         specifier: workspace:*
         version: link:../../studiocms
@@ -325,13 +325,13 @@ importers:
         version: 1.22.0
       astro:
         specifier: catalog:min
-        version: 5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
+        version: 5.16.0(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
       astro-integration-kit:
         specifier: 'catalog:'
-        version: 0.19.1(astro@5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
+        version: 0.19.1(astro@5.16.0(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
       effect:
         specifier: catalog:effect
-        version: 3.19.4
+        version: 3.19.6
       studiocms:
         specifier: workspace:*
         version: link:../../studiocms
@@ -347,19 +347,19 @@ importers:
     dependencies:
       '@astrojs/db':
         specifier: '>=0.17.2'
-        version: 0.18.2(@types/pg@8.15.6)(kysely@0.28.8)(mysql2@3.15.3)(pg@8.16.3)
+        version: 0.18.3(@types/pg@8.15.6)(kysely@0.28.8)(mysql2@3.15.3)(pg@8.16.3)
       astro:
         specifier: catalog:min
-        version: 5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
+        version: 5.16.0(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
       astro-integration-kit:
         specifier: 'catalog:'
-        version: 0.19.1(astro@5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
+        version: 0.19.1(astro@5.16.0(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
       cheerio:
         specifier: ^1.1.2
         version: 1.1.2
       effect:
         specifier: catalog:effect
-        version: 3.19.4
+        version: 3.19.6
       sanitize-html:
         specifier: ^2.17.0
         version: 2.17.0
@@ -390,13 +390,13 @@ importers:
         version: 3.7.0
       astro:
         specifier: catalog:min
-        version: 5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
+        version: 5.16.0(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
       astro-integration-kit:
         specifier: 'catalog:'
-        version: 0.19.1(astro@5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
+        version: 0.19.1(astro@5.16.0(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
       effect:
         specifier: catalog:effect
-        version: 3.19.4
+        version: 3.19.6
       studiocms:
         specifier: workspace:*
         version: link:../../studiocms
@@ -415,13 +415,13 @@ importers:
         version: 3.7.0
       astro:
         specifier: catalog:min
-        version: 5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
+        version: 5.16.0(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
       astro-integration-kit:
         specifier: 'catalog:'
-        version: 0.19.1(astro@5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
+        version: 0.19.1(astro@5.16.0(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
       effect:
         specifier: catalog:effect
-        version: 3.19.4
+        version: 3.19.6
       studiocms:
         specifier: workspace:*
         version: link:../../studiocms
@@ -440,13 +440,13 @@ importers:
         version: 3.7.0
       astro:
         specifier: catalog:min
-        version: 5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
+        version: 5.16.0(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
       astro-integration-kit:
         specifier: 'catalog:'
-        version: 0.19.1(astro@5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
+        version: 0.19.1(astro@5.16.0(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
       effect:
         specifier: catalog:effect
-        version: 3.19.4
+        version: 3.19.6
       studiocms:
         specifier: workspace:*
         version: link:../../studiocms
@@ -462,16 +462,16 @@ importers:
     dependencies:
       astro:
         specifier: catalog:min
-        version: 5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
+        version: 5.16.0(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
       astro-integration-kit:
         specifier: 'catalog:'
-        version: 0.19.1(astro@5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
+        version: 0.19.1(astro@5.16.0(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
       codemirror:
         specifier: 5.65.19
         version: 5.65.19
       effect:
         specifier: catalog:effect
-        version: 3.19.4
+        version: 3.19.6
       katex:
         specifier: ^0.16.25
         version: 0.16.25
@@ -496,19 +496,19 @@ importers:
     dependencies:
       '@markdoc/markdoc':
         specifier: ^0.5.4
-        version: 0.5.4(@types/react@19.2.5)(react@19.2.0)
+        version: 0.5.4(@types/react@19.2.6)(react@19.2.0)
       '@studiocms/md':
         specifier: workspace:*
         version: link:../md
       astro:
         specifier: catalog:min
-        version: 5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
+        version: 5.16.0(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
       astro-integration-kit:
         specifier: 'catalog:'
-        version: 0.19.1(astro@5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
+        version: 0.19.1(astro@5.16.0(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
       effect:
         specifier: catalog:effect
-        version: 3.19.4
+        version: 3.19.6
       react:
         specifier: catalog:react
         version: 19.2.0
@@ -527,10 +527,10 @@ importers:
         version: 22.19.0
       '@types/react':
         specifier: catalog:react
-        version: 19.2.5
+        version: 19.2.6
       '@types/react-dom':
         specifier: catalog:react
-        version: 19.2.3(@types/react@19.2.5)
+        version: 19.2.3(@types/react@19.2.6)
 
   packages/@studiocms/md:
     dependencies:
@@ -542,13 +542,13 @@ importers:
         version: 1.2.0
       astro:
         specifier: catalog:min
-        version: 5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
+        version: 5.16.0(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
       astro-integration-kit:
         specifier: 'catalog:'
-        version: 0.19.1(astro@5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
+        version: 0.19.1(astro@5.16.0(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
       effect:
         specifier: catalog:effect
-        version: 3.19.4
+        version: 3.19.6
       studiocms:
         specifier: workspace:*
         version: link:../../studiocms
@@ -570,13 +570,13 @@ importers:
         version: link:../md
       astro:
         specifier: catalog:min
-        version: 5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
+        version: 5.16.0(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
       astro-integration-kit:
         specifier: 'catalog:'
-        version: 0.19.1(astro@5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
+        version: 0.19.1(astro@5.16.0(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
       effect:
         specifier: catalog:effect
-        version: 3.19.4
+        version: 3.19.6
       react:
         specifier: catalog:react
         version: 19.2.0
@@ -604,31 +604,31 @@ importers:
         version: 22.19.0
       '@types/react':
         specifier: catalog:react
-        version: 19.2.5
+        version: 19.2.6
       '@types/react-dom':
         specifier: catalog:react
-        version: 19.2.3(@types/react@19.2.5)
+        version: 19.2.3(@types/react@19.2.6)
 
   packages/@studiocms/wysiwyg:
     dependencies:
       '@studiocms/ui':
         specifier: catalog:studiocms
-        version: 1.0.0-beta.4(astro@5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))(vite@6.4.1(@types/node@22.19.0)(jiti@2.6.1)(tsx@4.20.6)(yaml@2.8.1))
+        version: 1.0.0-beta.4(astro@5.16.0(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))(vite@6.4.1(@types/node@22.19.0)(jiti@2.6.1)(tsx@4.20.6)(yaml@2.8.1))
       '@withstudiocms/component-registry':
         specifier: workspace:*
         version: link:../../@withstudiocms/component-registry
       astro:
         specifier: catalog:min
-        version: 5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
+        version: 5.16.0(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
       astro-integration-kit:
         specifier: 'catalog:'
-        version: 0.19.1(astro@5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
+        version: 0.19.1(astro@5.16.0(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
       deepmerge-ts:
         specifier: 'catalog:'
         version: 7.1.5
       grapesjs:
-        specifier: ^0.22.13
-        version: 0.22.13
+        specifier: ^0.22.14
+        version: 0.22.14
       studiocms:
         specifier: workspace:*
         version: link:../../studiocms
@@ -659,7 +659,7 @@ importers:
         version: link:../effect
       astro:
         specifier: catalog:min
-        version: 5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
+        version: 5.16.0(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
     devDependencies:
       '@types/node':
         specifier: 'catalog:'
@@ -688,10 +688,10 @@ importers:
         version: link:../effect
       astro:
         specifier: catalog:min
-        version: 5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
+        version: 5.16.0(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
       astro-integration-kit:
         specifier: 'catalog:'
-        version: 0.19.1(astro@5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
+        version: 0.19.1(astro@5.16.0(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
       ts-morph:
         specifier: ^27.0.2
         version: 27.0.2
@@ -713,19 +713,19 @@ importers:
         version: link:../../..
       astro:
         specifier: catalog:astrojs
-        version: 5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
+        version: 5.16.0(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
       astro-integration-kit:
         specifier: 'catalog:'
-        version: 0.19.1(astro@5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
+        version: 0.19.1(astro@5.16.0(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
 
   packages/@withstudiocms/config-utils:
     dependencies:
       astro:
         specifier: catalog:min
-        version: 5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
+        version: 5.16.0(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
       astro-integration-kit:
         specifier: 'catalog:'
-        version: 0.19.1(astro@5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
+        version: 0.19.1(astro@5.16.0(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
       deepmerge-ts:
         specifier: 'catalog:'
         version: 7.1.5
@@ -744,34 +744,34 @@ importers:
         version: link:../../..
       astro:
         specifier: catalog:astrojs
-        version: 5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
+        version: 5.16.0(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
       astro-integration-kit:
         specifier: 'catalog:'
-        version: 0.19.1(astro@5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
+        version: 0.19.1(astro@5.16.0(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
 
   packages/@withstudiocms/effect:
     dependencies:
       '@astrojs/db':
         specifier: '>=0.17.2'
-        version: 0.18.2(@types/pg@8.15.6)(kysely@0.28.8)(mysql2@3.15.3)(pg@8.16.3)
+        version: 0.18.3(@types/pg@8.15.6)(kysely@0.28.8)(mysql2@3.15.3)(pg@8.16.3)
       '@clack/prompts':
         specifier: ^0.11.0
         version: 0.11.0
       '@effect/cli':
         specifier: catalog:effect
-        version: 0.72.1(@effect/platform@0.93.3(effect@3.19.4))(@effect/printer-ansi@0.47.0(@effect/typeclass@0.38.0(effect@3.19.4))(effect@3.19.4))(@effect/printer@0.47.0(@effect/typeclass@0.38.0(effect@3.19.4))(effect@3.19.4))(effect@3.19.4)
+        version: 0.72.1(@effect/platform@0.93.3(effect@3.19.6))(@effect/printer-ansi@0.47.0(@effect/typeclass@0.38.0(effect@3.19.6))(effect@3.19.6))(@effect/printer@0.47.0(@effect/typeclass@0.38.0(effect@3.19.6))(effect@3.19.6))(effect@3.19.6)
       '@effect/platform':
         specifier: catalog:effect
-        version: 0.93.3(effect@3.19.4)
+        version: 0.93.3(effect@3.19.6)
       '@effect/platform-node':
         specifier: catalog:effect
-        version: 0.100.0(@effect/cluster@0.51.0(@effect/platform@0.93.3(effect@3.19.4))(@effect/rpc@0.72.0(@effect/platform@0.93.3(effect@3.19.4))(effect@3.19.4))(@effect/sql@0.47.0(@effect/experimental@0.57.0(@effect/platform@0.93.3(effect@3.19.4))(effect@3.19.4))(@effect/platform@0.93.3(effect@3.19.4))(effect@3.19.4))(@effect/workflow@0.12.0(@effect/platform@0.93.3(effect@3.19.4))(@effect/rpc@0.72.0(@effect/platform@0.93.3(effect@3.19.4))(effect@3.19.4))(effect@3.19.4))(effect@3.19.4))(@effect/platform@0.93.3(effect@3.19.4))(@effect/rpc@0.72.0(@effect/platform@0.93.3(effect@3.19.4))(effect@3.19.4))(@effect/sql@0.47.0(@effect/experimental@0.57.0(@effect/platform@0.93.3(effect@3.19.4))(effect@3.19.4))(@effect/platform@0.93.3(effect@3.19.4))(effect@3.19.4))(effect@3.19.4)
+        version: 0.101.0(@effect/cluster@0.51.0(@effect/platform@0.93.3(effect@3.19.6))(@effect/rpc@0.72.0(@effect/platform@0.93.3(effect@3.19.6))(effect@3.19.6))(@effect/sql@0.47.0(@effect/experimental@0.57.0(@effect/platform@0.93.3(effect@3.19.6))(effect@3.19.6))(@effect/platform@0.93.3(effect@3.19.6))(effect@3.19.6))(@effect/workflow@0.12.0(@effect/platform@0.93.3(effect@3.19.6))(@effect/rpc@0.72.0(@effect/platform@0.93.3(effect@3.19.6))(effect@3.19.6))(effect@3.19.6))(effect@3.19.6))(@effect/platform@0.93.3(effect@3.19.6))(@effect/rpc@0.72.0(@effect/platform@0.93.3(effect@3.19.6))(effect@3.19.6))(@effect/sql@0.47.0(@effect/experimental@0.57.0(@effect/platform@0.93.3(effect@3.19.6))(effect@3.19.6))(@effect/platform@0.93.3(effect@3.19.6))(effect@3.19.6))(effect@3.19.6)
       '@libsql/client':
         specifier: catalog:min
         version: 0.15.15
       astro:
         specifier: catalog:min
-        version: 5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
+        version: 5.16.0(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
       deepmerge-ts:
         specifier: 'catalog:'
         version: 7.1.5
@@ -780,7 +780,7 @@ importers:
         version: 0.42.0(@libsql/client@0.15.15)(@types/pg@8.15.6)(kysely@0.28.8)(mysql2@3.15.3)(pg@8.16.3)
       effect:
         specifier: catalog:effect
-        version: 3.19.4
+        version: 3.19.6
       micromatch:
         specifier: ^4.0.8
         version: 4.0.8
@@ -798,8 +798,8 @@ importers:
         specifier: 'catalog:'
         version: 22.19.0
       '@types/nodemailer':
-        specifier: ^7.0.3
-        version: 7.0.3
+        specifier: ^7.0.4
+        version: 7.0.4
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
@@ -808,10 +808,10 @@ importers:
     dependencies:
       astro:
         specifier: catalog:min
-        version: 5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
+        version: 5.16.0(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
       astro-integration-kit:
         specifier: 'catalog:'
-        version: 0.19.1(astro@5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
+        version: 0.19.1(astro@5.16.0(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
       mdast-util-from-markdown:
         specifier: ^2.0.2
         version: 2.0.2
@@ -839,7 +839,7 @@ importers:
         version: 0.4.1(kysely@0.28.8)
       effect:
         specifier: catalog:effect
-        version: 3.19.4
+        version: 3.19.6
       kysely:
         specifier: ^0.28.8
         version: 0.28.8
@@ -892,7 +892,7 @@ importers:
     dependencies:
       '@astrojs/db':
         specifier: '>=0.17.2'
-        version: 0.18.2(@types/pg@8.15.6)(kysely@0.28.8)(mysql2@3.15.3)(pg@8.16.3)
+        version: 0.18.3(@types/pg@8.15.6)(kysely@0.28.8)(mysql2@3.15.3)(pg@8.16.3)
       '@iconify-json/circle-flags':
         specifier: ^1.2.10
         version: 1.2.10
@@ -904,22 +904,22 @@ importers:
         version: 1.2.59
       '@inox-tools/runtime-logger':
         specifier: ^0.7.0
-        version: 0.7.0(astro@5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
+        version: 0.7.0(astro@5.16.0(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
       '@libsql/client':
         specifier: catalog:min
         version: 0.15.15
       '@nanostores/i18n':
         specifier: ^1.2.2
-        version: 1.2.2(nanostores@1.0.1)
+        version: 1.2.2(nanostores@1.1.0)
       '@nanostores/persistent':
         specifier: ^1.2.0
-        version: 1.2.0(nanostores@1.0.1)
+        version: 1.2.0(nanostores@1.1.0)
       '@studiocms/ui':
         specifier: catalog:studiocms
-        version: 1.0.0-beta.4(astro@5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))(vite@6.4.1(@types/node@22.19.0)(jiti@2.6.1)(tsx@4.20.6)(yaml@2.8.1))
+        version: 1.0.0-beta.4(astro@5.16.0(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))(vite@6.4.1(@types/node@22.19.0)(jiti@2.6.1)(tsx@4.20.6)(yaml@2.8.1))
       '@studiocms/web-vitals':
         specifier: catalog:min
-        version: 4.5.3(@astrojs/db@0.18.2(@types/pg@8.15.6)(kysely@0.28.8)(mysql2@3.15.3)(pg@8.16.3))
+        version: 4.5.3(@astrojs/db@0.18.3(@types/pg@8.15.6)(kysely@0.28.8)(mysql2@3.15.3)(pg@8.16.3))
       '@withstudiocms/auth-kit':
         specifier: workspace:*
         version: link:../@withstudiocms/auth-kit
@@ -946,10 +946,10 @@ importers:
         version: 1.43.4
       astro:
         specifier: catalog:min
-        version: 5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
+        version: 5.16.0(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
       astro-integration-kit:
         specifier: 'catalog:'
-        version: 0.19.1(astro@5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
+        version: 0.19.1(astro@5.16.0(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
       boxen:
         specifier: ^8.0.1
         version: 8.0.1
@@ -973,7 +973,7 @@ importers:
         version: 0.42.0(@libsql/client@0.15.15)(@types/pg@8.15.6)(kysely@0.28.8)(mysql2@3.15.3)(pg@8.16.3)
       effect:
         specifier: catalog:effect
-        version: 3.19.4
+        version: 3.19.6
       fuse.js:
         specifier: ^7.1.0
         version: 7.1.0
@@ -996,8 +996,8 @@ importers:
         specifier: ^2.0.1
         version: 2.0.1
       nanostores:
-        specifier: ^1.0.1
-        version: 1.0.1
+        specifier: ^1.1.0
+        version: 1.1.0
       package-manager-detector:
         specifier: ^1.5.0
         version: 1.5.0
@@ -1037,10 +1037,10 @@ importers:
     dependencies:
       '@astrojs/db':
         specifier: catalog:astrojs
-        version: 0.18.2(@types/pg@8.15.6)(kysely@0.28.8)(mysql2@3.15.3)(pg@8.16.3)
+        version: 0.18.3(@types/pg@8.15.6)(kysely@0.28.8)(mysql2@3.15.3)(pg@8.16.3)
       '@astrojs/node':
         specifier: catalog:astrojs
-        version: 9.5.1(astro@5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
+        version: 9.5.1(astro@5.16.0(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
       '@studiocms/blog':
         specifier: workspace:*
         version: link:../packages/@studiocms/blog
@@ -1052,13 +1052,13 @@ importers:
         version: link:../packages/@studiocms/md
       '@studiocms/web-vitals':
         specifier: catalog:studiocms
-        version: 4.5.3(@astrojs/db@0.18.2(@types/pg@8.15.6)(kysely@0.28.8)(mysql2@3.15.3)(pg@8.16.3))
+        version: 4.5.3(@astrojs/db@0.18.3(@types/pg@8.15.6)(kysely@0.28.8)(mysql2@3.15.3)(pg@8.16.3))
       '@studiocms/wysiwyg':
         specifier: workspace:*
         version: link:../packages/@studiocms/wysiwyg
       astro:
         specifier: catalog:astrojs
-        version: 5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
+        version: 5.16.0(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
       sharp:
         specifier: 'catalog:'
         version: 0.34.4
@@ -1109,8 +1109,8 @@ packages:
   '@astrojs/compiler@2.13.0':
     resolution: {integrity: sha512-mqVORhUJViA28fwHYaWmsXSzLO9osbdZ5ImUfxBarqsYdMlPbqAqGJCxsNzvppp1BEzc1mJNjOVvQqeDN8Vspw==}
 
-  '@astrojs/db@0.18.2':
-    resolution: {integrity: sha512-ez6CHsqHKTqck3RvDNP7riw5Y12COuyZuw4yIfFycJWgi/FcU9en4ktmNoYrLGK+w1CsvSnT89Qf25clMF4jnA==}
+  '@astrojs/db@0.18.3':
+    resolution: {integrity: sha512-iTK50jUgyj25oa/JiXSN1/IVp5kTmPuioLlve06LE8/HzWGv3JpVgCKIV9HHf3kOVi1HV/uauXnyWzkB+yHLSQ==}
 
   '@astrojs/internal-helpers@0.6.1':
     resolution: {integrity: sha512-l5Pqf6uZu31aG+3Lv8nl/3s4DbUzdlxTWDof4pEpto6GUJNhhCbelVi9dEyurOVyqaelwmS9oSyOWOENSfgo9A==}
@@ -1130,8 +1130,8 @@ packages:
     resolution: {integrity: sha512-q8VwfU/fDZNoDOf+r7jUnMC2//H2l0TuQ6FkGJL8vD8nw/q5KiL3DS1KKBI3QhI9UQhpJ5dc7AtqfbXWuOgLCQ==}
     engines: {node: 18.20.8 || ^20.3.0 || >=22.0.0}
 
-  '@astrojs/rss@4.0.13':
-    resolution: {integrity: sha512-ugW4DmGn8kgfl8/qecU3EcKCAuEBrZqY7eYfa6at0sY7HGEwRdzsOafLE437RwDMP2ZuxfKnCNABs99YVhX0kg==}
+  '@astrojs/rss@4.0.14':
+    resolution: {integrity: sha512-KCe1imDcADKOOuO/wtKOMDO/umsBD6DWF+94r5auna1jKl5fmlK9vzf+sjA3EyveXA/FoB3khtQ/u/tQgETmTw==}
 
   '@astrojs/telemetry@3.3.0':
     resolution: {integrity: sha512-UFBgfeldP06qu6khs/yY+q1cDAaArM2/7AEIqQ9Cuvf7B1hNLq0xDrZkct+QoIGyjq56y8IaE2I3CTvG99mlhQ==}
@@ -1518,23 +1518,23 @@ packages:
     resolution: {integrity: sha512-gvJaHoeXMHAoA6+Xyj9Vdq52yDCs+ECLbKpHvxHtdJP/C0D9b3JFEfLjdVuw37zoWcYS856um4rgEYHlW2LSEQ==}
     hasBin: true
 
-  '@effect/platform-node-shared@0.53.0':
-    resolution: {integrity: sha512-xqhYyUYotVUJi7Tqd/iM+tqEoNm6fVowcPm9naxKZCa6WPD6TnRfaogxjkB3yNBnPY63Ya/sIkfkeZXA3MwF3w==}
+  '@effect/platform-node-shared@0.54.0':
+    resolution: {integrity: sha512-prTgG3CXqmrxB4Rg6utfwCTqjlGwjAEvK7R4g3HzVdFpfFRum+FQBpGHUcjyz7EejkDtBY2MWJC3Wr1QKDPjPw==}
     peerDependencies:
-      '@effect/cluster': ^0.52.0
-      '@effect/platform': ^0.93.0
-      '@effect/rpc': ^0.72.1
+      '@effect/cluster': ^0.53.0
+      '@effect/platform': ^0.93.3
+      '@effect/rpc': ^0.72.2
       '@effect/sql': ^0.48.0
-      effect: ^3.19.0
+      effect: ^3.19.5
 
-  '@effect/platform-node@0.100.0':
-    resolution: {integrity: sha512-awfeW8zy5hgyRy+ml4bHK27DukTrTV5xvDhZioRF7USjJRwlZ+irdWhR6ExY+UOnAsmq0h8m/1s0l9pUcBi0bw==}
+  '@effect/platform-node@0.101.0':
+    resolution: {integrity: sha512-dtaQA6Wn5EbVpunwNI9Uld6sSqAnC4Pg7WZ19SndK2pMr4QEPetBH80080kvYQoQbXz6J+T+OI/AyGSiIsADhw==}
     peerDependencies:
-      '@effect/cluster': ^0.52.0
-      '@effect/platform': ^0.93.0
-      '@effect/rpc': ^0.72.1
+      '@effect/cluster': ^0.53.0
+      '@effect/platform': ^0.93.3
+      '@effect/rpc': ^0.72.2
       '@effect/sql': ^0.48.0
-      effect: ^3.19.0
+      effect: ^3.19.5
 
   '@effect/platform@0.93.3':
     resolution: {integrity: sha512-s88zctkeXba24Mjy7MEFMuam1p5sXmsG7uQjPIDE6EiC+2IFUQd8976TtangiU0e8qu0SALpjIH1P1QyC7/1og==}
@@ -2244,106 +2244,106 @@ packages:
   '@oslojs/jwt@0.2.0':
     resolution: {integrity: sha512-bLE7BtHrURedCn4Mco3ma9L4Y1GR2SMBuIvjWr7rmQ4/W/4Jy70TIAgZ+0nIlk0xHz1vNP8x8DCns45Sb2XRbg==}
 
-  '@oxc-resolver/binding-android-arm-eabi@11.13.0':
-    resolution: {integrity: sha512-lqaFg5bavNdDoRuQywS66hRk4M12m4kyT3cFpIXfFy6OpobOBeo6R+vJIXl3XRzCmDK58haIYfqTP3KBb3QFgQ==}
+  '@oxc-resolver/binding-android-arm-eabi@11.13.2':
+    resolution: {integrity: sha512-vWd1NEaclg/t2DtEmYzRRBNQOueMI8tixw/fSNZ9XETXLRJiAjQMYpYeflQdRASloGze6ZelHE/wIBNt4S+pkw==}
     cpu: [arm]
     os: [android]
 
-  '@oxc-resolver/binding-android-arm64@11.13.0':
-    resolution: {integrity: sha512-oLjhpGMKOT8lsqdof2tNSeb4tOi7zAGJHbGBe7pB/75mSDshs/7YbHG+zm35cwecQTBTXf9Ok4/gIbzX3YaRpw==}
+  '@oxc-resolver/binding-android-arm64@11.13.2':
+    resolution: {integrity: sha512-jxZrYcxgpI6IuQpguQVAQNrZfUyiYfMVqR4pKVU3PRLCM7AsfXNKp0TIgcvp+l6dYVdoZ1MMMMa5Ayjd09rNOw==}
     cpu: [arm64]
     os: [android]
 
-  '@oxc-resolver/binding-darwin-arm64@11.13.0':
-    resolution: {integrity: sha512-hPhssWhyzvlks6r4Cx3j7LUd5r7dnLdgOTSyfVpH978iv/a7dau2takuCZ0NU8/YQ+Gvjdl+Rm65ZTyzcAo2qA==}
+  '@oxc-resolver/binding-darwin-arm64@11.13.2':
+    resolution: {integrity: sha512-RDS3HUe1FvgjNS1xfBUqiEJ8938Zb5r7iKABwxEblp3K4ufZZNAtoaHjdUH2TJ0THDmuf0OxxVUO/Y+4Ep4QfQ==}
     cpu: [arm64]
     os: [darwin]
 
-  '@oxc-resolver/binding-darwin-x64@11.13.0':
-    resolution: {integrity: sha512-8g1MxQNy0Wy4NbCxOetCZIP0fesCXxWPeJrekPdqYtCnoPuS28xIy0O/nmjj+mensjzrgHcHk9h35R45sLUOqA==}
+  '@oxc-resolver/binding-darwin-x64@11.13.2':
+    resolution: {integrity: sha512-tDcyWtkUzkt6auJLP2dOjL84BxqHkKW4mz2lNRIGPTq7b+HBraB+m8RdRH6BgqTvbnNECOxR3XAMaKBKC8J51g==}
     cpu: [x64]
     os: [darwin]
 
-  '@oxc-resolver/binding-freebsd-x64@11.13.0':
-    resolution: {integrity: sha512-A/BolJ2XbSrJRJjOewAlG7wcW9YE+9A+0d+g5Xc0+woEvpA0AfnrAT6aGQw9LlWBuswzI7HRetWg/cq8tHvWVw==}
+  '@oxc-resolver/binding-freebsd-x64@11.13.2':
+    resolution: {integrity: sha512-fpaeN8Q0kWvKns9uSMg6CcKo7cdgmWt6J91stPf8sdM+EKXzZ0YcRnWWyWF8SM16QcLUPCy5Iwt5Z8aYBGaZYA==}
     cpu: [x64]
     os: [freebsd]
 
-  '@oxc-resolver/binding-linux-arm-gnueabihf@11.13.0':
-    resolution: {integrity: sha512-w0nNUywfg/OVCVfcLMpzr5zH/d9JDzOt7H0fqD0PbMTizdcM/SP/gWziZ64rA8CmrUzhMdUEeeSiMoZn0CQ2Rg==}
+  '@oxc-resolver/binding-linux-arm-gnueabihf@11.13.2':
+    resolution: {integrity: sha512-idBgJU5AvSsGOeaIWiFBKbNBjpuduHsJmrG4CBbEUNW/Ykx+ISzcuj1PHayiYX6R9stVsRhj3d2PyymfC5KWRg==}
     cpu: [arm]
     os: [linux]
 
-  '@oxc-resolver/binding-linux-arm-musleabihf@11.13.0':
-    resolution: {integrity: sha512-iVkhn/Vlo21DTZZgNO1JppGQUpMcU9C5FybVLeSwm3Z8h0XboYzgCs/rvaNg/HrHjGQJpID686TMqdCe0iPcRg==}
+  '@oxc-resolver/binding-linux-arm-musleabihf@11.13.2':
+    resolution: {integrity: sha512-BlBvQUhvvIM/7s96KlKhMk0duR2sj8T7Hyii46/5QnwfN/pHwobvOL5czZ6/SKrHNB/F/qDY4hGsBuB1y7xgTg==}
     cpu: [arm]
     os: [linux]
 
-  '@oxc-resolver/binding-linux-arm64-gnu@11.13.0':
-    resolution: {integrity: sha512-uhbth0AM9IZsKIKJS6esg+0xlMMiJsvr8hH/HIY3nUjW4elKLsBOj3MbgdOIBvWOg+edJ0FXM9h22riy254xBw==}
+  '@oxc-resolver/binding-linux-arm64-gnu@11.13.2':
+    resolution: {integrity: sha512-lUmDTmYOGpbIK+FBfZ0ySaQTo7g1Ia/WnDnQR2wi/0AtehZIg/ZZIgiT/fD0iRvKEKma612/0PVo8dXdAKaAGA==}
     cpu: [arm64]
     os: [linux]
     libc: [glibc]
 
-  '@oxc-resolver/binding-linux-arm64-musl@11.13.0':
-    resolution: {integrity: sha512-87J7aIXOXQ6VuvJU9BQHcpf/llHPKmHYkFgwTc6KyX9YJ6th1jr6z3Soi1F0/xs74Ay3/CSgtZ9UJRDAkx6kRA==}
+  '@oxc-resolver/binding-linux-arm64-musl@11.13.2':
+    resolution: {integrity: sha512-dkGzOxo+I9lA4Er6qzFgkFevl3JvwyI9i0T/PkOJHva04rb1p9dz8GPogTO9uMK4lrwLWzm/piAu+tHYC7v7+w==}
     cpu: [arm64]
     os: [linux]
     libc: [musl]
 
-  '@oxc-resolver/binding-linux-ppc64-gnu@11.13.0':
-    resolution: {integrity: sha512-qARWktXmpNO9raSxykwicNbcVIF8A0FrK0rtKCIds4FsBBr9M9lUPzG4BfZm/Qg4S4OnnQGQxFzmcnEiwBqjsg==}
+  '@oxc-resolver/binding-linux-ppc64-gnu@11.13.2':
+    resolution: {integrity: sha512-53kWsjLkVFnoSA7COdps38pBssN48zI8LfsOvupsmQ0/4VeMYb+0Ao9O6r52PtmFZsGB3S1Qjqbjl/Pswj1a3g==}
     cpu: [ppc64]
     os: [linux]
     libc: [glibc]
 
-  '@oxc-resolver/binding-linux-riscv64-gnu@11.13.0':
-    resolution: {integrity: sha512-k3SNJQi1PiUvyzRPqLIl0jGST4pOUn6ISWvk9Gg28FPS+ng1XwWEEXV2sSKncLNgh/UKjv81LcNy8m17STJuRg==}
+  '@oxc-resolver/binding-linux-riscv64-gnu@11.13.2':
+    resolution: {integrity: sha512-MfxN6DMpvmdCbGlheJ+ihy11oTcipqDfcEIQV9ah3FGXBRCZtBOHJpQDk8qI2Y+nCXVr3Nln7OSsOzoC4+rSYQ==}
     cpu: [riscv64]
     os: [linux]
     libc: [glibc]
 
-  '@oxc-resolver/binding-linux-riscv64-musl@11.13.0':
-    resolution: {integrity: sha512-JPZhlZkJY5HUed0J13TttkzDs+J2DbE516MgSDCCKkYGTGPZ9Z1ZcOae1wOLYZOYoYVLzool1Bijt2eVVoLZ9Q==}
+  '@oxc-resolver/binding-linux-riscv64-musl@11.13.2':
+    resolution: {integrity: sha512-WXrm4YiRU0ijqb72WHSjmfYaQZ7t6/kkQrFc4JtU+pUE4DZA/DEdxOuQEd4Q43VqmLvICTJWSaZMlCGQ4PSRUg==}
     cpu: [riscv64]
     os: [linux]
     libc: [musl]
 
-  '@oxc-resolver/binding-linux-s390x-gnu@11.13.0':
-    resolution: {integrity: sha512-Qh69bTj4cinpemWwSfULn2dw0YZnNdOfD9/bT4+5yrCIemaloJ6rmj1p1TTPS1lvhvxuuAPVw4husR3Mp48Kew==}
+  '@oxc-resolver/binding-linux-s390x-gnu@11.13.2':
+    resolution: {integrity: sha512-4pISWIlOFRUhWyvGCB3XUhtcwyvwGGhlXhHz7IXCXuGufaQtvR05trvw8U1ZnaPhsdPBkRhOMIedX11ayi5uXw==}
     cpu: [s390x]
     os: [linux]
     libc: [glibc]
 
-  '@oxc-resolver/binding-linux-x64-gnu@11.13.0':
-    resolution: {integrity: sha512-GksRH4TxcnDxFeq+DmP+L/X7f6sTHO0sBHv4WVOXF9EESWLavbcrHMzOLCb1Hz9BecUVqXTfVhLHLgBZFQb2iQ==}
+  '@oxc-resolver/binding-linux-x64-gnu@11.13.2':
+    resolution: {integrity: sha512-DVo6jS8n73yNAmCsUOOk2vBeC60j2RauDXQM8p7RDl0afsEaA2le22vD8tky7iNoM5tsxfBmE4sOJXEKgpwWRw==}
     cpu: [x64]
     os: [linux]
     libc: [glibc]
 
-  '@oxc-resolver/binding-linux-x64-musl@11.13.0':
-    resolution: {integrity: sha512-3lieqELuhnsjc6rAZiKYJaIKDCNNAsOt5wazi+/h1McaWB4VwKO0If6kI2gSvcs01u4XrIeDKNcR85JxzChYxA==}
+  '@oxc-resolver/binding-linux-x64-musl@11.13.2':
+    resolution: {integrity: sha512-6WqrE+hQBFP35KdwQjWcZpldbTq6yJmuTVThISu+rY3+j6MaDp2ciLHTr1X68r2H/7ocOIl4k3NnOVIzeRJE3w==}
     cpu: [x64]
     os: [linux]
     libc: [musl]
 
-  '@oxc-resolver/binding-wasm32-wasi@11.13.0':
-    resolution: {integrity: sha512-FFX6UDhT9yVVsj7/HBpdUtVT589QavKNo9c/GyIyZhzJhZ33OIo0eHZewFF43sGsO+eixrrdt3hQlPfZ9ei+oA==}
+  '@oxc-resolver/binding-wasm32-wasi@11.13.2':
+    resolution: {integrity: sha512-YpxvQmP2D+mNUkLQZbBjGz20g/pY8XoOBdPPoWMl9X68liFFjXxkPQTrZxWw4zzG/UkTM5z6dPRTyTePRsMcjw==}
     engines: {node: '>=14.0.0'}
     cpu: [wasm32]
 
-  '@oxc-resolver/binding-win32-arm64-msvc@11.13.0':
-    resolution: {integrity: sha512-pfQDRggtnsP0ZIx+XntAiqeAGOqsbUNoeWuAd9mdfGzCDI7BOauTd1gSaI89rQ30rnf90ELb+L2dNa0I2wLIPQ==}
+  '@oxc-resolver/binding-win32-arm64-msvc@11.13.2':
+    resolution: {integrity: sha512-1SKBw6KcCmvPBdEw1/Qdpv6eSDf23lCXTWz9VxTe6QUQ/1wR+HZR2uS4q6C8W6jnIswMTQbxpTvVwdRXl+ufeA==}
     cpu: [arm64]
     os: [win32]
 
-  '@oxc-resolver/binding-win32-ia32-msvc@11.13.0':
-    resolution: {integrity: sha512-TViVvey424MV/cavv6x8ja/swTwIi4RTdM8QlxafLmUg1sn6f09ktKLVMy9UvV4gcHAFHeqSAaIdrljcw58RBA==}
+  '@oxc-resolver/binding-win32-ia32-msvc@11.13.2':
+    resolution: {integrity: sha512-KEVV7wggDucxRn3vvyHnmTCPXoCT7vWpH18UVLTygibHJvNRP2zl5lBaQcCIdIaYYZjKt1aGI/yZqxZvHoiCdg==}
     cpu: [ia32]
     os: [win32]
 
-  '@oxc-resolver/binding-win32-x64-msvc@11.13.0':
-    resolution: {integrity: sha512-wH7t+I0o6EU+O+VMV1AitqYeyZCGtpKDtK8fSqD6N35JQVOHYSsnxrtULoP5PA5SMAEW4GwE8ZbOajaUXXxzuA==}
+  '@oxc-resolver/binding-win32-x64-msvc@11.13.2':
+    resolution: {integrity: sha512-6AAdN9v/wO5c3td1yidgNLKYlzuNgfOtEqBq60WE469bJWR7gHgG/S5aLR2pH6/gyPLs9UXtItxi934D+0Estg==}
     cpu: [x64]
     os: [win32]
 
@@ -2864,8 +2864,8 @@ packages:
   '@types/node@22.19.0':
     resolution: {integrity: sha512-xpr/lmLPQEj+TUnHmR+Ab91/glhJvsqcjB+yY0Ix9GO70H6Lb4FHH5GeqdOE5btAx7eIMwuHkp4H2MSkLcqWbA==}
 
-  '@types/nodemailer@7.0.3':
-    resolution: {integrity: sha512-fC8w49YQ868IuPWRXqPfLf+MuTRex5Z1qxMoG8rr70riqqbOp2F5xgOKE9fODEBPzpnvjkJXFgK6IL2xgMSTnA==}
+  '@types/nodemailer@7.0.4':
+    resolution: {integrity: sha512-ee8fxWqOchH+Hv6MDDNNy028kwvVnLplrStm4Zf/3uHWw5zzo8FoYYeffpJtGs2wWysEumMH0ZIdMGMY1eMAow==}
 
   '@types/pg@8.15.6':
     resolution: {integrity: sha512-NoaMtzhxOrubeL/7UZuNTrejB4MPAJ0RpxZqXQf2qXuVlTPuG6Y8p4u9dKRaue4yjmC7ZhzVO2/Yyyn25znrPQ==}
@@ -2875,8 +2875,8 @@ packages:
     peerDependencies:
       '@types/react': ^19.2.0
 
-  '@types/react@19.2.5':
-    resolution: {integrity: sha512-keKxkZMqnDicuvFoJbzrhbtdLSPhj/rZThDlKWCDbgXmUg0rEUFtRssDXKYmtXluZlIqiC5VqkCgRwzuyLHKHw==}
+  '@types/react@19.2.6':
+    resolution: {integrity: sha512-p/jUvulfgU7oKtj6Xpk8cA2Y1xKTtICGpJYeJXz2YVO2UcvjQgeRMLDGfDeqeRW2Ta+0QNFwcc8X3GH8SxZz6w==}
 
   '@types/sanitize-html@2.16.0':
     resolution: {integrity: sha512-l6rX1MUXje5ztPT0cAFtUayXF06DqPhRyfVXareEN5gGCFaP/iwsxIyKODr9XDhfxPpN6vXUFNfo5kZMXCxBtw==}
@@ -3121,8 +3121,8 @@ packages:
     peerDependencies:
       astro: ^4.5 || ^5.1.0
 
-  astro@5.15.9:
-    resolution: {integrity: sha512-XLDXxu0282cC/oYHswWZm3johGlRvk9rLRS7pWVWSne+HsZe9JgrpHI+vewAJSSNHBGd1aCyaQOElT5RNGe7IQ==}
+  astro@5.16.0:
+    resolution: {integrity: sha512-GaDRs2Mngpw3dr2vc085GnORh98NiXxwIjg/EoQQQl/icZt3Z7s0BRsYHDZ8swkZbOA6wZsqWJdrNirl+iKcDg==}
     engines: {node: 18.20.8 || ^20.3.0 || >=22.0.0, npm: '>=9.6.5', pnpm: '>=7.1.0'}
     hasBin: true
 
@@ -3335,6 +3335,10 @@ packages:
   comma-separated-tokens@2.0.3:
     resolution: {integrity: sha512-Fu4hJdvzeylCfQPp9SGWidpzrMs7tTrlu6Vb8XGaRGck8QSNZJJp538Wrb60Lax4fPwR64ViY468OIUTbRlGZg==}
 
+  commander@11.1.0:
+    resolution: {integrity: sha512-yPVavfyCcRhmorC7rWlkHn15b4wDVgVmBA7kV4QVBsF7kv/9TKJAbAXVTxvTnwP8HHKjRCJDClKbciiYS7p0DQ==}
+    engines: {node: '>=16'}
+
   commander@13.1.0:
     resolution: {integrity: sha512-/rFeCpNJQbhSZjGVwO9RFV3xPqbnERS8MmIQzCtD/zl6gpJuV/bMLuN92oG3F7d8oDEHHRrujSXNUr8fpjntKw==}
     engines: {node: '>=18'}
@@ -3382,6 +3386,10 @@ packages:
   css-select@5.2.2:
     resolution: {integrity: sha512-TizTzUddG/xYLA3NXodFM0fSbNizXjOKhqiQQwvhlspadZokn1KDy0NZFS0wuEubIYAV5/c1/lAr0TaaFXEXzw==}
 
+  css-tree@2.2.1:
+    resolution: {integrity: sha512-OA0mILzGc1kCOCSJerOeqDxDQ4HOh+G8NbOJFOTgOCzpw7fCBubk0fEyxp8AgOL/jvLgYA/uV0cMbe43ElF1JA==}
+    engines: {node: ^10 || ^12.20.0 || ^14.13.0 || >=15.0.0, npm: '>=7.0.0'}
+
   css-tree@3.1.0:
     resolution: {integrity: sha512-0eW44TGN5SQXU1mWSkKwFstI/22X2bG1nYzZTYMAWjylYURhse752YgbE4Cx46AC+bAvI+/dYTPRk1LqSUnu6w==}
     engines: {node: ^10 || ^12.20.0 || ^14.13.0 || >=15.0.0}
@@ -3394,6 +3402,10 @@ packages:
     resolution: {integrity: sha512-/Tb/JcjK111nNScGob5MNtsntNM1aCNUDipB/TkwZFhyDrrE47SOx/18wF2bbjgc3ZzCSKW1T5nt5EbFoAz/Vg==}
     engines: {node: '>=4'}
     hasBin: true
+
+  csso@5.0.5:
+    resolution: {integrity: sha512-0LrrStPOdJj+SPCCrGhzryycLjwcgUSHBtxNA8aIDxf0GLsRh1cKYhB00Gd1lDOS4yGH69+SNn13+TWbVHETFQ==}
+    engines: {node: ^10 || ^12.20.0 || ^14.13.0 || >=15.0.0, npm: '>=7.0.0'}
 
   cssom@0.3.8:
     resolution: {integrity: sha512-b0tGHbfegbhPJpxpiBPU2sCkigAqtM9O121le6bbOlgyV+NyGyCmVfJ6QW9eRjz8CpNfWEOYBIMIGRYkLwsIYg==}
@@ -3409,8 +3421,8 @@ packages:
     resolution: {integrity: sha512-OytmFH+13/QXONJcC75QNdMtKpceNk3u8ThBjyyYjkEcy/ekBwR1mMAuNvi3gdBPW3N5TlCzQ0WZw8H0lN/bDw==}
     engines: {node: '>=20'}
 
-  csstype@3.1.3:
-    resolution: {integrity: sha512-M1uQkMl8rQK/szD0LNhtqxIPLpimGm8sOBwU7lLnCpSbTyY3yeU1Vc7l4KT5zT4s/yOxHH5O7tIuuLOCnLADRw==}
+  csstype@3.2.3:
+    resolution: {integrity: sha512-z1HGKcYy2xA8AGQfwrn0PAy+PB7X/GSj3UVJW9qKyn43xWa+gl5nXmU4qqLMRzWVLFC8KusUX8T/0kCiOYpAIQ==}
 
   dashdash@1.14.1:
     resolution: {integrity: sha512-jRFi8UDGo6j+odZiEpjazZaWqEal3w/basFjQHQEwVtZJGDpxbH1MeYluwCS8Xq5wmLJooDlMgvVarmWfGM44g==}
@@ -3686,8 +3698,8 @@ packages:
   ee-first@1.1.1:
     resolution: {integrity: sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==}
 
-  effect@3.19.4:
-    resolution: {integrity: sha512-gApFffMwpDVgmw/FzCaYWt6zw4m0xAnQf5+cPS0+Sl85AxfeovJeEIsiEQVlk+ZvtBYcoPXxi65GIyruzanQ5g==}
+  effect@3.19.6:
+    resolution: {integrity: sha512-Eh1E/CI+xCAcMSDC5DtyE29yWJINC0zwBbwHappQPorjKyS69rCA8qzpsHpfhKnPDYgxdg8zkknii8mZ+6YMQA==}
 
   emoji-regex@10.6.0:
     resolution: {integrity: sha512-toUI84YS5YmxW219erniWD0CIVOo46xGKColeNQRgOzDorgBi1v4D71/OFzgD9GO2UGKIv1C3Sp8DAn0+j5w7A==}
@@ -4038,8 +4050,8 @@ packages:
   graceful-fs@4.2.11:
     resolution: {integrity: sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ==}
 
-  grapesjs@0.22.13:
-    resolution: {integrity: sha512-GsLqv9ckVF7cWgp6aqlmxmLUJSsGvni4FHsKm9nxa6rv3acUeTkdR93GbbYaTejn5nFFCn9mBwzGGmGh9X+xHA==}
+  grapesjs@0.22.14:
+    resolution: {integrity: sha512-UyHKGtB9YOQ4bmvhmwY3H7J6SO30qgIH4qRp1ucUlblS21btMxY90xwQuAVIi+EFGl0wi8v1NBEYvA52eIEfyg==}
 
   h3@1.15.4:
     resolution: {integrity: sha512-z5cFQWDffyOe4vQ9xIqNfCZdV4p//vy6fBnr8Q1AWnVZ0teurKMG66rLj++TKwKPUP3u7iMUvrvKaEUiQw2QWQ==}
@@ -4415,8 +4427,8 @@ packages:
     resolution: {integrity: sha512-eTIzlVOSUR+JxdDFepEYcBMtZ9Qqdef+rnzWdRZuMbOywu5tO2w2N7rqjoANZ5k9vywhL6Br1VRjUIgTQx4E8w==}
     engines: {node: '>=6'}
 
-  knip@5.69.1:
-    resolution: {integrity: sha512-duK61dmrk9O3RiPQtDrsWGzxGyNoyf9gQyjXPcvmcecZypdv9x0ixzPdBU4YTPRbwvUaRtNGulHYUyixz2fbKg==}
+  knip@5.70.1:
+    resolution: {integrity: sha512-tGRjOivkHPV+YoVVDz0oKSlvCAY6d009Mlhufs4Y+7VWl/Ky073+KURcrgMLzJVy4pkpZvoxYu3wmC0gK7XS5g==}
     engines: {node: '>=18.18.0'}
     hasBin: true
     peerDependencies:
@@ -4562,6 +4574,9 @@ packages:
 
   mdast-util-to-string@4.0.0:
     resolution: {integrity: sha512-0H44vDimn51F0YwvxSJSm0eCDOJTRlmN0R1yBh4HLj9wiV1Dn0QoXGbvFAWj2hSItVTlCmBF1hqKlIyUBVFLPg==}
+
+  mdn-data@2.0.28:
+    resolution: {integrity: sha512-aylIc7Z9y4yzHYAJNuESG3hfhC+0Ibp/MAMiaOZgNv4pmEdFyfZhhhny4MNiAfWdBQ1RQ2mfDWmM1x8SvGyp8g==}
 
   mdn-data@2.12.2:
     resolution: {integrity: sha512-IEn+pegP1aManZuckezWCO+XZQDplx1366JoVhTpMpBB1sPey/SbveZQUosKiKiGYjg1wH4pMlNgXbCiYgihQA==}
@@ -4795,8 +4810,8 @@ packages:
     engines: {node: ^18 || >=20}
     hasBin: true
 
-  nanostores@1.0.1:
-    resolution: {integrity: sha512-kNZ9xnoJYKg/AfxjrVL4SS0fKX++4awQReGqWnwTRHxeHGZ1FJFVgTqr/eMrNQdp0Tz7M7tG/TDaX8QfHDwVCw==}
+  nanostores@1.1.0:
+    resolution: {integrity: sha512-yJBmDJr18xy47dbNVlHcgdPrulSn1nhSE6Ns9vTG+Nx9VPT6iV1MD6aQFp/t52zpf82FhLLTXAXr30NuCnxvwA==}
     engines: {node: ^20.0.0 || >=22.0.0}
 
   neotraverse@0.6.18:
@@ -4905,8 +4920,8 @@ packages:
   outdent@0.5.0:
     resolution: {integrity: sha512-/jHxFIzoMXdqPzTaCpFzAAWhpkSjZPF4Vsn6jAfNpmbH/ymsmd7Qc6VE9BGn0L6YMj6uwpQLxCECpus4ukKS9Q==}
 
-  oxc-resolver@11.13.0:
-    resolution: {integrity: sha512-Pp9ULXeB0KDclQrSRVUUF0NwXCoADtzMBd2kKsk2pHeQoDlZHl9NwVzeCIYFdfKrc7LQxtGoVec3eX2tZHS0Bw==}
+  oxc-resolver@11.13.2:
+    resolution: {integrity: sha512-1SXVyYQ9bqMX3uZo8Px81EG7jhZkO9PvvR5X9roY5TLYVm4ZA7pbPDNlYaDBBeF9U+YO3OeMNoHde52hrcCu8w==}
 
   p-filter@2.1.0:
     resolution: {integrity: sha512-ZBxxZ5sL2HghephhpGAQdoskxplTwr7ICaehZwLIlfL6acuVgZPm8yBNuRAFBGEqtD/hmUeq9eqLg2ys9Xr/yw==}
@@ -5056,6 +5071,9 @@ packages:
 
   pgpass@1.0.5:
     resolution: {integrity: sha512-FdW9r/jQZhSeohs1Z3sI1yxFQNFvMcnmfuj4WBMUTxOrAyLMaTcE1aAMBiTlbMNaXvBCQuVi0R7hd8udDSP7ug==}
+
+  piccolore@0.1.3:
+    resolution: {integrity: sha512-o8bTeDWjE086iwKrROaDf31K0qC/BENdm15/uH9usSC/uZjJOKb2YGiVHfLY4GhwsERiPI1jmwI2XrA7ACOxVw==}
 
   picocolors@1.1.1:
     resolution: {integrity: sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA==}
@@ -5340,6 +5358,9 @@ packages:
   sanitize-html@2.17.0:
     resolution: {integrity: sha512-dLAADUSS8rBwhaevT12yCezvioCA+bmUTPH/u57xKPT8d++voeYE6HeluA/bPbQ15TwDBG2ii+QZIEmYx8VdxA==}
 
+  sax@1.4.3:
+    resolution: {integrity: sha512-yqYn1JhPczigF94DMS+shiDMjDowYO6y9+wB/4WgO0Y19jWYk0lQ4tuG5KI7kj4FTp1wxPj5IFfcrz/s1c3jjQ==}
+
   saxes@3.1.11:
     resolution: {integrity: sha512-Ydydq3zC+WYDJK1+gRxRapLIED9PWeSuuS41wqyoRmzvhhh9nc+QQrVMKJYzJFULazeGhzSV0QleN2wD3boh2g==}
     engines: {node: '>=8'}
@@ -5524,8 +5545,8 @@ packages:
     resolution: {integrity: sha512-aulFJcD6YK8V1G7iRB5tigAP4TsHBZZrOV8pjV++zdUwmeV8uzbY7yn6h9MswN62adStNZFuCIx4haBnRuMDaw==}
     engines: {node: '>=18'}
 
-  strip-json-comments@5.0.2:
-    resolution: {integrity: sha512-4X2FR3UwhNUE9G49aIsJW5hRRR3GXGTBTZRMfv568O60ojM8HcWjV/VxAxCDW3SUND33O6ZY66ZuRcdkj73q2g==}
+  strip-json-comments@5.0.3:
+    resolution: {integrity: sha512-1tB5mhVo7U+ETBKNf92xT4hrQa3pm0MZ0PQvuDnWgAAGHDsfp4lPSpiS6psrSiet87wyGPh9ft6wmhOMQ0hDiw==}
     engines: {node: '>=14.16'}
 
   strip-literal@3.1.0:
@@ -5550,6 +5571,11 @@ packages:
   supports-preserve-symlinks-flag@1.0.0:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
+
+  svgo@4.0.0:
+    resolution: {integrity: sha512-VvrHQ+9uniE+Mvx3+C9IEe/lWasXCU0nXMY2kZeLrHNICuRiC8uMPyM14UEaMOFA5mhyQqEkB02VoQ16n3DLaw==}
+    engines: {node: '>=16'}
+    hasBin: true
 
   symbol-tree@3.2.4:
     resolution: {integrity: sha512-9QNk5KwDF+Bvz+PyObkmSYjI5ksVUYtjW7AU22r2NKcfLJcXp96hkDWU3+XndOsUb+AQ9QhfzfCT2O+CNWT5Tw==}
@@ -6222,13 +6248,13 @@ snapshots:
 
   '@astrojs/compiler@2.13.0': {}
 
-  '@astrojs/db@0.18.2(@types/pg@8.15.6)(kysely@0.28.8)(mysql2@3.15.3)(pg@8.16.3)':
+  '@astrojs/db@0.18.3(@types/pg@8.15.6)(kysely@0.28.8)(mysql2@3.15.3)(pg@8.16.3)':
     dependencies:
       '@libsql/client': 0.15.15
       deep-diff: 1.0.2
       drizzle-orm: 0.42.0(@libsql/client@0.15.15)(@types/pg@8.15.6)(kysely@0.28.8)(mysql2@3.15.3)(pg@8.16.3)
       nanoid: 5.1.6
-      picocolors: 1.1.1
+      piccolore: 0.1.3
       prompts: 2.4.2
       yargs-parser: 21.1.1
       zod: 3.25.76
@@ -6293,10 +6319,10 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@astrojs/node@9.5.1(astro@5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))':
+  '@astrojs/node@9.5.1(astro@5.16.0(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))':
     dependencies:
       '@astrojs/internal-helpers': 0.7.5
-      astro: 5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
+      astro: 5.16.0(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
       send: 1.2.0
       server-destroy: 1.0.1
     transitivePeerDependencies:
@@ -6306,10 +6332,10 @@ snapshots:
     dependencies:
       prismjs: 1.30.0
 
-  '@astrojs/rss@4.0.13':
+  '@astrojs/rss@4.0.14':
     dependencies:
       fast-xml-parser: 5.3.1
-      picocolors: 1.1.1
+      piccolore: 0.1.3
 
   '@astrojs/telemetry@3.3.0':
     dependencies:
@@ -6952,11 +6978,11 @@ snapshots:
     dependencies:
       '@cloudinary/transformation-builder-sdk': 1.21.2
 
-  '@codecov/astro-plugin@1.9.1(astro@5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))(vite@6.4.1(@types/node@22.19.0)(jiti@2.6.1)(tsx@4.20.6)(yaml@2.8.1))':
+  '@codecov/astro-plugin@1.9.1(astro@5.16.0(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))(vite@6.4.1(@types/node@22.19.0)(jiti@2.6.1)(tsx@4.20.6)(yaml@2.8.1))':
     dependencies:
       '@codecov/bundler-plugin-core': 1.9.1
       '@codecov/vite-plugin': 1.9.1(vite@6.4.1(@types/node@22.19.0)(jiti@2.6.1)(tsx@4.20.6)(yaml@2.8.1))
-      astro: 5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
+      astro: 5.16.0(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
       unplugin: 1.16.1
     transitivePeerDependencies:
       - vite
@@ -7008,54 +7034,54 @@ snapshots:
 
   '@csstools/css-tokenizer@3.0.4': {}
 
-  '@effect/cli@0.72.1(@effect/platform@0.93.3(effect@3.19.4))(@effect/printer-ansi@0.47.0(@effect/typeclass@0.38.0(effect@3.19.4))(effect@3.19.4))(@effect/printer@0.47.0(@effect/typeclass@0.38.0(effect@3.19.4))(effect@3.19.4))(effect@3.19.4)':
+  '@effect/cli@0.72.1(@effect/platform@0.93.3(effect@3.19.6))(@effect/printer-ansi@0.47.0(@effect/typeclass@0.38.0(effect@3.19.6))(effect@3.19.6))(@effect/printer@0.47.0(@effect/typeclass@0.38.0(effect@3.19.6))(effect@3.19.6))(effect@3.19.6)':
     dependencies:
-      '@effect/platform': 0.93.3(effect@3.19.4)
-      '@effect/printer': 0.47.0(@effect/typeclass@0.38.0(effect@3.19.4))(effect@3.19.4)
-      '@effect/printer-ansi': 0.47.0(@effect/typeclass@0.38.0(effect@3.19.4))(effect@3.19.4)
-      effect: 3.19.4
+      '@effect/platform': 0.93.3(effect@3.19.6)
+      '@effect/printer': 0.47.0(@effect/typeclass@0.38.0(effect@3.19.6))(effect@3.19.6)
+      '@effect/printer-ansi': 0.47.0(@effect/typeclass@0.38.0(effect@3.19.6))(effect@3.19.6)
+      effect: 3.19.6
       ini: 4.1.3
       toml: 3.0.0
       yaml: 2.8.1
 
-  '@effect/cluster@0.51.0(@effect/platform@0.93.3(effect@3.19.4))(@effect/rpc@0.72.0(@effect/platform@0.93.3(effect@3.19.4))(effect@3.19.4))(@effect/sql@0.47.0(@effect/experimental@0.57.0(@effect/platform@0.93.3(effect@3.19.4))(effect@3.19.4))(@effect/platform@0.93.3(effect@3.19.4))(effect@3.19.4))(@effect/workflow@0.12.0(@effect/platform@0.93.3(effect@3.19.4))(@effect/rpc@0.72.0(@effect/platform@0.93.3(effect@3.19.4))(effect@3.19.4))(effect@3.19.4))(effect@3.19.4)':
+  '@effect/cluster@0.51.0(@effect/platform@0.93.3(effect@3.19.6))(@effect/rpc@0.72.0(@effect/platform@0.93.3(effect@3.19.6))(effect@3.19.6))(@effect/sql@0.47.0(@effect/experimental@0.57.0(@effect/platform@0.93.3(effect@3.19.6))(effect@3.19.6))(@effect/platform@0.93.3(effect@3.19.6))(effect@3.19.6))(@effect/workflow@0.12.0(@effect/platform@0.93.3(effect@3.19.6))(@effect/rpc@0.72.0(@effect/platform@0.93.3(effect@3.19.6))(effect@3.19.6))(effect@3.19.6))(effect@3.19.6)':
     dependencies:
-      '@effect/platform': 0.93.3(effect@3.19.4)
-      '@effect/rpc': 0.72.0(@effect/platform@0.93.3(effect@3.19.4))(effect@3.19.4)
-      '@effect/sql': 0.47.0(@effect/experimental@0.57.0(@effect/platform@0.93.3(effect@3.19.4))(effect@3.19.4))(@effect/platform@0.93.3(effect@3.19.4))(effect@3.19.4)
-      '@effect/workflow': 0.12.0(@effect/platform@0.93.3(effect@3.19.4))(@effect/rpc@0.72.0(@effect/platform@0.93.3(effect@3.19.4))(effect@3.19.4))(effect@3.19.4)
-      effect: 3.19.4
+      '@effect/platform': 0.93.3(effect@3.19.6)
+      '@effect/rpc': 0.72.0(@effect/platform@0.93.3(effect@3.19.6))(effect@3.19.6)
+      '@effect/sql': 0.47.0(@effect/experimental@0.57.0(@effect/platform@0.93.3(effect@3.19.6))(effect@3.19.6))(@effect/platform@0.93.3(effect@3.19.6))(effect@3.19.6)
+      '@effect/workflow': 0.12.0(@effect/platform@0.93.3(effect@3.19.6))(@effect/rpc@0.72.0(@effect/platform@0.93.3(effect@3.19.6))(effect@3.19.6))(effect@3.19.6)
+      effect: 3.19.6
 
-  '@effect/experimental@0.57.0(@effect/platform@0.93.3(effect@3.19.4))(effect@3.19.4)':
+  '@effect/experimental@0.57.0(@effect/platform@0.93.3(effect@3.19.6))(effect@3.19.6)':
     dependencies:
-      '@effect/platform': 0.93.3(effect@3.19.4)
-      effect: 3.19.4
+      '@effect/platform': 0.93.3(effect@3.19.6)
+      effect: 3.19.6
       uuid: 11.1.0
 
   '@effect/language-service@0.56.0': {}
 
-  '@effect/platform-node-shared@0.53.0(@effect/cluster@0.51.0(@effect/platform@0.93.3(effect@3.19.4))(@effect/rpc@0.72.0(@effect/platform@0.93.3(effect@3.19.4))(effect@3.19.4))(@effect/sql@0.47.0(@effect/experimental@0.57.0(@effect/platform@0.93.3(effect@3.19.4))(effect@3.19.4))(@effect/platform@0.93.3(effect@3.19.4))(effect@3.19.4))(@effect/workflow@0.12.0(@effect/platform@0.93.3(effect@3.19.4))(@effect/rpc@0.72.0(@effect/platform@0.93.3(effect@3.19.4))(effect@3.19.4))(effect@3.19.4))(effect@3.19.4))(@effect/platform@0.93.3(effect@3.19.4))(@effect/rpc@0.72.0(@effect/platform@0.93.3(effect@3.19.4))(effect@3.19.4))(@effect/sql@0.47.0(@effect/experimental@0.57.0(@effect/platform@0.93.3(effect@3.19.4))(effect@3.19.4))(@effect/platform@0.93.3(effect@3.19.4))(effect@3.19.4))(effect@3.19.4)':
+  '@effect/platform-node-shared@0.54.0(@effect/cluster@0.51.0(@effect/platform@0.93.3(effect@3.19.6))(@effect/rpc@0.72.0(@effect/platform@0.93.3(effect@3.19.6))(effect@3.19.6))(@effect/sql@0.47.0(@effect/experimental@0.57.0(@effect/platform@0.93.3(effect@3.19.6))(effect@3.19.6))(@effect/platform@0.93.3(effect@3.19.6))(effect@3.19.6))(@effect/workflow@0.12.0(@effect/platform@0.93.3(effect@3.19.6))(@effect/rpc@0.72.0(@effect/platform@0.93.3(effect@3.19.6))(effect@3.19.6))(effect@3.19.6))(effect@3.19.6))(@effect/platform@0.93.3(effect@3.19.6))(@effect/rpc@0.72.0(@effect/platform@0.93.3(effect@3.19.6))(effect@3.19.6))(@effect/sql@0.47.0(@effect/experimental@0.57.0(@effect/platform@0.93.3(effect@3.19.6))(effect@3.19.6))(@effect/platform@0.93.3(effect@3.19.6))(effect@3.19.6))(effect@3.19.6)':
     dependencies:
-      '@effect/cluster': 0.51.0(@effect/platform@0.93.3(effect@3.19.4))(@effect/rpc@0.72.0(@effect/platform@0.93.3(effect@3.19.4))(effect@3.19.4))(@effect/sql@0.47.0(@effect/experimental@0.57.0(@effect/platform@0.93.3(effect@3.19.4))(effect@3.19.4))(@effect/platform@0.93.3(effect@3.19.4))(effect@3.19.4))(@effect/workflow@0.12.0(@effect/platform@0.93.3(effect@3.19.4))(@effect/rpc@0.72.0(@effect/platform@0.93.3(effect@3.19.4))(effect@3.19.4))(effect@3.19.4))(effect@3.19.4)
-      '@effect/platform': 0.93.3(effect@3.19.4)
-      '@effect/rpc': 0.72.0(@effect/platform@0.93.3(effect@3.19.4))(effect@3.19.4)
-      '@effect/sql': 0.47.0(@effect/experimental@0.57.0(@effect/platform@0.93.3(effect@3.19.4))(effect@3.19.4))(@effect/platform@0.93.3(effect@3.19.4))(effect@3.19.4)
+      '@effect/cluster': 0.51.0(@effect/platform@0.93.3(effect@3.19.6))(@effect/rpc@0.72.0(@effect/platform@0.93.3(effect@3.19.6))(effect@3.19.6))(@effect/sql@0.47.0(@effect/experimental@0.57.0(@effect/platform@0.93.3(effect@3.19.6))(effect@3.19.6))(@effect/platform@0.93.3(effect@3.19.6))(effect@3.19.6))(@effect/workflow@0.12.0(@effect/platform@0.93.3(effect@3.19.6))(@effect/rpc@0.72.0(@effect/platform@0.93.3(effect@3.19.6))(effect@3.19.6))(effect@3.19.6))(effect@3.19.6)
+      '@effect/platform': 0.93.3(effect@3.19.6)
+      '@effect/rpc': 0.72.0(@effect/platform@0.93.3(effect@3.19.6))(effect@3.19.6)
+      '@effect/sql': 0.47.0(@effect/experimental@0.57.0(@effect/platform@0.93.3(effect@3.19.6))(effect@3.19.6))(@effect/platform@0.93.3(effect@3.19.6))(effect@3.19.6)
       '@parcel/watcher': 2.5.1
-      effect: 3.19.4
+      effect: 3.19.6
       multipasta: 0.2.7
       ws: 8.18.3
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
 
-  '@effect/platform-node@0.100.0(@effect/cluster@0.51.0(@effect/platform@0.93.3(effect@3.19.4))(@effect/rpc@0.72.0(@effect/platform@0.93.3(effect@3.19.4))(effect@3.19.4))(@effect/sql@0.47.0(@effect/experimental@0.57.0(@effect/platform@0.93.3(effect@3.19.4))(effect@3.19.4))(@effect/platform@0.93.3(effect@3.19.4))(effect@3.19.4))(@effect/workflow@0.12.0(@effect/platform@0.93.3(effect@3.19.4))(@effect/rpc@0.72.0(@effect/platform@0.93.3(effect@3.19.4))(effect@3.19.4))(effect@3.19.4))(effect@3.19.4))(@effect/platform@0.93.3(effect@3.19.4))(@effect/rpc@0.72.0(@effect/platform@0.93.3(effect@3.19.4))(effect@3.19.4))(@effect/sql@0.47.0(@effect/experimental@0.57.0(@effect/platform@0.93.3(effect@3.19.4))(effect@3.19.4))(@effect/platform@0.93.3(effect@3.19.4))(effect@3.19.4))(effect@3.19.4)':
+  '@effect/platform-node@0.101.0(@effect/cluster@0.51.0(@effect/platform@0.93.3(effect@3.19.6))(@effect/rpc@0.72.0(@effect/platform@0.93.3(effect@3.19.6))(effect@3.19.6))(@effect/sql@0.47.0(@effect/experimental@0.57.0(@effect/platform@0.93.3(effect@3.19.6))(effect@3.19.6))(@effect/platform@0.93.3(effect@3.19.6))(effect@3.19.6))(@effect/workflow@0.12.0(@effect/platform@0.93.3(effect@3.19.6))(@effect/rpc@0.72.0(@effect/platform@0.93.3(effect@3.19.6))(effect@3.19.6))(effect@3.19.6))(effect@3.19.6))(@effect/platform@0.93.3(effect@3.19.6))(@effect/rpc@0.72.0(@effect/platform@0.93.3(effect@3.19.6))(effect@3.19.6))(@effect/sql@0.47.0(@effect/experimental@0.57.0(@effect/platform@0.93.3(effect@3.19.6))(effect@3.19.6))(@effect/platform@0.93.3(effect@3.19.6))(effect@3.19.6))(effect@3.19.6)':
     dependencies:
-      '@effect/cluster': 0.51.0(@effect/platform@0.93.3(effect@3.19.4))(@effect/rpc@0.72.0(@effect/platform@0.93.3(effect@3.19.4))(effect@3.19.4))(@effect/sql@0.47.0(@effect/experimental@0.57.0(@effect/platform@0.93.3(effect@3.19.4))(effect@3.19.4))(@effect/platform@0.93.3(effect@3.19.4))(effect@3.19.4))(@effect/workflow@0.12.0(@effect/platform@0.93.3(effect@3.19.4))(@effect/rpc@0.72.0(@effect/platform@0.93.3(effect@3.19.4))(effect@3.19.4))(effect@3.19.4))(effect@3.19.4)
-      '@effect/platform': 0.93.3(effect@3.19.4)
-      '@effect/platform-node-shared': 0.53.0(@effect/cluster@0.51.0(@effect/platform@0.93.3(effect@3.19.4))(@effect/rpc@0.72.0(@effect/platform@0.93.3(effect@3.19.4))(effect@3.19.4))(@effect/sql@0.47.0(@effect/experimental@0.57.0(@effect/platform@0.93.3(effect@3.19.4))(effect@3.19.4))(@effect/platform@0.93.3(effect@3.19.4))(effect@3.19.4))(@effect/workflow@0.12.0(@effect/platform@0.93.3(effect@3.19.4))(@effect/rpc@0.72.0(@effect/platform@0.93.3(effect@3.19.4))(effect@3.19.4))(effect@3.19.4))(effect@3.19.4))(@effect/platform@0.93.3(effect@3.19.4))(@effect/rpc@0.72.0(@effect/platform@0.93.3(effect@3.19.4))(effect@3.19.4))(@effect/sql@0.47.0(@effect/experimental@0.57.0(@effect/platform@0.93.3(effect@3.19.4))(effect@3.19.4))(@effect/platform@0.93.3(effect@3.19.4))(effect@3.19.4))(effect@3.19.4)
-      '@effect/rpc': 0.72.0(@effect/platform@0.93.3(effect@3.19.4))(effect@3.19.4)
-      '@effect/sql': 0.47.0(@effect/experimental@0.57.0(@effect/platform@0.93.3(effect@3.19.4))(effect@3.19.4))(@effect/platform@0.93.3(effect@3.19.4))(effect@3.19.4)
-      effect: 3.19.4
+      '@effect/cluster': 0.51.0(@effect/platform@0.93.3(effect@3.19.6))(@effect/rpc@0.72.0(@effect/platform@0.93.3(effect@3.19.6))(effect@3.19.6))(@effect/sql@0.47.0(@effect/experimental@0.57.0(@effect/platform@0.93.3(effect@3.19.6))(effect@3.19.6))(@effect/platform@0.93.3(effect@3.19.6))(effect@3.19.6))(@effect/workflow@0.12.0(@effect/platform@0.93.3(effect@3.19.6))(@effect/rpc@0.72.0(@effect/platform@0.93.3(effect@3.19.6))(effect@3.19.6))(effect@3.19.6))(effect@3.19.6)
+      '@effect/platform': 0.93.3(effect@3.19.6)
+      '@effect/platform-node-shared': 0.54.0(@effect/cluster@0.51.0(@effect/platform@0.93.3(effect@3.19.6))(@effect/rpc@0.72.0(@effect/platform@0.93.3(effect@3.19.6))(effect@3.19.6))(@effect/sql@0.47.0(@effect/experimental@0.57.0(@effect/platform@0.93.3(effect@3.19.6))(effect@3.19.6))(@effect/platform@0.93.3(effect@3.19.6))(effect@3.19.6))(@effect/workflow@0.12.0(@effect/platform@0.93.3(effect@3.19.6))(@effect/rpc@0.72.0(@effect/platform@0.93.3(effect@3.19.6))(effect@3.19.6))(effect@3.19.6))(effect@3.19.6))(@effect/platform@0.93.3(effect@3.19.6))(@effect/rpc@0.72.0(@effect/platform@0.93.3(effect@3.19.6))(effect@3.19.6))(@effect/sql@0.47.0(@effect/experimental@0.57.0(@effect/platform@0.93.3(effect@3.19.6))(effect@3.19.6))(@effect/platform@0.93.3(effect@3.19.6))(effect@3.19.6))(effect@3.19.6)
+      '@effect/rpc': 0.72.0(@effect/platform@0.93.3(effect@3.19.6))(effect@3.19.6)
+      '@effect/sql': 0.47.0(@effect/experimental@0.57.0(@effect/platform@0.93.3(effect@3.19.6))(effect@3.19.6))(@effect/platform@0.93.3(effect@3.19.6))(effect@3.19.6)
+      effect: 3.19.6
       mime: 3.0.0
       undici: 7.16.0
       ws: 8.18.3
@@ -7063,51 +7089,51 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  '@effect/platform@0.93.3(effect@3.19.4)':
+  '@effect/platform@0.93.3(effect@3.19.6)':
     dependencies:
-      effect: 3.19.4
+      effect: 3.19.6
       find-my-way-ts: 0.1.6
       msgpackr: 1.11.5
       multipasta: 0.2.7
 
-  '@effect/printer-ansi@0.47.0(@effect/typeclass@0.38.0(effect@3.19.4))(effect@3.19.4)':
+  '@effect/printer-ansi@0.47.0(@effect/typeclass@0.38.0(effect@3.19.6))(effect@3.19.6)':
     dependencies:
-      '@effect/printer': 0.47.0(@effect/typeclass@0.38.0(effect@3.19.4))(effect@3.19.4)
-      '@effect/typeclass': 0.38.0(effect@3.19.4)
-      effect: 3.19.4
+      '@effect/printer': 0.47.0(@effect/typeclass@0.38.0(effect@3.19.6))(effect@3.19.6)
+      '@effect/typeclass': 0.38.0(effect@3.19.6)
+      effect: 3.19.6
 
-  '@effect/printer@0.47.0(@effect/typeclass@0.38.0(effect@3.19.4))(effect@3.19.4)':
+  '@effect/printer@0.47.0(@effect/typeclass@0.38.0(effect@3.19.6))(effect@3.19.6)':
     dependencies:
-      '@effect/typeclass': 0.38.0(effect@3.19.4)
-      effect: 3.19.4
+      '@effect/typeclass': 0.38.0(effect@3.19.6)
+      effect: 3.19.6
 
-  '@effect/rpc@0.72.0(@effect/platform@0.93.3(effect@3.19.4))(effect@3.19.4)':
+  '@effect/rpc@0.72.0(@effect/platform@0.93.3(effect@3.19.6))(effect@3.19.6)':
     dependencies:
-      '@effect/platform': 0.93.3(effect@3.19.4)
-      effect: 3.19.4
+      '@effect/platform': 0.93.3(effect@3.19.6)
+      effect: 3.19.6
       msgpackr: 1.11.5
 
-  '@effect/sql@0.47.0(@effect/experimental@0.57.0(@effect/platform@0.93.3(effect@3.19.4))(effect@3.19.4))(@effect/platform@0.93.3(effect@3.19.4))(effect@3.19.4)':
+  '@effect/sql@0.47.0(@effect/experimental@0.57.0(@effect/platform@0.93.3(effect@3.19.6))(effect@3.19.6))(@effect/platform@0.93.3(effect@3.19.6))(effect@3.19.6)':
     dependencies:
-      '@effect/experimental': 0.57.0(@effect/platform@0.93.3(effect@3.19.4))(effect@3.19.4)
-      '@effect/platform': 0.93.3(effect@3.19.4)
-      effect: 3.19.4
+      '@effect/experimental': 0.57.0(@effect/platform@0.93.3(effect@3.19.6))(effect@3.19.6)
+      '@effect/platform': 0.93.3(effect@3.19.6)
+      effect: 3.19.6
       uuid: 11.1.0
 
-  '@effect/typeclass@0.38.0(effect@3.19.4)':
+  '@effect/typeclass@0.38.0(effect@3.19.6)':
     dependencies:
-      effect: 3.19.4
+      effect: 3.19.6
 
-  '@effect/vitest@0.27.0(effect@3.19.4)(vitest@3.2.4(@types/debug@4.1.12)(@types/node@22.19.0)(jiti@2.6.1)(jsdom@27.2.0)(tsx@4.20.6)(yaml@2.8.1))':
+  '@effect/vitest@0.27.0(effect@3.19.6)(vitest@3.2.4(@types/debug@4.1.12)(@types/node@22.19.0)(jiti@2.6.1)(jsdom@27.2.0)(tsx@4.20.6)(yaml@2.8.1))':
     dependencies:
-      effect: 3.19.4
+      effect: 3.19.6
       vitest: 3.2.4(@types/debug@4.1.12)(@types/node@22.19.0)(jiti@2.6.1)(jsdom@27.2.0)(tsx@4.20.6)(yaml@2.8.1)
 
-  '@effect/workflow@0.12.0(@effect/platform@0.93.3(effect@3.19.4))(@effect/rpc@0.72.0(@effect/platform@0.93.3(effect@3.19.4))(effect@3.19.4))(effect@3.19.4)':
+  '@effect/workflow@0.12.0(@effect/platform@0.93.3(effect@3.19.6))(@effect/rpc@0.72.0(@effect/platform@0.93.3(effect@3.19.6))(effect@3.19.6))(effect@3.19.6)':
     dependencies:
-      '@effect/platform': 0.93.3(effect@3.19.4)
-      '@effect/rpc': 0.72.0(@effect/platform@0.93.3(effect@3.19.4))(effect@3.19.4)
-      effect: 3.19.4
+      '@effect/platform': 0.93.3(effect@3.19.6)
+      '@effect/rpc': 0.72.0(@effect/platform@0.93.3(effect@3.19.6))(effect@3.19.6)
+      effect: 3.19.6
 
   '@emnapi/core@1.7.0':
     dependencies:
@@ -7311,12 +7337,12 @@ snapshots:
   '@img/sharp-win32-x64@0.34.4':
     optional: true
 
-  '@inox-tools/astro-tests@0.8.0(astro@5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))':
+  '@inox-tools/astro-tests@0.8.0(astro@5.16.0(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))':
     dependencies:
       '@astrojs/internal-helpers': 0.7.5
       '@astrojs/markdown-remark': 6.3.9
       '@inox-tools/utils': 0.7.0
-      astro: 5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
+      astro: 5.16.0(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
       debug: 4.4.3
       fast-glob: 3.3.3
       shiki: 3.15.0
@@ -7326,21 +7352,21 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@inox-tools/modular-station@0.7.0(astro@5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))':
+  '@inox-tools/modular-station@0.7.0(astro@5.16.0(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))':
     dependencies:
       '@inox-tools/utils': 0.7.0
-      astro: 5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
-      astro-integration-kit: 0.19.1(astro@5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
+      astro: 5.16.0(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
+      astro-integration-kit: 0.19.1(astro@5.16.0(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
       debug: 4.4.3
     transitivePeerDependencies:
       - supports-color
 
-  '@inox-tools/runtime-logger@0.7.0(astro@5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))':
+  '@inox-tools/runtime-logger@0.7.0(astro@5.16.0(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))':
     dependencies:
-      '@inox-tools/modular-station': 0.7.0(astro@5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
+      '@inox-tools/modular-station': 0.7.0(astro@5.16.0(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
       '@inox-tools/utils': 0.7.0
-      astro: 5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
-      astro-integration-kit: 0.19.1(astro@5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
+      astro: 5.16.0(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
+      astro-integration-kit: 0.19.1(astro@5.16.0(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
     transitivePeerDependencies:
       - supports-color
 
@@ -7541,11 +7567,11 @@ snapshots:
       - supports-color
     optional: true
 
-  '@markdoc/markdoc@0.5.4(@types/react@19.2.5)(react@19.2.0)':
+  '@markdoc/markdoc@0.5.4(@types/react@19.2.6)(react@19.2.0)':
     optionalDependencies:
       '@types/linkify-it': 3.0.5
       '@types/markdown-it': 12.2.3
-      '@types/react': 19.2.5
+      '@types/react': 19.2.6
       react: 19.2.0
 
   '@mdx-js/mdx@3.1.1':
@@ -7598,13 +7624,13 @@ snapshots:
   '@msgpackr-extract/msgpackr-extract-win32-x64@3.0.3':
     optional: true
 
-  '@nanostores/i18n@1.2.2(nanostores@1.0.1)':
+  '@nanostores/i18n@1.2.2(nanostores@1.1.0)':
     dependencies:
-      nanostores: 1.0.1
+      nanostores: 1.1.0
 
-  '@nanostores/persistent@1.2.0(nanostores@1.0.1)':
+  '@nanostores/persistent@1.2.0(nanostores@1.1.0)':
     dependencies:
-      nanostores: 1.0.1
+      nanostores: 1.1.0
 
   '@napi-rs/wasm-runtime@1.0.7':
     dependencies:
@@ -7718,63 +7744,63 @@ snapshots:
     dependencies:
       '@oslojs/encoding': 0.4.1
 
-  '@oxc-resolver/binding-android-arm-eabi@11.13.0':
+  '@oxc-resolver/binding-android-arm-eabi@11.13.2':
     optional: true
 
-  '@oxc-resolver/binding-android-arm64@11.13.0':
+  '@oxc-resolver/binding-android-arm64@11.13.2':
     optional: true
 
-  '@oxc-resolver/binding-darwin-arm64@11.13.0':
+  '@oxc-resolver/binding-darwin-arm64@11.13.2':
     optional: true
 
-  '@oxc-resolver/binding-darwin-x64@11.13.0':
+  '@oxc-resolver/binding-darwin-x64@11.13.2':
     optional: true
 
-  '@oxc-resolver/binding-freebsd-x64@11.13.0':
+  '@oxc-resolver/binding-freebsd-x64@11.13.2':
     optional: true
 
-  '@oxc-resolver/binding-linux-arm-gnueabihf@11.13.0':
+  '@oxc-resolver/binding-linux-arm-gnueabihf@11.13.2':
     optional: true
 
-  '@oxc-resolver/binding-linux-arm-musleabihf@11.13.0':
+  '@oxc-resolver/binding-linux-arm-musleabihf@11.13.2':
     optional: true
 
-  '@oxc-resolver/binding-linux-arm64-gnu@11.13.0':
+  '@oxc-resolver/binding-linux-arm64-gnu@11.13.2':
     optional: true
 
-  '@oxc-resolver/binding-linux-arm64-musl@11.13.0':
+  '@oxc-resolver/binding-linux-arm64-musl@11.13.2':
     optional: true
 
-  '@oxc-resolver/binding-linux-ppc64-gnu@11.13.0':
+  '@oxc-resolver/binding-linux-ppc64-gnu@11.13.2':
     optional: true
 
-  '@oxc-resolver/binding-linux-riscv64-gnu@11.13.0':
+  '@oxc-resolver/binding-linux-riscv64-gnu@11.13.2':
     optional: true
 
-  '@oxc-resolver/binding-linux-riscv64-musl@11.13.0':
+  '@oxc-resolver/binding-linux-riscv64-musl@11.13.2':
     optional: true
 
-  '@oxc-resolver/binding-linux-s390x-gnu@11.13.0':
+  '@oxc-resolver/binding-linux-s390x-gnu@11.13.2':
     optional: true
 
-  '@oxc-resolver/binding-linux-x64-gnu@11.13.0':
+  '@oxc-resolver/binding-linux-x64-gnu@11.13.2':
     optional: true
 
-  '@oxc-resolver/binding-linux-x64-musl@11.13.0':
+  '@oxc-resolver/binding-linux-x64-musl@11.13.2':
     optional: true
 
-  '@oxc-resolver/binding-wasm32-wasi@11.13.0':
+  '@oxc-resolver/binding-wasm32-wasi@11.13.2':
     dependencies:
       '@napi-rs/wasm-runtime': 1.0.7
     optional: true
 
-  '@oxc-resolver/binding-win32-arm64-msvc@11.13.0':
+  '@oxc-resolver/binding-win32-arm64-msvc@11.13.2':
     optional: true
 
-  '@oxc-resolver/binding-win32-ia32-msvc@11.13.0':
+  '@oxc-resolver/binding-win32-ia32-msvc@11.13.2':
     optional: true
 
-  '@oxc-resolver/binding-win32-x64-msvc@11.13.0':
+  '@oxc-resolver/binding-win32-x64-msvc@11.13.2':
     optional: true
 
   '@parcel/watcher-android-arm64@2.5.1':
@@ -8259,18 +8285,18 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@studiocms/ui@1.0.0-beta.4(astro@5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))(vite@6.4.1(@types/node@22.19.0)(jiti@2.6.1)(tsx@4.20.6)(yaml@2.8.1))':
+  '@studiocms/ui@1.0.0-beta.4(astro@5.16.0(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))(vite@6.4.1(@types/node@22.19.0)(jiti@2.6.1)(tsx@4.20.6)(yaml@2.8.1))':
     dependencies:
       '@iconify-json/heroicons': 1.2.3
       '@iconify/types': 2.0.0
-      astro: 5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
-      astro-integration-kit: 0.19.1(astro@5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
-      astro-transition-event-polyfill: 1.1.0(astro@5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
+      astro: 5.16.0(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
+      astro-integration-kit: 0.19.1(astro@5.16.0(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
+      astro-transition-event-polyfill: 1.1.0(astro@5.16.0(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
       vite: 6.4.1(@types/node@22.19.0)(jiti@2.6.1)(tsx@4.20.6)(yaml@2.8.1)
 
-  '@studiocms/web-vitals@4.5.3(@astrojs/db@0.18.2(@types/pg@8.15.6)(kysely@0.28.8)(mysql2@3.15.3)(pg@8.16.3))':
+  '@studiocms/web-vitals@4.5.3(@astrojs/db@0.18.3(@types/pg@8.15.6)(kysely@0.28.8)(mysql2@3.15.3)(pg@8.16.3))':
     dependencies:
-      '@astrojs/db': 0.18.2(@types/pg@8.15.6)(kysely@0.28.8)(mysql2@3.15.3)(pg@8.16.3)
+      '@astrojs/db': 0.18.3(@types/pg@8.15.6)(kysely@0.28.8)(mysql2@3.15.3)(pg@8.16.3)
       web-vitals: 5.1.0
 
   '@swc/helpers@0.5.17':
@@ -8368,7 +8394,7 @@ snapshots:
     dependencies:
       undici-types: 6.21.0
 
-  '@types/nodemailer@7.0.3':
+  '@types/nodemailer@7.0.4':
     dependencies:
       '@aws-sdk/client-sesv2': 3.922.0
       '@types/node': 22.19.0
@@ -8381,13 +8407,13 @@ snapshots:
       pg-protocol: 1.10.3
       pg-types: 2.2.0
 
-  '@types/react-dom@19.2.3(@types/react@19.2.5)':
+  '@types/react-dom@19.2.3(@types/react@19.2.6)':
     dependencies:
-      '@types/react': 19.2.5
+      '@types/react': 19.2.6
 
-  '@types/react@19.2.5':
+  '@types/react@19.2.6':
     dependencies:
-      csstype: 3.1.3
+      csstype: 3.2.3
 
   '@types/sanitize-html@2.16.0':
     dependencies:
@@ -8644,18 +8670,18 @@ snapshots:
 
   astring@1.9.0: {}
 
-  astro-integration-kit@0.19.1(astro@5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)):
+  astro-integration-kit@0.19.1(astro@5.16.0(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)):
     dependencies:
-      astro: 5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
+      astro: 5.16.0(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
       pathe: 1.1.2
 
-  astro-transition-event-polyfill@1.1.0(astro@5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)):
+  astro-transition-event-polyfill@1.1.0(astro@5.16.0(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)):
     dependencies:
       '@types/node': 20.19.24
-      astro: 5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
+      astro: 5.16.0(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
       pathe: 2.0.3
 
-  astro@5.15.9(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1):
+  astro@5.16.0(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1):
     dependencies:
       '@astrojs/compiler': 2.13.0
       '@astrojs/internal-helpers': 0.7.5
@@ -8696,13 +8722,14 @@ snapshots:
       p-limit: 6.2.0
       p-queue: 8.1.1
       package-manager-detector: 1.5.0
-      picocolors: 1.1.1
+      piccolore: 0.1.3
       picomatch: 4.0.3
       prompts: 2.4.2
       rehype: 13.0.2
       semver: 7.7.3
       shiki: 3.15.0
       smol-toml: 1.5.2
+      svgo: 4.0.0
       tinyexec: 1.0.2
       tinyglobby: 0.2.15
       tsconfck: 3.1.6(typescript@5.9.3)
@@ -8968,6 +8995,8 @@ snapshots:
 
   comma-separated-tokens@2.0.3: {}
 
+  commander@11.1.0: {}
+
   commander@13.1.0: {}
 
   commander@14.0.2: {}
@@ -9011,6 +9040,11 @@ snapshots:
       domutils: 3.2.2
       nth-check: 2.1.1
 
+  css-tree@2.2.1:
+    dependencies:
+      mdn-data: 2.0.28
+      source-map-js: 1.2.1
+
   css-tree@3.1.0:
     dependencies:
       mdn-data: 2.12.2
@@ -9019,6 +9053,10 @@ snapshots:
   css-what@6.2.2: {}
 
   cssesc@3.0.0: {}
+
+  csso@5.0.5:
+    dependencies:
+      css-tree: 2.2.1
 
   cssom@0.3.8:
     optional: true
@@ -9037,7 +9075,7 @@ snapshots:
       '@csstools/css-syntax-patches-for-csstree': 1.0.15
       css-tree: 3.1.0
 
-  csstype@3.1.3: {}
+  csstype@3.2.3: {}
 
   dashdash@1.14.1:
     dependencies:
@@ -9201,7 +9239,7 @@ snapshots:
 
   ee-first@1.1.1: {}
 
-  effect@3.19.4:
+  effect@3.19.6:
     dependencies:
       '@standard-schema/spec': 1.0.0
       fast-check: 3.23.2
@@ -9631,7 +9669,7 @@ snapshots:
 
   graceful-fs@4.2.11: {}
 
-  grapesjs@0.22.13:
+  grapesjs@0.22.14:
     dependencies:
       '@types/backbone': 1.4.15
       backbone: 1.4.1
@@ -10143,7 +10181,7 @@ snapshots:
 
   kleur@3.0.3: {}
 
-  knip@5.69.1(@types/node@22.19.0)(typescript@5.9.3):
+  knip@5.70.1(@types/node@22.19.0)(typescript@5.9.3):
     dependencies:
       '@nodelib/fs.walk': 1.2.8
       '@types/node': 22.19.0
@@ -10152,11 +10190,11 @@ snapshots:
       jiti: 2.6.1
       js-yaml: 4.1.1
       minimist: 1.2.8
-      oxc-resolver: 11.13.0
+      oxc-resolver: 11.13.2
       picocolors: 1.1.1
       picomatch: 4.0.3
       smol-toml: 1.5.2
-      strip-json-comments: 5.0.2
+      strip-json-comments: 5.0.3
       typescript: 5.9.3
       zod: 4.1.12
 
@@ -10433,6 +10471,8 @@ snapshots:
   mdast-util-to-string@4.0.0:
     dependencies:
       '@types/mdast': 4.0.4
+
+  mdn-data@2.0.28: {}
 
   mdn-data@2.12.2: {}
 
@@ -10818,7 +10858,7 @@ snapshots:
 
   nanoid@5.1.6: {}
 
-  nanostores@1.0.1: {}
+  nanostores@1.1.0: {}
 
   neotraverse@0.6.18: {}
 
@@ -10928,27 +10968,27 @@ snapshots:
 
   outdent@0.5.0: {}
 
-  oxc-resolver@11.13.0:
+  oxc-resolver@11.13.2:
     optionalDependencies:
-      '@oxc-resolver/binding-android-arm-eabi': 11.13.0
-      '@oxc-resolver/binding-android-arm64': 11.13.0
-      '@oxc-resolver/binding-darwin-arm64': 11.13.0
-      '@oxc-resolver/binding-darwin-x64': 11.13.0
-      '@oxc-resolver/binding-freebsd-x64': 11.13.0
-      '@oxc-resolver/binding-linux-arm-gnueabihf': 11.13.0
-      '@oxc-resolver/binding-linux-arm-musleabihf': 11.13.0
-      '@oxc-resolver/binding-linux-arm64-gnu': 11.13.0
-      '@oxc-resolver/binding-linux-arm64-musl': 11.13.0
-      '@oxc-resolver/binding-linux-ppc64-gnu': 11.13.0
-      '@oxc-resolver/binding-linux-riscv64-gnu': 11.13.0
-      '@oxc-resolver/binding-linux-riscv64-musl': 11.13.0
-      '@oxc-resolver/binding-linux-s390x-gnu': 11.13.0
-      '@oxc-resolver/binding-linux-x64-gnu': 11.13.0
-      '@oxc-resolver/binding-linux-x64-musl': 11.13.0
-      '@oxc-resolver/binding-wasm32-wasi': 11.13.0
-      '@oxc-resolver/binding-win32-arm64-msvc': 11.13.0
-      '@oxc-resolver/binding-win32-ia32-msvc': 11.13.0
-      '@oxc-resolver/binding-win32-x64-msvc': 11.13.0
+      '@oxc-resolver/binding-android-arm-eabi': 11.13.2
+      '@oxc-resolver/binding-android-arm64': 11.13.2
+      '@oxc-resolver/binding-darwin-arm64': 11.13.2
+      '@oxc-resolver/binding-darwin-x64': 11.13.2
+      '@oxc-resolver/binding-freebsd-x64': 11.13.2
+      '@oxc-resolver/binding-linux-arm-gnueabihf': 11.13.2
+      '@oxc-resolver/binding-linux-arm-musleabihf': 11.13.2
+      '@oxc-resolver/binding-linux-arm64-gnu': 11.13.2
+      '@oxc-resolver/binding-linux-arm64-musl': 11.13.2
+      '@oxc-resolver/binding-linux-ppc64-gnu': 11.13.2
+      '@oxc-resolver/binding-linux-riscv64-gnu': 11.13.2
+      '@oxc-resolver/binding-linux-riscv64-musl': 11.13.2
+      '@oxc-resolver/binding-linux-s390x-gnu': 11.13.2
+      '@oxc-resolver/binding-linux-x64-gnu': 11.13.2
+      '@oxc-resolver/binding-linux-x64-musl': 11.13.2
+      '@oxc-resolver/binding-wasm32-wasi': 11.13.2
+      '@oxc-resolver/binding-win32-arm64-msvc': 11.13.2
+      '@oxc-resolver/binding-win32-ia32-msvc': 11.13.2
+      '@oxc-resolver/binding-win32-x64-msvc': 11.13.2
 
   p-filter@2.1.0:
     dependencies:
@@ -11093,6 +11133,8 @@ snapshots:
   pgpass@1.0.5:
     dependencies:
       split2: 4.2.0
+
+  piccolore@0.1.3: {}
 
   picocolors@1.1.1: {}
 
@@ -11496,6 +11538,8 @@ snapshots:
       parse-srcset: 1.0.2
       postcss: 8.5.6
 
+  sax@1.4.3: {}
+
   saxes@3.1.11:
     dependencies:
       xmlchars: 2.2.0
@@ -11706,7 +11750,7 @@ snapshots:
 
   strip-final-newline@4.0.0: {}
 
-  strip-json-comments@5.0.2: {}
+  strip-json-comments@5.0.3: {}
 
   strip-literal@3.1.0:
     dependencies:
@@ -11729,6 +11773,16 @@ snapshots:
       has-flag: 4.0.0
 
   supports-preserve-symlinks-flag@1.0.0: {}
+
+  svgo@4.0.0:
+    dependencies:
+      commander: 11.1.0
+      css-select: 5.2.2
+      css-tree: 3.1.0
+      css-what: 6.2.2
+      csso: 5.0.5
+      picocolors: 1.1.1
+      sax: 1.4.3
 
   symbol-tree@3.2.4: {}
 

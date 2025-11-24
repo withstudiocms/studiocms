@@ -71,7 +71,7 @@
     "allure-vitest": "^3.4.2",
     "allure-commandline": "^2.34.1",
     "execa": "^9.6.0",
-    "knip": "^5.69.1",
+    "knip": "^5.70.1",
     "pkg-pr-new": "^0.0.60",
     "studiocms": "workspace:*",
     "typescript": "catalog:",

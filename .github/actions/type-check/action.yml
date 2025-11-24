@@ -10,7 +10,7 @@ runs:
   using: "composite"
   steps:
     - name: Install Tools & Dependencies
-      uses: withstudiocms/automations/.github/actions/install@729a20ff5e68dd95330fb1914b801960ad4b5e7b # main
+      uses: withstudiocms/automations/.github/actions/install@a08b74527cb0ddb4a392bf44d3e28b36bf282a8a # main
 
     - name: run Build for TypeChecks
       shell: bash

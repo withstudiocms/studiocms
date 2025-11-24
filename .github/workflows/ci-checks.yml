@@ -29,7 +29,7 @@ jobs:
       issues: write
       checks: write
       pull-requests: write
-    uses: withstudiocms/automations/.github/workflows/knip.yml@729a20ff5e68dd95330fb1914b801960ad4b5e7b # main
+    uses: withstudiocms/automations/.github/workflows/knip.yml@a08b74527cb0ddb4a392bf44d3e28b36bf282a8a # main
     secrets: inherit
     with:
       pre-knip-cmd: "pnpm ci:build"
@@ -47,4 +47,4 @@ jobs:
           persist-credentials: false
 
       - name: Run zizmor
-        uses: zizmorcore/zizmor-action@e673c3917a1aef3c65c972347ed84ccd013ecda4 # v0.2.0
+        uses: zizmorcore/zizmor-action@e639db99335bc9038abc0e066dfcd72e23d26fb4 # v0.3.0
