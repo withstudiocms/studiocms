@@ -4,7 +4,6 @@
     "adam_fix-config-loader",
     "adam_update-plugin-hooks",
     "changeset-release_main",
-    "main",
-    "renovate_studiocms-studiocms-dependencies"
+    "main"
   ]
 }
