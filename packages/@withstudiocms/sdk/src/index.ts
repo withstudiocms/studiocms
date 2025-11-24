@@ -15,6 +15,7 @@ const SDKBaseDependencies = Layer.mergeAll(CacheService.Default, Deepmerge.Defau
  */
 export const StudioCMSSDKCore = Effect.all({
 	dbService: DBClientLive,
+	cache: CacheService,
 	...SDKModules,
 }).pipe(Effect.provide(SDKBaseDependencies));
 
