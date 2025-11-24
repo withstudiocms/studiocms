@@ -191,9 +191,12 @@ export class StudioCMSPluginTester {
 		if (typeof hooks['studiocms:rendering'] === 'function') {
 			await hooks['studiocms:rendering']({
 				logger,
-				setRendering: ({ pageTypes }) => {
+				setRendering: ({ pageTypes, augments }) => {
 					if (pageTypes !== undefined) {
 						rendering.pageTypes = pageTypes;
+					}
+					if (augments !== undefined) {
+						rendering.augments = augments;
 					}
 				},
 			});
