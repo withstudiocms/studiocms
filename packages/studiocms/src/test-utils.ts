@@ -230,7 +230,10 @@ export class StudioCMSPluginTester {
 	 *
 	 * @returns An object containing the plugin's identifier, name, minimum required StudioCMS version, and dependencies.
 	 */
-	public getPluginInfo() {
+	public getPluginInfo(): Pick<
+		StudioCMSPlugin,
+		'identifier' | 'name' | 'studiocmsMinimumVersion' | 'requires'
+	> {
 		return {
 			identifier: this.plugin.identifier,
 			name: this.plugin.name,
@@ -282,7 +285,7 @@ export class StudioCMSPluginTester {
 	 *
 	 * @returns A promise that resolves to the rendering configuration results defined by the plugin.
 	 */
-	private async getRenderingHookResults() {
+	private async getRenderingHookResults(): Promise<Partial<SCMSRenderingFnOpts>> {
 		const hookResults = await this.runStudioCMSConfigHook();
 		return hookResults.rendering;
 	}
@@ -292,7 +295,7 @@ export class StudioCMSPluginTester {
 	 *
 	 * @returns A promise that resolves to an array of page types defined in the plugin's rendering configuration.
 	 */
-	private async getPluginPageTypes() {
+	private async getPluginPageTypes(): Promise<NonNullable<SCMSRenderingFnOpts['pageTypes']>> {
 		const hookResults = await this.getRenderingHookResults();
 		return hookResults.pageTypes || [];
 	}
@@ -303,7 +306,7 @@ export class StudioCMSPluginTester {
 	 * @param identifier - The unique identifier of the page type whose renderer is to be retrieved.
 	 * @returns A promise that resolves to the PluginRenderer if found, or null if not found or not defined.
 	 */
-	public async getPluginRenderer(identifier: string) {
+	public async getPluginRenderer(identifier: string): Promise<PluginRenderer | null> {
 		// Get the page types
 		const pageTypes = await this.getPluginPageTypes();
 
@@ -328,17 +331,14 @@ export class StudioCMSPluginTester {
 	 *
 	 * @returns A promise that resolves to the renderer augments if found, or null if not defined.
 	 */
-	public async getPluginRendererAugments() {
-		// Get the page types
+	public async getPluginRendererAugments(): Promise<SCMSRenderingFnOpts['augments'] | null> {
+		// Get the rendering configuration results
 		const results = await this.getRenderingHookResults();
-
-		// Find the page type with the matching identifier
 		const augments = results.augments;
 
-		// If no page type or renderer component is found, return null
-		if (!augments) return null;
+		// If no augments are defined, return null
+		if (augments == null) return null;
 
-		// Return the augments
 		return augments;
 	}
 }
