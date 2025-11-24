@@ -6,9 +6,7 @@
     "changeset-release_main",
     "main",
     "renovate_all-minor-patch",
-    "renovate_effect-@withstudiocms-dependencies",
     "renovate_effect-dependencies",
-    "renovate_studiocms-studiocms-dependencies",
-    "renovate_wysiwyg-@studiocms-plugin-dependencies"
+    "renovate_studiocms-studiocms-dependencies"
   ]
 }
