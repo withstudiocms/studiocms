@@ -2,7 +2,9 @@
   "links": [
     "..",
     "adam_fix-config-loader",
+    "adam_update-plugin-hooks",
     "changeset-release_main",
-    "main"
+    "main",
+    "renovate_effect-@withstudiocms-dependencies"
   ]
 }
