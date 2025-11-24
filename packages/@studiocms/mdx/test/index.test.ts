@@ -84,18 +84,11 @@ describe(parentSuiteName, () => {
 
 			await ctx.parameter(
 				'hasAstroConfigHook',
-				String(plugin.hooks['studiocms:astro:config'] !== undefined)
-			);
-			await ctx.parameter(
-				'hasConfigSetupHook',
-				String(plugin.hooks['studiocms:config:setup'] !== undefined)
+				String(plugin.hooks['studiocms:astro-config'] !== undefined)
 			);
 
-			expect(plugin.hooks['studiocms:astro:config']).toBeDefined();
-			expect(typeof plugin.hooks['studiocms:astro:config']).toBe('function');
-
-			expect(plugin.hooks['studiocms:config:setup']).toBeDefined();
-			expect(typeof plugin.hooks['studiocms:config:setup']).toBe('function');
+			expect(plugin.hooks['studiocms:astro-config']).toBeDefined();
+			expect(typeof plugin.hooks['studiocms:astro-config']).toBe('function');
 		});
 
 		await allure.step('Should execute hooks correctly', async (ctx) => {
@@ -103,8 +96,8 @@ describe(parentSuiteName, () => {
 			const mockAddIntegrations = vi.fn();
 			const mockSetRendering = vi.fn();
 
-			// Test 'studiocms:astro:config' hook
-			const astroConfigHook = plugin.hooks['studiocms:astro:config'];
+			// Test 'studiocms:astro-config' hook
+			const astroConfigHook = plugin.hooks['studiocms:astro-config'];
 			if (!astroConfigHook) throw new Error('Hook not found');
 			astroConfigHook({ addIntegrations: mockAddIntegrations } as any);
 
@@ -121,7 +114,7 @@ describe(parentSuiteName, () => {
 			});
 
 			// Test 'studiocms:config:setup' hook
-			const configSetupHook = plugin.hooks['studiocms:config:setup'];
+			const configSetupHook = plugin.hooks['studiocms:rendering'];
 			if (!configSetupHook) throw new Error('Hook not found');
 			configSetupHook({ setRendering: mockSetRendering } as any);
 
@@ -151,7 +144,7 @@ describe(parentSuiteName, () => {
 			const plugin: ReturnType<typeof studiocmsMDX> = studiocmsMDX(customOptions);
 			const mockAddIntegrations = vi.fn();
 
-			const astroConfigHook = plugin.hooks['studiocms:astro:config'];
+			const astroConfigHook = plugin.hooks['studiocms:astro-config'];
 			if (!astroConfigHook) throw new Error('Hook not found');
 			astroConfigHook({ addIntegrations: mockAddIntegrations } as any);
 

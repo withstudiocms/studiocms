@@ -45,10 +45,10 @@ function cloudinaryImageService() {
 		identifier: name,
 		studiocmsMinimumVersion: '0.1.0-beta.19',
 		hooks: {
-			'studiocms:astro:config': ({ addIntegrations }) => {
+			'studiocms:astro-config': ({ addIntegrations }) => {
 				addIntegrations(CloudinaryENVIntegration());
 			},
-			'studiocms:config:setup': ({ logger, setImageService }) => {
+			'studiocms:image-service': ({ logger, setImageService }) => {
 				logger.info('Initializing Cloudinary Image Service');
 
 				setImageService({

@@ -136,17 +136,17 @@ describe(parentSuiteName, () => {
 			await ctx.parameter('definedHooks', String(Object.keys(plugin.hooks || {})));
 
 			expect(plugin.hooks).toBeDefined();
-			expect(plugin.hooks['studiocms:astro:config']).toBeDefined();
-			expect(plugin.hooks['studiocms:config:setup']).toBeDefined();
+			expect(plugin.hooks['studiocms:astro-config']).toBeDefined();
+			expect(plugin.hooks['studiocms:rendering']).toBeDefined();
 		});
 
 		await allure.step(
-			'Should call studiocms:astro:config hook with addIntegrations',
+			'Should call studiocms:astro-config hook with addIntegrations',
 			async (ctx) => {
 				const plugin: ReturnType<typeof studiocmsMD> = studiocmsMD();
 				const mockAddIntegrations = vi.fn();
 
-				const hook = plugin.hooks['studiocms:astro:config'];
+				const hook = plugin.hooks['studiocms:astro-config'];
 				if (!hook) throw new Error('Hook not found');
 				// @ts-expect-error -- ignore
 				hook({ addIntegrations: mockAddIntegrations });
@@ -163,11 +163,11 @@ describe(parentSuiteName, () => {
 			}
 		);
 
-		await allure.step('Should call studiocms:config:setup hook with setRendering', async (ctx) => {
+		await allure.step('Should call studiocms:rendering hook with setRendering', async (ctx) => {
 			const plugin = studiocmsMD();
 			const mockSetRendering = vi.fn();
 
-			const hook = plugin.hooks['studiocms:config:setup'] as (...args: unknown[]) => unknown;
+			const hook = plugin.hooks['studiocms:rendering'] as (...args: unknown[]) => unknown;
 			hook({ setRendering: mockSetRendering });
 
 			await ctx.parameter('setRenderingCalls', String(mockSetRendering.mock.calls.length));
@@ -198,7 +198,7 @@ describe(parentSuiteName, () => {
 				const mockConfig = { markdown: { remarkPlugins: [] } };
 				const mockAddIntegrations = vi.fn();
 
-				const hook = plugin.hooks['studiocms:astro:config'];
+				const hook = plugin.hooks['studiocms:astro-config'];
 				if (!hook) throw new Error('Hook not found');
 				// @ts-expect-error -- ignore
 				hook({ addIntegrations: mockAddIntegrations });

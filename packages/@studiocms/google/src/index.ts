@@ -39,7 +39,7 @@ export function studiocmsGoogle(): StudioCMSPlugin {
 		name: 'StudioCMS Google Plugin',
 		studiocmsMinimumVersion: '0.1.0-beta.22',
 		hooks: {
-			'studiocms:config:setup': ({ setAuthService }) => {
+			'studiocms:auth': ({ setAuthService }) => {
 				setAuthService({
 					oAuthProvider: {
 						name: 'google',

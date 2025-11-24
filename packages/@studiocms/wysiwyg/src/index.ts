@@ -103,11 +103,11 @@ function wysiwyg(opts?: WYSIWYGSchemaOptions): StudioCMSPlugin {
 		name: 'StudioCMS WYSIWYG Editor',
 		studiocmsMinimumVersion: '0.1.0-beta.23',
 		hooks: {
-			'studiocms:astro:config': ({ addIntegrations }) => {
+			'studiocms:astro-config': ({ addIntegrations }) => {
 				// Add the WYSIWYG editor integration to the Astro configuration
 				addIntegrations(internalWysiwygIntegration(packageIdentifier, options));
 			},
-			'studiocms:config:setup': ({ setRendering }) => {
+			'studiocms:rendering': ({ setRendering }) => {
 				// Set the rendering configuration for the WYSIWYG editor
 				// This will allow the editor to be rendered in the StudioCMS environment
 				// and provide the necessary components for the editor.

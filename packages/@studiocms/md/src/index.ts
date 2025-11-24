@@ -127,10 +127,10 @@ export function studiocmsMD(options?: MarkdownSchemaOptions): StudioCMSPlugin {
 		name: 'StudioCMS Markdown',
 		studiocmsMinimumVersion: '0.1.0-beta.21',
 		hooks: {
-			'studiocms:astro:config': ({ addIntegrations }) => {
+			'studiocms:astro-config': ({ addIntegrations }) => {
 				addIntegrations(internalMarkdownIntegration(resolvedOptions));
 			},
-			'studiocms:config:setup': ({ setRendering }) => {
+			'studiocms:rendering': ({ setRendering }) => {
 				setRendering({
 					pageTypes: [markdownPageType],
 				});

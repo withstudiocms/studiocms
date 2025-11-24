@@ -358,12 +358,41 @@ const astroConfigHookSchema = baseHookSchema.extend({
 	),
 });
 
-const setSitemapFn = z.function(z.tuple([SitemapConfigSchema]), z.void());
-const setDashboardFn = z.function(z.tuple([DashboardConfigSchema]), z.void());
-const setFrontendFn = z.function(z.tuple([FrontendConfigSchema]), z.void());
-const setRenderingFn = z.function(z.tuple([RenderingConfigSchema]), z.void());
-const setImageServiceFn = z.function(z.tuple([ImageServiceConfigSchema]), z.void());
-const setAuthServiceFn = z.function(z.tuple([AuthServiceConfigSchema]), z.void());
+type SCMSAstroConfigHook = z.infer<typeof astroConfigHookSchema>;
+
+const studiocms_SitemapHookSchema = baseHookSchema.extend({
+	setSitemap: z.function(z.tuple([SitemapConfigSchema]), z.void()),
+});
+
+type StudioCMSSitemapHook = z.infer<typeof studiocms_SitemapHookSchema>;
+
+const studiocms_DashboardHookSchema = baseHookSchema.extend({
+	setDashboard: z.function(z.tuple([DashboardConfigSchema]), z.void()),
+});
+
+type StudioCMSDashboardHook = z.infer<typeof studiocms_DashboardHookSchema>;
+
+const studiocms_FrontendHookSchema = baseHookSchema.extend({
+	setFrontend: z.function(z.tuple([FrontendConfigSchema]), z.void()),
+});
+
+type StudioCMSFrontendHook = z.infer<typeof studiocms_FrontendHookSchema>;
+
+const studiocms_RenderingHookSchema = baseHookSchema.extend({
+	setRendering: z.function(z.tuple([RenderingConfigSchema]), z.void()),
+});
+
+type StudioCMSRenderingHook = z.infer<typeof studiocms_RenderingHookSchema>;
+
+const studiocms_ImageServiceHookSchema = baseHookSchema.extend({
+	setImageService: z.function(z.tuple([ImageServiceConfigSchema]), z.void()),
+});
+
+type StudioCMSImageServiceHook = z.infer<typeof studiocms_ImageServiceHookSchema>;
+
+const studiocms_AuthHookSchema = baseHookSchema.extend({
+	setAuthService: z.function(z.tuple([AuthServiceConfigSchema]), z.void()),
+});
 
 export type SCMSSiteMapFnOpts = z.infer<typeof SitemapConfigSchema>;
 export type SCMSDashboardFnOpts = z.infer<typeof DashboardConfigSchema>;
@@ -372,49 +401,21 @@ export type SCMSRenderingFnOpts = z.infer<typeof RenderingConfigSchema>;
 export type SCMSImageServiceFnOpts = z.infer<typeof ImageServiceConfigSchema>;
 export type SCMSAuthServiceFnOpts = z.infer<typeof AuthServiceConfigSchema>;
 
-type StudioCMSConfigHookSchema = BaseHookSchema & {
-	setSitemap: typeof setSitemapFn;
-	setDashboard: typeof setDashboardFn;
-	setFrontend: typeof setFrontendFn;
-	setRendering: typeof setRenderingFn;
-	setImageService: typeof setImageServiceFn;
-	setAuthService: typeof setAuthServiceFn;
-};
-
-const studiocmsConfigHookSchema: z.ZodObject<StudioCMSConfigHookSchema> = baseHookSchema.extend({
-	setSitemap: setSitemapFn,
-	setDashboard: setDashboardFn,
-	setFrontend: setFrontendFn,
-	setRendering: setRenderingFn,
-	setImageService: setImageServiceFn,
-	setAuthService: setAuthServiceFn,
-});
-
-type SCMSAstroConfigHook = z.infer<typeof astroConfigHookSchema>;
-type SCMSConfigSetupHook = z.infer<typeof studiocmsConfigHookSchema>;
+type StudioCMSAuthServiceHook = z.infer<typeof studiocms_AuthHookSchema>;
 
 type PluginHook<OPT> = (options: OPT) => void | Promise<void>;
-
-const StudioCMSPluginSchemaInternal = z.array(z.custom<StudioCMSPlugin>());
-
-const exposePluginsFn = z.function(z.tuple([StudioCMSPluginSchemaInternal.optional()]), z.void());
-
-const studiocmsPluginAstroHook = z.object({
-	exposePlugins: exposePluginsFn,
-});
-
-type SCMSPluginAstroHook = z.infer<typeof studiocmsPluginAstroHook>;
-
-export interface StudioCMSPluginHook {
-	'studiocms:plugins'?: PluginHook<SCMSPluginAstroHook>;
-}
 
 /**
  * Interface representing the base hooks for plugins in the StudioCMS system.
  */
 export interface BasePluginHooks {
-	'studiocms:astro:config': PluginHook<SCMSAstroConfigHook>;
-	'studiocms:config:setup': PluginHook<SCMSConfigSetupHook>;
+	'studiocms:astro-config': PluginHook<SCMSAstroConfigHook>;
+	'studiocms:auth': PluginHook<StudioCMSAuthServiceHook>;
+	'studiocms:dashboard': PluginHook<StudioCMSDashboardHook>;
+	'studiocms:frontend': PluginHook<StudioCMSFrontendHook>;
+	'studiocms:rendering': PluginHook<StudioCMSRenderingHook>;
+	'studiocms:image-service': PluginHook<StudioCMSImageServiceHook>;
+	'studiocms:sitemap': PluginHook<StudioCMSSitemapHook>;
 }
 
 export interface StudioCMSPlugin {

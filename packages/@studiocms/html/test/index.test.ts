@@ -135,11 +135,8 @@ describe(parentSuiteName, () => {
 		await allure.step('Should have all required hooks', async () => {
 			const plugin = studiocmsHTML();
 
-			expect(plugin.hooks['studiocms:astro:config']).toBeDefined();
-			expect(typeof plugin.hooks['studiocms:astro:config']).toBe('function');
-
-			expect(plugin.hooks['studiocms:config:setup']).toBeDefined();
-			expect(typeof plugin.hooks['studiocms:config:setup']).toBe('function');
+			expect(plugin.hooks['studiocms:astro-config']).toBeDefined();
+			expect(typeof plugin.hooks['studiocms:astro-config']).toBe('function');
 		});
 
 		await allure.step('Should call astro:config hook correctly', async (ctx) => {
@@ -158,7 +155,7 @@ describe(parentSuiteName, () => {
 				debug: vi.fn(),
 			} as any;
 
-			const hook = plugin.hooks['studiocms:astro:config'];
+			const hook = plugin.hooks['studiocms:astro-config'];
 			if (!hook) throw new Error('Hook not found');
 			hook({ addIntegrations: mockAddIntegrations, logger: mockLogger });
 
@@ -183,11 +180,11 @@ describe(parentSuiteName, () => {
 			expect(shared.htmlConfig).toEqual({});
 		});
 
-		await allure.step('Should call studiocms:config:setup hook correctly', async (ctx) => {
+		await allure.step('Should call studiocms:rendering hook correctly', async (ctx) => {
 			const plugin = studiocmsHTML();
 			const mockSetRendering = vi.fn();
 
-			const hook = plugin.hooks['studiocms:config:setup'] as (...args: unknown[]) => unknown;
+			const hook = plugin.hooks['studiocms:rendering'] as (...args: unknown[]) => unknown;
 			hook({ setRendering: mockSetRendering });
 
 			await ctx.parameter(
@@ -236,7 +233,7 @@ describe(parentSuiteName, () => {
 				debug: vi.fn(),
 			} as any;
 
-			const hook = plugin.hooks['studiocms:astro:config'];
+			const hook = plugin.hooks['studiocms:astro-config'];
 			if (!hook) throw new Error('Hook not found');
 			hook({ addIntegrations: mockAddIntegrations, logger: mockLogger });
 
