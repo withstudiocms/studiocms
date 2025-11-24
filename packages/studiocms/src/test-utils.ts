@@ -316,14 +316,20 @@ export class StudioCMSPluginTester {
 		// If no page type or renderer component is found, return null
 		if (!pageType || !pageType.rendererComponent) return null;
 
-		// Dynamically import the renderer module
-		const rendererModule = await import(pageType.rendererComponent);
+		try {
+			// Dynamically import the renderer module
+			const rendererModule = await import(pageType.rendererComponent);
 
-		// Return null if no default export found
-		if (!rendererModule.default) return null;
+			// Return null if not found
+			if (!rendererModule.default) return null;
 
-		// Return the default export as PluginRenderer
-		return rendererModule.default as PluginRenderer;
+			// Return the default export as PluginRenderer
+			return rendererModule.default as PluginRenderer;
+		} catch (error) {
+			throw new Error(
+				`Failed to import renderer for pageType "${identifier}" from "${pageType.rendererComponent}" in plugin "${this.plugin.identifier}": ${String(error)}`
+			);
+		}
 	}
 
 	/**
