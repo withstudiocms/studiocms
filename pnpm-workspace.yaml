@@ -22,10 +22,10 @@ catalog:
 catalogs:
   astrojs:
     "@astrojs/check": ^0.9.5
-    "@astrojs/db": ^0.18.2
+    "@astrojs/db": ^0.18.3
     "@astrojs/node": ^9.5.1
-    "@astrojs/rss": ^4.0.13
-    astro: ^5.15.9
+    "@astrojs/rss": ^4.0.14
+    astro: ^5.16.0
     vite: ^6.3.4
   effect:
     "@effect/cli": ^0.72.1
@@ -41,7 +41,7 @@ catalogs:
     vite: ^6.3.4
   react:
     "@astrojs/react": ^4.4.2
-    "@types/react": ^19.2.5
+    "@types/react": ^19.2.6
     "@types/react-dom": ^19.2.3
     react: ^19.2.0
     react-dom: ^19.2.0
