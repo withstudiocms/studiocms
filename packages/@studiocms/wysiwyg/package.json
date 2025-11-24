@@ -65,7 +65,7 @@
   "dependencies": {
     "astro-integration-kit": "catalog:",
     "deepmerge-ts": "catalog:",
-    "grapesjs": "^0.22.13",
+    "grapesjs": "^0.22.14",
     "tui-image-editor": "^3.15.3"
   },
   "devDependencies": {
