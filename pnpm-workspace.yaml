@@ -30,8 +30,8 @@ catalogs:
   effect:
     "@effect/cli": ^0.72.1
     "@effect/platform": ^0.93.3
-    "@effect/platform-node": ^0.100.0
-    effect: ^3.19.4
+    "@effect/platform-node": ^0.101.0
+    effect: ^3.19.6
   min:
     "@astrojs/markdown-remark": ^6.3.3
     "@libsql/client": ^0.15.10
