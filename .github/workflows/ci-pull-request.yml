@@ -24,7 +24,7 @@ jobs:
     permissions:
       contents: read
       pull-requests: write
-    uses: withstudiocms/automations/.github/workflows/run-pnpm.yml@729a20ff5e68dd95330fb1914b801960ad4b5e7b # main
+    uses: withstudiocms/automations/.github/workflows/run-pnpm.yml@a08b74527cb0ddb4a392bf44d3e28b36bf282a8a # main
     secrets: inherit
     with:
       commands: > 
@@ -44,7 +44,7 @@ jobs:
           persist-credentials: false
 
       - name: Install Tools & Dependencies
-        uses: withstudiocms/automations/.github/actions/install@729a20ff5e68dd95330fb1914b801960ad4b5e7b # main
+        uses: withstudiocms/automations/.github/actions/install@a08b74527cb0ddb4a392bf44d3e28b36bf282a8a # main
 
       - name: Check Changeset Status
         run: pnpm changeset:status
@@ -58,7 +58,7 @@ jobs:
       issues: write
       pull-requests: write
     secrets: inherit
-    uses: withstudiocms/automations/.github/workflows/preview.yml@729a20ff5e68dd95330fb1914b801960ad4b5e7b # main
+    uses: withstudiocms/automations/.github/workflows/preview.yml@a08b74527cb0ddb4a392bf44d3e28b36bf282a8a # main
     with:
       build-cmd: "pnpm ci:build"
 
@@ -71,6 +71,6 @@ jobs:
       issues: write
       pull-requests: write
     secrets: inherit
-    uses: withstudiocms/automations/.github/workflows/preview-pr.yml@729a20ff5e68dd95330fb1914b801960ad4b5e7b # main
+    uses: withstudiocms/automations/.github/workflows/preview-pr.yml@a08b74527cb0ddb4a392bf44d3e28b36bf282a8a # main
     with:
       build-cmd: "pnpm ci:build"
