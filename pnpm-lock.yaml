@@ -910,10 +910,10 @@ importers:
         version: 0.15.15
       '@nanostores/i18n':
         specifier: ^1.2.2
-        version: 1.2.2(nanostores@1.0.1)
+        version: 1.2.2(nanostores@1.1.0)
       '@nanostores/persistent':
         specifier: ^1.2.0
-        version: 1.2.0(nanostores@1.0.1)
+        version: 1.2.0(nanostores@1.1.0)
       '@studiocms/ui':
         specifier: catalog:studiocms
         version: 1.0.0-beta.4(astro@5.16.0(@types/node@22.19.0)(jiti@2.6.1)(rollup@4.52.5)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))(vite@6.4.1(@types/node@22.19.0)(jiti@2.6.1)(tsx@4.20.6)(yaml@2.8.1))
@@ -996,8 +996,8 @@ importers:
         specifier: ^2.0.1
         version: 2.0.1
       nanostores:
-        specifier: ^1.0.1
-        version: 1.0.1
+        specifier: ^1.1.0
+        version: 1.1.0
       package-manager-detector:
         specifier: ^1.5.0
         version: 1.5.0
@@ -4810,8 +4810,8 @@ packages:
     engines: {node: ^18 || >=20}
     hasBin: true
 
-  nanostores@1.0.1:
-    resolution: {integrity: sha512-kNZ9xnoJYKg/AfxjrVL4SS0fKX++4awQReGqWnwTRHxeHGZ1FJFVgTqr/eMrNQdp0Tz7M7tG/TDaX8QfHDwVCw==}
+  nanostores@1.1.0:
+    resolution: {integrity: sha512-yJBmDJr18xy47dbNVlHcgdPrulSn1nhSE6Ns9vTG+Nx9VPT6iV1MD6aQFp/t52zpf82FhLLTXAXr30NuCnxvwA==}
     engines: {node: ^20.0.0 || >=22.0.0}
 
   neotraverse@0.6.18:
@@ -7624,13 +7624,13 @@ snapshots:
   '@msgpackr-extract/msgpackr-extract-win32-x64@3.0.3':
     optional: true
 
-  '@nanostores/i18n@1.2.2(nanostores@1.0.1)':
+  '@nanostores/i18n@1.2.2(nanostores@1.1.0)':
     dependencies:
-      nanostores: 1.0.1
+      nanostores: 1.1.0
 
-  '@nanostores/persistent@1.2.0(nanostores@1.0.1)':
+  '@nanostores/persistent@1.2.0(nanostores@1.1.0)':
     dependencies:
-      nanostores: 1.0.1
+      nanostores: 1.1.0
 
   '@napi-rs/wasm-runtime@1.0.7':
     dependencies:
@@ -10858,7 +10858,7 @@ snapshots:
 
   nanoid@5.1.6: {}
 
-  nanostores@1.0.1: {}
+  nanostores@1.1.0: {}
 
   neotraverse@0.6.18: {}
 
