@@ -784,7 +784,8 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 						if (components !== undefined) {
 							const fixed = Object.entries(components).reduce(
 								(acc, [compKey, compPath]) => {
-									acc[`${safeData.identifier}_${compKey}`] = compPath;
+									const safeKey = convertToSafeString(`${safeData.identifier}_${compKey}`);
+									acc[safeKey] = compPath;
 									return acc;
 								},
 								{} as Record<string, string>
