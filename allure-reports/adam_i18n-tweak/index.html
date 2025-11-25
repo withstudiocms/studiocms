@@ -1,0 +1,171 @@
+<!-- report-action -->
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Allure Test Report Listing</title>
+
+  <style>
+    :root {
+      --bg1: #0f1724;
+      --bg2: #071129;
+      --card: #0b1220;
+      --accent: #60a5fa;
+      --muted: #9aa7bd;
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    html,
+    body {
+      height: 100%
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: linear-gradient(180deg, var(--bg1), var(--bg2));
+      color: #e6eef8;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      padding: 32px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+    }
+
+    .wrap {
+      width: 100%;
+      max-width: 980px;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    header h1 {
+      font-size: 24px;
+      margin: 0;
+      letter-spacing: 0.2px;
+      color: #fff;
+    }
+
+    header .sub {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    #links {
+      list-style: none;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 12px;
+      padding: 0;
+      margin: 0;
+    }
+
+    #links li a {
+      display: block;
+      padding: 14px 12px;
+      border-radius: 10px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+      border: 1px solid rgba(255, 255, 255, 0.03);
+      color: var(--accent);
+      text-decoration: none;
+      box-shadow: 0 4px 12px rgba(2, 6, 23, 0.6);
+      transition: transform .18s ease, box-shadow .18s ease;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    #links li a:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 30px rgba(2, 6, 23, 0.6);
+    }
+
+    #links li a::before {
+      content: "🔗";
+      margin-right: 8px;
+    }
+
+    #links li.back-link a::before {
+      content: "⬆️";
+    }
+
+    .empty {
+      color: var(--muted);
+      padding: 18px;
+      text-align: center;
+    }
+
+    .meta {
+      display: block;
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <header>
+      <div>
+        <h1>Allure Test Report Listing</h1>
+        <div class="sub">Automatic index of files — refreshed on load</div>
+      </div>
+    </header>
+
+    <div id="app">
+      <ul id="links"></ul>
+    </div>
+  </div>
+
+  <script>
+    const linksList = document.getElementById('links')
+
+    fetch(`./data.json?t=${Date.now()}`)
+      .then((response) => response.ok && response.json())
+      .then((json) => {
+        if (!json) {
+          linksList.innerHTML = '<li class="empty">No data available</li>'
+          return
+        }
+
+        if (!Array.isArray(json.links) || json.links.length === 0) {
+          linksList.innerHTML = '<li class="empty">No links found</li>'
+          return
+        }
+
+        json.links.forEach((record) => {
+          const link = document.createElement('a')
+          let textNodeContent = record;
+          if (record === '..') {
+            textNodeContent = 'Parent Directory';
+          }
+          link.appendChild(document.createTextNode(textNodeContent))
+          link.href = record
+          const li = document.createElement('li')
+          if (record === '..') {
+            li.classList.add('back-link')
+          }
+          li.appendChild(link)
+          linksList.appendChild(li)
+        })
+        delete json.links
+      })
+      .catch(() => {
+        linksList.innerHTML = '<li class="empty">Failed to load data</li>'
+      })
+  </script>
+</body>
+
+</html>
