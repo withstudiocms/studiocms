@@ -66,6 +66,9 @@ describe(parentSuiteName, () => {
 				locale: {
 					dateLocale: 'fr-FR',
 					dateTimeFormat: { year: '2-digit', month: 'long', day: '2-digit' },
+					i18n: {
+						defaultLocale: 'fr',
+					},
 				},
 			},
 			expected: {
@@ -73,6 +76,9 @@ describe(parentSuiteName, () => {
 				actualValue: {
 					dateLocale: 'fr-FR',
 					dateTimeFormat: { year: '2-digit', month: 'long', day: '2-digit' },
+					i18n: {
+						defaultLocale: 'fr',
+					},
 				},
 			},
 		},
