@@ -794,7 +794,9 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 							dashboardAugmentComponents.push(fixed);
 						}
 						if (scripts) {
-							dashboardAugmentScripts.push(...scripts);
+							const uniqueScripts = [...new Set([...dashboardAugmentScripts, ...scripts])];
+							dashboardAugmentScripts.length = 0;
+							dashboardAugmentScripts.push(...uniqueScripts);
 						}
 					},
 				});
@@ -1224,13 +1226,14 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 					id: 'studiocms:dashboard/augments/components',
 					content: await runEffect(
 						Effect.succeed(dashboardAugmentComponents).pipe(
-							Effect.map((components) => [
-								...components.map(remapAugmentComps),
-								`export const componentKeys = ${JSON.stringify(
-									components.flatMap((components) => Object.keys(components))
-								)};`,
-							]),
-							Effect.map((data) => data.join('\n'))
+							Effect.map((components) =>
+								[
+									...components.map(remapAugmentComps),
+									`export const componentKeys = ${JSON.stringify(
+										components.flatMap((components) => Object.keys(components))
+									)};`,
+								].join('\n')
+							)
 						)
 					),
 				},
