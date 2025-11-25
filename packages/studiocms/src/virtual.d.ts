@@ -12,6 +12,12 @@ declare module 'studiocms:logger' {
 	) => Response;
 }
 
+declare module 'studiocms:dashboard/augments/components' {
+	export const componentKeys: string[];
+}
+
+declare module 'studiocms:dashboard/augments/scripts' {}
+
 declare module 'studiocms:components/dashboard-grid-items' {
 	export const dashboardGridItems: import('./schemas/plugins/shared').GridItemUsable[];
 	export default dashboardGridItems;

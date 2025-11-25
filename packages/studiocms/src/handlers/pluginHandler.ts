@@ -369,6 +369,9 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 
 		const augmentTranslations: PluginAugmentsTranslationCollection = {};
 
+		const dashboardAugmentScripts: string[] = [];
+		const dashboardAugmentComponents: Record<string, string>[] = [];
+
 		/////
 
 		/**
@@ -605,6 +608,11 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 			return { id, safeId, type, components, html: augment.html };
 		}
 
+		const remapAugmentComps = (components: Record<string, string>) =>
+			Object.entries(components)
+				.map(([key, value]) => `export { default as ${key} } from '${value}';`)
+				.join('\n');
+
 		/////
 
 		integrationLogger(logInfo, 'Setting up StudioCMS plugins...');
@@ -770,6 +778,22 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 							}
 
 							foundSettingsPage = settingsPage;
+						}
+					},
+					augmentDashboard({ components, scripts }) {
+						if (components !== undefined) {
+							const fixed = Object.entries(components).reduce(
+								(acc, [compKey, compPath]) => {
+									acc[`${safeData.identifier}_${compKey}`] = compPath;
+									return acc;
+								},
+								{} as Record<string, string>
+							);
+
+							dashboardAugmentComponents.push(fixed);
+						}
+						if (scripts) {
+							dashboardAugmentScripts.push(...scripts);
 						}
 					},
 				});
@@ -1194,6 +1218,24 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 							initCallback: providers[safeName + '_initCallback'] || null,
 						}));
 					`,
+				},
+				{
+					id: 'studiocms:dashboard/augments/components',
+					content: await runEffect(
+						Effect.succeed(dashboardAugmentComponents).pipe(
+							Effect.map((components) => [
+								...components.map(remapAugmentComps).join('\n'),
+								`export const componentKeys = ${JSON.stringify(
+									components.flatMap((components) => Object.keys(components))
+								)};`,
+							]),
+							Effect.map((data) => data.join('\n'))
+						)
+					),
+				},
+				{
+					id: 'studiocms:dashboard/augments/scripts',
+					content: dashboardAugmentScripts.map((script) => `import '${script}';`).join('\n'),
 				}
 			);
 		}
