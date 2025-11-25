@@ -1224,7 +1224,7 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 					content: await runEffect(
 						Effect.succeed(dashboardAugmentComponents).pipe(
 							Effect.map((components) => [
-								...components.map(remapAugmentComps).join('\n'),
+								...components.map(remapAugmentComps),
 								`export const componentKeys = ${JSON.stringify(
 									components.flatMap((components) => Object.keys(components))
 								)};`,
