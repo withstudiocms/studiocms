@@ -7,6 +7,7 @@ import type { MigrationInfo } from '@withstudiocms/kysely/kysely';
 import { getMigratorLive } from '@withstudiocms/kysely/migrator';
 import { getDbDriver, parseDbDialect } from '../../db/index.js';
 import { genLogger } from '../../effect.js';
+import type { StudioCMSConfig } from '../../schemas/index.js';
 import { type BaseContext, CliContext, genContext, parseDebug } from '../utils/context.js';
 import { intro as SCMS_Intro } from '../utils/intro.js';
 import { buildDebugLogger } from '../utils/logger.js';
@@ -14,7 +15,6 @@ import { loadConfig } from './utils/loadConfig.js';
 
 export const debug = Cli.Options.boolean('debug').pipe(
 	Cli.Options.optional,
-	Cli.Options.withDefault(false),
 	Cli.Options.withDescription('Enable debug mode')
 );
 
@@ -38,8 +38,7 @@ export const status = Cli.Options.boolean('status').pipe(
 // biome-ignore lint/suspicious/noExplicitAny: this is a valid use case for explicit any
 const exitIfEmpty = Effect.fn(function* (context: BaseContext, items: any[], itemType: string) {
 	if (items.length === 0) {
-		yield* log.error(`No ${itemType} selected, exiting...`);
-		yield* context.exit(0);
+		yield* Effect.all([log.error(`No ${itemType} selected, exiting...`), context.exit(0)]);
 	}
 });
 
@@ -64,6 +63,10 @@ function createMigrationStatusLine({ name, executedAt }: MigrationInfo): string 
 	return `- ${prefix} ${cleanName}: ${status}\n`;
 }
 
+const getRootUrl = (context: BaseContext) => Effect.sync(() => pathToFileURL(context.cwd));
+
+const extractDialect = (config: StudioCMSConfig) => Effect.sync(() => config.db.dialect);
+
 enum MigrationMode {
 	LATEST = 'latest',
 	ROLLBACK = 'rollback',
@@ -87,38 +90,30 @@ export const migratorCMD = Cli.Command.make(
 	{ debug, rollback, latest, status },
 	({ debug: rawDebug, rollback: rawRollback, latest: rawLatest, status: rawStatus }) =>
 		genLogger('studiocms/cli/migrator')(function* () {
-			const [rollback, context, debug, latest, status] = yield* Effect.all([
+			const [rollback, latest, status, debug, context] = yield* Effect.all([
 				rawRollback,
-				genContext,
-				parseDebug(rawDebug),
 				rawLatest,
 				rawStatus,
+				parseDebug(rawDebug),
+				genContext,
 			]);
 
-			const debugLogger = yield* buildDebugLogger(debug);
-
-			const cliContext = CliContext.makeProvide(context);
-
-			// Load StudioCMS Configuration
-			const [__drop, studiocmsConfig] = yield* Effect.all([
-				debugLogger('Loading StudioCMS configuration...'),
-				loadConfig(pathToFileURL(context.cwd)),
-			]);
-
-			// Initialize DB Migrator
-			const [_dbMigratorLog, dbMigrator] = yield* Effect.all([
-				debugLogger('Getting database migrator...'),
-				parseDbDialect(studiocmsConfig.db.dialect).pipe(
+			const [debugLogger, dbMigrator] = yield* Effect.all([
+				buildDebugLogger(debug),
+				getRootUrl(context).pipe(
+					Effect.flatMap(loadConfig),
+					Effect.flatMap(extractDialect),
+					Effect.flatMap(parseDbDialect),
 					Effect.flatMap(getDbDriver),
 					Effect.flatMap(getMigratorLive)
 				),
 			]);
 
+			const cliContext = CliContext.makeProvide(context);
+
 			yield* Effect.all([
 				debugLogger('Starting interactive CLI...'),
-				debugLogger(
-					`Options: ${JSON.stringify({ debug, rollback, dialect: studiocmsConfig.db.dialect }, null, 2)}`
-				),
+				debugLogger(`Options: ${JSON.stringify({ debug, rollback }, null, 2)}`),
 				debugLogger(`Context: ${JSON.stringify(context, null, 2)}`),
 				intro(
 					`${label('StudioCMS Migrator', StudioCMSColorwayBg, context.chalk.black)} - initializing...`
@@ -140,8 +135,10 @@ export const migratorCMD = Cli.Command.make(
 						: null;
 
 			if (!migrationMode) {
-				yield* debugLogger('No mode CLI flags provided, Loading interactive...');
-				yield* SCMS_Intro(debug).pipe(cliContext);
+				yield* Effect.all([
+					debugLogger('No mode CLI flags provided, Loading interactive...'),
+					SCMS_Intro(debug).pipe(cliContext),
+				]);
 
 				const options = yield* select({
 					message: 'Select migration mode:',
@@ -242,16 +239,21 @@ export const migratorCMD = Cli.Command.make(
 			}
 
 			// No tasks? Exit
-			yield* exitIfEmpty(context, context.tasks, 'tasks');
-
-			yield* Effect.all([
-				debugLogger(`Tasks to run: ${context.tasks.length}`),
-				debugLogger('Running tasks...'),
-				tasks(context.tasks),
-			]);
-
-			yield* outro(outroMessage[migrationMode]);
-
-			yield* Effect.all([debugLogger('Interactive CLI completed, exiting...'), context.exit(0)]);
+			yield* exitIfEmpty(context, context.tasks, 'tasks').pipe(
+				// Run tasks
+				Effect.flatMap(() =>
+					Effect.all([
+						debugLogger(`Tasks to run: ${context.tasks.length}`),
+						debugLogger('Running tasks...'),
+						tasks(context.tasks),
+					])
+				),
+				// Outro
+				Effect.flatMap(() => outro(outroMessage[migrationMode])),
+				// Final log and exit
+				Effect.flatMap(() =>
+					Effect.all([debugLogger('Interactive CLI completed, exiting...'), context.exit(0)])
+				)
+			);
 		})
 ).pipe(Cli.Command.withDescription('Manage database migrations for StudioCMS.'));
