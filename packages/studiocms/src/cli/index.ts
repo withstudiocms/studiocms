@@ -5,6 +5,7 @@ import { addPlugin } from './add/index.js';
 import { cryptoCMD } from './crypto/index.js';
 import { getTurso } from './getTurso/index.js';
 import { initCMD } from './init/index.js';
+import { migratorCMD } from './migrator/index.js';
 import { usersCMD } from './users/index.js';
 
 dotenv.config({ quiet: true });
@@ -13,7 +14,7 @@ const pkgJson = readJson<{ version: string }>(new URL('../../package.json', impo
 
 const command = Cli.Command.make('studiocms').pipe(
 	Cli.Command.withDescription('StudioCMS CLI Utility Toolkit'),
-	Cli.Command.withSubcommands([addPlugin, cryptoCMD, getTurso, initCMD, usersCMD])
+	Cli.Command.withSubcommands([addPlugin, cryptoCMD, getTurso, initCMD, usersCMD, migratorCMD])
 );
 
 // Set up the CLI application

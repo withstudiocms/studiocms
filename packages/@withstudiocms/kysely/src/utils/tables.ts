@@ -108,7 +108,7 @@ export function applyColumnConstraints(col: any, def: ColumnDefinition, isAlterT
  * @throws {SqlError} If the underlying CREATE TABLE promise rejects, the error is wrapped as SqlError.
  */
 export const createTable = Effect.fn(function* (db: Kysely<any>, tableDef: TableDefinition) {
-	yield* Effect.logInfo(`Creating table ${tableDef.name}...`);
+	yield* Effect.logDebug(`Creating table ${tableDef.name}...`);
 
 	let tableBuilder = db.schema.createTable(tableDef.name);
 
@@ -126,7 +126,7 @@ export const createTable = Effect.fn(function* (db: Kysely<any>, tableDef: Table
 		catch: (cause) => new SqlError({ cause }),
 	});
 
-	yield* Effect.logInfo(`Table ${tableDef.name} created.`);
+	yield* Effect.logDebug(`Table ${tableDef.name} created.`);
 
 	// Create indexes after table creation
 	yield* createIndexes(db, tableDef);
@@ -169,7 +169,7 @@ export const addMissingColumns = Effect.fn(function* (
 	tableDef: TableDefinition,
 	existingColumns: string[]
 ) {
-	yield* Effect.logInfo(`${tableDef.name} exists, checking for missing columns...`);
+	yield* Effect.logDebug(`${tableDef.name} exists, checking for missing columns...`);
 
 	let addedCount = 0;
 
@@ -188,13 +188,13 @@ export const addMissingColumns = Effect.fn(function* (
 				catch: (cause) => new SqlError({ cause }),
 			});
 
-			yield* Effect.logInfo(`Column ${colDef.name} added to table ${tableDef.name}`);
+			yield* Effect.logDebug(`Column ${colDef.name} added to table ${tableDef.name}`);
 			addedCount++;
 		})
 	);
 
 	if (addedCount === 0) {
-		yield* Effect.logInfo(`No missing columns to add for table ${tableDef.name}`);
+		yield* Effect.logDebug(`No missing columns to add for table ${tableDef.name}`);
 	}
 });
 

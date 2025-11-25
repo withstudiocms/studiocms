@@ -59,13 +59,13 @@ export const syncDatabaseSchema = (
 ) =>
 	Effect.runPromise(
 		Effect.gen(function* () {
-			yield* Effect.logInfo('Starting database schema synchronization...');
+			yield* Effect.logDebug('Starting database schema synchronization...');
 
 			const removedTables = yield* detectRemovedTables(schemaDefinition, previousSchemaDefinition);
 
 			// Drop removed tables
 			if (removedTables.length > 0) {
-				yield* Effect.logInfo(
+				yield* Effect.logDebug(
 					`🗑️  Dropping ${removedTables.length} removed table(s) from previous schema:`
 				);
 
@@ -74,18 +74,18 @@ export const syncDatabaseSchema = (
 					Effect.fn(function* (tableName) {
 						const exists = yield* tableExists(db, tableName);
 						if (exists) {
-							yield* Effect.logInfo(`  Dropping removed table: ${tableName}...`);
+							yield* Effect.logDebug(`  Dropping removed table: ${tableName}...`);
 							yield* Effect.tryPromise({
 								try: () => db.schema.dropTable(tableName).execute(),
 								catch: (cause) => new SqlError({ cause }),
 							});
-							yield* Effect.logInfo(`  ✓ Dropped: ${tableName}`);
+							yield* Effect.logDebug(`  ✓ Dropped: ${tableName}`);
 						} else {
-							yield* Effect.logInfo(`  ℹ Table ${tableName} already doesn't exist, skipping.`);
+							yield* Effect.logDebug(`  ℹ Table ${tableName} already doesn't exist, skipping.`);
 						}
 					})
 				);
-				yield* Effect.logInfo('');
+				yield* Effect.logDebug('');
 			}
 
 			// Sync current schema
@@ -97,14 +97,14 @@ export const syncDatabaseSchema = (
 					switch (tableDef.deprecated) {
 						case true: {
 							if (exists) {
-								yield* Effect.logInfo(`Table ${tableDef.name} is deprecated. Dropping...`);
+								yield* Effect.logDebug(`Table ${tableDef.name} is deprecated. Dropping...`);
 								yield* Effect.tryPromise({
 									try: () => db.schema.dropTable(tableDef.name).execute(),
 									catch: (cause) => new SqlError({ cause }),
 								});
-								yield* Effect.logInfo(`Table ${tableDef.name} dropped.`);
+								yield* Effect.logDebug(`Table ${tableDef.name} dropped.`);
 							} else {
-								yield* Effect.logInfo(
+								yield* Effect.logDebug(
 									`Deprecated table ${tableDef.name} does not exist. Skipping drop.`
 								);
 							}
@@ -136,7 +136,7 @@ export const syncDatabaseSchema = (
 				})
 			);
 
-			yield* Effect.logInfo('✅ Database schema synchronization complete.');
+			yield* Effect.logDebug('✅ Database schema synchronization complete.');
 		}).pipe(Effect.catchAllCause(handleCause))
 	);
 
@@ -181,7 +181,7 @@ export const rollbackMigration = (
 ) =>
 	Effect.runPromise(
 		Effect.gen(function* () {
-			yield* Effect.logInfo('Starting database schema rollback...');
+			yield* Effect.logDebug('Starting database schema rollback...');
 
 			const previousTableNames = new Set(previousSchema.map((table) => table.name));
 
@@ -191,22 +191,22 @@ export const rollbackMigration = (
 					if (!previousTableNames.has(tableDef.name)) {
 						const exists = yield* tableExists(db, tableDef.name);
 						if (exists) {
-							yield* Effect.logInfo(
+							yield* Effect.logDebug(
 								`Rolling back: Dropping table not present in previous schema: ${tableDef.name}...`
 							);
 							yield* Effect.tryPromise({
 								try: () => db.schema.dropTable(tableDef.name).execute(),
 								catch: (cause) => new SqlError({ cause }),
 							});
-							yield* Effect.logInfo(`✓ Dropped table: ${tableDef.name}`);
+							yield* Effect.logDebug(`✓ Dropped table: ${tableDef.name}`);
 						} else {
-							yield* Effect.logInfo(`Table ${tableDef.name} does not exist. Skipping drop.`);
+							yield* Effect.logDebug(`Table ${tableDef.name} does not exist. Skipping drop.`);
 						}
 					}
 				})
 			);
 
-			yield* Effect.logInfo('✅ Migration rollback completed!');
+			yield* Effect.logDebug('✅ Migration rollback completed!');
 		}).pipe(Effect.catchAllCause(handleCause))
 	);
 
