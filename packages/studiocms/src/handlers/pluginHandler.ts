@@ -1224,18 +1224,12 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 				},
 				{
 					id: 'studiocms:dashboard/augments/components',
-					content: await runEffect(
-						Effect.succeed(dashboardAugmentComponents).pipe(
-							Effect.map((components) =>
-								[
-									...components.map(remapAugmentComps),
-									`export const componentKeys = ${JSON.stringify(
-										components.flatMap((components) => Object.keys(components))
-									)};`,
-								].join('\n')
-							)
-						)
-					),
+					content: [
+						...dashboardAugmentComponents.map(remapAugmentComps),
+						`export const componentKeys = ${JSON.stringify(
+							dashboardAugmentComponents.flatMap((components) => Object.keys(components))
+						)};`,
+					].join('\n'),
 				},
 				{
 					id: 'studiocms:dashboard/augments/scripts',
