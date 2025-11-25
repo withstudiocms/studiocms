@@ -8,6 +8,7 @@ import type {
 	SCMSSiteMapFnOpts,
 	StudioCMSPlugin,
 } from './schemas/index.js';
+import type { PluginRenderer } from './types.js';
 
 type HookRun<T> = { hasHook: boolean; hookResults: T };
 export interface PluginHookResults {
@@ -21,6 +22,7 @@ export interface PluginHookResults {
 		sitemap: Partial<SCMSSiteMapFnOpts>;
 	}>;
 }
+
 /**
  * Utility class for testing StudioCMS plugins by simulating hook execution and collecting results.
  *
@@ -120,7 +122,7 @@ export class StudioCMSPluginTester {
 	 * This utility is primarily intended for testing purposes, allowing inspection of
 	 * configuration values set by a plugin's `studiocms:config:setup` hook.
 	 */
-	private async runStudioCMSConfigHook(): Promise<{
+	public async runStudioCMSConfigHook(): Promise<{
 		authService: Partial<SCMSAuthServiceFnOpts>;
 		dashboard: Partial<SCMSDashboardFnOpts>;
 		frontend: Partial<SCMSFrontendFnOpts>;
@@ -189,9 +191,12 @@ export class StudioCMSPluginTester {
 		if (typeof hooks['studiocms:rendering'] === 'function') {
 			await hooks['studiocms:rendering']({
 				logger,
-				setRendering: ({ pageTypes }) => {
+				setRendering: ({ pageTypes, augments }) => {
 					if (pageTypes !== undefined) {
 						rendering.pageTypes = pageTypes;
+					}
+					if (augments !== undefined) {
+						rendering.augments = augments;
 					}
 				},
 			});
@@ -225,7 +230,10 @@ export class StudioCMSPluginTester {
 	 *
 	 * @returns An object containing the plugin's identifier, name, minimum required StudioCMS version, and dependencies.
 	 */
-	public getPluginInfo() {
+	public getPluginInfo(): Pick<
+		StudioCMSPlugin,
+		'identifier' | 'name' | 'studiocmsMinimumVersion' | 'requires'
+	> {
 		return {
 			identifier: this.plugin.identifier,
 			name: this.plugin.name,
@@ -234,6 +242,11 @@ export class StudioCMSPluginTester {
 		};
 	}
 
+	/**
+	 * Checks if the plugin has any StudioCMS-specific hooks defined.
+	 *
+	 * @returns A boolean indicating whether the plugin defines any of the StudioCMS hooks.
+	 */
 	private hasStudioCMSHooks(): boolean {
 		if (!this.plugin.hooks) return false;
 		const hookKeys = [
@@ -266,6 +279,72 @@ export class StudioCMSPluginTester {
 			},
 		};
 	}
-}
 
-// TODO Create testers for Plugin Renderers as well as RendererAugments
+	/**
+	 * Asynchronously retrieves the rendering configuration results from the plugin's StudioCMS config hook.
+	 *
+	 * @returns A promise that resolves to the rendering configuration results defined by the plugin.
+	 */
+	private async getRenderingHookResults(): Promise<Partial<SCMSRenderingFnOpts>> {
+		const hookResults = await this.runStudioCMSConfigHook();
+		return hookResults.rendering;
+	}
+
+	/**
+	 * Asynchronously retrieves the page types defined by the plugin.
+	 *
+	 * @returns A promise that resolves to an array of page types defined in the plugin's rendering configuration.
+	 */
+	private async getPluginPageTypes(): Promise<NonNullable<SCMSRenderingFnOpts['pageTypes']>> {
+		const hookResults = await this.getRenderingHookResults();
+		return hookResults.pageTypes || [];
+	}
+
+	/**
+	 * Asynchronously retrieves the PluginRenderer for a given page type identifier.
+	 *
+	 * @param identifier - The unique identifier of the page type whose renderer is to be retrieved.
+	 * @returns A promise that resolves to the PluginRenderer if found, or null if not found or not defined.
+	 */
+	public async getPluginRenderer(identifier: string): Promise<PluginRenderer | null> {
+		// Get the page types
+		const pageTypes = await this.getPluginPageTypes();
+
+		// Find the page type with the matching identifier
+		const pageType = pageTypes.find((pt) => pt.identifier === identifier);
+
+		// If no page type or renderer component is found, return null
+		if (!pageType || !pageType.rendererComponent) return null;
+
+		try {
+			// Dynamically import the renderer module
+			const rendererModule = await import(pageType.rendererComponent);
+
+			// Return null if not found
+			if (!rendererModule.default) return null;
+
+			// Return the default export as PluginRenderer
+			return rendererModule.default as PluginRenderer;
+		} catch (error) {
+			throw new Error(
+				`Failed to import renderer for pageType "${identifier}" from "${pageType.rendererComponent}" in plugin "${this.plugin.identifier}": ${String(error)}`
+			);
+		}
+	}
+
+	/**
+	 * Asynchronously retrieves any renderer augments defined by the plugin.
+	 *
+	 * @returns A promise that resolves to the renderer augments if found, or null if not defined.
+	 */
+	public async getPluginRendererAugments(): Promise<SCMSRenderingFnOpts['augments'] | null> {
+		// Get the rendering configuration results
+		const results = await this.getRenderingHookResults();
+		const augments = results.augments;
+
+		// If no augments are defined, return null
+		if (augments == null) return null;
+
+		return augments;
+	}
+}
