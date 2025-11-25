@@ -12,9 +12,6 @@
 import type { AstroGlobal } from 'astro';
 import { defaultLang, serverUiTranslations } from './config.js';
 
-// TODO: Move this to being a Client only default
-// - Adapt server-side defaultLang with project configurable option
-//   from the StudioCMS configuration file.
 export { defaultLang };
 
 /**

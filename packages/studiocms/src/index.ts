@@ -311,6 +311,7 @@ export const studiocms = defineIntegration({
 								'./virtuals/auth/getLabelForPermissionLevel.js',
 							]),
 							'studiocms:auth/scripts/three': ambientScripts(['./virtuals/auth/scripts/three.js']),
+							'studiocms:i18n/config': `export default ${JSON.stringify({ ...options.locale.i18n })}`,
 							'studiocms:i18n/virtual': `
 								export const availableTranslationFileKeys = ${JSON.stringify(availableTranslationFileKeys)};
 								export const availableTranslations = ${JSON.stringify(availableTranslations)};
