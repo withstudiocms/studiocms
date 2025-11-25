@@ -1,5 +1,6 @@
 import { z } from 'astro/zod';
 import { RobotsTXTConfigSchema } from '../../integrations/robots/schema.js';
+import { availableTranslationsKeys } from '../../virtuals/i18n/v-files.js';
 import type { StudioCMSPlugin } from '../plugins/index.js';
 import { authConfigSchema } from './auth.js';
 import { dashboardConfigSchema } from './dashboard.js';
@@ -10,6 +11,24 @@ import { SDKSchema } from './sdk.js';
 // Exported Schemas for use in other internal packages
 //
 export { dashboardConfigSchema };
+
+const i18nLocaleOptions = z
+	.string()
+	.superRefine((val, ctx) => {
+		// Check if the provided locale is in the list of available translation keys
+		// Note: 'en' is always available as the default locale
+		if (val !== 'en' && !availableTranslationsKeys.includes(val)) {
+			ctx.addIssue({
+				code: z.ZodIssueCode.custom,
+				message: `Locale '${val}' is not supported. Available locales are: ${availableTranslationsKeys.join(
+					', '
+				)}`,
+			});
+			return z.NEVER;
+		}
+	})
+	.optional()
+	.default('en');
 
 export const StudioCMSOptionsSchema = z
 	.object({
@@ -71,6 +90,24 @@ export const StudioCMSOptionsSchema = z
 					month: 'short',
 					day: 'numeric',
 				}),
+
+				/**
+				 * I18n Specific Settings
+				 */
+				i18n: z
+					.object({
+						/**
+						 * Default Locale for the StudioCMS
+						 *
+						 * The default locale is used when no specific locale is set or detected.
+						 * It determines the language in which the StudioCMS interface is displayed by default.
+						 *
+						 * @default 'en'
+						 */
+						defaultLocale: i18nLocaleOptions,
+					})
+					.optional()
+					.default({}),
 			})
 			.optional()
 			.default({}),

@@ -138,6 +138,11 @@ declare module 'virtual:studiocms/components/Editors' {
 	export const editorKeys: string[];
 }
 
+declare module 'studiocms:i18n/config' {
+	export const config: import('./schemas/config/index').StudioCMSConfig['locale']['i18n'];
+	export default config;
+}
+
 declare module 'studiocms:i18n/virtual' {
 	export const availableTranslationFileKeys: typeof import('./virtuals/i18n/v-files').availableTranslationFileKeys;
 	export const availableTranslations: typeof import('./virtuals/i18n/v-files').availableTranslations;

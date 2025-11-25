@@ -134,7 +134,7 @@ export const availableTranslations: ServerUiTranslations = (() => {
  * Restored Available Translations which includes the default
  * english translation key for usage generating the language flags
  */
-const availableTranslationsKeys = ['en', ...Object.keys(availableTranslations)];
+export const availableTranslationsKeys = ['en', ...Object.keys(availableTranslations)];
 
 /**
  * An array of language flags derived from `availableTranslationsKeys`.

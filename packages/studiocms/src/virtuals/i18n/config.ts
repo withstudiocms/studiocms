@@ -6,15 +6,13 @@
  * `packages/studiocms/src/virtuals/i18n/translations/` on https://github.com/withstudiocms/studiocms
  */
 
+import config from 'studiocms:i18n/config';
 import { availableTranslations, currentFlags } from 'studiocms:i18n/virtual';
 
-// TODO: Move this to being a Client only default
-// - Adapt server-side defaultLang with project configurable option
-//   from the StudioCMS configuration file.
 /**
  * The default language for the StudioCMS app.
  */
-export const defaultLang: UiTranslationKey = 'en';
+export const defaultLang: UiTranslationKey = config.defaultLocale;
 
 /**
  * Dynamically imports the base English translations for server-side internationalization.
