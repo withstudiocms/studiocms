@@ -1,5 +1,5 @@
 import { pathToFileURL } from 'node:url';
-import { StudioCMSColorwayBg } from '@withstudiocms/cli-kit/colors';
+import { StudioCMSColorwayBg, StudioCMSColorwayInfoBg } from '@withstudiocms/cli-kit/colors';
 import { label } from '@withstudiocms/cli-kit/messages';
 import { Cli, Effect, runEffect } from '@withstudiocms/effect';
 import { intro, log, outro, select, tasks } from '@withstudiocms/effect/clack';
@@ -42,6 +42,27 @@ const exitIfEmpty = Effect.fn(function* (context: BaseContext, items: any[], ite
 		yield* context.exit(0);
 	}
 });
+
+/**
+ * Create a formatted migration status line.
+ *
+ * @param migration - The migration information object.
+ * @returns A formatted string representing the migration status.
+ */
+function createMigrationStatusLine({ name, executedAt }: MigrationInfo): string {
+	// Get prefix
+	const prefix = executedAt ? '✅' : '⏳';
+
+	// Clean name
+	const nameMatcher = name.match(/^\d{8}T\d{6}_(.+)$/);
+	const cleanName = nameMatcher ? nameMatcher[1] : name;
+
+	// Get status line
+	const status = executedAt ? `Applied ${executedAt.toDateString()}` : 'Pending';
+
+	// Return formatted line
+	return `- ${prefix} ${cleanName}: ${status}\n`;
+}
 
 enum MigrationMode {
 	LATEST = 'latest',
@@ -94,7 +115,7 @@ export const migratorCMD = Cli.Command.make(
 				),
 				debugLogger(`Context: ${JSON.stringify(context, null, 2)}`),
 				intro(
-					`${label('StudioCMS', StudioCMSColorwayBg, context.chalk.black)} Interactive CLI - initializing...`
+					`${label('StudioCMS Migrator', StudioCMSColorwayBg, context.chalk.black)} - initializing...`
 				),
 			]);
 
@@ -147,21 +168,11 @@ export const migratorCMD = Cli.Command.make(
 								message('No migrations have been applied yet.');
 							}
 
-							function createMigrationStatusLine({ name, executedAt }: MigrationInfo): string {
-								function cleanName(name: string): string {
-									// 20251025T040912_init => init
-									const match = name.match(/^\d{8}T\d{6}_(.+)$/);
-									return match ? match[1] : name;
-								}
-
-								return `- ${cleanName(name)}: ${
-									executedAt ? `Applied at ${executedAt.toISOString()}` : 'Pending'
-								}\n`;
-							}
-
 							const migrations = status.map(createMigrationStatusLine).join('\n');
 
-							await runEffect(log.info(`Migration Status:\n${migrations}`));
+							const responseMessage = `${label('Migration Status', StudioCMSColorwayInfoBg, context.chalk.black)}\n\n${migrations}`;
+
+							await runEffect(log.step(responseMessage));
 						},
 					});
 					break;
