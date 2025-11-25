@@ -70,6 +70,12 @@ enum MigrationMode {
 	STATUS = 'status',
 }
 
+const outroMessage = {
+	[MigrationMode.LATEST]: 'Database migrated to latest version!',
+	[MigrationMode.ROLLBACK]: 'Last migration rolled back successfully!',
+	[MigrationMode.STATUS]: 'Migration status fetched successfully!',
+};
+
 export type MigrationStepFn = (
 	context: BaseContext,
 	debug: boolean,
@@ -244,11 +250,6 @@ export const migratorCMD = Cli.Command.make(
 				tasks(context.tasks),
 			]);
 
-			const outroMessage = {
-				[MigrationMode.LATEST]: 'Database migrated to latest version!',
-				[MigrationMode.ROLLBACK]: 'Last migration rolled back successfully!',
-				[MigrationMode.STATUS]: 'Migration status fetched successfully!',
-			};
 			yield* outro(outroMessage[migrationMode]);
 
 			yield* Effect.all([debugLogger('Interactive CLI completed, exiting...'), context.exit(0)]);
