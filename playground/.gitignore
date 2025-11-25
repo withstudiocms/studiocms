@@ -24,3 +24,5 @@ pnpm-debug.log*
 .DS_Store
 
 .npmrc
+
+test.db

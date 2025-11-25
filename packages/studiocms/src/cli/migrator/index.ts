@@ -3,6 +3,7 @@ import { StudioCMSColorwayBg } from '@withstudiocms/cli-kit/colors';
 import { label } from '@withstudiocms/cli-kit/messages';
 import { Cli, Effect, runEffect } from '@withstudiocms/effect';
 import { intro, log, outro, select, tasks } from '@withstudiocms/effect/clack';
+import type { MigrationInfo } from '@withstudiocms/kysely/kysely';
 import { getMigratorLive } from '@withstudiocms/kysely/migrator';
 import { getDbDriver, parseDbDialect } from '../../db/index.js';
 import { genLogger } from '../../effect.js';
@@ -97,8 +98,6 @@ export const migratorCMD = Cli.Command.make(
 				),
 			]);
 
-			yield* SCMS_Intro(debug).pipe(cliContext);
-
 			const isRollback = rollback && !latest && !status;
 			const isLatest = !rollback && latest && !status;
 			const isStatus = !rollback && !latest && status;
@@ -114,7 +113,9 @@ export const migratorCMD = Cli.Command.make(
 						: null;
 
 			if (!migrationMode) {
-				yield* debugLogger('No mode CLI flags provided, prompting user for selection...');
+				yield* debugLogger('No mode CLI flags provided, Loading interactive...');
+				yield* SCMS_Intro(debug).pipe(cliContext);
+
 				const options = yield* select({
 					message: 'Select migration mode:',
 					options: [
@@ -136,7 +137,7 @@ export const migratorCMD = Cli.Command.make(
 			switch (migrationMode) {
 				case MigrationMode.STATUS: {
 					context.tasks.push({
-						title: 'Fetching migration status',
+						title: 'Fetched migration status',
 						task: async (message) => {
 							message('Getting migration status...');
 
@@ -146,24 +147,28 @@ export const migratorCMD = Cli.Command.make(
 								message('No migrations have been applied yet.');
 							}
 
-							const migrations = status
-								.map((migration) => {
-									const applied = migration.executedAt
-										? `Applied at ${migration.executedAt.toISOString()}`
-										: 'Pending';
-									return `- ${migration.name}: ${applied}`;
-								})
-								.join('\n');
+							function createMigrationStatusLine({ name, executedAt }: MigrationInfo): string {
+								function cleanName(name: string): string {
+									// 20251025T040912_init => init
+									const match = name.match(/^\d{8}T\d{6}_(.+)$/);
+									return match ? match[1] : name;
+								}
 
-							await runEffect(outro(`Migration Status:\n\n${migrations}`));
+								return `- ${cleanName(name)}: ${
+									executedAt ? `Applied at ${executedAt.toISOString()}` : 'Pending'
+								}\n`;
+							}
+
+							const migrations = status.map(createMigrationStatusLine).join('\n');
+
+							await runEffect(log.info(`Migration Status:\n${migrations}`));
 						},
 					});
-
 					break;
 				}
 				case MigrationMode.LATEST: {
 					context.tasks.push({
-						title: 'Migrating to latest version',
+						title: 'Migration to latest version',
 						task: async (message) => {
 							message('Applying latest migrations...');
 
@@ -171,26 +176,27 @@ export const migratorCMD = Cli.Command.make(
 
 							results?.forEach(async (it) => {
 								if (it.status === 'Success') {
-									message(`Migration "${it.migrationName}" was executed successfully`);
+									await runEffect(
+										log.success(`Migration "${it.migrationName}" was executed successfully`)
+									);
 								} else if (it.status === 'Error') {
-									message(`Failed to execute migration "${it.migrationName}"`);
+									await runEffect(log.error(`Failed to execute migration "${it.migrationName}"`));
 								}
 							});
 
 							if (error) {
 								const errorMessage = `Failed to migrate: ${String(error)}`;
-								message(errorMessage);
+								await runEffect(log.error(errorMessage));
 								return await runEffect(context.exit(1));
 							}
-
-							await runEffect(outro('Database migrated to latest version!'));
 						},
 					});
+
 					break;
 				}
 				case MigrationMode.ROLLBACK:
 					context.tasks.push({
-						title: 'Rolling back last migration',
+						title: 'Rolled back to last migration',
 						task: async (message) => {
 							message('Reverting last migration...');
 
@@ -198,19 +204,19 @@ export const migratorCMD = Cli.Command.make(
 
 							results?.forEach(async (it) => {
 								if (it.status === 'Success') {
-									message(`Migration "${it.migrationName}" was reverted successfully`);
+									await runEffect(
+										log.success(`Migration "${it.migrationName}" was reverted successfully`)
+									);
 								} else if (it.status === 'Error') {
-									message(`Failed to revert migration "${it.migrationName}"`);
+									await runEffect(log.error(`Failed to revert migration "${it.migrationName}"`));
 								}
 							});
 
 							if (error) {
 								const errorMessage = `Failed to rollback: ${String(error)}`;
-								message(errorMessage);
+								await runEffect(log.error(errorMessage));
 								return await runEffect(context.exit(1));
 							}
-
-							await runEffect(outro('Last migration rolled back successfully!'));
 						},
 					});
 					break;
@@ -226,6 +232,13 @@ export const migratorCMD = Cli.Command.make(
 				debugLogger('Running tasks...'),
 				tasks(context.tasks),
 			]);
+
+			const outroMessage = {
+				[MigrationMode.LATEST]: 'Database migrated to latest version!',
+				[MigrationMode.ROLLBACK]: 'Last migration rolled back successfully!',
+				[MigrationMode.STATUS]: 'Migration status fetched successfully!',
+			};
+			yield* outro(outroMessage[migrationMode]);
 
 			yield* Effect.all([debugLogger('Interactive CLI completed, exiting...'), context.exit(0)]);
 		})
