@@ -99,8 +99,13 @@ export const StudioCMSOptionsSchema = z
 						/**
 						 * Default Locale for the StudioCMS
 						 *
-						 * The default locale is used when no specific locale is set or detected.
-						 * It determines the language in which the StudioCMS interface is displayed by default.
+						 * This option sets the default language for the StudioCMS application.
+						 *
+						 * It must be one of the available translation keys or 'en' for English.
+						 *
+						 * @remarks
+						 * All translations are 2-letter language codes as per ISO 639-1 standard.
+						 * Existing available translations can be found in the `/src/virtuals/i18n/translations/` directory. or on [Crowdin](https://crowdin.com/project/studiocms).
 						 *
 						 * @default 'en'
 						 */
