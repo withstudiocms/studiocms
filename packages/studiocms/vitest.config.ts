@@ -51,6 +51,7 @@ const testIntegration: AstroIntegration = {
 						export default logger;
 					`,
 					'studiocms:version': `export default '0.0.0-test';`,
+					'studiocms:i18n/config': `export default ${JSON.stringify({ ...testConfig.locale.i18n })}`,
 					'studiocms:i18n': `export * from '${resolve('./src/virtuals/i18n/server.ts')}';`,
 					'studiocms:i18n/client': `export * from '${resolve('./src/virtuals/i18n/client.ts')}';`,
 					'studiocms:i18n/virtual': `
