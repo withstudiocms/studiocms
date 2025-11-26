@@ -3,6 +3,7 @@
     "..",
     "adam_fix-config-loader",
     "adam_migration-cli",
+    "adam_tweak-layouts",
     "changeset-release_main",
     "main"
   ]
