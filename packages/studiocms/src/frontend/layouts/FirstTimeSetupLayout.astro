@@ -1,20 +1,15 @@
 ---
 import '../styles/dashboard-base.css';
 import '../styles/dashboard-diff.css';
-import { defaultLang } from 'studiocms:i18n';
 import type { ComponentProps } from 'astro/types';
 import BaseLayout from './BaseLayout.astro';
 
 interface Props extends ComponentProps<typeof BaseLayout> {}
 
-const {
-	title = 'StudioCMS Setup',
-	description = 'StudioCMS Onboarding',
-	lang = defaultLang,
-} = Astro.props;
+const headProps = Astro.props;
 ---
 
-<BaseLayout {lang} {title} {description}>
+<BaseLayout {...headProps}>
   <main>
     <div class="container">
       <slot />
