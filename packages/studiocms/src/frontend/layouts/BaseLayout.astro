@@ -1,18 +1,22 @@
 ---
+import { dashboardConfig } from 'studiocms:config';
 import { defaultLang } from 'studiocms:i18n';
 import type { ComponentProps } from 'astro/types';
 import BaseBody from '../components/shared/BaseBody.astro';
 import BaseHead from '../components/shared/BaseHead.astro';
 
-export interface Props extends ComponentProps<typeof BaseHead> {
+export interface Props extends Omit<ComponentProps<typeof BaseHead>, 'generators'> {
 	lang?: string;
 }
 
 // Destructure props with default lang
 const { lang = defaultLang, ...headProps } = Astro.props;
+
+const hideGeneratorTags = dashboardConfig.security?.hideGeneratorTags ?? false;
+const generators = !hideGeneratorTags;
 ---
 <html {lang}>
-    <BaseHead {...headProps} />
+    <BaseHead {...headProps} {generators} />
     <BaseBody>
         <slot />
     </BaseBody>

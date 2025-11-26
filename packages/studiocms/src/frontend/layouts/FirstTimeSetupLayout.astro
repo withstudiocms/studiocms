@@ -1,9 +1,8 @@
 ---
-import type { ComponentProps } from 'astro/types';
 import '../styles/dashboard-base.css';
 import '../styles/dashboard-diff.css';
-import { dashboardConfig } from 'studiocms:config';
 import { defaultLang } from 'studiocms:i18n';
+import type { ComponentProps } from 'astro/types';
 import BaseLayout from './BaseLayout.astro';
 
 interface Props extends ComponentProps<typeof BaseLayout> {}
@@ -13,17 +12,9 @@ const {
 	description = 'StudioCMS Onboarding',
 	lang = defaultLang,
 } = Astro.props;
-
-// Extract hideGeneratorTags from dashboardConfig
-const {
-	security: { hideGeneratorTags },
-} = dashboardConfig;
-
-// invert hideGeneratorTags to get generators
-const generators = !hideGeneratorTags;
 ---
 
-<BaseLayout {lang} {title} {description} {generators}>
+<BaseLayout {lang} {title} {description}>
   <main>
     <div class="container">
       <slot />
