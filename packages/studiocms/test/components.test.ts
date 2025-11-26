@@ -8,9 +8,6 @@ import StudioCMSLogoSVG from '../src/frontend/components/auth/StudioCMSLogoSVG.a
 import ThreeCanvasLoader from '../src/frontend/components/auth/ThreeCanvasLoader.astro';
 import PageHeader from '../src/frontend/components/first-time-setup/PageHeader.astro';
 import Code from '../src/frontend/components/shared/Code.astro';
-import Favicons from '../src/frontend/components/shared/head/Favicons.astro';
-import Global from '../src/frontend/components/shared/head/Global.astro';
-import TitleTags from '../src/frontend/components/shared/head/TitleTags.astro';
 import SSRUser from '../src/frontend/components/shared/SSRUser.astro';
 import ThemeManager from '../src/frontend/components/shared/ThemeManager.astro';
 import { allureTester } from './fixtures/allureTester';
@@ -20,11 +17,6 @@ const localSuiteName = 'Components Container tests';
 
 describe(parentSuiteName, () => {
 	[
-		{
-			component: TitleTags,
-			name: 'TitleTags',
-			opts: { props: { title: 'Test Title', description: 'Test Description' } },
-		},
 		{
 			component: ThemeManager,
 			name: 'ThemeManager',
@@ -69,16 +61,6 @@ describe(parentSuiteName, () => {
 					id: 'test-user-3',
 				},
 			},
-		},
-		{
-			component: Global,
-			name: 'Global',
-			opts: {},
-		},
-		{
-			component: Favicons,
-			name: 'Favicons',
-			opts: {},
 		},
 		{
 			component: Code,

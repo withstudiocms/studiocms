@@ -1,0 +1,36 @@
+---
+import 'studiocms:ui/global-css';
+import { Generator } from 'studiocms:components';
+import { FAVICON_ASSETS, STUDIOCMS_THEME_COLOR } from '../../../consts.js';
+import ThemeManager from './ThemeManager.astro';
+
+export interface Props {
+	title: string;
+	description: string;
+	// TODO: Allow configuring generators from StudioCMS config
+	generators?: boolean;
+}
+
+const { title, description, generators = true } = Astro.props;
+---
+
+<head>
+  { /* Primary Meta Tags */ }
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>{title}</title>
+  <meta name="title" content={title} />
+  <meta name="description" content={description} />
+  <meta name="theme-color" content={STUDIOCMS_THEME_COLOR} />
+
+  { /* Generators (Optional) */ }
+  { generators && <Generator /> }
+
+  { /* Favicon Tags */ }
+  <link rel="icon" href={FAVICON_ASSETS.svg} type="image/svg+xml" />
+  <link rel="icon" href={FAVICON_ASSETS.png.light} type="image/png" media="(prefers-color-scheme: dark)" />
+  <link rel="icon" href={FAVICON_ASSETS.png.dark} type="image/png" media="(prefers-color-scheme: light)" />
+
+  { /* Theme Manager */ }
+  <ThemeManager />
+</head>

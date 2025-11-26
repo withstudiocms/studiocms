@@ -9,6 +9,7 @@ import type { AvailableIcons } from 'studiocms:ui/icons';
 import PageHeader from '../components/first-time-setup/PageHeader.astro';
 import { providerData, showOAuth } from '../components/shared/oAuthButtonProviders.js';
 import Layout from '../layouts/FirstTimeSetupLayout.astro';
+import { sharedProps } from './shared.js';
 
 // Define the current images for the providers
 // This is a mapping of provider labels to their respective icons.
@@ -45,7 +46,7 @@ const Providers = providerData
 	href: string;
 }[];
 ---
-<Layout title="Welcome to StudioCMS">
+<Layout {...sharedProps}>
 
     <PageHeader title="Welcome to StudioCMS" badge={{ label: 'Step 2' }} />
 

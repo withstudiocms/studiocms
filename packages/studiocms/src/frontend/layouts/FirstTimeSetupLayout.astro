@@ -1,53 +1,34 @@
 ---
-import 'studiocms:ui/global-css';
+import type { ComponentProps } from 'astro/types';
 import '../styles/dashboard-base.css';
 import '../styles/dashboard-diff.css';
-import { Toaster } from 'studiocms:ui/components/toaster';
-import Favicons from '../components/shared/head/Favicons.astro';
-import Global from '../components/shared/head/Global.astro';
-import TitleTags from '../components/shared/head/TitleTags.astro';
-import ThemeManager from '../components/shared/ThemeManager.astro';
+import { defaultLang } from 'studiocms:i18n';
+import BaseLayout from './BaseLayout.astro';
 
-type Props = {
-	title?: string;
-	description?: string;
-	lang?: string;
-};
+interface Props extends ComponentProps<typeof BaseLayout> {}
 
 const {
 	title = 'StudioCMS Setup',
 	description = 'StudioCMS Onboarding',
-	lang = 'en-us',
+	lang = defaultLang,
 } = Astro.props;
 ---
 
-<!DOCTYPE html>
-<html {lang}>
-  
-<head>
-  <Global />
- 	<Favicons />
-	<TitleTags {title} {description} />
-  <ThemeManager />
-</head>
-  <body>
-    <Toaster />
-    <main>
-      <div class="container">
-        <slot />
-      </div>
-    </main>
-    <style>
-      .container {
-        margin: 0 auto;
-        padding: 0 1rem;
-        padding-top: 2rem;
-
-        display: flex;
-        flex-direction: column;
-        height: 100vh;
-        width: 100%;
-      }
-    </style>
-  </body>
-</html>
+<BaseLayout {lang} {title} {description}>
+  <main>
+    <div class="container">
+      <slot />
+    </div>
+  </main>
+  <style>
+    .container {
+      margin: 0 auto;
+      padding: 0 1rem;
+      padding-top: 2rem;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      width: 100%;
+    }
+  </style>
+</BaseLayout>

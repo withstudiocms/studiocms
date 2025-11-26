@@ -1,42 +1,24 @@
 ---
-import 'studiocms:ui/global-css';
 import '../styles/auth-layout.css';
-import { Generator } from 'studiocms:components';
-import { Toaster } from 'studiocms:ui/components/toaster';
+import type { ComponentProps } from 'astro/types';
 import FallbackCanvas from '../components/auth/FallbackCanvas.astro';
 import OAuthButtonStack from '../components/auth/OAuthButtonStack.astro';
 import StaticAuthCheck from '../components/auth/StaticAuthCheck.astro';
 import ThreeCanvasLoader from '../components/auth/ThreeCanvasLoader.astro';
-import Favicons from '../components/shared/head/Favicons.astro';
-import Global from '../components/shared/head/Global.astro';
-import TitleTags from '../components/shared/head/TitleTags.astro';
-import ThemeManager from '../components/shared/ThemeManager.astro';
+import BaseLayout from './BaseLayout.astro';
 
 const { siteConfig: config, security } = Astro.locals.StudioCMS;
 
 const userData = security?.userSessionData || null;
 
-interface Props {
-	title: string;
-	description: string;
-	lang: string;
+interface Props extends ComponentProps<typeof BaseLayout> {
 	disableScreen?: boolean;
 	checkLogin?: boolean;
 }
 
 const { title, description, lang, disableScreen, checkLogin } = Astro.props;
 ---
-<!doctype html>
-<html {lang}>
-  <head>
-	<Global />
-    <Generator />
- 	<Favicons />
-	<TitleTags {title} {description} />
-	<ThemeManager />
-</head>
-  <body>
-	<Toaster />
+<BaseLayout {lang} {title} {description}>
 	<main>
 		<div id="canvas-container">
 			<FallbackCanvas {config} />
@@ -59,5 +41,4 @@ const { title, description, lang, disableScreen, checkLogin } = Astro.props;
 		<StaticAuthCheck {userData} />
 	)}
 	<ThreeCanvasLoader />
-  </body>
-</html>
+</BaseLayout>
