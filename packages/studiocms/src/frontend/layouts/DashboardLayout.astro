@@ -1,14 +1,17 @@
 ---
+import '../styles/dashboard-base.css';
+import '../styles/dashboard-diff.css';
 import type { UserSessionData } from 'studiocms:auth/lib/types';
+import { defaultLang } from 'studiocms:i18n';
 import type { SiteConfigCacheObject } from 'studiocms:sdk/types';
-import { Toaster } from 'studiocms:ui/components/toaster';
 import type { AvailablePermissionRanks } from '@withstudiocms/auth-kit/types';
+import type { ComponentProps } from 'astro/types';
 import Ambients from '../components/Ambients.astro';
-import BaseHead from '../components/dashboard/BaseHead.astro';
 import DoubleSidebar from '../components/dashboard/DoubleSidebar.astro';
 import LoginChecker from '../components/dashboard/LoginChecker.astro';
 import SidebarModals from '../components/dashboard/SidebarModals.astro';
 import SingleSidebar from '../components/dashboard/SingleSidebar.astro';
+import BaseLayout from './BaseLayout.astro';
 
 const makePageTitle = (
 	pageName: string,
@@ -22,21 +25,18 @@ const makePageTitle = (
 	return `${pageName} ${separatorString} ${config.title}`;
 };
 
-type Props = {
+interface Props extends ComponentProps<typeof BaseLayout> {
 	config: SiteConfigCacheObject;
-	title: string;
-	description?: string;
-	lang?: string;
 	sidebar?: false | 'single' | 'double';
 	requiredPermission?: AvailablePermissionRanks | 'none';
 	currentUser: UserSessionData | null;
-};
+}
 
 const {
 	config,
 	title: propTitle,
 	description: propDescription,
-	lang = 'en',
+	lang = defaultLang,
 	requiredPermission = 'unknown',
 	sidebar = 'single',
 	currentUser,
@@ -46,48 +46,48 @@ const title = makePageTitle(propTitle, config.data);
 const description = propDescription ?? config.data.description;
 ---
 
-<!DOCTYPE html>
-<html {lang}>
-  <BaseHead {title} {description} />
-  <body>
-    <Ambients />
-    <Toaster />
-    { requiredPermission !== 'none' && (
+<BaseLayout {lang} {title} {description}>
+  <Ambients />
+  <SidebarModals {lang} />
+  { 
+    requiredPermission !== 'none' && (
       <LoginChecker {requiredPermission} {currentUser} />
-    ) }
-    <SidebarModals {lang} />
-    { sidebar === 'single' && (
+    )
+  }
+  { 
+    sidebar === 'single' && (
       <SingleSidebar {currentUser} />
-    ) }
-    { sidebar === 'double' && (
+    )
+  }
+  { 
+    sidebar === 'double' && (
       <DoubleSidebar {currentUser} >
         <slot name="double-sidebar" />
       </DoubleSidebar>
-    ) }
-    <main>
-      <div class="container">
-
-        <div class="page-header">
-          <slot name="header" />
-        </div>
-
-        <div class="container-content">
-          <slot />
-        </div>
-
+    ) 
+  }
+  <main>
+    <div class="container">
+      <div class="page-header">
+        <slot name="header" />
       </div>
-    </main>
-    <style>
-      .page-header {
-        margin-bottom: 1.5rem;
-      }
-    </style>
-    <script>
-      import { PluginTranslations } from 'studiocms:i18n/plugins';
+      <div class="container-content">
+        <slot />
+      </div>
+    </div>
+  </main>
+  
+  <style>
+    .page-header {
+      margin-bottom: 1.5rem;
+    }
+  </style>
 
-      if (!customElements.get('p-translations')) {
-        customElements.define('p-translations', PluginTranslations);
-      }
-    </script>
-  </body>
-</html>
+  <script>
+    import { PluginTranslations } from 'studiocms:i18n/plugins';
+
+    if (!customElements.get('p-translations')) {
+      customElements.define('p-translations', PluginTranslations);
+    }
+  </script>
+</BaseLayout>

@@ -7,8 +7,9 @@ import codeSnippet2 from '../components/first-time-setup/snippets/opt2-astro.con
 import codeSnippet3 from '../components/first-time-setup/snippets/opt2-studiocms.config.diff?raw';
 import Code from '../components/shared/Code.astro';
 import Layout from '../layouts/FirstTimeSetupLayout.astro';
+import { sharedProps } from './shared.js';
 ---
-<Layout title="Welcome to StudioCMS">
+<Layout {...sharedProps}>
 
     <PageHeader title="Welcome to StudioCMS" badge={{ label: 'Done' }} />
 
