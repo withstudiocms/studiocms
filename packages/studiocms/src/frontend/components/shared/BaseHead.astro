@@ -7,11 +7,10 @@ import ThemeManager from './ThemeManager.astro';
 export interface Props {
 	title: string;
 	description: string;
-	// TODO: Allow configuring generators from StudioCMS config
-	generators?: boolean;
+	generators: boolean;
 }
 
-const { title, description, generators = true } = Astro.props;
+const { title, description, generators } = Astro.props;
 ---
 
 <head>
