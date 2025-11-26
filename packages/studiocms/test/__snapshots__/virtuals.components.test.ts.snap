@@ -1,6 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`studiocms Package Tests > Virtual Components Container tests - CustomImage component 1`] = `"<img src="https://seccdn.libravatar.org/static/img/mm/80.png" data-image-component="true" loading="lazy" alt="Test Image" decoding="async" fetchpriority="auto" width="80" height="80">"`;
+exports[`studiocms Package Tests > Virtual Components Container tests - CustomImage component 1`] = `"<img src="https://cdn.studiocms.dev/default_avatar.png" data-image-component="true" loading="lazy" alt="Test Image" decoding="async" fetchpriority="auto" width="80" height="80">"`;
 
 exports[`studiocms Package Tests > Virtual Components Container tests - FormattedDate component 1`] = `"<time datetime="2020-01-01T00:00:00.000Z">Wed, 01 Jan 2020 00:00:00 GMT</time>"`;
 

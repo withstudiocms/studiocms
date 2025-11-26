@@ -175,7 +175,7 @@ export const GhostUserDefaults = {
 	id: '_StudioCMS_Ghost_User_',
 	name: 'Ghost (deleted user)',
 	username: 'studiocms_ghost_user',
-	avatar: 'https://seccdn.libravatar.org/static/img/mm/80.png',
+	avatar: 'https://cdn.studiocms.dev/default_avatar.png',
 };
 
 /**
