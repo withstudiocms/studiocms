@@ -242,6 +242,26 @@ const DashboardConfigSchema = z.object({
 	settingsPage: SettingsPageSchema,
 });
 
+const DashboardAugmentSchema = z.object({
+	/**
+	 * Scripts to be added to the dashboard
+	 *
+	 * Scripts should be paths to the client side files that will be loaded in the dashboard
+	 *
+	 * These files should be able to imported as ambient modules
+	 */
+	scripts: z.array(z.string()).optional(),
+
+	/**
+	 * Astro Components to be added to the dashboard
+	 *
+	 * These components should be self-contained and not rely on any external state
+	 *
+	 * The key is the component identifier, and the value is the path to the component file
+	 */
+	components: z.record(z.string()).optional(),
+});
+
 const FrontendConfigSchema = z.object({
 	/**
 	 * Navigation Links for use with the `@studiocms/frontend` package to display links in the frontend
@@ -368,6 +388,7 @@ type StudioCMSSitemapHook = z.infer<typeof studiocms_SitemapHookSchema>;
 
 const studiocms_DashboardHookSchema = baseHookSchema.extend({
 	setDashboard: z.function(z.tuple([DashboardConfigSchema]), z.void()),
+	augmentDashboard: z.function(z.tuple([DashboardAugmentSchema]), z.void()),
 });
 
 type StudioCMSDashboardHook = z.infer<typeof studiocms_DashboardHookSchema>;
@@ -396,6 +417,7 @@ const studiocms_AuthHookSchema = baseHookSchema.extend({
 
 export type SCMSSiteMapFnOpts = z.infer<typeof SitemapConfigSchema>;
 export type SCMSDashboardFnOpts = z.infer<typeof DashboardConfigSchema>;
+export type SCMSDashboardAugmentFnOpts = z.infer<typeof DashboardAugmentSchema>;
 export type SCMSFrontendFnOpts = z.infer<typeof FrontendConfigSchema>;
 export type SCMSRenderingFnOpts = z.infer<typeof RenderingConfigSchema>;
 export type SCMSImageServiceFnOpts = z.infer<typeof ImageServiceConfigSchema>;
