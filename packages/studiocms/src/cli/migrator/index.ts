@@ -38,7 +38,7 @@ export const status = Cli.Options.boolean('status').pipe(
 // biome-ignore lint/suspicious/noExplicitAny: this is a valid use case for explicit any
 const exitIfEmpty = Effect.fn(function* (context: BaseContext, items: any[], itemType: string) {
 	if (items.length === 0) {
-		yield* Effect.all([log.error(`No ${itemType} selected, exiting...`), context.exit(0)]);
+		yield* Effect.all([log.error(`No ${itemType} selected, exiting...`), context.exit(1)]);
 	}
 });
 
@@ -218,13 +218,13 @@ export const migratorCMD = Cli.Command.make(
 
 							const migrationTotal = status.length;
 							const appliedMigrations = status.filter((m) => m.executedAt).length;
-							const migrationPercent = ((appliedMigrations / migrationTotal) * 100).toFixed(2);
+							const migrationPercent = (appliedMigrations / migrationTotal) * 100;
 
 							// If migrations are 100% applied, color green, if over 50% yellow, else red
 							const migrationTotalColor =
-								migrationPercent === '100.00'
+								migrationPercent === 100
 									? context.chalk.green
-									: migrationPercent > '50.00'
+									: migrationPercent > 50
 										? context.chalk.yellow
 										: context.chalk.red;
 

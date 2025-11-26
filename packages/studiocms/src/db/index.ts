@@ -27,44 +27,59 @@ export type DbDialectType = keyof typeof DbDialect | DbDialect;
  * Parse a string into a DbDialect enum value
  */
 export const parseDbDialect = Effect.fn((dialect: DbDialectType) =>
-	Effect.try({
-		try: () => {
-			switch (dialect) {
-				case 'libsql':
-					return DbDialect.libsql;
-				case 'postgres':
-					return DbDialect.postgres;
-				case 'mysql':
-					return DbDialect.mysql;
-				default:
-					throw new UnsupportedDialectError({ dialect });
-			}
-		},
-		catch: (cause) => new UnsupportedDialectError({ dialect, cause }),
-	})
+	Effect.sync(() => {
+		switch (dialect) {
+			case 'libsql':
+				return DbDialect.libsql;
+			case 'postgres':
+				return DbDialect.postgres;
+			case 'mysql':
+				return DbDialect.mysql;
+			default:
+				return dialect as never; // For exhaustiveness
+		}
+	}).pipe(
+		Effect.flatMap((d) =>
+			d === dialect ? Effect.fail(new UnsupportedDialectError({ dialect })) : Effect.succeed(d)
+		)
+	)
 );
+
+/**
+ * Error thrown when a database driver fails to import
+ */
+export class DriverImportError extends Data.TaggedError('DriverImportError')<{
+	dialect: DbDialect;
+	cause: unknown;
+}> {}
+
+/**
+ * Helper to attempt dynamic import of a database driver with error handling
+ */
+const tryPromise = (dialect: DbDialect) =>
+	Effect.fn(<T>(_try: () => Promise<T>) =>
+		Effect.tryPromise({
+			try: _try,
+			catch: (cause) => new DriverImportError({ dialect, cause }),
+		})
+	);
 
 /**
  * Get the database driver Effect for the specified dialect
  */
 export const getDbDriver = Effect.fn(function* (dialect: DbDialect) {
+	const _try = tryPromise(dialect);
 	switch (dialect) {
 		case DbDialect.libsql: {
-			const driverModule = yield* Effect.tryPromise(
-				() => import('@withstudiocms/kysely/drivers/libsql')
-			);
+			const driverModule = yield* _try(() => import('@withstudiocms/kysely/drivers/libsql'));
 			return yield* driverModule.libsqlDriver;
 		}
 		case DbDialect.postgres: {
-			const driverModule = yield* Effect.tryPromise(
-				() => import('@withstudiocms/kysely/drivers/postgres')
-			);
+			const driverModule = yield* _try(() => import('@withstudiocms/kysely/drivers/postgres'));
 			return yield* driverModule.postgresDriver;
 		}
 		case DbDialect.mysql: {
-			const driverModule = yield* Effect.tryPromise(
-				() => import('@withstudiocms/kysely/drivers/mysql')
-			);
+			const driverModule = yield* _try(() => import('@withstudiocms/kysely/drivers/mysql'));
 			return yield* driverModule.mysqlDriver;
 		}
 		default:
