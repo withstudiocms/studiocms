@@ -10,10 +10,11 @@ import { Select } from 'studiocms:ui/components/select';
 import LoginPreview from '../components/dashboard/configuration/LoginPreview.astro';
 import PageHeader from '../components/first-time-setup/PageHeader.astro';
 import Layout from '../layouts/FirstTimeSetupLayout.astro';
+import { sharedProps } from './shared.js';
 
 const ogSelectOptions = validImages.map(({ label, name: value }) => ({ label, value }));
 ---
-<Layout title="Welcome to StudioCMS">
+<Layout {...sharedProps}>
 
     <PageHeader title="Welcome to StudioCMS" badge={{ label: 'Step 1' }} />
 
