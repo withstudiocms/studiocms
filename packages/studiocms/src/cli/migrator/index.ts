@@ -3,7 +3,7 @@ import { StudioCMSColorwayBg, StudioCMSColorwayInfoBg } from '@withstudiocms/cli
 import { label } from '@withstudiocms/cli-kit/messages';
 import { Cli, Effect, runEffect } from '@withstudiocms/effect';
 import { intro, log, outro, select, tasks } from '@withstudiocms/effect/clack';
-import type { MigrationInfo } from '@withstudiocms/kysely/kysely';
+import type { MigrationInfo, MigrationResult } from '@withstudiocms/kysely/kysely';
 import { getMigratorLive } from '@withstudiocms/kysely/migrator';
 import { getDbDriver, parseDbDialect } from '../../db/index.js';
 import { genLogger } from '../../effect.js';
@@ -67,6 +67,55 @@ const getRootUrl = (context: BaseContext) => Effect.sync(() => pathToFileURL(con
 
 const extractDialect = (config: StudioCMSConfig) => Effect.sync(() => config.db.dialect);
 
+/**
+ * Handle and log migration or rollback results.
+ *
+ * @param results - The array of MigrationResult objects.
+ * @param success - A boolean indicating if the operation was a migration (true) or rollback (false).
+ */
+const handleResults = async (results: MigrationResult[] | undefined, success: boolean) => {
+	const logMessages = success
+		? {
+				success: (name: string) => `Migration "${name}" was executed successfully`,
+				error: (name: string) => `Failed to execute migration "${name}"`,
+			}
+		: {
+				success: (name: string) => `Migration "${name}" was reverted successfully`,
+				error: (name: string) => `Failed to revert migration "${name}"`,
+			};
+
+	if (results) {
+		for (const it of results) {
+			if (it.status === 'Success') {
+				await runEffect(log.success(logMessages.success(it.migrationName)));
+			} else if (it.status === 'Error') {
+				await runEffect(log.error(logMessages.error(it.migrationName)));
+			}
+		}
+	}
+};
+
+/**
+ * Handle errors during migration or rollback.
+ *
+ * @param error - The error encountered during the operation.
+ * @param success - A boolean indicating if the operation was a migration (true) or rollback (false).
+ * @param exitFn - The Effect to execute for exiting the process.
+ */
+const handleError = async (
+	error: unknown,
+	success: boolean,
+	exitFn: Effect.Effect<undefined, never, never>
+) => {
+	if (error) {
+		const message = success
+			? `An error occurred during migration: ${String(error)}`
+			: `An error occurred during rollback: ${String(error)}`;
+		await runEffect(log.error(message));
+		return await runEffect(exitFn);
+	}
+};
+
 enum MigrationMode {
 	LATEST = 'latest',
 	ROLLBACK = 'rollback',
@@ -78,12 +127,6 @@ const outroMessage = {
 	[MigrationMode.ROLLBACK]: 'Last migration rolled back successfully!',
 	[MigrationMode.STATUS]: 'Migration status fetched successfully!',
 };
-
-export type MigrationStepFn = (
-	context: BaseContext,
-	debug: boolean,
-	rollback: boolean
-) => Effect.Effect<void, Error>;
 
 export const migratorCMD = Cli.Command.make(
 	'migrate',
@@ -147,7 +190,7 @@ export const migratorCMD = Cli.Command.make(
 						{ label: 'Rollback last migration', value: MigrationMode.ROLLBACK },
 						{ label: 'View migration status', value: MigrationMode.STATUS },
 					],
-					initialValue: rollback ? MigrationMode.ROLLBACK : MigrationMode.LATEST,
+					initialValue: MigrationMode.LATEST,
 				});
 
 				// Cancel or add steps based on options
@@ -173,7 +216,28 @@ export const migratorCMD = Cli.Command.make(
 
 							const migrations = status.map(createMigrationStatusLine).join('\n');
 
-							const responseMessage = `${label('Migration Status', StudioCMSColorwayInfoBg, context.chalk.black)}\n\n${migrations}`;
+							const migrationTotal = status.length;
+							const appliedMigrations = status.filter((m) => m.executedAt).length;
+							const migrationPercent = ((appliedMigrations / migrationTotal) * 100).toFixed(2);
+
+							// If migrations are 100% applied, color green, if over 50% yellow, else red
+							const migrationTotalColor =
+								migrationPercent === '100.00'
+									? context.chalk.green
+									: migrationPercent > '50.00'
+										? context.chalk.yellow
+										: context.chalk.red;
+
+							const labelParts = [
+								label('Migration Status', StudioCMSColorwayInfoBg, context.chalk.black),
+								label(
+									`(${context.chalk.green(appliedMigrations.toString())}/${migrationTotalColor(migrationTotal.toString())}) Applied`,
+									context.chalk.bold,
+									context.chalk.black
+								),
+							];
+
+							const responseMessage = `${labelParts.join(' ')}\n\n${migrations}`;
 
 							await runEffect(log.step(responseMessage));
 						},
@@ -188,21 +252,8 @@ export const migratorCMD = Cli.Command.make(
 
 							const { error, results } = await runEffect(dbMigrator.toLatest);
 
-							results?.forEach(async (it) => {
-								if (it.status === 'Success') {
-									await runEffect(
-										log.success(`Migration "${it.migrationName}" was executed successfully`)
-									);
-								} else if (it.status === 'Error') {
-									await runEffect(log.error(`Failed to execute migration "${it.migrationName}"`));
-								}
-							});
-
-							if (error) {
-								const errorMessage = `Failed to migrate: ${String(error)}`;
-								await runEffect(log.error(errorMessage));
-								return await runEffect(context.exit(1));
-							}
+							await handleResults(results, true);
+							await handleError(error, true, context.exit(1));
 						},
 					});
 
@@ -216,21 +267,8 @@ export const migratorCMD = Cli.Command.make(
 
 							const { error, results } = await runEffect(dbMigrator.down);
 
-							results?.forEach(async (it) => {
-								if (it.status === 'Success') {
-									await runEffect(
-										log.success(`Migration "${it.migrationName}" was reverted successfully`)
-									);
-								} else if (it.status === 'Error') {
-									await runEffect(log.error(`Failed to revert migration "${it.migrationName}"`));
-								}
-							});
-
-							if (error) {
-								const errorMessage = `Failed to rollback: ${String(error)}`;
-								await runEffect(log.error(errorMessage));
-								return await runEffect(context.exit(1));
-							}
+							await handleResults(results, false);
+							await handleError(error, false, context.exit(1));
 						},
 					});
 					break;

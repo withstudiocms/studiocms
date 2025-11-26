@@ -1,5 +1,5 @@
 import { getDBClientLive, type StudioCMSDatabaseSchema } from '@withstudiocms/kysely';
-import { Effect } from 'effect';
+import { Data, Effect } from 'effect';
 
 /**
  * Supported Database Dialects
@@ -11,6 +11,14 @@ export enum DbDialect {
 }
 
 /**
+ * Error thrown when an unsupported database dialect is encountered
+ */
+export class UnsupportedDialectError extends Data.TaggedError('UnsupportedDialectError')<{
+	dialect: DbDialectType;
+	cause?: unknown;
+}> {}
+
+/**
  * Type representing the database dialect, either as a key or value
  */
 export type DbDialectType = keyof typeof DbDialect | DbDialect;
@@ -19,17 +27,20 @@ export type DbDialectType = keyof typeof DbDialect | DbDialect;
  * Parse a string into a DbDialect enum value
  */
 export const parseDbDialect = Effect.fn((dialect: DbDialectType) =>
-	Effect.try(() => {
-		switch (dialect) {
-			case 'libsql':
-				return DbDialect.libsql;
-			case 'postgres':
-				return DbDialect.postgres;
-			case 'mysql':
-				return DbDialect.mysql;
-			default:
-				throw new Error(`Unknown database dialect: ${dialect}`);
-		}
+	Effect.try({
+		try: () => {
+			switch (dialect) {
+				case 'libsql':
+					return DbDialect.libsql;
+				case 'postgres':
+					return DbDialect.postgres;
+				case 'mysql':
+					return DbDialect.mysql;
+				default:
+					throw new UnsupportedDialectError({ dialect });
+			}
+		},
+		catch: (cause) => new UnsupportedDialectError({ dialect, cause }),
 	})
 );
 
@@ -57,7 +68,7 @@ export const getDbDriver = Effect.fn(function* (dialect: DbDialect) {
 			return yield* driverModule.mysqlDriver;
 		}
 		default:
-			throw new Error(`Unsupported database dialect: ${dialect}`);
+			return yield* Effect.fail(new UnsupportedDialectError({ dialect }));
 	}
 });
 
