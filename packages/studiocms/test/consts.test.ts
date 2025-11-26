@@ -176,7 +176,7 @@ describe(parentSuiteName, () => {
 		{
 			name: 'GhostUserDefaults.avatar',
 			actual: GhostUserDefaults.avatar,
-			expected: 'https://seccdn.libravatar.org/static/img/mm/80.png',
+			expected: 'https://cdn.studiocms.dev/default_avatar.png',
 		},
 		{
 			name: 'NotificationSettingsDefaults.emailVerification',

@@ -15,7 +15,7 @@ describe(parentSuiteName, () => {
 			component: CustomImage,
 			name: 'CustomImage',
 			opts: {
-				props: { src: 'https://seccdn.libravatar.org/static/img/mm/80.png', alt: 'Test Image' },
+				props: { src: 'https://cdn.studiocms.dev/default_avatar.png', alt: 'Test Image' },
 			},
 		},
 		{

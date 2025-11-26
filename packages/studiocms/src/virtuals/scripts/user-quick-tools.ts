@@ -256,6 +256,7 @@ export class UserQuickTools extends HTMLElement {
 	protected MENU_READY_DELAY = 350; // milliseconds (after animation completes)
 
 	// Static menu items configuration
+	// biome-ignore lint/correctness/noUnusedPrivateClassMembers: Used in methods
 	private static readonly MENU_ITEMS: Omit<MenuItem, 'href'>[] = [
 		{
 			name: 'Logout',
@@ -282,6 +283,10 @@ export class UserQuickTools extends HTMLElement {
 			cssClass: 'edit',
 		},
 	];
+
+	private get menuItems() {
+		return UserQuickTools.MENU_ITEMS;
+	}
 
 	constructor() {
 		super();
@@ -452,7 +457,7 @@ export class UserQuickTools extends HTMLElement {
 			Edit: routes.contentManagement,
 		};
 
-		UserQuickTools.MENU_ITEMS.forEach((item) => {
+		this.menuItems().forEach((item) => {
 			if (verifyUserPermissionLevel(permissionLevel, item.permission)) {
 				const menuElement = this.createMenuElement({
 					...item,
