@@ -63,7 +63,7 @@ function createMigrationStatusLine({ name, executedAt }: MigrationInfo): string 
 	return `- ${prefix} ${cleanName}: ${status}\n`;
 }
 
-const getRootUrl = (context: BaseContext) => Effect.sync(() => pathToFileURL(context.cwd));
+const getRootUrl = (context: BaseContext) => Effect.sync(() => pathToFileURL(`${context.cwd}/`));
 
 const extractDialect = (config: StudioCMSConfig) => Effect.sync(() => config.db.dialect);
 

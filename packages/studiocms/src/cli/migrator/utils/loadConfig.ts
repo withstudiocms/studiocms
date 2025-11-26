@@ -10,8 +10,10 @@ const loadConfigFile = Effect.fn((root: URL) =>
 	Effect.tryPromise(() => _loadConfigFile<StudioCMSOptions>(root, configPaths, 'migrator'))
 );
 
+const defaultConfig = StudioCMSOptionsSchema.parse({});
+
 const parseAndMerge = Effect.fn((config: StudioCMSOptions) =>
-	Effect.try(() => _parseAndMerge(StudioCMSOptionsSchema, undefined, config))
+	Effect.try(() => _parseAndMerge(StudioCMSOptionsSchema, defaultConfig, config))
 );
 
 export const loadConfig = (root: URL) => loadConfigFile(root).pipe(Effect.flatMap(parseAndMerge));
