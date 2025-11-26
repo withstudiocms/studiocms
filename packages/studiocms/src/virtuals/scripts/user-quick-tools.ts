@@ -457,7 +457,7 @@ export class UserQuickTools extends HTMLElement {
 			Edit: routes.contentManagement,
 		};
 
-		this.menuItems().forEach((item) => {
+		this.menuItems.forEach((item) => {
 			if (verifyUserPermissionLevel(permissionLevel, item.permission)) {
 				const menuElement = this.createMenuElement({
 					...item,
