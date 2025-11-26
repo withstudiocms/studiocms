@@ -36,11 +36,12 @@ export const parseDbDialect = Effect.fn((dialect: DbDialectType) =>
 			case 'mysql':
 				return DbDialect.mysql;
 			default:
-				return dialect as never; // For exhaustiveness
+				// Return a sentinel that will fail the check below
+				return null;
 		}
 	}).pipe(
 		Effect.flatMap((d) =>
-			d === dialect ? Effect.fail(new UnsupportedDialectError({ dialect })) : Effect.succeed(d)
+			d === null ? Effect.fail(new UnsupportedDialectError({ dialect })) : Effect.succeed(d)
 		)
 	)
 );

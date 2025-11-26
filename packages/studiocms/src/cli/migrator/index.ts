@@ -211,7 +211,8 @@ export const migratorCMD = Cli.Command.make(
 							const status = await runEffect(dbMigrator.status);
 
 							if (status.length === 0) {
-								message('No migrations have been applied yet.');
+								await runEffect(log.info('No migrations found.'));
+								return;
 							}
 
 							const migrations = status.map(createMigrationStatusLine).join('\n');
