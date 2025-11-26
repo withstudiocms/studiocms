@@ -3,6 +3,7 @@ import type { UserSessionData } from 'studiocms:auth/lib/types';
 import type { SiteConfigCacheObject } from 'studiocms:sdk/types';
 import { Toaster } from 'studiocms:ui/components/toaster';
 import type { AvailablePermissionRanks } from '@withstudiocms/auth-kit/types';
+import Ambients from '../components/Ambients.astro';
 import BaseHead from '../components/dashboard/BaseHead.astro';
 import DoubleSidebar from '../components/dashboard/DoubleSidebar.astro';
 import LoginChecker from '../components/dashboard/LoginChecker.astro';
@@ -20,8 +21,6 @@ const makePageTitle = (
 
 	return `${pageName} ${separatorString} ${config.title}`;
 };
-
-const latestVersion = Astro.locals.StudioCMS.latestVersion;
 
 type Props = {
 	config: SiteConfigCacheObject;
@@ -51,6 +50,7 @@ const description = propDescription ?? config.data.description;
 <html {lang}>
   <BaseHead {title} {description} />
   <body>
+    <Ambients />
     <Toaster />
     { requiredPermission !== 'none' && (
       <LoginChecker {requiredPermission} {currentUser} />

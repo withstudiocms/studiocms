@@ -82,6 +82,7 @@ describe(parentSuiteName, () => {
 			expect(results.studiocmsConfig.hookResults).toEqual({
 				authService: {},
 				dashboard: {},
+				dashboardAugments: {},
 				frontend: {},
 				imageService: {},
 				rendering: {},
@@ -127,6 +128,7 @@ describe(parentSuiteName, () => {
 
 		const dashboardConfigHook = vi.fn(async (ctx) => {
 			ctx.setDashboard({ dashboardGridItems: ['item1'], dashboardPages: ['page1'] });
+			ctx.augmentDashboard({ components: { comp1: 'comp1' }, scripts: ['script1'] });
 		});
 
 		const frontendConfigHook = vi.fn(async (ctx) => {
@@ -162,6 +164,7 @@ describe(parentSuiteName, () => {
 			expect(results.studiocmsConfig.hookResults).toEqual({
 				authService: { oAuthProvider: 'github' },
 				dashboard: { dashboardGridItems: ['item1'], dashboardPages: ['page1'] },
+				dashboardAugments: { components: { comp1: 'comp1' }, scripts: ['script1'] },
 				frontend: { frontendNavigationLinks: ['link1'] },
 				imageService: { imageService: 'imgService' },
 				rendering: { pageTypes: ['type1'] },

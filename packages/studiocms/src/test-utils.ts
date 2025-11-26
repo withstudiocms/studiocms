@@ -1,6 +1,7 @@
 import type { AstroIntegration, AstroIntegrationLogger } from 'astro';
 import type {
 	SCMSAuthServiceFnOpts,
+	SCMSDashboardAugmentFnOpts,
 	SCMSDashboardFnOpts,
 	SCMSFrontendFnOpts,
 	SCMSImageServiceFnOpts,
@@ -16,6 +17,7 @@ export interface PluginHookResults {
 	studiocmsConfig: HookRun<{
 		authService: Partial<SCMSAuthServiceFnOpts>;
 		dashboard: Partial<SCMSDashboardFnOpts>;
+		dashboardAugments: Partial<SCMSDashboardAugmentFnOpts>;
 		frontend: Partial<SCMSFrontendFnOpts>;
 		imageService: Partial<SCMSImageServiceFnOpts>;
 		rendering: Partial<SCMSRenderingFnOpts>;
@@ -125,6 +127,7 @@ export class StudioCMSPluginTester {
 	public async runStudioCMSConfigHook(): Promise<{
 		authService: Partial<SCMSAuthServiceFnOpts>;
 		dashboard: Partial<SCMSDashboardFnOpts>;
+		dashboardAugments: Partial<SCMSDashboardAugmentFnOpts>;
 		frontend: Partial<SCMSFrontendFnOpts>;
 		imageService: Partial<SCMSImageServiceFnOpts>;
 		rendering: Partial<SCMSRenderingFnOpts>;
@@ -132,6 +135,7 @@ export class StudioCMSPluginTester {
 	}> {
 		const authService: Partial<SCMSAuthServiceFnOpts> = {};
 		const dashboard: Partial<SCMSDashboardFnOpts> = {};
+		const dashboardAugments: Partial<SCMSDashboardAugmentFnOpts> = {};
 		const frontend: Partial<SCMSFrontendFnOpts> = {};
 		const imageService: Partial<SCMSImageServiceFnOpts> = {};
 		const rendering: Partial<SCMSRenderingFnOpts> = {};
@@ -161,6 +165,14 @@ export class StudioCMSPluginTester {
 					}
 					if (dashboardPages !== undefined) {
 						dashboard.dashboardPages = dashboardPages;
+					}
+				},
+				augmentDashboard: ({ components, scripts }) => {
+					if (components !== undefined) {
+						dashboardAugments.components = components;
+					}
+					if (scripts !== undefined) {
+						dashboardAugments.scripts = scripts;
 					}
 				},
 			});
@@ -218,6 +230,7 @@ export class StudioCMSPluginTester {
 		return {
 			authService,
 			dashboard,
+			dashboardAugments,
 			frontend,
 			imageService,
 			rendering,
