@@ -21,8 +21,6 @@ const notifyAdmin = Effect.fn(function* (type: AdminNotification, message: strin
 	yield* notifier.sendAdminNotification(type, message);
 });
 
-// TODO: Fix this
-
 /**
  * Configuration object for the authentication kit, providing session and user management tools.
  *
@@ -52,7 +50,8 @@ const authKitConfig = AuthKitOptions.Live({
 		getCurrentPermissions: async (userId) => runEffect(sdk.AUTH.permission.currentStatus(userId)),
 		getUserById: async (id) => runEffect(sdk.GET.users.byId(id)),
 		getUserByEmail: async (email) => runEffect(sdk.GET.users.byEmail(email)),
-		updateLocalUser: async (userId, userData) => runEffect(sdk.AUTH.user.update({ userId, userData })),
+		updateLocalUser: async (userId, userData) =>
+			runEffect(sdk.AUTH.user.update({ userId, userData })),
 		notifier: {
 			admin: (type, message) => runEffect(notifyAdmin(type, message)),
 		},
