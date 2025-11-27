@@ -37,6 +37,20 @@ export const dashboardConfigSchema = z
 		 * @default true
 		 */
 		versionCheck: z.boolean().optional().default(true),
+		/**
+		 * OPTIONAL - This allows the user to configure security settings for the dashboard
+		 */
+		security: z
+			.object({
+				/**
+				 * OPTIONAL - This allows the user to hide generator tags in the HTML output of the dashboard
+				 *
+				 * @default false
+				 */
+				hideGeneratorTags: z.boolean().optional().default(false),
+			})
+			.optional()
+			.default({}),
 	})
 	.optional()
 	.default({});
