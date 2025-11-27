@@ -76,7 +76,7 @@ export class NpmRegistryResponseSchema extends Schema.Class<NpmRegistryResponseS
 /**
  * Helper to process and validate the HTTP response from the NPM registry.
  */
-const parseNpmRegistryResponse = Platform.HttpClientResponse.schemaBodyJson(
+export const parseNpmRegistryResponse = Platform.HttpClientResponse.schemaBodyJson(
 	NpmRegistryResponseSchema,
 	{
 		exact: false,
@@ -87,12 +87,12 @@ const parseNpmRegistryResponse = Platform.HttpClientResponse.schemaBodyJson(
 /**
  * Cache key for NPM package data.
  */
-const cacheKey = cacheKeyGetters.npmPackage;
+export const cacheKey = cacheKeyGetters.npmPackage;
 
 /**
  * Cache options for NPM package data.
  */
-const cacheOpts = { tags: cacheTags.npmPackage };
+export const cacheOpts = { tags: cacheTags.npmPackage };
 
 /**
  * An Effect service for retrieving the version of an NPM package from the NPM registry.

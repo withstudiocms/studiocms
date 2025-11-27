@@ -434,13 +434,14 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 		}
 
 		function getPlugins() {
-			// Check for `@astrojs/web-vitals` Integration
-			const wvPlugin = checkForWebVitals(params, { name, verbose, version: pkgVersion });
+			// TODO: Web-vitals plugin will require reworking later as it was built for AstroDB and not Kysely
+			// Check for `@studiocms/web-vitals` Integration
+			// const wvPlugin = checkForWebVitals(params, { name, verbose, version: pkgVersion });
 
 			// Initialize and Add the default StudioCMS Plugin to the Safe Plugin List
 			const pluginsToProcess: StudioCMSPlugin[] = [defaultPlugin];
 
-			if (wvPlugin) pluginsToProcess.push(wvPlugin);
+			// if (wvPlugin) pluginsToProcess.push(wvPlugin);
 
 			if (plugins) pluginsToProcess.push(...plugins);
 

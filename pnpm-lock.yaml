@@ -941,6 +941,9 @@ importers:
       '@withstudiocms/kysely':
         specifier: workspace:*
         version: link:../@withstudiocms/kysely
+      '@withstudiocms/sdk':
+        specifier: workspace:*
+        version: link:../@withstudiocms/sdk
       '@withstudiocms/template-lang':
         specifier: workspace:*
         version: link:../@withstudiocms/template-lang

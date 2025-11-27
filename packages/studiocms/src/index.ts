@@ -114,10 +114,10 @@ export const studiocms = defineIntegration({
 		return {
 			name,
 			hooks: {
-				// DB Setup: Setup the Database Connection for AstroDB and StudioCMS
-				'astro:db:setup': ({ extendDb }) => {
-					extendDb({ configEntrypoint: resolve('./db/config.js') });
-				},
+				// // DB Setup: Setup the Database Connection for AstroDB and StudioCMS
+				// 'astro:db:setup': ({ extendDb }) => {
+				// 	extendDb({ configEntrypoint: resolve('./db/config.js') });
+				// },
 				'astro:config:setup': async (params) => {
 					// Destructure the params
 					const { logger, updateConfig, createCodegenDir, command } = params;

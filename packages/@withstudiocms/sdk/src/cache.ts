@@ -28,7 +28,7 @@ export class CacheMissError {
 	readonly _tag = 'CacheMissError';
 }
 
-const returnNonNull = <A>(value: A | null): Effect.Effect<A, CacheMissError> =>
+export const returnNonNull = <A>(value: A | null): Effect.Effect<A, CacheMissError> =>
 	value !== null ? Effect.succeed(value) : Effect.fail(new CacheMissError());
 
 /**

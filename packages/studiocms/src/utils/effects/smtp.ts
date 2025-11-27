@@ -16,6 +16,8 @@ import { Effect, genLogger, Layer, pipeLogger } from '../../effect.js';
 
 export type { Mail, SMTPTransport };
 
+// TODO: Fix this
+
 /**
  * Converts a null value to undefined.
  *

@@ -13,7 +13,7 @@ export class GeneratorError extends Data.TaggedError('GeneratorError')<{ cause: 
  * @param _try - A function that performs the generator operation.
  * @returns An Effect that either yields the result of the operation or fails with a GeneratorError.
  */
-const useGeneratorError = <A>(_try: () => A) =>
+export const useGeneratorError = <A>(_try: () => A) =>
 	Effect.try({
 		try: _try,
 		catch: (error) => new GeneratorError({ cause: error }),

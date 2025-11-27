@@ -23,7 +23,6 @@
     "access": "public",
     "provenance": true
   },
-  "sideEffects": false,
   "files": [
     "dist"
   ],
@@ -44,7 +43,8 @@
     "./types": {
       "types": "./dist/types.d.ts",
       "default": "./dist/types.js"
-    }
+    },
+    "./*": "./dist/*"
   },
   "type": "module",
   "dependencies": {

@@ -55,7 +55,7 @@ export class VerifyEmail extends Effect.Service<VerifyEmail>()(
 			 */
 			const getSettings = () =>
 				genLogger('studiocms/virtuals/auth/verify-email/VerifyEmail.getSettings')(function* () {
-					const settings = yield* sdk.GET.databaseTable.notificationSettings();
+					const { data: settings } = yield* sdk.notificationSettings.site.get();
 
 					if (!settings) {
 						return {

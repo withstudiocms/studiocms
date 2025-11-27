@@ -21,6 +21,8 @@ const notifyAdmin = Effect.fn(function* (type: AdminNotification, message: strin
 	yield* notifier.sendAdminNotification(type, message);
 });
 
+// TODO: Fix this
+
 /**
  * Configuration object for the authentication kit, providing session and user management tools.
  *

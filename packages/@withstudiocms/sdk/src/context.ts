@@ -23,7 +23,7 @@ export class DBClientLive extends Context.Tag('@withstudiocms/sdk/context/DBClie
 /**
  * Interface representing the default SDK options.
  */
-interface SDKDefaultOpts {
+export interface SDKDefaultOpts {
 	GhostUserDefaults: {
 		id: string;
 		name: string;

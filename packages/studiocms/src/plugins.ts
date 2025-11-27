@@ -2,7 +2,7 @@
 /// <reference types="./virtual.d.ts" preserve="true" />
 
 import type { APIContext } from 'astro';
-import type { PageDataCacheObject } from './virtuals/sdk/types/index.js';
+import type { CombinedPageData } from './virtuals/sdk/types.js';
 
 /* v8 ignore start */
 // These are re-exported from ./schemas/index.ts
@@ -23,7 +23,7 @@ export * from './utils/lang-helper.js';
 type EndpointSelector = 'onCreate' | 'onEdit' | 'onDelete';
 
 interface StudioCMSAPIContextBase {
-	pageData: PageDataCacheObject;
+	pageData: CombinedPageData;
 	AstroCtx: APIContext;
 }
 

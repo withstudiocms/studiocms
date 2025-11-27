@@ -1,8 +1,9 @@
-import db from '@astrojs/db';
 import node from '@astrojs/node';
-import devApps from '@studiocms/devapps';
 import { defineConfig } from 'astro/config';
 import studioCMS from 'studiocms';
+
+// import db from '@astrojs/db';
+// import devApps from '@studiocms/devapps';
 
 const site = process.env.DOKPLOY_DEPLOY_URL
 	? `https://${process.env.DOKPLOY_DEPLOY_URL}`
@@ -18,7 +19,7 @@ export default defineConfig({
 	security: {
 		checkOrigin: false,
 	},
-	integrations: [db(), studioCMS(), devApps()],
+	integrations: [studioCMS()],
 
 	// Used for devcontainer/docker development
 	server: {

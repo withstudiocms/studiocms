@@ -165,6 +165,7 @@
 		"@withstudiocms/effect": "workspace:*",
 		"@withstudiocms/template-lang": "workspace:*",
 		"@withstudiocms/kysely": "workspace:*",
+		"@withstudiocms/sdk": "workspace:*",
 		"ace-builds": "^1.43.4",
 		"astro-integration-kit": "catalog:",
 		"boxen": "^8.0.1",
