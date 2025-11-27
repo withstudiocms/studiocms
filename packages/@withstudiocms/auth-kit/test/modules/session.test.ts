@@ -11,6 +11,9 @@ const localSuiteName = 'Session Module Tests';
 
 // Minimal fake session tools for testing
 const now = Date.now();
+
+const NOW = new Date(now);
+
 const fakeSession = {
 	id: 'session-id',
 	userId: 'user-id',
@@ -24,8 +27,8 @@ const fakeUser = {
 	avatar: null,
 	username: 'testuser',
 	password: null,
-	updatedAt: null,
-	createdAt: null,
+	updatedAt: NOW,
+	createdAt: NOW,
 	emailVerified: true,
 	notifications: null,
 };
@@ -42,12 +45,12 @@ const sessionTools: SessionConfig['sessionTools'] = {
 	createSession: async (params) => params,
 	sessionAndUserData: async (sessionId) => {
 		if (sessionId === fakeSessionAndUser.session.id) {
-			return await Promise.resolve([fakeSessionAndUser]);
+			return await Promise.resolve(fakeSessionAndUser);
 		}
-		return await Promise.resolve([]);
+		return await Promise.resolve(undefined);
 	},
 	deleteSession: async (_sessionId) => {},
-	updateSession: async (_sessionId, data) => [{ ...fakeSession, ...data }],
+	updateSession: async (_sessionId, data) => ({ ...fakeSession, ...data }),
 };
 
 const config: SessionConfig = {

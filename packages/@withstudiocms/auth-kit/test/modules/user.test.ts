@@ -10,6 +10,8 @@ import { parentSuiteName, sharedTags } from '../test-utils.js';
 
 const localSuiteName = 'User Module Tests';
 
+const NOW = new Date();
+
 // Minimal fake user tools for testing
 const fakeUser = {
 	id: 'user-id',
@@ -19,8 +21,8 @@ const fakeUser = {
 	avatar: null,
 	username: 'testuser',
 	password: 'hashed-password',
-	updatedAt: null,
-	createdAt: null,
+	updatedAt: NOW,
+	createdAt: NOW,
 	emailVerified: true,
 	notifications: null,
 };
@@ -34,16 +36,16 @@ const fakeSessionAndUser = {
 	user: fakeUser,
 };
 
-const sessionTools = {
+const sessionTools: UserConfig['session']['sessionTools'] = {
 	createSession: async (params: any) => params,
 	sessionAndUserData: async (sessionId: string) => {
 		if (sessionId === fakeSessionAndUser.session.id) {
-			return [fakeSessionAndUser];
+			return fakeSessionAndUser;
 		}
-		return [];
+		return undefined;
 	},
 	deleteSession: async (_sessionId: string) => {},
-	updateSession: async (_sessionId: string, data: any) => [{ ...fakeSession, ...data }],
+	updateSession: async (_sessionId: string, data: any) => ({ ...fakeSession, ...data }),
 };
 
 // Generate a 16-byte base64 key for AES-128-GCM
@@ -70,7 +72,12 @@ const Scrypt = Effect.gen(function* () {
 }).pipe(Effect.provide(_Scrypt.makeLive(scrypt)));
 
 const userTools: UserConfig['userTools'] = {
-	createLocalUser: async (data) => ({ ...fakeUser, ...data }),
+	createLocalUser: async (data) => ({
+		...fakeUser,
+		...data,
+		updatedAt: new Date(),
+		createdAt: new Date(),
+	}),
 	// @ts-expect-error - type mock
 	createOAuthUser: async (_data) => ({ ...fakeUser }),
 	getCurrentPermissions: async (id: string) =>
@@ -84,7 +91,11 @@ const userTools: UserConfig['userTools'] = {
 			? { ...fakeUser, oAuthData: [], permissionsData: { rank: 'admin', user: fakeUser.id } }
 			: undefined,
 	idGenerator: () => 'user-id',
-	updateLocalUser: async (_userId: string, data) => ({ ...fakeUser, ...data }),
+	updateLocalUser: async (_userId: string, data) => ({
+		...fakeUser,
+		...data,
+		updatedAt: new Date(),
+	}),
 	notifier: {
 		admin: async (_event: string, _username: string) => {},
 	},
@@ -176,7 +187,10 @@ describe(parentSuiteName, async () => {
 
 		await allure.step('Should return a user object', async () => {
 			const user = await runEffect(
-				service.createOAuthUser(fakeUser, { provider: 'github', providerUserId: '123' })
+				service.createOAuthUser(
+					{ ...fakeUser, updatedAt: NOW.toISOString(), createdAt: NOW.toISOString() },
+					{ provider: 'github', providerUserId: '123' }
+				)
 			);
 			expect(user.id).toBe(fakeUser.id);
 		});
