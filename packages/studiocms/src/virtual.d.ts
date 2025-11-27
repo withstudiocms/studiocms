@@ -381,6 +381,22 @@ declare module 'studiocms:sdk' {
 
 declare module 'studiocms:sdk/types' {
 	// ===============================================================
+	// Plugin Data Types
+	// ===============================================================
+
+	export type PluginDataEntry<T> = import('./virtuals/sdk/types').PluginDataEntry<T>;
+	export type JSONValidatorFn<T> = import('./virtuals/sdk/types').JSONValidatorFn<T>;
+	export type EffectSchemaValidator<T> = import('./virtuals/sdk/types').EffectSchemaValidator<T>;
+	export type ZodValidator<T> = import('./virtuals/sdk/types').ZodValidator<T>;
+	export type ValidatorOptions<T> = import('./virtuals/sdk/types').ValidatorOptions<T>;
+	export type RecursiveSimplifyMutable<T> =
+		import('./virtuals/sdk/types').RecursiveSimplifyMutable<T>;
+	export type UsePluginDataOptsBase<T> = import('./virtuals/sdk/types').UsePluginDataOptsBase<T>;
+	export type UsePluginDataOpts<T> = import('./virtuals/sdk/types').UsePluginDataOpts<T>;
+	export type UserPluginDataOptsImplementation<T> =
+		import('./virtuals/sdk/types').UserPluginDataOptsImplementation<T>;
+
+	// ===============================================================
 	// Table Type Aliases
 	// ===============================================================
 
