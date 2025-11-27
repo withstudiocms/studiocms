@@ -1,9 +1,11 @@
 import { StudioCMSColorwayBg } from '@withstudiocms/cli-kit/colors';
 import { label } from '@withstudiocms/cli-kit/messages';
 import { intro, log, select, tasks } from '@withstudiocms/effect/clack';
+import { type Kysely, sql } from '@withstudiocms/kysely/kysely';
 import { Cli, Effect, genLogger } from '../../effect.js';
 import { checkRequiredEnvVarsEffect } from '../utils/checkRequiredEnvVars.js';
 import { type BaseContext, CliContext, genContext, parseDebug } from '../utils/context.js';
+import { getCliDbClient } from '../utils/getCliDbClient.js';
 import { intro as SCMS_Intro } from '../utils/intro.js';
 import { buildDebugLogger } from '../utils/logger.js';
 import type { EffectStepFn } from '../utils/types.js';
@@ -30,6 +32,13 @@ const exitIfEmpty = Effect.fn(function* (context: BaseContext, items: any[], ite
 		yield* context.exit(0);
 	}
 });
+
+// biome-ignore lint/suspicious/noExplicitAny: Allowed when using raw sql queries in this context
+const getQuery = Effect.fn(({ db }: { db: Kysely<any> }) =>
+	Effect.tryPromise(
+		async () => (await db.executeQuery(sql<string>`SELECT CURRENT_TIME;`.compile(db))).rows[0]
+	)
+);
 
 export enum DBEditOptions {
 	create = 'create',
@@ -67,6 +76,12 @@ export const usersCMD = Cli.Command.make(
 				),
 				checkRequiredEnvVarsEffect(['CMS_ENCRYPTION_KEY']),
 			]);
+
+			// Check DB Config and Required Env Vars
+			yield* getCliDbClient(context).pipe(
+				Effect.flatMap(getQuery),
+				Effect.tap((ts) => debugLogger(`Database connection successful: ${ts}`))
+			);
 
 			yield* SCMS_Intro(debug).pipe(cliContext);
 
