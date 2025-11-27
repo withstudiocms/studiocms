@@ -417,14 +417,14 @@ declare module 'studiocms:sdk/types' {
 	export type PageDataStripped = import('./virtuals/sdk/types').PageDataStripped;
 	export type CombinedPageData = import('./virtuals/sdk/types').CombinedPageData;
 	export type MetaOnlyPageData = import('./virtuals/sdk/types').MetaOnlyPageData;
-	export type PageDataReturnType = import('./virtuals/sdk/types').PageDataReturnType;
+	export type PageDataReturnType<T> = import('./virtuals/sdk/types').PageDataReturnType<T>;
 	export type FolderNode = import('./virtuals/sdk/types').FolderNode;
 	export type FolderListItem = import('./virtuals/sdk/types').FolderListItem;
 	export type DbQueryFn = import('./virtuals/sdk/types').DbQueryFn;
-	export type DynamicConfigEntry = import('./virtuals/sdk/types').DynamicConfigEntry;
+	export type DynamicConfigEntry<T> = import('./virtuals/sdk/types').DynamicConfigEntry<T>;
 	export type StudioCMSDynamicConfigBase =
 		import('./virtuals/sdk/types').StudioCMSDynamicConfigBase;
-	export type ConfigFinal = import('./virtuals/sdk/types').ConfigFinal;
+	export type ConfigFinal<T> = import('./virtuals/sdk/types').ConfigFinal<T>;
 	export type StudioCMSSiteConfig = import('./virtuals/sdk/types').StudioCMSSiteConfig;
 	export type StudioCMSMailerConfig = import('./virtuals/sdk/types').StudioCMSMailerConfig;
 	export type StudioCMSNotificationSettings =
@@ -435,7 +435,7 @@ declare module 'studiocms:sdk/types' {
 	export type JwtVerificationResult = import('./virtuals/sdk/types').JwtVerificationResult;
 	export type diffItem = import('./virtuals/sdk/types').diffItem;
 	export type diffReturn = import('./virtuals/sdk/types').diffReturn;
-	export type DiffReturnType = import('./virtuals/sdk/types').DiffReturnType;
+	export type DiffReturnType<T> = import('./virtuals/sdk/types').DiffReturnType<T>;
 	export type SingleRank = import('./virtuals/sdk/types').SingleRank;
 	export type CombinedRank = import('./virtuals/sdk/types').CombinedRank;
 	export type AvailableLists = import('./virtuals/sdk/types').AvailableLists;
@@ -451,11 +451,11 @@ declare module 'studiocms:sdk/types' {
 	export const AuthErrorTagsEntries: typeof import('./virtuals/sdk/types').AuthErrorTagsEntries;
 }
 
-declare module 'studiocms-dashboard:web-vitals' {
-	export const getWebVitals: typeof import('./integrations/webVitals/webVital').getWebVitals;
-	export type WebVitalsResponseItem =
-		import('./integrations/webVitals/webVital').WebVitalsResponseItem;
-}
+// declare module 'studiocms-dashboard:web-vitals' {
+// 	export const getWebVitals: typeof import('./integrations/webVitals/webVital').getWebVitals;
+// 	export type WebVitalsResponseItem =
+// 		import('./integrations/webVitals/webVital').WebVitalsResponseItem;
+// }
 
 declare module 'studiocms:auth/utils/validImages' {
 	export const validImages: typeof import('./virtuals/auth/validImages/index.js').validImages;
