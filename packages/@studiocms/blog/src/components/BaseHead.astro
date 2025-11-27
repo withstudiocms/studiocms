@@ -27,7 +27,7 @@ interface Props {
 	title: string;
 	description: string;
 	lang?: string | undefined;
-	image?: string | undefined;
+	image?: string | null | undefined;
 }
 
 const canonicalURL = Astro.url;

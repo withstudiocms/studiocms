@@ -14,14 +14,12 @@ if (!slug) {
 
 // Fetch the blog post content
 
-const fullPageData = await runSDK(SDKCoreJs.GET.page.bySlug(slug));
+const post = await runSDK(SDKCoreJs.GET.page.bySlug(slug));
 
 // If no content is found, redirect to 404
-if (!fullPageData) {
+if (!post) {
 	return new Response(null, { status: 404 });
 }
-
-const post = fullPageData.data;
 
 const { title, description, heroImage, publishedAt, updatedAt } = post;
 ---

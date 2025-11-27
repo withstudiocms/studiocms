@@ -15,9 +15,9 @@ const description: string = configDescription || 'Blog Index';
 const showRSSFeed: boolean = blogConfig.enableRSS;
 
 // Get all pages
-const blogPageList = (await runSDK(SDKCoreJs.GET.pages()))
-	.map(({ data }) => data)
-	.filter(({ package: pkg }) => pkg === '@studiocms/blog');
+const blogPageList = (await runSDK(SDKCoreJs.GET.pages())).filter(
+	({ package: pkg }) => pkg === '@studiocms/blog'
+);
 
 // Get the RSS feed URL
 const rssPath = '/rss.xml';

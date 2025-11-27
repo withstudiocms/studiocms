@@ -26,7 +26,7 @@ export function trimInput(input: string | null | undefined): string | undefined 
  * @param Astro - The Astro global context, used to access site configuration.
  * @returns The resolved hero image URL as a string.
  */
-export function getHeroImage(hero: string | undefined, Astro: AstroGlobal): string {
+export function getHeroImage(hero: string | null | undefined, Astro: AstroGlobal): string {
 	const primary = trimInput(hero);
 	const siteFallback = trimInput(Astro.locals?.StudioCMS?.siteConfig?.data?.defaultOgImage);
 	if (primary) return primary;
