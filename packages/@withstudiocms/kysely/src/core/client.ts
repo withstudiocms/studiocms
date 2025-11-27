@@ -28,7 +28,8 @@ export type OptionalNullable<T> = OmitNever<
 				? T[K] // Don't recurse into arrays
 				: OptionalNullable<T[K]> // Recurse into objects
 			: T[K];
-	} & { // Required properties (non-nullable)
+	} & {
+		// Required properties (non-nullable)
 		[K in keyof T as HasNullOrUndefined<T[K]> extends true ? never : K]: T[K] extends object
 			? // biome-ignore lint/suspicious/noExplicitAny: Dynamic BS
 				T[K] extends any[]
