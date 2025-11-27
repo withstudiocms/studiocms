@@ -30,16 +30,18 @@ export const createUsers: EffectStepFn = Effect.fn(function* (context, _debug, d
 	/**
 	 * Get the current users from the database.
 	 */
-	const getCurrentUsers = dbClient.withDecoder({
+	const _getCurrentUsers = dbClient.withDecoder({
 		decoder: Schema.Array(StudioCMSUsersTable.Select),
 		callbackFn: (client) =>
-			client((db) => db.selectFrom('StudioCMSUsersTable').selectAll().execute()),
+			client((db) =>
+				db.selectFrom('StudioCMSUsersTable').selectAll().orderBy('name', 'asc').execute()
+			),
 	});
 
 	/**
 	 * Create a new user in the database.
 	 */
-	const createUser = dbClient.withCodec({
+	const _createUser = dbClient.withCodec({
 		decoder: StudioCMSUsersTable.Select,
 		encoder: StudioCMSUsersTable.Insert,
 		callbackFn: (client, user) =>
@@ -51,7 +53,7 @@ export const createUsers: EffectStepFn = Effect.fn(function* (context, _debug, d
 	/**
 	 * Create a new permission rank for a user in the database.
 	 */
-	const createRank = dbClient.withCodec({
+	const _createRank = dbClient.withCodec({
 		decoder: StudioCMSPermissions.Select,
 		encoder: StudioCMSPermissions.Insert,
 		callbackFn: (client, permission) =>
@@ -67,17 +69,17 @@ export const createUsers: EffectStepFn = Effect.fn(function* (context, _debug, d
 	/**
 	 * Type for a user to be inserted into the database.
 	 */
-	type InsertUser = Parameters<typeof createUser>[0];
+	type InsertUser = Parameters<typeof _createUser>[0];
 
 	/**
 	 * Type for a permission rank to be inserted into the database.
 	 */
-	type InsertPermission = Parameters<typeof createRank>[0];
+	type InsertPermission = Parameters<typeof _createRank>[0];
 
 	/**
 	 * Current DB users.
 	 */
-	const currentUsers = yield* getCurrentUsers();
+	const currentUsers = yield* _getCurrentUsers();
 
 	// Collect input data
 	const inputData = yield* group(
@@ -207,7 +209,7 @@ export const createUsers: EffectStepFn = Effect.fn(function* (context, _debug, d
 	};
 
 	// Prepare database operations
-	const todo = Effect.all([createUser(newUser), createRank(newRank)]);
+	const todo = Effect.all([_createUser(newUser), _createRank(newRank)]);
 
 	if (dryRun) {
 		// Dry run: skip user creation
