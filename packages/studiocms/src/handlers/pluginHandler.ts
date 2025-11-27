@@ -19,12 +19,7 @@ import { compare as semCompare } from 'semver';
 import { loadEnv } from 'vite';
 import { StudioCMSDefaultRobotsConfig } from '../consts.js';
 import { StudioCMSError } from '../errors.js';
-import {
-	checkForWebVitals,
-	dynamicSitemap,
-	type RobotsConfig,
-	robotsTXT,
-} from '../integrations/plugins.js';
+import { dynamicSitemap, type RobotsConfig, robotsTXT } from '../integrations/plugins.js';
 import type {
 	AvailableDashboardPages,
 	BasePluginHooks,

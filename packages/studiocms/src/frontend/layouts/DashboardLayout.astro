@@ -3,8 +3,8 @@ import '../styles/dashboard-base.css';
 import '../styles/dashboard-diff.css';
 import type { UserSessionData } from 'studiocms:auth/lib/types';
 import { defaultLang } from 'studiocms:i18n';
-import type { SiteConfigCacheObject } from 'studiocms:sdk/types';
 import type { AvailablePermissionRanks } from '@withstudiocms/auth-kit/types';
+import type { DynamicConfigEntry, StudioCMSSiteConfig } from '@withstudiocms/sdk/types';
 import type { ComponentProps } from 'astro/types';
 import Ambients from '../components/Ambients.astro';
 import DoubleSidebar from '../components/dashboard/DoubleSidebar.astro';
@@ -26,7 +26,7 @@ const makePageTitle = (
 };
 
 interface Props extends ComponentProps<typeof BaseLayout> {
-	config: SiteConfigCacheObject;
+	config: DynamicConfigEntry<StudioCMSSiteConfig>;
 	sidebar?: false | 'single' | 'double';
 	requiredPermission?: AvailablePermissionRanks | 'none';
 	currentUser: UserSessionData | null;

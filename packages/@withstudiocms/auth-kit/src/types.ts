@@ -42,17 +42,17 @@ export interface UserSession {
  * @property notifications - Notification settings or preferences for the user, or null if not set.
  */
 export interface UserData {
-	name: string;
-	username: string;
-	id?: string | undefined;
-	url?: string | null | undefined;
-	email?: string | null | undefined;
-	avatar?: string | null | undefined;
-	password?: string | null | undefined;
-	updatedAt?: Date | null | undefined;
-	createdAt?: Date | null | undefined;
-	emailVerified?: boolean | undefined;
-	notifications?: string | null | undefined;
+	readonly username: string;
+	readonly password: string | null | undefined;
+	readonly name: string;
+	readonly notifications: string | null | undefined;
+	readonly id: string;
+	readonly updatedAt: Date;
+	readonly url: string | null | undefined;
+	readonly email: string | null | undefined;
+	readonly avatar: string | null | undefined;
+	readonly createdAt: Date;
+	readonly emailVerified: boolean;
 }
 
 /**
@@ -110,7 +110,7 @@ type Present<T> = { [K in keyof T]-?: Exclude<T[K], undefined> };
  */
 export type UserSessionData = {
 	isLoggedIn: boolean;
-	user: Present<UserData> | null;
+	user: UserData | null;
 	permissionLevel: AvailablePermissionRanks;
 };
 

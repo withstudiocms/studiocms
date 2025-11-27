@@ -631,10 +631,15 @@ interface StudioCMSPluginLocals {
 interface StudioCMSLocals {
 	SCMSGenerator: string;
 	SCMSUiGenerator: string;
-	siteConfig: import('./virtuals/sdk/types/index').SiteConfigCacheObject;
+	siteConfig: import('./virtuals/sdk/types').DynamicConfigEntry<
+		import('./virtuals/sdk/types').StudioCMSSiteConfig
+	>;
 	routeMap: typeof import('./virtuals/lib/routeMap').StudioCMSRoutes;
 	defaultLang: import('./virtuals/i18n/config').UiTranslationKey;
-	latestVersion: import('./virtuals/sdk/types/index').VersionCacheObject;
+	latestVersion: {
+		version: string;
+		lastCacheUpdate: Date;
+	};
 	security?: StudioCMSSecurityLocals;
 	plugins?: StudioCMSPluginLocals;
 }

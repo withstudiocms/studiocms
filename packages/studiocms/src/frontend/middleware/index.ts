@@ -27,8 +27,6 @@ import { getUserPermissions, makeFallbackSiteConfig, SetLocal, setLocals } from 
 // This allows for flexibility in the dashboard route without hardcoding it
 const dashboardRoute = dashboardConfig.dashboardRouteOverride || 'dashboard';
 
-const cacheStore = new Map<string, Date>();
-
 /**
  * Main middleware sequence for StudioCMS.
  *
@@ -55,7 +53,7 @@ export const onRequest = defineMiddlewareRouter([
 			} = yield* SDKCore;
 
 			if (!['/studiocms_api/dashboard/verify-session'].includes(context.url.pathname)) {
-				yield* verifyCache(cacheStore);
+				yield* verifyCache();
 			}
 
 			const [latestVersion, siteConfig] = yield* Effect.all([
@@ -105,7 +103,7 @@ export const onRequest = defineMiddlewareRouter([
 			// Set the security-related data in the context locals
 			yield* setLocals(context, SetLocal.SECURITY, {
 				userSessionData,
-				emailVerificationEnabled,
+				emailVerificationEnabled: emailVerificationEnabled ?? false,
 				userPermissionLevel,
 			});
 

@@ -1,10 +1,9 @@
 import { UserPermissionLevel } from '@withstudiocms/auth-kit/types';
 import { getLevel } from '@withstudiocms/auth-kit/utils/user';
+import type { DynamicConfigEntry, StudioCMSSiteConfig } from '@withstudiocms/sdk/types';
 import type { APIContext } from 'astro';
 import { deepmerge, Effect, genLogger } from '../../effect.js';
 import type { UserSessionData } from '../../virtuals/auth/types.js';
-import { CURRENT_CONFIG_VERSION } from '../../virtuals/sdk/consts.js';
-import type { SiteConfigCacheObject } from '../../virtuals/sdk/types/index.js';
 
 export const getUserPermissionLevel = Effect.fn(
 	'@withstudiocms/AuthKit/modules/user.getUserPermissionLevel'
@@ -54,8 +53,7 @@ export const getUserPermissions = (userData: UserSessionData) =>
  *
  * @returns {SiteConfigCacheObject} The fallback site configuration object.
  */
-export const makeFallbackSiteConfig = (): SiteConfigCacheObject => ({
-	lastCacheUpdate: new Date(),
+export const makeFallbackSiteConfig = (): DynamicConfigEntry<StudioCMSSiteConfig> => ({
 	data: {
 		defaultOgImage: null,
 		description: 'A StudioCMS Project',
@@ -68,8 +66,9 @@ export const makeFallbackSiteConfig = (): SiteConfigCacheObject => ({
 		loginPageCustomImage: null,
 		siteIcon: null,
 		title: 'StudioCMS-Setup',
-		_config_version: CURRENT_CONFIG_VERSION,
+		_config_version: '',
 	},
+	id: 'fallback-site-config',
 });
 
 /**
