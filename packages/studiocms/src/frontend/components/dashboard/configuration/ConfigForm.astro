@@ -2,7 +2,7 @@
 import { validImages } from 'studiocms:auth/utils/validImages';
 import dashboardGridItems from 'studiocms:components/dashboard-grid-items';
 import { useTranslations } from 'studiocms:i18n';
-import type { SiteConfigCacheObject } from 'studiocms:sdk/types';
+import type { DynamicConfigEntry, StudioCMSSiteConfig } from 'studiocms:sdk/types';
 import { Card } from 'studiocms:ui/components/card';
 import { Divider } from 'studiocms:ui/components/divider';
 import { Input } from 'studiocms:ui/components/input';
@@ -11,7 +11,7 @@ import { Toggle } from 'studiocms:ui/components/toggle';
 import LoginPreview from './LoginPreview.astro';
 
 interface Props {
-	config: SiteConfigCacheObject;
+	config: DynamicConfigEntry<StudioCMSSiteConfig>;
 }
 
 const { config } = Astro.props as Props;

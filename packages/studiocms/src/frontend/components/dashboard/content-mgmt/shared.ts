@@ -6,7 +6,7 @@ interface PluginListItem {
 	value: string;
 }
 
-const { data: folderList } = await runSDK(SDKCoreJs.GET.folderList());
+const folderList = await runSDK(SDKCoreJs.GET.folderList());
 
 export const parentFolders = folderList.map(({ id: value, name: label }) => ({ value, label }));
 

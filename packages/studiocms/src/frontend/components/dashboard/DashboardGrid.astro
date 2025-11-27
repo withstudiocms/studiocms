@@ -3,14 +3,14 @@ import { User } from 'studiocms:auth/lib';
 import type { UserSessionData } from 'studiocms:auth/lib/types';
 import dashboardGridItems from 'studiocms:components/dashboard-grid-items';
 import type { UiLanguageKeys } from 'studiocms:i18n';
-import type { SiteConfigCacheObject } from 'studiocms:sdk/types';
+import type { DynamicConfigEntry, StudioCMSSiteConfig } from 'studiocms:sdk/types';
 import { Center } from 'studiocms:ui/components/center';
 import { Effect } from '../../../effect.js';
 import DashboardGridItem from './DashboardGridItem.astro';
 
 interface Props {
 	lang: UiLanguageKeys;
-	config: SiteConfigCacheObject;
+	config: DynamicConfigEntry<StudioCMSSiteConfig>;
 	currentUser: UserSessionData | null;
 }
 

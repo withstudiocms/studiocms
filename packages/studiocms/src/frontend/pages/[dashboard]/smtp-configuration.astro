@@ -2,6 +2,7 @@
 import { useTranslations } from 'studiocms:i18n';
 import { Mailer } from 'studiocms:mailer';
 import { SDKCore } from 'studiocms:sdk';
+import type { ConfigFinal, StudioCMSNotificationSettings } from 'studiocms:sdk/types';
 import templateEngine from 'studiocms:template-engine';
 import { Button } from 'studiocms:ui/components/button';
 import { Card } from 'studiocms:ui/components/card';
@@ -12,10 +13,6 @@ import { Select } from 'studiocms:ui/components/select';
 import { TabItem, Tabs } from 'studiocms:ui/components/tabs';
 import { Toggle } from 'studiocms:ui/components/toggle';
 import { Effect, genLogger, runEffect } from '../../../effect.js';
-import type {
-	ConfigFinal,
-	StudioCMSNotificationSettings,
-} from '../../../virtuals/sdk/modules/config.js';
 import PageHeader from '../../components/dashboard/PageHeader.astro';
 import TemplateEditor from '../../components/dashboard/smtp-config/TemplateEditor.astro';
 import Layout from '../../layouts/DashboardLayout.astro';

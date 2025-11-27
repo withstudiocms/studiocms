@@ -39,21 +39,19 @@ const { user, diff } = await runEffect(
 
 if (!diff) return Astro.redirect('/404');
 
-const [possiblePage, metaDataChanges, diffContentHTML] = await runEffect(
+const [page, metaDataChanges, diffContentHTML] = await runEffect(
 	genLogger('studiocms/routes/dashboard/content-management/diff.page-meta')(function* () {
 		const sdk = yield* SDKCore;
 
 		return yield* Effect.all([
 			sdk.GET.page.byId(diff.pageId),
 			sdk.diffTracking.utils.getMetaDataDifferences(diff.pageMetaData.start, diff.pageMetaData.end),
-			sdk.diffTracking.utils.getDiffHTML(diff.diff),
+			sdk.diffTracking.utils.getDiffHTML(diff.diff ?? ''),
 		]);
 	})
 );
 
-if (!possiblePage) return new Response(null, { status: 404 });
-
-const { data: page } = possiblePage;
+if (!page) return new Response(null, { status: 404 });
 ---
 
 <Layout

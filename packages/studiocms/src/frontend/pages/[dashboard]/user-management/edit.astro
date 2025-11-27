@@ -251,12 +251,12 @@ if (isAdmin) allowedRanks.unshift({ label: 'Administrator', value: 'admin' });
             diffs.map((diff) => (
               <Card fullWidth class={'edit-card'}>
                 <div class="card-row">
-                  <span class="card-title">{pages.find((page) => page.data.id === diff.pageId)?.data.title}</span>
+                  <span class="card-title">{pages.find((page) => page.id === diff.pageId)?.title}</span>
                   <span class="card-date"><t-users-edit key="last-edit-pages-edited">{t('last-edit-pages-edited')}</t-users-edit>: <FormattedDate date={diff.timestamp!} /></span>
                 </div>
 
                 <div class="card-row">
-                  <span class="card-description">{pages.find((page) => page.data.id === diff.pageId)?.data.description}</span>
+                  <span class="card-description">{pages.find((page) => page.id === diff.pageId)?.description}</span>
                   <Button size='sm' as='a' href={Astro.locals.StudioCMS.routeMap.mainLinks.contentManagementDiff + `?diff=${diff.id}`}>
                     <Icon name="heroicons:eye" width={24} height={24} class="card-icon" />
                   </Button>
