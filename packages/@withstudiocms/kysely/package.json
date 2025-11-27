@@ -39,6 +39,10 @@
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     },
+    "./kysely": {
+      "types": "./dist/kysely.d.ts",
+      "default": "./dist/kysely.js"
+    },
     "./client": {
       "types": "./dist/client.d.ts",
       "default": "./dist/client.js"

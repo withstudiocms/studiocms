@@ -31,6 +31,7 @@ import { loadEnv } from 'vite';
 import {
 	AstroConfigImageSettings,
 	AstroConfigViteSettings,
+	configPaths,
 	getUiOpts,
 	makeDashboardRoute,
 } from './consts.js';
@@ -71,19 +72,6 @@ const CustomImageComponentPath = './virtuals/components/CustomImage.astro';
 const builtInComponents = {
 	'cms-img': resolve(CustomImageComponentPath),
 };
-
-/**
- * Paths to search for the StudioCMS config file,
- * sorted by how likely they're to appear.
- */
-const configPaths = [
-	'studiocms.config.js',
-	'studiocms.config.mjs',
-	'studiocms.config.cjs',
-	'studiocms.config.ts',
-	'studiocms.config.mts',
-	'studiocms.config.cts',
-];
 
 /**
  * **StudioCMS Integration**

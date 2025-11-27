@@ -4,6 +4,7 @@ import { availableTranslationsKeys } from '../../virtuals/i18n/v-files.js';
 import type { StudioCMSPlugin } from '../plugins/index.js';
 import { authConfigSchema } from './auth.js';
 import { dashboardConfigSchema } from './dashboard.js';
+import { dbConfigSchema } from './db.js';
 import { developerConfigSchema } from './developer.js';
 import { SDKSchema } from './sdk.js';
 
@@ -61,6 +62,11 @@ export const StudioCMSOptionsSchema = z
 			])
 			.optional()
 			.default('Info'),
+
+		/**
+		 * Database Configuration
+		 */
+		db: dbConfigSchema,
 
 		/**
 		 * Add Plugins to the StudioCMS

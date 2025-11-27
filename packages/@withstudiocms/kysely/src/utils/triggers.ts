@@ -241,7 +241,7 @@ export const addMissingTriggersForTable = Effect.fn(function* (
 		Effect.fn(function* (t) {
 			if (existingTriggers.includes(t.name)) return;
 
-			yield* Effect.logInfo(`Creating trigger ${t.name} on ${tableDef.name}...`);
+			yield* Effect.logDebug(`Creating trigger ${t.name} on ${tableDef.name}...`);
 
 			switch (dialect) {
 				case 'sqlite': {
@@ -262,7 +262,7 @@ export const addMissingTriggersForTable = Effect.fn(function* (
 				}
 			}
 
-			yield* Effect.logInfo(`Trigger ${t.name} created on ${tableDef.name}`);
+			yield* Effect.logDebug(`Trigger ${t.name} created on ${tableDef.name}`);
 		})
 	);
 });
@@ -315,7 +315,7 @@ export const dropRemovedTriggersForTable = Effect.fn(function* (
 	yield* Effect.forEach(
 		toDrop,
 		Effect.fn(function* (trigName) {
-			yield* Effect.logInfo(`Dropping trigger ${trigName} from ${tableDef.name}...`);
+			yield* Effect.logDebug(`Dropping trigger ${trigName} from ${tableDef.name}...`);
 
 			switch (dialect) {
 				case 'sqlite': {
@@ -345,7 +345,7 @@ export const dropRemovedTriggersForTable = Effect.fn(function* (
 				}
 			}
 
-			yield* Effect.logInfo(`Trigger ${trigName} dropped from ${tableDef.name}`);
+			yield* Effect.logDebug(`Trigger ${trigName} dropped from ${tableDef.name}`);
 		})
 	);
 });

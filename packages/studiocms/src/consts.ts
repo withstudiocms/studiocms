@@ -14,6 +14,19 @@ import { makeAPIRoute } from './virtuals/lib/makeAPIRoute.js';
 import { stripLeadingAndTrailingSlashes } from './virtuals/lib/pathGenerators.js';
 
 /**
+ * Paths to search for the StudioCMS config file,
+ * sorted by how likely they're to appear.
+ */
+export const configPaths = [
+	'studiocms.config.js',
+	'studiocms.config.mjs',
+	'studiocms.config.cjs',
+	'studiocms.config.ts',
+	'studiocms.config.mts',
+	'studiocms.config.cts',
+];
+
+/**
  * StudioCMS Site Config Table Entry ID
  */
 export const CMSSiteConfigId: number = 1;

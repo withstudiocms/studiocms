@@ -103,14 +103,14 @@ export const getTableIndexes = Effect.fn(function* (db: Kysely<any>, tableName: 
 export const createIndexes = Effect.fn(function* (db: Kysely<any>, tableDef: TableDefinition) {
 	if (!tableDef.indexes || tableDef.indexes.length === 0) return;
 
-	yield* Effect.logInfo(`Creating indexes for table ${tableDef.name} if they do not exist`);
+	yield* Effect.logDebug(`Creating indexes for table ${tableDef.name} if they do not exist`);
 
 	yield* Effect.forEach(
 		tableDef.indexes,
 		Effect.fn(function* (indexDef) {
 			const exists = yield* indexExists(db, indexDef.name);
 			if (exists) {
-				yield* Effect.logInfo(`Index ${indexDef.name} already exists for table ${tableDef.name}`);
+				yield* Effect.logDebug(`Index ${indexDef.name} already exists for table ${tableDef.name}`);
 				return;
 			}
 
@@ -128,7 +128,7 @@ export const createIndexes = Effect.fn(function* (db: Kysely<any>, tableDef: Tab
 				catch: (cause) => new SqlError({ cause }),
 			});
 
-			yield* Effect.logInfo(`Index ${indexDef.name} created for table ${tableDef.name}`);
+			yield* Effect.logDebug(`Index ${indexDef.name} created for table ${tableDef.name}`);
 		})
 	);
 });
@@ -175,7 +175,7 @@ export const addMissingIndexes = Effect.fn(function* (
 ) {
 	if (!tableDef.indexes || tableDef.indexes.length === 0) return;
 
-	yield* Effect.logInfo(`Adding missing indexes for table ${tableDef.name}`);
+	yield* Effect.logDebug(`Adding missing indexes for table ${tableDef.name}`);
 
 	let addedCount = 0;
 
@@ -198,13 +198,13 @@ export const addMissingIndexes = Effect.fn(function* (
 				catch: (cause) => new SqlError({ cause }),
 			});
 
-			yield* Effect.logInfo(`Index ${indexDef.name} added for table ${tableDef.name}`);
+			yield* Effect.logDebug(`Index ${indexDef.name} added for table ${tableDef.name}`);
 			addedCount++;
 		})
 	);
 
 	if (addedCount === 0) {
-		yield* Effect.logInfo(`No missing indexes to add for table ${tableDef.name}`);
+		yield* Effect.logDebug(`No missing indexes to add for table ${tableDef.name}`);
 	}
 });
 
@@ -244,12 +244,12 @@ export const dropRemovedIndexes = Effect.fn(function* (
 	yield* Effect.forEach(
 		indexesToDrop,
 		Effect.fn(function* (indexName) {
-			yield* Effect.logInfo(`Dropping index ${indexName} from table ${tableDef.name}`);
+			yield* Effect.logDebug(`Dropping index ${indexName} from table ${tableDef.name}`);
 			yield* Effect.tryPromise({
 				try: () => db.schema.dropIndex(indexName).execute(),
 				catch: (cause) => new SqlError({ cause }),
 			});
-			yield* Effect.logInfo(`Index ${indexName} dropped from table ${tableDef.name}`);
+			yield* Effect.logDebug(`Index ${indexName} dropped from table ${tableDef.name}`);
 		})
 	);
 });
