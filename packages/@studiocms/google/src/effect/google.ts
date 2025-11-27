@@ -143,10 +143,10 @@ export class GoogleOAuthAPI extends Effect.Service<GoogleOAuthAPI>()('GoogleOAut
 
 					const { sub: googleUserId, name: googleUsername } = googleUser;
 
-					const existingOAuthAccount = yield* sdk.AUTH.oAuth.searchProvidersForId(
-						GoogleOAuthAPI.ProviderID,
-						googleUserId
-					);
+					const existingOAuthAccount = yield* sdk.AUTH.oAuth.searchProvidersForId({
+						providerId: GoogleOAuthAPI.ProviderID,
+						userId: googleUserId,
+					});
 
 					if (existingOAuthAccount) {
 						const user = yield* sdk.GET.users.byId(existingOAuthAccount.userId);
@@ -204,11 +204,11 @@ export class GoogleOAuthAPI extends Effect.Service<GoogleOAuthAPI>()('GoogleOAut
 							email: googleUser.email,
 							name: googleUser.name,
 							avatar: googleUser.picture,
-							createdAt: new Date(),
+							createdAt: new Date().toISOString(),
 							emailVerified: false,
 							notifications: null,
 							password: null,
-							updatedAt: new Date(),
+							updatedAt: new Date().toISOString(),
 							url: null,
 						},
 						{ provider: GoogleOAuthAPI.ProviderID, providerUserId: googleUserId }

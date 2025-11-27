@@ -215,6 +215,25 @@ export const SDKAuthModule = Effect.gen(function* () {
 	});
 
 	/**
+	 * Searches for OAuth providers for a given user ID.
+	 */
+	const _searchOauthProvidersForId = withCodec({
+		encoder: Schema.Struct({
+			providerId: Schema.String,
+			userId: Schema.String,
+		}),
+		decoder: Schema.UndefinedOr(StudioCMSOAuthAccounts.Select),
+		callbackFn: (db, { providerId, userId }) =>
+			db((client) =>
+				client
+					.selectFrom('StudioCMSOAuthAccounts')
+					.selectAll()
+					.where((eb) => eb.and([eb('provider', '=', providerId), eb('userId', '=', userId)]))
+					.executeTakeFirst()
+			),
+	});
+
+	/**
 	 * Retrieves the current permission for a user by their ID.
 	 */
 	const _getCurrentPermission = withCodec({
@@ -583,6 +602,14 @@ export const SDKAuthModule = Effect.gen(function* () {
 		 * @returns A promise that resolves to the found OAuth account if it exists, otherwise undefined.
 		 */
 		searchByProviderId: _searchOAuthAccountByProviderId,
+
+		/**
+		 * Searches for OAuth providers for a given user ID.
+		 *
+		 * @param input - An object containing the providerId and userId to search for.
+		 * @returns A promise that resolves to the found OAuth account if it exists, otherwise undefined.
+		 */
+		searchProvidersForId: _searchOauthProvidersForId,
 	};
 
 	/**

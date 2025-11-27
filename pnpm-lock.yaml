@@ -965,9 +965,6 @@ importers:
       diff:
         specifier: ^8.0.2
         version: 8.0.2
-      diff2html:
-        specifier: ^3.4.52
-        version: 3.4.52
       dompurify:
         specifier: ^3.3.0
         version: 3.3.0
@@ -1050,9 +1047,6 @@ importers:
       '@studiocms/blog':
         specifier: workspace:*
         version: link:../packages/@studiocms/blog
-      '@studiocms/devapps':
-        specifier: workspace:*
-        version: link:../packages/@studiocms/devapps
       '@studiocms/md':
         specifier: workspace:*
         version: link:../packages/@studiocms/md

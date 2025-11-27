@@ -169,10 +169,10 @@ export class Auth0OAuthAPI extends Effect.Service<Auth0OAuthAPI>()('Auth0OAuthAP
 
 					const { sub: auth0UserId, name: auth0Username } = auth0User;
 
-					const existingOAuthAccount = yield* sdk.AUTH.oAuth.searchProvidersForId(
-						Auth0OAuthAPI.ProviderID,
-						auth0UserId
-					);
+					const existingOAuthAccount = yield* sdk.AUTH.oAuth.searchProvidersForId({
+						providerId: Auth0OAuthAPI.ProviderID,
+						userId: auth0UserId,
+					});
 
 					if (existingOAuthAccount) {
 						const user = yield* sdk.GET.users.byId(existingOAuthAccount.userId);
@@ -230,11 +230,11 @@ export class Auth0OAuthAPI extends Effect.Service<Auth0OAuthAPI>()('Auth0OAuthAP
 							name: auth0User.name,
 							email: auth0User.email,
 							avatar: auth0User.picture,
-							createdAt: new Date(),
+							createdAt: new Date().toISOString(),
 							emailVerified: false,
 							notifications: null,
 							password: null,
-							updatedAt: new Date(),
+							updatedAt: new Date().toISOString(),
 							url: null,
 						},
 						{ provider: Auth0OAuthAPI.ProviderID, providerUserId: auth0UserId }
