@@ -10,8 +10,8 @@ import { genLogger } from '../../effect.js';
 import type { StudioCMSConfig } from '../../schemas/index.js';
 import { type BaseContext, CliContext, genContext, parseDebug } from '../utils/context.js';
 import { intro as SCMS_Intro } from '../utils/intro.js';
+import { loadConfig } from '../utils/loadConfig.js';
 import { buildDebugLogger } from '../utils/logger.js';
-import { loadConfig } from './utils/loadConfig.js';
 
 export const debug = Cli.Options.boolean('debug').pipe(
 	Cli.Options.optional,
