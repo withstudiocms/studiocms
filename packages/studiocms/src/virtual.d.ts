@@ -451,12 +451,6 @@ declare module 'studiocms:sdk/types' {
 	export const AuthErrorTagsEntries: typeof import('./virtuals/sdk/types').AuthErrorTagsEntries;
 }
 
-// declare module 'studiocms-dashboard:web-vitals' {
-// 	export const getWebVitals: typeof import('./integrations/webVitals/webVital').getWebVitals;
-// 	export type WebVitalsResponseItem =
-// 		import('./integrations/webVitals/webVital').WebVitalsResponseItem;
-// }
-
 declare module 'studiocms:auth/utils/validImages' {
 	export const validImages: typeof import('./virtuals/auth/validImages/index.js').validImages;
 }

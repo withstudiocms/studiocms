@@ -10,10 +10,10 @@ const [allPages, totalUsers] = await runSDK(
 );
 
 // Filter out the pages that are not allowed
-const totalPages = allPages.filter(({ data: page }) => allowedIdentifiers.includes(page.package));
+const totalPages = allPages.filter((page) => allowedIdentifiers.includes(page.package));
 
 // Filter out for draft pages
-const totalDraftPages = totalPages.filter(({ data: page }) => page.draft === true);
+const totalDraftPages = totalPages.filter((page) => page.draft === true);
 
 const genericTranslationProps = {
 	plugin: 'studiocms',
