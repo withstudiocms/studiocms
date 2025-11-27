@@ -26,21 +26,19 @@ export const { ALL, GET, OPTIONS } = createEffectAPIRoutes(
 				let filteredPages = pages;
 
 				if (titleFilter) {
-					filteredPages = filteredPages.filter((page) => page.data.title.includes(titleFilter));
+					filteredPages = filteredPages.filter((page) => page.title.includes(titleFilter));
 				}
 
 				if (slugFilter) {
-					filteredPages = filteredPages.filter((page) => page.data.slug.includes(slugFilter));
+					filteredPages = filteredPages.filter((page) => page.slug.includes(slugFilter));
 				}
 
 				if (authorFilter) {
-					filteredPages = filteredPages.filter((page) => page.data.authorId === authorFilter);
+					filteredPages = filteredPages.filter((page) => page.authorId === authorFilter);
 				}
 
 				if (parentFolderFilter) {
-					filteredPages = filteredPages.filter(
-						(page) => page.data.parentFolder === parentFolderFilter
-					);
+					filteredPages = filteredPages.filter((page) => page.parentFolder === parentFolderFilter);
 				}
 
 				return createJsonResponse(filteredPages);

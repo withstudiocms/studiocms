@@ -1,5 +1,6 @@
 import { apiResponseLogger } from 'studiocms:logger';
 import { SDKCore } from 'studiocms:sdk';
+import type { ConfigFinal, StudioCMSNotificationSettings } from 'studiocms:sdk/types';
 import {
 	AllResponse,
 	createEffectAPIRoutes,
@@ -9,10 +10,6 @@ import {
 	OptionsResponse,
 	readAPIContextJson,
 } from '../../../../effect.js';
-import type {
-	ConfigFinal,
-	StudioCMSNotificationSettings,
-} from '../../../../virtuals/sdk/modules/config.js';
 
 export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
 	{

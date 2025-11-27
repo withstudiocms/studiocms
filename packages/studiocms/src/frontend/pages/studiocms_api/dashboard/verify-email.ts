@@ -41,9 +41,22 @@ export const { GET, OPTIONS, ALL } = createEffectAPIRoutes(
 					return apiResponseLogger(400, 'Invalid token');
 				}
 
+				const existingUser = yield* sdk.GET.users.byId(userId);
+
+				if (!existingUser) {
+					return apiResponseLogger(404, 'User not found');
+				}
+
 				yield* Effect.all([
-					sdk.AUTH.user.update(userId, {
-						emailVerified: true,
+					sdk.AUTH.user.update({
+						userId,
+						userData: {
+							id: userId,
+							name: existingUser.name,
+							username: existingUser.username,
+							emailVerified: true,
+							updatedAt: new Date().toISOString(),
+						},
 					}),
 					sdk.AUTH.verifyEmail.delete(userId),
 				]);

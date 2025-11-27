@@ -131,7 +131,7 @@ export const { ALL, GET, POST, OPTIONS } = createEffectAPIRoutes(
 				}
 
 				if (!password) {
-					password = yield* sdk.generateRandomPassword(12);
+					password = yield* sdk.UTIL.Generators.generateRandomPassword(12);
 				}
 
 				if (!email) {

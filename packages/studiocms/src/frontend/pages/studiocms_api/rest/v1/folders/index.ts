@@ -40,7 +40,7 @@ export const { GET, POST, OPTIONS, ALL } = createEffectAPIRoutes(
 				const folderNameFilter = searchParams.get('name');
 				const folderParentFilter = searchParams.get('parent');
 
-				let filteredFolders = folders.data;
+				let filteredFolders = folders;
 
 				if (folderNameFilter) {
 					filteredFolders = filteredFolders.filter((folder) =>
@@ -54,12 +54,7 @@ export const { GET, POST, OPTIONS, ALL } = createEffectAPIRoutes(
 					);
 				}
 
-				const finalFolders = {
-					data: filteredFolders,
-					lastCacheUpdate: folders.lastCacheUpdate,
-				};
-
-				return createJsonResponse(finalFolders);
+				return createJsonResponse(filteredFolders);
 			}),
 		POST: (ctx) =>
 			genLogger('studioCMS:rest:v1:folders:POST')(function* () {

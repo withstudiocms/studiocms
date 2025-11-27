@@ -49,7 +49,7 @@ export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
 				const data = yield* sdk.diffTracking.revertToDiff(id, type);
 
 				yield* Effect.all([
-					sdk.CLEAR.pages(),
+					sdk.CLEAR.pages,
 					notify.sendEditorNotification('page_updated', data.pageMetaData.end.title || ''),
 				]);
 

@@ -27,7 +27,7 @@ export const { GET, OPTIONS, ALL } = createEffectAPIRoutes(
 					return apiResponseLogger(404, 'Page not found');
 				}
 
-				if (page.data.draft) {
+				if (page.draft) {
 					return apiResponseLogger(404, 'Page not found');
 				}
 

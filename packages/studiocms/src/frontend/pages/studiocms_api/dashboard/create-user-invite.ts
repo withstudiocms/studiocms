@@ -148,8 +148,14 @@ export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
 							username,
 							email: checkEmail.data,
 							name: displayname,
-							createdAt: new Date(),
+							createdAt: new Date().toISOString(),
 							id: crypto.randomUUID(),
+							avatar: undefined,
+							emailVerified: false,
+							notifications: undefined,
+							password: undefined,
+							updatedAt: new Date().toISOString(),
+							url: undefined,
 						},
 						rank
 					)

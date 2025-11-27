@@ -1,7 +1,8 @@
 import { apiResponseLogger } from 'studiocms:logger';
 import { Notifications } from 'studiocms:notifier';
 import { SDKCore } from 'studiocms:sdk';
-import type { tsPageContentSelect, tsPageDataSelect } from 'studiocms:sdk/types';
+import type { tsPageContentSelect, tsPageData, tsPageDataSelect } from 'studiocms:sdk/types';
+import { StudioCMSPageData } from '@withstudiocms/kysely';
 import {
 	AllResponse,
 	createEffectAPIRoutes,
@@ -10,6 +11,7 @@ import {
 	genLogger,
 	OptionsResponse,
 	readAPIContextJson,
+	Schema,
 } from '../../../../../../../effect.js';
 import { verifyAuthTokenFromHeader } from '../../../utils/auth-token.js';
 
@@ -105,12 +107,12 @@ export const { GET, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 					return apiResponseLogger(404, 'Page not found');
 				}
 
-				const { authorId, contributorIds, defaultContent } = currentPageData.data;
+				const { authorId, contributorIds, defaultContent } = currentPageData;
 
 				let AuthorId = authorId;
 
 				if (!authorId) {
-					AuthorId = userId || null;
+					AuthorId = userId;
 				}
 
 				const ContributorIds = contributorIds || [];
@@ -119,22 +121,38 @@ export const { GET, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 					ContributorIds.push(userId);
 				}
 
-				data.authorId = AuthorId;
-				data.contributorIds = ContributorIds;
-				data.updatedAt = new Date();
+				const newData: tsPageData['Insert']['Type'] = {
+					...(data as tsPageDataSelect),
+					authorId: AuthorId,
+					contributorIds: JSON.stringify(ContributorIds),
+					updatedAt: new Date().toISOString(),
+					publishedAt: data.publishedAt?.toISOString() || new Date().toISOString(),
+					categories: JSON.stringify(data.categories || []),
+					tags: JSON.stringify(data.tags || []),
+					augments: JSON.stringify(data.augments || []),
+				};
 
-				const startMetaData = (yield* sdk.GET.databaseTable.pageData()).find(
-					(metaData) => metaData.id === data.id
-				);
+				const getMetaData = sdk.dbService.withCodec({
+					encoder: Schema.String,
+					decoder: StudioCMSPageData.Select,
+					callbackFn: (query, input) =>
+						query((db) =>
+							db
+								.selectFrom('StudioCMSPageData')
+								.selectAll()
+								.where('id', '=', input)
+								.executeTakeFirstOrThrow()
+						),
+				});
+
+				const startMetaData = yield* getMetaData(data.id);
 
 				yield* sdk.UPDATE.page.byId(data.id, {
-					pageData: data as tsPageDataSelect,
+					pageData: newData,
 					pageContent: content as tsPageContentSelect,
 				});
 
-				const updatedMetaData = (yield* sdk.GET.databaseTable.pageData()).find(
-					(metaData) => metaData.id === data.id
-				);
+				const updatedMetaData = yield* getMetaData(data.id);
 
 				const siteConfig = yield* sdk.GET.siteConfig();
 
@@ -208,7 +226,7 @@ export const { GET, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 				yield* sdk.DELETE.page(id);
 				yield* sdk.CLEAR.page.byId(id);
 
-				yield* notifier.sendEditorNotification('page_deleted', page.data.title);
+				yield* notifier.sendEditorNotification('page_deleted', page.title);
 
 				return apiResponseLogger(200, 'Page deleted successfully');
 			}).pipe(Notifications.Provide),
