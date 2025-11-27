@@ -4,6 +4,7 @@ import {
 	makeStudioCMSSDKCoreLive,
 	type SDKContext,
 } from '@withstudiocms/sdk';
+import type { CacheEntry } from '@withstudiocms/sdk/cache.js';
 import { Data, Effect } from 'effect';
 import { GhostUserDefaults, NotificationSettingsDefaults } from '../../consts.js';
 import { getDbClient } from '../../db/index.js';
@@ -39,6 +40,9 @@ export type SDKCoreLive = _SDKLive extends Effect.Effect<infer A, infer _E, infe
  */
 export type GetJs<T> = T extends Effect.Effect<infer A, infer _E, infer _R> ? A : never;
 
+const cacheStore = new Map<string, CacheEntry<unknown>>();
+const cacheTagIndex = new Map<string, Set<string>>();
+
 /**
  * Builds the SDK context using the provided database client.
  *
@@ -46,13 +50,20 @@ export type GetJs<T> = T extends Effect.Effect<infer A, infer _E, infer _R> ? A 
  * @returns An Effect that produces the SDK context with the database client and default settings.
  */
 export const buildSDKContext = Effect.fn((db: SDKContext['db']) =>
-	Effect.sync(() => ({
-		db,
-		defaults: {
-			GhostUserDefaults,
-			NotificationSettingsDefaults,
-		},
-	}))
+	Effect.sync(
+		() =>
+			({
+				db,
+				defaults: {
+					GhostUserDefaults,
+					NotificationSettingsDefaults,
+				},
+				cache: {
+					store: cacheStore,
+					tagIndex: cacheTagIndex,
+				},
+			}) as SDKContext
+	)
 );
 
 /**

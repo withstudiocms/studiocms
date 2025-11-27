@@ -180,8 +180,6 @@ export const { POST, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 					}
 				>(ctx);
 
-				console.log('Combined Data:', combinedData);
-
 				const { contentId, content: incomingContent, pluginFields, ...data } = combinedData;
 
 				if (!data.id) {

@@ -1,14 +1,22 @@
-import { Deepmerge, Effect, Layer } from '@withstudiocms/effect';
+import { Deepmerge, Effect, Layer, Logger } from '@withstudiocms/effect';
 import CacheService from './cache.js';
 import { DBClientLive, makeSDKContext, type SDKContext } from './context.js';
+import { makeLogger, setLoggerLevel } from './lib/logger.js';
 import SDKModules from './modules/index.js';
 
 export * from './context.js';
 
+const loggerLayer = Logger.replace(Logger.defaultLogger, makeLogger);
+
 /**
  * SDK Dependencies Layer
  */
-export const SDKBaseDependencies = Layer.mergeAll(CacheService.Default, Deepmerge.Default);
+export const SDKBaseDependencies = Layer.mergeAll(
+	CacheService.Default,
+	Deepmerge.Default,
+	setLoggerLevel,
+	loggerLayer
+);
 
 /**
  * Extracts an Effect type without its requirements.
