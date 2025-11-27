@@ -3,7 +3,6 @@
  * loaded when a user imports the StudioCMS integration in their Astro configuration file. These
  * directives must be first at the top of the file and can only be preceded by this comment.
  */
-/// <reference types="@astrojs/db" preserve="true" />
 /// <reference types="@studiocms/ui/v/types" preserve="true" />
 /// <reference types="./global.d.ts" preserve="true" />
 /// <reference types="./virtual.d.ts" preserve="true" />
