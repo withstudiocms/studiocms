@@ -55,6 +55,20 @@ export interface UserData {
 	readonly emailVerified: boolean;
 }
 
+export interface UserDataInsert {
+	readonly username: string;
+	readonly password: string | null | undefined;
+	readonly name: string;
+	readonly notifications: string | null | undefined;
+	readonly id: string;
+	readonly updatedAt: string;
+	readonly url: string | null | undefined;
+	readonly email: string | null | undefined;
+	readonly avatar: string | null | undefined;
+	readonly createdAt: string | undefined;
+	readonly emailVerified: boolean;
+}
+
 /**
  * Represents the data associated with an OAuth authentication event.
  *
@@ -99,7 +113,7 @@ export interface PermissionsData {
 	rank: AvailablePermissionRanks;
 }
 
-type Present<T> = { [K in keyof T]-?: Exclude<T[K], undefined> };
+// type Present<T> = { [K in keyof T]-?: Exclude<T[K], undefined> };
 
 /**
  * Represents the session data for a user.
@@ -134,7 +148,7 @@ export interface CombinedUserData extends UserData {
  */
 export interface SessionAndUserData {
 	session: UserSession;
-	user: Present<UserData>;
+	user: UserData;
 }
 
 /**
@@ -160,9 +174,9 @@ export type SessionValidationResult =
  */
 export interface SessionTools {
 	createSession(params: UserSession): Promise<UserSession>;
-	sessionAndUserData(sessionId: string): Promise<SessionAndUserData[]>;
+	sessionAndUserData(sessionId: string): Promise<SessionAndUserData | undefined>;
 	deleteSession(sessionId: string): Promise<void>;
-	updateSession(sessionId: string, data: UserSession): Promise<UserSession[]>;
+	updateSession(sessionId: string, data: UserSession): Promise<UserSession>;
 }
 
 /**
@@ -190,13 +204,13 @@ export interface UserTools {
 	notifier?: {
 		admin(type: 'new_user', message: string): Promise<void>;
 	};
-	createLocalUser(data: UserData): Promise<Present<UserData>>;
+	createLocalUser(data: UserDataInsert): Promise<UserData>;
 	createOAuthUser(data: { provider: string; providerUserId: string; userId: string }): Promise<{
 		userId: string;
 		provider: string;
 		providerUserId: string;
 	}>;
-	updateLocalUser(id: string, data: Partial<UserData>): Promise<Present<UserData>>;
+	updateLocalUser(id: string, data: Omit<UserDataInsert, 'createdAt'>): Promise<UserData>;
 	getUserById(id: string): Promise<CombinedUserData | undefined | null>;
 	getUserByEmail(email: string): Promise<CombinedUserData | undefined | null>;
 	getCurrentPermissions(userId: string): Promise<PermissionsData | undefined | null>;

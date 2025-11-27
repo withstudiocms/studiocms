@@ -2,7 +2,9 @@
 // Runtime utilities for sending emails using SMTP with Effect
 // SMTP implementation is already tested in @withstudiocms/effect
 // We import and create a custom SMTPMailer service here for StudioCMS specific use cases
-import { db, eq } from 'astro:db';
+
+import { SDKCore } from 'studiocms:sdk';
+import type { DynamicConfigEntry, StudioCMSMailerConfig } from 'studiocms:sdk/types';
 import {
 	type Mail,
 	SMTPService,
@@ -10,13 +12,9 @@ import {
 	SMTPTransportConfig,
 	TransportConfig,
 } from '@withstudiocms/effect/smtp';
-import { CMSMailerConfigId } from '../../consts.js';
-import { tsMailerConfig } from '../../db/config.js';
 import { Effect, genLogger, Layer, pipeLogger } from '../../effect.js';
 
 export type { Mail, SMTPTransport };
-
-// TODO: Fix this
 
 /**
  * Converts a null value to undefined.
@@ -31,12 +29,7 @@ function nullToUndefined<T>(value: T | null): T | undefined {
 /**
  * TypeSafe Table definition for use in StudioCMS Integrations
  */
-export type tsMailer = typeof tsMailerConfig.$inferSelect;
-
-/**
- * TypeSafe Table definition for use in StudioCMS Integrations
- */
-export type tsMailerInsert = Omit<typeof tsMailerConfig.$inferInsert, 'id'>;
+export type tsMailer = DynamicConfigEntry<StudioCMSMailerConfig>;
 
 /**
  * Converts a mailer configuration object into a TransportConfig object.
@@ -61,7 +54,7 @@ const convertTransporterConfig = (config: tsMailer) =>
 				tls_rejectUnauthorized,
 				tls_servername,
 				default_sender,
-			} = config;
+			} = config.data;
 
 			// Return the transporter configuration object
 			return TransportConfig({
@@ -101,9 +94,8 @@ const convertTransporterConfig = (config: tsMailer) =>
  */
 const buildTransporterConfig = genLogger('studiocms/lib/effects/smtp/buildTransporterConfig')(
 	function* () {
-		const configTable = yield* Effect.tryPromise(() =>
-			db.select().from(tsMailerConfig).where(eq(tsMailerConfig.id, CMSMailerConfigId)).get()
-		);
+		const sdk = yield* SDKCore;
+		const configTable = yield* sdk.CONFIG.mailerConfig.get();
 
 		// If the mailer configuration is not found, return an Empty config
 		if (!configTable) {
