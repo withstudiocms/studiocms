@@ -810,49 +810,39 @@ export const SDKGetModule = Effect.gen(function* () {
 	}
 
 	/**
-	 * Builds the page folder tree structure, integrating pages into their respective folders.
-	 *
-	 * @param hideDefaultIndex - If `true`, excludes pages with the slug 'index' from the tree; otherwise, includes them.
-	 * @returns The page folder tree structure.
-	 */
-	const __pageFolderTree = Effect.fn(function* (hideDefaultIndex = false) {
-		const [tree, pages] = yield* Effect.all([
-			GET.folderTree(),
-			_getAllPages(false, hideDefaultIndex),
-		]);
-
-		for (const page of pages) {
-			if (page.parentFolder) {
-				yield* addPageToFolderTree(tree, page.parentFolder, {
-					id: page.id,
-					name: page.title,
-					page: true,
-					pageData: page,
-					children: [],
-				});
-			} else {
-				tree.push({
-					id: page.id,
-					name: page.title,
-					page: true,
-					pageData: page,
-					children: [],
-				});
-			}
-		}
-
-		return tree;
-	});
-
-	/**
 	 * Retrieves the page folder tree structure.
 	 *
 	 * @param hideDefaultIndex - If `true`, excludes pages with the slug 'index' from the tree; otherwise, includes them.
 	 * @returns The page folder tree structure.
 	 */
 	const _pageFolderTree = (hideDefaultIndex = false) =>
-		memoize(cacheKeyGetters.pageFolderTree(hideDefaultIndex), __pageFolderTree(hideDefaultIndex), {
-			tags: cacheTags.pageFolderTree,
+		Effect.gen(function* () {
+			const [tree, pages] = yield* Effect.all([
+				GET.folderTree(),
+				_getAllPages(true, hideDefaultIndex),
+			]);
+
+			for (const page of pages) {
+				if (page.parentFolder) {
+					yield* addPageToFolderTree(tree, page.parentFolder, {
+						id: page.id,
+						name: page.title,
+						page: true,
+						pageData: page,
+						children: [],
+					});
+				} else {
+					tree.push({
+						id: page.id,
+						name: page.title,
+						page: true,
+						pageData: page,
+						children: [],
+					});
+				}
+			}
+
+			return tree;
 		});
 
 	// ===================================================
@@ -934,10 +924,7 @@ export const SDKGetModule = Effect.gen(function* () {
 		 *
 		 * @returns The folder tree structure.
 		 */
-		folderTree: () =>
-			memoize(cacheKeyGetters.folderTree(), buildFolderTree, {
-				tags: cacheTags.folderTree,
-			}),
+		folderTree: () => buildFolderTree,
 
 		/**
 		 * Retrieves a list of folders.

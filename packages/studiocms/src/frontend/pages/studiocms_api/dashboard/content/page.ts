@@ -119,24 +119,27 @@ export const { POST, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 					...rest
 				} = data as unknown as tsPageData['Insert']['Type'];
 
+				yield* Effect.logInfo('11111');
+
 				const newData = yield* sdk.POST.page({
 					pageData: {
 						...rest,
 						id: dataId,
-						// biome-ignore lint/style/noNonNullAssertion: this is a valid use case for non-null assertion
-						title: title!,
+						title: title,
 						slug: slug || title.toLowerCase().replace(/\s/g, '-'),
 						description: description || '',
-						// biome-ignore lint/style/noNonNullAssertion: this is a valid use case for non-null assertion
-						authorId: userData.user!.id,
+						authorId: userData.user?.id || '',
 						updatedAt: new Date().toISOString(),
+						publishedAt: new Date().toISOString(),
 						categories: JSON.stringify(categories || []),
 						tags: JSON.stringify(tags || []),
 						augments: JSON.stringify(augments || []),
 						contributorIds: JSON.stringify(contributorIds || []),
+						contentLang: 'default',
 					},
 					pageContent: pageContent,
 				});
+				yield* Effect.logInfo('22222');
 
 				if (!newData) {
 					return apiResponseLogger(500, 'Failed to create page');
@@ -177,20 +180,24 @@ export const { POST, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 					}
 				>(ctx);
 
-				const { contentId, content: incomingContent, pluginFields, ...data } = combinedData;
+				console.log('Combined Data:', combinedData);
 
-				const content = {
-					id: contentId,
-					content: incomingContent,
-				};
+				const { contentId, content: incomingContent, pluginFields, ...data } = combinedData;
 
 				if (!data.id) {
 					return apiResponseLogger(400, 'Invalid form data, id is required');
 				}
 
-				if (!content.id) {
+				if (!contentId) {
 					return apiResponseLogger(400, 'Invalid form data, contentId is required');
 				}
+
+				const content = {
+					id: contentId,
+					contentId: data.id,
+					content: incomingContent,
+					contentLang: 'default',
+				};
 
 				const currentPageData = yield* sdk.GET.page.byId(data.id);
 
@@ -224,6 +231,7 @@ export const { POST, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 					categories: JSON.stringify(data.categories || []),
 					tags: JSON.stringify(data.tags || []),
 					augments: JSON.stringify(data.augments || []),
+					contentLang: 'default',
 				};
 
 				const getMetaData = sdk.dbService.withCodec({
@@ -246,7 +254,7 @@ export const { POST, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 
 				const updatedPage = yield* sdk.UPDATE.page.byId(data.id, {
 					pageData: newData,
-					pageContent: content as tsPageContentSelect,
+					pageContent: content,
 				});
 
 				if (!updatedPage) {

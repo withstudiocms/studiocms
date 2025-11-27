@@ -84,12 +84,12 @@ export const SDKParsers = Effect.gen(function* () {
 		useParsersError(() => {
 			if (Array.isArray(items)) {
 				const toReturn: diffReturn[] = [];
-				for (const { pageMetaData, ...rest } of items) {
+				for (const { pageMetaData, ...rest } of items as diffItem[]) {
 					toReturn.push({
 						...rest,
-						pageMetaData: JSON.parse(pageMetaData as string) as {
-							start: Partial<tsPageDataSelect>;
-							end: Partial<tsPageDataSelect>;
+						pageMetaData: pageMetaData as {
+							start: tsPageDataSelect;
+							end: tsPageDataSelect;
 						},
 					});
 				}
@@ -98,9 +98,9 @@ export const SDKParsers = Effect.gen(function* () {
 
 			return {
 				...items,
-				pageMetaData: JSON.parse(items.pageMetaData as string) as {
-					start: Partial<tsPageDataSelect>;
-					end: Partial<tsPageDataSelect>;
+				pageMetaData: items.pageMetaData as {
+					start: tsPageDataSelect;
+					end: tsPageDataSelect;
 				},
 			} as DiffReturnType<T>;
 		})

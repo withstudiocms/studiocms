@@ -1,6 +1,6 @@
 import { Effect } from '@withstudiocms/effect';
-import SDKAuthModule from '../auth';
-import SDKConfigModule from '../config';
+import SDKAuthModule from '../auth/index.js';
+import SDKConfigModule from '../config/index.js';
 
 /**
  * Initializes and exposes core StudioCMS SDK initialization utilities as an Effect.

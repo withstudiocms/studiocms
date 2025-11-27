@@ -11,14 +11,6 @@ import { StudioCMSCoreError } from '../errors.js';
  */
 export const checkAstroConfig = defineUtility('astro:config:setup')(
 	({ config: astroConfig, logger }) => {
-		// Check for Astro:DB Integration
-		if (!astroConfig.integrations.find(({ name }) => name === 'astro:db')) {
-			throw new StudioCMSCoreError(
-				'Astro DB Integration not found in Astro Config',
-				'Run `astro add db` to install `@astrojs/db` and add it to your Astro config.'
-			);
-		}
-
 		if (!astroConfig.adapter) {
 			throw new StudioCMSCoreError(
 				'SSR Adapter not found in Astro Config',

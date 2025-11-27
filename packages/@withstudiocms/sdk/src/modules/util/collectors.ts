@@ -136,7 +136,7 @@ export const SDKCollectors = Effect.gen(function* () {
 		decoder: Schema.Array(StudioCMSPageContent.Select),
 		callbackFn: (query, id) =>
 			query((db) =>
-				db.selectFrom('StudioCMSPageContent').selectAll().where('id', '=', id).execute()
+				db.selectFrom('StudioCMSPageContent').selectAll().where('contentId', '=', id).execute()
 			),
 	});
 
