@@ -3,6 +3,8 @@ import type { Kysely } from 'kysely';
 import { KyselyTableManager } from '../src/plugin.js';
 import type { DatabaseDialect, TableDefinition } from '../src/utils/types.js';
 
+export type { TableDefinition };
+
 // Example 1: Simple plugin table
 export async function initializePluginTable(db: Kysely<any>, dialect: DatabaseDialect) {
 	const tableDefinition: TableDefinition = {
