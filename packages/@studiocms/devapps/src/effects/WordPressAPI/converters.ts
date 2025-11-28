@@ -1,10 +1,9 @@
-import { eq } from 'astro:db';
 import path from 'node:path';
 import { SDKCore } from 'studiocms:sdk';
 import { userProjectRoot } from 'virtual:studiocms-devapps/config';
+import { StudioCMSPageDataCategories, StudioCMSPageDataTags } from '@withstudiocms/kysely';
 import { Console, Effect, genLogger, Schema } from 'studiocms/effect';
 import { decode } from 'studiocms/runtime';
-import { tsPageDataCategories, tsPageDataTags } from 'studiocms/sdk/tables';
 import type { CombinedInsertContent } from 'studiocms/sdk/types';
 import {
 	APIEndpointConfig,
@@ -40,6 +39,19 @@ const pagesImagesFolder = path.resolve(WPImportFolder, 'pages');
  */
 const postsImagesFolder = path.resolve(WPImportFolder, 'posts');
 
+const sharedMeta = (data: Post | Page) => ({
+	augments: '[]',
+	authorId: '',
+	categories: '[]',
+	tags: '[]',
+	contributorIds: '[]',
+	draft: data.status !== 'publish',
+	heroImage: undefined,
+	parentFolder: undefined,
+	showAuthor: false,
+	showContributors: false,
+});
+
 export class WordPressAPIConverters extends Effect.Service<WordPressAPIConverters>()(
 	'WordPressAPIConverters',
 	{
@@ -55,6 +67,74 @@ export class WordPressAPIConverters extends Effect.Service<WordPressAPIConverter
 				stripHtml,
 				turndown,
 			} = yield* WordPressAPIUtils;
+
+			/**
+			 * Retrieves a category by its ID from the database.
+			 *
+			 * @param id - The ID of the category to retrieve.
+			 * @returns A promise that resolves to the category data or undefined if not found.
+			 */
+			const _getCategoryById = sdk.dbService.withCodec({
+				decoder: Schema.UndefinedOr(StudioCMSPageDataCategories.Select),
+				encoder: Schema.Number,
+				callbackFn: (client, id) =>
+					client((db) =>
+						db
+							.selectFrom('StudioCMSPageDataCategories')
+							.selectAll()
+							.where('id', '=', id)
+							.executeTakeFirst()
+					),
+			});
+
+			/**
+			 * Inserts new category(s) into the database.
+			 *
+			 * @param categoryData - The data of the category to insert.
+			 * @returns A promise that resolves when the category has been inserted.
+			 */
+			const _insertCategory = sdk.dbService.withEncoder({
+				encoder: Schema.Union(
+					Schema.Array(StudioCMSPageDataCategories.Insert),
+					StudioCMSPageDataCategories.Insert
+				),
+				callbackFn: (client, data) =>
+					client((db) => db.insertInto('StudioCMSPageDataCategories').values(data).execute()),
+			});
+
+			/**
+			 * Retrieves a tag by its ID from the database.
+			 *
+			 * @param id - The ID of the tag to retrieve.
+			 * @returns A promise that resolves to the tag data or undefined if not found.
+			 */
+			const _getTagById = sdk.dbService.withCodec({
+				decoder: Schema.UndefinedOr(StudioCMSPageDataTags.Select),
+				encoder: Schema.Number,
+				callbackFn: (client, id) =>
+					client((db) =>
+						db
+							.selectFrom('StudioCMSPageDataTags')
+							.selectAll()
+							.where('id', '=', id)
+							.executeTakeFirst()
+					),
+			});
+
+			/**
+			 * Inserts new tag(s) into the database.
+			 *
+			 * @param tagData - The data of the tag to insert.
+			 * @returns A promise that resolves when the tag has been inserted.
+			 */
+			const _insertTag = sdk.dbService.withEncoder({
+				encoder: Schema.Union(
+					Schema.Array(StudioCMSPageDataTags.Insert),
+					StudioCMSPageDataTags.Insert
+				),
+				callbackFn: (client, data) =>
+					client((db) => db.insertInto('StudioCMSPageDataTags').values(data).execute()),
+			});
 
 			/**
 			 * Converts a given page object to a PageData object.
@@ -85,12 +165,13 @@ export class WordPressAPIConverters extends Effect.Service<WordPressAPIConverter
 					yield* Console.log('No featured media for:', data.title.rendered);
 
 					const pageData: PageData = {
+						...sharedMeta(data),
 						id: crypto.randomUUID(),
 						title: data.title.rendered,
 						description: decode(cleanHTML),
 						slug: data.slug,
-						publishedAt: new Date(data.date_gmt),
-						updatedAt: new Date(data.modified_gmt),
+						publishedAt: new Date(data.date_gmt).toISOString(),
+						updatedAt: new Date(data.modified_gmt).toISOString(),
 						showOnNav: false,
 						contentLang: 'default',
 						package: 'studiocms',
@@ -108,12 +189,13 @@ export class WordPressAPIConverters extends Effect.Service<WordPressAPIConverter
 				);
 
 				const pageData: PageData = {
+					...sharedMeta(data),
 					id: crypto.randomUUID(),
 					title: data.title.rendered,
 					description: decode(cleanHTML),
 					slug: data.slug,
-					publishedAt: new Date(data.date_gmt),
-					updatedAt: new Date(data.modified_gmt),
+					publishedAt: new Date(data.date_gmt).toISOString(),
+					updatedAt: new Date(data.modified_gmt).toISOString(),
 					showOnNav: false,
 					contentLang: 'default',
 					package: 'studiocms',
@@ -172,20 +254,18 @@ export class WordPressAPIConverters extends Effect.Service<WordPressAPIConverter
 						CategoryOrTagConfig,
 					]);
 
-					const TableMap = {
-						categories: tsPageDataCategories,
-						tags: tsPageDataTags,
+					const TableFnMap = {
+						categories: _getCategoryById,
+						tags: _getTagById,
 					};
 
-					const table = TableMap[type];
+					const tableFn = TableFnMap[type];
 
 					const newItems = [];
 
 					const idChecks = yield* Effect.all(
 						value.map((val) =>
-							sdk.dbService
-								.execute((client) => client.select().from(table).where(eq(table.id, val)).get())
-								.pipe(Effect.map((exists) => ({ val, exists: !!exists })))
+							tableFn(val).pipe(Effect.map((exists) => ({ val, exists: !!exists })))
 						),
 						{ concurrency: 10 }
 					);
@@ -208,53 +288,44 @@ export class WordPressAPIConverters extends Effect.Service<WordPressAPIConverter
 					if (newItems.length > 0) {
 						switch (type) {
 							case 'categories': {
-								const data = newItems.map((category) => {
-									const data: typeof tsPageDataCategories.$inferInsert = {
-										id: category.id,
-										name: category.name,
-										slug: category.slug,
-										description: category.description,
-										meta: JSON.stringify(category.meta),
-									};
-
-									if (category.parent) {
-										data.parent = category.parent;
-									}
-
-									return data;
-								});
+								const data = newItems.map(
+									(category) =>
+										({
+											id: category.id,
+											name: category.name,
+											slug: category.slug,
+											description: category.description,
+											meta: JSON.stringify(category.meta),
+											parent: category.parent || null,
+										}) as (typeof StudioCMSPageDataCategories)['Insert']['Type']
+								);
 
 								yield* Console.log(
 									'Inserting new Categories into the database:',
 									data.map((d) => `${d.id}: ${d.name}`).join(', ')
 								);
-								yield* sdk.dbService.execute((client) =>
-									client.insert(tsPageDataCategories).values(data)
-								);
+								yield* _insertCategory(data);
 
 								yield* Console.log('Categories inserted!');
 								break;
 							}
 							case 'tags': {
-								const tagData = newItems.map((tag) => {
-									const data: typeof tsPageDataTags.$inferInsert = {
-										id: tag.id,
-										name: tag.name,
-										slug: tag.slug,
-										description: tag.description,
-										meta: JSON.stringify(tag.meta),
-									};
-
-									return data;
-								});
+								const tagData = newItems.map(
+									(tag) =>
+										({
+											id: tag.id,
+											name: tag.name,
+											slug: tag.slug,
+											description: tag.description,
+											meta: JSON.stringify(tag.meta),
+										}) as (typeof StudioCMSPageDataTags)['Insert']['Type']
+								);
 
 								yield* Console.log(
 									'Inserting new Tags into the database:',
 									tagData.map((data) => `${data.id}: ${data.name}`).join(', ')
 								);
-								yield* sdk.dbService.execute((client) =>
-									client.insert(tsPageDataTags).values(tagData)
-								);
+								yield* _insertTag(tagData);
 
 								yield* Console.log('Tags inserted!');
 								break;
@@ -291,12 +362,13 @@ export class WordPressAPIConverters extends Effect.Service<WordPressAPIConverter
 					yield* Console.log('No featured media for:', data.title.rendered);
 
 					const pageData: PageData = {
+						...sharedMeta(data),
 						id: crypto.randomUUID(),
 						title: data.title.rendered,
 						description: decode(cleanedHTML),
 						slug: data.slug,
-						publishedAt: new Date(data.date_gmt),
-						updatedAt: new Date(data.modified_gmt),
+						publishedAt: new Date(data.date_gmt).toISOString(),
+						updatedAt: new Date(data.modified_gmt).toISOString(),
 						showOnNav: false,
 						contentLang: 'default',
 						package: pkg,
@@ -325,12 +397,13 @@ export class WordPressAPIConverters extends Effect.Service<WordPressAPIConverter
 				);
 
 				const pageData: PageData = {
+					...sharedMeta(data),
 					id: crypto.randomUUID(),
 					title: data.title.rendered,
 					description: decode(cleanedHTML),
 					slug: data.slug,
-					publishedAt: new Date(data.date_gmt),
-					updatedAt: new Date(data.modified_gmt),
+					publishedAt: new Date(data.date_gmt).toISOString(),
+					updatedAt: new Date(data.modified_gmt).toISOString(),
 					showOnNav: false,
 					contentLang: 'default',
 					package: pkg,
