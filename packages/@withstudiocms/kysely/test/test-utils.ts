@@ -1,13 +1,8 @@
-import { existsSync } from 'node:fs';
-import { unlink } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { LibsqlDialect } from '@libsql/kysely-libsql';
 import * as allure from 'allure-js-commons';
-import { Effect } from 'effect';
 import { test as baseTest } from 'vitest';
-import { getDBClientLive } from '../src';
-import { getMigratorLive } from '../src/migrator';
+import { DBFixture } from '../src/test-utils';
 
 export const parentSuiteName = '@withstudiocms/kysely Package Tests';
 export const sharedTags = ['package:@withstudiocms/kysely', 'type:unit', 'scope:withstudiocms'];
@@ -100,166 +95,23 @@ export const allureTester = (allureMeta: { suiteParentName: string; suiteName: s
 	});
 
 /**
- * Creates a reusable test fixture for a file-backed LibSQL Kysely database.
+ * Creates a new database client fixture for testing.
  *
- * This factory sets up a file URL for a local SQLite/LibSQL test database (test.db next to this module)
- * and returns helpers to create a typed Kysely client and to remove the database file between tests.
+ * @typeParam Schema - The database schema type for the Kysely client.
  *
- * Remarks:
- * - Intended for use in tests where an isolated, file-backed database instance is required.
- * - The returned cleanup function is idempotent: it checks for the file's existence before attempting removal.
- * - The returned getClient function constructs a Kysely client configured with a LibsqlDialect pointed at the
- *   fixture database file and typed to StudioCMSDatabaseSchema.
+ * @param suite - The name of the test suite, used to generate a unique database file.
  *
- * Returns:
- * An object with two properties:
- * - cleanup: () => Promise<void> — asynchronously removes the test database file if it exists.
- * - getClient: () => Kysely<StudioCMSDatabaseSchema> — creates and returns a new Kysely client instance
- *   configured to use the LibSQL dialect with the fixture file URL.
+ * @returns A `DBFixture<Schema>` instance configured for the specified test suite.
  *
- * Example:
- * ```ts
- * const { cleanup, getClient } = DBClientFixture();
- * await cleanup(); // ensure fresh state
- * const db = getClient();
- * // ... run tests against `db`
- * await cleanup(); // remove test.db after tests
- * ```
+ * @remarks
+ * This function initializes a new `DBFixture` with the provided suite name,
+ * setting up a dedicated test database environment for each test suite.
+ * The database file is created in the current working directory of the test file.
  */
 export const DBClientFixture = <Schema>(suite: string) => {
-	/**
-	 * Normalizes a string to be filesystem-friendly by replacing non-alphanumeric characters.
-	 *
-	 * @param str - The input string to normalize.
-	 * @returns A normalized string safe for use in file paths.
-	 * @internal
-	 */
-	function normalize(str: string) {
-		return str.replace(/[^a-zA-Z0-9]/g, '_').toLowerCase();
-	}
-
-	/**
-	 * File path for the test database, unique per suite.
-	 *
-	 * @remarks
-	 * The database file is named using the normalized suite name to avoid collisions
-	 * between different test suites.
-	 * @internal
-	 */
-	const dbFilePath = `./test-${normalize(suite)}.db`;
-
-	/**
-	 * URL object representing the test database file location.
-	 * @internal
-	 */
-	const dbFile = new URL(dbFilePath, import.meta.url);
-
-	/**
-	 * String URL for the test database file.
-	 * @internal
-	 */
-	const url = dbFile.toString();
-
-	/**
-	 * LibsqlDialect instance configured to connect to the test database file.
-	 */
-	const dialect = new LibsqlDialect({ url });
-
-	// ============================================
-	// Primary Effect-based fixture implementations
-	// ============================================
-
-	/**
-	 * Returns an object containing the cleanup and getClient functions.
-	 */
-	const effect = {
-		/**
-		 * Asynchronously removes the test database file if it exists.
-		 *
-		 * @remarks
-		 * This function checks for the existence of the database file before attempting to delete it,
-		 * ensuring that it does not throw an error if the file is already absent.
-		 *
-		 * @returns A Promise that resolves when the file has been removed or if it did not exist.
-		 */
-		cleanup: () =>
-			Effect.gen(function* () {
-				if (existsSync(dbFile)) {
-					yield* Effect.promise(() => unlink(dbFile));
-				}
-			}),
-
-		/**
-		 * Creates and returns a Kysely client instance configured for the test database.
-		 *
-		 * @remarks
-		 * The returned client is typed to StudioCMSDatabaseSchema and uses the LibSQL dialect
-		 * pointed at the fixture database file.
-		 *
-		 * @returns A Kysely client instance for interacting with the test database.
-		 */
-		getClient: () => getDBClientLive<Schema>(dialect),
-
-		/**
-		 * Creates and returns a migrator instance configured for the test database.
-		 *
-		 * @remarks
-		 * The returned migrator is configured to use the LibSQL dialect pointed at the fixture database file.
-		 *
-		 * @returns A migrator instance for managing migrations on the test database.
-		 */
-		getMigrator: () => getMigratorLive(dialect, migrationFolder),
-	};
-
-	// ============================================
-	// Primary JavaScript-based fixture implementations
-	// ============================================
-
-	/**
-	 * Returns an object containing JavaScript versions of the cleanup and getClient functions
-	 */
-	const js = {
-		/**
-		 * Asynchronously removes the test database file if it exists.
-		 *
-		 * @remarks
-		 * This function checks for the existence of the database file before attempting to delete it,
-		 * ensuring that it does not throw an error if the file is already absent.
-		 *
-		 * @returns A Promise that resolves when the file has been removed or if it did not exist.
-		 */
-		cleanup: () => Effect.runPromise(effect.cleanup()),
-
-		/**
-		 * Creates and returns a Kysely client instance configured for the test database.
-		 *
-		 * @remarks
-		 * The returned client is typed to StudioCMSDatabaseSchema and uses the LibSQL dialect
-		 * pointed at the fixture database file.
-		 *
-		 * @returns A Kysely client instance for interacting with the test database.
-		 */
-		getClient: () => Effect.runPromise(effect.getClient()),
-
-		/**
-		 * Creates and returns a migrator instance configured for the test database.
-		 *
-		 * @remarks
-		 * The returned migrator is configured to use the LibSQL dialect pointed at the fixture database file.
-		 *
-		 * @returns A migrator instance for managing migrations on the test database.
-		 */
-		getMigrator: () => Effect.runPromise(effect.getMigrator()),
-	};
-
-	// ============================================
-	// Return both Effect and JavaScript fixtures
-	// ============================================
-
-	return {
-		dialect,
-		effect,
-		js,
-		run: Effect.runPromise,
-	};
+	return new DBFixture<Schema>({
+		suiteName: suite,
+		cwd: import.meta.url,
+		migrationsDir: migrationFolder,
+	});
 };
