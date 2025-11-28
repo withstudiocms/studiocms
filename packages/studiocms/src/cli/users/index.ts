@@ -10,7 +10,7 @@ import { intro as SCMS_Intro } from '../utils/intro.js';
 import { buildDebugLogger } from '../utils/logger.js';
 import type { EffectStepFn } from '../utils/types.js';
 import { createUsers } from './steps/createUsers.js';
-import { libsqlModifyUsers } from './steps/libsql/modifyUsers.js';
+import { modifyUsers } from './steps/modifyUsers.js';
 import { next } from './steps/next.js';
 
 export const debug = Cli.Options.boolean('debug').pipe(
@@ -51,7 +51,7 @@ type SelectOptionMap = {
 
 const SelectOptionMapper: SelectOptionMap = {
 	[DBEditOptions.create]: createUsers,
-	[DBEditOptions.modify]: libsqlModifyUsers,
+	[DBEditOptions.modify]: modifyUsers,
 };
 
 export const usersCMD = Cli.Command.make(
