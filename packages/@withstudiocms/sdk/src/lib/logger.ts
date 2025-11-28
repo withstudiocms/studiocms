@@ -37,11 +37,11 @@ function getLevelPrefix(level: LoggerLevel) {
 	const levelLabel = level.toUpperCase();
 	switch (level) {
 		case 'error':
-			return `❌ [${levelLabel}]`;
+			return `[${levelLabel}]`;
 		case 'warn':
-			return `⚠️ [${levelLabel}]`;
+			return `[${levelLabel}]`;
 		case 'debug':
-			return `🐛 [${levelLabel}]`;
+			return `[${levelLabel}]`;
 		default:
 			return '';
 	}
@@ -96,13 +96,13 @@ export class SDKLogger {
 		console.log(`${getEventPrefix('info', this.label)} ${message}`);
 	}
 	warn(message: string) {
-		console.warn(`${getEventPrefix('warn', this.label)} ${message}`);
+		console.warn(`${getEventPrefix('warn', this.label)} ⚠️ ${message}`);
 	}
 	error(message: string) {
-		console.error(`${getEventPrefix('error', this.label)} ${message}`);
+		console.error(`${getEventPrefix('error', this.label)} ❌ ${message}`);
 	}
 	debug(message: string) {
-		console.debug(`${getEventPrefix('debug', this.label)} ${message}`);
+		console.debug(`${getEventPrefix('debug', this.label)} 🐛 ${message}`);
 	}
 }
 
@@ -139,16 +139,16 @@ export const makeLogger = Logger.make(({ logLevel, message: _message, spans }) =
 		case LogLevel.Trace:
 		case LogLevel.Debug: {
 			// Debug Emoji followed by message
-			logger.debug(`🐛 ${message}`);
+			logger.debug(`${message}`);
 			break;
 		}
 		case LogLevel.Error:
 		case LogLevel.Fatal: {
-			logger.error(`❌ ${message}`);
+			logger.error(`${message}`);
 			break;
 		}
 		case LogLevel.Warning: {
-			logger.warn(`⚠️ ${message}`);
+			logger.warn(`${message}`);
 			break;
 		}
 		case LogLevel.All:
