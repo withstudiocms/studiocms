@@ -486,13 +486,13 @@ export const studiocms = defineIntegration({
 						messages.push({
 							label: 'studiocms:database',
 							logLevel: 'info',
-							message: 'Successfully connected to the database.',
+							message: '✅ Successfully connected to the database.',
 						});
 					} catch (error) {
 						messages.push({
 							label: 'studiocms:database',
 							logLevel: 'error',
-							message: `Error connecting to the database: ${
+							message: `❌ Error connecting to the database: ${
 								error instanceof Error ? error.message : String(error)
 							}`,
 						});
