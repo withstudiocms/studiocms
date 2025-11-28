@@ -1,10 +1,9 @@
 import { globSync } from 'node:fs';
 import node from '@astrojs/node';
+import devApps from '@studiocms/devapps';
 import { defineConfig } from 'astro/config';
 import { hmrIntegration } from 'astro-integration-kit/dev';
 import studioCMS from 'studiocms';
-
-// import devApps from '@studiocms/devapps';
 
 const site = process.env.DOKPLOY_DEPLOY_URL
 	? `https://${process.env.DOKPLOY_DEPLOY_URL}`
@@ -41,6 +40,7 @@ export default defineConfig({
 			directories: packagePaths,
 		}),
 		studioCMS(),
+		devApps(),
 	],
 
 	// Used for devcontainer/docker development

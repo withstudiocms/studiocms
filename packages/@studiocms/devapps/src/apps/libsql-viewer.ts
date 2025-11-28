@@ -2,6 +2,9 @@ import { libsqlEndpoint } from 'virtual:studiocms-devapps/endpoints';
 import { defineToolbarApp } from 'astro/toolbar';
 import { closeOnOutsideClick } from '../utils/app-utils.js';
 
+// TODO: Rework this to support multiple database dialects with our new Kysely SDK based on the StudioCMS Config options
+// Possibly have different backend urls/endpoints for different database types?
+
 export default defineToolbarApp({
 	init(canvas, eventTarget) {
 		const appWindow = document.createElement('astro-dev-toolbar-window');

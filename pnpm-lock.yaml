@@ -1017,6 +1017,9 @@ importers:
       '@studiocms/blog':
         specifier: workspace:*
         version: link:../packages/@studiocms/blog
+      '@studiocms/devapps':
+        specifier: workspace:*
+        version: link:../packages/@studiocms/devapps
       '@studiocms/md':
         specifier: workspace:*
         version: link:../packages/@studiocms/md

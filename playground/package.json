@@ -20,6 +20,7 @@
   "dependencies": {
     "@astrojs/node": "catalog:astrojs",
     "@studiocms/blog": "workspace:*",
+    "@studiocms/devapps": "workspace:*",
     "@studiocms/md": "workspace:*",
     "@studiocms/wysiwyg": "workspace:*",
     "astro": "catalog:astrojs",
