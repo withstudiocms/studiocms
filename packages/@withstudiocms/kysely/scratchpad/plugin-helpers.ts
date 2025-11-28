@@ -124,7 +124,7 @@ export async function initializeTableWithTriggers(db: Kysely<any>, dialect: Data
 				name: 'set_audit_timestamp',
 				timing: 'before',
 				event: 'insert',
-				bodySQL: `SET NEW.timestamp = strftime('%s', 'now');`,
+				bodySQL: 'UPDATE plugin_audit_log SET timestamp = CURRENT_TIMESTAMP;',
 			},
 		],
 	};
