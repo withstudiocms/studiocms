@@ -276,4 +276,141 @@ describe(parentSuiteName, () => {
 			expect(triggerNames).toContain('set_audit_timestamp');
 		});
 	});
+
+	test('Handles default values in table definitions', async ({ setupAllure, step }) => {
+		await setupAllure({
+			subSuiteName: 'Handles default values in table definitions',
+			tags: [...sharedTags],
+		});
+
+		await step('should create a table with default values successfully', async () => {
+			const { db } = await dbFixture.getClient();
+			const tableDefinition: TableDefinition = {
+				name: 'plugin_default_values',
+				columns: [
+					{
+						name: 'id',
+						type: 'integer',
+						primaryKey: true,
+						autoIncrement: true,
+					},
+					{
+						name: 'status',
+						type: 'text',
+						notNull: true,
+						default: 'active',
+					},
+					{
+						name: 'created_at',
+						type: 'integer',
+						notNull: true,
+						defaultSQL: 'CURRENT_TIMESTAMP',
+					},
+				],
+			};
+
+			const manager = new KyselyTableManager(db, {
+				tableDefinition,
+				dialect,
+				onTableCreated(tableName) {
+					expect(tableName).toBe(tableDefinition.name);
+				},
+				onTableExists(_tableName) {
+					expect(_tableName).toBe(tableDefinition.name);
+				},
+			});
+
+			await manager.initialize();
+
+			// Verify that the table was created with default values
+			const columns = await db
+				.selectFrom('sqlite_master')
+				.select(['sql'])
+				.where('type', '=', 'table')
+				.where('name', '=', tableDefinition.name)
+				.execute();
+
+			const createTableSQL = columns[0]?.sql as string;
+			expect(createTableSQL).toContain('"status" text default \'active\' not null');
+			expect(createTableSQL).toContain('"created_at" integer default CURRENT_TIMESTAMP not null');
+		});
+	});
+
+	test('Create, drop, and recreate a table', async ({ setupAllure, step }) => {
+		await setupAllure({
+			subSuiteName: 'Create, drop, and recreate a table',
+			tags: [...sharedTags],
+		});
+
+		const tableDefinition: TableDefinition = {
+			name: 'plugin_recreate_table',
+			columns: [
+				{
+					name: 'id',
+					type: 'integer',
+					primaryKey: true,
+					autoIncrement: true,
+				},
+				{
+					name: 'data',
+					type: 'text',
+					notNull: true,
+				},
+			],
+		};
+
+		await step('should drop and recreate a table successfully', async () => {
+			const { db } = await dbFixture.getClient();
+
+			const manager = new KyselyTableManager(db, {
+				tableDefinition,
+				dialect,
+				onTableCreated(tableName) {
+					expect(tableName).toBe(tableDefinition.name);
+				},
+				onTableExists(_tableName) {
+					expect(_tableName).toBe(tableDefinition.name);
+				},
+			});
+
+			// First creation
+			await manager.initialize();
+
+			const existsAfterCreate = await manager.tableExists();
+			expect(existsAfterCreate).toBe(true);
+
+			// Drop the table
+			await manager.dropTable();
+
+			const existsAfterDrop = await manager.tableExists();
+			expect(existsAfterDrop).toBe(false);
+		});
+
+		await step('should recreate the dropped table successfully', async () => {
+			const { db } = await dbFixture.getClient();
+
+			const manager = new KyselyTableManager(db, {
+				tableDefinition,
+				dialect,
+				onTableCreated(tableName) {
+					expect(tableName).toBe(tableDefinition.name);
+				},
+				onTableExists(_tableName) {
+					expect(_tableName).toBe(tableDefinition.name);
+				},
+			});
+
+			// Recreate the table
+			await manager.initialize();
+
+			const existsAfterRecreate = await manager.tableExists();
+			expect(existsAfterRecreate).toBe(true);
+
+			// Recreate again to ensure idempotency
+			await manager.recreateTable();
+
+			const existsAfterSecondRecreate = await manager.tableExists();
+			expect(existsAfterSecondRecreate).toBe(true);
+		});
+	});
 });
