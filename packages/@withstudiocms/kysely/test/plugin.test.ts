@@ -1,4 +1,3 @@
-import { sql } from 'kysely';
 import { afterEach, beforeEach, describe, expect } from 'vitest';
 import { KyselyTableManager, type TableDefinition } from '../src/plugin.js';
 import { allureTester, DBClientFixture, parentSuiteName, sharedTags } from './test-utils.js';
