@@ -4,8 +4,8 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { LibsqlDialect } from '@libsql/kysely-libsql';
 import { Effect } from 'effect';
-import { getDBClientLive } from './client';
-import { getMigratorLive } from './migrator';
+import { getDBClientLive } from './client.js';
+import { getMigratorLive } from './migrator.js';
 
 type DBFixtureOptions = {
 	suiteName: string;
