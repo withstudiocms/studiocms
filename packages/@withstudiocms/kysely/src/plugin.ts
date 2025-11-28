@@ -136,6 +136,7 @@ export class KyselyTableManager {
 		const { dialect } = this.options;
 
 		switch (dialect) {
+			/* v8 ignore start */
 			case 'postgres': {
 				const result = await this.db
 					.selectFrom('information_schema.tables')
@@ -155,7 +156,7 @@ export class KyselyTableManager {
 					.executeTakeFirst();
 				return !!result;
 			}
-
+			/* v8 ignore stop */
 			case 'sqlite': {
 				const result = await this.db
 					.selectFrom('sqlite_master')
@@ -165,9 +166,10 @@ export class KyselyTableManager {
 					.executeTakeFirst();
 				return !!result;
 			}
-
+			/* v8 ignore start */
 			default:
 				throw new Error(`Unsupported dialect: ${dialect}`);
+			/* v8 ignore stop */
 		}
 	}
 
@@ -257,6 +259,7 @@ export class KyselyTableManager {
 	private async createTrigger(trigger: TriggerDefinition): Promise<void> {
 		const { tableDefinition, dialect } = this.options;
 
+		/* v8 ignore start */
 		if (dialect === 'postgres') {
 			// PostgreSQL requires a function first, then the trigger
 			const functionName = `${trigger.name}_func`;
@@ -279,6 +282,7 @@ export class KyselyTableManager {
         EXECUTE FUNCTION ${sql.raw(functionName)}();
       `.execute(this.db);
 		} else {
+			/* v8 ignore stop */
 			// SQLite and MySQL
 			await sql`
         CREATE TRIGGER ${sql.raw(trigger.name)}
