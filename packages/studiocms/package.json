@@ -1,7 +1,7 @@
 {
 	"name": "studiocms",
 	"version": "0.1.0-beta.30",
-	"description": "Astro Native CMS for AstroDB. Built from the ground up by the Astro community.",
+	"description": "A Community-Driven Astro native CMS. Built from the ground up by the Astro community.",
 	"author": {
 		"name": "withstudiocms",
 		"url": "https://studiocms.dev"
@@ -21,7 +21,6 @@
 	"keywords": [
 		"cms",
 		"astrocms",
-		"astrodb",
 		"astrostudio",
 		"astrostudiocms",
 		"studiocms",
@@ -32,7 +31,10 @@
 		"astro-integration",
 		"headlesscms",
 		"headless-cms",
-		"headless"
+		"headless",
+		"content-management-system",
+		"kysely",
+		"kysely-db"
 	],
 	"homepage": "https://studiocms.dev",
 	"publishConfig": {
@@ -187,17 +189,8 @@
 		"typescript": "catalog:"
 	},
 	"peerDependencies": {
-		"@astrojs/db": ">=0.17.2",
-		"@libsql/client": "catalog:min",
-		"@studiocms/web-vitals": "catalog:min",
 		"astro": "catalog:min",
-		"drizzle-orm": "catalog:min",
 		"effect": "catalog:effect",
 		"vite": "catalog:min"
-	},
-	"peerDependenciesMeta": {
-		"@studiocms/web-vitals": {
-			"optional": true
-		}
 	}
 }

@@ -4,15 +4,13 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "db:login": "astro db login",
-    "db:link": "astro db link",
-    "db:push": "astro db push --remote",
-    "dev": "astro dev --remote",
-    "start": "astro dev --remote",
-    "build": "astro build --remote",
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
     "astro": "astro",
-    "preview": "astro preview --remote",
-    "studiocms": "studiocms"
+    "preview": "astro preview",
+    "studiocms": "studiocms",
+    "migrate": "pnpm studiocms migrate"
   },
   "devDependencies": {
     "@types/node": "catalog:",
@@ -20,7 +18,6 @@
     "astro-integration-kit": "catalog:"
   },
   "dependencies": {
-    "@astrojs/db": "catalog:astrojs",
     "@astrojs/node": "catalog:astrojs",
     "@studiocms/web-vitals": "catalog:studiocms",
     "@studiocms/blog": "workspace:*",

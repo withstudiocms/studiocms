@@ -1,4 +1,3 @@
-import db from '@astrojs/db';
 import node from '@astrojs/node';
 import codecovAstroPlugin from '@codecov/astro-plugin';
 import { defineConfig } from 'astro/config';
@@ -13,7 +12,6 @@ export default defineConfig({
 		checkOrigin: false, // This depends on your hosting provider
 	},
 	integrations: [
-		db(),
 		studioCMS(),
 		codecovAstroPlugin({
 			enableBundleAnalysis: true,

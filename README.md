@@ -10,7 +10,7 @@
 [![pkg.pr.new](https://img.shields.io/badge/Continuous%20Releases-pkg.pr.new-8A2BE2?logo=pkgsrc&logoColor=FFF)](https://pkg.pr.new/~/withstudiocms/studiocms)
 [![Built with Astro](https://astro.badg.es/v2/built-with-astro/tiny.svg)](https://astro.build)
 
-StudioCMS is an SSR Headless CMS built with AstroDB for the Astro Ecosystem.
+StudioCMS is an SSR Headless CMS built for the Astro Ecosystem.
 
 To see how to get started with StudioCMS, check out the [StudioCMS Docs](https://docs.studiocms.dev).
 
@@ -67,11 +67,12 @@ Steps to get a running playground should be the following:
 - Clone the GitHub repository
 - Run `pnpm i --frozen-lockfile`
 - Change `dbStartPage` in the Node playground's [StudioCMS config](./playground/studiocms.config.mts) to `true`.
-- Ensure `.env` variables are configured (see [`.env.demo`](./playground/.env.demo) for an example of available environment variables)
+  - If working with a non-libsql DB ensure the `db.dialect` option in the StudioCMS config matches your desired DB type!
+- Ensure `.env` variables are configured (see [`.env.demo`](./playground/.env.demo) for an example of available environment variables).
 - Run the following in this order:
-  - `pnpm build:studiocms` - Build the StudioCMS packages (required to get the current table schema for the StudioCMS integration)
-  - `pnpm playground:push` - Push to your libSQL database assigned via environment variables
-  - `pnpm dev` - Starts the Dev server connected to the linked database (as well as builds all repo packages)
+  - `pnpm build:studiocms` - Build the StudioCMS packages (required to get the current table schema for the StudioCMS integration).
+  - `pnpm playground:migrate --latest` - Update your Database schema to align with the latest migration version.
+  - `pnpm dev` - Starts the Dev server connected to the linked database (as well as builds all repo packages).
 
 Once that process completes successfully you are ready to navigate to `http://localhost:4321/start` and follow the instructions to get your database initialized.
 

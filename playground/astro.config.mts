@@ -4,7 +4,6 @@ import { defineConfig } from 'astro/config';
 import { hmrIntegration } from 'astro-integration-kit/dev';
 import studioCMS from 'studiocms';
 
-// import db from '@astrojs/db';
 // import devApps from '@studiocms/devapps';
 
 const site = process.env.DOKPLOY_DEPLOY_URL
