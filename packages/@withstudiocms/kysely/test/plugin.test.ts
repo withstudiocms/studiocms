@@ -277,9 +277,12 @@ describe(parentSuiteName, () => {
 		});
 	});
 
-	test('Handles default values in table definitions', async ({ setupAllure, step }) => {
+	test('KyselyTableManager can Handle default values in table definitions', async ({
+		setupAllure,
+		step,
+	}) => {
 		await setupAllure({
-			subSuiteName: 'Handles default values in table definitions',
+			subSuiteName: 'KyselyTableManager can Handle default values in table definitions',
 			tags: [...sharedTags],
 		});
 
@@ -336,9 +339,12 @@ describe(parentSuiteName, () => {
 		});
 	});
 
-	test('Create, drop, and recreate a table', async ({ setupAllure, step }) => {
+	test('KyselyTableManager can Create, drop, and recreate a table', async ({
+		setupAllure,
+		step,
+	}) => {
 		await setupAllure({
-			subSuiteName: 'Create, drop, and recreate a table',
+			subSuiteName: 'KyselyTableManager can Create, drop, and recreate a table',
 			tags: [...sharedTags],
 		});
 
