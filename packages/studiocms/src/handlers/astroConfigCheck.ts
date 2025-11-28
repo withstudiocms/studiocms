@@ -5,8 +5,7 @@ import { StudioCMSCoreError } from '../errors.js';
 /**
  * Checks the Users Astro Config for the following:
  *
- * - Astro:DB Integration
- * - SSR Mode (output: "server")
+ * - SSR Adapter is available
  * - Site URL is set (can be "http://localhost:4321" for local development)
  */
 export const checkAstroConfig = defineUtility('astro:config:setup')(
