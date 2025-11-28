@@ -1,90 +1,113 @@
 /** biome-ignore-all lint/suspicious/noExplicitAny: Kysely requires `any` type for handling any migrations */
+
 import { type Kysely, sql } from 'kysely';
+import { type LoggerLevel, SDKLogger } from './utils/logger.js';
+import type {
+	DatabaseDialect,
+	IndexDefinition,
+	TableDefinition,
+	TriggerDefinition,
+} from './utils/types.js';
 
 /**
- * Supported database dialects.
+ * Options for configuring the KyselyTableManager.
  */
-export type DatabaseDialect = 'sqlite' | 'mysql' | 'postgres';
-
-/**
- * Supported column types.
- */
-export type ColumnType = 'integer' | 'text';
-
-/**
- * Trigger timing options.
- */
-export type TriggerTiming = 'before' | 'after';
-
-/**
- * Trigger event options.
- */
-export type TriggerEvent = 'insert' | 'update' | 'delete';
-
-/**
- * Defines a column in a database table.
- */
-export interface ColumnDefinition {
-	name: string;
-	type: ColumnType;
-	primaryKey?: boolean;
-	autoIncrement?: boolean;
-	notNull?: boolean;
-	unique?: boolean;
-	default?: string | number;
-	defaultSQL?: string; // For SQL expressions like CURRENT_TIMESTAMP
-	references?: {
-		table: string;
-		column: string;
-		onDelete?: 'cascade' | 'set null' | 'restrict' | 'no action';
-	};
-}
-
-/**
- * Defines an index on a database table.
- */
-export interface IndexDefinition {
-	name: string;
-	columns: string[];
-	unique?: boolean;
-}
-
-/**
- * Defines a trigger on a database table.
- */
-export interface TriggerDefinition {
-	name: string;
-	timing: TriggerTiming; // 'before' | 'after'
-	event: TriggerEvent; // 'insert' | 'update' | 'delete'
-	// Body statements that can reference NEW/OLD. For SQLite/MySQL this is the trigger body;
-	// for Postgres it's placed inside a trigger function that returns NEW/OLD automatically.
-	bodySQL: string;
-}
-
-/**
- * Defines a database table schema.
- */
-export interface TableDefinition {
-	name: string;
-	deprecated?: boolean;
-	columns: ColumnDefinition[];
-	indexes?: IndexDefinition[];
-	triggers?: TriggerDefinition[];
-}
-
-interface TableManagerOptions {
+export interface TableManagerOptions {
 	tableDefinition: TableDefinition;
 	dialect: DatabaseDialect;
 	onTableCreated?: (tableName: string) => void | Promise<void>;
 	onTableExists?: (tableName: string) => void | Promise<void>;
 	silent?: boolean;
+	logLevel?: LoggerLevel;
+	logLabel?: string;
 }
 
+/**
+ * KyselyTableManager
+ *
+ * Manages the lifecycle of a single database table using a Kysely instance and a declarative
+ * table definition. Responsibilities include:
+ * - Introspecting the database to determine whether the table exists.
+ * - Creating the table with columns, constraints, defaults, foreign keys, indexes and triggers.
+ * - Dropping and recreating the table.
+ * - Providing an initialize method that conditionally creates the table and invokes callbacks.
+ *
+ * The manager is dialect-aware and uses information schema queries for introspection and
+ * dialect-specific SQL for trigger creation (PostgreSQL requires a separate function creation).
+ *
+ * Constructor:
+ * - db: A configured Kysely instance used to build and execute schema and raw SQL statements.
+ * - options: Configuration for the manager. Required properties include:
+ *   - tableDefinition: A TableDefinition describing name, columns, indexes and triggers.
+ *   - dialect: One of the supported dialect strings (e.g. "postgres", "mysql", "sqlite").
+ *   - onTableCreated?: Optional callback invoked with the table name after successful creation.
+ *   - onTableExists?: Optional callback invoked with the table name when the table already exists.
+ *   - silent?: When true, suppresses console logs produced by initialize.
+ *
+ * Public methods:
+ * - tableExists(): Promise<boolean>
+ *   Checks whether the configured table exists by querying the database's introspection tables.
+ *
+ * - createTable(): Promise<void>
+ *   Creates the table according to the provided TableDefinition. The method:
+ *   - Adds columns with declared attributes (primary key, auto-increment, not-null, unique,
+ *     defaults, SQL defaults, foreign key references and onDelete behavior).
+ *   - Creates declared indexes.
+ *   - Creates declared triggers (dialect-specific SQL).
+ *
+ * - initialize(): Promise<void>
+ *   Ensures the table exists. If it does not, creates it, logs progress unless suppressed, and
+ *   calls onTableCreated. If it already exists, logs (unless suppressed) and calls onTableExists.
+ *
+ * - dropTable(): Promise<void>
+ *   Drops the table if it exists.
+ *
+ * - recreateTable(): Promise<void>
+ *   Convenience routine that drops the table (if present) then creates it anew.
+ *
+ * Private/internal methods:
+ * - tableExistsViaIntrospection(tableName: string): Promise<boolean>
+ *   Performs dialect-specific introspection to determine table existence:
+ *   - Postgres: queries information_schema.tables for public schema.
+ *   - MySQL: queries information_schema.tables using DATABASE() for the current schema.
+ *   - SQLite: queries sqlite_master.
+ *
+ * - createIndex(index: IndexDefinition): Promise<void>
+ *   Builds and executes an index creation statement (supports uniqueness and multiple columns).
+ *
+ * - createTrigger(trigger: TriggerDefinition): Promise<void>
+ *   Creates triggers using raw SQL. For PostgreSQL, a trigger function is created or replaced
+ *   and the trigger is attached to it. For SQLite and MySQL, a single CREATE TRIGGER statement
+ *   is executed. The trigger body is injected as raw SQL (caller responsibility to ensure correctness).
+ *
+ * Errors and edge cases:
+ * - Throws an error for unsupported dialect values when performing introspection or dialect-specific operations.
+ * - Raw SQL execution (trigger/function creation) may propagate provider-specific errors (syntax, permission, etc.).
+ * - The caller is responsible for supplying a correct and safe TableDefinition (including valid
+ *   raw SQL in trigger bodies and defaultSQL) to avoid SQL injection or runtime errors.
+ *
+ * Notes:
+ * - This class intentionally relies on Kysely's schema builder for typical DDL and on raw SQL
+ *   for operations (like trigger functions) not uniformly supported by builders across dialects.
+ * - The onTableCreated and onTableExists callbacks allow consumers to perform application-level
+ *   migration or initialization tasks after the manager's actions.
+ *
+ * Example:
+ * // Construct with a Kysely instance and options containing a TableDefinition and dialect,
+ * // then call manager.initialize() to ensure the table exists.
+ *
+ * @remarks
+ * - Keep trigger.bodySQL and column.defaultSQL under strict control; they are injected as raw SQL.
+ * - The manager treats "public" as the schema for PostgreSQL introspection.
+ *
+ * @public
+ */
 export class KyselyTableManager {
 	private db: Kysely<any>;
 	private options: Required<Omit<TableManagerOptions, 'tableDefinition'>> & {
 		tableDefinition: TableDefinition;
 	};
+	private logger: SDKLogger;
 
 	constructor(db: Kysely<any>, options: TableManagerOptions) {
 		this.db = db;
@@ -92,8 +115,11 @@ export class KyselyTableManager {
 			onTableCreated: () => {},
 			onTableExists: () => {},
 			silent: false,
+			logLevel: 'info',
+			logLabel: 'studiocms:database',
 			...options,
 		};
+		this.logger = new SDKLogger({ level: this.options.logLevel }, this.options.logLabel);
 	}
 
 	/**
@@ -269,19 +295,19 @@ export class KyselyTableManager {
 
 		if (!exists) {
 			if (!silent) {
-				console.log(`Table '${tableDefinition.name}' does not exist. Creating...`);
+				this.logger.info(`Table '${tableDefinition.name}' does not exist. Creating...`);
 			}
 
 			await this.createTable();
 
 			if (!silent) {
-				console.log(`Table '${tableDefinition.name}' created successfully.`);
+				this.logger.info(`Table '${tableDefinition.name}' created successfully.`);
 			}
 
 			await onTableCreated(tableDefinition.name);
 		} else {
 			if (!silent) {
-				console.log(`Table '${tableDefinition.name}' already exists.`);
+				this.logger.debug(`Table '${tableDefinition.name}' already exists.`);
 			}
 
 			await onTableExists(tableDefinition.name);
@@ -303,180 +329,4 @@ export class KyselyTableManager {
 		await this.dropTable();
 		await this.createTable();
 	}
-}
-
-// ============================================================
-// USAGE EXAMPLES
-// ============================================================
-
-// Example 1: Simple plugin table
-export async function initializePluginTable(db: Kysely<any>, dialect: DatabaseDialect) {
-	const tableDefinition: TableDefinition = {
-		name: 'plugin_data',
-		columns: [
-			{
-				name: 'id',
-				type: 'integer',
-				primaryKey: true,
-				autoIncrement: true,
-			},
-			{
-				name: 'key',
-				type: 'text',
-				notNull: true,
-				unique: true,
-			},
-			{
-				name: 'value',
-				type: 'text',
-			},
-			{
-				name: 'created_at',
-				type: 'integer',
-				notNull: true,
-			},
-		],
-	};
-
-	const manager = new KyselyTableManager(db, {
-		tableDefinition,
-		dialect,
-	});
-
-	await manager.initialize();
-}
-
-// Example 2: Table with indexes and foreign keys
-export async function initializeAdvancedTable(db: Kysely<any>, dialect: DatabaseDialect) {
-	const tableDefinition: TableDefinition = {
-		name: 'plugin_sessions',
-		columns: [
-			{
-				name: 'id',
-				type: 'integer',
-				primaryKey: true,
-				autoIncrement: true,
-			},
-			{
-				name: 'user_id',
-				type: 'integer',
-				notNull: true,
-				references: {
-					table: 'plugin_users',
-					column: 'id',
-					onDelete: 'cascade',
-				},
-			},
-			{
-				name: 'token',
-				type: 'text',
-				notNull: true,
-				unique: true,
-			},
-			{
-				name: 'expires_at',
-				type: 'integer',
-				notNull: true,
-			},
-		],
-		indexes: [
-			{
-				name: 'idx_sessions_user_id',
-				columns: ['user_id'],
-			},
-			{
-				name: 'idx_sessions_token',
-				columns: ['token'],
-				unique: true,
-			},
-		],
-	};
-
-	const manager = new KyselyTableManager(db, {
-		tableDefinition,
-		dialect,
-		onTableCreated: async (tableName) => {
-			console.log(`${tableName} created! Inserting default data...`);
-		},
-	});
-
-	await manager.initialize();
-}
-
-// Example 3: Table with triggers
-export async function initializeTableWithTriggers(db: Kysely<any>, dialect: DatabaseDialect) {
-	const tableDefinition: TableDefinition = {
-		name: 'plugin_audit_log',
-		columns: [
-			{
-				name: 'id',
-				type: 'integer',
-				primaryKey: true,
-				autoIncrement: true,
-			},
-			{
-				name: 'action',
-				type: 'text',
-				notNull: true,
-			},
-			{
-				name: 'timestamp',
-				type: 'integer',
-				notNull: true,
-			},
-		],
-		triggers: [
-			{
-				name: 'set_audit_timestamp',
-				timing: 'before',
-				event: 'insert',
-				bodySQL: `SET NEW.timestamp = strftime('%s', 'now');`,
-			},
-		],
-	};
-
-	const manager = new KyselyTableManager(db, {
-		tableDefinition,
-		dialect,
-	});
-
-	await manager.initialize();
-}
-
-// Example 4: Multiple tables with shared dialect
-export async function initializePluginTables(db: Kysely<any>, dialect: DatabaseDialect) {
-	const tables: TableDefinition[] = [
-		{
-			name: 'plugin_users',
-			columns: [
-				{ name: 'id', type: 'integer', primaryKey: true, autoIncrement: true },
-				{ name: 'username', type: 'text', notNull: true, unique: true },
-				{ name: 'email', type: 'text', notNull: true, unique: true },
-			],
-		},
-		{
-			name: 'plugin_sessions',
-			columns: [
-				{ name: 'id', type: 'integer', primaryKey: true, autoIncrement: true },
-				{
-					name: 'user_id',
-					type: 'integer',
-					notNull: true,
-					references: {
-						table: 'plugin_users',
-						column: 'id',
-						onDelete: 'cascade',
-					},
-				},
-				{ name: 'token', type: 'text', notNull: true },
-			],
-		},
-	];
-
-	// Initialize all tables
-	await Promise.all(
-		tables.map((tableDefinition) =>
-			new KyselyTableManager(db, { tableDefinition, dialect }).initialize()
-		)
-	);
 }

@@ -51,6 +51,10 @@
       "types": "./dist/migrator.d.ts",
       "default": "./dist/migrator.js"
     },
+    "./plugin": {
+      "types": "./dist/plugin.d.ts",
+      "default": "./dist/plugin.js"
+    },
     "./schema": {
       "types": "./dist/schema.d.ts",
       "default": "./dist/schema.js"
