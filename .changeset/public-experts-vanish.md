@@ -8,6 +8,7 @@
 "@studiocms/google": patch
 "@studiocms/auth0": patch
 "@studiocms/blog": patch
+"@studiocms/devapps": patch
 "studiocms": patch
 ---
 

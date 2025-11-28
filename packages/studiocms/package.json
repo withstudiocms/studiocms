@@ -164,7 +164,7 @@
 		"astro-integration-kit": "catalog:",
 		"boxen": "^8.0.1",
 		"chalk": "catalog:",
-		"diff": "^8.0.2",
+		"diff": "catalog:",
 		"dompurify": "^3.3.0",
 		"dotenv": "^17.2.3",
 		"fuse.js": "^7.1.0",

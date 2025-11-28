@@ -40,6 +40,9 @@ catalogs:
     deepmerge-ts:
       specifier: ^7.1.5
       version: 7.1.5
+    diff:
+      specifier: ^8.0.2
+      version: 8.0.2
     esbuild:
       specifier: ^0.25.8
       version: 0.25.12
@@ -65,12 +68,31 @@ catalogs:
     effect:
       specifier: ^3.19.6
       version: 3.19.6
+  kysely:
+    '@libsql/client':
+      specifier: ^0.15.15
+      version: 0.15.15
+    '@libsql/kysely-libsql':
+      specifier: ^0.4.1
+      version: 0.4.1
+    '@types/pg':
+      specifier: ^8.15.6
+      version: 8.15.6
+    kysely:
+      specifier: ^0.28.8
+      version: 0.28.8
+    mysql2:
+      specifier: ^3.15.3
+      version: 3.15.3
+    pg:
+      specifier: ^8.16.3
+      version: 8.16.3
   min:
     '@astrojs/markdown-remark':
       specifier: ^6.3.3
       version: 6.3.9
     '@libsql/client':
-      specifier: ^0.15.10
+      specifier: ^0.15.15
       version: 0.15.15
     astro:
       specifier: ^5.12.9
@@ -817,29 +839,29 @@ importers:
   packages/@withstudiocms/kysely:
     dependencies:
       '@libsql/client':
-        specifier: ^0.15.15
+        specifier: catalog:kysely
         version: 0.15.15
       '@libsql/kysely-libsql':
-        specifier: ^0.4.1
+        specifier: catalog:kysely
         version: 0.4.1(kysely@0.28.8)
       effect:
         specifier: catalog:effect
         version: 3.19.6
       kysely:
-        specifier: ^0.28.8
+        specifier: catalog:kysely
         version: 0.28.8
       mysql2:
-        specifier: ^3.15.3
+        specifier: catalog:kysely
         version: 3.15.3
       pg:
-        specifier: ^8.16.3
+        specifier: catalog:kysely
         version: 8.16.3
     devDependencies:
       '@types/node':
         specifier: 'catalog:'
         version: 22.19.1
       '@types/pg':
-        specifier: ^8.15.6
+        specifier: catalog:kysely
         version: 8.15.6
       tsx:
         specifier: ^4.20.6
@@ -854,7 +876,7 @@ importers:
         specifier: workspace:*
         version: link:../kysely
       diff:
-        specifier: ^8.0.2
+        specifier: 'catalog:'
         version: 8.0.2
       diff2html:
         specifier: ^3.4.52
@@ -939,7 +961,7 @@ importers:
         specifier: 'catalog:'
         version: 5.6.2
       diff:
-        specifier: ^8.0.2
+        specifier: 'catalog:'
         version: 8.0.2
       dompurify:
         specifier: ^3.3.0
