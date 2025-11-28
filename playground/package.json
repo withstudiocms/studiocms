@@ -19,7 +19,6 @@
   },
   "dependencies": {
     "@astrojs/node": "catalog:astrojs",
-    "@studiocms/web-vitals": "catalog:studiocms",
     "@studiocms/blog": "workspace:*",
     "@studiocms/md": "workspace:*",
     "@studiocms/wysiwyg": "workspace:*",
