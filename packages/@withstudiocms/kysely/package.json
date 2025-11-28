@@ -63,6 +63,10 @@
       "types": "./dist/tables.d.ts",
       "default": "./dist/tables.js"
     },
+    "./test-utils": {
+      "types": "./dist/test-utils.d.ts",
+      "default": "./dist/test-utils.js"
+    },
     "./core/*": {
       "types": "./dist/core/*.d.ts",
       "default": "./dist/core/*.js"
