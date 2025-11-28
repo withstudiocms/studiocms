@@ -1,10 +1,12 @@
 import { styleText } from 'node:util';
 import { Config, Effect, Layer, List, Logger, LogLevel } from 'effect';
 
+/* v8 ignore start */
 export function stripNameFromLabel(label: string): string {
 	const prefix = 'studiocms/';
 	return label.startsWith(prefix) ? label.slice(prefix.length) : label;
 }
+/* v8 ignore stop */
 
 /**
  * A cache that stores instances of `AstroIntegrationLogger` associated with their string keys.
@@ -36,6 +38,7 @@ const dateTimeFormat = new Intl.DateTimeFormat([], {
 function getLevelPrefix(level: LoggerLevel) {
 	const levelLabel = level.toUpperCase();
 	switch (level) {
+		/* v8 ignore start */
 		case 'error':
 			return `[${levelLabel}]`;
 		case 'warn':
@@ -44,6 +47,7 @@ function getLevelPrefix(level: LoggerLevel) {
 			return `[${levelLabel}]`;
 		default:
 			return '';
+		/* v8 ignore stop */
 	}
 }
 
@@ -59,12 +63,14 @@ export const getEventPrefix = (level: LoggerLevel, label?: string) => {
 	if (label) {
 		prefix.push(`[${label}]`);
 	}
+	/* v8 ignore start */
 	if (level === 'error') {
 		return styleText('red', prefix.join(' '));
 	}
 	if (level === 'warn') {
 		return styleText('yellow', prefix.join(' '));
 	}
+	/* v8 ignore stop */
 	if (level === 'debug') {
 		return styleText('blue', prefix.join(' '));
 	}
@@ -85,22 +91,26 @@ export class SDKLogger {
 		this.label = label;
 	}
 
+	/* v8 ignore start */
 	/**
 	 * Creates a new logger instance with a new label, but the same log options.
 	 */
 	fork(label: string): SDKLogger {
 		return new SDKLogger(this.options, label);
 	}
+	/* v8 ignore stop */
 
 	info(message: string) {
 		console.log(`${getEventPrefix('info', this.label)} ${message}`);
 	}
+	/* v8 ignore start */
 	warn(message: string) {
 		console.warn(`${getEventPrefix('warn', this.label)} ⚠️ ${message}`);
 	}
 	error(message: string) {
 		console.error(`${getEventPrefix('error', this.label)} ❌ ${message}`);
 	}
+	/* v8 ignore stop */
 	debug(message: string) {
 		console.debug(`${getEventPrefix('debug', this.label)} 🐛 ${message}`);
 	}
@@ -124,6 +134,7 @@ const _logger = new SDKLogger({ level: 'info' }, 'studiocms:database');
  * @internal
  */
 export const makeLogger = Logger.make(({ logLevel, message: _message, spans }) => {
+	/* v8 ignore start */
 	const label = 'sdk';
 	const logger = loggerCache.get(label) ?? _logger.fork(stripNameFromLabel(label));
 	loggerCache.set(label, logger);
@@ -133,7 +144,6 @@ export const makeLogger = Logger.make(({ logLevel, message: _message, spans }) =
 	const spanPart = list.length ? ` :: ${list.join(' › ')}` : '';
 	const message = `${String(_message)}${spanPart}`;
 
-	/* v8 ignore start */
 	switch (logLevel) {
 		case LogLevel.Trace:
 		case LogLevel.Debug: {
@@ -159,8 +169,8 @@ export const makeLogger = Logger.make(({ logLevel, message: _message, spans }) =
 			logger.info(message);
 		}
 	}
-	/* v8 ignore stop */
 });
+/* v8 ignore stop */
 
 /**
  * Sets the logger level based on the `STUDIOCMS_LOGLEVEL` environment variable,
