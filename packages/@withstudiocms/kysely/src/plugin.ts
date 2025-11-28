@@ -9,7 +9,12 @@ import type {
 	TriggerDefinition,
 } from './utils/types.js';
 
-export type { IndexDefinition, TableDefinition, TriggerDefinition } from './utils/types.js';
+export type {
+	DatabaseDialect,
+	IndexDefinition,
+	TableDefinition,
+	TriggerDefinition,
+} from './utils/types.js';
 
 /**
  * Options for configuring the KyselyTableManager.

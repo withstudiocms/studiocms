@@ -3,6 +3,7 @@ import {
 	parseAndMerge as _parseAndMerge,
 } from '@withstudiocms/config-utils';
 import { getDBClientLive, type StudioCMSDatabaseSchema } from '@withstudiocms/kysely';
+import type { DatabaseDialect } from '@withstudiocms/kysely/plugin';
 import { configPaths } from '../consts.js';
 import { Effect } from '../effect.js';
 import { type StudioCMSOptions, StudioCMSOptionsSchema } from '../schemas/index.js';
@@ -38,7 +39,7 @@ const loadConfig = (root: URL) => loadConfigFile(root).pipe(Effect.flatMap(parse
  * @param root - The root URL to load the configuration from
  *   - Root URL can be obtained via the `config.root` property from the `astro:config:setup` integration hook
  */
-export const getDBDialect = Effect.fn((root: URL) =>
+export const getDBClientDialect = Effect.fn((root: URL) =>
 	loadConfig(root).pipe(Effect.map((config) => config.db.dialect as DbDialectType))
 );
 
@@ -50,3 +51,12 @@ export const getDbPluginClient = <Schema>(driverDialect: DbDialectType) =>
 		Effect.flatMap(getDbDriver),
 		Effect.flatMap(getDBClientLive<StudioCMSDatabaseSchema & Schema>)
 	);
+
+/**
+ * Get the appropriate DatabaseDialect for the Table Manager based on the configuration
+ */
+export const getTableManagerDialect = Effect.fn((root: URL) =>
+	getDBClientDialect(root).pipe(
+		Effect.map((dialect) => (dialect === 'libsql' ? 'sqlite' : dialect) as DatabaseDialect)
+	)
+);
