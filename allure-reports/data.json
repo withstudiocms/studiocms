@@ -2,6 +2,8 @@
   "links": [
     "..",
     "adam_fix-config-loader",
+    "adam_kysely-plugin-helper",
+    "adam_tweak-config-types",
     "changeset-release_main",
     "main"
   ]
