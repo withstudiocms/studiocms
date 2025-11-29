@@ -1,7 +1,5 @@
 #!/usr/bin/env node
-import dotenv from 'dotenv';
-
-dotenv.config({ quiet: true });
+import 'dotenv/config';
 
 console.log('Starting StudioCMS Migrator...');
 

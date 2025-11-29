@@ -6,6 +6,9 @@ settings:
 
 catalogs:
   astrojs:
+    '@astrojs/db':
+      specifier: ^0.18.3
+      version: 0.18.3
     '@astrojs/node':
       specifier: ^9.5.1
       version: 9.5.1
@@ -621,9 +624,21 @@ importers:
 
   packages/@studiocms/migrator:
     dependencies:
+      '@astrojs/db':
+        specifier: catalog:astrojs
+        version: 0.18.3(@types/pg@8.15.6)(kysely@0.28.8)(mysql2@3.15.3)(pg@8.16.3)
       '@astrojs/node':
         specifier: catalog:astrojs
         version: 9.5.1(astro@5.16.0(@types/node@22.19.1)(jiti@2.6.1)(rollup@4.53.3)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
+      '@studiocms/ui':
+        specifier: catalog:studiocms
+        version: 1.0.0-beta.4(astro@5.16.0(@types/node@22.19.1)(jiti@2.6.1)(rollup@4.53.3)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))(vite@6.4.1(@types/node@22.19.1)(jiti@2.6.1)(tsx@4.20.6)(yaml@2.8.1))
+      '@withstudiocms/effect':
+        specifier: workspace:*
+        version: link:../../@withstudiocms/effect
+      '@withstudiocms/kysely':
+        specifier: workspace:*
+        version: link:../../@withstudiocms/kysely
       astro:
         specifier: catalog:astrojs
         version: 5.16.0(@types/node@22.19.1)(jiti@2.6.1)(rollup@4.53.3)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)

@@ -2,7 +2,7 @@
   "name": "@studiocms/migrator",
   "type": "module",
   "version": "0.1.0-beta.0",
-  "description": "Utility to migrate from older versions of StudioCMS to the latest version.",
+  "description": "Tool for migrating from AstroDB based StudioCMS to Kysely based StudioCMS.",
   "author": {
     "name": "withstudiocms",
     "url": "https://studiocms.dev"
@@ -18,6 +18,14 @@
     "dreyfus92",
     "code.spirit"
   ],
+  "bin": {
+    "studiocms-migrator": "./start.mjs"
+  },
+  "scripts": {
+    "astro:dev": "astro dev",
+    "build": "astro build",
+    "astro": "astro"
+  },
   "license": "MIT",
   "homepage": "https://studiocms.dev",
   "publishConfig": {
@@ -29,20 +37,16 @@
     "dist",
     "start.mjs"
   ],
-  "bin": {
-    "studiocms-migrator": "./start.mjs"
-  },
-  "scripts": {
-    "astro:dev": "astro dev",
-    "build": "astro build",
-    "astro": "astro"
-  },
   "devDependencies": {
     "@types/node": "catalog:",
     "typescript": "catalog:"
   },
   "dependencies": {
+    "@astrojs/db": "catalog:astrojs",
     "@astrojs/node": "catalog:astrojs",
+		"@studiocms/ui": "catalog:studiocms",
+		"@withstudiocms/effect": "workspace:*",
+		"@withstudiocms/kysely": "workspace:*",
     "astro": "catalog:astrojs",
 		"dotenv": "^17.2.3",
     "sharp": "catalog:"
