@@ -10,12 +10,12 @@ export interface AuthConfig {
 		 * Username and Password Auth Provider Configuration
 		 */
 		usernameAndPasswordConfig?: {
-		/**
-		 * Allow User Registration - Allows users to register an account
-		 *
-		 * @default true
-		 */
-		allowUserRegistration?: boolean;
+			/**
+			 * Allow User Registration - Allows users to register an account
+			 *
+			 * @default true
+			 */
+			allowUserRegistration?: boolean;
 		};
 	};
 

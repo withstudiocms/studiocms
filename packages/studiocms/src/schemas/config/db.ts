@@ -1,7 +1,11 @@
 import { z } from 'astro/zod';
 
 export interface DBConfigSchema {
-	/** Database Dialect to use */
+	/**
+	 * Database Dialect to use
+	 *
+	 * @default 'libsql'
+	 */
 	dialect?: 'libsql' | 'postgres' | 'mysql';
 }
 
