@@ -4,11 +4,6 @@ import { allureTester, DBClientFixture, parentSuiteName, sharedTags } from './te
 
 const localSuiteName = 'Plugin Utilities';
 
-/**
- * Database dialect to use for testing
- */
-const dialect = 'sqlite' as const;
-
 describe(parentSuiteName, () => {
 	const test = allureTester({
 		suiteParentName: parentSuiteName,
@@ -56,7 +51,6 @@ describe(parentSuiteName, () => {
 
 			const manager = new KyselyTableManager(db, {
 				tableDefinition,
-				dialect,
 				onTableCreated(tableName) {
 					tableCreated = true;
 					expect(tableName).toBe(tableDefinition.name);
@@ -113,7 +107,6 @@ describe(parentSuiteName, () => {
 
 			const manager = new KyselyTableManager(db, {
 				tableDefinition,
-				dialect,
 				onTableCreated(_tableName) {
 					tableCreated = true;
 				},
@@ -188,7 +181,6 @@ describe(parentSuiteName, () => {
 
 			const manager = new KyselyTableManager(db, {
 				tableDefinition,
-				dialect,
 				onTableCreated(tableName) {
 					expect(tableName).toBe(tableDefinition.name);
 				},
@@ -253,7 +245,6 @@ describe(parentSuiteName, () => {
 
 			const manager = new KyselyTableManager(db, {
 				tableDefinition,
-				dialect,
 				onTableCreated(tableName) {
 					expect(tableName).toBe(tableDefinition.name);
 				},
@@ -314,7 +305,6 @@ describe(parentSuiteName, () => {
 
 			const manager = new KyselyTableManager(db, {
 				tableDefinition,
-				dialect,
 				onTableCreated(tableName) {
 					expect(tableName).toBe(tableDefinition.name);
 				},
@@ -370,7 +360,6 @@ describe(parentSuiteName, () => {
 
 			const manager = new KyselyTableManager(db, {
 				tableDefinition,
-				dialect,
 				onTableCreated(tableName) {
 					expect(tableName).toBe(tableDefinition.name);
 				},
@@ -397,7 +386,6 @@ describe(parentSuiteName, () => {
 
 			const manager = new KyselyTableManager(db, {
 				tableDefinition,
-				dialect,
 				onTableCreated(tableName) {
 					expect(tableName).toBe(tableDefinition.name);
 				},

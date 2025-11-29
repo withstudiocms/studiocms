@@ -3,7 +3,6 @@ import {
 	parseAndMerge as _parseAndMerge,
 } from '@withstudiocms/config-utils';
 import { getDBClientLive, type StudioCMSDatabaseSchema } from '@withstudiocms/kysely';
-import type { DatabaseDialect } from '@withstudiocms/kysely/plugin';
 import { configPaths } from '../consts.js';
 import { Effect } from '../effect.js';
 import { type StudioCMSOptions, StudioCMSOptionsSchema } from '../schemas/index.js';
@@ -51,12 +50,3 @@ export const getDbPluginClient = <Schema>(driverDialect: DbDialectType) =>
 		Effect.flatMap(getDbDriver),
 		Effect.flatMap(getDBClientLive<StudioCMSDatabaseSchema & Schema>)
 	);
-
-/**
- * Get the appropriate DatabaseDialect for the Table Manager based on the configuration
- */
-export const getTableManagerDialect = Effect.fn((root: URL) =>
-	getDBClientDialect(root).pipe(
-		Effect.map((dialect) => (dialect === 'libsql' ? 'sqlite' : dialect) as DatabaseDialect)
-	)
-);

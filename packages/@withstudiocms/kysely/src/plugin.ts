@@ -21,7 +21,6 @@ export type {
  */
 export interface TableManagerOptions {
 	tableDefinition: TableDefinition;
-	dialect: DatabaseDialect;
 	onTableCreated?: (tableName: string) => void | Promise<void>;
 	onTableExists?: (tableName: string) => void | Promise<void>;
 	silent?: boolean;
@@ -129,11 +128,40 @@ export class KyselyTableManager {
 		this.logger = new SDKLogger({ level: this.options.logLevel }, this.options.logLabel);
 	}
 
+	private getDialect(): DatabaseDialect {
+		const adapter = this.db.getExecutor().adapter;
+
+		const cases = [
+			{
+				dialect: 'sqlite' as DatabaseDialect,
+				condition: adapter.supportsReturning && !adapter.supportsTransactionalDdl,
+			},
+			/* v8 ignore start */
+			{
+				dialect: 'mysql' as DatabaseDialect,
+				condition: !adapter.supportsReturning && !adapter.supportsTransactionalDdl,
+			},
+			{
+				dialect: 'postgres' as DatabaseDialect,
+				condition: adapter.supportsReturning && adapter.supportsTransactionalDdl,
+			},
+			/* v8 ignore stop */
+		];
+
+		for (const c of cases) {
+			if (c.condition) {
+				return c.dialect;
+			}
+		}
+
+		throw new Error('Unsupported database dialect');
+	}
+
 	/**
 	 * Check if table exists using database introspection
 	 */
 	private async tableExistsViaIntrospection(tableName: string): Promise<boolean> {
-		const { dialect } = this.options;
+		const dialect = this.getDialect();
 
 		switch (dialect) {
 			/* v8 ignore start */
@@ -257,7 +285,8 @@ export class KyselyTableManager {
 	 * Create a trigger
 	 */
 	private async createTrigger(trigger: TriggerDefinition): Promise<void> {
-		const { tableDefinition, dialect } = this.options;
+		const dialect = this.getDialect();
+		const { tableDefinition } = this.options;
 
 		/* v8 ignore start */
 		if (dialect === 'postgres') {
