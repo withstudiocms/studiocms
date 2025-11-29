@@ -22,8 +22,8 @@
     "studiocms-migrator": "./start.mjs"
   },
   "scripts": {
-    "astro:dev": "astro dev",
-    "build": "astro build",
+    "dev": "astro dev --remote",
+    "build": "astro build --remote",
     "astro": "astro"
   },
   "license": "MIT",

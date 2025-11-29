@@ -185,63 +185,6 @@ const StudioCMSDynamicConfigSettings = defineTable({
 	},
 });
 
-// TODO: Remove deprecated tables in future release
-// StudioCMSSiteConfig, StudioCMSMailerConfig, StudioCMSNotificationSettings
-
-/**
- * @deprecated
- */
-const StudioCMSSiteConfig = defineTable({
-	deprecated: true,
-	columns: {
-		id: column.number({ primaryKey: true }),
-		title: column.text(),
-		description: column.text(),
-		defaultOgImage: column.text({ optional: true }),
-		siteIcon: column.text({ optional: true }),
-		loginPageBackground: column.text({ default: 'studiocms-curves' }),
-		loginPageCustomImage: column.text({ optional: true }),
-		enableDiffs: column.boolean({ default: false }),
-		diffPerPage: column.number({ default: 10 }),
-		gridItems: column.json({ default: [] }),
-		enableMailer: column.boolean({ default: false }),
-		hideDefaultIndex: column.boolean({ default: false }),
-	},
-});
-
-/**
- * @deprecated
- */
-const StudioCMSMailerConfig = defineTable({
-	deprecated: true,
-	columns: {
-		id: column.text({ primaryKey: true }),
-		host: column.text(),
-		port: column.number(),
-		secure: column.boolean(),
-		proxy: column.text({ optional: true }),
-		auth_user: column.text({ optional: true }),
-		auth_pass: column.text({ optional: true }),
-		tls_rejectUnauthorized: column.boolean({ optional: true }),
-		tls_servername: column.text({ optional: true }),
-		default_sender: column.text(),
-	},
-});
-
-/**
- * @deprecated
- */
-const StudioCMSNotificationSettings = defineTable({
-	deprecated: true,
-	columns: {
-		id: column.text({ primaryKey: true }),
-		emailVerification: column.boolean({ default: false }),
-		requireAdminVerification: column.boolean({ default: false }),
-		requireEditorVerification: column.boolean({ default: false }),
-		oAuthBypassVerification: column.boolean({ default: false }),
-	},
-});
-
 // Export the Database Configuration for StudioCMS
 export default defineDb({
 	tables: {
@@ -260,9 +203,5 @@ export default defineDb({
 		StudioCMSEmailVerificationTokens,
 		StudioCMSPluginData,
 		StudioCMSDynamicConfigSettings,
-		// Deprecated Tables
-		StudioCMSSiteConfig,
-		StudioCMSMailerConfig,
-		StudioCMSNotificationSettings,
 	},
 });
