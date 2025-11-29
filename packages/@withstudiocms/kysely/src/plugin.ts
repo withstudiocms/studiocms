@@ -164,7 +164,9 @@ export class KyselyTableManager {
 			if (condition) return dialect;
 		}
 
+		/* v8 ignore start */
 		throw new Error('Unsupported database dialect');
+		/* v8 ignore stop */
 	}
 
 	/**

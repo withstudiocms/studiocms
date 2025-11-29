@@ -35,10 +35,10 @@ const dateTimeFormat = new Intl.DateTimeFormat([], {
 	hour12: false,
 });
 
+/* v8 ignore start */
 function getLevelPrefix(level: LoggerLevel) {
 	const levelLabel = level.toUpperCase();
 	switch (level) {
-		/* v8 ignore start */
 		case 'error':
 			return `[${levelLabel}]`;
 		case 'warn':
@@ -47,16 +47,18 @@ function getLevelPrefix(level: LoggerLevel) {
 			return `[${levelLabel}]`;
 		default:
 			return '';
-		/* v8 ignore stop */
 	}
 }
+/* v8 ignore stop */
 
 export const getEventPrefix = (level: LoggerLevel, label?: string) => {
 	const timestamp = `${dateTimeFormat.format(/* @__PURE__ */ new Date())}`;
 	const prefix = [];
 	if (level === 'error' || level === 'warn' || level === 'debug') {
+		/* v8 ignore start */
 		prefix.push(styleText('bold', timestamp));
 		prefix.push(getLevelPrefix(level));
+		/* v8 ignore stop */
 	} else {
 		prefix.push(timestamp);
 	}
@@ -70,15 +72,13 @@ export const getEventPrefix = (level: LoggerLevel, label?: string) => {
 	if (level === 'warn') {
 		return styleText('yellow', prefix.join(' '));
 	}
-	/* v8 ignore stop */
 	if (level === 'debug') {
 		return styleText('blue', prefix.join(' '));
 	}
 	if (prefix.length === 1) {
-		/* v8 ignore start */
 		return styleText('dim', prefix[0]);
-		/* v8 ignore stop */
 	}
+	/* v8 ignore stop */
 	return `${styleText('dim', prefix[0])} ${styleText('blue', prefix.splice(1).join(' '))}`;
 };
 
@@ -110,10 +110,10 @@ export class SDKLogger {
 	error(message: string) {
 		console.error(`${getEventPrefix('error', this.label)} ❌ ${message}`);
 	}
-	/* v8 ignore stop */
 	debug(message: string) {
 		console.debug(`${getEventPrefix('debug', this.label)} 🐛 ${message}`);
 	}
+	/* v8 ignore stop */
 }
 
 const _logger = new SDKLogger({ level: 'info' }, 'studiocms:database');
