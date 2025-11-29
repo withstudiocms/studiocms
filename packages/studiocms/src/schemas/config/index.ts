@@ -177,9 +177,7 @@ export const StudioCMSOptionsSchema = z
 						defaultLocale: z
 							.string()
 							.superRefine((val, ctx) => {
-								// Check if the provided locale is in the list of available translation keys
-								// Note: 'en' is always available as the default locale
-								if (val !== 'en' && !availableTranslationsKeys.includes(val)) {
+								if (!availableTranslationsKeys.includes(val)) {
 									ctx.addIssue({
 										code: z.ZodIssueCode.custom,
 										message: `Locale '${val}' is not supported. Available locales are: ${availableTranslationsKeys.join(
