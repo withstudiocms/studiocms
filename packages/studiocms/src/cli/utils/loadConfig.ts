@@ -12,7 +12,7 @@ const loadConfigFile = Effect.fn((root: URL) =>
 
 const defaultConfig = StudioCMSOptionsSchema.parse({});
 
-const parseAndMerge = Effect.fn((config: StudioCMSOptions) =>
+const parseAndMerge = Effect.fn((config: StudioCMSOptions | undefined) =>
 	Effect.try(() => _parseAndMerge(StudioCMSOptionsSchema, defaultConfig, config))
 );
 
