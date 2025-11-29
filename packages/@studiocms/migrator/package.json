@@ -1,0 +1,50 @@
+{
+  "name": "@studiocms/migrator",
+  "type": "module",
+  "version": "0.1.0-beta.0",
+  "description": "Utility to migrate from older versions of StudioCMS to the latest version.",
+  "author": {
+    "name": "withstudiocms",
+    "url": "https://studiocms.dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/withstudiocms/studiocms.git",
+    "directory": "packages/@studiocms/migrator"
+  },
+  "contributors": [
+    "Adammatthiesen",
+    "jdtjenkins",
+    "dreyfus92",
+    "code.spirit"
+  ],
+  "license": "MIT",
+  "homepage": "https://studiocms.dev",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "sideEffects": false,
+  "files": [
+    "dist",
+    "start.mjs"
+  ],
+  "bin": {
+    "studiocms-migrator": "./start.mjs"
+  },
+  "scripts": {
+    "astro:dev": "astro dev",
+    "build": "astro build",
+    "astro": "astro"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "typescript": "catalog:"
+  },
+  "dependencies": {
+    "@astrojs/node": "catalog:astrojs",
+    "astro": "catalog:astrojs",
+		"dotenv": "^17.2.3",
+    "sharp": "catalog:"
+  }
+}

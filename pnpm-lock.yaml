@@ -161,6 +161,9 @@ importers:
       '@inox-tools/astro-tests':
         specifier: ^0.8.0
         version: 0.8.0(astro@5.16.0(@types/node@22.19.1)(jiti@2.6.1)(rollup@4.53.3)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
+      '@studiocms/migrator':
+        specifier: workspace:*
+        version: link:packages/@studiocms/migrator
       '@types/node':
         specifier: 'catalog:'
         version: 22.19.1
@@ -615,6 +618,28 @@ importers:
       '@types/react-dom':
         specifier: catalog:react
         version: 19.2.3(@types/react@19.2.7)
+
+  packages/@studiocms/migrator:
+    dependencies:
+      '@astrojs/node':
+        specifier: catalog:astrojs
+        version: 9.5.1(astro@5.16.0(@types/node@22.19.1)(jiti@2.6.1)(rollup@4.53.3)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
+      astro:
+        specifier: catalog:astrojs
+        version: 5.16.0(@types/node@22.19.1)(jiti@2.6.1)(rollup@4.53.3)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
+      dotenv:
+        specifier: ^17.2.3
+        version: 17.2.3
+      sharp:
+        specifier: 'catalog:'
+        version: 0.34.5
+    devDependencies:
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.19.1
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
 
   packages/@studiocms/wysiwyg:
     dependencies:
