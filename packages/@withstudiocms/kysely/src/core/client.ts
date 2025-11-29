@@ -9,13 +9,35 @@ import { type DatabaseError, NotFoundError, QueryError, QueryParseError } from '
 type HasNullOrUndefined<T> = null extends T ? true : undefined extends T ? true : false;
 
 /**
- * Utility type to make properties of T that can be null or undefined optional.
+ * Utility type to remove never from object types at any depth.
  */
-export type OptionalNullable<T> = {
-	[K in keyof T as HasNullOrUndefined<T[K]> extends true ? K : never]?: T[K];
-} & {
-	[K in keyof T as HasNullOrUndefined<T[K]> extends true ? never : K]: T[K];
+type OmitNever<T> = {
+	[K in keyof T as T[K] extends never ? never : K]: T[K];
 };
+
+/**
+ * Utility type to recursively make properties that can be null or undefined optional,
+ * while also processing nested objects and removing never types.
+ */
+export type OptionalNullable<T> = OmitNever<
+	// Optional properties (nullable/undefined)
+	{
+		[K in keyof T as HasNullOrUndefined<T[K]> extends true ? K : never]?: T[K] extends object
+			? // biome-ignore lint/suspicious/noExplicitAny: Dynamic BS
+				T[K] extends any[]
+				? T[K] // Don't recurse into arrays
+				: OptionalNullable<T[K]> // Recurse into objects
+			: T[K];
+	} & {
+		// Required properties (non-nullable)
+		[K in keyof T as HasNullOrUndefined<T[K]> extends true ? never : K]: T[K] extends object
+			? // biome-ignore lint/suspicious/noExplicitAny: Dynamic BS
+				T[K] extends any[]
+				? T[K] // Don't recurse into arrays
+				: OptionalNullable<T[K]> // Recurse into objects
+			: T[K];
+	}
+>;
 
 /**
  * Type alias for an Effect-wrapped database operation that accepts a Kysely instance and returns a result.

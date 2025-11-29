@@ -5,7 +5,7 @@ import type {
 	AvailablePermissionRanks,
 	CombinedUserData,
 	UserConfig,
-	UserData,
+	UserDataInsert,
 	UserSessionData,
 } from '../types.js';
 import { UserPermissionLevel } from '../types.js';
@@ -121,7 +121,7 @@ export const User = ({ Scrypt, session, userTools }: UserConfig) =>
 					useUserError(() => userTools.idGenerator()),
 				]);
 
-				const createdAt = new Date();
+				const createdAt = new Date().toISOString();
 
 				const createdUser = yield* useUserErrorPromise(() =>
 					userTools.createLocalUser({
@@ -155,7 +155,7 @@ export const User = ({ Scrypt, session, userTools }: UserConfig) =>
 		 * @returns The newly created user object or an error object if the creation fails.
 		 */
 		const createOAuthUser = Effect.fn('@withstudiocms/AuthKit/modules/user.createOAuthUser')(
-			function* (data: UserData, oAuthFields: { provider: string; providerUserId: string }) {
+			function* (data: UserDataInsert, oAuthFields: { provider: string; providerUserId: string }) {
 				const createdUser = yield* useUserErrorPromise(() => userTools.createLocalUser(data));
 
 				yield* useUserErrorPromise(() =>
@@ -187,8 +187,24 @@ export const User = ({ Scrypt, session, userTools }: UserConfig) =>
 		const updateUserPassword = Effect.fn('@withstudiocms/AuthKit/modules/user.updateUserPassword')(
 			function* (userId: string, password: string) {
 				const newHash = yield* Password.hashPassword(password);
+				const data = yield* useUserErrorPromise(() => userTools.getUserById(userId));
+				if (!data) {
+					return yield* Effect.fail(new UserError({ cause: 'User not found' }));
+				}
+				const { avatar, email, emailVerified, name, notifications, id, username, url } = data;
 				return yield* useUserErrorPromise(() =>
-					userTools.updateLocalUser(userId, { password: newHash })
+					userTools.updateLocalUser(userId, {
+						avatar,
+						email,
+						emailVerified,
+						name,
+						notifications,
+						id,
+						updatedAt: new Date().toISOString(),
+						username,
+						url,
+						password: newHash,
+					})
 				);
 			}
 		);

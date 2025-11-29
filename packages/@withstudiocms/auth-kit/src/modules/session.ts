@@ -110,15 +110,9 @@ export const Session = (config: SessionConfig) =>
 				user: null,
 			};
 
-			const result = yield* useSessionErrorPromise(() =>
+			const userSession = yield* useSessionErrorPromise(() =>
 				sessionTools.sessionAndUserData(sessionId)
 			);
-
-			if (!result.length) {
-				return nullSession;
-			}
-
-			const userSession = result[0];
 
 			if (!userSession) {
 				return nullSession;

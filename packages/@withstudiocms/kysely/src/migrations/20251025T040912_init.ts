@@ -79,7 +79,7 @@ export const schemaDefinition: TableDefinition[] = [
 				notNull: true,
 				references: { table: 'StudioCMSUsersTable', column: 'id' },
 			},
-			{ name: 'permissions', type: 'text', notNull: true },
+			{ name: 'rank', type: 'text', notNull: true },
 		],
 	},
 	{

@@ -3,7 +3,7 @@ import type { UserSessionData } from 'studiocms:auth/lib/types';
 import { useTranslations } from 'studiocms:i18n';
 import { Mailer } from 'studiocms:mailer';
 import { notificationTypes } from 'studiocms:notifier';
-import { type SiteConfigCacheObject } from 'studiocms:sdk/types';
+import type { DynamicConfigEntry, StudioCMSSiteConfig } from 'studiocms:sdk/types';
 import { Button } from 'studiocms:ui/components/button';
 import { Card } from 'studiocms:ui/components/card';
 import { Icon } from 'studiocms:ui/components/icon';
@@ -12,7 +12,7 @@ import { Effect } from '../../../../effect.js';
 
 interface Props {
 	currentUser: UserSessionData | null;
-	config: SiteConfigCacheObject;
+	config: DynamicConfigEntry<StudioCMSSiteConfig>;
 }
 
 const { currentUser: data, config: siteConfig } = Astro.props as Props;

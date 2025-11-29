@@ -1,7 +1,7 @@
 import type {
 	tsOAuthAccountsSelect,
 	tsPermissionsSelect,
-	tsSessionTableSelect,
+	tsSessionTable,
 	tsUsersSelect,
 } from 'studiocms:sdk/types';
 
@@ -44,7 +44,7 @@ export type UserSessionData = {
  */
 export type UserSession = {
 	user: tsUsersSelect;
-	session: tsSessionTableSelect;
+	session: tsSessionTable['Select']['Type'];
 };
 
 /**

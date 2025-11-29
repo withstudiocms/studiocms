@@ -73,18 +73,18 @@
   },
   "type": "module",
   "dependencies": {
-    "@libsql/client": "^0.15.15",
-    "@libsql/kysely-libsql": "^0.4.1",
-    "kysely": "^0.28.8",
-    "pg": "^8.16.3",
-    "mysql2": "^3.15.3"
+    "@libsql/kysely-libsql": "catalog:kysely",
+    "kysely": "catalog:kysely"
   },
   "devDependencies": {
     "@types/node": "catalog:",
-    "@types/pg": "^8.15.6",
+    "@types/pg": "catalog:kysely",
     "tsx": "^4.20.6"
   },
   "peerDependencies": {
-		"effect": "catalog:effect"
+		"effect": "catalog:effect",
+    "@libsql/client": "catalog:kysely",
+    "pg": "catalog:kysely",
+    "mysql2": "catalog:kysely"
   }
 }

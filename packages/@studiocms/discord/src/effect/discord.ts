@@ -137,10 +137,10 @@ export class DiscordOAuthAPI extends Effect.Service<DiscordOAuthAPI>()('DiscordO
 
 					const { id: discordUserId, username: discordUsername } = discordUser;
 
-					const existingOAuthAccount = yield* sdk.AUTH.oAuth.searchProvidersForId(
-						DiscordOAuthAPI.ProviderID,
-						discordUserId
-					);
+					const existingOAuthAccount = yield* sdk.AUTH.oAuth.searchProvidersForId({
+						providerId: DiscordOAuthAPI.ProviderID,
+						userId: discordUserId,
+					});
 
 					if (existingOAuthAccount) {
 						const user = yield* sdk.GET.users.byId(existingOAuthAccount.userId);
@@ -200,11 +200,11 @@ export class DiscordOAuthAPI extends Effect.Service<DiscordOAuthAPI>()('DiscordO
 							name: discordUser.global_name ?? discordUsername,
 							email: discordUser.email,
 							avatar: avatar_url,
-							createdAt: new Date(),
+							createdAt: new Date().toISOString(),
 							emailVerified: false,
 							notifications: null,
 							password: null,
-							updatedAt: new Date(),
+							updatedAt: new Date().toISOString(),
 							url: null,
 						},
 						{ provider: DiscordOAuthAPI.ProviderID, providerUserId: discordUserId }

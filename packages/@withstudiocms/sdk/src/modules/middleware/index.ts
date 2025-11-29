@@ -104,7 +104,7 @@ export const SDKMiddlewareModule = Effect.gen(function* () {
 		memoize(cacheKeyGetters.middleware(), _verifyCacheEffect, {
 			tags: cacheTags.middleware,
 			ttl: Duration.minutes(30),
-		})
+		}).pipe(Effect.tap(() => Effect.logDebug('Completed middleware cache verification.')))
 	);
 
 	return {

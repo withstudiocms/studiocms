@@ -1,6 +1,6 @@
 ---
 import { type UiLanguageKeys, useTranslations } from 'studiocms:i18n';
-import type { SiteConfigCacheObject } from 'studiocms:sdk/types';
+import type { DynamicConfigEntry, StudioCMSSiteConfig } from 'studiocms:sdk/types';
 import { Button } from 'studiocms:ui/components/button';
 import { Divider } from 'studiocms:ui/components/divider';
 import { Dropdown } from 'studiocms:ui/components/dropdown';
@@ -9,7 +9,7 @@ import { Input } from 'studiocms:ui/components/input';
 import PageList from './PageList.astro';
 
 interface Props {
-	config: SiteConfigCacheObject;
+	config: DynamicConfigEntry<StudioCMSSiteConfig>;
 	lang: UiLanguageKeys;
 	isNewFolder?: boolean;
 	isNewPage?: boolean;

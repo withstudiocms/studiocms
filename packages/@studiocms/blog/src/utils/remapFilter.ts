@@ -1,8 +1,8 @@
 import blogConfig from 'studiocms:blog/config';
 import { pathWithBase } from 'studiocms:lib';
+import type { CombinedPageData } from 'studiocms:sdk/types';
 import type { APIContext } from 'astro';
 import { dual } from 'studiocms/effect';
-import type { PageDataCacheObject } from 'studiocms/sdk/types';
 
 const blogRouteFullPath = `${blogConfig.route}/[...slug]`;
 
@@ -14,16 +14,16 @@ export type SiteMapTemplate = {
 	location: string;
 }[];
 
-export type { APIContext, PageDataCacheObject };
+export type { APIContext, CombinedPageData };
 
 export const remapFilterSitemap = dual<
 	(
 		filter: string,
 		context: APIContext,
 		blog?: boolean
-	) => (array: Array<PageDataCacheObject>) => SiteMapTemplate,
+	) => (array: Array<CombinedPageData>) => SiteMapTemplate,
 	(
-		array: Array<PageDataCacheObject>,
+		array: Array<CombinedPageData>,
 		filter: string,
 		context: APIContext,
 		blog?: boolean
@@ -35,7 +35,6 @@ export const remapFilterSitemap = dual<
 	}
 
 	return array
-		.map(({ data }) => data)
 		.filter(({ package: pkg }) => pkg === filter)
 		.map(({ slug }) => ({
 			location: genLocation(slug).toString(),

@@ -1,5 +1,6 @@
 import { Context, Layer } from '@withstudiocms/effect';
 import type { DBClientInterface, StudioCMSDatabaseSchema } from '@withstudiocms/kysely';
+import type { CacheEntry } from './cache.js';
 
 /**
  * Context tag representing the database client interface for StudioCMS.
@@ -23,7 +24,7 @@ export class DBClientLive extends Context.Tag('@withstudiocms/sdk/context/DBClie
 /**
  * Interface representing the default SDK options.
  */
-interface SDKDefaultOpts {
+export interface SDKDefaultOpts {
 	GhostUserDefaults: {
 		id: string;
 		name: string;
@@ -63,6 +64,17 @@ export class SDKDefaults extends Context.Tag('@withstudiocms/sdk/context/SDKDefa
 export interface SDKContext {
 	db: DBClientInterface<StudioCMSDatabaseSchema>;
 	defaults: SDKDefaultOpts;
+	cache: {
+		store: Map<string, CacheEntry<unknown>>;
+		tagIndex: Map<string, Set<string>>;
+	};
+}
+
+export class CacheStores extends Context.Tag('@withstudiocms/sdk/context/CacheStores')<
+	CacheStores,
+	SDKContext['cache']
+>() {
+	static live = (cache: SDKContext['cache']) => Layer.succeed(this, cache);
 }
 
 /**
@@ -72,4 +84,8 @@ export interface SDKContext {
  * @returns A merged layer that provides both the DBClient and SDKDefaults context tags.
  */
 export const makeSDKContext = (context: SDKContext) =>
-	Layer.mergeAll(DBClientLive.Live(context.db), SDKDefaults.live(context.defaults));
+	Layer.mergeAll(
+		DBClientLive.Live(context.db),
+		SDKDefaults.live(context.defaults),
+		CacheStores.live(context.cache)
+	);

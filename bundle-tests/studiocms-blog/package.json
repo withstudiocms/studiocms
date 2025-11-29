@@ -6,17 +6,15 @@
 	"scripts": {
 		"astro": "astro",
 		"studiocms": "studiocms",
-		"db:push": "astro db push --remote",
-		"dev": "astro dev --remote",
-		"build": "astro build --remote",
-		"preview": "astro preview --remote"
+		"dev": "astro dev",
+		"build": "astro build",
+		"preview": "astro preview"
 	},
 	"devDependencies": {
 		"@types/node": "catalog:",
 		"typescript": "catalog:"
 	},
 	"dependencies": {
-		"@astrojs/db": "catalog:astrojs",
 		"@astrojs/node": "catalog:astrojs",
 		"@codecov/astro-plugin": "catalog:",
 		"@studiocms/blog": "workspace:*",

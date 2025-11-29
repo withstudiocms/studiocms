@@ -1,9 +1,9 @@
 import path from 'node:path';
 import { SDKCore } from 'studiocms:sdk';
-import type { SiteConfig } from 'studiocms:sdk/types';
+import type { ConfigFinal, StudioCMSSiteConfig } from 'studiocms:sdk/types';
 import { userProjectRoot } from 'virtual:studiocms-devapps/config';
+import type { StudioCMSPageContent, StudioCMSPageData } from '@withstudiocms/kysely';
 import { Console, Effect, genLogger, Schema } from 'studiocms/effect';
-import type { tsPageContent, tsPageData } from 'studiocms/sdk/tables';
 import {
 	APIEndpointConfig,
 	DownloadPostImageConfig,
@@ -17,8 +17,8 @@ import { WordPressAPIConverters } from './converters.js';
 import { PagesSchema, PostsSchema, SiteSettings } from './schema.js';
 import { WordPressAPIUtils } from './utils.js';
 
-export type PageData = typeof tsPageData.$inferInsert;
-export type PageContent = typeof tsPageContent.$inferInsert;
+export type PageData = (typeof StudioCMSPageData)['Insert']['Type'];
+export type PageContent = (typeof StudioCMSPageContent)['Insert']['Type'];
 
 /**
  * User's Astro Public Folder
@@ -86,7 +86,7 @@ export class WordPressAPI extends Effect.Service<WordPressAPI>()('WordPressAPI',
 				);
 			}
 
-			const siteConfig: SiteConfig = {
+			const siteConfig: ConfigFinal<StudioCMSSiteConfig> = {
 				title: settings.name,
 				description: settings.description,
 			};

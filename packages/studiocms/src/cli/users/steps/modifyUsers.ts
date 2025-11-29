@@ -1,11 +1,11 @@
 import { StudioCMSColorwayError, StudioCMSColorwayInfo } from '@withstudiocms/cli-kit/colors';
+import { runEffect } from '@withstudiocms/effect';
 import { log, note, password, select, text } from '@withstudiocms/effect/clack';
-import { eq } from 'drizzle-orm';
-import { Effect, runEffect } from '../../../../effect.js';
-import { buildDebugLogger } from '../../../utils/logger.js';
-import type { EffectStepFn } from '../../../utils/types.js';
-import { libSQLDrizzleClient, Permissions, Users } from '../../../utils/useLibSQLDb.js';
-import { getCheckers, hashPassword, verifyPasswordStrength } from '../../../utils/user-utils.js';
+import { StudioCMSPermissions, StudioCMSUsersTable } from '@withstudiocms/kysely';
+import { Effect, Schema } from 'effect';
+import { getCliDbClient } from '../../utils/getCliDbClient.js';
+import type { EffectStepFn } from '../../utils/types.js';
+import { getCheckers, hashPassword, verifyPasswordStrength } from '../../utils/user-utils.js';
 
 export enum UserFieldOption {
 	password = 'password',
@@ -13,35 +13,76 @@ export enum UserFieldOption {
 	name = 'name',
 }
 
-export const libsqlModifyUsers: EffectStepFn = Effect.fn(function* (context, debug, dryRun) {
-	const [checker, debugLogger] = yield* Effect.all([getCheckers, buildDebugLogger(debug)]);
-
-	const { ASTRO_DB_REMOTE_URL, ASTRO_DB_APP_TOKEN } = process.env;
-
-	const [_drop, db] = yield* Effect.all([
-		debugLogger('Running libsqlUsers...'),
-		libSQLDrizzleClient(ASTRO_DB_REMOTE_URL as string, ASTRO_DB_APP_TOKEN as string),
+export const modifyUsers: EffectStepFn = Effect.fn(function* (context, _debug, dryRun) {
+	const [checker, dbClient] = yield* Effect.all([
+		getCheckers,
+		getCliDbClient(context).pipe(
+			Effect.catchAll((error) =>
+				Effect.fail(new Error(`Failed to get database client: ${error.message}`))
+			)
+		),
 	]);
 
-	yield* debugLogger('Getting Users from DB...');
+	/**
+	 * Get the current users from the database.
+	 */
+	const _getCurrentUsers = dbClient.withDecoder({
+		decoder: Schema.Array(StudioCMSUsersTable.Select),
+		callbackFn: (client) =>
+			client((db) =>
+				db.selectFrom('StudioCMSUsersTable').selectAll().orderBy('name', 'asc').execute()
+			),
+	});
 
-	const [currentUsers, currentPermissions] = yield* db.execute((tx) =>
-		tx.batch([tx.select().from(Users), tx.select().from(Permissions)])
+	/**
+	 * Get the current permissions from the database.
+	 */
+	const _getCurrentPermissions = dbClient.withDecoder({
+		decoder: Schema.Array(StudioCMSPermissions.Select),
+		callbackFn: (client) =>
+			client((db) => db.selectFrom('StudioCMSPermissions').selectAll().execute()),
+	});
+
+	const _updateUser = dbClient.withCodec({
+		decoder: StudioCMSUsersTable.Select,
+		encoder: Schema.Struct({
+			key: Schema.Union(
+				Schema.Literal('name'),
+				Schema.Literal('username'),
+				Schema.Literal('password')
+			),
+			value: Schema.String,
+			id: Schema.String,
+		}),
+		callbackFn: (client, { key, value, id }) =>
+			client((db) =>
+				db
+					.updateTable('StudioCMSUsersTable')
+					.set({ [key]: value })
+					.where('id', '=', id)
+					.returningAll()
+					.executeTakeFirstOrThrow()
+			),
+	});
+
+	const currentUsers = yield* _getCurrentUsers();
+
+	// Assemble user options for selection
+	const allUsers: { value: string; label: string; hint?: string }[] = yield* Effect.all({
+		permissions: _getCurrentPermissions(),
+	}).pipe(
+		Effect.map(({ permissions }) =>
+			currentUsers.map((user) => ({
+				value: user.id,
+				label: user.username,
+				hint: permissions.find((perm) => perm.user === user.id)?.rank,
+			}))
+		)
 	);
 
-	if (currentUsers.length === 0) {
+	if (allUsers.length === 0) {
 		yield* note('There are no users in the database.', 'No Users Available');
-		yield* context.exit(0);
-	}
-
-	const allUsers: { value: string; label: string; hint?: string }[] = [];
-
-	for (const user of currentUsers) {
-		allUsers.push({
-			value: user.id,
-			label: user.username,
-			hint: currentPermissions.find((perm) => perm.user === user.id)?.rank,
-		});
+		return yield* context.exit(0);
 	}
 
 	const userSelection = yield* select({
@@ -89,9 +130,11 @@ export const libsqlModifyUsers: EffectStepFn = Effect.fn(function* (context, deb
 					task: async (message) => {
 						try {
 							await runEffect(
-								db.execute((tx) =>
-									tx.update(Users).set({ name: newDisplayName }).where(eq(Users.id, userSelection))
-								)
+								_updateUser({
+									key: 'name',
+									value: newDisplayName,
+									id: userSelection,
+								})
 							);
 
 							message('User modified successfully');
@@ -109,7 +152,6 @@ export const libsqlModifyUsers: EffectStepFn = Effect.fn(function* (context, deb
 					},
 				});
 			}
-
 			break;
 		}
 		case UserFieldOption.username: {
@@ -120,6 +162,8 @@ export const libsqlModifyUsers: EffectStepFn = Effect.fn(function* (context, deb
 					const u = user.trim();
 					const isUser = currentUsers.find(({ username }) => username === u);
 					if (isUser) return 'Username is already in use, please try another one';
+					// Doing this because we can't use `await` here
+					// @effect-diagnostics-next-line runEffectInsideEffect:off
 					if (Effect.runSync(checker.username(u))) {
 						return 'Username should not be a commonly used unsafe username (admin, root, etc.)';
 					}
@@ -144,9 +188,11 @@ export const libsqlModifyUsers: EffectStepFn = Effect.fn(function* (context, deb
 					task: async (message) => {
 						try {
 							await runEffect(
-								db.execute((tx) =>
-									tx.update(Users).set({ username: newUsername }).where(eq(Users.id, userSelection))
-								)
+								_updateUser({
+									key: 'username',
+									value: newUsername,
+									id: userSelection,
+								})
 							);
 
 							message('User modified successfully');
@@ -170,6 +216,8 @@ export const libsqlModifyUsers: EffectStepFn = Effect.fn(function* (context, deb
 			const newPassword = yield* password({
 				message: `Enter the user's new password`,
 				validate: (pass) => {
+					// Doing this because we can't use `await` here
+					// @effect-diagnostics-next-line runEffectInsideEffect:off
 					const passCheck = Effect.runSync(verifyPasswordStrength(pass));
 					if (passCheck !== true) {
 						return passCheck;
@@ -196,13 +244,13 @@ export const libsqlModifyUsers: EffectStepFn = Effect.fn(function* (context, deb
 						try {
 							// Environment variables are already checked by checkRequiredEnvVars
 							const hashedPassword = await runEffect(hashPassword(newPassword));
+
 							await runEffect(
-								db.execute((tx) =>
-									tx
-										.update(Users)
-										.set({ password: hashedPassword })
-										.where(eq(Users.id, userSelection))
-								)
+								_updateUser({
+									key: 'password',
+									value: hashedPassword,
+									id: userSelection,
+								})
 							);
 
 							message('User modified successfully');
@@ -220,10 +268,10 @@ export const libsqlModifyUsers: EffectStepFn = Effect.fn(function* (context, deb
 					},
 				});
 			}
+
 			break;
 		}
-		default: {
+		default:
 			return yield* context.pCancel(action);
-		}
 	}
 });

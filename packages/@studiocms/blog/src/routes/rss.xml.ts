@@ -20,7 +20,6 @@ export const GET = withEffectAPI(
 		const posts = yield* sdk.GET.pages();
 
 		const sortedPosts = posts
-			.map(({ data }) => data)
 			.filter(({ package: pkg }) => pkg === '@studiocms/blog')
 			.sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
 

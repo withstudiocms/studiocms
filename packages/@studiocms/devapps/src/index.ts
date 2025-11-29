@@ -50,7 +50,7 @@ export function studioCMSDevApps(opts?: StudioCMSDevAppsOptions): AstroIntegrati
 	// Endpoint Path Generator placeholder
 	let makeEndpointPath: (path: string) => string;
 
-	const astroDbEnv = loadEnv('all', process.cwd(), 'ASTRO_DB');
+	const cmsEnv = loadEnv('all', process.cwd(), 'CMS');
 
 	return {
 		name: '@studiocms/devapps',
@@ -83,8 +83,8 @@ export function studioCMSDevApps(opts?: StudioCMSDevAppsOptions): AstroIntegrati
 								export const userProjectRoot = "${config.root.pathname}";
 
 								export const dbEnv = {
-									remoteUrl: "${astroDbEnv.ASTRO_DB_REMOTE_URL}",
-									token: "${astroDbEnv.ASTRO_DB_APP_TOKEN}",
+									remoteUrl: "${cmsEnv.CMS_LIBSQL_URL}",
+									token: "${cmsEnv.CMS_LIBSQL_AUTH_TOKEN}",
 								};
 							`,
 						},

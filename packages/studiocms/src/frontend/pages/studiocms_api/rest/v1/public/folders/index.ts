@@ -21,7 +21,7 @@ export const { GET, OPTIONS, ALL } = createEffectAPIRoutes(
 				const folderNameFilter = searchParams.get('name');
 				const folderParentFilter = searchParams.get('parent');
 
-				let filteredFolders = folders.data;
+				let filteredFolders = folders;
 
 				if (folderNameFilter) {
 					filteredFolders = filteredFolders.filter((folder) =>
@@ -35,12 +35,7 @@ export const { GET, OPTIONS, ALL } = createEffectAPIRoutes(
 					);
 				}
 
-				const finalFolders = {
-					data: filteredFolders,
-					lastCacheUpdate: folders.lastCacheUpdate,
-				};
-
-				return createJsonResponse(finalFolders);
+				return createJsonResponse(filteredFolders);
 			}),
 		OPTIONS: () => Effect.try(() => OptionsResponse({ allowedMethods: ['GET'] })),
 		ALL: () => Effect.try(() => AllResponse()),

@@ -115,10 +115,23 @@ export const { POST, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 					return apiResponseLogger(400, 'Failed to update user rank');
 				}
 
+				const existingUser = yield* sdk.GET.users.byId(id);
+
+				if (!existingUser) {
+					return apiResponseLogger(404, 'User not found');
+				}
+
 				if (typeof emailVerified === 'boolean') {
 					// Update user email verification status
-					yield* sdk.AUTH.user.update(id, {
-						emailVerified,
+					yield* sdk.AUTH.user.update({
+						userId: id,
+						userData: {
+							id,
+							name: existingUser.name,
+							username: existingUser.username,
+							updatedAt: new Date().toISOString(),
+							emailVerified,
+						},
 					});
 				}
 

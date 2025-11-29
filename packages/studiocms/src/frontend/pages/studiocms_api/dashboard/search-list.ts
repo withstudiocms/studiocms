@@ -24,11 +24,11 @@ export const { GET, OPTIONS, ALL } = createEffectAPIRoutes(
 
 				const searchList = yield* Effect.all([
 					sdk.GET.folderList().pipe(
-						Effect.map((res) => res.data.map(({ id, name }) => ({ id, name, type: 'folder' })))
+						Effect.map((res) => res.map(({ id, name }) => ({ id, name, type: 'folder' })))
 					),
 					sdk.GET.pages().pipe(
 						Effect.map((res) =>
-							res.map(({ data: { id, title, slug, draft } }) => ({
+							res.map(({ id, title, slug, draft }) => ({
 								id,
 								name: title,
 								slug,

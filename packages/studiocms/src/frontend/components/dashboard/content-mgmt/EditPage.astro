@@ -5,7 +5,7 @@ import type { SettingsField } from 'studiocms:plugin-helpers';
 import pluginList from 'studiocms:plugins';
 import { renderAugments } from 'studiocms:plugins/augments';
 import { runSDK, SDKCoreJs } from 'studiocms:sdk';
-import type { SiteConfigCacheObject } from 'studiocms:sdk/types';
+import type { DynamicConfigEntry, StudioCMSSiteConfig } from 'studiocms:sdk/types';
 import { Button } from 'studiocms:ui/components/button';
 import { Card } from 'studiocms:ui/components/card';
 import { Center } from 'studiocms:ui/components/center';
@@ -32,27 +32,26 @@ const editId = urlParams.get('edit') || '';
 
 interface Props {
 	lang: UiLanguageKeys;
-	config: SiteConfigCacheObject;
+	config: DynamicConfigEntry<StudioCMSSiteConfig>;
 }
 
 const { lang, config } = Astro.props as Props;
 
 const enableDiffs = config.data.enableDiffs;
 
-const [[currentPageData, users], editors] = await Promise.all([
+const [[pageData, users], editors] = await Promise.all([
 	runSDK(Effect.all([SDKCoreJs.GET.page.byId(editId), SDKCoreJs.GET.users.all()])),
 	importEditorKeys(editorKeys),
 ]);
 
-if (!currentPageData) {
+if (!pageData) {
 	return new Response(null, { status: 404, statusText: 'Page Not Found' });
 }
 
-const pageData = currentPageData.data;
-
-function getParentFolderValue(value: string | null): string | undefined {
+function getParentFolderValue(value: string | null | undefined): string | undefined {
 	const options = parentFolderOptions;
 	if (value === null) return 'null';
+	if (!value) return undefined;
 	return options.find((option: { value: FormDataEntryValue }) => option.value === value)?.value;
 }
 
@@ -195,7 +194,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
                     label={t("input-page-hero-image")}
                     name="page-hero-image"
                     placeholder="https://..."
-                    defaultValue={pageData.heroImage}
+                    defaultValue={pageData.heroImage ?? undefined}
                   />
                   <span class="form-row-item__description"
                     ><t-content-edit-page key="requires-supported-frontend"
@@ -456,12 +455,14 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
 </script>
 
 <script>
-  import type { tsPageDataInsert } from "studiocms:sdk/types";
+  import type { tsPageData } from "studiocms:sdk/types";
   import { toast } from "studiocms:ui/components/toaster/client";
   import {
     formDataToRecord,
     studioCMSEditPageDataAndContentSchema,
   } from "../../../scripts/formdata-utils.js";
+
+  type tsPageDataInsert = tsPageData['Insert']['Type'];
 
   // get the elements
   const editPageForm = document.getElementById(

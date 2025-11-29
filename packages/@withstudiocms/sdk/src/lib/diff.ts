@@ -13,7 +13,7 @@ export class DiffError extends Data.TaggedError('DiffError')<{ cause: unknown }>
  * @param _try - A function that performs the desired operation.
  * @returns An Effect that either succeeds with the result of the operation or fails with a DiffError.
  */
-const useDiffError = <T>(_try: () => T) =>
+export const useDiffError = <T>(_try: () => T) =>
 	Effect.try({
 		try: _try,
 		catch: (error) => new DiffError({ cause: error }),

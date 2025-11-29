@@ -70,7 +70,7 @@ export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
 					return apiResponseLogger(403, 'Invalid or expired reset token');
 				}
 
-				const tokenInfo = yield* sdk.testToken(token);
+				const tokenInfo = yield* sdk.UTIL.Generators.testToken(token);
 				if (!tokenInfo || !tokenInfo.userId) {
 					return apiResponseLogger(403, 'Invalid or expired reset token');
 				}
@@ -85,7 +85,17 @@ export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
 					return apiResponseLogger(404, 'User not found');
 				}
 
-				yield* sdk.AUTH.user.update(targetUserId, userUpdate);
+				yield* sdk.AUTH.user.update({
+					userId: targetUserId,
+					userData: {
+						id: targetUserId,
+						name: userData.name,
+						username: userData.username,
+						updatedAt: new Date().toISOString(),
+						emailVerified: userData.emailVerified,
+						...userUpdate,
+					},
+				});
 
 				yield* Effect.all([
 					sdk.resetTokenBucket.delete(targetUserId),

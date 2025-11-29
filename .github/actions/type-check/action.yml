@@ -16,7 +16,7 @@ runs:
       shell: bash
       run: pnpm ci:build
 
-    - name: Run @${{ inputs.cmd }} TypeCheck
+    - name: Run ${{ inputs.cmd }} TypeCheck
       shell: bash
       run: | # zizmor: ignore[template-injection]
         pnpm ci:typecheck:${{ inputs.cmd }}

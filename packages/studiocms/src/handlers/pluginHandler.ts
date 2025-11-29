@@ -19,12 +19,7 @@ import { compare as semCompare } from 'semver';
 import { loadEnv } from 'vite';
 import { StudioCMSDefaultRobotsConfig } from '../consts.js';
 import { StudioCMSError } from '../errors.js';
-import {
-	checkForWebVitals,
-	dynamicSitemap,
-	type RobotsConfig,
-	robotsTXT,
-} from '../integrations/plugins.js';
+import { dynamicSitemap, type RobotsConfig, robotsTXT } from '../integrations/plugins.js';
 import type {
 	AvailableDashboardPages,
 	BasePluginHooks,
@@ -434,16 +429,13 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 		}
 
 		function getPlugins() {
-			// Check for `@astrojs/web-vitals` Integration
-			const wvPlugin = checkForWebVitals(params, { name, verbose, version: pkgVersion });
-
 			// Initialize and Add the default StudioCMS Plugin to the Safe Plugin List
 			const pluginsToProcess: StudioCMSPlugin[] = [defaultPlugin];
 
-			if (wvPlugin) pluginsToProcess.push(wvPlugin);
-
+			// Add any user-defined plugins to the list
 			if (plugins) pluginsToProcess.push(...plugins);
 
+			// Return the list of plugins to process
 			return pluginsToProcess;
 		}
 

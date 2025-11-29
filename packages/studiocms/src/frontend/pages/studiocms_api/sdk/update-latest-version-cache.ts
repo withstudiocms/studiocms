@@ -5,19 +5,16 @@ import {
 	createEffectAPIRoutes,
 	createJsonResponse,
 	Effect,
-	genLogger,
 	OptionsResponse,
 } from '../../../../effect.js';
 
 export const { ALL, OPTIONS, GET } = createEffectAPIRoutes(
 	{
 		GET: () =>
-			genLogger('routes/sdk/update-latest-version-cache/GET')(function* () {
-				const sdk = yield* SDKCore;
-				const latestVersion = yield* sdk.UPDATE.latestVersion();
-
-				return createJsonResponse({ success: true, latestVersion });
-			}),
+			SDKCore.pipe(
+				Effect.flatMap((sdk) => sdk.UPDATE.latestVersion()),
+				Effect.map((latestVersion) => createJsonResponse({ success: true, latestVersion }))
+			),
 		OPTIONS: () => Effect.try(() => OptionsResponse({ allowedMethods: ['GET'] })),
 		ALL: () => Effect.try(() => AllResponse()),
 	},

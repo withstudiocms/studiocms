@@ -48,8 +48,22 @@ export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
 					return apiResponseLogger(404, 'User not found');
 				}
 
-				const updatedData = yield* sdk.AUTH.user.update(userId, {
-					notifications,
+				const existingUser = yield* sdk.GET.users.byId(userId);
+
+				if (!existingUser) {
+					return apiResponseLogger(404, 'User not found');
+				}
+
+				const updatedData = yield* sdk.AUTH.user.update({
+					userId,
+					userData: {
+						id: userId,
+						name: existingUser.name,
+						username: existingUser.username,
+						updatedAt: new Date().toISOString(),
+						emailVerified: existingUser.emailVerified,
+						notifications,
+					},
 				});
 
 				if (!updatedData) {

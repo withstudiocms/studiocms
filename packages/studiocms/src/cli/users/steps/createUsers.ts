@@ -1,25 +1,87 @@
 import { getAvatarUrl } from '@withstudiocms/auth-kit/utils/libravatar';
 import { StudioCMSColorwayInfo } from '@withstudiocms/cli-kit/colors';
 import { group, log, password, select, text } from '@withstudiocms/effect/clack';
+import { StudioCMSPermissions, StudioCMSUsersTable } from '@withstudiocms/kysely';
 import { z } from 'astro/zod';
-import { Effect, runEffect } from '../../../../effect.js';
-import { buildDebugLogger } from '../../../utils/logger.js';
-import type { EffectStepFn } from '../../../utils/types.js';
-import { libSQLDrizzleClient, Permissions, Users } from '../../../utils/useLibSQLDb.js';
-import { getCheckers, hashPassword, verifyPasswordStrength } from '../../../utils/user-utils.js';
+import { Effect, runEffect, Schema } from '../../../effect.js';
+import { getCliDbClient } from '../../utils/getCliDbClient.js';
+import type { EffectStepFn } from '../../utils/types.js';
+import { getCheckers, hashPassword, verifyPasswordStrength } from '../../utils/user-utils.js';
 
-export const libsqlCreateUsers: EffectStepFn = Effect.fn(function* (context, debug, dryRun) {
-	const [checker, debugLogger] = yield* Effect.all([getCheckers, buildDebugLogger(debug)]);
-
-	const { ASTRO_DB_REMOTE_URL, ASTRO_DB_APP_TOKEN } = process.env;
-
-	const [_drop, db] = yield* Effect.all([
-		debugLogger('Running libsqlUsers...'),
-		libSQLDrizzleClient(ASTRO_DB_REMOTE_URL as string, ASTRO_DB_APP_TOKEN as string),
+/**
+ * Step to create new users in the database.
+ *
+ * @param context - The CLI base context.
+ * @param _debug - The debug flag.
+ * @param dryRun - The dry run flag.
+ *
+ * @return An effect representing the user creation step.
+ */
+export const createUsers: EffectStepFn = Effect.fn(function* (context, _debug, dryRun) {
+	const [checker, dbClient] = yield* Effect.all([
+		getCheckers,
+		getCliDbClient(context).pipe(
+			Effect.catchAll((error) =>
+				Effect.fail(new Error(`Failed to get database client: ${error.message}`))
+			)
+		),
 	]);
 
-	const currentUsers = yield* db.execute((db) => db.select().from(Users));
+	/**
+	 * Get the current users from the database.
+	 */
+	const _getCurrentUsers = dbClient.withDecoder({
+		decoder: Schema.Array(StudioCMSUsersTable.Select),
+		callbackFn: (client) =>
+			client((db) =>
+				db.selectFrom('StudioCMSUsersTable').selectAll().orderBy('name', 'asc').execute()
+			),
+	});
 
+	/**
+	 * Create a new user in the database.
+	 */
+	const _createUser = dbClient.withCodec({
+		decoder: StudioCMSUsersTable.Select,
+		encoder: StudioCMSUsersTable.Insert,
+		callbackFn: (client, user) =>
+			client((db) =>
+				db.insertInto('StudioCMSUsersTable').values(user).returningAll().executeTakeFirstOrThrow()
+			),
+	});
+
+	/**
+	 * Create a new permission rank for a user in the database.
+	 */
+	const _createRank = dbClient.withCodec({
+		decoder: StudioCMSPermissions.Select,
+		encoder: StudioCMSPermissions.Insert,
+		callbackFn: (client, permission) =>
+			client((db) =>
+				db
+					.insertInto('StudioCMSPermissions')
+					.values(permission)
+					.returningAll()
+					.executeTakeFirstOrThrow()
+			),
+	});
+
+	/**
+	 * Type for a user to be inserted into the database.
+	 */
+	type InsertUser = Parameters<typeof _createUser>[0];
+
+	/**
+	 * Type for a permission rank to be inserted into the database.
+	 */
+	type InsertPermission = Parameters<typeof _createRank>[0];
+
+	/**
+	 * Current DB users.
+	 */
+	const currentUsers = yield* _getCurrentUsers();
+
+	// Collect input data
 	const inputData = yield* group(
 		{
 			username: async () =>
@@ -31,6 +93,8 @@ export const libsqlCreateUsers: EffectStepFn = Effect.fn(function* (context, deb
 							const u = user.trim();
 							const isUser = currentUsers.find(({ username }) => username === u);
 							if (isUser) return 'Username is already in use, please try another one';
+							// Doing this because we can't use `await` here
+							// @effect-diagnostics-next-line runEffectInsideEffect:off
 							if (Effect.runSync(checker.username(user))) {
 								return 'Username should not be a commonly used unsafe username (admin, root, etc.)';
 							}
@@ -67,6 +131,8 @@ export const libsqlCreateUsers: EffectStepFn = Effect.fn(function* (context, deb
 					password({
 						message: 'Password',
 						validate: (password) => {
+							// Doing this because we can't use `await` here
+							// @effect-diagnostics-next-line runEffectInsideEffect:off
 							const passCheck = Effect.runSync(verifyPasswordStrength(password));
 							if (passCheck !== true) {
 								return passCheck;
@@ -99,15 +165,19 @@ export const libsqlCreateUsers: EffectStepFn = Effect.fn(function* (context, deb
 		}
 	);
 
+	// Destructure input data
 	const { confirmPassword, email, name, newPassword, rank, username } = inputData;
 
+	// Check password confirmation
 	if (newPassword !== confirmPassword) {
 		yield* log.error(context.chalk.red('Passwords do not match, exiting...'));
 		return yield* context.exit(1);
 	}
 
+	// Generate new user ID
 	const newUserId = crypto.randomUUID();
 
+	// Hash password and get avatar URL
 	const [hashedPassword, avatar] = yield* Effect.all([
 		hashPassword(newPassword),
 		Effect.tryPromise({
@@ -116,23 +186,33 @@ export const libsqlCreateUsers: EffectStepFn = Effect.fn(function* (context, deb
 		}),
 	]);
 
-	const newUser: typeof Users.$inferInsert = {
+	// Get current timestamp
+	const NOW = new Date().toISOString();
+
+	// Create new user object
+	const newUser: InsertUser = {
 		id: newUserId,
 		name,
 		username,
 		email,
 		avatar,
 		password: hashedPassword,
-		createdAt: new Date(),
-		updatedAt: new Date(),
+		createdAt: NOW,
+		updatedAt: NOW,
+		emailVerified: false,
 	};
 
-	const newRank: typeof Permissions.$inferInsert = {
+	// Create new permission rank object
+	const newRank: InsertPermission = {
 		user: newUserId,
 		rank,
 	};
 
+	// Prepare database operations
+	const todo = Effect.all([_createUser(newUser), _createRank(newRank)]);
+
 	if (dryRun) {
+		// Dry run: skip user creation
 		context.tasks.push({
 			title: `${StudioCMSColorwayInfo.bold('--dry-run')} ${context.chalk.dim('Skipping user creation')}`,
 			task: async (message) => {
@@ -140,20 +220,14 @@ export const libsqlCreateUsers: EffectStepFn = Effect.fn(function* (context, deb
 			},
 		});
 	} else {
+		// Create user in database
 		context.tasks.push({
 			title: context.chalk.dim('Creating user...'),
 			task: async (message) => {
 				try {
-					const [insertedUser, insertedRank] = await runEffect(
-						db.execute((tx) =>
-							tx.batch([
-								tx.insert(Users).values(newUser).returning(),
-								tx.insert(Permissions).values(newRank).returning(),
-							])
-						)
-					);
+					const [insertedUser, insertedRank] = await runEffect(todo);
 
-					if (insertedUser.length === 0 || insertedRank.length === 0) {
+					if (!insertedUser || !insertedRank) {
 						message('Failed to create user or assign permissions');
 						return await runEffect(context.exit(1));
 					}

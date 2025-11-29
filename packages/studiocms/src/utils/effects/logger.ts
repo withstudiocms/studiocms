@@ -180,7 +180,7 @@ const setLoggerLevel = Logger.withMinimumLogLevel(level);
  * @returns An effect that provides the custom logger to the application.
  * @internal
  */
-const setLogger = (label: string) =>
+export const setLogger = (label: string) =>
 	Effect.provide(Logger.replace(Logger.defaultLogger, makeLogger(label)));
 
 /**

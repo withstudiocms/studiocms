@@ -1,7 +1,7 @@
 {
 	"name": "studiocms",
 	"version": "0.1.0-beta.30",
-	"description": "Astro Native CMS for AstroDB. Built from the ground up by the Astro community.",
+	"description": "A Community-Driven Astro native CMS. Built from the ground up by the Astro community.",
 	"author": {
 		"name": "withstudiocms",
 		"url": "https://studiocms.dev"
@@ -21,7 +21,6 @@
 	"keywords": [
 		"cms",
 		"astrocms",
-		"astrodb",
 		"astrostudio",
 		"astrostudiocms",
 		"studiocms",
@@ -32,7 +31,10 @@
 		"astro-integration",
 		"headlesscms",
 		"headless-cms",
-		"headless"
+		"headless",
+		"content-management-system",
+		"kysely",
+		"kysely-db"
 	],
 	"homepage": "https://studiocms.dev",
 	"publishConfig": {
@@ -72,10 +74,6 @@
 			"types": "./dist/consts.d.ts",
 			"default": "./dist/consts.js"
 		},
-		"./db/config": {
-			"types": "./dist/db/config.d.ts",
-			"default": "./dist/db/config.js"
-		},
 		"./errors": {
 			"types": "./dist/errors.d.ts",
 			"default": "./dist/errors.js"
@@ -88,13 +86,9 @@
 			"types": "./dist/virtuals/sdk/index.d.ts",
 			"default": "./dist/virtuals/sdk/index.js"
 		},
-		"./sdk/tables": {
-			"types": "./dist/virtuals/sdk/tables.d.ts",
-			"default": "./dist/virtuals/sdk/tables.js"
-		},
 		"./sdk/types": {
-			"types": "./dist/virtuals/sdk/types/index.d.ts",
-			"default": "./dist/virtuals/sdk/types/index.js"
+			"types": "./dist/virtuals/sdk/types.d.ts",
+			"default": "./dist/virtuals/sdk/types.js"
 		},
 		"./schemas": {
 			"types": "./dist/schemas/index.d.ts",
@@ -165,12 +159,12 @@
 		"@withstudiocms/effect": "workspace:*",
 		"@withstudiocms/template-lang": "workspace:*",
 		"@withstudiocms/kysely": "workspace:*",
+		"@withstudiocms/sdk": "workspace:*",
 		"ace-builds": "^1.43.4",
 		"astro-integration-kit": "catalog:",
 		"boxen": "^8.0.1",
 		"chalk": "catalog:",
-		"diff": "^8.0.2",
-		"diff2html": "^3.4.52",
+		"diff": "catalog:",
 		"dompurify": "^3.3.0",
 		"dotenv": "^17.2.3",
 		"fuse.js": "^7.1.0",
@@ -195,17 +189,8 @@
 		"typescript": "catalog:"
 	},
 	"peerDependencies": {
-		"@astrojs/db": ">=0.17.2",
-		"@libsql/client": "catalog:min",
-		"@studiocms/web-vitals": "catalog:min",
 		"astro": "catalog:min",
-		"drizzle-orm": "catalog:min",
 		"effect": "catalog:effect",
 		"vite": "catalog:min"
-	},
-	"peerDependenciesMeta": {
-		"@studiocms/web-vitals": {
-			"optional": true
-		}
 	}
 }

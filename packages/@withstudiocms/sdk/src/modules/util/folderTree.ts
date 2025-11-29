@@ -14,7 +14,7 @@ export class FolderTreeError extends Data.TaggedError('FolderTreeError')<{ cause
  * @param _try - A function that performs the operation to be wrapped.
  * @returns An Effect that either yields the result of the operation or a FolderTreeError.
  */
-const useFolderTreeError = <T>(_try: () => T) =>
+export const useFolderTreeError = <T>(_try: () => T) =>
 	Effect.try({
 		try: _try,
 		catch: (error) => new FolderTreeError({ cause: error }),

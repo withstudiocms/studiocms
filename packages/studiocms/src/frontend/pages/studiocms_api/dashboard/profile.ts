@@ -4,7 +4,7 @@ import { developerConfig } from 'studiocms:config';
 import { apiResponseLogger } from 'studiocms:logger';
 import { Notifications } from 'studiocms:notifier';
 import { SDKCore } from 'studiocms:sdk';
-import type { tsUsersUpdate } from 'studiocms:sdk/types';
+import type { tsUsers } from 'studiocms:sdk/types';
 import { z } from 'astro/zod';
 import {
 	AllResponse,
@@ -15,6 +15,8 @@ import {
 	OptionsResponse,
 	readAPIContextJson,
 } from '../../../../effect.js';
+
+type tsUsersUpdate = tsUsers['Update']['Type'];
 
 type UserBasicUpdate = Omit<tsUsersUpdate, 'id'>;
 
@@ -116,7 +118,10 @@ export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
 							if (emailSearch.length > 0)
 								return apiResponseLogger(400, 'Invalid email: Email is already in use');
 						}
-						yield* sdk.AUTH.user.update(userData.user!.id!, data);
+						yield* sdk.AUTH.user.update({
+							userId: userData.user!.id!,
+							userData: { ...data, id: userData.user!.id! },
+						});
 
 						return apiResponseLogger(200, 'User profile updated successfully');
 					}
@@ -171,7 +176,17 @@ export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
 
 						if (userData.user)
 							yield* Effect.all([
-								sdk.AUTH.user.update(userData.user.id, userUpdate),
+								sdk.AUTH.user.update({
+									userId: userData.user.id,
+									userData: {
+										id: userData.user.id,
+										name: userData.user.name,
+										username: userData.user.username,
+										updatedAt: new Date().toISOString(),
+										emailVerified: userData.user.emailVerified,
+										...userUpdate,
+									},
+								}),
 								notify.sendUserNotification('account_updated', userData.user.id),
 								notify.sendAdminNotification('user_updated', userData.user.username),
 							]);
@@ -184,17 +199,25 @@ export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
 						}
 
 						if (userData.user)
-							yield* userHelper
-								.createUserAvatar(userData.user.email)
-								.pipe(
-									Effect.flatMap((newAvatar) =>
-										Effect.all([
-											sdk.AUTH.user.update(userData.user!.id, { avatar: newAvatar }),
-											notify.sendUserNotification('account_updated', userData.user!.id),
-											notify.sendAdminNotification('user_updated', userData.user!.username),
-										])
-									)
-								);
+							yield* userHelper.createUserAvatar(userData.user.email).pipe(
+								Effect.flatMap((newAvatar) =>
+									Effect.all([
+										sdk.AUTH.user.update({
+											userId: userData.user!.id,
+											userData: {
+												id: userData.user!.id,
+												name: userData.user!.name,
+												username: userData.user!.username,
+												updatedAt: new Date().toISOString(),
+												emailVerified: userData.user!.emailVerified,
+												avatar: newAvatar,
+											},
+										}),
+										notify.sendUserNotification('account_updated', userData.user!.id),
+										notify.sendAdminNotification('user_updated', userData.user!.username),
+									])
+								)
+							);
 
 						return apiResponseLogger(200, 'User Avatar updated successfully');
 					}

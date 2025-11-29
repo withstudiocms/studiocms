@@ -9,7 +9,7 @@ interface Props extends ComponentProps<typeof BaseLayout> {}
 const headProps = Astro.props;
 ---
 
-<BaseLayout {...headProps}>
+<BaseLayout {...headProps} generators={false}>
   <main>
     <div class="container">
       <slot />

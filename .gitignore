@@ -19,3 +19,4 @@ dist
 
 # allure results
 allure-results/*
+allure-results

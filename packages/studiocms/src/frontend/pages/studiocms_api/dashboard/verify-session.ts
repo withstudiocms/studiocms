@@ -83,8 +83,8 @@ const responseBuilder = (
 			? {
 					id: user.id,
 					name: user.name,
-					email: user.email,
-					avatar: user.avatar,
+					email: user.email || null,
+					avatar: user.avatar || null,
 					username: user.username,
 				}
 			: null,

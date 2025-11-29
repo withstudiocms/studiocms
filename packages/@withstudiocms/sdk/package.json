@@ -23,7 +23,6 @@
     "access": "public",
     "provenance": true
   },
-  "sideEffects": false,
   "files": [
     "dist"
   ],
@@ -44,11 +43,12 @@
     "./types": {
       "types": "./dist/types.d.ts",
       "default": "./dist/types.js"
-    }
+    },
+    "./*": "./dist/*"
   },
   "type": "module",
   "dependencies": {
-		"diff": "^8.0.2",
+		"diff": "catalog:",
 		"diff2html": "^3.4.52",
     "zod": "^3.25.76"
   },

@@ -3,6 +3,9 @@ import { addVirtualImports, defineUtility } from 'astro-integration-kit';
 import type { List, Root } from 'mdast';
 import { toMarkdown } from 'mdast-util-to-markdown';
 
+/**
+ * Generates a changelog markdown file from the changelog data.
+ */
 export const changelogHelper = defineUtility('astro:config:setup')(
 	(params, resolvedPath: string) => {
 		const changelog = loadChangelog({ path: resolvedPath });

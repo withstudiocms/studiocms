@@ -132,10 +132,10 @@ export class GitHubOAuthAPI extends Effect.Service<GitHubOAuthAPI>()('GitHubOAut
 
 					const { id: githubUserId, login: githubUsername } = githubUser;
 
-					const existingOAuthAccount = yield* sdk.AUTH.oAuth.searchProvidersForId(
-						GitHubOAuthAPI.ProviderID,
-						`${githubUserId}`
-					);
+					const existingOAuthAccount = yield* sdk.AUTH.oAuth.searchProvidersForId({
+						providerId: GitHubOAuthAPI.ProviderID,
+						userId: `${githubUserId}`,
+					});
 
 					if (existingOAuthAccount) {
 						const user = yield* sdk.GET.users.byId(existingOAuthAccount.userId);
@@ -193,12 +193,12 @@ export class GitHubOAuthAPI extends Effect.Service<GitHubOAuthAPI>()('GitHubOAut
 							email: githubUser.email || null,
 							name: githubUser.name || githubUsername,
 							avatar: githubUser.avatar_url,
-							createdAt: new Date(),
+							createdAt: new Date().toISOString(),
 							url: githubUser.blog || null,
 							emailVerified: false,
 							notifications: null,
 							password: null,
-							updatedAt: new Date(),
+							updatedAt: new Date().toISOString(),
 						},
 						{ provider: GitHubOAuthAPI.ProviderID, providerUserId: `${githubUserId}` }
 					);

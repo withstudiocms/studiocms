@@ -11,7 +11,7 @@ const allPages = await runSDK(SDKCoreJs.GET.pages(true));
 
 // Filter out the pages that are not allowed
 const totalPages = allPages
-	.map((page) => page.data)
+	.map((page) => page)
 	.filter((page) => allowedIdentifiers.includes(page.package));
 
 const recentlyUpdatedPages = totalPages

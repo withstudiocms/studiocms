@@ -9,13 +9,11 @@ if (!slug) {
 	slug = 'index';
 }
 
-const fullPageData = await runSDK(SDKCoreJs.GET.page.bySlug(slug));
+const page = await runSDK(SDKCoreJs.GET.page.bySlug(slug));
 
-if (!fullPageData) {
+if (!page) {
 	return new Response(null, { status: 404 });
 }
-
-const page = fullPageData.data;
 
 const { title, description, heroImage } = page;
 ---

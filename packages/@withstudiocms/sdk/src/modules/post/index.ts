@@ -316,9 +316,9 @@ export const SDKPostModule = Effect.gen(function* () {
 				Effect.flatMap(({ pageData: { id, contentLang, ...basePageData }, pageContent }) =>
 					Effect.all({
 						pageData: _insertPageData({
+							...basePageData,
 							id,
 							contentLang,
-							...basePageData,
 						}),
 						pageContent: _insertPageContent({
 							id: crypto.randomUUID().toString(),
@@ -494,10 +494,18 @@ export const SDKPostModule = Effect.gen(function* () {
 			pageContent: CombinedInsertContent;
 		}) =>
 			_insertNewPageWithContent(pageData, pageContent).pipe(
+				Effect.flatMap(({ pageData: { id } }) => GET.page.byId(id)),
 				Effect.tap(() =>
-					Effect.all([clear.folderList, clear.folderTree, invalidateTags(cacheTags.pages)])
-				),
-				Effect.flatMap(({ pageData: { id } }) => GET.page.byId(id))
+					Effect.all([
+						clear.folderList,
+						clear.folderTree,
+						invalidateTags([
+							...cacheTags.pages,
+							...cacheTags.pageFolderTree,
+							...cacheTags.folderTree,
+						]),
+					])
+				)
 			)
 	);
 

@@ -5,6 +5,8 @@ import type { LibSQLDatabase } from 'drizzle-orm/libsql';
 import type { SQLiteTransaction } from 'drizzle-orm/sqlite-core';
 import { Context, Data, Effect, Option } from './effect.js';
 
+// TODO: Remove drizzle client and dependency in favor of Kysely-based client
+
 /**
  * Represents an error specific to the LibSQL client.
  *
@@ -17,6 +19,8 @@ import { Context, Data, Effect, Option } from './effect.js';
  * ```
  *
  * @property cause - The underlying cause of the error, can be any value.
+ *
+ * @deprecated Use new Kysely-based database client in @withstudiocms/Kysely package.
  */
 export class LibSQLClientError extends Data.TaggedError('LibSQLClientError')<{ cause: unknown }> {}
 
@@ -28,6 +32,8 @@ export class LibSQLClientError extends Data.TaggedError('LibSQLClientError')<{ c
  * @param _try A function that returns a Promise of type `A`.
  * @returns An Effect that resolves with the value of the Promise,
  *          or fails with a `LibSQLClientError` if the Promise is rejected.
+ *
+ * @deprecated Use new Kysely-based database client in @withstudiocms/Kysely package.
  */
 const useWithErrorPromise = <A>(_try: () => Promise<A>) =>
 	Effect.tryPromise({
@@ -42,6 +48,8 @@ const useWithErrorPromise = <A>(_try: () => Promise<A>) =>
  * @typeParam ResultSet - The result set type returned by queries.
  * @typeParam Record<string, never> - The schema type for the transaction (empty object in this case).
  * @typeParam ExtractTablesWithRelations<Record<string, never>> - Extracted table relations from the schema.
+ *
+ * @deprecated Use new Kysely-based database client in @withstudiocms/Kysely package.
  */
 export type TransactionClient<Schema extends Record<string, unknown> = Record<string, never>> =
 	SQLiteTransaction<'async', ResultSet, Schema, ExtractTablesWithRelations<Schema>>;
@@ -54,6 +62,8 @@ export type TransactionClient<Schema extends Record<string, unknown> = Record<st
  * @param fn - An asynchronous function that receives either a `LibSQLDatabase` or `TransactionClient`
  *             and returns a promise of type `T`.
  * @returns An `Effect` that resolves to the result of type `T` or fails with a `LibSQLClientError`.
+ *
+ * @deprecated Use new Kysely-based database client in @withstudiocms/Kysely package.
  */
 export type ExecuteFn<Schema extends Record<string, unknown> = Record<string, never>> = <T>(
 	fn: (client: LibSQLDatabase<Schema> | TransactionClient<Schema>) => Promise<T>
@@ -65,6 +75,8 @@ export type ExecuteFn<Schema extends Record<string, unknown> = Record<string, ne
  * @template U The type of the value returned by the provided function.
  * @param fn - A function that receives a `TransactionClient` and returns a `Promise` of type `U`.
  * @returns An `Effect` that resolves to the result of type `U` or fails with a `LibSQLClientError`.
+ *
+ * @deprecated Use new Kysely-based database client in @withstudiocms/Kysely package.
  */
 export type TransactionContextShape<
 	Schema extends Record<string, unknown> = Record<string, never>,
@@ -85,6 +97,8 @@ export type TransactionContextShape<
  * const transactionContext = { /* ... *\/ };
  * const effectWithTransaction = TransactionContext.provide(transactionContext)(someEffect);
  * ```
+ *
+ * @deprecated Use new Kysely-based database client in @withstudiocms/Kysely package.
  */
 export class TransactionContext extends Context.Tag('TransactionContext')<
 	TransactionContext,
@@ -108,6 +122,8 @@ export class TransactionContext extends Context.Tag('TransactionContext')<
  *
  * This class is used to provide and consume a Drizzle database client and its schema
  * within a context-aware application, leveraging the Context.Tag utility for type safety.
+ *
+ * @deprecated Use new Kysely-based database client in @withstudiocms/Kysely package.
  */
 export class DrizzleClient extends Context.Tag('DrizzleClient')<
 	DrizzleClient,
@@ -134,6 +150,8 @@ export class DrizzleClient extends Context.Tag('DrizzleClient')<
  * const { makeQuery, execute } = yield* DrizzleDBClient;
  * const result = yield* makeQuery((exec, input) => exec( ... ));
  * ```
+ *
+ * @deprecated Use new Kysely-based database client in @withstudiocms/Kysely package.
  */
 export class DrizzleDBClientService extends Effect.Service<DrizzleDBClientService>()(
 	'DrizzleDBClientService',
@@ -198,6 +216,8 @@ export class DrizzleDBClientService extends Effect.Service<DrizzleDBClientServic
  * @param config.drizzle - An instance of either `LibSQLDatabase` or `Database` to be used by the client.
  * @param [config.schema] - Optional schema definition for the database.
  * @returns An Effect that provides a Drizzle database client service, configured with the given parameters.
+ *
+ * @deprecated Use new Kysely-based database client in @withstudiocms/Kysely package.
  */
 export const drizzleDBClientLive = <Schema extends Record<string, unknown>>(config: {
 	drizzle: LibSQLDatabase | Database;

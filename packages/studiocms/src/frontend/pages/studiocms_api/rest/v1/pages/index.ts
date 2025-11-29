@@ -51,29 +51,27 @@ export const { GET, POST, ALL, OPTIONS } = createEffectAPIRoutes(
 				let filteredPages = pages;
 
 				if (titleFilter) {
-					filteredPages = filteredPages.filter((page) => page.data.title.includes(titleFilter));
+					filteredPages = filteredPages.filter((page) => page.title.includes(titleFilter));
 				}
 
 				if (slugFilter) {
-					filteredPages = filteredPages.filter((page) => page.data.slug.includes(slugFilter));
+					filteredPages = filteredPages.filter((page) => page.slug.includes(slugFilter));
 				}
 
 				if (authorFilter) {
-					filteredPages = filteredPages.filter((page) => page.data.authorId === authorFilter);
+					filteredPages = filteredPages.filter((page) => page.authorId === authorFilter);
 				}
 
 				if (draftFilter) {
-					filteredPages = filteredPages.filter((page) => page.data.draft === draftFilter);
+					filteredPages = filteredPages.filter((page) => page.draft === draftFilter);
 				}
 
 				if (publishedFilter) {
-					filteredPages = filteredPages.filter((page) => !page.data.draft);
+					filteredPages = filteredPages.filter((page) => !page.draft);
 				}
 
 				if (parentFolderFilter) {
-					filteredPages = filteredPages.filter(
-						(page) => page.data.parentFolder === parentFolderFilter
-					);
+					filteredPages = filteredPages.filter((page) => page.parentFolder === parentFolderFilter);
 				}
 
 				return createJsonResponse(filteredPages);
@@ -118,6 +116,10 @@ export const { GET, POST, ALL, OPTIONS } = createEffectAPIRoutes(
 					title,
 					slug,
 					description,
+					categories,
+					tags,
+					contributorIds,
+					augments,
 					id: ___id,
 					authorId: __authorId,
 					updatedAt: __updatedAt,
@@ -140,9 +142,13 @@ export const { GET, POST, ALL, OPTIONS } = createEffectAPIRoutes(
 								.replace(/-+/g, '-') // Replace multiple hyphens with single hyphen
 								.replace(/^-|-$/g, ''), // Remove leading/trailing hyphens '-'),
 						description: description || '',
-						authorId: userId || null,
-						updatedAt: new Date(),
-						publishedAt: restPageData?.draft ? undefined : new Date(),
+						authorId: userId,
+						updatedAt: new Date().toISOString(),
+						publishedAt: new Date().toISOString(),
+						categories: JSON.stringify(categories || []),
+						tags: JSON.stringify(tags || []),
+						contributorIds: JSON.stringify(contributorIds || []),
+						augments: JSON.stringify(augments || []),
 						...restPageData,
 					},
 					{ ...contentData }

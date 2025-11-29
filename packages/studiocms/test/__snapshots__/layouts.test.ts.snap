@@ -52,7 +52,7 @@ exports[`studiocms Package Tests > Layout Container tests - AuthLayout component
 `;
 
 exports[`studiocms Package Tests > Layout Container tests - FirstTimeSetupLayout component 1`] = `
-"<html lang="en"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Test Title</title><meta name="title" content="Test Title"><meta name="description" content="Test Description"><meta name="theme-color" content="#a581f3"><meta name="generator" content="Astro v0.0.0-test"><meta name="generator" content="StudioCMS v0.0.0-test"><meta name="generator" content="StudioCMS UI v0.0.0-test"><link rel="icon" href="https://cdn.studiocms.dev/favicon.svg" type="image/svg+xml"><link rel="icon" href="https://cdn.studiocms.dev/favicon-light.png" type="image/png" media="(prefers-color-scheme: dark)"><link rel="icon" href="https://cdn.studiocms.dev/favicon-dark.png" type="image/png" media="(prefers-color-scheme: light)"><script>
+"<html lang="en"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Test Title</title><meta name="title" content="Test Title"><meta name="description" content="Test Description"><meta name="theme-color" content="#a581f3"><link rel="icon" href="https://cdn.studiocms.dev/favicon.svg" type="image/svg+xml"><link rel="icon" href="https://cdn.studiocms.dev/favicon-light.png" type="image/png" media="(prefers-color-scheme: dark)"><link rel="icon" href="https://cdn.studiocms.dev/favicon-dark.png" type="image/png" media="(prefers-color-scheme: light)"><script>
     window.theme ??= (() => {
         const defaultTheme = "system";
         const storageKey = "studiocms-theme-preference";

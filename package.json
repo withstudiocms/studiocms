@@ -31,10 +31,10 @@
     "build:packages": "pnpm --filter studiocms --filter @studiocms/* --filter @withstudiocms/* build",
 
     "playground:dev": "pnpm dev",
-    "playground:push": "pnpm --filter node-playground db:push",
     "playground:preview": "pnpm --filter node-playground preview",
     "playground:build": "pnpm --filter node-playground build",
     "playground:cli": "pnpm --filter node-playground studiocms",
+    "playground:migrate": "pnpm --filter node-playground migrate",
 
     "dev": "pnpm --stream --filter studiocms --filter @studiocms/* --filter @withstudiocms/* --filter node-playground -r --parallel dev",
 

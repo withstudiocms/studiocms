@@ -1,7 +1,8 @@
-import db from '@astrojs/db';
+import { globSync } from 'node:fs';
 import node from '@astrojs/node';
 import devApps from '@studiocms/devapps';
 import { defineConfig } from 'astro/config';
+import { hmrIntegration } from 'astro-integration-kit/dev';
 import studioCMS from 'studiocms';
 
 const site = process.env.DOKPLOY_DEPLOY_URL
@@ -9,6 +10,22 @@ const site = process.env.DOKPLOY_DEPLOY_URL
 	: 'https://playground.studiocms.dev';
 
 console.log('Site URL:', site);
+
+const studiocmsScopedPackages = globSync('../packages/@studiocms/*');
+const withstudiocmsScopedPackages = globSync('../packages/@withstudiocms/*').filter(
+	(v) => !v.endsWith('buildkit')
+);
+
+function appendDistPath(paths: string[]) {
+	return paths.map((p) => `${p}/dist`);
+}
+
+const packagePaths = [
+	...appendDistPath(studiocmsScopedPackages),
+	...appendDistPath(withstudiocmsScopedPackages),
+];
+
+console.log('HMR Package Paths:', packagePaths);
 
 // https://astro.build/config
 export default defineConfig({
@@ -18,7 +35,13 @@ export default defineConfig({
 	security: {
 		checkOrigin: false,
 	},
-	integrations: [db(), studioCMS(), devApps()],
+	integrations: [
+		hmrIntegration({
+			directories: packagePaths,
+		}),
+		studioCMS(),
+		devApps(),
+	],
 
 	// Used for devcontainer/docker development
 	server: {

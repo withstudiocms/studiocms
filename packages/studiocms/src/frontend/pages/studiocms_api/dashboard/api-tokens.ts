@@ -93,7 +93,7 @@ export const { POST, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 					return apiResponseLogger(400, 'Invalid form data, userID is required');
 				}
 
-				yield* sdk.REST_API.tokens.delete(jsonData.userID, jsonData.tokenID);
+				yield* sdk.REST_API.tokens.delete({ tokenId: jsonData.tokenID, userId: jsonData.userID });
 
 				return apiResponseLogger(200, 'Token deleted');
 			}),

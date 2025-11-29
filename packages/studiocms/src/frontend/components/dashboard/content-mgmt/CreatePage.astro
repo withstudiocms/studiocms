@@ -308,12 +308,14 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
 </script>
 
 <script>
-  import type { tsPageDataInsert } from "studiocms:sdk/types";
+  import type { tsPageData } from "studiocms:sdk/types";
   import { toast } from "studiocms:ui/components/toaster/client";
   import {
     formDataToRecord,
     studioCMSCreatePageDataSchema,
   } from "../../../scripts/formdata-utils.js";
+
+  type tsPageDataInsert = tsPageData['Insert']['Type'];
 
   // get the elements
   const createPageForm = document.getElementById(

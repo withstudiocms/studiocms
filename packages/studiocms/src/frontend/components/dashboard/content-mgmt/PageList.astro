@@ -1,19 +1,19 @@
 ---
 import { runSDK, SDKCoreJs } from 'studiocms:sdk';
-import type { SiteConfigCacheObject } from 'studiocms:sdk/types';
+import type { DynamicConfigEntry, StudioCMSSiteConfig } from 'studiocms:sdk/types';
 import TreeRenderer from './TreeRenderer.astro';
 
 interface Props {
 	isNewFolder?: boolean;
 	isNewPage?: boolean;
-	config: SiteConfigCacheObject;
+	config: DynamicConfigEntry<StudioCMSSiteConfig>;
 }
 
 const { config, isNewFolder, isNewPage } = Astro.props as Props;
 
 const hideDefaults = config.data.hideDefaultIndex;
 
-const { data: PageFolderTree } = await runSDK(SDKCoreJs.GET.pageFolderTree(hideDefaults));
+const PageFolderTree = await runSDK(SDKCoreJs.GET.pageFolderTree(hideDefaults));
 ---
 
 <TreeRenderer data={PageFolderTree} {isNewFolder} {isNewPage} />

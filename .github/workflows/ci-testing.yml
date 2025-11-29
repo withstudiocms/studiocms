@@ -32,7 +32,7 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Run @${{ matrix.cmd }} TypeCheck
+      - name: Run ${{ matrix.cmd }} TypeCheck
         uses: ./.github/actions/type-check
         with:
           cmd: ${{ matrix.cmd }}

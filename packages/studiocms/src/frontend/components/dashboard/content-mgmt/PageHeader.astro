@@ -38,9 +38,9 @@ if (editId) {
 	}
 
 	if (editPage) {
-		pageTitle = `${res.data.title}`;
-		pageSlug = res.data.slug;
-		currentId = res.data.id;
+		pageTitle = `${res.title}`;
+		pageSlug = res.slug;
+		currentId = res.id;
 	}
 }
 
@@ -49,7 +49,7 @@ const folderId = urlParams.get('folder') || '';
 if (folderId) {
 	const res = await runSDK(SDKCoreJs.GET.folderList());
 
-	const folder = res.data.find((folder) => folder.id === folderId);
+	const folder = res.find((folder) => folder.id === folderId);
 
 	if (editFolder && folder) {
 		pageTitle = `${folder.name}`;

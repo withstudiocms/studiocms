@@ -13,7 +13,7 @@ export class UsersError extends Data.TaggedError('UsersError')<{ cause: unknown 
  * @param _try - A function that performs the desired operation.
  * @returns An Effect that either succeeds with the result of the operation or fails with a UsersError.
  */
-const useUsersError = <T>(_try: () => T) =>
+export const useUsersError = <T>(_try: () => T) =>
 	Effect.try({
 		try: _try,
 		catch: (error) => new UsersError({ cause: error }),

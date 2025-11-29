@@ -33,23 +33,25 @@ const authKitConfig = AuthKitOptions.Live({
 		cookieName: AuthSessionCookieName,
 		expTime: 1000 * 60 * 60 * 24 * 14,
 		sessionTools: {
-			createSession: async (params) => runEffect(sdk.AUTH.session.create(params)),
+			createSession: async ({ expiresAt, ...params }) =>
+				runEffect(sdk.AUTH.session.create({ expiresAt: expiresAt.toISOString(), ...params })),
 			deleteSession: async (sessionId) =>
 				runEffect(sdk.AUTH.session.delete(sessionId)).then(() => void 0),
 			sessionAndUserData: async (sessionId) =>
 				runEffect(sdk.AUTH.session.sessionWithUser(sessionId)),
 			updateSession: async (sessionId, params) =>
-				runEffect(sdk.AUTH.session.update(sessionId, params.expiresAt)),
+				runEffect(sdk.AUTH.session.update({ id: sessionId, newDate: params.expiresAt })),
 		},
 	},
 	userTools: {
 		idGenerator: () => crypto.randomUUID(),
-		createLocalUser: async (params) => runEffect(sdk.AUTH.user.create(params)),
+		createLocalUser: async (params) => runEffect(sdk.AUTH.user.create(params, 'visitor')),
 		createOAuthUser: async (params) => runEffect(sdk.AUTH.oAuth.create(params)),
 		getCurrentPermissions: async (userId) => runEffect(sdk.AUTH.permission.currentStatus(userId)),
 		getUserById: async (id) => runEffect(sdk.GET.users.byId(id)),
 		getUserByEmail: async (email) => runEffect(sdk.GET.users.byEmail(email)),
-		updateLocalUser: async (id, params) => runEffect(sdk.AUTH.user.update(id, params)),
+		updateLocalUser: async (userId, userData) =>
+			runEffect(sdk.AUTH.user.update({ userId, userData })),
 		notifier: {
 			admin: (type, message) => runEffect(notifyAdmin(type, message)),
 		},

@@ -71,15 +71,10 @@
     "typescript": "catalog:"
   },
   "peerDependencies": {
+    "@withstudiocms/kysely": "workspace:*",
     "studiocms": "workspace:*",
-    "@astrojs/db": ">=0.17.2",
     "astro": "catalog:min",
     "effect": "catalog:effect",
     "vite": "catalog:min"
-  },
-  "peerDependenciesMeta": {
-    "studiocms": {
-      "optional": true
-    }
   }
 }

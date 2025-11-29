@@ -19,7 +19,13 @@ import type { ParseError } from 'effect/ParseResult';
  */
 export class QueryParseError extends Data.TaggedError('QueryParseError')<{
 	parseError: ParseError;
-}> {}
+}> {
+	cause = this.parseError.cause;
+	message = this.parseError.message;
+	stack = this.parseError.stack;
+	toJSON = this.parseError.toJSON;
+	toString = this.parseError.toString;
+}
 
 /**
  * Error type representing failures that occur while executing or building a database query.

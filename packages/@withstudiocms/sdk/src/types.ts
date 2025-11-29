@@ -19,6 +19,8 @@ import type {
 	StudioCMSUsersTable,
 } from '@withstudiocms/kysely/tables';
 
+export * from './lib/pluginUtils.js';
+
 // ===============================================================
 // Table Type Aliases
 // ===============================================================

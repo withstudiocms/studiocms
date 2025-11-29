@@ -3,7 +3,6 @@
  * loaded when a user imports the StudioCMS integration in their Astro configuration file. These
  * directives must be first at the top of the file and can only be preceded by this comment.
  */
-/// <reference types="@astrojs/db" preserve="true" />
 /// <reference types="@studiocms/ui/v/types" preserve="true" />
 /// <reference types="./global.d.ts" preserve="true" />
 /// <reference types="./virtual.d.ts" preserve="true" />
@@ -14,6 +13,7 @@ import { runtimeLogger } from '@inox-tools/runtime-logger';
 import studiocmsUi from '@studiocms/ui';
 import { componentRegistryHandler } from '@withstudiocms/component-registry';
 import { configResolverBuilder, exists, watchConfigFileBuilder } from '@withstudiocms/config-utils';
+import { Effect, runEffect } from '@withstudiocms/effect';
 import {
 	addIntegrationArray,
 	getLatestVersion,
@@ -23,9 +23,11 @@ import {
 	type Messages,
 } from '@withstudiocms/internal_helpers/astro-integration';
 import { readJson } from '@withstudiocms/internal_helpers/utils';
+import { type Kysely, sql } from '@withstudiocms/kysely/kysely';
 import { envField } from 'astro/config';
 import { z } from 'astro/zod';
 import { addVirtualImports, createResolver, defineIntegration } from 'astro-integration-kit';
+import dotenv from 'dotenv';
 import { compare as semCompare } from 'semver';
 import { loadEnv } from 'vite';
 import {
@@ -35,6 +37,7 @@ import {
 	getUiOpts,
 	makeDashboardRoute,
 } from './consts.js';
+import { type DbDialectType, getDbClient } from './db/index.js';
 import {
 	changelogHelper,
 	checkAstroConfig,
@@ -61,6 +64,8 @@ const { resolve } = createResolver(import.meta.url);
 const { name: pkgName, version: pkgVersion } = readJson<{ name: string; version: string }>(
 	resolve('../package.json')
 );
+
+dotenv.config({ quiet: true });
 
 // Load Environment Variables
 const env = loadEnv('', process.cwd(), '');
@@ -110,14 +115,33 @@ export const studiocms = defineIntegration({
 		// Is the integration running in development mode?
 		let isDevMode = false;
 
+		/**
+		 * Effect to get the current time from the database.
+		 *
+		 * @remarks
+		 * This effect uses the provided database client to execute a simple SQL query
+		 * that retrieves the current time from the database server.
+		 *
+		 * @returns An effect that resolves to the result of the SQL query.
+		 */
+		// biome-ignore lint/suspicious/noExplicitAny: Allowed when using raw sql queries in this context
+		const getQuery = Effect.fn(({ db }: { db: Kysely<any> }) =>
+			Effect.tryPromise(async () => db.executeQuery(sql`SELECT CURRENT_TIME;`.compile(db)))
+		);
+
+		/**
+		 * Runs a database connection test using the specified driver dialect.
+		 *
+		 * @param driverDialect - The database dialect to use for the connection test.
+		 * @returns A promise that resolves when the connection test is complete.
+		 */
+		const runConnectionTest = async (driverDialect: DbDialectType) =>
+			await runEffect(getDbClient(driverDialect).pipe(Effect.flatMap(getQuery)));
+
 		// Return the Integration
 		return {
 			name,
 			hooks: {
-				// DB Setup: Setup the Database Connection for AstroDB and StudioCMS
-				'astro:db:setup': ({ extendDb }) => {
-					extendDb({ configEntrypoint: resolve('./db/config.js') });
-				},
 				'astro:config:setup': async (params) => {
 					// Destructure the params
 					const { logger, updateConfig, createCodegenDir, command } = params;
@@ -452,6 +476,26 @@ export const studiocms = defineIntegration({
 								error instanceof Error ? error.message : String(error)
 							}`
 						);
+					}
+
+					try {
+						// Attempt to connect to the database
+						await runConnectionTest(options.db.dialect);
+
+						// Log success message
+						messages.push({
+							label: 'studiocms:database',
+							logLevel: 'info',
+							message: '✅ Successfully connected to the database.',
+						});
+					} catch (error) {
+						messages.push({
+							label: 'studiocms:database',
+							logLevel: 'error',
+							message: `❌ Error connecting to the database: ${
+								error instanceof Error ? error.message : String(error)
+							}`,
+						});
 					}
 
 					// Log all messages

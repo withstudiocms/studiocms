@@ -1,4 +1,4 @@
-import { Effect, HTTPClient, Platform, Schema } from '@withstudiocms/effect';
+import { Effect, HTTPClient, Schema } from '@withstudiocms/effect';
 import { type CacheEntryStatus, CacheService } from '../../cache.js';
 import { cacheKeyGetters, cacheTags } from '../../consts.js';
 
@@ -76,23 +76,20 @@ export class NpmRegistryResponseSchema extends Schema.Class<NpmRegistryResponseS
 /**
  * Helper to process and validate the HTTP response from the NPM registry.
  */
-const parseNpmRegistryResponse = Platform.HttpClientResponse.schemaBodyJson(
-	NpmRegistryResponseSchema,
-	{
-		exact: false,
-		onExcessProperty: 'preserve',
-	}
-);
+export const parseNpmRegistryResponse = Effect.fn(function* (response: Response) {
+	const data = yield* Effect.tryPromise(() => response.json());
+	return yield* Schema.decodeUnknown(NpmRegistryResponseSchema)(data);
+});
 
 /**
  * Cache key for NPM package data.
  */
-const cacheKey = cacheKeyGetters.npmPackage;
+export const cacheKey = cacheKeyGetters.npmPackage;
 
 /**
  * Cache options for NPM package data.
  */
-const cacheOpts = { tags: cacheTags.npmPackage };
+export const cacheOpts = { tags: cacheTags.npmPackage };
 
 /**
  * An Effect service for retrieving the version of an NPM package from the NPM registry.
@@ -112,10 +109,14 @@ const cacheOpts = { tags: cacheTags.npmPackage };
  * @returns An Effect that resolves to the version string of the specified package.
  */
 export const GetFromNPM = Effect.gen(function* () {
-	const [{ get: getter }, { memoize, getCacheStatus }] = yield* Effect.all([
-		HTTPClient,
-		CacheService,
-	]);
+	const [{ memoize, getCacheStatus }] = yield* Effect.all([CacheService]);
+
+	const effectFetch = Effect.fn((url: string) =>
+		Effect.tryPromise({
+			try: () => fetch(url),
+			catch: (error) => new Error(`Failed to fetch NPM package data: ${String(error)}`),
+		})
+	);
 
 	/**
 	 * Remaps the cache status data to just the last updated date.
@@ -152,7 +153,7 @@ export const GetFromNPM = Effect.gen(function* () {
 	const getDataFromNPM = Effect.fn((pkg: string, ver?: string) =>
 		memoize(
 			cacheKey(pkg, ver || 'latest'),
-			getter(`https://registry.npmjs.org/${pkg}/${ver || 'latest'}`).pipe(
+			effectFetch(`https://registry.npmjs.org/${pkg}/${ver || 'latest'}`).pipe(
 				Effect.flatMap(parseNpmRegistryResponse)
 			),
 			cacheOpts

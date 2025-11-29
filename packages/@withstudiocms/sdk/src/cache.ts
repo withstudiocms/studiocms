@@ -1,4 +1,5 @@
 import { Clock, Duration, Effect } from '@withstudiocms/effect';
+import { CacheStores } from './context.js';
 
 /**
  * Represents a cache entry with a value, expiration time, and associated tags.
@@ -28,7 +29,14 @@ export class CacheMissError {
 	readonly _tag = 'CacheMissError';
 }
 
-const returnNonNull = <A>(value: A | null): Effect.Effect<A, CacheMissError> =>
+/**
+ * Helper function to return a non-null value or fail with CacheMissError.
+ *
+ * @template A - The type of the value.
+ * @param value - The value to check.
+ * @returns An Effect that yields the value or fails with CacheMissError.
+ */
+export const returnNonNull = <A>(value: A | null): Effect.Effect<A, CacheMissError> =>
 	value !== null ? Effect.succeed(value) : Effect.fail(new CacheMissError());
 
 /**
@@ -85,8 +93,7 @@ export class CacheService extends Effect.Service<CacheService>()(
 	'@withstudiocms/sdk/cache/CacheService',
 	{
 		effect: Effect.gen(function* () {
-			const store = new Map<string, CacheEntry<unknown>>();
-			const tagIndex = new Map<string, Set<string>>(); // tag -> Set of keys
+			const { store, tagIndex } = yield* CacheStores;
 
 			/**
 			 * Retrieves a value from the cache by key.

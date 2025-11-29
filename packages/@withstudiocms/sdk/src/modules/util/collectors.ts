@@ -1,5 +1,6 @@
 import { Data, Effect, type ParseResult, Schema } from '@withstudiocms/effect';
 import {
+	type DBCallbackFailure,
 	StudioCMSOAuthAccounts,
 	StudioCMSPageContent,
 	StudioCMSPageDataCategories,
@@ -32,7 +33,7 @@ export class CollectorError extends Data.TaggedError('CollectorError')<{ cause: 
  * @param _try - The function to execute that may throw an error.
  * @returns An effect that either yields the result of the function or a CollectorError.
  */
-const useCollectorError = <T>(_try: () => T) =>
+export const useCollectorError = <T>(_try: () => T) =>
 	Effect.try({
 		try: _try,
 		catch: (error) => new CollectorError({ cause: error }),
@@ -135,7 +136,7 @@ export const SDKCollectors = Effect.gen(function* () {
 		decoder: Schema.Array(StudioCMSPageContent.Select),
 		callbackFn: (query, id) =>
 			query((db) =>
-				db.selectFrom('StudioCMSPageContent').selectAll().where('id', '=', id).execute()
+				db.selectFrom('StudioCMSPageContent').selectAll().where('contentId', '=', id).execute()
 			),
 	});
 
@@ -246,7 +247,7 @@ export const SDKCollectors = Effect.gen(function* () {
 		tree: FolderNode[]
 	): Effect.Effect<
 		CombinedPageData,
-		DatabaseError | ParseResult.ParseError | FolderTreeError | CollectorError,
+		CollectorError | FolderTreeError | DBCallbackFailure | DatabaseError | ParseResult.ParseError,
 		never
 	>;
 	function collectPageData(
@@ -255,7 +256,7 @@ export const SDKCollectors = Effect.gen(function* () {
 		metaOnly: boolean
 	): Effect.Effect<
 		MetaOnlyPageData,
-		DatabaseError | ParseResult.ParseError | FolderTreeError | CollectorError,
+		CollectorError | FolderTreeError | DBCallbackFailure | DatabaseError | ParseResult.ParseError,
 		never
 	>;
 

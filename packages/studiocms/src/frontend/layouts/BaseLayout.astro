@@ -7,13 +7,14 @@ import BaseHead from '../components/shared/BaseHead.astro';
 
 export interface Props extends Omit<ComponentProps<typeof BaseHead>, 'generators'> {
 	lang?: string;
+	generators?: boolean;
 }
 
 // Destructure props with default lang
-const { lang = defaultLang, ...headProps } = Astro.props;
+const { lang = defaultLang, generators: genMeta = true, ...headProps } = Astro.props;
 
 const hideGeneratorTags = dashboardConfig.security?.hideGeneratorTags ?? false;
-const generators = !hideGeneratorTags;
+const generators = !hideGeneratorTags && genMeta;
 ---
 <html {lang}>
     <BaseHead {...headProps} {generators} />

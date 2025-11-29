@@ -256,7 +256,6 @@ export class UserQuickTools extends HTMLElement {
 	protected MENU_READY_DELAY = 350; // milliseconds (after animation completes)
 
 	// Static menu items configuration
-	// biome-ignore lint/correctness/noUnusedPrivateClassMembers: Used in methods
 	private static readonly MENU_ITEMS: Omit<MenuItem, 'href'>[] = [
 		{
 			name: 'Logout',

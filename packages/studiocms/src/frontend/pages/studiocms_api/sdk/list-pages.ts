@@ -4,21 +4,20 @@ import {
 	createEffectAPIRoutes,
 	createJsonResponse,
 	Effect,
-	genLogger,
 	OptionsResponse,
 } from '../../../../effect.js';
 
 export const { ALL, OPTIONS, GET } = createEffectAPIRoutes(
 	{
 		GET: () =>
-			genLogger('routes/sdk/list-pages/GET')(function* () {
-				const sdk = yield* SDKCore;
-				const pages = yield* sdk.GET.pages();
-
-				const lastUpdated = new Date().toISOString();
-
-				return createJsonResponse({ lastUpdated, pages });
-			}),
+			SDKCore.pipe(
+				Effect.flatMap((sdk) => sdk.GET.pages()),
+				Effect.map((pages) => {
+					const lastUpdated = new Date().toISOString();
+					return { lastUpdated, pages };
+				}),
+				Effect.map((data) => createJsonResponse(data))
+			),
 		OPTIONS: () => Effect.try(() => OptionsResponse({ allowedMethods: ['GET'] })),
 		ALL: () => Effect.try(() => AllResponse()),
 	},

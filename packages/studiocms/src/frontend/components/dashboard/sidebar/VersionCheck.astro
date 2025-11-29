@@ -37,7 +37,7 @@ const status: false | 'outdated' | 'latest' | 'future' = (() => {
   import { dateTimeListener } from "../../../scripts/dateTimeListener.js";
   import { dateWithTimeAndZone } from "../../../scripts/dateWithTimeAndZone.js";
   import { timeAgo } from "../../../scripts/timeAgo.js";
-  import type { VersionCacheObject } from "studiocms:sdk/types";
+  // import type { VersionCacheObject } from "studiocms:sdk/types";
 
   function setupVersionChecker() {
     const reloadButton = document.getElementById(
@@ -72,7 +72,7 @@ const status: false | 'outdated' | 'latest' | 'future' = (() => {
     reloadButton.addEventListener("click", async () => {
       const response = await fetch(reloadButton.dataset.link!);
       if (response.ok) {
-        const data: { success: boolean; latestVersion: VersionCacheObject } =
+        const data: { success: boolean; latestVersion: { version: string; lastCacheUpdate: Date } } =
           await response.json();
 
         if (data.success) {

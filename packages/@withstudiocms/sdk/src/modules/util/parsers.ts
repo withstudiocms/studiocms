@@ -12,7 +12,7 @@ export class ParsersError extends Data.TaggedError('ParsersError')<{ cause: unkn
  * @param _try - The function to execute that may throw an error.
  * @returns An effect that either yields the result of the function or a ParsersError.
  */
-const useParsersError = <T>(_try: () => T) =>
+export const useParsersError = <T>(_try: () => T) =>
 	Effect.try({
 		try: _try,
 		catch: (cause) => new ParsersError({ cause }),
@@ -84,12 +84,12 @@ export const SDKParsers = Effect.gen(function* () {
 		useParsersError(() => {
 			if (Array.isArray(items)) {
 				const toReturn: diffReturn[] = [];
-				for (const { pageMetaData, ...rest } of items) {
+				for (const { pageMetaData, ...rest } of items as diffItem[]) {
 					toReturn.push({
 						...rest,
-						pageMetaData: JSON.parse(pageMetaData as string) as {
-							start: Partial<tsPageDataSelect>;
-							end: Partial<tsPageDataSelect>;
+						pageMetaData: pageMetaData as {
+							start: tsPageDataSelect;
+							end: tsPageDataSelect;
 						},
 					});
 				}
@@ -98,9 +98,9 @@ export const SDKParsers = Effect.gen(function* () {
 
 			return {
 				...items,
-				pageMetaData: JSON.parse(items.pageMetaData as string) as {
-					start: Partial<tsPageDataSelect>;
-					end: Partial<tsPageDataSelect>;
+				pageMetaData: items.pageMetaData as {
+					start: tsPageDataSelect;
+					end: tsPageDataSelect;
 				},
 			} as DiffReturnType<T>;
 		})

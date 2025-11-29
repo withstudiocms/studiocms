@@ -54,16 +54,10 @@ describe(parentSuiteName, () => {
 		} as unknown as remapFilterUtils.APIContext;
 
 		const array = [
-			{
-				data: { slug: 'post-1', package: 'blog' },
-			},
-			{
-				data: { slug: 'post-2', package: 'blog' },
-			},
-			{
-				data: { slug: 'other', package: 'docs' },
-			},
-		] as remapFilterUtils.PageDataCacheObject[];
+			{ slug: 'post-1', package: 'blog' },
+			{ slug: 'post-2', package: 'blog' },
+			{ slug: 'other', package: 'docs' },
+		] as remapFilterUtils.CombinedPageData[];
 
 		await allure.parameter('Input Array', JSON.stringify(array, null, 2));
 
@@ -80,12 +74,8 @@ describe(parentSuiteName, () => {
 	[
 		{
 			input: [
-				{
-					data: { slug: 'foo', package: 'docs' },
-				},
-				{
-					data: { slug: 'bar', package: 'docs' },
-				},
+				{ slug: 'foo', package: 'docs' },
+				{ slug: 'bar', package: 'docs' },
 			],
 			filter: 'docs',
 			expected: [{ location: 'https://example.com/foo' }, { location: 'https://example.com/bar' }],
@@ -96,20 +86,12 @@ describe(parentSuiteName, () => {
 			expected: [],
 		},
 		{
-			input: [
-				{
-					data: { slug: 'foo', package: 'docs' },
-				},
-			],
+			input: [{ slug: 'foo', package: 'docs' }],
 			filter: 'blog',
 			expected: [],
 		},
 		{
-			input: [
-				{
-					data: { slug: 'special-slug', package: 'blog' },
-				},
-			],
+			input: [{ slug: 'special-slug', package: 'blog' }],
 			filter: 'blog',
 			expected: [{ location: 'https://example.com/blog/special-slug' }],
 		},
@@ -129,7 +111,7 @@ describe(parentSuiteName, () => {
 
 			await allure.step(`Mapping sitemap entries for package: ${filter}`, async (ctx) => {
 				const result = remapFilterUtils.remapFilterSitemap(
-					input as remapFilterUtils.PageDataCacheObject[],
+					input as remapFilterUtils.CombinedPageData[],
 					filter,
 					mockContext,
 					filter === 'blog'

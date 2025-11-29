@@ -90,7 +90,6 @@ describe(parentSuiteName, () => {
 
 		await step('Generate fallback site config', () => {
 			const config = makeFallbackSiteConfig();
-			expect(config).toHaveProperty('lastCacheUpdate');
 			expect(config.data).toMatchObject({
 				defaultOgImage: null,
 				description: 'A StudioCMS Project',

@@ -3,7 +3,6 @@ import {
 	createEffectAPIRoutes,
 	createJsonResponse,
 	Effect,
-	genLogger,
 	OptionsResponse,
 } from '../../../../effect.js';
 import { ProcessChangelog } from './utils/changelog.js';
@@ -11,17 +10,17 @@ import { ProcessChangelog } from './utils/changelog.js';
 export const { ALL, OPTIONS, POST } = createEffectAPIRoutes(
 	{
 		POST: (ctx) =>
-			genLogger('routes/sdk/full-changelog/POST')(function* () {
-				const changeLogger = yield* ProcessChangelog;
-
-				const rawChangelog = yield* changeLogger.getRawChangelog();
-
-				const changelogData = yield* changeLogger.generateChangelog(rawChangelog);
-
-				const renderedChangelog = yield* changeLogger.renderChangelog(changelogData, ctx);
-
-				return createJsonResponse({ success: true, changelog: renderedChangelog });
-			}).pipe(ProcessChangelog.Provide),
+			ProcessChangelog.pipe(
+				Effect.flatMap(({ generateChangelog, getRawChangelog, renderChangelog }) =>
+					getRawChangelog().pipe(
+						Effect.flatMap(generateChangelog),
+						Effect.flatMap((changelogData) => renderChangelog(changelogData, ctx))
+					)
+				),
+				Effect.map((renderedChangelog) => ({ success: true, changelog: renderedChangelog })),
+				Effect.map(createJsonResponse),
+				ProcessChangelog.Provide
+			),
 		OPTIONS: () => Effect.try(() => OptionsResponse({ allowedMethods: ['POST'] })),
 		ALL: () => Effect.try(() => AllResponse()),
 	},

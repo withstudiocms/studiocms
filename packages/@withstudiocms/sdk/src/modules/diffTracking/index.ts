@@ -299,6 +299,7 @@ export const SDKDiffTrackingModule = Effect.gen(function* () {
 						diff,
 						pageContentStart: data.content.start,
 						pageMetaData: JSON.stringify(data.metaData),
+						timestamp: new Date().toISOString(),
 					})
 				),
 				Effect.flatMap((insertedDiff) => fixDiff(insertedDiff as diffItem))

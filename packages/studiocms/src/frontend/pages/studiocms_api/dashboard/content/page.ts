@@ -6,8 +6,10 @@ import { SDKCore } from 'studiocms:sdk';
 import type {
 	CombinedInsertContent,
 	tsPageContentSelect,
+	tsPageData,
 	tsPageDataSelect,
 } from 'studiocms:sdk/types';
+import { StudioCMSPageData } from '@withstudiocms/kysely';
 import {
 	AllResponse,
 	createEffectAPIRoutes,
@@ -16,6 +18,7 @@ import {
 	genLogger,
 	OptionsResponse,
 	readAPIContextJson,
+	Schema,
 } from '../../../../../effect.js';
 import type { PluginAPIRoute } from '../../../../../plugins.js';
 
@@ -80,7 +83,7 @@ export const { POST, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 					return apiResponseLogger(403, 'Unauthorized');
 				}
 
-				const data = yield* readAPIContextJson<UpdatePageData & { augments?: string[] }>(ctx);
+				const data = yield* readAPIContextJson<UpdatePageData>(ctx);
 
 				const content = {
 					id: crypto.randomUUID(),
@@ -104,22 +107,39 @@ export const { POST, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 					content: content.content || '',
 				};
 
+				const {
+					title,
+					slug,
+					description,
+					categories,
+					tags,
+					augments,
+					contributorIds,
+					updatedAt: ___updatedAt,
+					...rest
+				} = data as unknown as tsPageData['Insert']['Type'];
+
+				yield* Effect.logInfo('11111');
+
 				const newData = yield* sdk.POST.page({
 					pageData: {
+						...rest,
 						id: dataId,
-						// biome-ignore lint/style/noNonNullAssertion: this is a valid use case for non-null assertion
-						title: data.title!,
-						slug: data.slug || data.title.toLowerCase().replace(/\s/g, '-'),
-						description: data.description || '',
-						authorId: userData.user?.id || null,
-						updatedAt: new Date(),
-						categories: [],
-						tags: [],
-						augments: data.augments || [],
-						...data,
+						title: title,
+						slug: slug || title.toLowerCase().replace(/\s/g, '-'),
+						description: description || '',
+						authorId: userData.user?.id || '',
+						updatedAt: new Date().toISOString(),
+						publishedAt: new Date().toISOString(),
+						categories: JSON.stringify(categories || []),
+						tags: JSON.stringify(tags || []),
+						augments: JSON.stringify(augments || []),
+						contributorIds: JSON.stringify(contributorIds || []),
+						contentLang: 'default',
 					},
 					pageContent: pageContent,
 				});
+				yield* Effect.logInfo('22222');
 
 				if (!newData) {
 					return apiResponseLogger(500, 'Failed to create page');
@@ -129,10 +149,7 @@ export const { POST, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 					yield* Effect.tryPromise(() => apiRoute({ AstroCtx: ctx, pageData: newData }));
 				}
 
-				yield* Effect.all([
-					sdk.CLEAR.pages(),
-					notify.sendEditorNotification('new_page', data.title),
-				]);
+				yield* Effect.all([sdk.CLEAR.pages, notify.sendEditorNotification('new_page', data.title)]);
 
 				return apiResponseLogger(200, 'Page created successfully');
 			}).pipe(Notifications.Provide),
@@ -165,18 +182,20 @@ export const { POST, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 
 				const { contentId, content: incomingContent, pluginFields, ...data } = combinedData;
 
-				const content = {
-					id: contentId,
-					content: incomingContent,
-				};
-
 				if (!data.id) {
 					return apiResponseLogger(400, 'Invalid form data, id is required');
 				}
 
-				if (!content.id) {
+				if (!contentId) {
 					return apiResponseLogger(400, 'Invalid form data, contentId is required');
 				}
+
+				const content = {
+					id: contentId,
+					contentId: data.id,
+					content: incomingContent,
+					contentLang: 'default',
+				};
 
 				const currentPageData = yield* sdk.GET.page.byId(data.id);
 
@@ -184,12 +203,13 @@ export const { POST, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 					return apiResponseLogger(404, 'Page not found');
 				}
 
-				const { authorId, contributorIds, defaultContent } = currentPageData.data;
+				const { authorId, contributorIds, defaultContent } = currentPageData;
 
 				let AuthorId = authorId;
 
 				if (!authorId) {
-					AuthorId = userData.user?.id || null;
+					// biome-ignore lint/style/noNonNullAssertion: this is a valid use case for non-null assertion
+					AuthorId = userData.user!.id;
 				}
 
 				const ContributorIds = contributorIds || [];
@@ -200,29 +220,46 @@ export const { POST, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 					ContributorIds.push(userData.user!.id);
 				}
 
-				data.authorId = AuthorId;
-				data.contributorIds = ContributorIds;
-				data.updatedAt = new Date();
+				const newData: tsPageData['Insert']['Type'] = {
+					...(data as tsPageDataSelect),
+					authorId: AuthorId,
+					contributorIds: JSON.stringify(ContributorIds),
+					updatedAt: new Date().toISOString(),
+					publishedAt: data.publishedAt?.toISOString() || new Date().toISOString(),
+					categories: JSON.stringify(data.categories || []),
+					tags: JSON.stringify(data.tags || []),
+					augments: JSON.stringify(data.augments || []),
+					contentLang: 'default',
+				};
 
-				const startMetaData = (yield* sdk.GET.databaseTable.pageData()).find(
-					(metaData) => metaData.id === data.id
-				);
+				const getMetaData = sdk.dbService.withCodec({
+					encoder: Schema.String,
+					decoder: StudioCMSPageData.Select,
+					callbackFn: (query, input) =>
+						query((db) =>
+							db
+								.selectFrom('StudioCMSPageData')
+								.selectAll()
+								.where('id', '=', input)
+								.executeTakeFirstOrThrow()
+						),
+				});
+
+				const startMetaData = yield* getMetaData(data.id);
 
 				// biome-ignore lint/style/noNonNullAssertion: this is a valid use case for non-null assertion
 				const apiRoute = getPageTypeEndpoints(data.package!, 'onEdit');
 
 				const updatedPage = yield* sdk.UPDATE.page.byId(data.id, {
-					pageData: data as tsPageDataSelect,
-					pageContent: content as tsPageContentSelect,
+					pageData: newData,
+					pageContent: content,
 				});
 
 				if (!updatedPage) {
 					return apiResponseLogger(500, 'Failed to update page');
 				}
 
-				const updatedMetaData = (yield* sdk.GET.databaseTable.pageData()).find(
-					(metaData) => metaData.id === data.id
-				);
+				const updatedMetaData = yield* getMetaData(data.id);
 
 				const { enableDiffs, diffPerPage = 10 } = ctx.locals.StudioCMS.siteConfig.data;
 
@@ -250,7 +287,7 @@ export const { POST, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 				}
 
 				yield* Effect.all([
-					sdk.CLEAR.pages(),
+					sdk.CLEAR.pages,
 					notify.sendEditorNotification('page_updated', data.title || startMetaData?.title || ''),
 				]);
 
@@ -281,11 +318,11 @@ export const { POST, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 				if (!pageToDelete) {
 					return apiResponseLogger(404, 'Page not found');
 				}
-				if (pageToDelete.data.slug !== slug) {
+				if (pageToDelete.slug !== slug) {
 					return apiResponseLogger(400, 'Invalid request');
 				}
 
-				const apiRoute = getPageTypeEndpoints(pageToDelete.data.package, 'onDelete');
+				const apiRoute = getPageTypeEndpoints(pageToDelete.package, 'onDelete');
 
 				yield* sdk.DELETE.page(id);
 
@@ -294,8 +331,8 @@ export const { POST, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 				}
 
 				yield* Effect.all([
-					sdk.CLEAR.pages(),
-					notify.sendEditorNotification('page_deleted', pageToDelete.data.title),
+					sdk.CLEAR.pages,
+					notify.sendEditorNotification('page_deleted', pageToDelete.title),
 				]);
 
 				return apiResponseLogger(200, 'Page deleted successfully');
