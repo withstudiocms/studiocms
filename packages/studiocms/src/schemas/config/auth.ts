@@ -1,48 +1,49 @@
 import { z } from 'astro/zod';
 
-export const localUsernameAndPasswordConfig = z
-	.object({
-		/**
-		 * Allow User Registration - Allows users to register an account
-		 *
-		 * @default false
-		 */
-		allowUserRegistration: z.boolean().optional().default(true),
-	})
-	.optional()
-	.default({});
+export interface AuthConfig {
+	/** Auth Providers - Allows enabling or disabling of the Authentication Providers */
+	providers?: {
+		/** Username and Password Auth Provider */
+		usernameAndPassword?: boolean;
 
-//
-// AUTH PROVIDER SCHEMA
-//
-export const authProviderSchema = z
-	.object({
 		/**
-		 * Username and Password Auth Provider
-		 *
+		 * Username and Password Auth Provider Configuration
 		 */
-		usernameAndPassword: z.boolean().optional().default(true),
-		usernameAndPasswordConfig: localUsernameAndPasswordConfig,
-	})
-	.optional()
-	.default({});
+		usernameAndPasswordConfig?: {
+			/**
+			 * Allow User Registration - Allows users to register an account
+			 *
+			 * @default false
+			 */
+			allowUserRegistration?: boolean;
+		};
+	};
 
-export type AuthProviders = z.infer<typeof authProviderSchema>;
+	/**
+	 * Auth Enabled - Allows enabling or disabling of the Authentication Configuration
+	 *
+	 * @default true
+	 */
+	enabled?: boolean;
+}
 
 //
 // AUTH CONFIG SCHEMA
 //
 export const authConfigSchema = z
 	.object({
-		/**
-		 * Auth Providers - Allows enabling or disabling of the Authentication Providers
-		 */
-		providers: authProviderSchema,
-		/**
-		 * Auth Enabled - Allows enabling or disabling of the Authentication Configuration
-		 *
-		 * @default true
-		 */
+		providers: z
+			.object({
+				usernameAndPassword: z.boolean().optional().default(true),
+				usernameAndPasswordConfig: z
+					.object({
+						allowUserRegistration: z.boolean().optional().default(true),
+					})
+					.optional()
+					.default({}),
+			})
+			.optional()
+			.default({}),
 		enabled: z.boolean().optional().default(true),
 	})
 	.optional()

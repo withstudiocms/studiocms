@@ -1,52 +1,67 @@
 import { z } from 'astro/zod';
 
+export interface DashboardConfig {
+	/** OPTIONAL - This allows the user to enable or disable the Astro StudioCMS dashboard but still provide all the helper's and utilities to those who are customizing their setup, doing so will disable the dashboard and you will need to manage your content via your database
+	 *
+	 * @default true
+	 */
+	dashboardEnabled?: boolean;
+
+	/**
+	 * OPTIONAL - This allows the user to enable or disable the default 404 route for the dashboard
+	 *
+	 * @default true
+	 */
+	inject404Route?: boolean;
+
+	/**
+	 * OPTIONAL - This allows the user to override the default Favicon URL to a custom URL
+	 */
+	faviconURL?: string;
+
+	/**
+	 * OPTIONAL - This allows the user to override the default dashboard route to a custom route
+	 *
+	 * **Note: Use with caution, this is an advanced feature**
+	 *
+	 * @usage - The default route is `dashboard` without any `/` or `\` characters. If you want to override the route to `/admin` you would set this value to `admin`
+	 *
+	 * @default "dashboard"
+	 */
+	dashboardRouteOverride?: string;
+
+	/**
+	 * OPTIONAL - This allows the user to enable or disable the version check for the dashboard
+	 *
+	 * This will check for the latest version of StudioCMS and notify the user
+	 * if there is a new version available.
+	 *
+	 * @default true
+	 */
+	versionCheck?: boolean;
+
+	/**
+	 * OPTIONAL - This allows the user to configure security settings for the dashboard
+	 */
+	security?: {
+		/**
+		 * OPTIONAL - This allows the user to hide generator tags in the HTML output of the dashboard
+		 *
+		 * @default false
+		 */
+		hideGeneratorTags?: boolean;
+	};
+}
+
 export const dashboardConfigSchema = z
 	.object({
-		/**
-		 * OPTIONAL - This allows the user to enable or disable the Astro StudioCMS dashboard but still provide all the helper's and utilities to those who are customizing their setup, doing so will disable the dashboard and you will need to manage your content via your database
-		 *
-		 * @default true
-		 */
 		dashboardEnabled: z.boolean().optional().default(true),
-		/**
-		 * OPTIONAL - This allows the user to enable or disable the default 404 route for the dashboard
-		 *
-		 * @default true
-		 */
 		inject404Route: z.boolean().optional().default(true),
-		/**
-		 * OPTIONAL - This allows the user to override the default Favicon URL to a custom URL
-		 */
 		faviconURL: z.string().optional().default('/favicon.svg'),
-		/**
-		 * OPTIONAL - This allows the user to override the default dashboard route to a custom route
-		 *
-		 * **Note: Use with caution, this is an advanced feature**
-		 *
-		 * @usage - The default route is `dashboard` without any `/` or `\` characters. If you want to override the route to `/admin` you would set this value to `admin`
-		 *
-		 * @default "dashboard"
-		 */
 		dashboardRouteOverride: z.string().optional(),
-		/**
-		 * OPTIONAL - This allows the user to enable or disable the version check for the dashboard
-		 *
-		 * This will check for the latest version of StudioCMS and notify the user
-		 * if there is a new version available.
-		 *
-		 * @default true
-		 */
 		versionCheck: z.boolean().optional().default(true),
-		/**
-		 * OPTIONAL - This allows the user to configure security settings for the dashboard
-		 */
 		security: z
 			.object({
-				/**
-				 * OPTIONAL - This allows the user to hide generator tags in the HTML output of the dashboard
-				 *
-				 * @default false
-				 */
 				hideGeneratorTags: z.boolean().optional().default(false),
 			})
 			.optional()
