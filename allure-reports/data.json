@@ -3,7 +3,6 @@
     "..",
     "adam_astrodb-to-kyselydb-migrator",
     "adam_fix-config-loader",
-    "adam_tweak-config-types",
     "changeset-release_main",
     "main"
   ]
