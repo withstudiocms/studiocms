@@ -1,11 +1,11 @@
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
-import type { Dialect } from 'kysely';
+import type { Dialect, Migration } from 'kysely';
 import { makeMigratorLive } from './core/migrator.js';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const migrationsFolder = path.join(__dirname, './migrations');
+const migrations: Record<string, Migration> = {
+	'20251025T040912_init': await import('./migrations/20251025T040912_init.js').then(
+		({ up, down }) => ({ up, down })
+	),
+};
 
 /**
  * Creates a live migrator instance bound to the package's migration folder.
@@ -16,14 +16,11 @@ const migrationsFolder = path.join(__dirname, './migrations');
  *
  * @template Schema - The database schema type; defaults to `StudioCMSDatabaseSchema`.
  * @param dialect - The SQL dialect implementation to use (e.g. Postgres, MySQL, SQLite).
- * @param migrationFolder - Optional custom migration folder path; defaults to the package migrations folder.
  * @returns A migrator instance configured for the given dialect and the package migration folder.
  *
  * @example
  * const migrator = getMigratorLive<MySchema>(yourDriver);
  * await migrator.migrateToLatest();
  */
-export const getMigratorLive = <Schema>(
-	dialect: Dialect,
-	migrationFolder: string = migrationsFolder
-) => makeMigratorLive<Schema>(dialect, migrationFolder);
+export const getMigratorLive = <Schema>(dialect: Dialect) =>
+	makeMigratorLive<Schema>(dialect, migrations);

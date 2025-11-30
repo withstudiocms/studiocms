@@ -630,6 +630,9 @@ importers:
       '@astrojs/node':
         specifier: catalog:astrojs
         version: 9.5.1(astro@5.16.0(@types/node@22.19.1)(jiti@2.6.1)(rollup@4.53.3)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
+      '@libsql/client':
+        specifier: catalog:kysely
+        version: 0.15.15
       '@studiocms/ui':
         specifier: catalog:studiocms
         version: 1.0.0-beta.4(astro@5.16.0(@types/node@22.19.1)(jiti@2.6.1)(rollup@4.53.3)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))(vite@6.4.1(@types/node@22.19.1)(jiti@2.6.1)(tsx@4.20.6)(yaml@2.8.1))

@@ -12,4 +12,29 @@ export default defineConfig({
 	output: 'server',
 	adapter: node({ mode: 'standalone' }),
 	integrations: [db(), ui()],
+	vite: {
+		build: {
+			rollupOptions: {
+				external: [
+					'@libsql/client',
+					'@libsql/win32-x64-msvc',
+					'@libsql/win32-arm64-msvc',
+					'@libsql/linux-x64-gnu',
+					'@libsql/linux-arm64-gnu',
+					'@libsql/darwin-x64',
+					'@libsql/darwin-arm64',
+				],
+			},
+			commonjsOptions: {
+				dynamicRequireTargets: [
+					'@libsql/win32-x64-msvc',
+					'@libsql/win32-arm64-msvc',
+					'@libsql/linux-x64-gnu',
+					'@libsql/linux-arm64-gnu',
+					'@libsql/darwin-x64',
+					'@libsql/darwin-arm64',
+				],
+			},
+		},
+	},
 });

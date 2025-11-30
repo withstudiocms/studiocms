@@ -1,7 +1,11 @@
-import { promises as fs } from 'node:fs';
-import * as path from 'node:path';
 import { Effect } from 'effect';
-import { type Dialect, FileMigrationProvider, type Kysely, Migrator } from 'kysely';
+import {
+	type Dialect,
+	type Kysely,
+	type Migration,
+	type MigrationProvider,
+	Migrator,
+} from 'kysely';
 import { kyselyClient, makeDBClientLive } from './client.js';
 import { MigratorError } from './errors.js';
 
@@ -47,6 +51,18 @@ const useWithErrorPromise = <A>(_try: () => Promise<A>) =>
 		catch: (cause) => new MigratorError({ cause }),
 	});
 
+export class PassthroughMigrationProvider implements MigrationProvider {
+	constructor(migrations: Record<string, Migration>) {
+		this.migrations = migrations;
+	}
+
+	private migrations: Record<string, Migration>;
+
+	async getMigrations(): Promise<Record<string, Migration>> {
+		return this.migrations;
+	}
+}
+
 /**
  * Create a factory for constructing a Kysely `Migrator` that loads migration files from a filesystem folder.
  *
@@ -63,17 +79,13 @@ const useWithErrorPromise = <A>(_try: () => Promise<A>) =>
  * const migratorInstance = getMigrator(kyselyInstance);
  */
 const kyselyMigrator =
-	(migrationFolder: string) =>
+	(migrationFolder: Record<string, Migration>) =>
 	<Schema>(db: Kysely<Schema>) =>
 		useWithError(
 			() =>
 				new Migrator({
 					db,
-					provider: new FileMigrationProvider({
-						fs,
-						path,
-						migrationFolder,
-					}),
+					provider: new PassthroughMigrationProvider(migrationFolder),
 				})
 		);
 
@@ -96,7 +108,7 @@ const kyselyMigrator =
  * Note: This function returns an Effect (deferred computation). You must run/interpret the Effect
  * to obtain and invoke the migration helpers.
  */
-const makeMigrator = <Schema>(migrationFolder: string) =>
+const makeMigrator = <Schema>(migrationFolder: Record<string, Migration>) =>
 	Effect.gen(function* () {
 		const base = yield* kyselyClient<Schema>().pipe(
 			Effect.flatMap(kyselyMigrator(migrationFolder))
@@ -131,7 +143,10 @@ const makeMigrator = <Schema>(migrationFolder: string) =>
  * @example
  * // Run the returned Effect to obtain and use the migrator in your application runtime.
  */
-export const makeMigratorLive = <Schema>(dialect: Dialect, migrationFolder: string) =>
+export const makeMigratorLive = <Schema>(
+	dialect: Dialect,
+	migrationFolder: Record<string, Migration>
+) =>
 	Effect.gen(function* () {
 		const { db } = yield* makeDBClientLive<Schema>(dialect);
 		return yield* makeMigrator<Schema>(migrationFolder).pipe(
