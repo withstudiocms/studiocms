@@ -2,6 +2,10 @@ import { column, defineDb, defineTable, NOW } from 'astro:db';
 
 // Astro DB Configuration Tables for StudioCMS
 
+// ====================================================
+// Tables that do not require relationship definitions
+// ====================================================
+
 /** StudioCMS - Users Table for Astro DB */
 const StudioCMSUsers = defineTable({
 	columns: {
@@ -21,6 +25,97 @@ const StudioCMSUsers = defineTable({
 		notifications: column.text({ optional: true }),
 	},
 });
+
+/** StudioCMS - Pages Data Table for Astro DB */
+const StudioCMSPageData = defineTable({
+	columns: {
+		id: column.text({ primaryKey: true }),
+		package: column.text({ default: 'studiocms' }),
+		title: column.text(),
+		description: column.text(),
+		showOnNav: column.boolean({ default: false }),
+		publishedAt: column.date({ default: NOW }),
+		updatedAt: column.date({ optional: true }),
+		slug: column.text(),
+		contentLang: column.text({ default: 'default' }),
+		heroImage: column.text({
+			default:
+				'https://images.unsplash.com/photo-1707343843982-f8275f3994c5?q=80&w=1032&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+		}),
+		categories: column.json({ default: [], optional: true }),
+		tags: column.json({ default: [], optional: true }),
+		authorId: column.text({ optional: true }),
+		contributorIds: column.json({ default: [], optional: true }),
+		showAuthor: column.boolean({ default: false, optional: true }),
+		showContributors: column.boolean({ default: false, optional: true }),
+		parentFolder: column.text({ optional: true }),
+		draft: column.boolean({ optional: true }),
+		augments: column.json({ default: [], optional: true }),
+	},
+});
+
+/** StudioCMS - Page Folder Structure */
+const StudioCMSPageFolderStructure = defineTable({
+	columns: {
+		id: column.text({ primaryKey: true }),
+		name: column.text(),
+		parent: column.text({ optional: true }),
+	},
+});
+
+/** StudioCMS - Page Data Tags Table for Astro DB */
+const StudioCMSPageDataTags = defineTable({
+	columns: {
+		id: column.number({ primaryKey: true }),
+		description: column.text(),
+		name: column.text(),
+		slug: column.text(),
+		meta: column.json(),
+	},
+});
+
+/** StudioCMS - Page Data Categories Table for Astro DB */
+const StudioCMSPageDataCategories = defineTable({
+	columns: {
+		id: column.number({ primaryKey: true }),
+		parent: column.number({ optional: true }),
+		description: column.text(),
+		name: column.text(),
+		slug: column.text(),
+		meta: column.json(),
+	},
+});
+
+const StudioCMSPluginData = defineTable({
+	columns: {
+		id: column.text({ primaryKey: true }),
+		data: column.json(),
+	},
+});
+
+/**
+ * StudioCMS - Dynamic Config Settings Table
+ *
+ * This table stores dynamic configuration settings for the StudioCMS application.
+ *
+ * @remarks
+ * This table is designed to store dynamic configuration settings that can be updated at runtime.
+ *
+ * Replaces:
+ * - `StudioCMSSiteConfig`
+ * - `StudioCMSMailerConfig`
+ * - `StudioCMSNotificationSettings`
+ */
+const StudioCMSDynamicConfigSettings = defineTable({
+	columns: {
+		id: column.text({ primaryKey: true }),
+		data: column.json(),
+	},
+});
+
+// ====================================================
+// Tables that require relationship definitions
+// ====================================================
 
 const StudioCMSAPIKeys = defineTable({
 	columns: {
@@ -66,43 +161,6 @@ const StudioCMSPermissions = defineTable({
 	},
 });
 
-/** StudioCMS - Page Folder Structure */
-const StudioCMSPageFolderStructure = defineTable({
-	columns: {
-		id: column.text({ primaryKey: true }),
-		name: column.text(),
-		parent: column.text({ optional: true }),
-	},
-});
-
-/** StudioCMS - Pages Data Table for Astro DB */
-const StudioCMSPageData = defineTable({
-	columns: {
-		id: column.text({ primaryKey: true }),
-		package: column.text({ default: 'studiocms' }),
-		title: column.text(),
-		description: column.text(),
-		showOnNav: column.boolean({ default: false }),
-		publishedAt: column.date({ default: NOW }),
-		updatedAt: column.date({ optional: true }),
-		slug: column.text(),
-		contentLang: column.text({ default: 'default' }),
-		heroImage: column.text({
-			default:
-				'https://images.unsplash.com/photo-1707343843982-f8275f3994c5?q=80&w=1032&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-		}),
-		categories: column.json({ default: [], optional: true }),
-		tags: column.json({ default: [], optional: true }),
-		authorId: column.text({ optional: true }),
-		contributorIds: column.json({ default: [], optional: true }),
-		showAuthor: column.boolean({ default: false, optional: true }),
-		showContributors: column.boolean({ default: false, optional: true }),
-		parentFolder: column.text({ optional: true }),
-		draft: column.boolean({ optional: true }),
-		augments: column.json({ default: [], optional: true }),
-	},
-});
-
 /** StudioCMS - Diff Tracking Table for Astro DB */
 const StudioCMSDiffTracking = defineTable({
 	columns: {
@@ -113,29 +171,6 @@ const StudioCMSDiffTracking = defineTable({
 		pageMetaData: column.json({ optional: true }),
 		pageContentStart: column.text({ multiline: true }),
 		diff: column.text({ multiline: true, optional: true }),
-	},
-});
-
-/** StudioCMS - Page Data Tags Table for Astro DB */
-const StudioCMSPageDataTags = defineTable({
-	columns: {
-		id: column.number({ primaryKey: true }),
-		description: column.text(),
-		name: column.text(),
-		slug: column.text(),
-		meta: column.json(),
-	},
-});
-
-/** StudioCMS - Page Data Categories Table for Astro DB */
-const StudioCMSPageDataCategories = defineTable({
-	columns: {
-		id: column.number({ primaryKey: true }),
-		parent: column.number({ optional: true }),
-		description: column.text(),
-		name: column.text(),
-		slug: column.text(),
-		meta: column.json(),
 	},
 });
 
@@ -155,33 +190,6 @@ const StudioCMSEmailVerificationTokens = defineTable({
 		userId: column.text({ references: () => StudioCMSUsers.columns.id }),
 		token: column.text(),
 		expiresAt: column.date(),
-	},
-});
-
-const StudioCMSPluginData = defineTable({
-	columns: {
-		id: column.text({ primaryKey: true }),
-		data: column.json(),
-	},
-});
-
-/**
- * StudioCMS - Dynamic Config Settings Table
- *
- * This table stores dynamic configuration settings for the StudioCMS application.
- *
- * @remarks
- * This table is designed to store dynamic configuration settings that can be updated at runtime.
- *
- * Replaces:
- * - `StudioCMSSiteConfig`
- * - `StudioCMSMailerConfig`
- * - `StudioCMSNotificationSettings`
- */
-const StudioCMSDynamicConfigSettings = defineTable({
-	columns: {
-		id: column.text({ primaryKey: true }),
-		data: column.json(),
 	},
 });
 

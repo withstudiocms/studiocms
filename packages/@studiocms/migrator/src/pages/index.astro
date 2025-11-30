@@ -20,7 +20,7 @@ import { getErrorCases } from '../lib/errors.js';
 import { astroDbTableKeys } from '../lib/tableMap.js';
 
 // AstroDB Tables
-const astroDBTables = await searchTables('StudioCMS%');
+const astroDBTables = await searchTables('StudioCMS%').catch(() => []);
 
 // Test StudioCMS DB Connection
 const isStudioCMSDbConnected = await runConnectionTest();
@@ -173,7 +173,7 @@ const dbStatusTables: ComponentProps<typeof StatusTables>['dbStatusTables'] = [
 
                     setTimeout(() => {
                         window.location.reload();
-                    }, 6000);
+                    }, 3000);
                 } else {
                     const errorData = await response.json();
                     toast({

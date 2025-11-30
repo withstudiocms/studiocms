@@ -121,7 +121,7 @@ export const getDataMigrationStatus = async () => {
 	const tablesWithRows: string[] = [];
 
 	for (const table of kyselyTableKeys) {
-		const result = await getTableLength(table);
+		const result = await getTableLength(table).catch(() => 0);
 		if (result > 0) {
 			tablesWithRows.push(table);
 		}
