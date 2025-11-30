@@ -138,6 +138,36 @@ export const ProcessedSDKSchema = z.object({
  */
 export type ProcessedSDKConfig = z.infer<typeof ProcessedSDKSchema>;
 
+export type StudioCMS_SDKOptions =
+	| boolean
+	| {
+			/**
+			 * Cache Configuration
+			 *
+			 * @default cacheConfig: { lifetime: '5m' }
+			 */
+			cacheConfig?:
+				| boolean
+				| {
+						/**
+						 * Cache Lifetime
+						 *
+						 * `{number}{unit}` - e.g. '5m' for 5 minutes or '1h' for 1 hour
+						 * @default '5m'
+						 */
+						lifetime?: string | undefined;
+				  }
+				| undefined;
+	  }
+	| undefined;
+
+export interface StudioCMS_SDKConfig {
+	cacheConfig: {
+		lifetime: number;
+		enabled: boolean;
+	};
+}
+
 /**
  * SDKSchema is a Zod schema that validates the SDK configuration.
  * It can either be a boolean or an object containing cache configuration.
@@ -152,11 +182,6 @@ export const SDKSchema = z
 	.union([
 		z.boolean(),
 		z.object({
-			/**
-			 * Cache Configuration
-			 *
-			 * @default cacheConfig: { lifetime: '5m' }
-			 */
 			cacheConfig: SDKCacheSchema,
 		}),
 	])
@@ -173,6 +198,3 @@ export const SDKSchema = z
 		}
 		return sdkConfig;
 	});
-
-export type StudioCMS_SDKOptions = typeof SDKSchema._input;
-export type StudioCMS_SDKConfig = typeof SDKSchema._output;
