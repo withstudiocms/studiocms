@@ -1,12 +1,15 @@
-# Playground: Dev Environment
+# @studiocms/migrator
 
-This is the Dev testing environment and playground.
+Utility tool to ensure that all your content, configurations, and settings are preserved during the migration process to the latest version, allowing you to take advantage of the new features and improvements in StudioCMS without losing any of your valuable data.
 
-## This is a [Moonrepo](https://moonrepo.dev)
+## Usage
 
-Follow install instructions listed on Moonrepo's docs, and you'll be all set to go! Its even a super easy single line command you put in your terminal!
+Run the following command in the root of your StudioCMS project that contains the `.env` file as well as the `studiocms.config.*` config file.
 
-To use the dev server the command is:
+```sh
+npx @studiocms/migrator
+```
 
-**Moon**: `moon run playground:dev`
-**pnpm**: `pnpm playground:dev`
+## License
+
+[MIT License](./LICENSE)
