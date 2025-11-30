@@ -1,0 +1,45 @@
+---
+import { Badge } from 'studiocms:ui/components/badge';
+import type { ComponentProps } from 'astro/types';
+
+interface Props {
+	dbStatusTables: {
+		label: string;
+		conditions: {
+			label: string;
+			value: string;
+			color: ComponentProps<typeof Badge>['color'];
+		}[];
+	}[];
+}
+
+const { dbStatusTables } = Astro.props;
+---
+
+{
+    dbStatusTables.map(({ label, conditions }) => (
+        <div class="split-screen-item">
+            <span class="status-label">{label}</span>
+            <table>
+                <tbody>
+                    {conditions.map(
+                        ({ label: conditionLabel, value, color }) => (
+                            <tr>
+                                <td>{conditionLabel}</td>
+                                <td>
+                                    <Badge
+                                        label={value}
+                                        color={color}
+                                        rounding="semi"
+                                        size="sm"
+                                        class="status"
+                                    />
+                                </td>
+                            </tr>
+                        ),
+                    )}
+                </tbody>
+            </table>
+        </div>
+    ))
+}

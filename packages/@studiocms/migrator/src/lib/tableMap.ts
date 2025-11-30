@@ -93,8 +93,8 @@ export const kyselyTableKeys = Object.keys(KyselyTableSchema) as Array<
 >;
 
 // Define table key types
-type AstroDBTableKeys = (typeof astroDbTableKeys)[number];
-type KyselyTableKeys = (typeof kyselyTableKeys)[number];
+export type AstroDBTableKeys = (typeof astroDbTableKeys)[number];
+export type KyselyTableKeys = (typeof kyselyTableKeys)[number];
 
 /**
  * Mapping from AstroDB table names to Kysely table names for StudioCMS.

@@ -1,6 +1,8 @@
 import { runEffect } from '@withstudiocms/effect';
 import { getDBClientLive, type StudioCMSDatabaseSchema } from '@withstudiocms/kysely';
+import { sql } from '@withstudiocms/kysely/kysely';
 import { getMigratorLive } from '@withstudiocms/kysely/migrator';
+import { type KyselyTableKeys, kyselyTableKeys } from '../lib/tableMap';
 
 /**
  * Dynamically import and return the database driver based on the provided dialect.
@@ -58,4 +60,69 @@ export const studioCMSDbMigrator = async () => {
 
 	const driver = await getDialectDriver(dialect);
 	return await runEffect(getMigratorLive(driver));
+};
+
+/**
+ * Run a connection test to the StudioCMS database.
+ *
+ * @returns Boolean indicating if the connection test was successful.
+ */
+export const runConnectionTest = async () => {
+	const { db } = await getStudioCMSDb();
+	try {
+		await db.executeQuery(sql`SELECT CURRENT_TIME;`.compile(db));
+		return true;
+	} catch (_e) {
+		return false;
+	}
+};
+
+/**
+ * Map of supported database dialects to their display names.
+ */
+const dialectMap = {
+	libsql: 'LibSQL',
+	mysql: 'MySQL',
+	postgres: 'PostgreSQL',
+};
+
+/**
+ * Get the database dialect from the environment variable.
+ *
+ * @returns The display name of the database dialect.
+ */
+export const getDialectFromEnv = () => {
+	return dialectMap[process.env.STUDIOCMS_DIALECT as keyof typeof dialectMap] || 'Unknown';
+};
+
+export const getTableLength = async (table: KyselyTableKeys) => {
+	const { db } = await getStudioCMSDb();
+	const result = await db.selectFrom(table).select(sql`COUNT(*)`.as('count')).executeTakeFirst();
+
+	if (!result) {
+		return 0;
+	}
+
+	return Number(result.count);
+};
+
+export const getDataMigrationStatus = async () => {
+	const tablesWithRows: string[] = [];
+
+	for (const table of kyselyTableKeys) {
+		const result = await getTableLength(table);
+		if (result > 0) {
+			tablesWithRows.push(table);
+		}
+	}
+
+	if (tablesWithRows.length > 0) {
+		return {
+			canMigrate: false,
+		};
+	}
+
+	return {
+		canMigrate: true,
+	};
 };

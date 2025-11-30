@@ -1,13 +1,20 @@
 ---
 import { Card } from 'studiocms:ui/components/card';
 import { Icon } from 'studiocms:ui/components/icon';
+
+interface Props {
+	title: string;
+	description: string;
+}
+
+const { title, description } = Astro.props;
 ---
 <Card fullHeight fullWidth class="db-error-card">
     <div slot="header">
         <span class="error-header">
             <Icon name="heroicons:exclamation-circle" height={24} width={24} />
-            <slot name="header" />
+            <h2>{title}</h2>
         </span>
     </div>
-    <slot />
+    <span>{description}</span>
 </Card>
