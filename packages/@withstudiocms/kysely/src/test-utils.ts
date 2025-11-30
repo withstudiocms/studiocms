@@ -1,7 +1,5 @@
 import { existsSync } from 'node:fs';
 import { unlink } from 'node:fs/promises';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { LibsqlDialect } from '@libsql/kysely-libsql';
 import { Effect } from 'effect';
 import { getDBClientLive } from './client.js';
@@ -18,10 +16,6 @@ type DBFixtureOptions = {
 	cwd: string;
 	migrationsDir?: string;
 };
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const migrationFolder = path.join(__dirname, '../dist/migrations');
 
 function normalize(str: string) {
 	return str.replace(/[^a-zA-Z0-9]/g, '_').toLowerCase();
@@ -58,12 +52,10 @@ function normalize(str: string) {
 export class DBFixture<Schema> {
 	private dbUrl: URL;
 	private dbString: string;
-	private migrationDir: string;
 
 	constructor(options: DBFixtureOptions) {
 		this.dbUrl = new URL(`./test-${normalize(options.suiteName)}.db`, options.cwd);
 		this.dbString = this.dbUrl.toString();
-		this.migrationDir = options.migrationsDir ?? migrationFolder;
 	}
 
 	/** Creates and returns a LibsqlDialect instance for the test database. */
@@ -120,8 +112,7 @@ export class DBFixture<Schema> {
 		 */
 		getMigrator: () => {
 			const dialect = this.getDialect();
-			const migrationFolder = this.migrationDir;
-			return getMigratorLive<Schema>(dialect, migrationFolder);
+			return getMigratorLive<Schema>(dialect);
 		},
 	};
 
