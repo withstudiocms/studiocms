@@ -88,6 +88,36 @@ export const astroDbTableKeys = Object.keys(AstroDBTableSchema) as Array<
 >;
 
 /**
+ * Array of AstroDB table keys that have no references to other tables.
+ */
+export const tablesWithNoReferences = [
+	'StudioCMSUsers',
+	'StudioCMSPageData',
+	'StudioCMSPageFolderStructure',
+	'StudioCMSPageDataTags',
+	'StudioCMSPageDataCategories',
+	'StudioCMSPluginData',
+	'StudioCMSDynamicConfigSettings',
+] as const;
+
+/**
+ * Array of AstroDB table keys that have references to other tables.
+ */
+export const tablesWithReferences: Exclude<
+	AstroDBTableKeys,
+	(typeof tablesWithNoReferences)[number]
+>[] = [
+	'StudioCMSAPIKeys',
+	'StudioCMSDiffTracking',
+	'StudioCMSEmailVerificationTokens',
+	'StudioCMSOAuthAccounts',
+	'StudioCMSPageContent',
+	'StudioCMSPermissions',
+	'StudioCMSSessionTable',
+	'StudioCMSUserResetTokens',
+];
+
+/**
  * Array of Kysely table keys.
  */
 export const kyselyTableKeys = Object.keys(KyselyTableSchema) as Array<
