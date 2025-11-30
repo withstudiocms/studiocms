@@ -33,11 +33,13 @@ import {
 	StudioCMSUserResetTokens as KyselyStudioCMSUserResetTokens,
 	StudioCMSUsersTable as KyselyStudioCMSUsersTable,
 } from '@withstudiocms/kysely/tables';
+import { getDataMigrationMeta as getAstroDataMigrationMeta } from '../db/astrodb.js';
+import { getDataMigrationMeta as getKyselyDataMigrationMeta } from '../db/client';
 
 /**
  * Schema definitions for AstroDB
  */
-const AstroDBTableSchema = {
+export const AstroDBTableSchema = {
 	StudioCMSAPIKeys,
 	StudioCMSDiffTracking,
 	StudioCMSDynamicConfigSettings,
@@ -58,7 +60,7 @@ const AstroDBTableSchema = {
 /**
  * Schema definitions for Kysely
  */
-const KyselyTableSchema = {
+export const KyselyTableSchema = {
 	StudioCMSAPIKeys: KyselyStudioCMSAPIKeys,
 	StudioCMSDiffTracking: KyselyStudioCMSDiffTracking,
 	StudioCMSDynamicConfigSettings: KyselyStudioCMSDynamicConfigSettings,
@@ -167,5 +169,38 @@ export const getMigrationPairs = <T extends AstroDBTableKeys>(key: T): Migration
 	};
 };
 
-type _exampleMapping = GetMigrationTypes<'StudioCMSUsers'>;
-const _examplePair = getMigrationPairs('StudioCMSUsers');
+// type _exampleMapping = GetMigrationTypes<'StudioCMSUsers'>;
+// const _examplePair = getMigrationPairs('StudioCMSUsers');
+
+/**
+ * Type representing migration metadata for both AstroDB and Kysely tables.
+ */
+export type MigrationMetaTables = {
+	astro: {
+		[key in AstroDBTableKeys]: number;
+	};
+	kysely: {
+		[key in KyselyTableKeys]: number;
+	};
+};
+
+/**
+ * Retrieve migration metadata for both AstroDB and Kysely databases.
+ *
+ * @returns An object containing migration metadata for AstroDB and Kysely tables.
+ */
+export const migrationMeta = async (): Promise<MigrationMetaTables> => {
+	const astro = await getAstroDataMigrationMeta().catch(() => {
+		const emptyMeta = {} as { [key in AstroDBTableKeys]: number };
+		return emptyMeta;
+	});
+	const kysely = await getKyselyDataMigrationMeta().catch(() => {
+		const emptyMeta = {} as { [key in KyselyTableKeys]: number };
+		return emptyMeta;
+	});
+
+	return {
+		astro,
+		kysely,
+	};
+};

@@ -6,6 +6,7 @@ import { TabItem, Tabs } from 'studiocms:ui/components/tabs';
 import { runEffect } from '@withstudiocms/effect';
 import type { ComponentProps } from 'astro/types';
 import ErrorCard from '../components/ErrorCard.astro';
+import MigrationMeta from '../components/MigrationMeta.astro';
 import MigrationStatus from '../components/MigrationStatus.astro';
 import StatusTables from '../components/StatusTables.astro';
 import { searchTables } from '../db/astrodb.js';
@@ -17,7 +18,7 @@ import {
 } from '../db/client.js';
 import Layout from '../layouts/Layout.astro';
 import { getErrorCases } from '../lib/errors.js';
-import { astroDbTableKeys } from '../lib/tableMap.js';
+import { astroDbTableKeys, migrationMeta } from '../lib/tableMap.js';
 
 // AstroDB Tables
 const astroDBTables = await searchTables('StudioCMS%').catch(() => []);
@@ -42,6 +43,8 @@ const errorCases = getErrorCases({
 	migrationTotal,
 	dataMigrationStatus,
 });
+
+const migrationMetaData = await migrationMeta();
 
 // Prepare Database Status Tables
 const dbStatusTables: ComponentProps<typeof StatusTables>['dbStatusTables'] = [
@@ -116,13 +119,13 @@ const dbStatusTables: ComponentProps<typeof StatusTables>['dbStatusTables'] = [
 
         <h2>Migration Actions</h2>
 
-        <Tabs variant='starlight'>
+        <Tabs variant='starlight' syncKey='migration-type' storage='persistent'>
 
             <TabItem label='Schema Migrations'>
 
                 <div class="button-shelf">
                     <Button 
-                        id='run-migrations-button'
+                        id='run-schema-migrations-button'
                         variant='solid' 
                         color='primary'
                         size="md"
@@ -135,7 +138,19 @@ const dbStatusTables: ComponentProps<typeof StatusTables>['dbStatusTables'] = [
             </TabItem>
 
             <TabItem label='Migrate Data'>
-                <p>TODO</p>
+                
+                <div class="button-shelf">
+                    <Button 
+                        id='run-data-migrations-button'
+                        variant='solid' 
+                        color='primary'
+                        size="md"
+                        disabled={!dataMigrationStatus.canMigrate}
+                        >Run Data Migrations
+                    </Button>
+                </div>
+
+                <MigrationMeta {migrationMetaData} />
             </TabItem>
 
         </Tabs>
@@ -144,20 +159,26 @@ const dbStatusTables: ComponentProps<typeof StatusTables>['dbStatusTables'] = [
 
     <script>
         import { toast } from 'studiocms:ui/components/toaster/client';
-        const $ = (selector: string) => document.querySelector(selector);
 
-        const migrationsButton = $('#run-migrations-button') as HTMLButtonElement | null;
+        // Helpers
 
-        function resetMigrationButton() {
-            if (migrationsButton) {
-                migrationsButton.disabled = false;
-                migrationsButton.textContent = 'Run Schema Migrations';
-            }
+        const $ = <E extends Element>(selector: string) => document.querySelector<E>(selector);
+
+        function resetMigrationButton(element: HTMLButtonElement, text: string) {
+            element.disabled = false;
+            element.textContent = text;
         };
 
-        migrationsButton?.addEventListener('click', async () => {
-            migrationsButton.disabled = true;
-            migrationsButton.textContent = 'Running Migrations...';
+        // Consts
+
+        const schemaMigrations = $<HTMLButtonElement>('#run-schema-migrations-button');
+        const dataMigrations = $<HTMLButtonElement>('#run-data-migrations-button');
+
+        // Event Listeners
+
+        schemaMigrations?.addEventListener('click', async () => {
+            schemaMigrations.disabled = true;
+            schemaMigrations.textContent = 'Running Migrations...';
 
             try {
                 const response = await fetch('/schema-migrations', {
@@ -181,7 +202,7 @@ const dbStatusTables: ComponentProps<typeof StatusTables>['dbStatusTables'] = [
                         description: errorData.error,
                         type: 'danger',
                     });
-                    resetMigrationButton();
+                    resetMigrationButton(schemaMigrations, 'Run Schema Migrations');
                 }
             } catch (error) {
                 toast({
@@ -189,7 +210,45 @@ const dbStatusTables: ComponentProps<typeof StatusTables>['dbStatusTables'] = [
                     description: String(error),
                     type: 'danger',
                 });
-                resetMigrationButton();
+                resetMigrationButton(schemaMigrations, 'Run Schema Migrations');
+            }
+        });
+
+        dataMigrations?.addEventListener('click', async () => {
+            dataMigrations.disabled = true;
+            dataMigrations.textContent = 'Migrating Data...';
+
+            try {
+                const response = await fetch('/data-migrations', {
+                    method: 'POST',
+                });
+
+                if (response.ok) {
+                    toast({
+                        title: 'Data Migration Completed',
+                        description: 'Data migration has been successfully completed.',
+                        type: 'success',
+                    })
+
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 3000);
+                } else {
+                    const errorData = await response.json();
+                    toast({
+                        title: 'Error During Data Migration',
+                        description: errorData.error,
+                        type: 'danger',
+                    });
+                    resetMigrationButton(dataMigrations, 'Run Data Migrations');
+                }
+            } catch (error) {
+                toast({
+                    title: 'Network Error',
+                    description: String(error),
+                    type: 'danger',
+                });
+                resetMigrationButton(dataMigrations, 'Run Data Migrations');
             }
         });
     </script>

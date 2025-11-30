@@ -107,6 +107,10 @@ main {
 			background-color: var(--background-step-3);
 		}
 
+		tr.not-applicable {
+			opacity: 0.5;
+		}
+
 		th,
 		td {
 			padding: 0.5rem;
@@ -116,10 +120,6 @@ main {
 		/* td first column */
 		td:first-child {
 			font-weight: bold;
-		}
-
-		td:nth-child(2) {
-			width: 40%;
 		}
 
 		thead {

@@ -1,4 +1,5 @@
 import { db, sql } from 'astro:db';
+import { type AstroDBTableKeys, astroDbTableKeys } from '../lib/tableMap';
 
 /**
  * Search for tables in a LibSQL database by name using Drizzle
@@ -38,6 +39,25 @@ export async function tableExists(tableName: string): Promise<boolean> {
 	const tables = await searchTables(tableName);
 	return tables.length > 0;
 }
+
+export const getTableLength = async (table: AstroDBTableKeys) => {
+	const result = await db.get<{ count: number }>(
+		sql`SELECT COUNT(*) as count FROM ${sql.raw(table)}`
+	);
+
+	return result?.count ?? 0;
+};
+
+export const getDataMigrationMeta = async () => {
+	const tableLengths: Record<AstroDBTableKeys, number> = {} as Record<AstroDBTableKeys, number>;
+
+	for (const table of astroDbTableKeys) {
+		const result = await getTableLength(table).catch(() => 0);
+		tableLengths[table] = result;
+	}
+
+	return tableLengths;
+};
 
 // Usage examples:
 // async function examples() {

@@ -137,3 +137,19 @@ export const getDataMigrationStatus = async () => {
 		canMigrate: true,
 	};
 };
+
+/**
+ * Get metadata about the data migration, including the number of rows in each table.
+ *
+ * @returns An object mapping table names to their respective row counts.
+ */
+export const getDataMigrationMeta = async () => {
+	const tableLengths: Record<KyselyTableKeys, number> = {} as Record<KyselyTableKeys, number>;
+
+	for (const table of kyselyTableKeys) {
+		const result = await getTableLength(table).catch(() => 0);
+		tableLengths[table] = result;
+	}
+
+	return tableLengths;
+};
