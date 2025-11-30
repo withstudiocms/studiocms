@@ -5,7 +5,7 @@ import { defineConfig } from 'astro/config';
 import dotenv from 'dotenv';
 
 // Load environment variables from .env file
-dotenv.config();
+dotenv.config({ quiet: true });
 
 // https://astro.build/config
 export default defineConfig({

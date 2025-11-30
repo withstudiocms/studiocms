@@ -19,7 +19,8 @@
     "code.spirit"
   ],
   "bin": {
-    "studiocms-migrator": "./start.mjs"
+    "studiocms-migrator": "./start.mjs",
+    "@studiocms/migrator": "./start.mjs"
   },
   "scripts": {
     "dev": "astro dev --remote",
