@@ -51,6 +51,25 @@ const useWithErrorPromise = <A>(_try: () => Promise<A>) =>
 		catch: (cause) => new MigratorError({ cause }),
 	});
 
+/**
+ * A MigrationProvider that directly serves a provided set of migrations.
+ *
+ * This class implements the MigrationProvider interface by storing a static
+ * record of migrations passed in at construction time. When getMigrations()
+ * is called, it simply returns this stored record.
+ *
+ * @remarks
+ * - This provider is useful for scenarios where migrations are defined
+ *   programmatically or imported as modules, rather than read from files.
+ *
+ * @example
+ * const migrations = {
+ *   '20230101T000000_initial': { up: async (db) => { ... }, down: async (db) => { ... } },
+ *   '20230201T000000_add_users': { up: async (db) => { ... }, down: async (db) => { ... } },
+ * };
+ *
+ * const provider = new PassthroughMigrationProvider(migrations);
+ */
 export class PassthroughMigrationProvider implements MigrationProvider {
 	constructor(migrations: Record<string, Migration>) {
 		this.migrations = migrations;
