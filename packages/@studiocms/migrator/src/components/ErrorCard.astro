@@ -1,0 +1,13 @@
+---
+import { Card } from 'studiocms:ui/components/card';
+import { Icon } from 'studiocms:ui/components/icon';
+---
+<Card fullHeight fullWidth class="db-error-card">
+    <div slot="header">
+        <span class="error-header">
+            <Icon name="heroicons:exclamation-circle" height={24} width={24} />
+            <slot name="header" />
+        </span>
+    </div>
+    <slot />
+</Card>

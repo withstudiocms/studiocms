@@ -1,15 +1,252 @@
 ---
-import PageHeader from '../components/PageHeader.astro';
+import { Badge, Button } from 'studiocms:ui/components';
+import { Card } from 'studiocms:ui/components/card';
+import { Divider } from 'studiocms:ui/components/divider';
+import { TabItem, Tabs } from 'studiocms:ui/components/tabs';
+import { runEffect } from '@withstudiocms/effect';
+import { sql } from '@withstudiocms/kysely/kysely';
+import ErrorCard from '../components/ErrorCard.astro';
+import { searchTables } from '../db/astrodb.js';
+import { getStudioCMSDb, studioCMSDbMigrator } from '../db/client.js';
 import Layout from '../layouts/Layout.astro';
+import { astroDbTableKeys } from '../lib/tableMap.js';
 
-console.log(`test var: ${process.env.STUDIOCMS_DIALECT}`);
+const StudioCMSDialect = process.env.STUDIOCMS_DIALECT;
+
+const astroDBTables = await searchTables('StudioCMS%');
+
+const dialectMap = {
+	libsql: 'LibSQL',
+	mysql: 'MySQL',
+	postgres: 'PostgreSQL',
+};
+
+const getDialect = (dialect: string | undefined) => {
+	return dialectMap[dialect as keyof typeof dialectMap] || 'Unknown';
+};
+
+const migrator = await studioCMSDbMigrator();
+
+const migrationStatus = await runEffect(migrator.status);
+
+const migrationTotal = migrationStatus.length;
+const appliedMigrations = migrationStatus.filter((m) => m.executedAt).length;
+
+const runConnectionTest = async () => {
+	const { db } = await getStudioCMSDb();
+	try {
+		await db.executeQuery(sql`SELECT CURRENT_TIME;`.compile(db));
+		return true;
+	} catch (_e) {
+		return false;
+	}
+};
+
+const isStudioCMSDbConnected = await runConnectionTest();
+
+const cleanName = (name: string) => {
+	const nameMatcher = name.match(/^\d{8}T\d{6}_(.+)$/);
+	const cleanName = nameMatcher ? nameMatcher[1] : name;
+
+	// Uppercase the first letter of each word and replace underscores with spaces
+	const formattedName = cleanName
+		.split('_')
+		.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+		.join(' ');
+	return formattedName;
+};
 ---
 <Layout title="StudioCMS Migrator">
-    <div slot="header">
-        <PageHeader />
-    </div>
 
-    <div>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-    </div>
+    {
+        astroDBTables.length < astroDbTableKeys.length && (
+            <ErrorCard>
+                <div slot="header">
+                    <h2>Error: Missing Required AstroDB Tables</h2>
+                </div>
+                <p>
+                    It seems that not all required StudioCMS AstroDB tables were found in your connected database.
+                    Please ensure that you have connected to the correct database that contains your previous StudioCMS data.
+                </p>
+            </ErrorCard>
+        )
+    }
+
+    {
+        appliedMigrations < migrationTotal && (
+            <ErrorCard>
+                <div slot="header">
+                    <h2>Error: Pending Schema Migrations Detected</h2>
+                </div>
+                <p>
+                    There are pending schema migrations that need to be applied to your StudioCMS database before proceeding with the data migration.
+                    Please run the necessary migrations below to ensure your database schema is up to date.
+                </p>
+            </ErrorCard>
+        )
+    }
+
+    <Card fullWidth class="db-status-card" variant='filled'>
+
+        <div slot="header">
+            <h2>Database Status Overview</h2>
+        </div>
+
+        <div class="split-screen">
+
+            <div class="split-screen-item">
+                <span class="status-label">AstroDB Database</span>
+
+                <table>
+                    <tbody>
+                        <tr>
+                            <td>Connection Status</td>
+                            <td>
+                                <Badge label={astroDBTables.length > 0 ? 'Connected' : 'Not Connected'} color={astroDBTables.length > 0 ? 'success' : 'danger'} rounding="semi" size='sm' class="status" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Required Tables</td>
+                            <td>
+                                <Badge label={astroDBTables.length >= astroDbTableKeys.length ? "Present": `Missing ${astroDbTableKeys.length - astroDBTables.length} Tables`} color={astroDBTables.length >= astroDbTableKeys.length ? 'success' : 'danger'} rounding="semi" size='sm' class="status" />
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+
+            <div class="split-screen-item">
+                <span class="status-label">StudioCMS Database</span>
+                <table>
+                    <tbody>
+                        <tr>
+                            <td>Connection Status</td>
+                            <td>
+                                <Badge label={isStudioCMSDbConnected ? 'Connected' : 'Not Connected'} color={isStudioCMSDbConnected ? 'success' : 'danger'} rounding="semi" size='sm' class="status" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Dialect</td>
+                            <td>
+                                <Badge label={getDialect(StudioCMSDialect)} rounding="semi" size='sm' color="info" class="status" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Schema Migration Status</td>
+                            <td>
+                                <Badge label={appliedMigrations === migrationTotal ? 'Up to Date' : 'Pending Migrations'} color={appliedMigrations === migrationTotal ? 'success' : 'danger'} rounding="semi" size='sm' class="status" />
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+
+        <span class="divider-holder"><Divider /></span>
+
+        <h2>Migration Actions</h2>
+
+        <Tabs variant='starlight'>
+
+            <TabItem label='Schema Migrations'>
+
+                <div class="button-shelf">
+                    <Button 
+                        id='run-migrations-button'
+                        variant='solid' 
+                        color='primary'
+                        size="md"
+                        disabled={appliedMigrations === migrationTotal}
+                        >Run Schema Migrations
+                    </Button>
+                </div>
+
+                <table class="migration">
+                    <thead>
+                        <tr>
+                            <th>Migration Name</th>
+                            <th>Status</th>
+                            <th>Executed At</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {
+                            migrationStatus.map((migration) => (
+                                <tr>
+                                    <td>{cleanName(migration.name)}</td>
+                                    <td>{
+                                        migration.executedAt
+                                            ? <Badge label="Applied" color="success" rounding="semi" size='sm' class="status" />
+                                            : <Badge label="Pending" color="warning" rounding="semi" size='sm' class="status" />
+                                    }</td>
+                                    <td>{migration.executedAt ? new Date(migration.executedAt).toLocaleString() : 'N/A'}</td>
+                                </tr>
+                            ))
+                        }
+                    </tbody>
+                </table>
+            </TabItem>
+
+            <TabItem label='Migrate Data'>
+                <p>Content for Migrate Data</p>
+            </TabItem>
+
+        </Tabs>
+
+    </Card>
+
+    <script>
+        import { toast } from 'studiocms:ui/components/toaster/client';
+        const $ = (selector: string) => document.querySelector(selector);
+
+        const migrationsButton = $('#run-migrations-button') as HTMLButtonElement | null;
+
+        function resetMigrationButton() {
+            if (migrationsButton) {
+                migrationsButton.disabled = false;
+                migrationsButton.textContent = 'Run Schema Migrations';
+            }
+        };
+
+        migrationsButton?.addEventListener('click', async () => {
+            migrationsButton.disabled = true;
+            migrationsButton.textContent = 'Running Migrations...';
+
+            try {
+                const response = await fetch('/schema-migrations', {
+                    method: 'POST',
+                });
+
+                if (response.ok) {
+                    toast({
+                        title: 'Schema Migrations Applied',
+                        description: 'All pending schema migrations have been successfully applied.',
+                        type: 'success',
+                    })
+
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 6000);
+                } else {
+                    const errorData = await response.json();
+                    toast({
+                        title: 'Error Applying Migrations',
+                        description: errorData.error,
+                        type: 'danger',
+                    });
+                    resetMigrationButton();
+                }
+            } catch (error) {
+                toast({
+                    title: 'Network Error',
+                    description: String(error),
+                    type: 'danger',
+                });
+                resetMigrationButton();
+            }
+        });
+    </script>
+
 </Layout>

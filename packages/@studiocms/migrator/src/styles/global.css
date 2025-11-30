@@ -2,13 +2,22 @@ main {
 	margin: 0 auto;
 	padding: 1rem;
 	max-width: 1000px;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 2rem;
+}
+
+.prose {
+	max-width: 100%;
+	min-width: 100%;
 }
 
 .header-content {
 	display: flex;
 	align-items: center;
 	gap: 1rem;
-	margin-bottom: 2rem;
 	width: 100%;
 
 	.header-logo {
@@ -22,15 +31,134 @@ main {
 		min-width: 100%;
 		flex-direction: column;
 		justify-content: center;
+
+		* {
+			width: 100%;
+			min-width: 100%;
+		}
 	}
 }
 
-.header-padding {
-	height: 1rem;
-	display: block;
-	content: "";
+:root {
+	--color-error: var(--danger-base);
+	--color-error-background: color-mix(in srgb, var(--color-error) 10%, var(--background-base) 90%);
+	--color-error-foreground: var(--danger-vibrant);
 }
 
-.sui-divider-line {
-	background-color: var(--border);
+.db-error-card {
+	border: 1px solid var(--color-error);
+	background-color: var(--color-error-background);
+	color: var(--color-error-foreground);
+	padding: 1rem;
+	border-radius: 8px;
+	width: 100%;
+
+	.error-header {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+	}
+
+	h2 {
+		margin-top: 0;
+		color: var(--color-error-foreground);
+	}
+
+	p {
+		margin-bottom: 0;
+	}
+}
+
+.db-status-card {
+	h2 {
+		margin-top: 0;
+		font-size: x-large;
+	}
+
+	p {
+		margin-bottom: 0;
+	}
+
+	.status-label {
+		display: flex;
+		align-items: center;
+		width: 100%;
+		font-weight: bold;
+		font-size: large;
+		border-bottom: 2px solid var(--border);
+		margin-bottom: 0.5rem;
+		padding-bottom: 0.25rem;
+	}
+
+	table {
+		border-collapse: collapse;
+		width: 100%;
+
+		tr {
+			border-bottom: 1px solid var(--border);
+		}
+
+		tr:last-child {
+			border-bottom: none;
+		}
+
+		/* tr every other row */
+		tr:nth-child(even) {
+			background-color: var(--background-step-3);
+		}
+
+		th,
+		td {
+			padding: 0.5rem;
+			text-align: left;
+		}
+
+		/* td first column */
+		td:first-child {
+			font-weight: bold;
+		}
+
+		td:nth-child(2) {
+			width: 40%;
+		}
+
+		thead {
+			border-bottom: 2px solid var(--border);
+		}
+	}
+
+	table.migration {
+		background-color: var(--background-step-2);
+		border: 1px solid var(--border);
+	}
+
+	.status {
+		font-weight: bold;
+	}
+}
+
+.split-screen {
+	display: flex;
+	gap: 2rem;
+	width: 100%;
+
+	.split-screen-item {
+		flex: 1;
+		width: 100%;
+		background-color: var(--background-step-2);
+		padding: 0.25rem 0.5rem;
+		border-radius: 4px;
+	}
+}
+
+.divider-holder {
+	width: 100%;
+	margin: 1rem 0;
+	display: flex;
+}
+
+.button-shelf {
+	width: 100%;
+	display: flex;
+	margin-bottom: 1rem;
 }

@@ -1,7 +1,9 @@
 ---
+import { Toaster } from 'studiocms:ui/components/toaster';
+import PageHeader from '../components/PageHeader.astro';
+import '../fonts/css/onest-variable.css';
 import '../styles/global.css';
 import 'studiocms:ui/prose';
-import { Card } from 'studiocms:ui/components/card';
 
 interface Props {
 	title: string;
@@ -15,14 +17,14 @@ const { title } = Astro.props;
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width" />
         <meta name="generator" content={Astro.generator} />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
         <title>{title}</title>
     </head>
     <body>
+        <Toaster />
         <main>
-            <Card variant='filled' fullWidth fullHeight>
-                <slot name="header" slot="header" />
-                <slot />
-            </Card>
+            <PageHeader />
+            <slot />
         </main>
     </body>
 </html>
