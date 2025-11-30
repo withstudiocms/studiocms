@@ -21,130 +21,139 @@ const booleanToNumber = (value: boolean): number => {
 	return 0;
 };
 
-export const remapUsersTable = (astro: Users['astro']): Users['kysely'] => {
-	return {
-		...astro,
+export const remapUsersTable = (astro: Users['astro'][]): Users['kysely'][] => {
+	return astro.map((user) => ({
+		...user,
 		// Add any necessary transformations here
-		createdAt: astro.createdAt?.toISOString(),
+		createdAt: user.createdAt?.toISOString(),
 		updatedAt: new Date().toISOString(),
-		emailVerified: booleanToNumber(astro.emailVerified),
-	};
+		emailVerified: booleanToNumber(user.emailVerified),
+	}));
 };
 
-export const remapPageDataTable = (astro: PageData['astro']): PageData['kysely'] => {
-	return {
-		...astro,
+export const remapPageDataTable = (astro: PageData['astro'][]): PageData['kysely'][] => {
+	return astro.map((item) => ({
+		...item,
 		// Add any necessary transformations here
 		updatedAt: new Date().toISOString(),
-		showOnNav: booleanToNumber(astro.showOnNav),
-		showAuthor: booleanToNumber(astro.showAuthor ?? false),
-		showContributors: booleanToNumber(astro.showContributors ?? false),
-		publishedAt: astro.publishedAt?.toISOString(),
-		categories: JSON.stringify(astro.categories as string),
-		tags: JSON.stringify(astro.tags as string),
-		contributorIds: JSON.stringify(astro.contributorIds as string),
-		augments: JSON.stringify(astro.augments as string),
-		authorId: astro.authorId ?? '',
-		draft: booleanToNumber(astro.draft ?? false),
-	};
+		showOnNav: booleanToNumber(item.showOnNav),
+		showAuthor: booleanToNumber(item.showAuthor ?? false),
+		showContributors: booleanToNumber(item.showContributors ?? false),
+		publishedAt: item.publishedAt?.toISOString(),
+		categories: JSON.stringify(item.categories as string),
+		tags: JSON.stringify(item.tags as string),
+		contributorIds: JSON.stringify(item.contributorIds as string),
+		augments: JSON.stringify(item.augments as string),
+		authorId: item.authorId ?? '',
+		draft: booleanToNumber(item.draft ?? false),
+	}));
 };
 
-export const remapPageFoldersTable = (astro: PageFolders['astro']): PageFolders['kysely'] => {
-	return astro;
+export const remapPageFoldersTable = (astro: PageFolders['astro'][]): PageFolders['kysely'][] => {
+	return astro.map((item) => ({
+		...item,
+	}));
 };
 
-export const remapPageDataTagsTable = (astro: PageDataTags['astro']): PageDataTags['kysely'] => {
-	return {
-		...astro,
-		meta: JSON.stringify(astro.meta as string),
-	};
+export const remapPageDataTagsTable = (
+	astro: PageDataTags['astro'][]
+): PageDataTags['kysely'][] => {
+	return astro.map((item) => ({
+		...item,
+		meta: JSON.stringify(item.meta as string),
+	}));
 };
 
 export const remapPageDataCategoriesTable = (
-	astro: PageDataCategories['astro']
-): PageDataCategories['kysely'] => {
-	return {
-		...astro,
-		meta: JSON.stringify(astro.meta as string),
-	};
+	astro: PageDataCategories['astro'][]
+): PageDataCategories['kysely'][] => {
+	return astro.map((item) => ({
+		...item,
+		meta: JSON.stringify(item.meta as string),
+	}));
 };
 
-export const remapPluginDataTable = (astro: PluginData['astro']): PluginData['kysely'] => {
-	return {
-		...astro,
-		data: JSON.stringify(astro.data as string),
-	};
+export const remapPluginDataTable = (astro: PluginData['astro'][]): PluginData['kysely'][] => {
+	return astro.map((item) => ({
+		...item,
+		data: JSON.stringify(item.data as string),
+	}));
 };
 
-export const remapDynamicConfigTable = (astro: DynamicConfig['astro']): DynamicConfig['kysely'] => {
-	return {
-		...astro,
-		data: JSON.stringify(astro.data as string),
-	};
+export const remapDynamicConfigTable = (
+	astro: DynamicConfig['astro'][]
+): DynamicConfig['kysely'][] => {
+	return astro.map((item) => ({
+		...item,
+		data: JSON.stringify(item.data as string),
+	}));
 };
 
-export const remapApiKeysTable = (astro: apiKeys['astro']): apiKeys['kysely'] => {
-	return {
-		...astro,
-		creationDate: astro.creationDate?.toISOString(),
-	};
+export const remapApiKeysTable = (astro: apiKeys['astro'][]): apiKeys['kysely'][] => {
+	return astro.map((item) => ({
+		...item,
+		creationDate: item.creationDate?.toISOString(),
+	}));
 };
 
-export const remapDiffTrackingTable = (astro: diffTracking['astro']): diffTracking['kysely'] => {
-	return {
-		...astro,
-		pageMetaData: JSON.stringify(astro.pageMetaData as string),
-		timestamp: astro.timestamp?.toISOString(),
-	};
+export const remapDiffTrackingTable = (
+	astro: diffTracking['astro'][]
+): diffTracking['kysely'][] => {
+	return astro.map((item) => ({
+		...item,
+		pageMetaData: JSON.stringify(item.pageMetaData as string),
+		timestamp: item.timestamp?.toISOString(),
+	}));
 };
 
 export const remapEmailVerificationTokensTable = (
-	astro: emailVerificationTokens['astro']
-): emailVerificationTokens['kysely'] => {
-	return {
-		...astro,
-		expiresAt: astro.expiresAt?.toISOString(),
-	};
+	astro: emailVerificationTokens['astro'][]
+): emailVerificationTokens['kysely'][] => {
+	return astro.map((item) => ({
+		...item,
+		expiresAt: item.expiresAt?.toISOString(),
+	}));
 };
 
-export const remapOAuthAccountsTable = (astro: oAuthAccounts['astro']): oAuthAccounts['kysely'] => {
-	return {
-		...astro,
-	};
+export const remapOAuthAccountsTable = (
+	astro: oAuthAccounts['astro'][]
+): oAuthAccounts['kysely'][] => {
+	return astro.map((item) => ({
+		...item,
+	}));
 };
 
-export const remapPageContentTable = (astro: pageContent['astro']): pageContent['kysely'] => {
-	return {
-		...astro,
-		content: astro.content ?? '',
-	};
+export const remapPageContentTable = (astro: pageContent['astro'][]): pageContent['kysely'][] => {
+	return astro.map((item) => ({
+		...item,
+		content: item.content ?? '',
+	}));
 };
 
-export const remapPermissionsTable = (astro: permissions['astro']): permissions['kysely'] => {
-	return {
-		...astro,
-	};
+export const remapPermissionsTable = (astro: permissions['astro'][]): permissions['kysely'][] => {
+	return astro.map(({ rank, user }) => ({
+		rank,
+		user,
+	}));
 };
 
-export const remapSessionTable = (astro: sessionTable['astro']): sessionTable['kysely'] => {
-	return {
-		...astro,
-		expiresAt: astro.expiresAt?.toISOString(),
-	};
+export const remapSessionTable = (astro: sessionTable['astro'][]): sessionTable['kysely'][] => {
+	return astro.map((item) => ({
+		...item,
+		expiresAt: item.expiresAt?.toISOString(),
+	}));
 };
 
 export const remapUserResetTokensTable = (
-	astro: userResetTokens['astro']
-): userResetTokens['kysely'] => {
-	return {
-		...astro,
-	};
+	astro: userResetTokens['astro'][]
+): userResetTokens['kysely'][] => {
+	return astro;
 };
 
 export const remapFunctions: {
 	[key in AstroDBTableKeys]: (
-		astro: GetMigrationTypes<key>['astro']
-	) => GetMigrationTypes<key>['kysely'];
+		astro: GetMigrationTypes<key>['astro'][]
+	) => GetMigrationTypes<key>['kysely'][];
 } = {
 	StudioCMSUsers: remapUsersTable,
 	StudioCMSPageData: remapPageDataTable,
