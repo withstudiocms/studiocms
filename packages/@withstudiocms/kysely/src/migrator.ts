@@ -5,6 +5,9 @@ const migrations: Record<string, Migration> = {
 	'20251025T040912_init': await import('./migrations/20251025T040912_init.js').then(
 		({ up, down }) => ({ up, down })
 	),
+	'20251130T150847_drop_deprecated': await import(
+		'./migrations/20251130T150847_drop_deprecated.js'
+	).then(({ up, down }) => ({ up, down })),
 };
 
 /**
