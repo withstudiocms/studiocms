@@ -95,6 +95,12 @@ export const getDialectFromEnv = () => {
 	return dialectMap[process.env.STUDIOCMS_DIALECT as keyof typeof dialectMap] || 'Unknown';
 };
 
+/**
+ * Get the number of rows in a specified table.
+ *
+ * @param table - The name of the table.
+ * @returns The number of rows in the table.
+ */
 export const getTableLength = async (table: KyselyTableKeys) => {
 	const { db } = await getStudioCMSDb();
 	const result = await db.selectFrom(table).select(sql`COUNT(*)`.as('count')).executeTakeFirst();
@@ -106,6 +112,11 @@ export const getTableLength = async (table: KyselyTableKeys) => {
 	return Number(result.count);
 };
 
+/**
+ * Check the data migration status by verifying if any tables contain rows.
+ *
+ * @returns An object indicating whether migration can proceed.
+ */
 export const getDataMigrationStatus = async () => {
 	const tablesWithRows: string[] = [];
 

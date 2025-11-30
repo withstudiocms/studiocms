@@ -8,11 +8,6 @@ import type { ComponentProps } from 'astro/types';
 import ErrorCard from '../components/ErrorCard.astro';
 import MigrationStatus from '../components/MigrationStatus.astro';
 import StatusTables from '../components/StatusTables.astro';
-import {
-	AstroDbTableError,
-	DataMigrationNotAvailableError,
-	PendingSchemaMigrationsError,
-} from '../content/strings/errors.js';
 import { searchTables } from '../db/astrodb.js';
 import {
 	getDataMigrationStatus,
@@ -21,40 +16,34 @@ import {
 	studioCMSDbMigrator,
 } from '../db/client.js';
 import Layout from '../layouts/Layout.astro';
+import { getErrorCases } from '../lib/errors.js';
 import { astroDbTableKeys } from '../lib/tableMap.js';
 
+// AstroDB Tables
 const astroDBTables = await searchTables('StudioCMS%');
 
+// Test StudioCMS DB Connection
+const isStudioCMSDbConnected = await runConnectionTest();
+
+// StudioCMS Schema Migrations
 const migrator = await studioCMSDbMigrator();
-
-const migrationStatus = await runEffect(migrator.status);
-
+const migrationStatus = await runEffect(migrator.status).catch(() => []);
 const migrationTotal = migrationStatus.length;
 const appliedMigrations = migrationStatus.filter((m) => m.executedAt).length;
 
-const isStudioCMSDbConnected = await runConnectionTest();
-
+// Data Migration Status
 const dataMigrationStatus = await getDataMigrationStatus();
 
-const errorCases: {
-	title: string;
-	description: string;
-	condition: boolean;
-}[] = [
-	{
-		condition: astroDBTables.length < astroDbTableKeys.length,
-		...AstroDbTableError,
-	},
-	{
-		condition: appliedMigrations < migrationTotal,
-		...PendingSchemaMigrationsError,
-	},
-	{
-		condition: dataMigrationStatus.canMigrate === false,
-		...DataMigrationNotAvailableError,
-	},
-];
+// Determine Error Cases
+const errorCases = getErrorCases({
+	astroDBTables,
+	astroDbTableKeys,
+	appliedMigrations,
+	migrationTotal,
+	dataMigrationStatus,
+});
 
+// Prepare Database Status Tables
 const dbStatusTables: ComponentProps<typeof StatusTables>['dbStatusTables'] = [
 	{
 		label: 'AstroDB Database',

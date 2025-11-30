@@ -8,6 +8,12 @@ interface Props {
 
 const { migrationStatus } = Astro.props;
 
+/**
+ * Cleans up the migration name by removing timestamp prefixes and formatting.
+ *
+ * @param name - The original migration name.
+ * @returns The cleaned and formatted migration name.
+ */
 const cleanName = (name: string) => {
 	const nameMatcher = name.match(/^\d{8}T\d{6}_(.+)$/);
 	const cleanName = nameMatcher ? nameMatcher[1] : name;
