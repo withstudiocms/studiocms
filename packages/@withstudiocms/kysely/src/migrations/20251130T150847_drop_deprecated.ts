@@ -1,9 +1,9 @@
 /**
- * - Title: <title here>
- * - Created: <date>
- * - Author: <author>
- * - GitHub PR: <pr>
- * - Description: <description>
+ * - Title: Drop Deprecated Tables
+ * - Created: 2025-11-30
+ * - Author: Adam Matthiesen
+ * - GitHub PR: #1033
+ * - Description: Drop previously deprecated tables from the database schema. (re-deprecate here to be fully removed in the next migration safely)
  */
 /** biome-ignore-all lint/suspicious/noExplicitAny: Requirement from Kysely */
 
