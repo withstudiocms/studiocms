@@ -1,0 +1,28 @@
+---
+import '../styles/global.css';
+import 'studiocms:ui/prose';
+import { Card } from 'studiocms:ui/components/card';
+
+interface Props {
+	title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width" />
+        <meta name="generator" content={Astro.generator} />
+        <title>{title}</title>
+    </head>
+    <body>
+        <main>
+            <Card variant='filled' fullWidth fullHeight>
+                <slot name="header" slot="header" />
+                <slot />
+            </Card>
+        </main>
+    </body>
+</html>

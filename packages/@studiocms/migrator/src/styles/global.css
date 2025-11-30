@@ -1,0 +1,36 @@
+main {
+	margin: 0 auto;
+	padding: 1rem;
+	max-width: 1000px;
+}
+
+.header-content {
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+	margin-bottom: 2rem;
+	width: 100%;
+
+	.header-logo {
+		height: 50px;
+		width: 50px;
+	}
+
+	.header-text {
+		display: flex;
+		width: 100%;
+		min-width: 100%;
+		flex-direction: column;
+		justify-content: center;
+	}
+}
+
+.header-padding {
+	height: 1rem;
+	display: block;
+	content: "";
+}
+
+.sui-divider-line {
+	background-color: var(--border);
+}

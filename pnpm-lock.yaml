@@ -633,6 +633,9 @@ importers:
       '@studiocms/ui':
         specifier: catalog:studiocms
         version: 1.0.0-beta.4(astro@5.16.0(@types/node@22.19.1)(jiti@2.6.1)(rollup@4.53.3)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))(vite@6.4.1(@types/node@22.19.1)(jiti@2.6.1)(tsx@4.20.6)(yaml@2.8.1))
+      '@withstudiocms/config-utils':
+        specifier: workspace:*
+        version: link:../../@withstudiocms/config-utils
       '@withstudiocms/effect':
         specifier: workspace:*
         version: link:../../@withstudiocms/effect
@@ -648,6 +651,9 @@ importers:
       sharp:
         specifier: 'catalog:'
         version: 0.34.5
+      studiocms:
+        specifier: workspace:*
+        version: link:../../studiocms
     devDependencies:
       '@types/node':
         specifier: 'catalog:'

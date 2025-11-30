@@ -45,10 +45,14 @@
     "@astrojs/db": "catalog:astrojs",
     "@astrojs/node": "catalog:astrojs",
 		"@studiocms/ui": "catalog:studiocms",
+    "@withstudiocms/config-utils": "workspace:*",
 		"@withstudiocms/effect": "workspace:*",
 		"@withstudiocms/kysely": "workspace:*",
     "astro": "catalog:astrojs",
 		"dotenv": "^17.2.3",
     "sharp": "catalog:"
+  },
+  "peerDependencies": {
+    "studiocms": "workspace:*"
   }
 }
