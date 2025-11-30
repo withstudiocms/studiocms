@@ -89,7 +89,12 @@ const builtInComponents = {
  */
 export const studiocms = defineIntegration({
 	name: pkgName,
-	optionsSchema: z.custom<StudioCMSOptions>(),
+	// TODO: Decide whether or not to continue to support inline options
+	// Currently, StudioCMS parses options from this inline options and from a config file
+	// If both are provided, the config file takes precedence in merged options
+	// Should we deprecate and remove inline options in the future in favor of config files only?
+	// This would be beneficial for compatibility with our other non-astro tools (such as our CLI)
+	optionsSchema: z.custom<StudioCMSOptions | undefined>(),
 	setup: ({ name, options: opts }) => {
 		// Resolved Options for StudioCMS
 		let options: StudioCMSConfig;

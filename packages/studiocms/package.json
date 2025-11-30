@@ -74,6 +74,14 @@
 			"types": "./dist/consts.d.ts",
 			"default": "./dist/consts.js"
 		},
+		"./db": {
+			"types": "./dist/db/index.d.ts",
+			"default": "./dist/db/index.js"
+		},
+		"./db/plugins": {
+			"types": "./dist/db/plugins.d.ts",
+			"default": "./dist/db/plugins.js"
+		},
 		"./errors": {
 			"types": "./dist/errors.d.ts",
 			"default": "./dist/errors.js"
