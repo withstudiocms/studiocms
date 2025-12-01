@@ -37,30 +37,35 @@ const logger = new Logger({ level: 'info' }, '@studiocms/migrator');
  * await loadCMSConfigFile();
  */
 async function loadCMSConfigFile() {
-	// Determine the root path of the project
-	const rootPath = pathToFileURL(`${process.cwd()}/`);
+	try {
+		// Determine the root path of the project
+		const rootPath = pathToFileURL(`${process.cwd()}/`);
 
-	// Load StudioCMS Config file
-	const configFile = await loadConfigFile(rootPath, configPaths, 'db-migrator-util');
+		// Load StudioCMS Config file
+		const configFile = await loadConfigFile(rootPath, configPaths, 'db-migrator-util');
 
-	// Log whether the config file was found
-	if (configFile) {
-		logger.info('Loaded StudioCMS config file successfully.');
-	} else {
-		logger.warn('No StudioCMS config file found, using default configuration.');
+		// Log whether the config file was found
+		if (configFile) {
+			logger.info('Loaded StudioCMS config file successfully.');
+		} else {
+			logger.warn('No StudioCMS config file found, using default configuration.');
+		}
+
+		// Get the minimal default configuration
+		const defaultConfig = StudioCMSOptionsSchema.parse({});
+
+		// Merge user config with default config
+		const userConfig = parseAndMerge(StudioCMSOptionsSchema, defaultConfig, configFile);
+
+		// Set custom environment variables based on user config
+		const customENV = { STUDIOCMS_DIALECT: userConfig.db.dialect };
+
+		// Populate process.env with custom environment variables
+		dotenv.populate(process.env, customENV, { quiet: true });
+	} catch (error) {
+		logger.error('Error loading StudioCMS configuration:', error);
+		throw error;
 	}
-
-	// Get the minimal default configuration
-	const defaultConfig = StudioCMSOptionsSchema.parse({});
-
-	// Merge user config with default config
-	const userConfig = parseAndMerge(StudioCMSOptionsSchema, defaultConfig, configFile);
-
-	// Set custom environment variables based on user config
-	const customENV = { STUDIOCMS_DIALECT: userConfig.db.dialect };
-
-	// Populate process.env with custom environment variables
-	dotenv.populate(process.env, customENV, { quiet: true });
 }
 
 const __filename = fileURLToPath(import.meta.url);
@@ -122,6 +127,7 @@ async function serveUI() {
 		});
 	} catch (error) {
 		logger.error(error);
+		throw error;
 	}
 }
 
@@ -150,7 +156,7 @@ export async function start() {
 
 start().catch((error) => {
 	logger.error(
-		`Error starting the migrator server: ${error instanceof Error ? error.message : String(error)}`
+		`Failed to start Astro dev server: ${error instanceof Error ? error.message : String(error)}`
 	);
 	process.exit(1);
 });

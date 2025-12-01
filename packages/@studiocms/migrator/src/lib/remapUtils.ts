@@ -16,10 +16,7 @@ type permissions = GetMigrationTypes<'StudioCMSPermissions'>;
 type sessionTable = GetMigrationTypes<'StudioCMSSessionTable'>;
 type userResetTokens = GetMigrationTypes<'StudioCMSUserResetTokens'>;
 
-const booleanToNumber = (value: boolean): number => {
-	if (value === true) return 1;
-	return 0;
-};
+const booleanToNumber = (value: boolean): number => (value ? 1 : 0);
 
 export const remapUsersTable = (astro: Users['astro'][]): Users['kysely'][] => {
 	return astro.map((user) => ({
@@ -60,7 +57,7 @@ export const remapPageDataTagsTable = (
 ): PageDataTags['kysely'][] => {
 	return astro.map((item) => ({
 		...item,
-		meta: JSON.stringify(item.meta as string),
+		meta: JSON.stringify(item.meta),
 	}));
 };
 
@@ -69,14 +66,14 @@ export const remapPageDataCategoriesTable = (
 ): PageDataCategories['kysely'][] => {
 	return astro.map((item) => ({
 		...item,
-		meta: JSON.stringify(item.meta as string),
+		meta: JSON.stringify(item.meta),
 	}));
 };
 
 export const remapPluginDataTable = (astro: PluginData['astro'][]): PluginData['kysely'][] => {
 	return astro.map((item) => ({
 		...item,
-		data: JSON.stringify(item.data as string),
+		data: JSON.stringify(item.data),
 	}));
 };
 
@@ -85,7 +82,7 @@ export const remapDynamicConfigTable = (
 ): DynamicConfig['kysely'][] => {
 	return astro.map((item) => ({
 		...item,
-		data: JSON.stringify(item.data as string),
+		data: JSON.stringify(item.data),
 	}));
 };
 
@@ -101,7 +98,7 @@ export const remapDiffTrackingTable = (
 ): diffTracking['kysely'][] => {
 	return astro.map((item) => ({
 		...item,
-		pageMetaData: JSON.stringify(item.pageMetaData as string),
+		pageMetaData: JSON.stringify(item.pageMetaData),
 		timestamp: item.timestamp?.toISOString(),
 	}));
 };
