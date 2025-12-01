@@ -37,7 +37,8 @@
     "src",
     "db",
     "public",
-    "start.mjs"
+    "start.mjs",
+    "logger.mjs"
   ],
   "devDependencies": {
     "@types/node": "catalog:",
