@@ -63,7 +63,9 @@ async function loadCMSConfigFile() {
 		// Populate process.env with custom environment variables
 		dotenv.populate(process.env, customENV, { quiet: true });
 	} catch (error) {
-		logger.error('Error loading StudioCMS configuration:', error);
+		logger.error(
+			`Error loading StudioCMS configuration: ${error instanceof Error ? error.message : String(error)}`
+		);
 		throw error;
 	}
 }
@@ -126,7 +128,9 @@ async function serveUI() {
 			],
 		});
 	} catch (error) {
-		logger.error(error);
+		logger.error(
+			`Error starting Astro server for StudioCMS Migrator UI: ${error instanceof Error ? error.message : String(error)}`
+		);
 		throw error;
 	}
 }
@@ -156,7 +160,7 @@ export async function start() {
 
 start().catch((error) => {
 	logger.error(
-		`Failed to start Astro dev server: ${error instanceof Error ? error.message : String(error)}`
+		`Failed to start StudioCMS Migrator: ${error instanceof Error ? error.message : String(error)}`
 	);
 	process.exit(1);
 });
