@@ -46,8 +46,8 @@
   },
   "dependencies": {
     "@astrojs/db": "catalog:astrojs",
-    "@libsql/client": "catalog:kysely",
     "@astrojs/node": "catalog:astrojs",
+    "@libsql/client": "catalog:kysely",
 		"@studiocms/ui": "catalog:studiocms",
     "@withstudiocms/config-utils": "workspace:*",
 		"@withstudiocms/effect": "workspace:*",

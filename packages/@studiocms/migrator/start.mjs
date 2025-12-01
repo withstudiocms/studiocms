@@ -109,12 +109,10 @@ async function serveUI() {
 					name: 'studiocms-migrator-ui',
 					hooks: {
 						'astro:server:start': ({ address }) => {
-							const messageLines = [
+							for (const line of [
 								'🚀 StudioCMS Migrator UI is running!',
 								`You can access it at: http://localhost:${address.port}`,
-							];
-							console.log(''); // Blank line before the message
-							for (const line of messageLines) {
+							]) {
 								logger.info(line);
 							}
 						},
