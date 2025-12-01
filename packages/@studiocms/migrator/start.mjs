@@ -5,6 +5,9 @@ import { loadConfigFile, parseAndMerge } from '@withstudiocms/config-utils';
 import dotenv from 'dotenv';
 import { configPaths } from 'studiocms/consts';
 import { StudioCMSOptionsSchema } from 'studiocms/schemas';
+import { Logger } from './logger.mjs';
+
+const logger = new Logger({ level: 'info' }, '@studiocms/migrator');
 
 /**
  * Asynchronously loads the StudioCMS configuration for the current project, merges it with
@@ -42,9 +45,9 @@ async function loadCMSConfigFile() {
 
 	// Log whether the config file was found
 	if (configFile) {
-		console.log('Loaded StudioCMS config file successfully.');
+		logger.info('Loaded StudioCMS config file successfully.');
 	} else {
-		console.log('No StudioCMS config file found, using default configuration.');
+		logger.warn('No StudioCMS config file found, using default configuration.');
 	}
 
 	// Get the minimal default configuration
@@ -88,15 +91,37 @@ async function serveUI() {
 	const { default: node } = await import('@astrojs/node');
 	const { default: ui } = await import('@studiocms/ui');
 
+	const isLocalHost = (address) => (address === '127.0.0.1' ? 'localhost' : address);
+
 	try {
 		await astro.dev({
 			root: __dirname,
 			output: 'server',
 			adapter: node({ mode: 'standalone' }),
-			integrations: [ui()],
+			configFile: false,
+			devToolbar: { enabled: false },
+			logLevel: 'error',
+			integrations: [
+				ui(),
+				{
+					name: 'studiocms-migrator-ui',
+					hooks: {
+						'astro:server:start': ({ address }) => {
+							const messageLines = [
+								'🚀 StudioCMS Migrator UI is running!',
+								`You can access it at: http://${isLocalHost(address.address)}:${address.port}`,
+							];
+							console.log(''); // Blank line before the message
+							for (const line of messageLines) {
+								logger.info(line);
+							}
+						},
+					},
+				},
+			],
 		});
 	} catch (error) {
-		console.log(error);
+		logger.error(error);
 	}
 }
 
@@ -117,12 +142,13 @@ async function serveUI() {
  * @throws {Error} If loading the configuration or starting the Astro server fails.
  */
 export async function start() {
+	logger.info('Starting StudioCMS Migrator...');
 	dotenv.config({ quiet: true });
 	await loadCMSConfigFile();
 	await serveUI();
 }
 
 start().catch((error) => {
-	console.error('Error starting the migrator server:', error);
+	logger.error('Error starting the migrator server:', error);
 	process.exit(1);
 });

@@ -23,7 +23,6 @@
     "@studiocms/migrator": "./start.mjs"
   },
   "scripts": {
-    "dev": "astro dev --remote",
     "astro": "astro"
   },
   "license": "MIT",

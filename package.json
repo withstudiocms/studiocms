@@ -39,7 +39,7 @@
     "playground:migrate": "pnpm --filter node-playground migrate",
 
     "dev": "pnpm --stream --filter studiocms --filter @studiocms/* --filter=!@studiocms/migrator --filter @withstudiocms/* --filter node-playground -r --parallel dev",
-    "dev:migrator": "pnpm --stream --filter @withstudiocms/* --filter @studiocms/migrator -r --parallel dev",
+    "dev:migrator": "pnpm build:packages && pnpm exec studiocms-migrator",
 
     "ci:lint": "biome ci --reporter=github",
     "ci:install": "pnpm install --frozen-lockfile",
