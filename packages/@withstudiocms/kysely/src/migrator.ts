@@ -1,4 +1,6 @@
-import type { Dialect, Migration } from 'kysely';
+/// <reference types="vite/client" />
+/** biome-ignore-all lint/suspicious/noExplicitAny: Kysely Requirement */
+import type { Dialect, Kysely, Migration } from 'kysely';
 import { makeMigratorLive } from './core/migrator.js';
 
 /**
@@ -8,7 +10,23 @@ import { makeMigratorLive } from './core/migrator.js';
  * @returns A promise that resolves to the imported Migration object.
  */
 const importMigration = async (name: string): Promise<Migration> => {
-	return import(`./migrations/${name}.js`).then(({ up, down }) => ({ up, down }));
+	if (import.meta.env?.VITEST) {
+		// When using vitest, we need to dynamically import the migrations directly from the built dist folder
+		const migrations = import.meta.glob<{
+			up: (db: Kysely<any>) => Promise<void>;
+			down: (db: Kysely<any>) => Promise<void>;
+		}>('../dist/migrations/*.js');
+		const migrationPath = `../dist/migrations/${name}.js`;
+
+		if (!migrations[migrationPath]) {
+			throw new Error(`Migration not found: ${name}`);
+		}
+
+		const { up, down } = await migrations[migrationPath]();
+		return { up, down };
+	}
+
+	return await import(`./migrations/${name}.js`).then(({ up, down }) => ({ up, down }));
 };
 
 // Define the migrations object with all available migrations
