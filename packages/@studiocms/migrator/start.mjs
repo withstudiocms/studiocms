@@ -91,16 +91,18 @@ async function serveUI() {
 	const { default: node } = await import('@astrojs/node');
 	const { default: ui } = await import('@studiocms/ui');
 
-	const isLocalHost = (address) => (address === '127.0.0.1' ? 'localhost' : address);
-
 	try {
 		await astro.dev({
 			root: __dirname,
 			output: 'server',
-			adapter: node({ mode: 'standalone' }),
 			configFile: false,
-			devToolbar: { enabled: false },
 			logLevel: 'error',
+			devToolbar: {
+				enabled: false,
+			},
+			adapter: node({
+				mode: 'standalone',
+			}),
 			integrations: [
 				ui(),
 				{
@@ -109,7 +111,7 @@ async function serveUI() {
 						'astro:server:start': ({ address }) => {
 							const messageLines = [
 								'🚀 StudioCMS Migrator UI is running!',
-								`You can access it at: http://${isLocalHost(address.address)}:${address.port}`,
+								`You can access it at: http://localhost:${address.port}`,
 							];
 							console.log(''); // Blank line before the message
 							for (const line of messageLines) {

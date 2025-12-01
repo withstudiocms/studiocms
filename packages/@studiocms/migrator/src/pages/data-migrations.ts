@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro';
 import { db } from '../db/astro-db-drizzle-client.js';
 import { getStudioCMSDb } from '../db/client.js';
+import logger from '../lib/logger.js';
 import { remapFunctions } from '../lib/remapUtils.js';
 import { jsonResponse } from '../lib/response-utils.js';
 import { AstroDBTableSchema } from '../lib/tableMap.js';
@@ -18,7 +19,7 @@ async function migrateUsersTable() {
 			.values(remappedData)
 			.executeTakeFirst();
 
-		console.log(`Migrated ${insertResult.numInsertedOrUpdatedRows} users.`);
+		logger.info(`Migrated ${insertResult.numInsertedOrUpdatedRows} users.`);
 	}
 }
 
@@ -33,7 +34,7 @@ async function migratePageDataTable() {
 			.values(remappedData)
 			.executeTakeFirst();
 
-		console.log(`Migrated ${insertResult.numInsertedOrUpdatedRows} page data items.`);
+		logger.info(`Migrated ${insertResult.numInsertedOrUpdatedRows} page data items.`);
 	}
 }
 
@@ -48,7 +49,7 @@ async function migratePageFolderStructureTable() {
 			.values(remappedData)
 			.executeTakeFirst();
 
-		console.log(`Migrated ${insertResult.numInsertedOrUpdatedRows} page folder items.`);
+		logger.info(`Migrated ${insertResult.numInsertedOrUpdatedRows} page folder items.`);
 	}
 }
 
@@ -63,7 +64,7 @@ async function migratePageDataTagsTable() {
 			.values(remappedData)
 			.executeTakeFirst();
 
-		console.log(`Migrated ${insertResult.numInsertedOrUpdatedRows} page data tags.`);
+		logger.info(`Migrated ${insertResult.numInsertedOrUpdatedRows} page data tags.`);
 	}
 }
 
@@ -80,7 +81,7 @@ async function migratePageDataCategoriesTable() {
 			.values(remappedData)
 			.executeTakeFirst();
 
-		console.log(`Migrated ${insertResult.numInsertedOrUpdatedRows} page data categories.`);
+		logger.info(`Migrated ${insertResult.numInsertedOrUpdatedRows} page data categories.`);
 	}
 }
 
@@ -95,7 +96,7 @@ async function migratePluginDataTable() {
 			.values(remappedData)
 			.executeTakeFirst();
 
-		console.log(`Migrated ${insertResult.numInsertedOrUpdatedRows} plugin data items.`);
+		logger.info(`Migrated ${insertResult.numInsertedOrUpdatedRows} plugin data items.`);
 	}
 }
 
@@ -112,7 +113,7 @@ async function migrateDynamicConfigSettingsTable() {
 			.values(remappedData)
 			.executeTakeFirst();
 
-		console.log(`Migrated ${insertResult.numInsertedOrUpdatedRows} dynamic config settings.`);
+		logger.info(`Migrated ${insertResult.numInsertedOrUpdatedRows} dynamic config settings.`);
 	}
 }
 
@@ -127,7 +128,7 @@ async function migrateApiKeysTable() {
 			.values(remappedData)
 			.executeTakeFirst();
 
-		console.log(`Migrated ${insertResult.numInsertedOrUpdatedRows} API keys.`);
+		logger.info(`Migrated ${insertResult.numInsertedOrUpdatedRows} API keys.`);
 	}
 }
 
@@ -142,7 +143,7 @@ async function migrateUserResetTokensTable() {
 			.values(remappedData)
 			.executeTakeFirst();
 
-		console.log(`Migrated ${insertResult.numInsertedOrUpdatedRows} user reset tokens.`);
+		logger.info(`Migrated ${insertResult.numInsertedOrUpdatedRows} user reset tokens.`);
 	}
 }
 
@@ -157,7 +158,7 @@ async function migrateOAuthAccountsTable() {
 			.values(remappedData)
 			.executeTakeFirst();
 
-		console.log(`Migrated ${insertResult.numInsertedOrUpdatedRows} OAuth accounts.`);
+		logger.info(`Migrated ${insertResult.numInsertedOrUpdatedRows} OAuth accounts.`);
 	}
 }
 
@@ -172,7 +173,7 @@ async function migrateSessionTable() {
 			.values(remappedData)
 			.executeTakeFirst();
 
-		console.log(`Migrated ${insertResult.numInsertedOrUpdatedRows} sessions.`);
+		logger.info(`Migrated ${insertResult.numInsertedOrUpdatedRows} sessions.`);
 	}
 }
 
@@ -187,7 +188,7 @@ async function migratePermissionsTable() {
 			.values(remappedData)
 			.executeTakeFirst();
 
-		console.log(`Migrated ${insertResult.numInsertedOrUpdatedRows} permissions.`);
+		logger.info(`Migrated ${insertResult.numInsertedOrUpdatedRows} permissions.`);
 	}
 }
 
@@ -202,7 +203,7 @@ async function migrateDiffTrackingTable() {
 			.values(remappedData)
 			.executeTakeFirst();
 
-		console.log(`Migrated ${insertResult.numInsertedOrUpdatedRows} diff tracking items.`);
+		logger.info(`Migrated ${insertResult.numInsertedOrUpdatedRows} diff tracking items.`);
 	}
 }
 
@@ -217,7 +218,7 @@ async function migratePageContentTable() {
 			.values(remappedData)
 			.executeTakeFirst();
 
-		console.log(`Migrated ${insertResult.numInsertedOrUpdatedRows} page content items.`);
+		logger.info(`Migrated ${insertResult.numInsertedOrUpdatedRows} page content items.`);
 	}
 }
 
@@ -234,7 +235,7 @@ async function migrateEmailVerificationTokensTable() {
 			.values(remappedData)
 			.executeTakeFirst();
 
-		console.log(`Migrated ${insertResult.numInsertedOrUpdatedRows} email verification tokens.`);
+		logger.info(`Migrated ${insertResult.numInsertedOrUpdatedRows} email verification tokens.`);
 	}
 }
 
@@ -259,7 +260,7 @@ export const POST: APIRoute = async () => {
 		await migratePageContentTable();
 		await migrateEmailVerificationTokensTable();
 	} catch (error) {
-		console.error('Migration failed:', error);
+		logger.error(`Migration failed: ${(error as Error).message}`);
 		return jsonResponse({ success: false, error: 'Migration failed' }, 500);
 	}
 

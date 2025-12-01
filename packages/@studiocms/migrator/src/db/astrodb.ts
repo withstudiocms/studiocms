@@ -1,6 +1,15 @@
 import { type AstroDBTableKeys, astroDbTableKeys } from '../lib/tableMap';
 import { db, sql } from './astro-db-drizzle-client.js';
 
+export const runConnectionTest = async () => {
+	try {
+		await db.$client.execute('SELECT CURRENT_TIME');
+		return true;
+	} catch (_error) {
+		return false;
+	}
+};
+
 /**
  * Search for tables in a LibSQL database by name using Drizzle
  * @param searchPattern - Search pattern (supports wildcards: %)

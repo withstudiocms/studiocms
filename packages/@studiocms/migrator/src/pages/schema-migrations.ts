@@ -1,6 +1,7 @@
 import { runEffect } from '@withstudiocms/effect';
 import type { APIRoute } from 'astro';
 import { studioCMSDbMigrator } from '../db/client.js';
+import logger from '../lib/logger.js';
 import { jsonResponse } from '../lib/response-utils.js';
 
 export const POST: APIRoute = async () => {
@@ -14,15 +15,15 @@ export const POST: APIRoute = async () => {
 	if (results) {
 		for (const it of results) {
 			if (it.status === 'Success') {
-				console.log(`Migration ${it.migrationName} applied successfully.`);
+				logger.info(`Migration ${it.migrationName} applied successfully.`);
 			} else if (it.status === 'Error') {
-				console.error(`Error applying migration ${it.migrationName}.`);
+				logger.error(`Error applying migration ${it.migrationName}.`);
 			}
 		}
 	}
 
 	if (error) {
-		console.error(`Migration failed with error: ${String(error)}`);
+		logger.error(`Migration failed with error: ${String(error)}`);
 		return jsonResponse({ success: false, error: String(error) }, 500);
 	}
 

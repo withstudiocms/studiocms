@@ -9,25 +9,25 @@ import ErrorCard from '../components/ErrorCard.astro';
 import MigrationMeta from '../components/MigrationMeta.astro';
 import MigrationStatus from '../components/MigrationStatus.astro';
 import StatusTables from '../components/StatusTables.astro';
-import { searchTables } from '../db/astrodb.js';
+import { runConnectionTest, searchTables } from '../db/astrodb.js';
 import {
 	getDataMigrationStatus,
 	getDialectFromEnv,
-	runConnectionTest,
+	runConnectionTest as runStudioCMSDbConnectionTest,
 	studioCMSDbMigrator,
 } from '../db/client.js';
 import Layout from '../layouts/Layout.astro';
 import { getErrorCases } from '../lib/errors.js';
 import { astroDbTableKeys, migrationMeta } from '../lib/tableMap.js';
 
-// AstroDB Tables
-const astroDBTables = await searchTables('StudioCMS%').catch((err) => {
-	console.error('Error fetching AstroDB tables:', err);
-	return [];
-});
+// Test AstroDB Connection
+const isAstroDBConnected = await runConnectionTest();
 
 // Test StudioCMS DB Connection
-const isStudioCMSDbConnected = await runConnectionTest();
+const isStudioCMSDbConnected = await runStudioCMSDbConnectionTest();
+
+// AstroDB Tables
+const astroDBTables = await searchTables('StudioCMS%').catch(() => []);
 
 // StudioCMS Schema Migrations
 const migrator = await studioCMSDbMigrator();
@@ -56,8 +56,8 @@ const dbStatusTables: ComponentProps<typeof StatusTables>['dbStatusTables'] = [
 		conditions: [
 			{
 				label: 'Connection Status',
-				value: astroDBTables.length > 0 ? 'Connected' : 'Not Connected',
-				color: astroDBTables.length > 0 ? 'success' : 'danger',
+				value: isAstroDBConnected ? 'Connected' : 'Not Connected',
+				color: isAstroDBConnected ? 'success' : 'danger',
 			},
 			{
 				label: 'Required Tables',
