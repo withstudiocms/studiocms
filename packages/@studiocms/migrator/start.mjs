@@ -63,13 +63,32 @@ async function loadCMSConfigFile() {
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+/**
+ * Asynchronously serves the Astro-based UI for the migrator tool.
+ *
+ * This function dynamically imports the necessary Astro modules and starts
+ * the development server with the StudioCMS UI integration for styles and components.
+ *
+ * Behavior:
+ * - Dynamically imports 'astro', '@astrojs/node', and '@studiocms/ui'.
+ * - Calls astro.dev() with the appropriate configuration to start the server.
+ * - Catches and logs any errors that occur during the server startup process.
+ *
+ * Notes:
+ * - The function produces side effects: launching server processes/listeners
+ *   and modifying process.env.
+ *
+ * @async
+ * @function serveUI
+ * @returns {Promise<void>} Resolves when the Astro server has been started.
+ * @throws {Error} If starting the Astro server fails (errors bubbled from astro.dev).
+ */
 async function serveUI() {
 	const astro = await import('astro');
 	const { default: node } = await import('@astrojs/node');
 	const { default: ui } = await import('@studiocms/ui');
 
 	try {
-		process.env.ASTRO_INTERNAL_TEST_REMOTE = true;
 		await astro.dev({
 			root: __dirname,
 			output: 'server',
