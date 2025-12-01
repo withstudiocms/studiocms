@@ -1,12 +1,10 @@
 #!/usr/bin/env node
-import { pathToFileURL } from 'node:url';
+import * as path from 'node:path';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { loadConfigFile, parseAndMerge } from '@withstudiocms/config-utils';
 import dotenv from 'dotenv';
 import { configPaths } from 'studiocms/consts';
 import { StudioCMSOptionsSchema } from 'studiocms/schemas';
-
-// Load environment variables from .env file
-dotenv.config({ quiet: true });
 
 /**
  * Asynchronously loads the StudioCMS configuration for the current project, merges it with
@@ -62,22 +60,25 @@ async function loadCMSConfigFile() {
 	dotenv.populate(process.env, customENV, { quiet: true });
 }
 
-/**
- * Asynchronously loads the Astro server entry module via a dynamic import.
- *
- * This delays loading of the server code until runtime, which can reduce
- * startup overhead and avoid early ESM evaluation or circular import issues.
- * The imported module is returned as-is; subsequent calls will typically
- * resolve to the cached module instance provided by the ESM loader.
- *
- * @async
- * @function loadAstroServer
- * @returns {Promise<import('./dist/server/entry.mjs')>} A promise that resolves to the imported Astro server entry module.
- * @throws {Error} If the dynamic import fails (e.g., file not found or module resolution error).
- */
-async function loadAstroServer() {
-	// Dynamically import the Astro server entry point
-	return await import('./dist/server/entry.mjs');
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+async function serveUI() {
+	const astro = await import('astro');
+	const { default: node } = await import('@astrojs/node');
+	const { default: ui } = await import('@studiocms/ui');
+
+	try {
+		process.env.ASTRO_INTERNAL_TEST_REMOTE = true;
+		await astro.dev({
+			root: __dirname,
+			output: 'server',
+			adapter: node({ mode: 'standalone' }),
+			integrations: [ui()],
+		});
+	} catch (error) {
+		console.log(error);
+	}
 }
 
 /**
@@ -97,10 +98,9 @@ async function loadAstroServer() {
  * @throws {Error} If loading the configuration or starting the Astro server fails.
  */
 export async function start() {
-	// Load configuration file and set environment variables
+	dotenv.config({ quiet: true });
 	await loadCMSConfigFile();
-	// Load and start the Astro server
-	await loadAstroServer();
+	await serveUI();
 }
 
 start().catch((error) => {

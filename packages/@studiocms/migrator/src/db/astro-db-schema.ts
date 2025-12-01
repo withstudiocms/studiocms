@@ -1,4 +1,4 @@
-import { column, defineDb, defineTable, NOW } from 'astro:db';
+import { column, defineTable, NOW } from '../lib/astro-db-drizzle-compat/virtual.js';
 
 // Astro DB Configuration Tables for StudioCMS
 
@@ -7,7 +7,7 @@ import { column, defineDb, defineTable, NOW } from 'astro:db';
 // ====================================================
 
 /** StudioCMS - Users Table for Astro DB */
-const StudioCMSUsers = defineTable({
+export const StudioCMSUsers = defineTable({
 	columns: {
 		id: column.text({ primaryKey: true }),
 		url: column.text({ optional: true }),
@@ -27,7 +27,7 @@ const StudioCMSUsers = defineTable({
 });
 
 /** StudioCMS - Pages Data Table for Astro DB */
-const StudioCMSPageData = defineTable({
+export const StudioCMSPageData = defineTable({
 	columns: {
 		id: column.text({ primaryKey: true }),
 		package: column.text({ default: 'studiocms' }),
@@ -55,7 +55,7 @@ const StudioCMSPageData = defineTable({
 });
 
 /** StudioCMS - Page Folder Structure */
-const StudioCMSPageFolderStructure = defineTable({
+export const StudioCMSPageFolderStructure = defineTable({
 	columns: {
 		id: column.text({ primaryKey: true }),
 		name: column.text(),
@@ -64,7 +64,7 @@ const StudioCMSPageFolderStructure = defineTable({
 });
 
 /** StudioCMS - Page Data Tags Table for Astro DB */
-const StudioCMSPageDataTags = defineTable({
+export const StudioCMSPageDataTags = defineTable({
 	columns: {
 		id: column.number({ primaryKey: true }),
 		description: column.text(),
@@ -75,7 +75,7 @@ const StudioCMSPageDataTags = defineTable({
 });
 
 /** StudioCMS - Page Data Categories Table for Astro DB */
-const StudioCMSPageDataCategories = defineTable({
+export const StudioCMSPageDataCategories = defineTable({
 	columns: {
 		id: column.number({ primaryKey: true }),
 		parent: column.number({ optional: true }),
@@ -86,7 +86,7 @@ const StudioCMSPageDataCategories = defineTable({
 	},
 });
 
-const StudioCMSPluginData = defineTable({
+export const StudioCMSPluginData = defineTable({
 	columns: {
 		id: column.text({ primaryKey: true }),
 		data: column.json(),
@@ -106,7 +106,7 @@ const StudioCMSPluginData = defineTable({
  * - `StudioCMSMailerConfig`
  * - `StudioCMSNotificationSettings`
  */
-const StudioCMSDynamicConfigSettings = defineTable({
+export const StudioCMSDynamicConfigSettings = defineTable({
 	columns: {
 		id: column.text({ primaryKey: true }),
 		data: column.json(),
@@ -117,7 +117,7 @@ const StudioCMSDynamicConfigSettings = defineTable({
 // Tables that require relationship definitions
 // ====================================================
 
-const StudioCMSAPIKeys = defineTable({
+export const StudioCMSAPIKeys = defineTable({
 	columns: {
 		id: column.text({ primaryKey: true }),
 		userId: column.text({ references: () => StudioCMSUsers.columns.id }),
@@ -127,7 +127,7 @@ const StudioCMSAPIKeys = defineTable({
 	},
 });
 
-const StudioCMSUserResetTokens = defineTable({
+export const StudioCMSUserResetTokens = defineTable({
 	columns: {
 		id: column.text({ primaryKey: true }),
 		userId: column.text({ references: () => StudioCMSUsers.columns.id }),
@@ -136,7 +136,7 @@ const StudioCMSUserResetTokens = defineTable({
 });
 
 /** StudioCMS - OAuth Accounts Table for Astro DB */
-const StudioCMSOAuthAccounts = defineTable({
+export const StudioCMSOAuthAccounts = defineTable({
 	columns: {
 		provider: column.text(), // github, google, discord, auth0
 		providerUserId: column.text({ primaryKey: true }),
@@ -145,7 +145,7 @@ const StudioCMSOAuthAccounts = defineTable({
 });
 
 /** StudioCMS - Session Table for Astro DB */
-const StudioCMSSessionTable = defineTable({
+export const StudioCMSSessionTable = defineTable({
 	columns: {
 		id: column.text({ primaryKey: true }),
 		userId: column.text({ references: () => StudioCMSUsers.columns.id, optional: false }),
@@ -154,7 +154,7 @@ const StudioCMSSessionTable = defineTable({
 });
 
 /** StudioCMS - Permissions Table for Astro DB */
-const StudioCMSPermissions = defineTable({
+export const StudioCMSPermissions = defineTable({
 	columns: {
 		user: column.text({ references: () => StudioCMSUsers.columns.id }),
 		rank: column.text({ enum: ['owner', 'admin', 'editor', 'visitor', 'unknown'] }),
@@ -162,7 +162,7 @@ const StudioCMSPermissions = defineTable({
 });
 
 /** StudioCMS - Diff Tracking Table for Astro DB */
-const StudioCMSDiffTracking = defineTable({
+export const StudioCMSDiffTracking = defineTable({
 	columns: {
 		id: column.text({ primaryKey: true }),
 		userId: column.text({ references: () => StudioCMSUsers.columns.id }),
@@ -175,7 +175,7 @@ const StudioCMSDiffTracking = defineTable({
 });
 
 /** StudioCMS - Pages Content Table for Astro DB */
-const StudioCMSPageContent = defineTable({
+export const StudioCMSPageContent = defineTable({
 	columns: {
 		id: column.text({ primaryKey: true }),
 		contentId: column.text({ references: () => StudioCMSPageData.columns.id }),
@@ -184,32 +184,11 @@ const StudioCMSPageContent = defineTable({
 	},
 });
 
-const StudioCMSEmailVerificationTokens = defineTable({
+export const StudioCMSEmailVerificationTokens = defineTable({
 	columns: {
 		id: column.text({ primaryKey: true }),
 		userId: column.text({ references: () => StudioCMSUsers.columns.id }),
 		token: column.text(),
 		expiresAt: column.date(),
-	},
-});
-
-// Export the Database Configuration for StudioCMS
-export default defineDb({
-	tables: {
-		StudioCMSPageContent,
-		StudioCMSPageData,
-		StudioCMSPageDataCategories,
-		StudioCMSPageDataTags,
-		StudioCMSPermissions,
-		StudioCMSSessionTable,
-		StudioCMSUsers,
-		StudioCMSOAuthAccounts,
-		StudioCMSDiffTracking,
-		StudioCMSPageFolderStructure,
-		StudioCMSUserResetTokens,
-		StudioCMSAPIKeys,
-		StudioCMSEmailVerificationTokens,
-		StudioCMSPluginData,
-		StudioCMSDynamicConfigSettings,
 	},
 });

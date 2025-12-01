@@ -1,7 +1,6 @@
-import db from '@astrojs/db';
 import node from '@astrojs/node';
 import ui from '@studiocms/ui';
-import { defineConfig } from 'astro/config';
+import { defineConfig, passthroughImageService } from 'astro/config';
 import dotenv from 'dotenv';
 
 // Load environment variables from .env file
@@ -11,8 +10,16 @@ dotenv.config({ quiet: true });
 export default defineConfig({
 	output: 'server',
 	adapter: node({ mode: 'standalone' }),
-	integrations: [db(), ui()],
+	integrations: [ui()],
+	image: {
+		service: passthroughImageService(),
+	},
 	vite: {
+		...(process.env.NODE_ENV === 'production' && {
+			ssr: {
+				noExternal: true,
+			},
+		}),
 		build: {
 			rollupOptions: {
 				external: [

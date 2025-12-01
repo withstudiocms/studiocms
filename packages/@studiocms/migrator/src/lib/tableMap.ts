@@ -1,20 +1,3 @@
-import {
-	StudioCMSAPIKeys,
-	StudioCMSDiffTracking,
-	StudioCMSDynamicConfigSettings,
-	StudioCMSEmailVerificationTokens,
-	StudioCMSOAuthAccounts,
-	StudioCMSPageContent,
-	StudioCMSPageData,
-	StudioCMSPageDataCategories,
-	StudioCMSPageDataTags,
-	StudioCMSPageFolderStructure,
-	StudioCMSPermissions,
-	StudioCMSPluginData,
-	StudioCMSSessionTable,
-	StudioCMSUserResetTokens,
-	StudioCMSUsers,
-} from 'astro:db';
 import type { Insertable } from '@withstudiocms/kysely/kysely';
 import {
 	StudioCMSAPIKeys as KyselyStudioCMSAPIKeys,
@@ -33,6 +16,23 @@ import {
 	StudioCMSUserResetTokens as KyselyStudioCMSUserResetTokens,
 	StudioCMSUsersTable as KyselyStudioCMSUsersTable,
 } from '@withstudiocms/kysely/tables';
+import {
+	StudioCMSAPIKeys,
+	StudioCMSDiffTracking,
+	StudioCMSDynamicConfigSettings,
+	StudioCMSEmailVerificationTokens,
+	StudioCMSOAuthAccounts,
+	StudioCMSPageContent,
+	StudioCMSPageData,
+	StudioCMSPageDataCategories,
+	StudioCMSPageDataTags,
+	StudioCMSPageFolderStructure,
+	StudioCMSPermissions,
+	StudioCMSPluginData,
+	StudioCMSSessionTable,
+	StudioCMSUserResetTokens,
+	StudioCMSUsers,
+} from '../db/astro-db-drizzle-client.js';
 import { getDataMigrationMeta as getAstroDataMigrationMeta } from '../db/astrodb.js';
 import { getDataMigrationMeta as getKyselyDataMigrationMeta } from '../db/client';
 

@@ -24,7 +24,6 @@
   },
   "scripts": {
     "dev": "astro dev --remote",
-    "build": "astro build --remote",
     "astro": "astro"
   },
   "license": "MIT",
@@ -36,6 +35,9 @@
   "sideEffects": false,
   "files": [
     "dist",
+    "src",
+    "db",
+    "public",
     "start.mjs"
   ],
   "devDependencies": {
@@ -52,6 +54,7 @@
 		"@withstudiocms/kysely": "workspace:*",
     "astro": "catalog:astrojs",
 		"dotenv": "^17.2.3",
+    "drizzle-orm": "catalog:min",
     "sharp": "catalog:"
   },
   "peerDependencies": {

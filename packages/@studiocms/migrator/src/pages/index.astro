@@ -21,7 +21,10 @@ import { getErrorCases } from '../lib/errors.js';
 import { astroDbTableKeys, migrationMeta } from '../lib/tableMap.js';
 
 // AstroDB Tables
-const astroDBTables = await searchTables('StudioCMS%').catch(() => []);
+const astroDBTables = await searchTables('StudioCMS%').catch((err) => {
+	console.error('Error fetching AstroDB tables:', err);
+	return [];
+});
 
 // Test StudioCMS DB Connection
 const isStudioCMSDbConnected = await runConnectionTest();

@@ -1,5 +1,5 @@
-import { db, sql } from 'astro:db';
 import { type AstroDBTableKeys, astroDbTableKeys } from '../lib/tableMap';
+import { db, sql } from './astro-db-drizzle-client.js';
 
 /**
  * Search for tables in a LibSQL database by name using Drizzle

@@ -1,5 +1,5 @@
-import { db } from 'astro:db';
 import type { APIRoute } from 'astro';
+import { db } from '../db/astro-db-drizzle-client.js';
 import { getStudioCMSDb } from '../db/client.js';
 import { remapFunctions } from '../lib/remapUtils.js';
 import { jsonResponse } from '../lib/response-utils.js';
