@@ -1,5 +1,8 @@
 import { styleText } from 'node:util';
 
+/**
+ * Intl.DateTimeFormat instance for formatting timestamps in log messages.
+ */
 const dateTimeFormat = new Intl.DateTimeFormat([], {
 	hour: '2-digit',
 	minute: '2-digit',
@@ -7,6 +10,9 @@ const dateTimeFormat = new Intl.DateTimeFormat([], {
 	hour12: false,
 });
 
+/**
+ * Returns a formatted level prefix string based on the log level.
+ */
 function getLevelPrefix(level) {
 	const levelLabel = level.toUpperCase();
 	switch (level) {
@@ -21,7 +27,10 @@ function getLevelPrefix(level) {
 	}
 }
 
-export const getEventPrefix = (level, label) => {
+/**
+ * Generates a formatted event prefix string based on the log level and optional label.
+ */
+const getEventPrefix = (level, label) => {
 	const timestamp = `${dateTimeFormat.format(/* @__PURE__ */ new Date())}`;
 	const prefix = [];
 	if (level === 'error' || level === 'warn' || level === 'debug') {
@@ -50,6 +59,9 @@ export const getEventPrefix = (level, label) => {
 	return `${styleText('dim', prefix[0])} ${styleText('blue', prefix.splice(1).join(' '))}`;
 };
 
+/**
+ * A simple logger class for logging messages with different levels and labels.
+ */
 export class Logger {
 	options;
 	label;
