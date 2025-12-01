@@ -34,7 +34,7 @@ import {
 	StudioCMSUsers,
 } from '../db/astro-db-drizzle-client.js';
 import { getDataMigrationMeta as getAstroDataMigrationMeta } from '../db/astrodb.js';
-import { getDataMigrationMeta as getKyselyDataMigrationMeta } from '../db/client';
+import { getDataMigrationMeta as getKyselyDataMigrationMeta } from '../db/client.js';
 
 /**
  * Schema definitions for AstroDB

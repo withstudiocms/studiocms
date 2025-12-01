@@ -149,6 +149,8 @@ export async function start() {
 }
 
 start().catch((error) => {
-	logger.error('Error starting the migrator server:', error);
+	logger.error(
+		`Error starting the migrator server: ${error instanceof Error ? error.message : String(error)}`
+	);
 	process.exit(1);
 });
