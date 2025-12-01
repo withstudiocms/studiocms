@@ -70,6 +70,37 @@ async function cleanup(content: string, previousMigrationFilename: string) {
 	return updatedContent;
 }
 
+async function appendNewMigrationToIndex(migrationFilename: string) {
+	const indexPath = path.join(__dirname, '../src/migrator.ts');
+
+	// Read the existing migrator file for `const migrations: Record<string, Migration> = {}`
+	// Since there is multiple constructs, we will append just before the closing `};`
+	const indexContent = await fs.readFile(indexPath, 'utf-8');
+	const lines = indexContent.split('\n');
+
+	const startOfMigrationsIndex = lines.findIndex((line) =>
+		line.includes('const migrationIndex: Record<string, Migration> = {')
+	);
+	const endOfMigrationsIndex = lines.findIndex(
+		(line, index) => index > startOfMigrationsIndex && line.includes('};')
+	);
+
+	if (startOfMigrationsIndex === -1 || endOfMigrationsIndex === -1) {
+		console.error('Could not find migrationIndex object in /src/migrator.ts');
+		return;
+	}
+
+	// Insert the new migration import line before the closing `};`
+	const migrationKey = migrationFilename.replace('.ts', '');
+	const importLine = `\t'${migrationKey}': await importMigration('${migrationKey}'),`;
+
+	lines.splice(endOfMigrationsIndex, 0, importLine);
+
+	// Write back the updated migrator file
+	const updatedIndexContent = lines.join('\n');
+	await fs.writeFile(indexPath, updatedIndexContent, 'utf-8');
+}
+
 async function createMigration() {
 	const migrationName = process.argv[2];
 
@@ -101,6 +132,10 @@ async function createMigration() {
 	try {
 		await fs.mkdir(migrationsDir, { recursive: true });
 		await fs.writeFile(filepath, template, 'utf-8');
+
+		// Append the new migration to the migrator index
+		await appendNewMigrationToIndex(filename);
+
 		console.log(`✓ Created migration: ${filename}`);
 	} catch (error) {
 		console.error('Failed to create migration:', error);

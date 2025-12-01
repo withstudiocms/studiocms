@@ -30,6 +30,8 @@
     "build:studiocms": "pnpm build:packages",
     "build:packages": "pnpm --filter studiocms --filter @studiocms/* --filter @withstudiocms/* build",
 
+    "create-migration": "pnpm --filter @withstudiocms/kysely create-migration",
+
     "playground:dev": "pnpm dev",
     "playground:preview": "pnpm --filter node-playground preview",
     "playground:build": "pnpm --filter node-playground build",

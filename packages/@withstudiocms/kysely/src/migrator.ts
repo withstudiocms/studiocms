@@ -1,13 +1,21 @@
 import type { Dialect, Migration } from 'kysely';
 import { makeMigratorLive } from './core/migrator.js';
 
-const migrations: Record<string, Migration> = {
-	'20251025T040912_init': await import('./migrations/20251025T040912_init.js').then(
-		({ up, down }) => ({ up, down })
-	),
-	'20251130T150847_drop_deprecated': await import(
-		'./migrations/20251130T150847_drop_deprecated.js'
-	).then(({ up, down }) => ({ up, down })),
+/**
+ * Dynamically imports a migration module by its name.
+ *
+ * @param name - The name of the migration file (without extension).
+ * @returns A promise that resolves to the imported Migration object.
+ */
+const importMigration = async (name: string): Promise<Migration> => {
+	return import(`./migrations/${name}.js`).then(({ up, down }) => ({ up, down }));
+};
+
+// Define the migrations object with all available migrations
+// This object automatically gets updated when new migrations are created via the create-migration script
+const migrationIndex: Record<string, Migration> = {
+	'20251025T040912_init': await importMigration('20251025T040912_init'),
+	'20251130T150847_drop_deprecated': await importMigration('20251130T150847_drop_deprecated'),
 };
 
 /**
@@ -26,4 +34,4 @@ const migrations: Record<string, Migration> = {
  * await migrator.migrateToLatest();
  */
 export const getMigratorLive = <Schema>(dialect: Dialect) =>
-	makeMigratorLive<Schema>(dialect, migrations);
+	makeMigratorLive<Schema>(dialect, migrationIndex);
