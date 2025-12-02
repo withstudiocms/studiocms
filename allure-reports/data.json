@@ -6,7 +6,6 @@
     "main",
     "renovate_all-minor-patch",
     "renovate_effect-npm-nodemailer-vulnerability",
-    "renovate_pnpm-workspace-dependencies",
     "renovate_studiocms-studiocms-dependencies"
   ]
 }
