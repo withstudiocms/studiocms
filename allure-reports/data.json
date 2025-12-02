@@ -3,7 +3,6 @@
     "..",
     "adam_fix-config-loader",
     "changeset-release_main",
-    "main",
-    "renovate_all-minor-patch"
+    "main"
   ]
 }
