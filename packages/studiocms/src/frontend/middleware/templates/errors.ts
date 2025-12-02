@@ -183,9 +183,14 @@ const errorTemplateBase = `<!DOCTYPE html>
  */
 const errorTemplateDev = `
     ${errorTemplateBase}
+
+    <details>
+      <summary style="cursor: pointer; margin: 20px 0;">View stack trace</summary>
+      <div class="stack-trace">{{error.stack}}</div>
+    </details>
     
     <div class="hint">
-      Please try again later or contact support if the problem persists.
+      This detailed error is only shown in development mode.
     </div>
   </div>
 </body>
@@ -196,14 +201,9 @@ const errorTemplateDev = `
  */
 const errorTemplateProd = `
     ${errorTemplateBase}
-
-    <details>
-      <summary style="cursor: pointer; margin: 20px 0;">View stack trace</summary>
-      <div class="stack-trace">{{error.stack}}</div>
-    </details>
     
     <div class="hint">
-      This detailed error is only shown in development mode.
+      Please try again later or contact support if the problem persists.
     </div>
   </div>
 </body>

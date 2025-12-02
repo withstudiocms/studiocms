@@ -36,12 +36,16 @@ export const onRequest: MiddlewareHandler = async (_, next) => {
 	} catch (error) {
 		logger.error(prettyPrintError('Server error caught in middleware', error));
 
-		// Get error details
+		// Prepare error details for the template
 		const errorMessage = error instanceof Error ? error.message : 'Unknown error';
 		const errorStack = error instanceof Error ? error.stack : '';
 
+		// Render the appropriate error template based on the environment
 		const responseData = renderErrorTemplate(
-			{ message: errorMessage, stack: escapeHtml(errorStack ?? '') },
+			{
+				message: escapeHtml(errorMessage),
+				stack: escapeHtml(errorStack ?? ''),
+			},
 			import.meta.env.DEV
 		);
 
