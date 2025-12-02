@@ -429,11 +429,17 @@ export const middleware = (dbStartPage: boolean): AstroIntegrationMiddleware[] =
 	// Generate middleware array
 	const middlewares: AstroIntegrationMiddleware[] = [];
 
+	// Add the error handler middleware
+	middlewares.push({
+		order: 'pre' as const,
+		entrypoint: resolvePath('middleware/error-handler.ts'),
+	});
+
 	// Add the main middleware only if there is no database start page
 	if (!dbStartPage) {
 		// Add the StudioCMS main middleware
 		middlewares.push({
-			order: 'pre' as const,
+			order: 'post' as const,
 			entrypoint: resolvePath('middleware/index.ts'),
 		});
 	}
