@@ -222,11 +222,6 @@ export const env: EffectStepFn = Effect.fn(function* (context, debug, dryRun) {
 									text({
 										message: 'Enter your MySQL port:',
 										placeholder: '3306',
-										validate: (value) => {
-											if (!value || value.trim() === '') {
-												return 'Database port is required';
-											}
-										},
 									})
 								),
 						},
@@ -300,11 +295,6 @@ export const env: EffectStepFn = Effect.fn(function* (context, debug, dryRun) {
 									text({
 										message: 'Enter your PostgreSQL port:',
 										placeholder: '5432',
-										validate: (value) => {
-											if (!value || value.trim() === '') {
-												return 'Database port is required';
-											}
-										},
 									})
 								),
 						},
