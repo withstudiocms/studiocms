@@ -3,9 +3,10 @@ import { icons as flatColorIcons } from '@iconify-json/flat-color-icons';
 import { icons as simpleIcons } from '@iconify-json/simple-icons';
 import studiocmsUi from '@studiocms/ui';
 import { convertToSafeString, rendererComponentFilter } from '@withstudiocms/internal_helpers';
+import createPathResolver from '@withstudiocms/internal_helpers/pathResolver';
 import type { AstroIntegration } from 'astro';
 import { getViteConfig } from 'astro/config';
-import { addVirtualImports, createResolver } from 'astro-integration-kit';
+import { addVirtualImports } from 'astro-integration-kit';
 import { defineProject, mergeConfig } from 'vitest/config';
 import { configShared } from '../../vitest.shared.js';
 import { type StudioCMSOptions, StudioCMSOptionsSchema } from './src/schemas/config/index.js';
@@ -16,7 +17,7 @@ import {
 } from './src/virtuals/i18n/v-files';
 import { buildVirtualConfig } from './src/virtuals/utils';
 
-const { resolve } = createResolver(import.meta.url);
+const { resolve } = createPathResolver(import.meta.url);
 
 const CMSConfig: StudioCMSOptions = {
 	dbStartPage: false,

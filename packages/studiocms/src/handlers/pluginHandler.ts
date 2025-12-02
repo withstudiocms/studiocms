@@ -4,6 +4,7 @@ import {
 	type Messages,
 	pluginLogger,
 } from '@withstudiocms/internal_helpers/astro-integration';
+import createPathResolver from '@withstudiocms/internal_helpers/pathResolver';
 import {
 	convertToSafeString,
 	pageContentComponentFilter,
@@ -13,7 +14,7 @@ import {
 import type { AstroIntegration, InjectedRoute } from 'astro';
 import { AstroError } from 'astro/errors';
 import type { z } from 'astro/zod';
-import { addVirtualImports, createResolver, defineUtility } from 'astro-integration-kit';
+import { addVirtualImports, defineUtility } from 'astro-integration-kit';
 import boxen from 'boxen';
 import { compare as semCompare } from 'semver';
 import { loadEnv } from 'vite';
@@ -38,7 +39,7 @@ import type { GridItemInput } from '../schemas/plugins/shared.js';
 import { buildTranslations, loadJsTranslations } from '../utils/lang-helper.js';
 
 // Resolver Function
-const { resolve } = createResolver(import.meta.url);
+const { resolve } = createPathResolver(import.meta.url);
 
 // Read the package.json file for the package name and version
 const { version: pkgVersion } = readJson<{ name: string; version: string }>(

@@ -146,6 +146,18 @@ export const mapRouteGroups = Effect.fn(
 		)
 );
 
+export const remapEntrypoints = (resolvePath: (path: string) => string) =>
+	Effect.fn((routes: InjectedRoute[]) =>
+		Effect.succeed<InjectedRoute[]>(
+			routes.map((route) => ({
+				...route,
+				entrypoint: resolvePath(
+					typeof route.entrypoint === 'string' ? route.entrypoint : route.entrypoint.href
+				),
+			}))
+		)
+	);
+
 /**
  * Inject extra routes from the configuration.
  */

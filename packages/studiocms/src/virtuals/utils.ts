@@ -1,8 +1,8 @@
 import fs from 'node:fs';
-import { createResolver } from 'astro-integration-kit';
+import createPathResolver from '@withstudiocms/internal_helpers/pathResolver';
 import type { StudioCMSConfig } from '../schemas/index.js';
 
-const { resolve } = createResolver(import.meta.url);
+const { resolve } = createPathResolver(import.meta.url);
 
 /**
  * Builds a string representing a default export of the provided module object.
