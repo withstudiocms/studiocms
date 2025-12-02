@@ -8,56 +8,124 @@ export interface Auth0OAuth extends GenericOAuth {
 	domain: string;
 }
 
-export interface EnvBuilderOptions {
-	astroDbRemoteUrl?: string;
-	astroDbToken?: string;
+export type GenericOAuthProviders = 'github' | 'discord' | 'google';
+
+export type OAuthProvider = GenericOAuthProviders | 'auth0';
+
+export type LibSQLDbDialectConfig = {
+	dialect: 'libsql';
+	url: string;
+	authToken?: string;
+	syncInterval?: number;
+	syncUrl?: string;
+};
+
+export type MySQLDbDialectConfig = {
+	dialect: 'mysql';
+	database: string;
+	user: string;
+	password: string;
+	host: string;
+	port: number;
+};
+
+export type PostgresDbDialectConfig = {
+	dialect: 'postgres';
+	database: string;
+	user: string;
+	password: string;
+	host: string;
+	port: number;
+};
+
+export type DbDialectConfig =
+	| LibSQLDbDialectConfig
+	| MySQLDbDialectConfig
+	| PostgresDbDialectConfig;
+
+export type EnvBuilderOptionsBase = {
+	dbConfig?: DbDialectConfig;
 	encryptionKey?: string;
-	oAuthOptions?: ('github' | 'discord' | 'google' | 'auth0')[];
-	githubOAuth?: GenericOAuth;
-	discordOAuth?: GenericOAuth;
-	googleOAuth?: GenericOAuth;
-	auth0OAuth?: Auth0OAuth;
-}
+	oAuthOptions?: OAuthProvider[];
+};
+
+export type EnvBuilderOptions = EnvBuilderOptionsBase & {
+	[K in OAuthProvider as K extends 'auth0' ? 'auth0OAuth' : `${K}OAuth`]?: K extends 'auth0'
+		? Auth0OAuth
+		: GenericOAuth;
+};
 
 export const ExampleEnv: string = `# StudioCMS Environment Variables (Example)
 
-# libSQL URL and Token for AstroDB
-ASTRO_DB_REMOTE_URL=libsql://your-database.turso.io
-ASTRO_DB_APP_TOKEN=
+# Database configuration (choose one)
+
+# libSQL
+# CMS_LIBSQL_URL=libsql://your-database.turso.io or file:./path/to/your/database.db (required)
+# CMS_LIBSQL_AUTH_TOKEN=<your-auth-token> (optional)
+# CMS_LIBSQL_SYNC_INTERVAL= (optional)
+# CMS_LIBSQL_SYNC_URL= (optional)
+
+# MySQL
+# CMS_MYSQL_DATABASE=<your-database-name>
+# CMS_MYSQL_USER=<your-database-user>
+# CMS_MYSQL_PASSWORD=<your-database-password>
+# CMS_MYSQL_HOST=<your-database-host>
+# CMS_MYSQL_PORT=<your-database-port>
+
+# PostgreSQL
+# CMS_PG_DATABASE=<your-database-name>
+# CMS_PG_USER=<your-database-user>
+# CMS_PG_PASSWORD=<your-database-password>
+# CMS_PG_HOST=<your-database-host>
+# CMS_PG_PORT=<your-database-port>
 
 # Auth encryption key
-CMS_ENCRYPTION_KEY="..." # openssl rand --base64 16
+CMS_ENCRYPTION_KEY="..." # openssl rand --base64 16`;
 
-# credentials for GitHub OAuth
-CMS_GITHUB_CLIENT_ID=
-CMS_GITHUB_CLIENT_SECRET=
-CMS_GITHUB_REDIRECT_URI=http://localhost:4321/studiocms_api/auth/github/callback
-
-# credentials for Discord OAuth
-CMS_DISCORD_CLIENT_ID=
-CMS_DISCORD_CLIENT_SECRET=
-CMS_DISCORD_REDIRECT_URI=http://localhost:4321/studiocms_api/auth/discord/callback
-
-# credentials for Google OAuth
-CMS_GOOGLE_CLIENT_ID=
-CMS_GOOGLE_CLIENT_SECRET=
-CMS_GOOGLE_REDIRECT_URI=http://localhost:4321/studiocms_api/auth/google/callback
-
-# credentials for auth0 OAuth
-CMS_AUTH0_CLIENT_ID=
-CMS_AUTH0_CLIENT_SECRET=
-CMS_AUTH0_DOMAIN=
-CMS_AUTH0_REDIRECT_URI=http://localhost:4321/studiocms_api/auth/auth0/callback`;
-
+/**
+ * Builds the environment file content for StudioCMS project.
+ */
 export function buildEnvFile(envBuilderOpts: EnvBuilderOptions): string {
-	return `# StudioCMS Environment Variables
+	function parseDBConfig() {
+		if (!envBuilderOpts.dbConfig) return '';
 
-# libSQL URL and Token for AstroDB
-ASTRO_DB_REMOTE_URL=${envBuilderOpts.astroDbRemoteUrl}
-ASTRO_DB_APP_TOKEN=${envBuilderOpts.astroDbToken}
+		switch (envBuilderOpts.dbConfig?.dialect) {
+			case 'libsql': {
+				return `
+# libSQL
+CMS_LIBSQL_URL=${envBuilderOpts.dbConfig?.url}
+${envBuilderOpts.dbConfig?.authToken ? `CMS_LIBSQL_AUTH_TOKEN=${envBuilderOpts.dbConfig?.authToken}` : ''}
+${envBuilderOpts.dbConfig?.syncInterval ? `CMS_LIBSQL_SYNC_INTERVAL=${envBuilderOpts.dbConfig?.syncInterval}` : ''}
+${envBuilderOpts.dbConfig?.syncUrl ? `CMS_LIBSQL_SYNC_URL=${envBuilderOpts.dbConfig?.syncUrl}` : ''}`;
+			}
+			case 'mysql': {
+				return `
+# MySQL
+CMS_MYSQL_DATABASE=${envBuilderOpts.dbConfig?.database}
+CMS_MYSQL_USER=${envBuilderOpts.dbConfig?.user}
+CMS_MYSQL_PASSWORD=${envBuilderOpts.dbConfig?.password}
+CMS_MYSQL_HOST=${envBuilderOpts.dbConfig?.host}
+CMS_MYSQL_PORT=${envBuilderOpts.dbConfig?.port}`;
+			}
+			case 'postgres': {
+				return `
+# PostgreSQL
+CMS_PG_DATABASE=${envBuilderOpts.dbConfig?.database}
+CMS_PG_USER=${envBuilderOpts.dbConfig?.user}
+CMS_PG_PASSWORD=${envBuilderOpts.dbConfig?.password}
+CMS_PG_HOST=${envBuilderOpts.dbConfig?.host}
+CMS_PG_PORT=${envBuilderOpts.dbConfig?.port}`;
+			}
+		}
+	}
+
+	return `# StudioCMS Environment Variables
+	
+# Database configuration
+${parseDBConfig()}
 
 # Auth encryption key
-CMS_ENCRYPTION_KEY="${envBuilderOpts.encryptionKey}" # openssl rand --base64 16
+CMS_ENCRYPTION_KEY="${envBuilderOpts.encryptionKey || ''}" # openssl rand --base64 16
 
 ${
 	envBuilderOpts.githubOAuth

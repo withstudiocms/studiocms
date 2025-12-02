@@ -1,20 +1,13 @@
 import crypto from 'node:crypto';
 import fs from 'node:fs/promises';
-import os from 'node:os';
 import path from 'node:path';
 import {
 	StudioCMSColorwayError,
 	StudioCMSColorwayInfo,
 	StudioCMSColorwayWarnBg,
-	TursoColorway,
 } from '@withstudiocms/cli-kit/colors';
 import { label } from '@withstudiocms/cli-kit/messages';
-import {
-	commandExists,
-	exists,
-	runInteractiveCommand,
-	runShellCommand,
-} from '@withstudiocms/cli-kit/utils';
+import { exists } from '@withstudiocms/cli-kit/utils';
 import {
 	askToContinue,
 	confirm,
@@ -22,7 +15,6 @@ import {
 	log,
 	multiselect,
 	select,
-	spinner,
 	text,
 } from '@withstudiocms/effect/clack';
 import { Effect, runEffect } from '../../../effect.js';
@@ -34,6 +26,19 @@ export enum EnvBuilderAction {
 	builder = 'builder',
 	example = 'example',
 	none = 'none',
+}
+
+function emptyStringToUndefined(value: string): string | undefined {
+	return value.trim() === '' ? undefined : value.trim();
+}
+
+function StringToNumber(value: string): number {
+	return value.trim() === '' ? 0 : Number(value.trim());
+}
+
+function NumberStringToUndefined(value: string): number | undefined {
+	const num = Number(value);
+	return Number.isNaN(num) ? undefined : num;
 }
 
 export const env: EffectStepFn = Effect.fn(function* (context, debug, dryRun) {
@@ -90,247 +95,242 @@ export const env: EffectStepFn = Effect.fn(function* (context, debug, dryRun) {
 			break;
 		}
 		case EnvBuilderAction.builder: {
+			// biome-ignore lint/style/useConst: will fix soon
 			let envBuilderOpts: EnvBuilderOptions = {};
 
-			const isWindows = os.platform() === 'win32';
+			// step1 - Choose dialect
+			const dialect = yield* select({
+				message: 'Select your database dialect:',
+				options: [
+					{ value: 'libsql', label: 'libSQL (Turso)' },
+					{ value: 'mysql', label: 'MySQL' },
+					{ value: 'pg', label: 'PostgreSQL' },
+				],
+			});
 
-			if (isWindows) {
-				yield* log.warn(
-					`${label('Warning', StudioCMSColorwayWarnBg, chalk.black)} Turso DB CLI is not supported on Windows outside of WSL.`
-				);
+			if (typeof dialect === 'symbol') {
+				return yield* pCancel(dialect);
 			}
 
-			let tursoDB: symbol | 'yes' | 'no' = 'no';
+			yield* debugLogger(`Database dialect selected: ${dialect}`);
 
-			if (!isWindows) {
-				tursoDB = yield* select({
-					message: 'Would you like us to setup a new Turso DB for you? (Runs `turso db create`)',
+			// step2 - Gather dialect specific config
+			let dbConfig: EnvBuilderOptions['dbConfig'];
+
+			switch (dialect) {
+				case 'libsql': {
+					const rawConfig = yield* group(
+						{
+							url: async () =>
+								await runEffect(
+									text({
+										message:
+											'Enter your libSQL database URL (e.g., libsql://your-database.turso.io or file:./path/to/your/database.db):',
+										placeholder: 'libsql://your-database.turso.io',
+									})
+								),
+							authToken: async () =>
+								await runEffect(
+									text({
+										message: 'Enter your libSQL auth token (leave blank if not applicable):',
+										placeholder: '',
+									})
+								),
+							syncInterval: async () =>
+								await runEffect(
+									text({
+										message:
+											'Enter your libSQL sync interval in seconds (leave blank if not applicable):',
+										placeholder: '',
+									})
+								),
+							syncUrl: async () =>
+								await runEffect(
+									text({
+										message: 'Enter your libSQL sync URL (leave blank if not applicable):',
+										placeholder: '',
+									})
+								),
+						},
+						{
+							onCancel: async () => await runEffect(pOnCancel()),
+						}
+					);
+
+					dbConfig = {
+						dialect: 'libsql',
+						url: rawConfig.url,
+						authToken: emptyStringToUndefined(rawConfig.authToken),
+						syncInterval: NumberStringToUndefined(rawConfig.syncInterval),
+						syncUrl: emptyStringToUndefined(rawConfig.syncUrl),
+					};
+
+					break;
+				}
+				case 'mysql': {
+					const rawConfig = yield* group(
+						{
+							database: async () =>
+								await runEffect(
+									text({
+										message: 'Enter your MySQL database name:',
+										placeholder: 'my_database',
+									})
+								),
+							user: async () =>
+								await runEffect(
+									text({
+										message: 'Enter your MySQL user:',
+										placeholder: 'root',
+									})
+								),
+							password: async () =>
+								await runEffect(
+									text({
+										message: 'Enter your MySQL password:',
+										placeholder: '',
+									})
+								),
+							host: async () =>
+								await runEffect(
+									text({
+										message: 'Enter your MySQL host:',
+										placeholder: 'localhost',
+									})
+								),
+							port: async () =>
+								await runEffect(
+									text({
+										message: 'Enter your MySQL port:',
+										placeholder: '3306',
+									})
+								),
+						},
+						{
+							onCancel: async () => await runEffect(pOnCancel()),
+						}
+					);
+
+					dbConfig = {
+						dialect: 'mysql',
+						database: rawConfig.database,
+						user: rawConfig.user,
+						password: rawConfig.password,
+						host: rawConfig.host,
+						port: StringToNumber(rawConfig.port),
+					};
+					break;
+				}
+				case 'pg': {
+					const rawConfig = yield* group(
+						{
+							database: async () =>
+								await runEffect(
+									text({
+										message: 'Enter your PostgreSQL database name:',
+										placeholder: 'my_database',
+									})
+								),
+							user: async () =>
+								await runEffect(
+									text({
+										message: 'Enter your PostgreSQL user:',
+										placeholder: 'postgres',
+									})
+								),
+							password: async () =>
+								await runEffect(
+									text({
+										message: 'Enter your PostgreSQL password:',
+										placeholder: '',
+									})
+								),
+							host: async () =>
+								await runEffect(
+									text({
+										message: 'Enter your PostgreSQL host:',
+										placeholder: 'localhost',
+									})
+								),
+							port: async () =>
+								await runEffect(
+									text({
+										message: 'Enter your PostgreSQL port:',
+										placeholder: '5432',
+									})
+								),
+						},
+						{
+							onCancel: async () => await runEffect(pOnCancel()),
+						}
+					);
+
+					dbConfig = {
+						dialect: 'postgres',
+						database: rawConfig.database,
+						user: rawConfig.user,
+						password: rawConfig.password,
+						host: rawConfig.host,
+						port: StringToNumber(rawConfig.port),
+					};
+					break;
+				}
+			}
+
+			envBuilderOpts.dbConfig = dbConfig;
+
+			yield* debugLogger(`Database configuration collected: ${JSON.stringify(dbConfig, null, 2)}`);
+
+			// step3 - Get Encryption Key
+			const encryptionKey = yield* text({
+				message: 'Enter an encryption key for authentication (leave blank to generate one):',
+				placeholder: '',
+			});
+
+			if (typeof encryptionKey === 'symbol') {
+				return yield* pCancel(encryptionKey);
+			}
+
+			envBuilderOpts.encryptionKey =
+				encryptionKey.trim() === ''
+					? crypto.randomBytes(16).toString('base64')
+					: encryptionKey.trim();
+
+			yield* debugLogger('Encryption key collected');
+
+			// step4 - OAuth Providers (optional)
+			const addOAuth = yield* confirm({
+				message: 'Would you like to configure OAuth providers now?',
+				initialValue: false,
+			});
+
+			if (typeof addOAuth === 'symbol') {
+				return yield* pCancel(addOAuth);
+			}
+
+			if (addOAuth) {
+				const oAuthProviders = yield* multiselect({
+					message: 'Select OAuth providers to configure:',
 					options: [
-						{ value: 'yes', label: 'Yes' },
-						{ value: 'no', label: 'No' },
+						{ value: 'github', label: 'GitHub' },
+						{ value: 'discord', label: 'Discord' },
+						{ value: 'google', label: 'Google' },
+						{ value: 'auth0', label: 'Auth0' },
 					],
 				});
+
+				if (typeof oAuthProviders === 'symbol') {
+					return yield* pCancel(oAuthProviders);
+				}
+
+				yield* debugLogger(`OAuth providers selected: ${oAuthProviders.join(', ')}`);
+
+				envBuilderOpts.oAuthOptions = oAuthProviders;
 			}
 
-			if (typeof tursoDB === 'symbol') {
-				return yield* pCancel(tursoDB);
-			}
+			// step4.1 - For each selected provider, gather config
 
-			if (tursoDB === 'yes') {
-				if (!commandExists('turso')) {
-					yield* log.error(StudioCMSColorwayError('Turso CLI is not installed.'));
-
-					const installTurso = yield* confirm({
-						message: 'Would you like to install Turso CLI now?',
-					});
-
-					if (typeof installTurso === 'symbol') {
-						return yield* pCancel(installTurso);
-					}
-
-					if (installTurso) {
-						if (isWindows) {
-							yield* log.error(
-								StudioCMSColorwayError(
-									'Automatic installation is not supported on Windows. Please install Turso CLI manually from https://turso.tech/docs/getting-started/installation'
-								)
-							);
-							return yield* context.exit(1);
-						}
-						yield* Effect.try({
-							try: () =>
-								runInteractiveCommand('curl -fsSL https://get.turso.tech/cli.sh | sh', {
-									cwd,
-									shell: true,
-									env: process.env,
-								}),
-							catch: (cause) => new Error(`Failed to install Turso CLI: ${String(cause)}`),
-						});
-						yield* log.success('Turso CLI installed successfully.');
-					} else {
-						yield* log.warn(
-							`${label('Warning', StudioCMSColorwayWarnBg, chalk.black)} You will need to setup your own AstroDB and provide the URL and Token.`
-						);
-					}
-				}
-
-				const checkLogin = yield* Effect.tryPromise({
-					try: () => runShellCommand('turso auth login --headless'),
-					catch: (cause) => new Error(`Turso CLI Error: ${String(cause)}`),
-				});
-
-				if (
-					!checkLogin.includes('Already signed in as') &&
-					!checkLogin.includes('Success! Existing JWT still valid')
-				) {
-					yield* log.message(`Please sign in to Turso to continue.\n${checkLogin}`);
-
-					const loginToken = yield* text({
-						message: 'Enter the login token ( the code within the " " )',
-						placeholder: 'eyJhb...tnPnw',
-					});
-
-					if (typeof loginToken === 'symbol') {
-						return yield* pCancel(loginToken);
-					}
-
-					const loginResult = yield* Effect.tryPromise({
-						try: () => runShellCommand(`turso config set token "${loginToken}"`),
-						catch: (cause) => new Error(`Turso CLI Error: ${String(cause)}`),
-					});
-
-					if (loginResult.includes('Token set successfully.')) {
-						yield* log.success('Successfully logged in to Turso.');
-					} else {
-						yield* log.error(StudioCMSColorwayError('Unable to login to Turso.'));
-						yield* context.exit(1);
-					}
-				}
-
-				const setCustomDbName = yield* confirm({
-					message: 'Would you like to provide a custom name for the database?',
-					initialValue: false,
-				});
-
-				if (typeof setCustomDbName === 'symbol') {
-					return yield* pCancel(setCustomDbName);
-				}
-
-				let dbName = `scms_db_${crypto.randomBytes(4).toString('hex')}`;
-
-				if (setCustomDbName) {
-					const customDbName = yield* text({
-						message: 'Enter a custom name for the database',
-						placeholder: 'my_custom_db_name',
-					});
-
-					if (typeof customDbName === 'symbol') {
-						return yield* pCancel(customDbName);
-					}
-
-					dbName = customDbName;
-				}
-
-				yield* debugLogger(`New database name: ${dbName}`);
-
-				const tursoSetup = yield* spinner();
-
-				yield* tursoSetup.start(
-					`${label('Turso', TursoColorway, chalk.black)} Setting up Turso DB...`
-				);
-
-				yield* tursoSetup.message(
-					`${label('Turso', TursoColorway, chalk.black)} Creating Database...`
-				);
-
-				const createResponse = yield* Effect.tryPromise({
-					try: () => runShellCommand(`turso db create ${dbName}`),
-					catch: (cause) => new Error(`Turso CLI Error: ${String(cause)}`),
-				});
-
-				const dbNameMatch = createResponse.match(/^Created database (\S+) at group/m);
-
-				const dbFinalName = dbNameMatch ? dbNameMatch[1] : undefined;
-
-				yield* tursoSetup.message(
-					`${label('Turso', TursoColorway, chalk.black)} Retrieving database information...`
-				);
-
-				const showCMD = `turso db show ${dbName}`;
-				const tokenCMD = `turso db tokens create ${dbName}`;
-
-				const showResponse = yield* Effect.tryPromise({
-					try: () => runShellCommand(showCMD),
-					catch: (cause) => new Error(`Turso CLI Error: ${String(cause)}`),
-				});
-
-				const urlMatch = showResponse.match(/^URL:\s+(\S+)/m);
-
-				const dbURL = urlMatch ? urlMatch[1] : undefined;
-
-				yield* debugLogger(`Database URL: ${dbURL}`);
-
-				const tokenResponse = yield* Effect.tryPromise({
-					try: () => runShellCommand(tokenCMD),
-					catch: (cause) => new Error(`Turso CLI Error: ${String(cause)}`),
-				});
-
-				const dbToken = tokenResponse.trim();
-
-				yield* debugLogger(`Database Token: ${dbToken}`);
-
-				envBuilderOpts.astroDbRemoteUrl = dbURL;
-				envBuilderOpts.astroDbToken = dbToken;
-
-				yield* tursoSetup.stop(
-					`${label('Turso', TursoColorway, chalk.black)} Database setup complete. New Database: ${dbFinalName}`
-				);
-
-				yield* log.message('Database Token and Url saved to environment file.');
-			} else {
-				yield* log.warn(
-					`${label('Warning', StudioCMSColorwayWarnBg, chalk.black)} You will need to setup your own AstroDB and provide the URL and Token.`
-				);
-				const envBuilderStep_AstroDB = yield* group(
-					{
-						astroDbRemoteUrl: async () =>
-							await runEffect(
-								text({
-									message: 'Remote URL for AstroDB',
-									initialValue: 'libsql://your-database.turso.io',
-								})
-							),
-						astroDbToken: async () =>
-							await runEffect(
-								text({
-									message: 'AstroDB Token',
-									initialValue: 'your-astrodb-token',
-								})
-							),
-					},
-					{
-						onCancel: async () => await runEffect(pOnCancel()),
-					}
-				);
-
-				yield* debugLogger(`AstroDB setup: ${envBuilderStep_AstroDB}`);
-
-				envBuilderOpts = { ...envBuilderStep_AstroDB };
-			}
-
-			const envBuilderStep1 = yield* group(
-				{
-					encryptionKey: async () =>
-						await runEffect(
-							text({
-								message: 'StudioCMS Auth Encryption Key',
-								initialValue: crypto.randomBytes(16).toString('base64'),
-							})
-						),
-					oAuthOptions: async () =>
-						await runEffect(
-							multiselect({
-								message: 'Setup OAuth Providers',
-								options: [
-									{ value: 'github', label: 'GitHub' },
-									{ value: 'discord', label: 'Discord' },
-									{ value: 'google', label: 'Google' },
-									{ value: 'auth0', label: 'Auth0' },
-								],
-								required: false,
-							})
-						),
-				},
-				{
-					onCancel: async () => await runEffect(pOnCancel()),
-				}
-			);
-
-			yield* debugLogger(`Environment Builder Step 1: ${envBuilderStep1}`);
-
-			envBuilderOpts = { ...envBuilderStep1 };
-
-			if (envBuilderStep1.oAuthOptions.includes('github')) {
+			if (envBuilderOpts.oAuthOptions?.includes('github')) {
 				const githubOAuth = yield* group(
 					{
 						clientId: async () =>
@@ -365,7 +365,7 @@ export const env: EffectStepFn = Effect.fn(function* (context, debug, dryRun) {
 				envBuilderOpts.githubOAuth = githubOAuth;
 			}
 
-			if (envBuilderStep1.oAuthOptions.includes('discord')) {
+			if (envBuilderOpts.oAuthOptions?.includes('discord')) {
 				const discordOAuth = yield* group(
 					{
 						clientId: async () =>
@@ -400,7 +400,7 @@ export const env: EffectStepFn = Effect.fn(function* (context, debug, dryRun) {
 				envBuilderOpts.discordOAuth = discordOAuth;
 			}
 
-			if (envBuilderStep1.oAuthOptions.includes('google')) {
+			if (envBuilderOpts.oAuthOptions?.includes('google')) {
 				const googleOAuth = yield* group(
 					{
 						clientId: async () =>
@@ -435,7 +435,7 @@ export const env: EffectStepFn = Effect.fn(function* (context, debug, dryRun) {
 				envBuilderOpts.googleOAuth = googleOAuth;
 			}
 
-			if (envBuilderStep1.oAuthOptions.includes('auth0')) {
+			if (envBuilderOpts.oAuthOptions?.includes('auth0')) {
 				const auth0OAuth = yield* group(
 					{
 						clientId: async () =>
@@ -477,7 +477,10 @@ export const env: EffectStepFn = Effect.fn(function* (context, debug, dryRun) {
 				envBuilderOpts.auth0OAuth = auth0OAuth;
 			}
 
+			// step5 - Build env file
 			envFileContent = buildEnvFile(envBuilderOpts);
+
+			yield* debugLogger('Environment file content built');
 
 			break;
 		}

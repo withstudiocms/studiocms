@@ -1,4 +1,3 @@
-// import { askToContinue } from '@withstudiocms/cli-kit/messages';
 import { exec } from '@withstudiocms/cli-kit/utils';
 import { askToContinue, note, spinner } from '@withstudiocms/effect/clack';
 import { detect, resolveCommand } from 'package-manager-detector';
@@ -78,7 +77,11 @@ export class TryToInstallPlugins extends Effect.Service<TryToInstallPlugins>()(
 								});
 								return UpdateResult.updated;
 							},
-							catch: (err) => err,
+							catch: (err) =>
+								new Error(
+									`Failed to install dependencies: ${(err as Error).message}`,
+									err instanceof Error ? { ...err } : {}
+								),
 						}).pipe(Effect.catchAll((err) => Effect.succeed(err)));
 
 						if (response === UpdateResult.updated) {

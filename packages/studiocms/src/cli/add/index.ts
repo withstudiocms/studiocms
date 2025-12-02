@@ -5,6 +5,7 @@ import { exists, pathToFileURL, resolveRoot } from '@withstudiocms/cli-kit/utils
 import { intro, note, outro } from '@withstudiocms/effect/clack';
 import { type ASTNode, builders, loadFile, type ProxifiedModule } from 'magicast';
 import { getDefaultExportOptions } from 'magicast/helpers';
+import { configPaths } from '../../consts.js';
 import { Cli, Console, Effect, genLogger, Layer } from '../../effect.js';
 import { CliContext, genContext } from '../utils/context.js';
 import { logger } from '../utils/logger.js';
@@ -73,19 +74,6 @@ export const createPrettyError = (err: Error) =>
 	Documentation: https://docs.studiocms.dev`;
 		return err;
 	});
-
-/**
- * Paths to search for the StudioCMS config file,
- * sorted by how likely they're to appear.
- */
-const configPaths = Object.freeze([
-	'./studiocms.config.js',
-	'./studiocms.config.mjs',
-	'./studiocms.config.cjs',
-	'./studiocms.config.ts',
-	'./studiocms.config.mts',
-	'./studiocms.config.cts',
-]);
 
 export const resolveConfigPath = (root: URL) =>
 	genLogger('studiocms/cli/add.resolveConfigPath')(function* () {
