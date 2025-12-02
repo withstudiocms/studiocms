@@ -40,7 +40,7 @@ function createPathResolver(baseOption: string): PathResolver {
 		baseDir = path.dirname(filePath);
 	} else {
 		// It's already a regular path (process.cwd() or custom string)
-		baseDir = baseOption;
+		baseDir = path.resolve(baseOption);
 	}
 
 	return {
