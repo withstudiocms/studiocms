@@ -91,12 +91,17 @@ export function buildEnvFile(envBuilderOpts: EnvBuilderOptions): string {
 
 		switch (envBuilderOpts.dbConfig?.dialect) {
 			case 'libsql': {
-				return `
-# libSQL
-CMS_LIBSQL_URL=${envBuilderOpts.dbConfig?.url}
-${envBuilderOpts.dbConfig?.authToken ? `CMS_LIBSQL_AUTH_TOKEN=${envBuilderOpts.dbConfig?.authToken}` : ''}
-${envBuilderOpts.dbConfig?.syncInterval ? `CMS_LIBSQL_SYNC_INTERVAL=${envBuilderOpts.dbConfig?.syncInterval}` : ''}
-${envBuilderOpts.dbConfig?.syncUrl ? `CMS_LIBSQL_SYNC_URL=${envBuilderOpts.dbConfig?.syncUrl}` : ''}`;
+				const lines = ['', '# libSQL', `CMS_LIBSQL_URL=${envBuilderOpts.dbConfig?.url}`];
+				if (envBuilderOpts.dbConfig?.authToken) {
+					lines.push(`CMS_LIBSQL_AUTH_TOKEN=${envBuilderOpts.dbConfig.authToken}`);
+				}
+				if (envBuilderOpts.dbConfig?.syncInterval) {
+					lines.push(`CMS_LIBSQL_SYNC_INTERVAL=${envBuilderOpts.dbConfig.syncInterval}`);
+				}
+				if (envBuilderOpts.dbConfig?.syncUrl) {
+					lines.push(`CMS_LIBSQL_SYNC_URL=${envBuilderOpts.dbConfig.syncUrl}`);
+				}
+				return lines.join('\n');
 			}
 			case 'mysql': {
 				return `

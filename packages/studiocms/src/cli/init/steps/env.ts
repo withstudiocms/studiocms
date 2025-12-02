@@ -104,7 +104,7 @@ export const env: EffectStepFn = Effect.fn(function* (context, debug, dryRun) {
 				options: [
 					{ value: 'libsql', label: 'libSQL (Turso)' },
 					{ value: 'mysql', label: 'MySQL' },
-					{ value: 'pg', label: 'PostgreSQL' },
+					{ value: 'postgres', label: 'PostgreSQL' },
 				],
 			});
 
@@ -221,7 +221,7 @@ export const env: EffectStepFn = Effect.fn(function* (context, debug, dryRun) {
 					};
 					break;
 				}
-				case 'pg': {
+				case 'postgres': {
 					const rawConfig = yield* group(
 						{
 							database: async () =>

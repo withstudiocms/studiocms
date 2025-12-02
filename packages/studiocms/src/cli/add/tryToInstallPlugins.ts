@@ -79,8 +79,8 @@ export class TryToInstallPlugins extends Effect.Service<TryToInstallPlugins>()(
 							},
 							catch: (err) =>
 								new Error(
-									`Failed to install dependencies: ${(err as Error).message}`,
-									err instanceof Error ? { ...err } : {}
+									`Failed to install dependencies: ${err instanceof Error ? err.message : String(err)}`,
+									{ cause: err }
 								),
 						}).pipe(Effect.catchAll((err) => Effect.succeed(err)));
 
