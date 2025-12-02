@@ -109,9 +109,9 @@ export interface ZodValidator<T> {
  * ```
  */
 // biome-ignore lint/suspicious/noExplicitAny: This is a generic type for the plugin data.
-export type ValidatorOptions<T extends Schema.Struct<any> | object> = T extends Schema.Struct<any>
-	? EffectSchemaValidator<T>
-	: JSONValidatorFn<T> | ZodValidator<T>;
+export type ValidatorOptions<T extends Schema.Struct<any> | object> =
+	// biome-ignore lint/suspicious/noExplicitAny: This is a generic type for the plugin data.
+	T extends Schema.Struct<any> ? EffectSchemaValidator<T> : JSONValidatorFn<T> | ZodValidator<T>;
 
 export type RecursiveSimplifyMutable<A> = {
 	-readonly [K in keyof A]: A[K] extends object ? RecursiveSimplifyMutable<A[K]> : A[K];

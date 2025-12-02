@@ -28,9 +28,10 @@ export class SDKInitializationError extends Data.TaggedError('SDKInitializationE
  * Type representing the live StudioCMS SDK Core Effect without requirements,
  * with specific error types for database client and SDK initialization failures.
  */
-export type SDKCoreLive = _SDKLive extends Effect.Effect<infer A, infer _E, infer R>
-	? Effect.Effect<A, DBClientInitializationError | SDKInitializationError, R>
-	: never;
+export type SDKCoreLive =
+	_SDKLive extends Effect.Effect<infer A, infer _E, infer R>
+		? Effect.Effect<A, DBClientInitializationError | SDKInitializationError, R>
+		: never;
 
 /**
  * Utility type to extract the resolved value type from an Effect.

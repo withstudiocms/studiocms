@@ -57,7 +57,7 @@ type D1ColumnBuilder = SQLiteColumnBuilderBase<
 export function internal_asDrizzleTable(name: string, table: DBTable) {
 	const columns: Record<string, D1ColumnBuilder> = {};
 	if (!Object.entries(table.columns).some(([, column]) => hasPrimaryKey(column))) {
-		columns['_id'] = integer('_id').primaryKey();
+		columns._id = integer('_id').primaryKey();
 	}
 	for (const [columnName, column] of Object.entries(table.columns)) {
 		columns[columnName] = columnMapper(columnName, column);
