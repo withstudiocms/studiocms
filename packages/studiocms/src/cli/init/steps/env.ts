@@ -14,6 +14,7 @@ import {
 	group,
 	log,
 	multiselect,
+	password,
 	select,
 	text,
 } from '@withstudiocms/effect/clack';
@@ -30,10 +31,6 @@ export enum EnvBuilderAction {
 
 function emptyStringToUndefined(value: string): string | undefined {
 	return value.trim() === '' ? undefined : value.trim();
-}
-
-function StringToNumber(value: string): number {
-	return value.trim() === '' ? 0 : Number(value.trim());
 }
 
 function NumberStringToUndefined(value: string): number | undefined {
@@ -95,8 +92,7 @@ export const env: EffectStepFn = Effect.fn(function* (context, debug, dryRun) {
 			break;
 		}
 		case EnvBuilderAction.builder: {
-			// biome-ignore lint/style/useConst: will fix soon
-			let envBuilderOpts: EnvBuilderOptions = {};
+			const envBuilderOpts: EnvBuilderOptions = {};
 
 			// step1 - Choose dialect
 			const dialect = yield* select({
@@ -127,13 +123,17 @@ export const env: EffectStepFn = Effect.fn(function* (context, debug, dryRun) {
 										message:
 											'Enter your libSQL database URL (e.g., libsql://your-database.turso.io or file:./path/to/your/database.db):',
 										placeholder: 'libsql://your-database.turso.io',
+										validate: (value) => {
+											if (!value || value.trim() === '') {
+												return 'Database URL is required';
+											}
+										},
 									})
 								),
 							authToken: async () =>
 								await runEffect(
-									text({
+									password({
 										message: 'Enter your libSQL auth token (leave blank if not applicable):',
-										placeholder: '',
 									})
 								),
 							syncInterval: async () =>
@@ -175,6 +175,11 @@ export const env: EffectStepFn = Effect.fn(function* (context, debug, dryRun) {
 									text({
 										message: 'Enter your MySQL database name:',
 										placeholder: 'my_database',
+										validate: (value) => {
+											if (!value || value.trim() === '') {
+												return 'Database name is required';
+											}
+										},
 									})
 								),
 							user: async () =>
@@ -182,13 +187,22 @@ export const env: EffectStepFn = Effect.fn(function* (context, debug, dryRun) {
 									text({
 										message: 'Enter your MySQL user:',
 										placeholder: 'root',
+										validate: (value) => {
+											if (!value || value.trim() === '') {
+												return 'Database user is required';
+											}
+										},
 									})
 								),
 							password: async () =>
 								await runEffect(
-									text({
+									password({
 										message: 'Enter your MySQL password:',
-										placeholder: '',
+										validate: (value) => {
+											if (!value || value.trim() === '') {
+												return 'Database password is required';
+											}
+										},
 									})
 								),
 							host: async () =>
@@ -196,6 +210,11 @@ export const env: EffectStepFn = Effect.fn(function* (context, debug, dryRun) {
 									text({
 										message: 'Enter your MySQL host:',
 										placeholder: 'localhost',
+										validate: (value) => {
+											if (!value || value.trim() === '') {
+												return 'Database host is required';
+											}
+										},
 									})
 								),
 							port: async () =>
@@ -203,6 +222,11 @@ export const env: EffectStepFn = Effect.fn(function* (context, debug, dryRun) {
 									text({
 										message: 'Enter your MySQL port:',
 										placeholder: '3306',
+										validate: (value) => {
+											if (!value || value.trim() === '') {
+												return 'Database port is required';
+											}
+										},
 									})
 								),
 						},
@@ -217,7 +241,7 @@ export const env: EffectStepFn = Effect.fn(function* (context, debug, dryRun) {
 						user: rawConfig.user,
 						password: rawConfig.password,
 						host: rawConfig.host,
-						port: StringToNumber(rawConfig.port),
+						port: NumberStringToUndefined(rawConfig.port) ?? 3306,
 					};
 					break;
 				}
@@ -229,6 +253,11 @@ export const env: EffectStepFn = Effect.fn(function* (context, debug, dryRun) {
 									text({
 										message: 'Enter your PostgreSQL database name:',
 										placeholder: 'my_database',
+										validate: (value) => {
+											if (!value || value.trim() === '') {
+												return 'Database name is required';
+											}
+										},
 									})
 								),
 							user: async () =>
@@ -236,13 +265,22 @@ export const env: EffectStepFn = Effect.fn(function* (context, debug, dryRun) {
 									text({
 										message: 'Enter your PostgreSQL user:',
 										placeholder: 'postgres',
+										validate: (value) => {
+											if (!value || value.trim() === '') {
+												return 'Database user is required';
+											}
+										},
 									})
 								),
 							password: async () =>
 								await runEffect(
-									text({
+									password({
 										message: 'Enter your PostgreSQL password:',
-										placeholder: '',
+										validate: (value) => {
+											if (!value || value.trim() === '') {
+												return 'Database password is required';
+											}
+										},
 									})
 								),
 							host: async () =>
@@ -250,6 +288,11 @@ export const env: EffectStepFn = Effect.fn(function* (context, debug, dryRun) {
 									text({
 										message: 'Enter your PostgreSQL host:',
 										placeholder: 'localhost',
+										validate: (value) => {
+											if (!value || value.trim() === '') {
+												return 'Database host is required';
+											}
+										},
 									})
 								),
 							port: async () =>
@@ -257,6 +300,11 @@ export const env: EffectStepFn = Effect.fn(function* (context, debug, dryRun) {
 									text({
 										message: 'Enter your PostgreSQL port:',
 										placeholder: '5432',
+										validate: (value) => {
+											if (!value || value.trim() === '') {
+												return 'Database port is required';
+											}
+										},
 									})
 								),
 						},
@@ -271,7 +319,7 @@ export const env: EffectStepFn = Effect.fn(function* (context, debug, dryRun) {
 						user: rawConfig.user,
 						password: rawConfig.password,
 						host: rawConfig.host,
-						port: StringToNumber(rawConfig.port),
+						port: NumberStringToUndefined(rawConfig.port) ?? 5432,
 					};
 					break;
 				}
@@ -337,21 +385,21 @@ export const env: EffectStepFn = Effect.fn(function* (context, debug, dryRun) {
 							await runEffect(
 								text({
 									message: 'GitHub Client ID',
-									initialValue: 'your-github-client-id',
+									placeholder: 'your-github-client-id',
 								})
 							),
 						clientSecret: async () =>
 							await runEffect(
 								text({
 									message: 'GitHub Client Secret',
-									initialValue: 'your-github-client-secret',
+									placeholder: 'your-github-client-secret',
 								})
 							),
 						redirectUri: async () =>
 							await runEffect(
 								text({
 									message: 'GitHub Redirect URI Domain',
-									initialValue: 'http://localhost:4321',
+									placeholder: 'http://localhost:4321',
 								})
 							),
 					},
@@ -372,21 +420,21 @@ export const env: EffectStepFn = Effect.fn(function* (context, debug, dryRun) {
 							await runEffect(
 								text({
 									message: 'Discord Client ID',
-									initialValue: 'your-discord-client-id',
+									placeholder: 'your-discord-client-id',
 								})
 							),
 						clientSecret: async () =>
 							await runEffect(
 								text({
 									message: 'Discord Client Secret',
-									initialValue: 'your-discord-client-secret',
+									placeholder: 'your-discord-client-secret',
 								})
 							),
 						redirectUri: async () =>
 							await runEffect(
 								text({
 									message: 'Discord Redirect URI Domain',
-									initialValue: 'http://localhost:4321',
+									placeholder: 'http://localhost:4321',
 								})
 							),
 					},
@@ -407,21 +455,21 @@ export const env: EffectStepFn = Effect.fn(function* (context, debug, dryRun) {
 							await runEffect(
 								text({
 									message: 'Google Client ID',
-									initialValue: 'your-google-client-id',
+									placeholder: 'your-google-client-id',
 								})
 							),
 						clientSecret: async () =>
 							await runEffect(
 								text({
 									message: 'Google Client Secret',
-									initialValue: 'your-google-client-secret',
+									placeholder: 'your-google-client-secret',
 								})
 							),
 						redirectUri: async () =>
 							await runEffect(
 								text({
 									message: 'Google Redirect URI Domain',
-									initialValue: 'http://localhost:4321',
+									placeholder: 'http://localhost:4321',
 								})
 							),
 					},
@@ -442,28 +490,28 @@ export const env: EffectStepFn = Effect.fn(function* (context, debug, dryRun) {
 							await runEffect(
 								text({
 									message: 'Auth0 Client ID',
-									initialValue: 'your-auth0-client-id',
+									placeholder: 'your-auth0-client-id',
 								})
 							),
 						clientSecret: async () =>
 							await runEffect(
 								text({
 									message: 'Auth0 Client Secret',
-									initialValue: 'your-auth0-client-secret',
+									placeholder: 'your-auth0-client-secret',
 								})
 							),
 						domain: async () =>
 							await runEffect(
 								text({
 									message: 'Auth0 Domain',
-									initialValue: 'your-auth0-domain',
+									placeholder: 'your-auth0-domain',
 								})
 							),
 						redirectUri: async () =>
 							await runEffect(
 								text({
 									message: 'Auth0 Redirect URI Domain',
-									initialValue: 'http://localhost:4321',
+									placeholder: 'http://localhost:4321',
 								})
 							),
 					},
