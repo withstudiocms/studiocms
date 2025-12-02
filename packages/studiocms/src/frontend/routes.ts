@@ -243,70 +243,76 @@ export const dashboardEnabledRoutes = (
 	},
 
 	// Dashboard Frontend Route
-	{
-		pattern: dashboardRoute('/'),
-		entrypoint: 'pages/[dashboard]/index.astro',
-	},
-	{
-		pattern: dashboardRoute('content-management'),
-		entrypoint: 'pages/[dashboard]/content-management/index.astro',
-	},
-	{
-		pattern: dashboardRoute('content-management/create'),
-		entrypoint: 'pages/[dashboard]/content-management/createpage.astro',
-	},
-	{
-		pattern: dashboardRoute('content-management/create-folder'),
-		entrypoint: 'pages/[dashboard]/content-management/createfolder.astro',
-	},
-	{
-		pattern: dashboardRoute('content-management/edit'),
-		entrypoint: 'pages/[dashboard]/content-management/editpage.astro',
-	},
-	{
-		pattern: dashboardRoute('content-management/edit-folder'),
-		entrypoint: 'pages/[dashboard]/content-management/editfolder.astro',
-	},
-	{
-		pattern: dashboardRoute('content-management/diff'),
-		entrypoint: 'pages/[dashboard]/content-management/diff.astro',
-	},
-	{
-		pattern: dashboardRoute('profile'),
-		entrypoint: 'pages/[dashboard]/profile.astro',
-	},
-	{
-		pattern: dashboardRoute('configuration'),
-		entrypoint: 'pages/[dashboard]/configuration.astro',
-	},
-	{
-		pattern: dashboardRoute('user-management'),
-		entrypoint: 'pages/[dashboard]/user-management/index.astro',
-	},
-	{
-		pattern: dashboardRoute('user-management/edit'),
-		entrypoint: 'pages/[dashboard]/user-management/edit.astro',
-	},
-	{
-		pattern: dashboardRoute('plugins/[plugin]'),
-		entrypoint: 'pages/[dashboard]/plugins/[plugin].astro',
-	},
-	{
-		pattern: dashboardRoute('smtp-configuration'),
-		entrypoint: 'pages/[dashboard]/smtp-configuration.astro',
-	},
-	{
-		pattern: dashboardRoute('unverified-email'),
-		entrypoint: 'pages/[dashboard]/unverified-email.astro',
-	},
-	{
-		pattern: dashboardRoute('login/'),
-		entrypoint: 'pages/[dashboard]/login.astro',
-	},
-	{
-		pattern: dashboardRoute('logout/'),
-		entrypoint: 'pages/[dashboard]/logout.astro',
-	},
+	...[
+		{
+			pattern: '/',
+			entrypoint: 'pages/[dashboard]/index.astro',
+		},
+		{
+			pattern: 'content-management',
+			entrypoint: 'pages/[dashboard]/content-management/index.astro',
+		},
+		{
+			pattern: 'content-management/create',
+			entrypoint: 'pages/[dashboard]/content-management/createpage.astro',
+		},
+		{
+			pattern: 'content-management/create-folder',
+			entrypoint: 'pages/[dashboard]/content-management/createfolder.astro',
+		},
+		{
+			pattern: 'content-management/edit',
+			entrypoint: 'pages/[dashboard]/content-management/editpage.astro',
+		},
+		{
+			pattern: 'content-management/edit-folder',
+			entrypoint: 'pages/[dashboard]/content-management/editfolder.astro',
+		},
+		{
+			pattern: 'content-management/diff',
+			entrypoint: 'pages/[dashboard]/content-management/diff.astro',
+		},
+		{
+			pattern: 'profile',
+			entrypoint: 'pages/[dashboard]/profile.astro',
+		},
+		{
+			pattern: 'configuration',
+			entrypoint: 'pages/[dashboard]/configuration.astro',
+		},
+		{
+			pattern: 'user-management',
+			entrypoint: 'pages/[dashboard]/user-management/index.astro',
+		},
+		{
+			pattern: 'user-management/edit',
+			entrypoint: 'pages/[dashboard]/user-management/edit.astro',
+		},
+		{
+			pattern: 'plugins/[plugin]',
+			entrypoint: 'pages/[dashboard]/plugins/[plugin].astro',
+		},
+		{
+			pattern: 'smtp-configuration',
+			entrypoint: 'pages/[dashboard]/smtp-configuration.astro',
+		},
+		{
+			pattern: 'unverified-email',
+			entrypoint: 'pages/[dashboard]/unverified-email.astro',
+		},
+		{
+			pattern: 'login/',
+			entrypoint: 'pages/[dashboard]/login.astro',
+		},
+		{
+			pattern: 'logout/',
+			entrypoint: 'pages/[dashboard]/logout.astro',
+		},
+	].map(({ entrypoint, pattern }) => ({
+		// Remap pattern to include dashboard base path
+		pattern: dashboardRoute(pattern),
+		entrypoint,
+	})),
 ];
 
 /**
