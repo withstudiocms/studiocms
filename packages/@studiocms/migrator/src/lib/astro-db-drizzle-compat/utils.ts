@@ -32,13 +32,13 @@ export function pathToFileURL(path: string): URL {
 		let slashed = slash(path);
 		// Windows like C:/foo/bar
 		if (!slashed.startsWith('/')) {
-			slashed = '/' + slashed;
+			slashed = `/${slashed}`;
 		}
-		return new URL('file://' + slashed);
+		return new URL(`file://${slashed}`);
 	}
 
 	// Unix is easy
-	return new URL('file://' + path);
+	return new URL(`file://${path}`);
 }
 
 /**

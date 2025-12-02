@@ -305,44 +305,50 @@ export const JsonColumnType = <
 /**
  * Helper type function to extract the select shapes from column types.
  */
-type GetSelectType<T> = T extends ColumnTypes<infer Select, any, any>
-	? Schema.Schema.Type<Select>
-	: Schema.Schema.Type<T>;
+type GetSelectType<T> =
+	T extends ColumnTypes<infer Select, any, any>
+		? Schema.Schema.Type<Select>
+		: Schema.Schema.Type<T>;
 
 /**
  * Helper type function to extract the insert shapes from column types.
  */
-type GetInsertType<T> = T extends ColumnTypes<any, infer Insert, any>
-	? Schema.Schema.Type<Insert>
-	: Schema.Schema.Type<T>;
+type GetInsertType<T> =
+	T extends ColumnTypes<any, infer Insert, any>
+		? Schema.Schema.Type<Insert>
+		: Schema.Schema.Type<T>;
 
 /**
  * Helper type function to extract the update shapes from column types.
  */
-type GetUpdateType<T> = T extends ColumnTypes<any, any, infer Update>
-	? Schema.Schema.Type<Update>
-	: Schema.Schema.Type<T>;
+type GetUpdateType<T> =
+	T extends ColumnTypes<any, any, infer Update>
+		? Schema.Schema.Type<Update>
+		: Schema.Schema.Type<T>;
 
 /**
  * Helper type function to extract the select encoded shapes from column types.
  */
-type GetSelectEncoded<T> = T extends ColumnTypes<infer Select, any, any>
-	? Schema.Schema.Encoded<Select>
-	: Schema.Schema.Encoded<T>;
+type GetSelectEncoded<T> =
+	T extends ColumnTypes<infer Select, any, any>
+		? Schema.Schema.Encoded<Select>
+		: Schema.Schema.Encoded<T>;
 
 /**
  * Helper type function to extract the insert encoded shapes from column types.
  */
-type GetInsertEncoded<T> = T extends ColumnTypes<any, infer Insert, any>
-	? Schema.Schema.Encoded<Insert>
-	: Schema.Schema.Encoded<T>;
+type GetInsertEncoded<T> =
+	T extends ColumnTypes<any, infer Insert, any>
+		? Schema.Schema.Encoded<Insert>
+		: Schema.Schema.Encoded<T>;
 
 /**
  * Helper type function to extract the update encoded shapes from column types.
  */
-type GetUpdateEncoded<T> = T extends ColumnTypes<any, any, infer Update>
-	? Schema.Schema.Encoded<Update>
-	: Schema.Schema.Encoded<T>;
+type GetUpdateEncoded<T> =
+	T extends ColumnTypes<any, any, infer Update>
+		? Schema.Schema.Encoded<Update>
+		: Schema.Schema.Encoded<T>;
 
 /**
  * Represents a strongly-typed database table definition.

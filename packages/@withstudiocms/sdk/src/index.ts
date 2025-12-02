@@ -23,13 +23,8 @@ export const SDKBaseDependencies = Layer.mergeAll(
  *
  * @typeParam E - The Effect type to extract from.
  */
-export type ExtractEffectWithoutRequirements<E> = E extends Effect.Effect<
-	infer A,
-	infer E2,
-	infer _R
->
-	? Effect.Effect<A, E2, never>
-	: never;
+export type ExtractEffectWithoutRequirements<E> =
+	E extends Effect.Effect<infer A, infer E2, infer _R> ? Effect.Effect<A, E2, never> : never;
 
 /**
  * StudioCMS SDK Core Layer
