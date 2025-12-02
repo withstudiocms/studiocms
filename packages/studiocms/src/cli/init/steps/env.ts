@@ -279,7 +279,7 @@ export const env: EffectStepFn = Effect.fn(function* (context, debug, dryRun) {
 
 			envBuilderOpts.dbConfig = dbConfig;
 
-			yield* debugLogger(`Database configuration collected: ${JSON.stringify(dbConfig, null, 2)}`);
+			yield* debugLogger(`Database configuration collected: dialect=${dbConfig?.dialect}`);
 
 			// step3 - Get Encryption Key
 			const encryptionKey = yield* text({
@@ -360,7 +360,7 @@ export const env: EffectStepFn = Effect.fn(function* (context, debug, dryRun) {
 					}
 				);
 
-				yield* debugLogger(`GitHub OAuth: ${githubOAuth}`);
+				yield* debugLogger('GitHub OAuth configured');
 
 				envBuilderOpts.githubOAuth = githubOAuth;
 			}
@@ -395,7 +395,7 @@ export const env: EffectStepFn = Effect.fn(function* (context, debug, dryRun) {
 					}
 				);
 
-				yield* debugLogger(`Discord OAuth: ${discordOAuth}`);
+				yield* debugLogger('Discord OAuth configured');
 
 				envBuilderOpts.discordOAuth = discordOAuth;
 			}
@@ -430,7 +430,7 @@ export const env: EffectStepFn = Effect.fn(function* (context, debug, dryRun) {
 					}
 				);
 
-				yield* debugLogger(`Google OAuth: ${googleOAuth}`);
+				yield* debugLogger('Google OAuth configured');
 
 				envBuilderOpts.googleOAuth = googleOAuth;
 			}
@@ -472,7 +472,7 @@ export const env: EffectStepFn = Effect.fn(function* (context, debug, dryRun) {
 					}
 				);
 
-				yield* debugLogger(`Auth0 OAuth: ${auth0OAuth}`);
+				yield* debugLogger('Auth0 OAuth configured');
 
 				envBuilderOpts.auth0OAuth = auth0OAuth;
 			}
