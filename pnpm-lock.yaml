@@ -845,7 +845,7 @@ importers:
         version: 4.0.8
       nodemailer:
         specifier: ^7.0.10
-        version: 7.0.10
+        version: 7.0.11
       socks:
         specifier: ^2.8.7
         version: 2.8.7
@@ -4915,8 +4915,8 @@ packages:
   node-mock-http@1.0.3:
     resolution: {integrity: sha512-jN8dK25fsfnMrVsEhluUTPkBFY+6ybu7jSB1n+ri/vOGjJxU8J9CZhpSGkHXSkFjtUhbmoncG/YG9ta5Ludqog==}
 
-  nodemailer@7.0.10:
-    resolution: {integrity: sha512-Us/Se1WtT0ylXgNFfyFSx4LElllVLJXQjWi2Xz17xWw7amDKO2MLtFnVp1WACy7GkVGs+oBlRopVNUzlrGSw1w==}
+  nodemailer@7.0.11:
+    resolution: {integrity: sha512-gnXhNRE0FNhD7wPSCGhdNh46Hs6nm+uTyg+Kq0cZukNQiYdnCsoQjodNP9BQVG9XrcK/v6/MgpAPBUFyzh9pvw==}
     engines: {node: '>=6.0.0'}
 
   nopt@1.0.10:
@@ -10966,7 +10966,7 @@ snapshots:
 
   node-mock-http@1.0.3: {}
 
-  nodemailer@7.0.10: {}
+  nodemailer@7.0.11: {}
 
   nopt@1.0.10:
     dependencies:
