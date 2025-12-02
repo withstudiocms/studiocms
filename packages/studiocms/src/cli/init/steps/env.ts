@@ -390,9 +390,8 @@ export const env: EffectStepFn = Effect.fn(function* (context, debug, dryRun) {
 							),
 						clientSecret: async () =>
 							await runEffect(
-								text({
+								password({
 									message: 'GitHub Client Secret',
-									placeholder: 'your-github-client-secret',
 								})
 							),
 						redirectUri: async () =>
@@ -425,9 +424,8 @@ export const env: EffectStepFn = Effect.fn(function* (context, debug, dryRun) {
 							),
 						clientSecret: async () =>
 							await runEffect(
-								text({
+								password({
 									message: 'Discord Client Secret',
-									placeholder: 'your-discord-client-secret',
 								})
 							),
 						redirectUri: async () =>
@@ -460,9 +458,8 @@ export const env: EffectStepFn = Effect.fn(function* (context, debug, dryRun) {
 							),
 						clientSecret: async () =>
 							await runEffect(
-								text({
+								password({
 									message: 'Google Client Secret',
-									placeholder: 'your-google-client-secret',
 								})
 							),
 						redirectUri: async () =>
@@ -495,9 +492,8 @@ export const env: EffectStepFn = Effect.fn(function* (context, debug, dryRun) {
 							),
 						clientSecret: async () =>
 							await runEffect(
-								text({
+								password({
 									message: 'Auth0 Client Secret',
-									placeholder: 'your-auth0-client-secret',
 								})
 							),
 						domain: async () =>
