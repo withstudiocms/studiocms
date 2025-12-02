@@ -35,9 +35,10 @@
   "files": [
     "dist",
     "src",
-    "db",
+    "utils",
     "public",
     "start.mjs",
+    "resolver.mjs",
     "logger.mjs"
   ],
   "devDependencies": {

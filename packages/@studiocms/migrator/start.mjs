@@ -1,11 +1,12 @@
 #!/usr/bin/env node
-import * as path from 'node:path';
-import { fileURLToPath, pathToFileURL } from 'node:url';
+import { join } from 'node:path';
+import { pathToFileURL } from 'node:url';
 import { loadConfigFile, parseAndMerge } from '@withstudiocms/config-utils';
 import dotenv from 'dotenv';
 import { configPaths } from 'studiocms/consts';
 import { StudioCMSOptionsSchema } from 'studiocms/schemas';
-import { Logger } from './logger.mjs';
+import { Logger } from './utils/logger.mjs';
+import createPathResolver from './utils/resolver.mjs';
 
 const logger = new Logger({ level: 'info' }, '@studiocms/migrator');
 
@@ -39,7 +40,7 @@ const logger = new Logger({ level: 'info' }, '@studiocms/migrator');
 async function loadCMSConfigFile() {
 	try {
 		// Determine the root path of the project
-		const rootPath = pathToFileURL(`${process.cwd()}/`);
+		const rootPath = pathToFileURL(join(createPathResolver(process.cwd()).resolve('.'), './'));
 
 		// Load StudioCMS Config file
 		const configFile = await loadConfigFile(rootPath, configPaths, 'db-migrator-util');
@@ -70,9 +71,6 @@ async function loadCMSConfigFile() {
 	}
 }
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
 /**
  * Asynchronously serves the Astro-based UI for the migrator tool.
  *
@@ -98,9 +96,11 @@ async function serveUI() {
 	const { default: node } = await import('@astrojs/node');
 	const { default: ui } = await import('@studiocms/ui');
 
+	const pkgRootPath = createPathResolver(import.meta.url).resolve('.');
+
 	try {
 		await astro.dev({
-			root: __dirname,
+			root: pkgRootPath,
 			output: 'server',
 			configFile: false,
 			logLevel: 'error',

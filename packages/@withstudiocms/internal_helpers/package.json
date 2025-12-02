@@ -62,6 +62,10 @@
     "./headConfigSchema": {
       "types": "./dist/headConfigSchema.d.ts",
       "default": "./dist/headConfigSchema.js"
+    },
+    "./pathResolver": {
+      "types": "./dist/pathResolver.d.ts",
+      "default": "./dist/pathResolver.js"
     }
   },
   "type": "module",
