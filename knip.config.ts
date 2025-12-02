@@ -64,6 +64,7 @@ const atStudioCMSPackages = [
 	'md',
 	'html',
 	'wysiwyg',
+	'migrator',
 ] as const;
 
 /**
@@ -161,6 +162,9 @@ const extras = (pkg: string) => {
 			ignore: ['**/node_modules/**', '**/dist/**', '**/scratchpad/**', '**/migrations/**'],
 			ignoreDependencies: ['@libsql/client'],
 		},
+		migrator: {
+			ignoreDependencies: ['sharp'],
+		},
 		...ignoredVirtuals,
 	};
 	const supportsExtras = Object.keys(extrasMap).includes(pkg);
@@ -171,7 +175,13 @@ const config: KnipConfig = {
 	exclude: ['duplicates', 'optionalPeerDependencies'],
 	workspaces: {
 		'.': {
-			ignoreDependencies: ['@changesets/config', 'studiocms', 'vite', 'allure-js-commons'],
+			ignoreDependencies: [
+				'@changesets/config',
+				'studiocms',
+				'vite',
+				'allure-js-commons',
+				'@studiocms/migrator',
+			],
 			ignoreBinaries: [/ci:.*$/, /bundle-test:.*$/],
 			entry: ['.github/workflows/*.yml', '.github/scripts/**/*.mjs', 'scripts/**/*.mjs'],
 			project: ['.github/scripts/**/*.mjs', 'scripts/**/*.mjs'],

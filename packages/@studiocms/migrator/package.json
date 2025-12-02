@@ -1,0 +1,63 @@
+{
+  "name": "@studiocms/migrator",
+  "type": "module",
+  "version": "0.1.0-beta.0",
+  "description": "Tool for migrating from AstroDB based StudioCMS to Kysely based StudioCMS.",
+  "author": {
+    "name": "withstudiocms",
+    "url": "https://studiocms.dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/withstudiocms/studiocms.git",
+    "directory": "packages/@studiocms/migrator"
+  },
+  "contributors": [
+    "Adammatthiesen",
+    "jdtjenkins",
+    "dreyfus92",
+    "code.spirit"
+  ],
+  "bin": {
+    "studiocms-migrator": "./start.mjs",
+    "@studiocms/migrator": "./start.mjs"
+  },
+  "scripts": {
+    "astro": "astro"
+  },
+  "license": "MIT",
+  "homepage": "https://studiocms.dev",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "sideEffects": false,
+  "files": [
+    "dist",
+    "src",
+    "db",
+    "public",
+    "start.mjs",
+    "logger.mjs"
+  ],
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "typescript": "catalog:"
+  },
+  "dependencies": {
+    "@astrojs/db": "catalog:astrojs",
+    "@astrojs/node": "catalog:astrojs",
+    "@libsql/client": "catalog:kysely",
+		"@studiocms/ui": "catalog:studiocms",
+    "@withstudiocms/config-utils": "workspace:*",
+		"@withstudiocms/effect": "workspace:*",
+		"@withstudiocms/kysely": "workspace:*",
+    "astro": "catalog:astrojs",
+		"dotenv": "^17.2.3",
+    "drizzle-orm": "catalog:min",
+    "sharp": "catalog:"
+  },
+  "peerDependencies": {
+    "studiocms": "workspace:*"
+  }
+}

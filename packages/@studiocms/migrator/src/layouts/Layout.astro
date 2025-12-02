@@ -1,0 +1,30 @@
+---
+import { Toaster } from 'studiocms:ui/components/toaster';
+import PageHeader from '../components/PageHeader.astro';
+import '../fonts/css/onest-variable.css';
+import '../styles/global.css';
+import 'studiocms:ui/prose';
+
+interface Props {
+	title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width" />
+        <meta name="generator" content={Astro.generator} />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <title>{title}</title>
+    </head>
+    <body>
+        <Toaster />
+        <main>
+            <PageHeader />
+            <slot />
+        </main>
+    </body>
+</html>

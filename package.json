@@ -30,13 +30,16 @@
     "build:studiocms": "pnpm build:packages",
     "build:packages": "pnpm --filter studiocms --filter @studiocms/* --filter @withstudiocms/* build",
 
+    "create-migration": "pnpm --filter @withstudiocms/kysely create-migration",
+
     "playground:dev": "pnpm dev",
     "playground:preview": "pnpm --filter node-playground preview",
     "playground:build": "pnpm --filter node-playground build",
     "playground:cli": "pnpm --filter node-playground studiocms",
     "playground:migrate": "pnpm --filter node-playground migrate",
 
-    "dev": "pnpm --stream --filter studiocms --filter @studiocms/* --filter @withstudiocms/* --filter node-playground -r --parallel dev",
+    "dev": "pnpm --stream --filter studiocms --filter @studiocms/* --filter=!@studiocms/migrator --filter @withstudiocms/* --filter node-playground -r --parallel dev",
+    "dev:migrator": "pnpm build:packages && pnpm exec studiocms-migrator",
 
     "ci:lint": "biome ci --reporter=github",
     "ci:install": "pnpm install --frozen-lockfile",
@@ -66,6 +69,7 @@
     "@types/node": "catalog:",
     "@vitest/coverage-v8": "^3.2.4",
     "@withstudiocms/buildkit": "workspace:*",
+    "@studiocms/migrator": "workspace:*",
     "@inox-tools/astro-tests": "^0.8.0",
     "allure-js-commons": "^3.4.2",
     "allure-vitest": "^3.4.2",

@@ -23,7 +23,7 @@ const defaultConfig = StudioCMSOptionsSchema.parse({});
 /**
  * Parse and merge the loaded configuration with the default configuration
  */
-const parseAndMerge = Effect.fn((config: StudioCMSOptions) =>
+const parseAndMerge = Effect.fn((config: StudioCMSOptions | undefined) =>
 	Effect.try(() => _parseAndMerge(StudioCMSOptionsSchema, defaultConfig, config))
 );
 

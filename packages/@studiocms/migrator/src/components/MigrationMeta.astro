@@ -1,0 +1,74 @@
+---
+import { Badge } from 'studiocms:ui/components/badge';
+import { astroDBToKyselyMap, type MigrationMetaTables } from '../lib/tableMap.js';
+
+interface Props {
+	migrationMetaData: MigrationMetaTables;
+}
+
+const { migrationMetaData } = Astro.props;
+---
+
+<table>
+    <thead>
+        <tr>
+            <th>Table</th>
+            <th>AstroDB Records</th>
+            <th>StudioCMS Records</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        {
+            Object.entries(migrationMetaData.astro).map(
+                ([tableName, astroCount]) => {
+                    const kyselyCount =
+                        migrationMetaData.kysely[
+                            astroDBToKyselyMap[
+                                tableName as keyof typeof astroDBToKyselyMap
+                            ]
+                        ] || 0;
+                    const isMigrated =
+                        astroCount === kyselyCount && astroCount > 0;
+
+                    const isDualEmpty = astroCount === 0 && kyselyCount === 0;
+
+                    return (
+                        <tr class:list={[isDualEmpty ? "not-applicable" : ""]}>
+                            <td>{tableName}</td>
+                            <td>{astroCount}</td>
+                            <td>{kyselyCount}</td>
+                            <td>
+                                {isDualEmpty ? (
+                                    <Badge
+                                        color="mono"
+                                        label="Not Applicable"
+                                        rounding="semi"
+                                        size="sm"
+                                        class="status"
+                                    />
+                                ) : isMigrated ? (
+                                    <Badge
+                                        color="success"
+                                        label="Migrated"
+                                        rounding="semi"
+                                        size="sm"
+                                        class="status"
+                                    />
+                                ) : (
+                                    <Badge
+                                        label="Pending"
+                                        color="warning"
+                                        rounding="semi"
+                                        size="sm"
+                                        class="status"
+                                    />
+                                )}
+                            </td>
+                        </tr>
+                    );
+                },
+            )
+        }
+    </tbody>
+</table>

@@ -1,0 +1,71 @@
+---
+import { Badge } from 'studiocms:ui/components/badge';
+import type { MigrationInfo } from '@withstudiocms/kysely/kysely';
+
+interface Props {
+	migrationStatus: readonly MigrationInfo[];
+}
+
+const { migrationStatus } = Astro.props;
+
+/**
+ * Cleans up the migration name by removing timestamp prefixes and formatting.
+ *
+ * @param name - The original migration name.
+ * @returns The cleaned and formatted migration name.
+ */
+const cleanName = (name: string) => {
+	const nameMatcher = name.match(/^\d{8}T\d{6}_(.+)$/);
+	const cleanName = nameMatcher ? nameMatcher[1] : name;
+
+	// Uppercase the first letter of each word and replace underscores with spaces
+	const formattedName = cleanName
+		.split('_')
+		.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+		.join(' ');
+	return formattedName;
+};
+---
+
+<table class="migration">
+    <thead>
+        <tr>
+            <th>Migration Name</th>
+            <th>Status</th>
+            <th>Executed At</th>
+        </tr>
+    </thead>
+    <tbody>
+        {
+            migrationStatus.map((migration) => (
+                <tr>
+                    <td>{cleanName(migration.name)}</td>
+                    <td>
+                        {migration.executedAt ? (
+                            <Badge
+                                label="Applied"
+                                color="success"
+                                rounding="semi"
+                                size="sm"
+                                class="status"
+                            />
+                        ) : (
+                            <Badge
+                                label="Pending"
+                                color="warning"
+                                rounding="semi"
+                                size="sm"
+                                class="status"
+                            />
+                        )}
+                    </td>
+                    <td>
+                        {migration.executedAt
+                            ? new Date(migration.executedAt).toLocaleString()
+                            : "N/A"}
+                    </td>
+                </tr>
+            ))
+        }
+    </tbody>
+</table>

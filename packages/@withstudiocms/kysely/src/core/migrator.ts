@@ -1,7 +1,11 @@
-import { promises as fs } from 'node:fs';
-import * as path from 'node:path';
 import { Effect } from 'effect';
-import { type Dialect, FileMigrationProvider, type Kysely, Migrator } from 'kysely';
+import {
+	type Dialect,
+	type Kysely,
+	type Migration,
+	type MigrationProvider,
+	Migrator,
+} from 'kysely';
 import { kyselyClient, makeDBClientLive } from './client.js';
 import { MigratorError } from './errors.js';
 
@@ -48,6 +52,37 @@ const useWithErrorPromise = <A>(_try: () => Promise<A>) =>
 	});
 
 /**
+ * A MigrationProvider that directly serves a provided set of migrations.
+ *
+ * This class implements the MigrationProvider interface by storing a static
+ * record of migrations passed in at construction time. When getMigrations()
+ * is called, it simply returns this stored record.
+ *
+ * @remarks
+ * - This provider is useful for scenarios where migrations are defined
+ *   programmatically or imported as modules, rather than read from files.
+ *
+ * @example
+ * const migrations = {
+ *   '20230101T000000_initial': { up: async (db) => { ... }, down: async (db) => { ... } },
+ *   '20230201T000000_add_users': { up: async (db) => { ... }, down: async (db) => { ... } },
+ * };
+ *
+ * const provider = new PassthroughMigrationProvider(migrations);
+ */
+export class PassthroughMigrationProvider implements MigrationProvider {
+	constructor(migrations: Record<string, Migration>) {
+		this.migrations = migrations;
+	}
+
+	private migrations: Record<string, Migration>;
+
+	async getMigrations(): Promise<Record<string, Migration>> {
+		return this.migrations;
+	}
+}
+
+/**
  * Create a factory for constructing a Kysely `Migrator` that loads migration files from a filesystem folder.
  *
  * @typeParam Schema - The database schema type parameter for the provided `Kysely` instance.
@@ -63,17 +98,13 @@ const useWithErrorPromise = <A>(_try: () => Promise<A>) =>
  * const migratorInstance = getMigrator(kyselyInstance);
  */
 const kyselyMigrator =
-	(migrationFolder: string) =>
+	(migrationFolder: Record<string, Migration>) =>
 	<Schema>(db: Kysely<Schema>) =>
 		useWithError(
 			() =>
 				new Migrator({
 					db,
-					provider: new FileMigrationProvider({
-						fs,
-						path,
-						migrationFolder,
-					}),
+					provider: new PassthroughMigrationProvider(migrationFolder),
 				})
 		);
 
@@ -96,7 +127,7 @@ const kyselyMigrator =
  * Note: This function returns an Effect (deferred computation). You must run/interpret the Effect
  * to obtain and invoke the migration helpers.
  */
-const makeMigrator = <Schema>(migrationFolder: string) =>
+const makeMigrator = <Schema>(migrationFolder: Record<string, Migration>) =>
 	Effect.gen(function* () {
 		const base = yield* kyselyClient<Schema>().pipe(
 			Effect.flatMap(kyselyMigrator(migrationFolder))
@@ -131,7 +162,10 @@ const makeMigrator = <Schema>(migrationFolder: string) =>
  * @example
  * // Run the returned Effect to obtain and use the migrator in your application runtime.
  */
-export const makeMigratorLive = <Schema>(dialect: Dialect, migrationFolder: string) =>
+export const makeMigratorLive = <Schema>(
+	dialect: Dialect,
+	migrationFolder: Record<string, Migration>
+) =>
 	Effect.gen(function* () {
 		const { db } = yield* makeDBClientLive<Schema>(dialect);
 		return yield* makeMigrator<Schema>(migrationFolder).pipe(

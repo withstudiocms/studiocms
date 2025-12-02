@@ -1,11 +1,40 @@
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
-import type { Dialect } from 'kysely';
+/// <reference types="vite/client" />
+/** biome-ignore-all lint/suspicious/noExplicitAny: Kysely Requirement */
+import type { Dialect, Kysely, Migration } from 'kysely';
 import { makeMigratorLive } from './core/migrator.js';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const migrationsFolder = path.join(__dirname, './migrations');
+/**
+ * Dynamically imports a migration module by its name.
+ *
+ * @param name - The name of the migration file (without extension).
+ * @returns A promise that resolves to the imported Migration object.
+ */
+const importMigration = async (name: string): Promise<Migration> => {
+	if (import.meta.env?.VITEST) {
+		// When using vitest, we need to dynamically import the migrations directly from the built dist folder
+		const migrations = import.meta.glob<{
+			up: (db: Kysely<any>) => Promise<void>;
+			down: (db: Kysely<any>) => Promise<void>;
+		}>('../dist/migrations/*.js');
+		const migrationPath = `../dist/migrations/${name}.js`;
+
+		if (!migrations[migrationPath]) {
+			throw new Error(`Migration not found: ${name}`);
+		}
+
+		const { up, down } = await migrations[migrationPath]();
+		return { up, down };
+	}
+
+	return await import(`./migrations/${name}.js`).then(({ up, down }) => ({ up, down }));
+};
+
+// Define the migrations object with all available migrations
+// This object automatically gets updated when new migrations are created via the create-migration script
+const migrationIndex: Record<string, Migration> = {
+	'20251025T040912_init': await importMigration('20251025T040912_init'),
+	'20251130T150847_drop_deprecated': await importMigration('20251130T150847_drop_deprecated'),
+};
 
 /**
  * Creates a live migrator instance bound to the package's migration folder.
@@ -16,14 +45,11 @@ const migrationsFolder = path.join(__dirname, './migrations');
  *
  * @template Schema - The database schema type; defaults to `StudioCMSDatabaseSchema`.
  * @param dialect - The SQL dialect implementation to use (e.g. Postgres, MySQL, SQLite).
- * @param migrationFolder - Optional custom migration folder path; defaults to the package migrations folder.
  * @returns A migrator instance configured for the given dialect and the package migration folder.
  *
  * @example
  * const migrator = getMigratorLive<MySchema>(yourDriver);
  * await migrator.migrateToLatest();
  */
-export const getMigratorLive = <Schema>(
-	dialect: Dialect,
-	migrationFolder: string = migrationsFolder
-) => makeMigratorLive<Schema>(dialect, migrationFolder);
+export const getMigratorLive = <Schema>(dialect: Dialect) =>
+	makeMigratorLive<Schema>(dialect, migrationIndex);

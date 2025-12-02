@@ -1,0 +1,259 @@
+---
+import { Button } from 'studiocms:ui/components/button';
+import { Card } from 'studiocms:ui/components/card';
+import { Divider } from 'studiocms:ui/components/divider';
+import { TabItem, Tabs } from 'studiocms:ui/components/tabs';
+import { runEffect } from '@withstudiocms/effect';
+import type { ComponentProps } from 'astro/types';
+import ErrorCard from '../components/ErrorCard.astro';
+import MigrationMeta from '../components/MigrationMeta.astro';
+import MigrationStatus from '../components/MigrationStatus.astro';
+import StatusTables from '../components/StatusTables.astro';
+import { runConnectionTest, searchTables } from '../db/astrodb.js';
+import {
+	getDataMigrationStatus,
+	getDialectFromEnv,
+	runConnectionTest as runStudioCMSDbConnectionTest,
+	studioCMSDbMigrator,
+} from '../db/client.js';
+import Layout from '../layouts/Layout.astro';
+import { getErrorCases } from '../lib/errors.js';
+import { astroDbTableKeys, migrationMeta } from '../lib/tableMap.js';
+
+// Test AstroDB Connection
+const isAstroDBConnected = await runConnectionTest();
+
+// Test StudioCMS DB Connection
+const isStudioCMSDbConnected = await runStudioCMSDbConnectionTest();
+
+// AstroDB Tables
+const astroDBTables = await searchTables('StudioCMS%').catch(() => []);
+
+// StudioCMS Schema Migrations
+const migrator = await studioCMSDbMigrator();
+const migrationStatus = await runEffect(migrator.status).catch(() => []);
+const migrationTotal = migrationStatus.length;
+const appliedMigrations = migrationStatus.filter((m) => m.executedAt).length;
+
+// Data Migration Status
+const dataMigrationStatus = await getDataMigrationStatus();
+
+// Determine Error Cases
+const errorCases = getErrorCases({
+	astroDBTables,
+	astroDbTableKeys,
+	appliedMigrations,
+	migrationTotal,
+	dataMigrationStatus,
+});
+
+const migrationMetaData = await migrationMeta();
+
+// Prepare Database Status Tables
+const dbStatusTables: ComponentProps<typeof StatusTables>['dbStatusTables'] = [
+	{
+		label: 'AstroDB Database',
+		conditions: [
+			{
+				label: 'Connection Status',
+				value: isAstroDBConnected ? 'Connected' : 'Not Connected',
+				color: isAstroDBConnected ? 'success' : 'danger',
+			},
+			{
+				label: 'Required Tables',
+				value:
+					astroDBTables.length >= astroDbTableKeys.length
+						? 'Available'
+						: `Missing ${astroDbTableKeys.length - astroDBTables.length} Tables`,
+				color: astroDBTables.length >= astroDbTableKeys.length ? 'success' : 'danger',
+			},
+		],
+	},
+	{
+		label: 'StudioCMS Database',
+		conditions: [
+			{
+				label: 'Connection Status',
+				value: isStudioCMSDbConnected ? 'Connected' : 'Not Connected',
+				color: isStudioCMSDbConnected ? 'success' : 'danger',
+			},
+			{
+				label: 'Dialect',
+				value: getDialectFromEnv(),
+				color: 'info',
+			},
+			{
+				label: 'Schema Migration Status',
+				value: appliedMigrations === migrationTotal ? 'Latest' : 'Pending Migrations',
+				color: appliedMigrations === migrationTotal ? 'success' : 'danger',
+			},
+			{
+				label: 'Data Migration Status',
+				value: dataMigrationStatus.canMigrate ? 'Available' : 'Not Available',
+				color: dataMigrationStatus.canMigrate ? 'success' : 'danger',
+			},
+		],
+	},
+];
+---
+<Layout title="StudioCMS Migrator">
+
+    {
+        errorCases
+            .filter((error) => error.condition)
+            .map(({ title, description }) => (
+                <ErrorCard {title} {description} />
+            ))
+    }
+
+    <Card fullWidth class="db-status-card" variant='filled'>
+
+        <div slot="header">
+            <h2>Database Status Overview</h2>
+        </div>
+
+        <div class="split-screen">
+
+            <StatusTables {dbStatusTables} />
+
+        </div>
+
+        <span class="divider-holder"><Divider /></span>
+
+        <h2>Migration Actions</h2>
+
+        <Tabs variant='starlight' syncKey='migration-type' storage='persistent'>
+
+            <TabItem label='Schema Migrations'>
+
+                <div class="button-shelf">
+                    <Button 
+                        id='run-schema-migrations-button'
+                        variant='solid' 
+                        color='primary'
+                        size="md"
+                        disabled={appliedMigrations === migrationTotal}
+                        >Run Schema Migrations
+                    </Button>
+                </div>
+
+                <MigrationStatus {migrationStatus} />
+            </TabItem>
+
+            <TabItem label='Migrate Data'>
+                
+                <div class="button-shelf">
+                    <Button 
+                        id='run-data-migrations-button'
+                        variant='solid' 
+                        color='primary'
+                        size="md"
+                        disabled={!dataMigrationStatus.canMigrate}
+                        >Run Data Migrations
+                    </Button>
+                </div>
+
+                <MigrationMeta {migrationMetaData} />
+            </TabItem>
+
+        </Tabs>
+
+    </Card>
+
+    <script>
+        import { toast } from 'studiocms:ui/components/toaster/client';
+
+        // Helpers
+
+        const $ = <E extends Element>(selector: string) => document.querySelector<E>(selector);
+
+        function resetMigrationButton(element: HTMLButtonElement, text: string) {
+            element.disabled = false;
+            element.textContent = text;
+        };
+
+        // Consts
+
+        const schemaMigrations = $<HTMLButtonElement>('#run-schema-migrations-button');
+        const dataMigrations = $<HTMLButtonElement>('#run-data-migrations-button');
+
+        // Event Listeners
+
+        schemaMigrations?.addEventListener('click', async () => {
+            schemaMigrations.disabled = true;
+            schemaMigrations.textContent = 'Running Migrations...';
+
+            try {
+                const response = await fetch('/schema-migrations', {
+                    method: 'POST',
+                });
+
+                if (response.ok) {
+                    toast({
+                        title: 'Schema Migrations Applied',
+                        description: 'All pending schema migrations have been successfully applied.',
+                        type: 'success',
+                    })
+
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 3000);
+                } else {
+                    const errorData = await response.json();
+                    toast({
+                        title: 'Error Applying Migrations',
+                        description: errorData.error,
+                        type: 'danger',
+                    });
+                    resetMigrationButton(schemaMigrations, 'Run Schema Migrations');
+                }
+            } catch (error) {
+                toast({
+                    title: 'Network Error',
+                    description: String(error),
+                    type: 'danger',
+                });
+                resetMigrationButton(schemaMigrations, 'Run Schema Migrations');
+            }
+        });
+
+        dataMigrations?.addEventListener('click', async () => {
+            dataMigrations.disabled = true;
+            dataMigrations.textContent = 'Migrating Data...';
+
+            try {
+                const response = await fetch('/data-migrations', {
+                    method: 'POST',
+                });
+
+                if (response.ok) {
+                    toast({
+                        title: 'Data Migration Completed',
+                        description: 'Data migration has been successfully completed.',
+                        type: 'success',
+                    })
+
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 3000);
+                } else {
+                    const errorData = await response.json();
+                    toast({
+                        title: 'Error During Data Migration',
+                        description: errorData.error,
+                        type: 'danger',
+                    });
+                    resetMigrationButton(dataMigrations, 'Run Data Migrations');
+                }
+            } catch (error) {
+                toast({
+                    title: 'Network Error',
+                    description: String(error),
+                    type: 'danger',
+                });
+                resetMigrationButton(dataMigrations, 'Run Data Migrations');
+            }
+        });
+    </script>
+
+</Layout>
