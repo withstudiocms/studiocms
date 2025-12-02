@@ -1,6 +1,11 @@
 import * as path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
+interface PathResolver {
+	resolve: (...segments: string[]) => string;
+	resolveURL: (...segments: string[]) => URL;
+}
+
 /**
  * Create a path resolver anchored to the provided base.
  *
@@ -25,7 +30,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
  * const absolutePath = resolver.resolve('..', 'assets', 'image.png');
  * const fileUrl = resolver.resolveURL('..', 'assets', 'image.png');
  */
-function createPathResolver(baseOption: string) {
+function createPathResolver(baseOption: string): PathResolver {
 	// Convert import.meta.url to file path if needed
 	let baseDir: string;
 

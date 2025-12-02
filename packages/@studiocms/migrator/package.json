@@ -37,9 +37,7 @@
     "src",
     "utils",
     "public",
-    "start.mjs",
-    "resolver.mjs",
-    "logger.mjs"
+    "start.mjs"
   ],
   "devDependencies": {
     "@types/node": "catalog:",
