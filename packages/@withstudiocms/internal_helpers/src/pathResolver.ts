@@ -34,13 +34,13 @@ function createPathResolver(baseOption: string): PathResolver {
 	// Convert import.meta.url to file path if needed
 	let baseDir: string;
 
-	if (typeof baseOption === 'string' && baseOption.startsWith('file://')) {
+	if (baseOption.startsWith('file://')) {
 		// It's import.meta.url - convert to directory path
 		const filePath = fileURLToPath(baseOption);
 		baseDir = path.dirname(filePath);
 	} else {
 		// It's already a regular path (process.cwd() or custom string)
-		baseDir = baseOption as string;
+		baseDir = baseOption;
 	}
 
 	return {
