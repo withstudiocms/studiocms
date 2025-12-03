@@ -22,11 +22,12 @@ import {
 	logMessages,
 	type Messages,
 } from '@withstudiocms/internal_helpers/astro-integration';
+import createPathResolver from '@withstudiocms/internal_helpers/pathResolver';
 import { readJson } from '@withstudiocms/internal_helpers/utils';
 import { type Kysely, sql } from '@withstudiocms/kysely/kysely';
 import { envField } from 'astro/config';
 import { z } from 'astro/zod';
-import { addVirtualImports, createResolver, defineIntegration } from 'astro-integration-kit';
+import { addVirtualImports, defineIntegration } from 'astro-integration-kit';
 import dotenv from 'dotenv';
 import { compare as semCompare } from 'semver';
 import { loadEnv } from 'vite';
@@ -58,7 +59,7 @@ import {
 import { VirtualModuleBuilder } from './virtuals/utils.js';
 
 // Resolver Function
-const { resolve } = createResolver(import.meta.url);
+const { resolve } = createPathResolver(import.meta.url);
 
 // Read the package.json file for the package name and version
 const { name: pkgName, version: pkgVersion } = readJson<{ name: string; version: string }>(
