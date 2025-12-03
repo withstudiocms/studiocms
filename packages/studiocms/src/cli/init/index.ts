@@ -9,8 +9,6 @@ import { appendOptionsToSteps, type EffectStepFn, type StepMap } from '../utils/
 import { env } from './steps/env.js';
 import { next } from './steps/next.js';
 
-// TODO: Refactor `initCMD` to rely on new Kysely structure instead of previous AstroDB
-
 export const debug = Cli.Options.boolean('debug').pipe(
 	Cli.Options.optional,
 	Cli.Options.withDefault(false),

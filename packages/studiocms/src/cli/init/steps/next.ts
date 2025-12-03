@@ -16,6 +16,13 @@ const commandMap: { [key: string]: string } = {
 	pnpm: 'pnpm dev',
 };
 
+const runCmdMap: { [key: string]: string } = {
+	npm: 'npm run',
+	bun: 'bun run',
+	yarn: 'yarn run',
+	pnpm: 'pnpm run',
+};
+
 export const next = (debug: boolean) =>
 	genLogger('studiocms/cli/init/steps/next')(function* () {
 		const [{ chalk, packageManager }, debugLogger] = yield* Effect.all([
@@ -24,6 +31,8 @@ export const next = (debug: boolean) =>
 		]);
 
 		const devCmd = commandMap[packageManager as keyof typeof commandMap] || 'npm run dev';
+
+		const runCmd = runCmdMap[packageManager as keyof typeof runCmdMap] || 'npm run';
 
 		yield* Effect.all([
 			debugLogger(`Dev command: ${devCmd}`),
@@ -35,7 +44,7 @@ export const next = (debug: boolean) =>
 					),
 					{
 						ln1: `Ensure your ${chalk.cyanBright('.env')} file is configured correctly.`,
-						ln3: `Run ${chalk.cyan('astro db push')} to sync your database schema.`,
+						ln3: `Run ${chalk.cyan(`${runCmd} studiocms migrate`)} to sync your database schema.`,
 						ln4: `Run ${chalk.cyan(devCmd)} to start the dev server. ${chalk.cyanBright('CTRL+C')} to stop.`,
 					}
 				)
