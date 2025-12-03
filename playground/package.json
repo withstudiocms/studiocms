@@ -25,6 +25,8 @@
     "@studiocms/wysiwyg": "workspace:*",
     "astro": "catalog:astrojs",
     "studiocms": "workspace:*",
-    "sharp": "catalog:"
+    "sharp": "catalog:",
+    "@libsql/kysely-libsql": "catalog:kysely",
+    "@libsql/client": "catalog:kysely"
   }
 }

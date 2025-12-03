@@ -7,6 +7,7 @@
   },
   "scripts": {
     "start": "node ./playground/dist/server/entry.mjs",
+    "start:env": "dotenvx run -- node ./playground/dist/server/entry.mjs",
 
     "changeset": "changeset",
     "changeset:status": "changeset status --since=origin/main",
@@ -64,6 +65,7 @@
     "@changesets/config": "^3.1.2",
     "@changesets/write": "^0.4.0",
     "@crowdin/crowdin-api-client": "^1.49.0",
+    "@dotenvx/dotenvx": "^1.51.1",
     "@effect/language-service": "^0.57.1",
     "@effect/vitest": "^0.27.0",
     "@types/node": "catalog:",

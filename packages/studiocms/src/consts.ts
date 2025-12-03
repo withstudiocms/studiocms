@@ -270,6 +270,10 @@ export const AstroConfigImageSettings: Partial<AstroConfig['image']> = {
 export const AstroConfigViteSettings: Partial<AstroConfig['vite']> = {
 	build: {
 		chunkSizeWarningLimit: 700,
+		rollupOptions: {
+			// Users will need to install these peer dependencies themselves
+			external: ['@libsql/client', '@libsql/kysely-libsql', 'pg', 'mysql2'],
+		},
 	},
 };
 
