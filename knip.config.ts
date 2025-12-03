@@ -244,7 +244,7 @@ const config: KnipConfig = {
 			ignore: ['**/*'],
 		},
 		playground: {
-			ignoreDependencies: ['sharp'],
+			ignoreDependencies: ['sharp', '@libsql/client', '@libsql/kysely-libsql'],
 			astro: {
 				entry: [
 					'studiocms.config.{js,cjs,mjs,ts,mts}',
