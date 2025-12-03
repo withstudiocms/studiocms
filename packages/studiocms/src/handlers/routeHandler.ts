@@ -1,6 +1,6 @@
 import { Effect, runEffect } from '@withstudiocms/effect';
 import { defineUtility } from 'astro-integration-kit';
-import { getAstroProject, type RouteConfig, StudioCMSRouteConfig } from '../frontend/routes.js';
+import { getAstroProject, type RouteConfig, StudioCMSRouteConfig } from './frontend/routes.js';
 
 /**
  * Utility that integrates StudioCMS routes into Astro's configuration during setup.

@@ -3,7 +3,7 @@ import config from 'studiocms:config';
 import { runSDK, SDKCoreJs } from 'studiocms:sdk';
 import { Card } from 'studiocms:ui/components/card';
 import { Icon } from 'studiocms:ui/components/icon';
-import User from '../../frontend/components/shared/SSRUser.astro';
+import User from '#frontend/components/shared/SSRUser.astro';
 import { sortByDate } from './utils.js';
 
 const totalUsers = await runSDK(SDKCoreJs.GET.users.all());

@@ -3,7 +3,4 @@
 // when importing Effect utilities from different parts of the codebase and packages
 /* v8 ignore start */
 export * from '@withstudiocms/effect';
-
-// Export custom Effect utils Specific to StudioCMS
-export * from './utils/effects/index.js';
 /* v8 ignore stop */
