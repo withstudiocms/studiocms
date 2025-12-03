@@ -1,7 +1,6 @@
 {
   "links": [
     "..",
-    "adam_error-middleware",
     "adam_fix-config-loader",
     "adam_helpers-rework",
     "changeset-release_main",
