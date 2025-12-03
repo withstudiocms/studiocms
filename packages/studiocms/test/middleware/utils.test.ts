@@ -10,7 +10,7 @@ import {
 	makeFallbackSiteConfig,
 	SetLocal,
 	setLocals,
-} from '../../src/frontend/middleware/utils';
+} from '#frontend/middleware/utils.js';
 import { allureTester } from '../fixtures/allureTester';
 import { parentSuiteName, sharedTags } from '../test-utils';
 

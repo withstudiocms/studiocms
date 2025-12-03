@@ -1,3 +1,4 @@
+import type { APIContext } from 'astro';
 import { StudioCMSRoutes } from '../src/virtuals/lib/routeMap';
 
 export const parentSuiteName = 'studiocms Package Tests';
@@ -32,11 +33,12 @@ export const makeRendererProps = (content: string | null) => ({
 	},
 });
 
-export const MockAstroLocals = () => {
+export const MockAstroLocals = (): APIContext['locals'] => {
 	const date = new Date();
 	return {
 		StudioCMS: {
 			siteConfig: {
+				id: '',
 				data: {
 					title: 'Test Site',
 					description: 'A test site for StudioCMS',
@@ -51,7 +53,6 @@ export const MockAstroLocals = () => {
 					siteIcon: null,
 					_config_version: '1.0.0',
 				},
-				lastCacheUpdate: date,
 			},
 			defaultLang: 'en',
 			latestVersion: {

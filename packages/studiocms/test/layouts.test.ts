@@ -1,7 +1,7 @@
 /// <reference types="astro/client" />
 import { describe, expect } from 'vitest';
-import AuthLayout from '../src/frontend/layouts/AuthLayout.astro';
-import FirstTimeSetupLayout from '../src/frontend/layouts/FirstTimeSetupLayout.astro';
+import AuthLayout from '#frontend/layouts/AuthLayout.astro';
+import FirstTimeSetupLayout from '#frontend/layouts/FirstTimeSetupLayout.astro';
 import { allureTester } from './fixtures/allureTester';
 import { parentSuiteName, sharedTags } from './test-utils';
 

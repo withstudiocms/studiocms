@@ -1,5 +1,5 @@
 import { describe, expect } from 'vitest';
-import { providerData, showOAuth } from '../../src/frontend/components/shared/oAuthButtonProviders';
+import { providerData, showOAuth } from '#frontend/components/shared/oAuthButtonProviders.js';
 import {
 	allowedIdentifiers,
 	sortByDate,

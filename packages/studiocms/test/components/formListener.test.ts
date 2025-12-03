@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { beforeEach, describe, expect, vi } from 'vitest';
-import { formListener } from '../../src/frontend/scripts/auth/formListener';
+import { formListener } from '#frontend/scripts/auth/formListener.js';
 import { allureTesterJsDom } from '../fixtures/allureTester-jsdom';
 import { parentSuiteName, sharedTags } from '../test-utils';
 
