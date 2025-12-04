@@ -94,9 +94,6 @@ catalogs:
     '@astrojs/markdown-remark':
       specifier: ^6.3.3
       version: 6.3.9
-    '@libsql/client':
-      specifier: ^0.15.15
-      version: 0.15.15
     astro:
       specifier: ^5.12.9
       version: 5.16.2
@@ -813,9 +810,6 @@ importers:
 
   packages/@withstudiocms/effect:
     dependencies:
-      '@astrojs/db':
-        specifier: '>=0.17.2'
-        version: 0.18.3(@types/pg@8.15.6)(kysely@0.28.8)(mysql2@3.15.3)(pg@8.16.3)
       '@clack/prompts':
         specifier: ^0.11.0
         version: 0.11.0
@@ -828,18 +822,12 @@ importers:
       '@effect/platform-node':
         specifier: catalog:effect
         version: 0.102.0(@effect/cluster@0.53.5(@effect/platform@0.93.5(effect@3.19.8))(@effect/rpc@0.72.2(@effect/platform@0.93.5(effect@3.19.8))(effect@3.19.8))(@effect/sql@0.48.0(@effect/experimental@0.57.4(@effect/platform@0.93.5(effect@3.19.8))(effect@3.19.8))(@effect/platform@0.93.5(effect@3.19.8))(effect@3.19.8))(@effect/workflow@0.13.0(@effect/experimental@0.57.4(@effect/platform@0.93.5(effect@3.19.8))(effect@3.19.8))(@effect/platform@0.93.5(effect@3.19.8))(@effect/rpc@0.72.2(@effect/platform@0.93.5(effect@3.19.8))(effect@3.19.8))(effect@3.19.8))(effect@3.19.8))(@effect/platform@0.93.5(effect@3.19.8))(@effect/rpc@0.72.2(@effect/platform@0.93.5(effect@3.19.8))(effect@3.19.8))(@effect/sql@0.48.0(@effect/experimental@0.57.4(@effect/platform@0.93.5(effect@3.19.8))(effect@3.19.8))(@effect/platform@0.93.5(effect@3.19.8))(effect@3.19.8))(effect@3.19.8)
-      '@libsql/client':
-        specifier: catalog:min
-        version: 0.15.15
       astro:
         specifier: catalog:min
         version: 5.16.2(@types/node@22.19.1)(jiti@2.6.1)(rollup@4.53.3)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
       deepmerge-ts:
         specifier: 'catalog:'
         version: 7.1.5
-      drizzle-orm:
-        specifier: catalog:min
-        version: 0.42.0(@libsql/client@0.15.15)(@types/pg@8.15.6)(kysely@0.28.8)(mysql2@3.15.3)(pg@8.16.3)
       effect:
         specifier: catalog:effect
         version: 3.19.8
