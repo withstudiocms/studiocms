@@ -375,7 +375,7 @@ export const studiocms = (): AstroIntegration => {
 				const codegenDir = createCodegenDir();
 				cacheJsonFile = new URL('cache.json', codegenDir);
 
-				if (!exists(cacheJsonFile.href)) {
+				if (!exists(cacheJsonFile)) {
 					writeFileSync(cacheJsonFile, '{}', 'utf-8');
 				}
 			},
