@@ -90,6 +90,10 @@
 			"types": "./dist/runtime/index.d.ts",
 			"default": "./dist/runtime/index.js"
 		},
+		"#utils/*": {
+			"types": "./dist/utils/*.d.ts",
+			"default": "./dist/utils/*.js"
+		},
 		"#frontend/*": "./frontend/*"
 	},
 	"exports": {

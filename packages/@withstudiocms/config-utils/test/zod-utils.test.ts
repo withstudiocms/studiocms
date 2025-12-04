@@ -120,9 +120,8 @@ describe(parentSuiteName, () => {
 					})
 					.default({ d: false }),
 			}),
-			inlineConfig: { a: 'inline', b: 2, c: { d: false } },
 			configFile: { a: 'file', c: { d: true } },
-			expected: { a: 'file', b: 2, c: { d: true } },
+			expected: { a: 'file', b: 1, c: { d: true } },
 		},
 		{
 			schema: z.object({
@@ -134,21 +133,6 @@ describe(parentSuiteName, () => {
 					})
 					.default({ d: false }),
 			}),
-			inlineConfig: { a: 'inline', b: 2, c: { d: true } },
-			configFile: undefined,
-			expected: { a: 'inline', b: 2, c: { d: true } },
-		},
-		{
-			schema: z.object({
-				a: z.string().default('A'),
-				b: z.number().default(1),
-				c: z
-					.object({
-						d: z.boolean().default(false),
-					})
-					.default({ d: false }),
-			}),
-			inlineConfig: undefined,
 			configFile: undefined,
 			expected: { a: 'A', b: 1, c: { d: false } },
 		},
@@ -162,33 +146,42 @@ describe(parentSuiteName, () => {
 					})
 					.default({ d: false }),
 			}),
-			inlineConfig: undefined,
+			configFile: undefined,
+			expected: { a: 'A', b: 1, c: { d: false } },
+		},
+		{
+			schema: z.object({
+				a: z.string().default('A'),
+				b: z.number().default(1),
+				c: z
+					.object({
+						d: z.boolean().default(false),
+					})
+					.default({ d: false }),
+			}),
 			configFile: { b: 'not-a-number' },
 			error: /Invalid Config Options/,
 		},
-	].forEach(({ schema, inlineConfig, configFile, expected, error }) => {
+	].forEach(({ schema, configFile, expected, error }) => {
 		test('Zod Utils - parseAndMerge Tests', async () => {
 			await allure.parentSuite(parentSuiteName);
 			await allure.suite(localSuiteName);
 			await allure.subSuite('parseAndMerge Test Set');
 			await allure.tags(...sharedTags);
 
-			await allure.parameter(
-				'testCase',
-				JSON.stringify({ inlineConfig, configFile, expected, error })
-			);
+			await allure.parameter('testCase', JSON.stringify({ configFile, expected, error }));
 
 			if (error) {
 				await allure.step('Should throw error for invalid config', async (ctx) => {
-					await ctx.parameter('input', JSON.stringify({ inlineConfig, configFile }));
+					await ctx.parameter('input', JSON.stringify({ configFile }));
 					await ctx.parameter('expectedError', error.toString());
 					// @ts-expect-error - testing error case
-					expect(() => parseAndMerge(schema, inlineConfig, configFile)).toThrow(error);
+					expect(() => parseAndMerge(schema, configFile)).toThrow(error);
 				});
 			} else {
 				await allure.step('Should parse and merge config successfully', async (ctx) => {
-					await ctx.parameter('input', JSON.stringify({ inlineConfig, configFile }));
-					const result = parseAndMerge(schema, inlineConfig, configFile);
+					await ctx.parameter('input', JSON.stringify({ configFile }));
+					const result = parseAndMerge(schema, configFile);
 					expect(result).toEqual(expected);
 				});
 			}

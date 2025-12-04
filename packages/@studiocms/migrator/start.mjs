@@ -52,11 +52,8 @@ async function loadCMSConfigFile() {
 			logger.warn('No StudioCMS config file found, using default configuration.');
 		}
 
-		// Get the minimal default configuration
-		const defaultConfig = StudioCMSOptionsSchema.parse({});
-
 		// Merge user config with default config
-		const userConfig = parseAndMerge(StudioCMSOptionsSchema, defaultConfig, configFile);
+		const userConfig = parseAndMerge(StudioCMSOptionsSchema, configFile);
 
 		// Set custom environment variables based on user config
 		const customENV = { STUDIOCMS_DIALECT: userConfig.db.dialect };
