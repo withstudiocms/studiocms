@@ -83,16 +83,13 @@ export function deepRemoveDefaults(schema: z.ZodTypeAny): z.ZodTypeAny {
  */
 export function parseAndMerge<T extends z.ZodTypeAny>(
 	schema: T,
-	inlineConfig?: T['_output'],
 	configFile?: T['_input']
 ): T['_output'] {
 	try {
 		const ZeroDefaultsSchema = deepRemoveDefaults(schema);
-		if (!configFile) {
-			return inlineConfig ?? schema.parse({});
-		}
+		const defaultOpts = schema.parse({});
 		const parsedConfigFile = ZeroDefaultsSchema.parse(configFile);
-		return deepmerge(inlineConfig ?? {}, parsedConfigFile);
+		return deepmerge(defaultOpts, parsedConfigFile);
 	} catch (error) {
 		if (error instanceof Error) {
 			throw new Error(`Invalid Config Options: ${error.message}`);
