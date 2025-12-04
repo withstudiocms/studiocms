@@ -8,6 +8,15 @@ function escapeRegExp(str: string): string {
 }
 
 /**
+ * Converts an empty string to undefined
+ * @param value - The string to check
+ * @returns Undefined if the string is empty, otherwise the original string
+ */
+function emptyStringToUndefined(value: string): string | undefined {
+	return value.trim() === '' ? undefined : value;
+}
+
+/**
  * Converts a string into a URL-safe slug
  * @param text - The text to slugify
  * @param options - Optional configuration
@@ -20,7 +29,8 @@ export function slugify(
 		lowercase?: boolean;
 	} = {}
 ): string {
-	const { separator = '-', lowercase = true } = options;
+	const { separator: rawSeparator = '-', lowercase = true } = options;
+	const separator = emptyStringToUndefined(rawSeparator) || '-'; // avoid empty separator causing invalid RegExp
 	const escapedSeparator = escapeRegExp(separator);
 
 	let slug = text
@@ -30,7 +40,7 @@ export function slugify(
 		.replace(new RegExp(`[^a-zA-Z0-9\\s${escapedSeparator}]`, 'g'), '') // Remove invalid characters
 		.trim()
 		.replace(/\s+/g, separator) // Replace spaces with separator
-		.replace(new RegExp(`${escapedSeparator}+`, 'g'), separator); // Replace multiple separators with single
+		.replace(new RegExp(`(?:${escapedSeparator})+`, 'g'), separator); // Replace multiple separators with single
 
 	if (lowercase) {
 		slug = slug.toLowerCase();
