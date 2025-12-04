@@ -11,6 +11,7 @@ import {
 	parseAPIContextJson,
 	Schema,
 } from '@withstudiocms/effect';
+import { StudioCMSPageData, StudioCMSPageFolderStructure } from '@withstudiocms/kysely';
 import { verifyAuthTokenFromHeader } from '../../utils/auth-token.js';
 
 export class FolderBase extends Schema.Class<FolderBase>('FolderBase')({
@@ -78,6 +79,11 @@ export const { GET, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 					return apiResponseLogger(400, 'Invalid form data, folderName is required');
 				}
 
+				// Ensure parent folder is not the same as the folder being edited
+				if (parentFolder === id) {
+					return apiResponseLogger(400, 'A folder cannot be its own parent');
+				}
+
 				const folderData = yield* sdk.UPDATE.folder({
 					id,
 					name: folderName,
@@ -103,6 +109,52 @@ export const { GET, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 					verifyAuthTokenFromHeader(ctx),
 				]);
 
+				/**
+				 * Check for child folders before deletion
+				 */
+				const checkForChildrenFolders = sdk.dbService.withCodec({
+					encoder: Schema.String,
+					decoder: Schema.Array(StudioCMSPageFolderStructure),
+					callbackFn: (client, id) =>
+						client((db) =>
+							db
+								.selectFrom('StudioCMSPageFolderStructure')
+								.where('parent', '=', id)
+								.selectAll()
+								.execute()
+						),
+				});
+
+				/**
+				 * Check for child pages before deletion
+				 */
+				const checkForChildrenPages = sdk.dbService.withCodec({
+					encoder: Schema.String,
+					decoder: Schema.Array(StudioCMSPageData),
+					callbackFn: (client, id) =>
+						client((db) =>
+							db
+								.selectFrom('StudioCMSPageData')
+								.where('parentFolder', '=', id)
+								.selectAll()
+								.execute()
+						),
+				});
+
+				/**
+				 * Check for any children (folders or pages) before deletion
+				 */
+				const checkForChildren = Effect.fn((id: string) =>
+					Effect.all({
+						folders: checkForChildrenFolders(id),
+						pages: checkForChildrenPages(id),
+					}).pipe(
+						Effect.map(({ folders, pages }) => {
+							return { hasChildren: folders.length > 0 || pages.length > 0 };
+						})
+					)
+				);
+
 				if (user instanceof Response) {
 					return user;
 				}
@@ -123,6 +175,15 @@ export const { GET, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 
 				if (!folder) {
 					return apiResponseLogger(404, 'Folder not found');
+				}
+
+				const { hasChildren } = yield* checkForChildren(id);
+
+				if (hasChildren) {
+					return apiResponseLogger(
+						400,
+						'Folder cannot be deleted because it contains subfolders or pages'
+					);
 				}
 
 				yield* Effect.all([

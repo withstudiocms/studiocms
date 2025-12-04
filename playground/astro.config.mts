@@ -23,6 +23,8 @@ function appendDistPath(paths: string[]) {
 const packagePaths = [
 	...appendDistPath(studiocmsScopedPackages),
 	...appendDistPath(withstudiocmsScopedPackages),
+	'../packages/studiocms/frontend',
+	'../packages/studiocms/dist',
 ];
 
 console.log('HMR Package Paths:', packagePaths);
