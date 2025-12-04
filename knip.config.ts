@@ -163,7 +163,7 @@ const extras = (pkg: string) => {
 			ignoreDependencies: ['@libsql/client'],
 		},
 		migrator: {
-			ignoreDependencies: ['sharp', '@astrojs/db'],
+			ignoreDependencies: ['sharp'],
 		},
 		...ignoredVirtuals,
 	};
