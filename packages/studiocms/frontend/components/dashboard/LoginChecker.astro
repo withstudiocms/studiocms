@@ -1,0 +1,68 @@
+---
+import { User, VerifyEmail } from 'studiocms:auth/lib';
+import type { UserSessionData } from 'studiocms:auth/lib/types';
+import type { AvailablePermissionRanks } from '@withstudiocms/auth-kit/types';
+import { Effect } from '@withstudiocms/effect';
+
+interface Props {
+	requiredPermission: AvailablePermissionRanks;
+	currentUser: UserSessionData | null;
+}
+
+const { requiredPermission, currentUser } = Astro.props;
+
+let [isAuthorized, emailVerified] = await Effect.runPromise(
+	Effect.gen(function* () {
+		const [{ isUserAllowed }, { isEmailVerified }] = yield* Effect.all([User, VerifyEmail]);
+
+		return yield* Effect.all([
+			isUserAllowed(currentUser, requiredPermission),
+			isEmailVerified(currentUser),
+		]);
+	}).pipe(VerifyEmail.Provide)
+);
+
+let redirectProfile = Astro.locals.StudioCMS.routeMap.mainLinks.userProfile;
+
+if (Astro.locals.StudioCMS.security?.emailVerificationEnabled && emailVerified === false) {
+	isAuthorized = false;
+	redirectProfile = Astro.locals.StudioCMS.routeMap.mainLinks.unverifiedEmail;
+}
+
+const redirectLogin = Astro.locals.StudioCMS.routeMap.authLinks.loginURL;
+---
+
+<login-check
+    data-is-logged-in={`${currentUser?.isLoggedIn ?? false}`}
+    data-authorized={`${isAuthorized}`}
+    data-redirect-profile={redirectProfile}
+    data-redirect-login={redirectLogin}
+    style="display: none;"></login-check>
+
+<script>
+    if (!customElements.get("login-check")) {
+        class LoginCheck extends HTMLElement {
+            constructor() {
+                super();
+                const authorized = this.dataset.authorized;
+                const isLoggedIn = this.dataset.isLoggedIn;
+                const redirectProfile = this.dataset.redirectProfile;
+                const redirectLogin = this.dataset.redirectLogin;
+
+                if (isLoggedIn === "false") {
+                    window.location.href = redirectLogin!;
+                }
+
+                if (window.location.pathname === redirectProfile) {
+                    return;
+                }
+
+                if (authorized === "false") {
+                    window.location.href = redirectProfile!;
+                }
+            }
+        }
+
+        customElements.define("login-check", LoginCheck);
+    }
+</script>

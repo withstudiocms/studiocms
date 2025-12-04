@@ -4,7 +4,7 @@ import path from 'node:path';
 import { AstroError } from 'astro/errors';
 import * as cheerio from 'cheerio';
 import sanitizeHtml from 'sanitize-html';
-import { Console, Effect, genLogger } from 'studiocms/effect';
+import { type ConfigError, Console, Effect, genLogger } from 'studiocms/effect';
 import TurndownService from 'turndown';
 import {
 	APIEndpointConfig,
@@ -110,7 +110,7 @@ export class WordPressAPIUtils extends Effect.Service<WordPressAPIUtils>()('Word
 			// biome-ignore lint/suspicious/noExplicitAny: This is a dynamic function that could return anything as an array
 			results: any[] = []
 			// biome-ignore lint/suspicious/noExplicitAny: This is a dynamic function that could return anything as an array
-		): Effect.Effect<any[], AstroError, never> =>
+		): Effect.Effect<any[], ConfigError.ConfigError | AstroError, never> =>
 			genLogger('@studiocms/devapps/effects/WordPressAPI/utils.effect.fetchAll')(function* () {
 				url.searchParams.set('per_page', '100');
 				url.searchParams.set('page', String(page));

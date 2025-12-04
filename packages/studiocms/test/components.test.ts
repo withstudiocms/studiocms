@@ -1,15 +1,15 @@
 /// <reference types="astro/client" />
 import { describe, expect } from 'vitest';
-import FallbackCanvas from '../src/frontend/components/auth/FallbackCanvas.astro';
-import OAuthButton from '../src/frontend/components/auth/OAuthButton.astro';
-import OAuthButtonStack from '../src/frontend/components/auth/OAuthButtonStack.astro';
-import StaticAuthCheck from '../src/frontend/components/auth/StaticAuthCheck.astro';
-import StudioCMSLogoSVG from '../src/frontend/components/auth/StudioCMSLogoSVG.astro';
-import ThreeCanvasLoader from '../src/frontend/components/auth/ThreeCanvasLoader.astro';
-import PageHeader from '../src/frontend/components/first-time-setup/PageHeader.astro';
-import Code from '../src/frontend/components/shared/Code.astro';
-import SSRUser from '../src/frontend/components/shared/SSRUser.astro';
-import ThemeManager from '../src/frontend/components/shared/ThemeManager.astro';
+import FallbackCanvas from '#frontend/components/auth/FallbackCanvas.astro';
+import OAuthButton from '#frontend/components/auth/OAuthButton.astro';
+import OAuthButtonStack from '#frontend/components/auth/OAuthButtonStack.astro';
+import StaticAuthCheck from '#frontend/components/auth/StaticAuthCheck.astro';
+import StudioCMSLogoSVG from '#frontend/components/auth/StudioCMSLogoSVG.astro';
+import ThreeCanvasLoader from '#frontend/components/auth/ThreeCanvasLoader.astro';
+import PageHeader from '#frontend/components/first-time-setup/PageHeader.astro';
+import Code from '#frontend/components/shared/Code.astro';
+import SSRUser from '#frontend/components/shared/SSRUser.astro';
+import ThemeManager from '#frontend/components/shared/ThemeManager.astro';
 import { allureTester } from './fixtures/allureTester';
 import { parentSuiteName, sharedTags } from './test-utils';
 

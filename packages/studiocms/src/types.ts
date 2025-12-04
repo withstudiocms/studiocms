@@ -106,8 +106,6 @@ export interface PluginRenderer {
  * This type is used within the StudioCMS system and is not intended for public use.
  *
  * Astro components do not have a properly exported type, so we use `any` here.
- *
- * @internal
  */
 // biome-ignore lint/suspicious/noExplicitAny: Astro components do not have a properly exported type
 export type Internal_SCMS_AstroComponent = (props: any) => any;

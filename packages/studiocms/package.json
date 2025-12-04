@@ -44,7 +44,7 @@
 	"sideEffects": false,
 	"files": [
 		"dist",
-		"src",
+		"frontend",
 		"LICENSE",
 		"CHANGELOG.md",
 		"README.md",
@@ -53,13 +53,44 @@
 		"ui.d.ts"
 	],
 	"scripts": {
-		"build": "buildkit build 'src/**/*.{ts,astro,css,json,png,webp,woff2,stub.js,d.ts}'",
+		"build": "buildkit build 'src/**/*.{ts,astro,css,json,png,webp,woff2,stub.js,d.ts}' --tsconfig=tsconfig.build.json",
 		"dev": "buildkit dev 'src/**/*.{ts,astro,css,json,png,webp,woff2,stub.js,d.ts}'",
 		"typecheck": "tspc -p tsconfig.tspc.json",
 		"test": "vitest"
 	},
 	"bin": {
 		"studiocms": "./studiocms-cli.mjs"
+	},
+	"imports": {
+		"#consts": {
+			"types": "./dist/consts.d.ts",
+			"default": "./dist/consts.js"
+		},
+		"#plugins": {
+			"types": "./dist/plugins.d.ts",
+			"default": "./dist/plugins.js"
+		},
+		"#schemas": {
+			"types": "./dist/schemas/index.d.ts",
+			"default": "./dist/schemas/index.js"
+		},
+		"#schemas/*": {
+			"types": "./dist/schemas/*.d.ts",
+			"default": "./dist/schemas/*.js"
+		},
+		"#types": {
+			"types": "./dist/types.d.ts",
+			"default": "./dist/types.js"
+		},
+		"#errors": {
+			"types": "./dist/errors.d.ts",
+			"default": "./dist/errors.js"
+		},
+		"#runtime": {
+			"types": "./dist/runtime/index.d.ts",
+			"default": "./dist/runtime/index.js"
+		},
+		"#frontend/*": "./frontend/*"
 	},
 	"exports": {
 		".": {
@@ -144,11 +175,11 @@
 			"default": "./dist/test-utils.js"
 		},
 		"./Renderer": "./dist/virtuals/components/Renderer.astro",
-		"./frontend/*": "./src/frontend/*",
-		"./components/*": "./src/frontend/components/*",
-		"./layouts/*": "./src/frontend/layouts/*",
-		"./styles/*": "./src/frontend/styles/*",
-		"./src/middleware/*": "./src/frontend/middleware/*"
+		"./frontend/*": "./frontend/*",
+		"./components/*": "./frontend/components/*",
+		"./layouts/*": "./frontend/layouts/*",
+		"./styles/*": "./frontend/styles/*",
+		"./src/middleware/*": "./frontend/middleware/*"
 	},
 	"type": "module",
 	"dependencies": {
