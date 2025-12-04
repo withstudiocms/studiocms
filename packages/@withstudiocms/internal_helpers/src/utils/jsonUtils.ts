@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import { fileURLToPath } from 'node:url';
 
 /**
  * Parses a JSON string and returns the resulting object.
@@ -19,6 +20,8 @@ export function readJson<T extends object>(
 	path: string | URL,
 	readFileSync: (path: string | URL, encoding: BufferEncoding) => string = fs.readFileSync
 ): T {
-	const content = readFileSync(path, 'utf-8');
+	// Convert URL objects to file paths for consistency
+	const filePath = path instanceof URL ? fileURLToPath(path) : path;
+	const content = readFileSync(filePath, 'utf-8');
 	return jsonParse<T>(content);
 }
