@@ -17,18 +17,29 @@ function emptyStringToUndefined(value: string): string | undefined {
 }
 
 /**
+ * Options for the slugify function
+ */
+export interface SlugifyOptions {
+	/**
+	 * The separator to use in the slug
+	 * @default '-'
+	 */
+	separator?: string;
+
+	/**
+	 * Whether to convert the slug to lowercase
+	 * @default true
+	 */
+	lowercase?: boolean;
+}
+
+/**
  * Converts a string into a URL-safe slug
  * @param text - The text to slugify
  * @param options - Optional configuration
  * @returns A URL-safe slug string
  */
-export function slugify(
-	text: string,
-	options: {
-		separator?: string;
-		lowercase?: boolean;
-	} = {}
-): string {
+export function slugify(text: string, options: SlugifyOptions = {}): string {
 	const { separator: rawSeparator = '-', lowercase = true } = options;
 	const separator = emptyStringToUndefined(rawSeparator) || '-'; // avoid empty separator causing invalid RegExp
 	const escapedSeparator = escapeRegExp(separator);
