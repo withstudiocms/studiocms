@@ -2,7 +2,7 @@
 export const partial = true;
 
 import { pipe } from '@withstudiocms/effect';
-import { parseMarkdown } from '../../../lib/tinyMDParser.js';
+import { parseMarkdown } from '#utils/tinyMDParser';
 
 const astroJsonData = await Astro.request.json();
 const queryParam = Astro.url.searchParams.get('content');

@@ -27,53 +27,30 @@ export const configResolverBuilder = <S extends z.ZodTypeAny>({
 	label,
 	zodSchema,
 }: ConfigResolverBuilderOpts<S>) =>
-	defineUtility('astro:config:setup')(
-		async ({ logger: l, config: { root: astroRoot } }, options: S['_input']) => {
-			let inlineConfig: S['_output'] = {} as S['_output'];
+	defineUtility('astro:config:setup')(async ({ logger: l, config: { root: astroRoot } }) => {
+		// Generate a logger for the config resolver
+		const logger = l.fork(`${label}:config`);
 
-			// Generate a logger for the config resolver
-			const logger = l.fork(`${label}:config`);
+		// Load the config file
+		const loadedConfigFile = await loadConfigFile<S['_input']>(astroRoot, configPaths, label);
 
-			// Check if inline options were provided
-			const inlineConfigExists = options !== undefined;
-
-			// If inline options are provided, parse them using the Zod schema
-			if (zodSchema) {
-				inlineConfig = parseConfig(zodSchema, options);
-			}
-
-			// Load the config file
-			const loadedConfigFile = await loadConfigFile<S['_input']>(astroRoot, configPaths, label);
-
-			// If no config file was found, return the inline config if it exists
-			if (!loadedConfigFile) {
-				logger.info('No config file found. Using inline config only.');
-				return inlineConfig;
-			}
-
-			// If inline config exists, log a warning
-			if (inlineConfigExists) {
-				logger.warn(
-					'Both an inline config and a config file were found. The config file will override the inline config during merging.'
-				);
-			}
-
-			// Parse and merge the inline config with the loaded config file
-			const mergedConfig = parseAndMerge(zodSchema, inlineConfig, loadedConfigFile);
-
-			let logMessage = 'Config file loaded and merged successfully.';
-
-			if (inlineConfigExists) {
-				logMessage += ` Warning: Inline config will be overridden by the config file, if you face any issues, try migrating your config to only use the ${label} config file.`;
-			}
-
-			logger.info(logMessage);
-
-			// Return the merged configuration object
-			// This object will contain the final configuration, validated and merged from both sources
-			return mergedConfig;
+		// If no config file was found, return the inline config if it exists
+		if (!loadedConfigFile) {
+			logger.info('No config file found. Using default configuration.');
+			return parseConfig(zodSchema, {});
 		}
-	);
+
+		// Parse and merge the inline config with the loaded config file
+		const mergedConfig = parseAndMerge(zodSchema, loadedConfigFile);
+
+		const logMessage = 'Config file loaded successfully.';
+
+		logger.info(logMessage);
+
+		// Return the merged configuration object
+		// This object will contain the final configuration, validated and merged from both sources
+		return mergedConfig;
+	});
 /* v8 ignore stop */
 
 /* v8 ignore start */

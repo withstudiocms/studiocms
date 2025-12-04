@@ -66,33 +66,35 @@ export function deepRemoveDefaults(schema: z.ZodTypeAny): z.ZodTypeAny {
 }
 
 /**
- * Parses and merges configuration objects using a Zod schema.
+ * Parses a provided configuration object against a Zod schema, merges it with the schema's defaults, and returns the validated, merged result.
  *
- * This function removes all default values from the provided schema,
- * parses the `configFile` object with the modified schema, and then
- * deeply merges the result with the `inlineConfig` object.
- *
- * If parsing fails, an error is thrown with a descriptive message.
- *
- * @typeParam T - A Zod schema type.
- * @param schema - The Zod schema to use for validation.
- * @param inlineConfig - The inline configuration object, expected to match the schema's output type.
- * @param configFile - The configuration object to parse, expected to match the schema's input type.
- * @returns The merged configuration object, conforming to the schema's output type.
- * @throws {Error} If parsing the configuration fails.
+ * @template T - A Zod schema type (extends z.ZodTypeAny).
+ * @param schema - The Zod schema used to obtain default values and to validate incoming config. Defaults are extracted by parsing an empty object.
+ * @param configFile - Optional raw config input to validate and merge with defaults. If omitted or `undefined`, the schema's defaults are returned directly.
+ * @returns The merged configuration object of type T['_output'].
+ * @throws Error - Throws an Error with a message prefixed "Invalid Config Options: " when parsing/validation fails. Unknown/parsing errors are wrapped with a generic message.
+ * @remarks
+ * - Internally, defaults are removed from a cloned schema (via deepRemoveDefaults) so that user-supplied values are validated without schema default injection.
+ * - The function first obtains the default options by parsing an empty object against the original schema, then validates the provided config (if any) against the zero-defaults schema, and finally deep-merges the parsed config into the defaults (deepmerge). User-provided values override defaults; missing values are filled from defaults.
+ * - The returned value conforms to the schema's output type (T['_output']).
+ * @example
+ * // const merged = parseAndMerge(myZodSchema, { port: 3000 });
  */
 export function parseAndMerge<T extends z.ZodTypeAny>(
 	schema: T,
-	inlineConfig?: T['_output'],
 	configFile?: T['_input']
 ): T['_output'] {
 	try {
 		const ZeroDefaultsSchema = deepRemoveDefaults(schema);
-		if (!configFile) {
-			return inlineConfig ?? schema.parse({});
+		const defaultOpts = schema.parse({});
+
+		// If configFile is undefined, return the default options directly
+		if (configFile === undefined) {
+			return defaultOpts;
 		}
+
 		const parsedConfigFile = ZeroDefaultsSchema.parse(configFile);
-		return deepmerge(inlineConfig ?? {}, parsedConfigFile);
+		return deepmerge(defaultOpts, parsedConfigFile);
 	} catch (error) {
 		if (error instanceof Error) {
 			throw new Error(`Invalid Config Options: ${error.message}`);

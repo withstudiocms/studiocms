@@ -14,17 +14,16 @@ export * from '@withstudiocms/kysely/plugin';
  * Load the StudioCMS configuration from the specified root URL
  */
 const loadConfigFile = Effect.fn((root: URL) =>
-	Effect.tryPromise(() => _loadConfigFile<StudioCMSOptions>(root, configPaths, 'migrator'))
+	Effect.tryPromise(() =>
+		_loadConfigFile<StudioCMSOptions>(root, configPaths, 'studiocms-db-plugin')
+	)
 );
-
-/* Base config with default values */
-const defaultConfig = StudioCMSOptionsSchema.parse({});
 
 /**
  * Parse and merge the loaded configuration with the default configuration
  */
 const parseAndMerge = Effect.fn((config: StudioCMSOptions | undefined) =>
-	Effect.try(() => _parseAndMerge(StudioCMSOptionsSchema, defaultConfig, config))
+	Effect.try(() => _parseAndMerge(StudioCMSOptionsSchema, config))
 );
 
 /**

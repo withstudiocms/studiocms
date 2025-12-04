@@ -50,14 +50,6 @@ export default defineConfig({
 		devApps(),
 	],
 
-	vite: {
-		build: {
-			rollupOptions: {
-				external: ['@libsql/client', '@libsql/kysely-libsql', 'pg', 'mysql2'],
-			},
-		},
-	},
-
 	// Used for devcontainer/docker development
 	server: {
 		port: 4321,
