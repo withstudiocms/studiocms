@@ -285,11 +285,6 @@ export const studiocms = (): AstroIntegration => {
 						'studiocms:notifier': dynamicVirtual(['./virtuals/notifier/index.js']),
 						'studiocms:notifier/client': dynamicVirtual(['./virtuals/notifier/client.js']),
 						'studiocms:mailer': dynamicVirtual(['./virtuals/mailer/index.js']),
-						'studiocms:mailer/templates': namedVirtual({
-							namedExport: 'getTemplate',
-							path: './virtuals/mailer/template.js',
-							exportDefault: true,
-						}),
 						'studiocms:template-engine': namedVirtual({
 							namedExport: 'templateEngine',
 							path: './virtuals/template-engine/index.js',

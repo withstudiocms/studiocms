@@ -3,12 +3,14 @@ import { type UiLanguageKeys, useTranslations } from 'studiocms:i18n';
 import { runSDK, SDKCoreJs } from 'studiocms:sdk';
 import { Input } from 'studiocms:ui/components/input';
 import { Select } from 'studiocms:ui/components/select';
-import { parentFolderOptions } from './shared.js';
+import { Effect } from 'effect';
 
 const urlParams = Astro.url.searchParams;
 const editId = urlParams.get('folder') || '';
 
-const currentFolder = await runSDK(SDKCoreJs.GET.folder(editId));
+const [currentFolder, folderList] = await runSDK(
+	Effect.all([SDKCoreJs.GET.folder(editId), SDKCoreJs.GET.folderList()])
+);
 
 if (!currentFolder) {
 	return new Response(null, { status: 404 });
@@ -20,6 +22,11 @@ interface Props {
 const { lang } = Astro.props;
 
 const t = useTranslations(lang, '@studiocms/dashboard:content-folder');
+
+const filteredParentFolderOptions = [
+	{ value: 'null', label: 'None' },
+	...folderList.map(({ id: value, name: label }) => ({ value, label })),
+].filter((option) => option.value !== currentFolder.id);
 ---
 <div id="edit-folder-container" data-content-management-url={Astro.locals.StudioCMS.routeMap.mainLinks.contentManagement}>
 
@@ -37,7 +44,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-folder');
         <Select 
             label={t('input-folder-parent')}
             name="parent-folder" 
-            options={parentFolderOptions} 
+            options={filteredParentFolderOptions} 
             defaultValue={currentFolder.parent || 'null'} 
             fullWidth 
             />

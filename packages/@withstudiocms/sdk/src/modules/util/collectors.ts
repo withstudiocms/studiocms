@@ -21,6 +21,7 @@ import type {
 } from '../../types.js';
 import { type FolderTreeError, SDKFolderTree } from './folderTree.js';
 import { SDKParsers } from './parsers.js';
+import { slugify } from './slugify.js';
 
 /**
  * Error class for collector errors.
@@ -286,17 +287,22 @@ export const SDKCollectors = Effect.gen(function* () {
 				(content) => content.contentLang === page.contentLang
 			);
 
-			const safeSlug = page.slug === 'index' ? '/' : `/${page.slug}`;
+			const safeSlug = page.slug === 'index' ? '/' : slugify(page.slug);
 
-			let urlRoute = safeSlug;
+			let urlRoute = safeSlug.startsWith('/') ? safeSlug : `/${safeSlug}`;
 
 			if (page.parentFolder) {
 				const urlParts = yield* findNodesAlongPathToId(tree, page.parentFolder);
-				urlRoute = `/${urlParts.map((part) => part.name).join('/')}${safeSlug}`;
+				const folderPath = urlParts.map(({ name }) => slugify(name)).join('/');
+				urlRoute =
+					folderPath.length > 0
+						? `/${folderPath}${safeSlug === '/' ? '' : `/${safeSlug}`}`
+						: safeSlug;
 			}
 
 			const returnData = {
 				...page,
+				slug: safeSlug,
 				urlRoute,
 				categories,
 				tags,

@@ -193,7 +193,6 @@ export class VerifyEmail extends Effect.Service<VerifyEmail>()(
 							{ token: verificationToken.id, userId }
 						);
 
-						// const htmlTemplate = getTemplate('verifyEmail');
 						const engine = yield* templateEngine;
 						const { title: siteTitle, description, siteIcon } = config;
 						const verifyEmailTemplate = yield* engine.render('verifyEmail', {

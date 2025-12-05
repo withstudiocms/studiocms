@@ -19,13 +19,7 @@ import PageEditorSwapper from './PageEditorSwapper.astro';
 import PageTypeHandler from './PageTypeHandler.astro';
 import PluginFields from './PluginFields.astro';
 import { convertToSafeString, importEditorKeys } from './runtime.js';
-import {
-	categoriesOptions,
-	pageTypeOptions,
-	parentFolderOptions,
-	tagsOptions,
-	trueFalse,
-} from './shared.js';
+import { categoriesOptions, pageTypeOptions, tagsOptions, trueFalse } from './shared.js';
 
 const urlParams = Astro.url.searchParams;
 const editId = urlParams.get('edit') || '';
@@ -39,10 +33,21 @@ const { lang, config } = Astro.props as Props;
 
 const enableDiffs = config.data.enableDiffs;
 
-const [[pageData, users], editors] = await Promise.all([
-	runSDK(Effect.all([SDKCoreJs.GET.page.byId(editId), SDKCoreJs.GET.users.all()])),
+const [[pageData, users, folderList], editors] = await Promise.all([
+	runSDK(
+		Effect.all([
+			SDKCoreJs.GET.page.byId(editId),
+			SDKCoreJs.GET.users.all(),
+			SDKCoreJs.GET.folderList(),
+		])
+	),
 	importEditorKeys(editorKeys),
 ]);
+
+const parentFolderOptions = [
+	{ value: 'null', label: 'None' },
+	...folderList.map(({ id: value, name: label }) => ({ value, label })),
+];
 
 if (!pageData) {
 	return new Response(null, { status: 404, statusText: 'Page Not Found' });
