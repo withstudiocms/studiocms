@@ -1,5 +1,11 @@
 # @withstudiocms/internal_helpers
 
+## 0.1.0-beta.4
+
+### Patch Changes
+
+- [#1046](https://github.com/withstudiocms/studiocms/pull/1046) [`39cf90d`](https://github.com/withstudiocms/studiocms/commit/39cf90dc8acdaff624f4a170e82bd97f7dd5703a) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Implements new pathResolver utility
+
 ## 0.1.0-beta.3
 
 ### Patch Changes

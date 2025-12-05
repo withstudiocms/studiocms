@@ -1,5 +1,18 @@
 # @studiocms/google
 
+## 0.1.0-beta.31
+
+### Patch Changes
+
+- [#1000](https://github.com/withstudiocms/studiocms/pull/1000) [`97461b7`](https://github.com/withstudiocms/studiocms/commit/97461b7e5f986e611ae77113c35f39d899eaf38a) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Fixes environment variable loading
+
+- [#1029](https://github.com/withstudiocms/studiocms/pull/1029) [`da369c7`](https://github.com/withstudiocms/studiocms/commit/da369c7bd8f40670cb56821d74686c79840f06e4) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Integrates new Kysely based SDK into StudioCMS
+
+- [#1010](https://github.com/withstudiocms/studiocms/pull/1010) [`a416585`](https://github.com/withstudiocms/studiocms/commit/a4165851f3ae44c43aa21c270ecfe9ea1dfa5f59) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Refactors plugin hooks
+
+- Updated dependencies [[`746c717`](https://github.com/withstudiocms/studiocms/commit/746c717fed390e0e9aaea7f3db147afcee42820f), [`39cf90d`](https://github.com/withstudiocms/studiocms/commit/39cf90dc8acdaff624f4a170e82bd97f7dd5703a), [`9a8bfed`](https://github.com/withstudiocms/studiocms/commit/9a8bfeda461dbc7e3188222db3adeffca1c29f6a), [`cb027b2`](https://github.com/withstudiocms/studiocms/commit/cb027b20d2620410ecde80b06a66f57b964fb4b1), [`86d2825`](https://github.com/withstudiocms/studiocms/commit/86d2825f8f077eed158ddd3e9d25e02ff0794804), [`25d5f6e`](https://github.com/withstudiocms/studiocms/commit/25d5f6ef79c39f4d69418b1dd0cae87f8d646dd1), [`66480a1`](https://github.com/withstudiocms/studiocms/commit/66480a19943ca42b8471c76984321a9f6bd13d94), [`43483c4`](https://github.com/withstudiocms/studiocms/commit/43483c455a648f804b4c6f418878830c396bc6f5), [`27fd297`](https://github.com/withstudiocms/studiocms/commit/27fd2975d8390728dc8af582ddff1a7691c9a3d2), [`2e2886d`](https://github.com/withstudiocms/studiocms/commit/2e2886d59646660e04dc9d0d4d2d1c08c607f733), [`262442b`](https://github.com/withstudiocms/studiocms/commit/262442bab6538b91b9959449b4aa473d70e0126a), [`72e1359`](https://github.com/withstudiocms/studiocms/commit/72e1359d9081f33f6a3d73e1f44774cdf9be0afd), [`1359631`](https://github.com/withstudiocms/studiocms/commit/13596311bfbb6e64ff862dc2d1b902eb6a9199e9), [`da369c7`](https://github.com/withstudiocms/studiocms/commit/da369c7bd8f40670cb56821d74686c79840f06e4), [`015a509`](https://github.com/withstudiocms/studiocms/commit/015a5095279680384143db8422ae0032ee8360b2), [`ddae77d`](https://github.com/withstudiocms/studiocms/commit/ddae77dbb22376803c4c166323dff161fe30d030), [`85727e5`](https://github.com/withstudiocms/studiocms/commit/85727e51a1c90a8f82ce8ca6f1ff6fabc9f3f090), [`dd259eb`](https://github.com/withstudiocms/studiocms/commit/dd259eb714fde4f1708cb9ad1f3dcb8b3f6b7661), [`a416585`](https://github.com/withstudiocms/studiocms/commit/a4165851f3ae44c43aa21c270ecfe9ea1dfa5f59), [`c24b655`](https://github.com/withstudiocms/studiocms/commit/c24b655e74a53fbf0b7a5a47f9d65270f0c3defc), [`962d5ae`](https://github.com/withstudiocms/studiocms/commit/962d5aebb1c4e44d2fc4fe4d652300776ebaed35), [`5756c15`](https://github.com/withstudiocms/studiocms/commit/5756c156d9adb4036029f930308606338fb39b6a), [`455a82a`](https://github.com/withstudiocms/studiocms/commit/455a82aff8f6430df3a40b2edbcf6f05bb4d4c9d), [`a0f45c5`](https://github.com/withstudiocms/studiocms/commit/a0f45c5d9c034cf63d0d36a1c4c1eef598533bb6)]:
+  - studiocms@0.1.0-beta.31
+
 ## 0.1.0-beta.30
 
 ### Patch Changes
