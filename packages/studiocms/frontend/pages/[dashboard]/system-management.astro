@@ -244,22 +244,6 @@ const debugOutput = styler.format(getDebugInfo);
             });
         }
 
-        // Function to format debug data for clipboard
-        function formatDebugData(data: string) {
-            return `\`\`\`\n${data}\n\`\`\``;
-        }
-
-        // Function to set alert state on button
-        function setAlertState(elm: HTMLElement, message: string, duration = 2000) {
-            const initialData = elm.innerHTML;
-            elm.classList.add('success')
-            elm.textContent = message;
-            setTimeout(() => {
-                elm.classList.remove('success')
-                elm.innerHTML = initialData;
-            }, duration);
-        }
-
         // Register copy-to-clipboard functionality for code blocks
         function registerCodeBlockCopy(
             button: HTMLButtonElement,
@@ -267,11 +251,17 @@ const debugOutput = styler.format(getDebugInfo);
         ) {
             button?.addEventListener("click", () => {
                 const debugData = dataElement?.textContent || "";
-                const formattedData = formatDebugData(debugData);
+                const formattedData = `\`\`\`\n${debugData}\n\`\`\``;
 
                 navigator.clipboard.writeText(formattedData).then(
                     () => {
-                        setAlertState(button, copiedToClipboardText);
+                        const initialData = button.innerHTML;
+                        button.classList.add('success')
+                        button.textContent = copiedToClipboardText;
+                        setTimeout(() => {
+                            button.classList.remove('success')
+                            button.innerHTML = initialData;
+                        }, 2000);
                     },
                     (err) => {
                         console.error("Could not copy debug data: ", err);
