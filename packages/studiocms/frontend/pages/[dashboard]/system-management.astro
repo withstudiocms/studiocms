@@ -44,12 +44,38 @@ const dbDialectLabels = {
 	sqlite: 'SQLite',
 };
 
+const nodeProcessLabels = {
+	win32: 'Windows',
+	darwin: 'macOS',
+	linux: 'Linux',
+	aix: 'AIX',
+	freebsd: 'FreeBSD',
+	openbsd: 'OpenBSD',
+	sunos: 'SunOS',
+};
+
+const nodeArchLabels = {
+	x64: 'x64',
+	arm64: 'ARM64',
+	ia32: 'x86',
+	arm: 'ARM',
+	mips: 'MIPS',
+	ppc: 'PowerPC',
+};
+
+function formatHost(platform: string, arch: string): string {
+	const platformLabel = nodeProcessLabels[platform as keyof typeof nodeProcessLabels] || platform;
+	const archLabel = nodeArchLabels[arch as keyof typeof nodeArchLabels] || arch;
+	return `${platformLabel} (${archLabel})`;
+}
+
 // Gather debug information
 const getDebugInfo = {
 	Astro: stripNamespace(Astro.generator),
 	StudioCMS: stripNamespace(SCMSGenerator),
 	'StudioCMS UI': stripNamespace(SCMSUiGenerator),
 	'Node.js': process.version,
+	Host: formatHost(process.platform, process.arch),
 	'Database Dialect': dbDialectLabels[db.dialect] || db.dialect,
 	'StudioCMS Plugins': pluginList
 		.map((plugin) => `${plugin.name} (${plugin.identifier})`)
