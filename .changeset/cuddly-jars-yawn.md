@@ -2,4 +2,4 @@
 "studiocms": patch
 ---
 
-Implements new built-in dev toolbar app
+Implements System Management dashboard page, and new built-in database viewer utility
