@@ -1,4 +1,5 @@
 ---
+import { adapter } from 'studiocms:astro-config/adapter';
 import { db } from 'studiocms:config';
 import { useTranslations } from 'studiocms:i18n';
 import { pluginList } from 'studiocms:plugins/list';
@@ -72,6 +73,7 @@ function formatHost(platform: string, arch: string): string {
 // Gather debug information
 const getDebugInfo = {
 	Astro: stripNamespace(Astro.generator),
+	'Astro Adapter': adapter,
 	StudioCMS: stripNamespace(SCMSGenerator),
 	'StudioCMS UI': stripNamespace(SCMSUiGenerator),
 	'Node.js': process.version,

@@ -145,7 +145,7 @@ export const studiocms = (): AstroIntegration => {
 		hooks: {
 			'astro:config:setup': async (params) => {
 				// Destructure the params
-				const { logger, updateConfig, createCodegenDir, command } = params;
+				const { logger, updateConfig, createCodegenDir, command, config } = params;
 
 				logger.info('Checking configuration...');
 
@@ -340,6 +340,9 @@ export const studiocms = (): AstroIntegration => {
 						'studiocms:i18n/plugins': dynamicVirtual(['./virtuals/i18n/plugin.js']),
 						'studiocms:sdk': dynamicVirtual(['./virtuals/sdk/index.js']),
 						'studiocms:sdk/types': dynamicVirtual(['./virtuals/sdk/types.js']),
+						'studiocms:astro-config/adapter': `export const adapter = ${JSON.stringify(
+							config.adapter?.name || 'unknown'
+						)}`,
 					},
 				});
 

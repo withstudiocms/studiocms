@@ -12,6 +12,10 @@ declare module 'studiocms:logger' {
 	) => Response;
 }
 
+declare module 'studiocms:astro-config/adapter' {
+	export const adapter: string;
+}
+
 declare module 'studiocms:dashboard/augments/components' {
 	export const componentKeys: string[];
 }
