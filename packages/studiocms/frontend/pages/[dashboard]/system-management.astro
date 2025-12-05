@@ -102,6 +102,7 @@ const debugOutput = styler.formatObject(getDebugInfo);
     </div>
 
     <div slot="external">
+        {/* DB Studio Modal Container */ }
         <div id="db-studio-container">
             <div class="studio-frame-container">
                 <div class="frame-header">
@@ -129,6 +130,7 @@ const debugOutput = styler.formatObject(getDebugInfo);
     </div>
 
     <div class="page-container">
+        {/* System Utilities Card */ }
         <Card fullWidth>
             <div slot="header">
                 <h2><t-system-management key="system-utilities-label">{t('system-utilities-label')}</t-system-management></h2>
@@ -152,6 +154,7 @@ const debugOutput = styler.formatObject(getDebugInfo);
             </div>
         </Card>
 
+        {/* Debug Information Output Card */ }
         <div class="debug-output">
             <div class="debug-header">
                 <h3><t-system-management key="debug-info-label">{t('debug-info-label')}</t-system-management></h3>
