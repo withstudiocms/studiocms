@@ -45,7 +45,7 @@ import {
 	pluginHandler,
 	routeHandler,
 } from './handlers/index.js';
-import { setupDevToolbar } from './handlers/setupDevToolbar.js';
+import { setupDbStudio } from './handlers/setupDbStudio.js';
 import { nodeNamespaceBuiltinsAstro } from './integrations/node-namespace.js';
 import { type StudioCMSConfig, StudioCMSOptionsSchema } from './schemas/index.js';
 import {
@@ -348,7 +348,7 @@ export const studiocms = (): AstroIntegration => {
 					},
 				});
 
-				await setupDevToolbar(params);
+				await setupDbStudio(params);
 
 				// Update the Astro Config
 				integrationLogger(
