@@ -118,6 +118,7 @@ declare module 'studiocms:config' {
 	export const authConfig: import('./schemas/index.js').StudioCMSConfig['features']['authConfig'];
 	export const developerConfig: import('./schemas/index.js').StudioCMSConfig['features']['developerConfig'];
 	export const sdk: import('./schemas/index.js').StudioCMSConfig['features']['sdk'];
+	export const db: import('./schemas/index.js').StudioCMSConfig['db'];
 }
 
 declare module 'studiocms:version' {
