@@ -14,6 +14,14 @@ const currentUser = security?.userSessionData ?? null;
 const t = useTranslations(lang, '@studiocms/dashboard:system-management');
 
 const userConfig = getConfig();
+
+// TODO: Fetch and display actual debug information
+// - Astro version
+// - StudioCMS & UI versions
+// - Effect version
+// - Database dialect and version
+// - Node.js version
+// - Installed plugins and their versions
 ---
 
 <Layout
