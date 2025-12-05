@@ -54,7 +54,7 @@ export class DbStudioElement extends HTMLElement {
 		switch (data?.type) {
 			case 'transaction':
 			case 'query': {
-				console.debug(`Executing ${data.type}:`, data);
+				console.debug('Executing %s:', data.type, data);
 				const result = await this.#executeQuery(data);
 				this.#iframe?.contentWindow?.postMessage(result, '*');
 				break;
