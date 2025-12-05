@@ -45,6 +45,7 @@ import {
 	pluginHandler,
 	routeHandler,
 } from './handlers/index.js';
+import { setupDevToolbar } from './handlers/setupDevToolbar.js';
 import { nodeNamespaceBuiltinsAstro } from './integrations/node-namespace.js';
 import { type StudioCMSConfig, StudioCMSOptionsSchema } from './schemas/index.js';
 import {
@@ -346,6 +347,8 @@ export const studiocms = (): AstroIntegration => {
 						'studiocms:sdk/types': dynamicVirtual(['./virtuals/sdk/types.js']),
 					},
 				});
+
+				await setupDevToolbar(params);
 
 				// Update the Astro Config
 				integrationLogger(

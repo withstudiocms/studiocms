@@ -1,7 +1,9 @@
 import { ColumnType } from '@outerbase/sdk-transform';
-import { createPool, type Pool, type PoolConnection, Types } from 'mysql2/promise';
+import mysql2Core, { type Pool, type PoolConnection } from 'mysql2/promise';
 import type BaseDriver from './base.js';
 import type { Result, ResultHeader } from './base.js';
+
+const { createPool, Types } = mysql2Core;
 
 enum MySQLType {
 	MYSQL_TYPE_DECIMAL = 0,
