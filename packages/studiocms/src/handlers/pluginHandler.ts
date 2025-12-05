@@ -66,7 +66,7 @@ const t = await buildTranslations(translations);
  * @see The [StudioCMS Docs](https://docs.studiocms.dev) for more information on how to use StudioCMS.
  */
 export const defaultPlugin: StudioCMSPlugin = {
-	name: 'StudioCMS (Built-in)',
+	name: 'Core (built-in)',
 	identifier: 'studiocms',
 	studiocmsMinimumVersion: pkgVersion,
 	hooks: {

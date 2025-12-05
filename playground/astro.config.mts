@@ -21,8 +21,7 @@ function appendDistPath(paths: string[]) {
 
 function appendDistFrontendPaths(path: string): string[] {
 	const distPath = `${path}/dist`;
-	const frontendPath = `${path}/frontend`;
-	return [distPath, frontendPath];
+	return [distPath];
 }
 
 const packagePaths = [

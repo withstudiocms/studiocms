@@ -75,12 +75,11 @@ const getDebugInfo = {
 	Astro: stripNamespace(Astro.generator),
 	'Astro Adapter': adapter,
 	'Database Dialect': dbDialectLabels[db.dialect] || db.dialect,
-	'Host OS': formatHost(process.platform, process.arch),
 	'Node.js': process.version,
+	System: formatHost(process.platform, process.arch),
 	StudioCMS: stripNamespace(SCMSGenerator),
 	'StudioCMS UI': stripNamespace(SCMSUiGenerator),
 	'StudioCMS Plugins': pluginList
-		.filter((plugin) => plugin.identifier !== 'studiocms')
 		.map((plugin) => `${plugin.name} (${plugin.identifier})`)
 		.join('\n'),
 };

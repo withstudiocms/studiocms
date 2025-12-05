@@ -24,7 +24,7 @@ describe(parentSuiteName, () => {
 		await step('Check integration creation', async () => {
 			const integration = nodeNamespaceBuiltinsAstro();
 			expect(integration).toBeDefined();
-			expect(integration.name).toBe('vite-namespace-builtins');
+			expect(integration.name).toBe('studiocms/node-namespace-builtins');
 			expect(typeof integration.hooks['astro:config:setup']).toBe('function');
 			expectTypeOf(integration).toEqualTypeOf<AstroIntegration>();
 		});
