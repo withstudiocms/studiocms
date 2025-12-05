@@ -183,6 +183,35 @@ const debugOutput = styler.formatObject(getDebugInfo);
         } from "studiocms:i18n/client";
 
         // =========================================
+        // i18n Logic
+        // =========================================
+
+        const currentPage = "@studiocms/dashboard:system-management";
+
+        let lang = defaultLang;
+
+        const i18n = $i18n(currentPage, baseTranslation[currentPage]);
+
+        let copiedToClipboardText = "Copied!";
+
+        $localeSettings.subscribe((locale) => {
+            lang = locale || defaultLang;
+        });
+
+        i18n.subscribe((comp) => {
+            documentUpdater(comp, lang);
+            pageHeaderUpdater(comp.header);
+            copiedToClipboardText = comp['copied-to-clipboard'];
+        });
+
+        if (!customElements.get("t-system-management")) {
+            customElements.define(
+                "t-system-management",
+                makeTranslation(currentPage, i18n),
+            );
+        }
+
+        // =========================================
         // Utility functions
         // =========================================
 
@@ -246,35 +275,6 @@ const debugOutput = styler.formatObject(getDebugInfo);
                     },
                 );
             });
-        }
-
-        // =========================================
-        // i18n Logic
-        // =========================================
-
-        const currentPage = "@studiocms/dashboard:system-management";
-
-        let lang = defaultLang;
-
-        const i18n = $i18n(currentPage, baseTranslation[currentPage]);
-
-        let copiedToClipboardText = "Copied!";
-
-        $localeSettings.subscribe((locale) => {
-            lang = locale || defaultLang;
-        });
-
-        i18n.subscribe((comp) => {
-            documentUpdater(comp, lang);
-            pageHeaderUpdater(comp.header);
-            copiedToClipboardText = comp['copied-to-clipboard'];
-        });
-
-        if (!customElements.get("t-system-management")) {
-            customElements.define(
-                "t-system-management",
-                makeTranslation(currentPage, i18n),
-            );
         }
 
         // =========================================
