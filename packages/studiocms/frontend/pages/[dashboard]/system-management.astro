@@ -32,7 +32,9 @@ const userConfig = getConfig();
         <div id="db-studio-container">
             <div class="studio-frame-container">
                 <div class="frame-header">
-                    <span class="frame-title">Database Management</span>
+                    <span class="frame-title">
+                        <t-system-management key="database-management-label">{t('database-management-label')}</t-system-management>
+                    </span>
                     <Button
                         color="default"
                         size="sm"
@@ -45,7 +47,7 @@ const userConfig = getConfig();
                             width={20}
                             height={20}
                         />
-                        Close
+                        <t-system-management key="close-button-label">{t('close-button-label')}</t-system-management>
                     </Button>
                 </div>
                 <db-studio dialect={userConfig.dialect}></db-studio>
@@ -56,7 +58,7 @@ const userConfig = getConfig();
     <div class="page-container">
         <Card fullWidth>
             <div slot="header">
-                <h2>System Utilities</h2>
+                <h2><t-system-management key="system-utilities-label">{t('system-utilities-label')}</t-system-management></h2>
             </div>
 
             <div class="button-shelf">
@@ -72,14 +74,14 @@ const userConfig = getConfig();
                         width={20}
                         height={20}
                     />
-                    Database Management
+                    <t-system-management key="database-management-label">{t('database-management-label')}</t-system-management>
                 </Button>
             </div>
         </Card>
 
         <Card fullWidth>
             <div slot="header">
-                <h2>Debug Information</h2>
+                <h2><t-system-management key="debug-info-label">{t('debug-info-label')}</t-system-management></h2>
             </div>
 
             <div>
@@ -216,10 +218,19 @@ const userConfig = getConfig();
 
         #db-studio-container {
             display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease, display 0.3s ease allow-discrete;
         }
 
         #db-studio-container.active {
             display: flex;
+            opacity: 1;
+        }
+
+        @starting-style {
+            #db-studio-container.active {
+                opacity: 0;
+            }
         }
     </style>
 </Layout>

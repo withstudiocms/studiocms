@@ -374,7 +374,11 @@
     "@studiocms/dashboard:system-management": {
       "title": "System Management",
       "description": "StudioCMS System Management",
-      "header": "System Management"
+      "header": "System Management",
+      "database-management-label": "Database Management",
+      "close-button-label": "Close",
+      "system-utilities-label": "System Utilities",
+      "debug-info-label": "Debug Information"
     }
   }
 }
