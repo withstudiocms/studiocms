@@ -20,9 +20,16 @@ function appendDistPath(paths: string[]) {
 	return paths.map((p) => `${p}/dist`);
 }
 
+function appendDistFrontendPaths(path: string): string[] {
+	const distPath = `${path}/dist`;
+	const frontendPath = `${path}/frontend`;
+	return [distPath, frontendPath];
+}
+
 const packagePaths = [
 	...appendDistPath(studiocmsScopedPackages),
 	...appendDistPath(withstudiocmsScopedPackages),
+	...appendDistFrontendPaths('../packages/studiocms'),
 ];
 
 console.log('HMR Package Paths:', packagePaths);

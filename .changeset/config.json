@@ -27,6 +27,7 @@
   "privatePackages": false,
   "changedFilePatterns": [
     "**/src/**/**.*",
+    "**/frontend/**/**.*",
     "**/package.json",
     "**/CHANGELOG.md",
     "**/README.md",

@@ -1,8 +1,15 @@
 ---
 import { type UiLanguageKeys, useTranslations } from 'studiocms:i18n';
+import { runSDK, SDKCoreJs } from 'studiocms:sdk';
 import { Input } from 'studiocms:ui/components/input';
 import { Select } from 'studiocms:ui/components/select';
-import { parentFolderOptions } from './shared.js';
+
+const folderList = await runSDK(SDKCoreJs.GET.folderList());
+
+const parentFolderOptions = [
+	{ value: 'null', label: 'None' },
+	...folderList.map(({ id: value, name: label }) => ({ value, label })),
+];
 
 interface Props {
 	lang: UiLanguageKeys;

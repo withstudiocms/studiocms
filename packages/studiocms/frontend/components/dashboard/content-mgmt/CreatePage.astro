@@ -2,20 +2,22 @@
 import { type UiLanguageKeys, useTranslations } from 'studiocms:i18n';
 import pluginList from 'studiocms:plugins';
 import { renderAugments } from 'studiocms:plugins/augments';
+import { runSDK, SDKCoreJs } from 'studiocms:sdk';
 import { Card } from 'studiocms:ui/components/card';
 import { Input } from 'studiocms:ui/components/input';
 import { Select } from 'studiocms:ui/components/select';
 import { TabItem, Tabs } from 'studiocms:ui/components/tabs';
 import PageTypeHandler from './PageTypeHandler.astro';
-import {
-	categoriesOptions,
-	pageTypeOptions,
-	parentFolderOptions,
-	tagsOptions,
-	trueFalse,
-} from './shared.js';
+import { categoriesOptions, pageTypeOptions, tagsOptions, trueFalse } from './shared.js';
 
 const pluginFields = pluginList.flatMap(({ pageTypes }) => pageTypes ?? []);
+
+const folderList = await runSDK(SDKCoreJs.GET.folderList());
+
+const parentFolderOptions = [
+	{ value: 'null', label: 'None' },
+	...folderList.map(({ id: value, name: label }) => ({ value, label })),
+];
 
 interface Props {
 	lang: UiLanguageKeys;

@@ -1,18 +1,9 @@
 import pluginsList from 'studiocms:plugins';
-import { runSDK, SDKCoreJs } from 'studiocms:sdk';
 
 interface PluginListItem {
 	label: string;
 	value: string;
 }
-
-const folderList = await runSDK(SDKCoreJs.GET.folderList());
-
-export const parentFolders = folderList.map(({ id: value, name: label }) => ({ value, label }));
-
-// EXPORTS
-
-export const parentFolderOptions = [{ value: 'null', label: 'None' }, ...parentFolders];
 
 export const pageTypeOptions = pluginsList.flatMap(({ pageTypes }) => {
 	const pageTypeOutput: PluginListItem[] = [];
