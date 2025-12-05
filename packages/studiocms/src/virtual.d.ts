@@ -58,6 +58,13 @@ declare module 'studiocms:plugins/augments' {
 	export const renderAugments: import('./types.js').RenderAugment[];
 }
 
+declare module 'studiocms:plugins/list' {
+	export const pluginList: {
+		identifier: string;
+		name: string;
+	}[];
+}
+
 declare module 'studiocms:mailer' {
 	type Mod = typeof import('./virtuals/mailer/index');
 	export const Mailer: Mod['Mailer'];

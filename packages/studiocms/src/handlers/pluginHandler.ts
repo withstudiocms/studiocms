@@ -1227,6 +1227,17 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 				{
 					id: 'studiocms:dashboard/augments/scripts',
 					content: dashboardAugmentScripts.map((script) => `import '${script}';`).join('\n'),
+				},
+				{
+					id: 'studiocms:plugins/list',
+					content: `
+						export const pluginList = ${JSON.stringify(
+							safePluginList.map(({ name, identifier }) => ({
+								name,
+								identifier,
+							}))
+						)};
+					`,
 				}
 			);
 		}
