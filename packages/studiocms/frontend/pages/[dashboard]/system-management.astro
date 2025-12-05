@@ -17,11 +17,10 @@ const {
 	SCMSGenerator,
 	SCMSUiGenerator,
 } = Astro.locals.StudioCMS;
-
 const currentUser = security?.userSessionData ?? null;
-
 const t = useTranslations(lang, '@studiocms/dashboard:system-management');
 
+// Get user database configuration
 const userConfig = getConfig();
 
 /**
@@ -37,6 +36,7 @@ function stripNamespace(versionString: string) {
 	return versionString.replace(/^[^\d]*/, 'v');
 }
 
+// Database dialect labels
 const dbDialectLabels = {
 	libsql: 'LibSQL',
 	mysql: 'MySQL',
@@ -44,6 +44,7 @@ const dbDialectLabels = {
 	sqlite: 'SQLite',
 };
 
+// Gather debug information
 const getDebugInfo = {
 	Astro: stripNamespace(Astro.generator),
 	StudioCMS: stripNamespace(SCMSGenerator),
@@ -55,8 +56,10 @@ const getDebugInfo = {
 		.join('\n'),
 };
 
+// Initialize DebugStyler with desired indentation
 const styler = new DebugStyler(4);
 
+// Format the debug information
 const debugOutput = styler.formatObject(getDebugInfo);
 ---
 
@@ -125,7 +128,7 @@ const debugOutput = styler.formatObject(getDebugInfo);
 
         <div class="debug-output">
             <div class="debug-header">
-                <h3>Debug Information</h3>
+                <h3><t-system-management key="debug-info-label">{t('debug-info-label')}</t-system-management></h3>
             </div>
             <div class="debug-content-wrapper">
                 <Button class="copy-button" id="copyDebugButton" variant="solid" size="sm">
@@ -143,6 +146,41 @@ const debugOutput = styler.formatObject(getDebugInfo);
     </div>
 
     <script>
+        import {
+            $i18n,
+            $localeSettings,
+            baseTranslation,
+            defaultLang,
+            documentUpdater,
+            makeTranslation,
+            pageHeaderUpdater,
+        } from "studiocms:i18n/client";
+
+        const currentPage = "@studiocms/dashboard:system-management";
+
+        let lang = defaultLang;
+
+        const i18n = $i18n(currentPage, baseTranslation[currentPage]);
+
+        let copiedToClipboardText = "Copied!";
+
+        $localeSettings.subscribe((locale) => {
+            lang = locale || defaultLang;
+        });
+
+        i18n.subscribe((comp) => {
+            documentUpdater(comp, lang);
+            pageHeaderUpdater(comp.header);
+            copiedToClipboardText = comp['copied-to-clipboard'];
+        });
+
+        if (!customElements.get("t-system-management")) {
+            customElements.define(
+                "t-system-management",
+                makeTranslation(currentPage, i18n),
+            );
+        }
+
         // Utility function to select elements
         const $ = (selector: string) => document.querySelector(selector);
 
@@ -209,47 +247,13 @@ const debugOutput = styler.formatObject(getDebugInfo);
 
             navigator.clipboard.writeText(formattedData).then(
                 () => {
-                    setAlertState(copyDebugButton, "Copied!");
+                    setAlertState(copyDebugButton, copiedToClipboardText);
                 },
                 (err) => {
                     console.error("Could not copy debug data: ", err);
                 },
             );
         });
-    </script>
-
-    <script>
-        import {
-            $i18n,
-            $localeSettings,
-            baseTranslation,
-            defaultLang,
-            documentUpdater,
-            makeTranslation,
-            pageHeaderUpdater,
-        } from "studiocms:i18n/client";
-
-        const currentPage = "@studiocms/dashboard:system-management";
-
-        let lang = defaultLang;
-
-        const i18n = $i18n(currentPage, baseTranslation[currentPage]);
-
-        $localeSettings.subscribe((locale) => {
-            lang = locale || defaultLang;
-        });
-
-        i18n.subscribe((comp) => {
-            documentUpdater(comp, lang);
-            pageHeaderUpdater(comp.header);
-        });
-
-        if (!customElements.get("t-system-management")) {
-            customElements.define(
-                "t-system-management",
-                makeTranslation(currentPage, i18n),
-            );
-        }
     </script>
 
     <style>
