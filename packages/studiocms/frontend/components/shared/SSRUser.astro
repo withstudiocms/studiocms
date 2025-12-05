@@ -93,6 +93,7 @@ const {
 			const avatarName = this.dataset.avatarName || 'User';
 
 			if (!avatarUrl) return;
+			if (!fallbackDataUri) return;
 
 			const img = this.querySelector('img');
 			if (!img) return;
@@ -142,46 +143,21 @@ const {
 			}
 		}
 
-		showFallbackIcon(img: HTMLImageElement, name: string): void {
+		showFallbackIcon(img: HTMLImageElement, fallbackDataUri: string): void {
 			const container = img.parentElement;
 			if (!container) return;
-
-			const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-			svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-			svg.setAttribute('width', '24');
-			svg.setAttribute('height', '24');
-			svg.setAttribute('viewBox', '0 0 24 24');
-			svg.setAttribute('fill', 'none');
-			svg.setAttribute('stroke', 'currentColor');
-			svg.setAttribute('stroke-width', '2');
-			svg.setAttribute('stroke-linecap', 'round');
-			svg.setAttribute('stroke-linejoin', 'round');
-			svg.setAttribute('role', 'img');
-			svg.setAttribute('aria-label', `Placeholder avatar for ${name}`);
-			const path1 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-			path1.setAttribute('d', 'M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2');
-	
-			const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-			circle.setAttribute('cx', '12');
-			circle.setAttribute('cy', '7');
-			circle.setAttribute('r', '4');
-
-			svg.appendChild(path1);
-			svg.appendChild(circle);
-
-			container.removeChild(img);
-			container.appendChild(svg);
+			img.src = fallbackDataUri;
 		}
 
 		async loadAvatar(
 			img: HTMLImageElement,
 			url: string,
 			timeoutMs: number,
-			fallbackDataUri: string | undefined,
+			fallbackDataUri: string,
 			name: string
 		): Promise<void> {
 			if (!this.isValidAvatarUrl(url)) {
-				this.showFallbackIcon(img, name);
+				this.showFallbackIcon(img, fallbackDataUri);
 				return;
 			}
 
@@ -197,7 +173,7 @@ const {
 				if (fallbackDataUri && img.src !== fallbackDataUri) {
 					img.src = fallbackDataUri;
 				} else {
-					this.showFallbackIcon(img, name);
+					this.showFallbackIcon(img, fallbackDataUri);
 				}
 				return;
 			}
@@ -209,7 +185,7 @@ const {
 				if (fallbackDataUri && img.src !== fallbackDataUri) {
 					img.src = fallbackDataUri;
 				} else {
-					this.showFallbackIcon(img, name);
+					this.showFallbackIcon(img, fallbackDataUri);
 				}
 			};
 			img.src = url;
