@@ -74,12 +74,13 @@ function formatHost(platform: string, arch: string): string {
 const getDebugInfo = {
 	Astro: stripNamespace(Astro.generator),
 	'Astro Adapter': adapter,
+	'Database Dialect': dbDialectLabels[db.dialect] || db.dialect,
+	'Host OS': formatHost(process.platform, process.arch),
+	'Node.js': process.version,
 	StudioCMS: stripNamespace(SCMSGenerator),
 	'StudioCMS UI': stripNamespace(SCMSUiGenerator),
-	'Node.js': process.version,
-	Host: formatHost(process.platform, process.arch),
-	'Database Dialect': dbDialectLabels[db.dialect] || db.dialect,
 	'StudioCMS Plugins': pluginList
+		.filter((plugin) => plugin.identifier !== 'studiocms')
 		.map((plugin) => `${plugin.name} (${plugin.identifier})`)
 		.join('\n'),
 };
