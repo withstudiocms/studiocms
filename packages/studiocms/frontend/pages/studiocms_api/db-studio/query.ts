@@ -1,4 +1,4 @@
-import { config } from 'studiocms:config';
+import { config, developerConfig } from 'studiocms:config';
 import { CMSLogger, type LoggerLevel } from '@withstudiocms/effect';
 import type { APIRoute } from 'astro';
 import { type BaseDriver, type DbQueryRequest, getDriver } from '#toolbar/db-studio';
@@ -66,6 +66,11 @@ export const POST: APIRoute = async ({ request, locals }) => {
 	const logLevel = parseLogLevel(config.logLevel);
 
 	const log = new CMSLogger({ level: logLevel }, 'studiocms:database/studio');
+
+	// Check if demo mode is enabled
+	if (developerConfig.demoMode !== false) {
+		return new Response('Demo mode is enabled, this action is not allowed.', { status: 403 });
+	}
 
 	// Security check: only allow access in the following cases
 	// 1. In development mode
