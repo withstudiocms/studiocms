@@ -98,6 +98,14 @@
 			"types": "./dist/toolbar/db-viewer/studio/index.d.ts",
 			"default": "./dist/toolbar/db-viewer/studio/index.js"
 		},
+		"#db-studio/config": {
+			"types": "./dist/toolbar/db-viewer/config.d.ts",
+			"default": "./dist/toolbar/db-viewer/config.js"
+		},
+		"#db-studio/viewer": {
+			"types": "./dist/toolbar/db-viewer/viewer.d.ts",
+			"default": "./dist/toolbar/db-viewer/viewer.js"
+		},
 		"#frontend/*": "./frontend/*"
 	},
 	"exports": {

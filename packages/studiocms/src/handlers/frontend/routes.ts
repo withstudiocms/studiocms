@@ -308,6 +308,10 @@ export const dashboardEnabledRoutes = (
 			pattern: 'logout/',
 			entrypoint: 'pages/[dashboard]/logout.astro',
 		},
+		{
+			pattern: 'system-management',
+			entrypoint: 'pages/[dashboard]/system-management.astro',
+		},
 	].map(({ entrypoint, pattern }) => ({
 		// Remap pattern to include dashboard base path
 		pattern: dashboardRoute(pattern),

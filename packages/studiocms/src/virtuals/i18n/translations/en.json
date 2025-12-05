@@ -67,7 +67,8 @@
       "user-dropdown:settings": "User Settings",
       "user-dropdown:view-site": "View Site",
       "user-dropdown:logout": "Log Out",
-      "mailer-configuration-label": "SMTP Configuration"
+      "mailer-configuration-label": "SMTP Configuration",
+      "system-management-label": "System Management"
     },
     "@studiocms/dashboard:profile": {
       "title": "User Profile",
@@ -369,6 +370,11 @@
       "user_updated": "Admin: User Updated",
       "user_deleted": "Admin: User Deleted",
       "new_user": "Admin: New User"
+    },
+    "@studiocms/dashboard:system-management": {
+      "title": "System Management",
+      "description": "StudioCMS System Management",
+      "header": "System Management"
     }
   }
 }

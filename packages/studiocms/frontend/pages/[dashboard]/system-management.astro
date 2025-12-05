@@ -1,0 +1,225 @@
+---
+import { useTranslations } from 'studiocms:i18n';
+import { Button } from 'studiocms:ui/components/button';
+import { Card } from 'studiocms:ui/components/card';
+import { Icon } from 'studiocms:ui/components/icon';
+import { getConfig } from '#db-studio/config';
+import PageHeader from '../../components/dashboard/PageHeader.astro';
+import Layout from '../../layouts/DashboardLayout.astro';
+
+const { siteConfig: config, defaultLang: lang, security } = Astro.locals.StudioCMS;
+
+const currentUser = security?.userSessionData ?? null;
+
+const t = useTranslations(lang, '@studiocms/dashboard:system-management');
+
+const userConfig = getConfig();
+---
+
+<Layout
+    title={t("title")}
+    description={t("description")}
+    requiredPermission="owner"
+    {lang}
+    {config}
+    {currentUser}
+>
+    <div slot="header">
+        <PageHeader title={t("header")} />
+    </div>
+
+    <div slot="external">
+        <div id="db-studio-container">
+            <div class="studio-frame-container">
+                <div class="frame-header">
+                    <span class="frame-title">Database Management</span>
+                    <Button
+                        color="default"
+                        size="sm"
+                        id="close-db-studio"
+                        variant="solid"
+                    >
+                        <Icon
+                            slot="start-content"
+                            name="heroicons:x-mark-20-solid"
+                            width={20}
+                            height={20}
+                        />
+                        Close
+                    </Button>
+                </div>
+                <db-studio dialect={userConfig.dialect}></db-studio>
+            </div>
+        </div>
+    </div>
+
+    <div class="page-container">
+        <Card fullWidth>
+            <div slot="header">
+                <h2>System Utilities</h2>
+            </div>
+
+            <div class="button-shelf">
+                <Button
+                    id="access-db-studio"
+                    variant="outlined"
+                    color="info"
+                    size="md"
+                >
+                    <Icon
+                        slot="start-content"
+                        name="heroicons:circle-stack-20-solid"
+                        width={20}
+                        height={20}
+                    />
+                    Database Management
+                </Button>
+            </div>
+        </Card>
+
+        <Card fullWidth>
+            <div slot="header">
+                <h2>Debug Information</h2>
+            </div>
+
+            <div>
+                <p>Debug information will be displayed here.</p>
+            </div>
+        </Card>
+    </div>
+
+    <script>
+        // Utility function to select elements
+        const $ = (selector: string) => document.querySelector(selector);
+
+        // Modal registration utility
+        function registerModal(opts: {
+            modal: HTMLElement;
+            openButton: HTMLElement;
+            closeButton: HTMLElement;
+        }) {
+            const { modal, openButton, closeButton } = opts;
+
+            openButton?.addEventListener("click", () => {
+                modal.classList.add("active");
+            });
+
+            closeButton?.addEventListener("click", () => {
+                modal.classList.remove("active");
+            });
+
+            modal?.addEventListener("click", (event) => {
+                if (event.target === modal) {
+                    modal.classList.remove("active");
+                }
+            });
+        }
+
+        // DB Studio Modal Logic
+        const dbStudioContainer = $("#db-studio-container") as HTMLDivElement;
+        const accessDbStudioButton = $(
+            "#access-db-studio",
+        ) as HTMLButtonElement;
+        const closeDbStudioButton = $("#close-db-studio") as HTMLButtonElement;
+
+        // Register the DB Studio modal
+        registerModal({
+            modal: dbStudioContainer,
+            openButton: accessDbStudioButton,
+            closeButton: closeDbStudioButton,
+        });
+    </script>
+
+    <script>
+        import {
+            $i18n,
+            $localeSettings,
+            baseTranslation,
+            defaultLang,
+            documentUpdater,
+            makeTranslation,
+            pageHeaderUpdater,
+        } from "studiocms:i18n/client";
+
+        const currentPage = "@studiocms/dashboard:system-management";
+
+        let lang = defaultLang;
+
+        const i18n = $i18n(currentPage, baseTranslation[currentPage]);
+
+        $localeSettings.subscribe((locale) => {
+            lang = locale || defaultLang;
+        });
+
+        i18n.subscribe((comp) => {
+            documentUpdater(comp, lang);
+            pageHeaderUpdater(comp.header);
+        });
+
+        if (!customElements.get("t-system-management")) {
+            customElements.define(
+                "t-system-management",
+                makeTranslation(currentPage, i18n),
+            );
+        }
+    </script>
+
+    <style>
+        .page-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .button-shelf {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        #db-studio-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+
+            .studio-frame-container {
+                width: 90%;
+                height: 90%;
+                background-color: var(--background-base);
+                border-radius: var(--radius-lg);
+                border: 1px solid var(--border);
+                overflow: hidden;
+
+                .frame-header {
+                    display: flex;
+                    justify-content: flex-end;
+                    padding: 0.25rem;
+                    background-color: var(--background-base);
+                    border-bottom: 1px solid var(--border);
+                    align-items: center;
+
+                    .frame-title {
+                        flex-grow: 1;
+                        font-weight: 600;
+                        font-size: 1.125rem;
+                        padding-left: 1rem;
+                    }
+                }
+            }
+        }
+
+        #db-studio-container {
+            display: none;
+        }
+
+        #db-studio-container.active {
+            display: flex;
+        }
+    </style>
+</Layout>

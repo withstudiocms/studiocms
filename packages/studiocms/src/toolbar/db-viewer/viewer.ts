@@ -33,7 +33,7 @@ export class DbStudioElement extends HTMLElement {
 		Object.assign(this.#iframe.style, {
 			height: '100%',
 			width: '100%',
-			border: '1px solid rgba(27, 30, 36, 1)',
+			border: 'none',
 		});
 
 		this.#dialect = (this.getAttribute('dialect') as SupportedDialect) || 'turso';
