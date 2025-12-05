@@ -44,7 +44,6 @@
     "typescript": "catalog:"
   },
   "dependencies": {
-    "@astrojs/db": "catalog:astrojs",
     "@astrojs/node": "catalog:astrojs",
     "@libsql/client": "catalog:kysely",
 		"@studiocms/ui": "catalog:studiocms",

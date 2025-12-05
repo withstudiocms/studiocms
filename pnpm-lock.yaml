@@ -6,9 +6,6 @@ settings:
 
 catalogs:
   astrojs:
-    '@astrojs/db':
-      specifier: ^0.18.3
-      version: 0.18.3
     '@astrojs/node':
       specifier: ^9.5.1
       version: 9.5.1
@@ -94,9 +91,6 @@ catalogs:
     '@astrojs/markdown-remark':
       specifier: ^6.3.3
       version: 6.3.9
-    '@libsql/client':
-      specifier: ^0.15.15
-      version: 0.15.15
     astro:
       specifier: ^5.12.9
       version: 5.16.2
@@ -627,9 +621,6 @@ importers:
 
   packages/@studiocms/migrator:
     dependencies:
-      '@astrojs/db':
-        specifier: catalog:astrojs
-        version: 0.18.3(@types/pg@8.15.6)(kysely@0.28.8)(mysql2@3.15.3)(pg@8.16.3)
       '@astrojs/node':
         specifier: catalog:astrojs
         version: 9.5.1(astro@5.16.2(@types/node@22.19.1)(jiti@2.6.1)(rollup@4.53.3)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
@@ -813,9 +804,6 @@ importers:
 
   packages/@withstudiocms/effect:
     dependencies:
-      '@astrojs/db':
-        specifier: '>=0.17.2'
-        version: 0.18.3(@types/pg@8.15.6)(kysely@0.28.8)(mysql2@3.15.3)(pg@8.16.3)
       '@clack/prompts':
         specifier: ^0.11.0
         version: 0.11.0
@@ -828,18 +816,12 @@ importers:
       '@effect/platform-node':
         specifier: catalog:effect
         version: 0.102.0(@effect/cluster@0.53.5(@effect/platform@0.93.5(effect@3.19.8))(@effect/rpc@0.72.2(@effect/platform@0.93.5(effect@3.19.8))(effect@3.19.8))(@effect/sql@0.48.0(@effect/experimental@0.57.4(@effect/platform@0.93.5(effect@3.19.8))(effect@3.19.8))(@effect/platform@0.93.5(effect@3.19.8))(effect@3.19.8))(@effect/workflow@0.13.0(@effect/experimental@0.57.4(@effect/platform@0.93.5(effect@3.19.8))(effect@3.19.8))(@effect/platform@0.93.5(effect@3.19.8))(@effect/rpc@0.72.2(@effect/platform@0.93.5(effect@3.19.8))(effect@3.19.8))(effect@3.19.8))(effect@3.19.8))(@effect/platform@0.93.5(effect@3.19.8))(@effect/rpc@0.72.2(@effect/platform@0.93.5(effect@3.19.8))(effect@3.19.8))(@effect/sql@0.48.0(@effect/experimental@0.57.4(@effect/platform@0.93.5(effect@3.19.8))(effect@3.19.8))(@effect/platform@0.93.5(effect@3.19.8))(effect@3.19.8))(effect@3.19.8)
-      '@libsql/client':
-        specifier: catalog:min
-        version: 0.15.15
       astro:
         specifier: catalog:min
         version: 5.16.2(@types/node@22.19.1)(jiti@2.6.1)(rollup@4.53.3)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
       deepmerge-ts:
         specifier: 'catalog:'
         version: 7.1.5
-      drizzle-orm:
-        specifier: catalog:min
-        version: 0.42.0(@libsql/client@0.15.15)(@types/pg@8.15.6)(kysely@0.28.8)(mysql2@3.15.3)(pg@8.16.3)
       effect:
         specifier: catalog:effect
         version: 3.19.8
@@ -1164,9 +1146,6 @@ packages:
 
   '@astrojs/compiler@2.13.0':
     resolution: {integrity: sha512-mqVORhUJViA28fwHYaWmsXSzLO9osbdZ5ImUfxBarqsYdMlPbqAqGJCxsNzvppp1BEzc1mJNjOVvQqeDN8Vspw==}
-
-  '@astrojs/db@0.18.3':
-    resolution: {integrity: sha512-iTK50jUgyj25oa/JiXSN1/IVp5kTmPuioLlve06LE8/HzWGv3JpVgCKIV9HHf3kOVi1HV/uauXnyWzkB+yHLSQ==}
 
   '@astrojs/internal-helpers@0.6.1':
     resolution: {integrity: sha512-l5Pqf6uZu31aG+3Lv8nl/3s4DbUzdlxTWDof4pEpto6GUJNhhCbelVi9dEyurOVyqaelwmS9oSyOWOENSfgo9A==}
@@ -3556,9 +3535,6 @@ packages:
     resolution: {integrity: sha512-jOSne2qbyE+/r8G1VU+G/82LBs2Fs4LAsTiLSHOCOMZQl2OKZ6i8i4IyHemTe+/yIXOtTcRQMzPcgyhoFlqPkw==}
     engines: {node: '>=8'}
 
-  deep-diff@1.0.2:
-    resolution: {integrity: sha512-aWS3UIVH+NPGCD1kki+DCU9Dua032iSsO43LqQpcs4R3+dVv7tX0qBGjiVHJHjplsoUM2XRO/KB92glqc68awg==}
-
   deep-eql@5.0.2:
     resolution: {integrity: sha512-h5k/5U50IJJFpzfL6nO9jaaumfjO/f2NjK/oYB2Djzm4p9L+3T9qWpZqZ2hAbLPuuYq9wrU08WQyBTL5GbPk5Q==}
     engines: {node: '>=6'}
@@ -4924,11 +4900,6 @@ packages:
   nanoid@3.3.11:
     resolution: {integrity: sha512-N8SpfPUnUp1bK+PMYW8qSWdl9U+wwNWI4QKxOYDy9JAro3WMX7p2OeVRF9v+347pnakNevPmiHhNmZ2HbFA76w==}
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
-    hasBin: true
-
-  nanoid@5.1.6:
-    resolution: {integrity: sha512-c7+7RQ+dMB5dPwwCp4ee1/iV/q2P6aK1mTZcfr1BTuVlyW9hJYiMPybJCcnBlQtuSmTIWNeazm/zqNoZSSElBg==}
-    engines: {node: ^18 || >=20}
     hasBin: true
 
   nanostores@1.1.0:
@@ -6377,47 +6348,6 @@ snapshots:
   '@asamuzakjp/nwsapi@2.3.9': {}
 
   '@astrojs/compiler@2.13.0': {}
-
-  '@astrojs/db@0.18.3(@types/pg@8.15.6)(kysely@0.28.8)(mysql2@3.15.3)(pg@8.16.3)':
-    dependencies:
-      '@libsql/client': 0.15.15
-      deep-diff: 1.0.2
-      drizzle-orm: 0.42.0(@libsql/client@0.15.15)(@types/pg@8.15.6)(kysely@0.28.8)(mysql2@3.15.3)(pg@8.16.3)
-      nanoid: 5.1.6
-      piccolore: 0.1.3
-      prompts: 2.4.2
-      yargs-parser: 21.1.1
-      zod: 3.25.76
-    transitivePeerDependencies:
-      - '@aws-sdk/client-rds-data'
-      - '@cloudflare/workers-types'
-      - '@electric-sql/pglite'
-      - '@libsql/client-wasm'
-      - '@neondatabase/serverless'
-      - '@op-engineering/op-sqlite'
-      - '@opentelemetry/api'
-      - '@planetscale/database'
-      - '@prisma/client'
-      - '@tidbcloud/serverless'
-      - '@types/better-sqlite3'
-      - '@types/pg'
-      - '@types/sql.js'
-      - '@vercel/postgres'
-      - '@xata.io/client'
-      - better-sqlite3
-      - bufferutil
-      - bun-types
-      - expo-sqlite
-      - gel
-      - knex
-      - kysely
-      - mysql2
-      - pg
-      - postgres
-      - prisma
-      - sql.js
-      - sqlite3
-      - utf-8-validate
 
   '@astrojs/internal-helpers@0.6.1': {}
 
@@ -9288,8 +9218,6 @@ snapshots:
       mimic-response: 2.1.0
     optional: true
 
-  deep-diff@1.0.2: {}
-
   deep-eql@5.0.2: {}
 
   deep-is@0.1.4:
@@ -11059,8 +10987,6 @@ snapshots:
     optional: true
 
   nanoid@3.3.11: {}
-
-  nanoid@5.1.6: {}
 
   nanostores@1.1.0: {}
 
