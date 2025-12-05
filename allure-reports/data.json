@@ -3,7 +3,6 @@
     "..",
     "adam_db-viewer",
     "adam_fix-config-loader",
-    "adam_remove-drizzle",
     "changeset-release_main",
     "main"
   ]
