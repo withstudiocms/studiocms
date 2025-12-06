@@ -31,9 +31,10 @@ export async function getDriverInstance(): Promise<BaseDriver> {
  * @param {unknown} data - The data to include in the response.
  * @returns {Response} The JSON response.
  */
-const jsonResponse = (data: unknown): Response =>
+const jsonResponse = (data: unknown, status = 200): Response =>
 	new Response(JSON.stringify(data), {
 		headers: { 'Content-Type': 'application/json' },
+		status,
 	});
 
 const parseLogLevel = (
@@ -69,14 +70,14 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
 	// Check if demo mode is enabled
 	if (developerConfig.demoMode !== false) {
-		return jsonResponse({ error: 'Demo mode is enabled, this action is not allowed.' });
+		return jsonResponse({ error: 'Demo mode is enabled, this action is not allowed.' }, 403);
 	}
 
 	// Security check: only allow access in the following cases
 	// 1. In development mode
 	// 2. In production, only if the user is an owner
 	if (!isDev && !locals.StudioCMS.security?.userPermissionLevel.isOwner) {
-		return new Response('Forbidden', { status: 403 });
+		return jsonResponse({ error: 'Forbidden' }, 403);
 	}
 
 	// Parse the request body
@@ -108,10 +109,13 @@ export const POST: APIRoute = async ({ request, locals }) => {
 		});
 	} catch (e) {
 		log.error(`Error handling ${body.type} request with ID ${body.id}: ${(e as Error).message}`);
-		return jsonResponse({
-			type: body.type,
-			id: body.id,
-			error: (e as Error).message,
-		});
+		return jsonResponse(
+			{
+				type: body.type,
+				id: body.id,
+				error: (e as Error).message,
+			},
+			500
+		);
 	}
 };

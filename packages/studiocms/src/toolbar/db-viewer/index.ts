@@ -6,7 +6,9 @@ import { DbStudioElement } from './viewer.js';
 export default defineToolbarApp({
 	init(canvas, eventTarget) {
 		let appElement: HTMLElement | null = null;
+		let isInitialized = false;
 		function createCanvas() {
+			if (isInitialized) return;
 			// Remove previous element if it exists
 			appElement?.remove();
 			// Get user config
@@ -39,6 +41,7 @@ export default defineToolbarApp({
 		}
 
 		createCanvas();
+		isInitialized = true;
 		document.addEventListener('astro:after-swap', createCanvas);
 		closeOnOutsideClick(eventTarget);
 	},
