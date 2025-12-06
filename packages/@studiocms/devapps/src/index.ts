@@ -4,6 +4,8 @@ import { loadEnv } from 'vite';
 import { type StudioCMSDevAppsOptions, StudioCMSDevAppsSchema } from './schema/index.js';
 import { pathGenerator } from './utils/pathGenerator.js';
 
+// TODO: Deprecate and remove the libsql-viewer app in favor of the new built-in DB Viewer in StudioCMS core
+
 /**
  * Integrates StudioCMS development applications with Astro.
  *

@@ -170,7 +170,15 @@ export const StudioCMSRoutes = {
 		 */
 		unverifiedEmail: makeDashboardRoute('unverified-email'),
 
+		/**
+		 * URL for the password reset page.
+		 */
 		passwordReset: makeDashboardRoute('password-reset'),
+
+		/**
+		 * URL for the system management page.
+		 */
+		systemManagement: makeDashboardRoute('system-management'),
 	},
 	authLinks: {
 		/**

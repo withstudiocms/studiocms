@@ -1,0 +1,414 @@
+---
+import { adapter } from 'studiocms:astro-config/adapter';
+import { db } from 'studiocms:config';
+import { useTranslations } from 'studiocms:i18n';
+import { pluginList } from 'studiocms:plugins/list';
+import { Button } from 'studiocms:ui/components/button';
+import { Card } from 'studiocms:ui/components/card';
+import { Icon } from 'studiocms:ui/components/icon';
+import { getConfig } from '#db-studio/config';
+import PageHeader from '../../components/dashboard/PageHeader.astro';
+import Layout from '../../layouts/DashboardLayout.astro';
+import { DebugStyler } from '../../scripts/debug-styler.js';
+
+const {
+	siteConfig: config,
+	defaultLang: lang,
+	security,
+	SCMSGenerator,
+	SCMSUiGenerator,
+} = Astro.locals.StudioCMS;
+const currentUser = security?.userSessionData ?? null;
+const t = useTranslations(lang, '@studiocms/dashboard:system-management');
+
+// Get user database configuration
+const userConfig = getConfig();
+
+/**
+ * Strips namespace prefixes from version strings.
+ *
+ * @param versionString - The version string to process.
+ * @returns The version string without namespace prefixes.
+ *
+ * @example
+ * stripNamespace('Astro v3.5.0'); // Returns '3.5.0'
+ */
+function stripNamespace(versionString: string) {
+	return versionString.replace(/^[^\d]*/, 'v');
+}
+
+// Database dialect labels
+const dbDialectLabels = {
+	libsql: 'LibSQL',
+	mysql: 'MySQL',
+	postgres: 'PostgreSQL',
+	sqlite: 'SQLite',
+};
+
+const nodeProcessLabels = {
+	win32: 'Windows',
+	darwin: 'macOS',
+	linux: 'Linux',
+	aix: 'AIX',
+	freebsd: 'FreeBSD',
+	openbsd: 'OpenBSD',
+	sunos: 'SunOS',
+};
+
+const nodeArchLabels = {
+	x64: 'x64',
+	arm64: 'ARM64',
+	ia32: 'x86',
+	arm: 'ARM',
+	mips: 'MIPS',
+	ppc: 'PowerPC',
+};
+
+function formatHost(platform: string, arch: string): string {
+	const platformLabel = nodeProcessLabels[platform as keyof typeof nodeProcessLabels] || platform;
+	const archLabel = nodeArchLabels[arch as keyof typeof nodeArchLabels] || arch;
+	return `${platformLabel} (${archLabel})`;
+}
+
+// Gather debug information
+const getDebugInfo = {
+	Astro: stripNamespace(Astro.generator),
+	'Astro Adapter': adapter,
+	'Database Dialect': dbDialectLabels[db.dialect] || db.dialect,
+	'Node.js': process.version,
+	System: formatHost(process.platform, process.arch),
+	StudioCMS: stripNamespace(SCMSGenerator),
+	'StudioCMS UI': stripNamespace(SCMSUiGenerator),
+	'StudioCMS Plugins': pluginList
+		.map((plugin) => `${plugin.name} (${plugin.identifier})`)
+		.join('\n'),
+};
+
+// Initialize DebugStyler with desired indentation
+const styler = new DebugStyler(4);
+
+// Format the debug information
+const debugOutput = styler.format(getDebugInfo);
+---
+
+<Layout
+    title={t("title")}
+    description={t("description")}
+    requiredPermission="owner"
+    {lang}
+    {config}
+    {currentUser}
+>
+    <div slot="header">
+        <PageHeader title={t("header")} />
+    </div>
+
+    <div slot="external">
+        {/* DB Studio Modal Container */ }
+        <div id="db-studio-container">
+            <div class="studio-frame-container">
+                <div class="frame-header">
+                    <span class="frame-title">
+                        <t-system-management key="database-management-label">{t('database-management-label')}</t-system-management>
+                    </span>
+                    <Button
+                        color="default"
+                        size="sm"
+                        id="close-db-studio"
+                        variant="solid"
+                    >
+                        <Icon
+                            slot="start-content"
+                            name="heroicons:x-mark-20-solid"
+                            width={20}
+                            height={20}
+                        />
+                        <t-system-management key="close-button-label">{t('close-button-label')}</t-system-management>
+                    </Button>
+                </div>
+                <db-studio dialect={userConfig.dialect}></db-studio>
+            </div>
+        </div>
+    </div>
+
+    <div class="page-container">
+        {/* System Utilities Card */ }
+        <Card fullWidth>
+            <div slot="header">
+                <h2><t-system-management key="system-utilities-label">{t('system-utilities-label')}</t-system-management></h2>
+            </div>
+
+            <div class="button-shelf">
+                <Button
+                    id="access-db-studio"
+                    variant="outlined"
+                    color="info"
+                    size="md"
+                >
+                    <Icon
+                        slot="start-content"
+                        name="heroicons:circle-stack-20-solid"
+                        width={20}
+                        height={20}
+                    />
+                    <t-system-management key="database-management-label">{t('database-management-label')}</t-system-management>
+                </Button>
+            </div>
+        </Card>
+
+        {/* Debug Information Output Card */ }
+        <div class="debug-output">
+            <div class="debug-header">
+                <h3><t-system-management key="debug-info-label">{t('debug-info-label')}</t-system-management></h3>
+            </div>
+            <div class="debug-content-wrapper">
+                <Button class="copy-button" id="copyDebugButton" variant="solid" size="sm">
+                    <Icon
+                        slot="start-content"
+                        name="heroicons:clipboard-20-solid"
+                        width={16}
+                        height={16}
+                    />
+                </Button>
+                <pre class="debug-content"><code>{debugOutput}</code></pre>
+                <div id="debug-data" style="display: none;">{debugOutput}</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        import {
+            $i18n,
+            $localeSettings,
+            baseTranslation,
+            defaultLang,
+            documentUpdater,
+            makeTranslation,
+            pageHeaderUpdater,
+        } from "studiocms:i18n/client";
+
+        // =========================================
+        // i18n Logic
+        // =========================================
+
+        const currentPage = "@studiocms/dashboard:system-management";
+
+        let lang = defaultLang;
+
+        const i18n = $i18n(currentPage, baseTranslation[currentPage]);
+
+        let copiedToClipboardText = "Copied!";
+
+        $localeSettings.subscribe((locale) => {
+            lang = locale || defaultLang;
+        });
+
+        i18n.subscribe((comp) => {
+            documentUpdater(comp, lang);
+            pageHeaderUpdater(comp.header);
+            copiedToClipboardText = comp['copied-to-clipboard'];
+        });
+
+        if (!customElements.get("t-system-management")) {
+            customElements.define(
+                "t-system-management",
+                makeTranslation(currentPage, i18n),
+            );
+        }
+
+        // =========================================
+        // Utility functions
+        // =========================================
+
+        // Utility function to select elements
+        const $ = (selector: string) => document.querySelector(selector);
+
+        // Modal registration utility
+        function registerModal(opts: {
+            modal: HTMLElement;
+            openButton: HTMLElement;
+            closeButton: HTMLElement;
+        }) {
+            const { modal, openButton, closeButton } = opts;
+
+            openButton?.addEventListener("click", () => {
+                modal.classList.add("active");
+            });
+
+            closeButton?.addEventListener("click", () => {
+                modal.classList.remove("active");
+            });
+
+            modal?.addEventListener("click", (event) => {
+                if (event.target === modal) {
+                    modal.classList.remove("active");
+                }
+            });
+        }
+
+        // Register copy-to-clipboard functionality for code blocks
+        function registerCodeBlockCopy(
+            button: HTMLButtonElement,
+            dataElement: HTMLElement
+        ) {
+            button?.addEventListener("click", () => {
+                const debugData = dataElement?.textContent || "";
+                const formattedData = `\`\`\`\n${debugData}\n\`\`\``;
+
+                navigator.clipboard.writeText(formattedData).then(
+                    () => {
+                        const initialData = button.innerHTML;
+                        button.classList.add('success')
+                        button.textContent = copiedToClipboardText;
+                        setTimeout(() => {
+                            button.classList.remove('success')
+                            button.innerHTML = initialData;
+                        }, 2000);
+                    },
+                    (err) => {
+                        console.error("Could not copy debug data: ", err);
+                    },
+                );
+            });
+        }
+
+        // =========================================
+        // DB Studio Modal Logic
+        // =========================================
+
+        const dbStudioContainer = $("#db-studio-container") as HTMLDivElement;
+        const accessDbStudioButton = $(
+            "#access-db-studio",
+        ) as HTMLButtonElement;
+        const closeDbStudioButton = $("#close-db-studio") as HTMLButtonElement;
+
+        // Register the DB Studio modal
+        registerModal({
+            modal: dbStudioContainer,
+            openButton: accessDbStudioButton,
+            closeButton: closeDbStudioButton,
+        });
+
+        // =========================================
+        // Debug Output Copy Logic
+        // =========================================
+
+        const copyDebugButton = $("#copyDebugButton") as HTMLButtonElement;
+        const debugDataElement = $("#debug-data") as HTMLDivElement;
+
+        registerCodeBlockCopy(copyDebugButton, debugDataElement);
+    </script>
+
+    <style>
+        .page-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .button-shelf {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        #db-studio-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+
+            .studio-frame-container {
+                width: 90%;
+                height: 90%;
+                background-color: var(--background-base);
+                border-radius: var(--radius-lg);
+                border: 1px solid var(--border);
+                overflow: hidden;
+
+                .frame-header {
+                    display: flex;
+                    justify-content: flex-end;
+                    padding: 0.25rem;
+                    background-color: var(--background-base);
+                    border-bottom: 1px solid var(--border);
+                    align-items: center;
+
+                    .frame-title {
+                        flex-grow: 1;
+                        font-weight: 600;
+                        font-size: 1.125rem;
+                        padding-left: 1rem;
+                    }
+                }
+            }
+        }
+
+        #db-studio-container {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease, display 0.3s ease allow-discrete;
+        }
+
+        #db-studio-container.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        @starting-style {
+            #db-studio-container.active {
+                opacity: 0;
+            }
+        }
+
+        .debug-output {
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            background: var(--background-base);
+
+            .debug-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 0.75rem 1rem;
+                border-bottom: 1px solid var(--border);
+                background: var(--background-step-2);
+            }
+
+            .debug-header h3 {
+                margin: 0;
+                font-size: 1rem;
+            }
+
+            .debug-content-wrapper {
+                position: relative;
+            }
+
+            .copy-button {
+                position: absolute;
+                top: 1rem;
+                right: 1rem;
+            }
+
+            .debug-content {
+                margin: 0;
+                padding: 1rem;
+                overflow-x: auto;
+                background: var(--background-base);
+                border-radius: 0 0 var(--radius-md) var(--radius-md);
+            }
+
+            .debug-content code {
+                font-family: 'Courier New', Courier, monospace;
+                font-size: 0.875rem;
+                line-height: 1.5;
+            }
+        }
+
+    </style>
+</Layout>

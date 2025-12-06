@@ -390,6 +390,12 @@ const notificationSettingKeys = Object.keys(notificationSettings.data).filter(
 
 <script>
   import { toast } from "studiocms:ui/components/toaster/client";
+  import { DbStudioElement } from '#db-studio/viewer'
+
+	// Define the custom element if not already defined
+	if (!customElements.get('db-studio')) {
+		customElements.define('db-studio', DbStudioElement);
+	}
 
   const smtpConfigForm = document.getElementById(
     "smtp-config-form",

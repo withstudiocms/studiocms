@@ -150,6 +150,11 @@ export function getSidebarLinks(lang: UiLanguageKeys): GetSidebarLinksReturn {
 			icon: 'heroicons:inbox',
 			href: StudioCMSRoutes.mainLinks.smtpConfiguration,
 		},
+		{
+			key: 'system-management-label',
+			icon: 'heroicons:server-stack',
+			href: StudioCMSRoutes.mainLinks.systemManagement,
+		},
 		...filterAndProcessPages(adminPages, true, ['owner'], lang),
 	];
 

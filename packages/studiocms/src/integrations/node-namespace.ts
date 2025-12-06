@@ -1,6 +1,7 @@
 import { builtinModules as builtins } from 'node:module';
 import type { AstroIntegration } from 'astro';
 import { addVitePlugin, hasVitePlugin } from 'astro-integration-kit';
+import type { PluginOption } from 'vite';
 
 export const resolveBuiltIns = (id: string) => {
 	if (!id || id[0] === '.' || id[0] === '/') return;
@@ -27,19 +28,19 @@ export const resolveBuiltIns = (id: string) => {
  * @returns {AstroIntegration} An Astro integration for handling Node.js built-in modules.
  */
 export function nodeNamespaceBuiltinsAstro(): AstroIntegration {
+	const name = 'studiocms/node-namespace-builtins';
+	const plugin: PluginOption = {
+		name,
+		enforce: 'pre',
+		resolveId: resolveBuiltIns,
+	};
 	return {
-		name: 'vite-namespace-builtins',
+		name,
 		hooks: {
 			/* v8 ignore start */
 			'astro:config:setup': (params) => {
-				if (!hasVitePlugin(params, { plugin: 'namespace-builtins' })) {
-					addVitePlugin(params, {
-						plugin: {
-							name: 'namespace-builtins',
-							enforce: 'pre',
-							resolveId: resolveBuiltIns,
-						},
-					});
+				if (!hasVitePlugin(params, { plugin })) {
+					addVitePlugin(params, { plugin });
 				}
 			},
 			/* v8 ignore stop */
