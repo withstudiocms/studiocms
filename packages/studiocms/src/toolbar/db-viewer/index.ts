@@ -5,7 +5,10 @@ import { DbStudioElement } from './viewer.js';
 
 export default defineToolbarApp({
 	init(canvas, eventTarget) {
+		let appElement: HTMLElement | null = null;
 		function createCanvas() {
+			// Remove previous element if it exists
+			appElement?.remove();
 			// Get user config
 			const userConfig = getConfig();
 
@@ -31,7 +34,8 @@ export default defineToolbarApp({
 			}
 
 			// Append the app element to the canvas
-			canvas.appendChild(AppElement);
+			appElement = AppElement;
+			canvas.appendChild(appElement);
 		}
 
 		createCanvas();

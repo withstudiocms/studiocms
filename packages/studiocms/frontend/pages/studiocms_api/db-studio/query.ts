@@ -69,7 +69,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
 	// Check if demo mode is enabled
 	if (developerConfig.demoMode !== false) {
-		return new Response('Demo mode is enabled, this action is not allowed.', { status: 403 });
+		return jsonResponse({ error: 'Demo mode is enabled, this action is not allowed.' });
 	}
 
 	// Security check: only allow access in the following cases

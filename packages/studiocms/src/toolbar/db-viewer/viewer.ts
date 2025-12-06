@@ -55,6 +55,10 @@ export class DbStudioElement extends HTMLElement {
 	 *
 	 */
 	async #handleMessage(event: MessageEvent) {
+		// Only accept messages from the Outerbase Studio iframe
+		if (event.origin !== 'https://studio.outerbase.com') {
+			return;
+		}
 		const data = event.data;
 		switch (data?.type) {
 			case 'transaction':
