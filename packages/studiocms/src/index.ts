@@ -161,12 +161,14 @@ export const studiocms = (): AstroIntegration => {
 					plugins,
 					verbose,
 					componentRegistry,
+					db: { dialect },
 					features: {
 						developerConfig,
 						robotsTXT: robotsTXTConfig,
 						injectQuickActionsMenu,
 						dashboardConfig: { dashboardEnabled, inject404Route, dashboardRouteOverride },
 						authConfig,
+						webVitals,
 					},
 				} = options;
 
@@ -226,6 +228,8 @@ export const studiocms = (): AstroIntegration => {
 					plugins,
 					robotsTXTConfig,
 					verbose,
+					webVitals,
+					dialect,
 				});
 
 				// Setup Routes

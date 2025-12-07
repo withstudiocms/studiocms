@@ -52,57 +52,6 @@ export interface TableManagerOptions {
  *   - logLevel?: string – logging verbosity for SDKLogger (default: 'info').
  *   - logLabel?: string – logger label (default: 'studiocms:database').
  *
- * Important methods and behavior:
- *
- * - getDialect(): DatabaseDialect
- *   Determines the underlying database dialect by inspecting the Kysely executor's adapter
- *   (e.g. sqlite, mysql, postgres). Throws an Error if the dialect cannot be determined or is unsupported.
- *   @internal
- *
- * - tableExistsViaIntrospection(tableName: string): Promise<boolean>
- *   Uses information_schema (Postgres/MySQL) or sqlite_master (SQLite) to determine whether the
- *   given table exists. Returns true when the table is present.
- *   @internal
- *
- * - tableExists(): Promise<boolean>
- *   Convenience wrapper that checks existence for the table defined in options.tableDefinition.name.
- *
- * - createTable(): Promise<void>
- *   Creates the table as described by the provided TableDefinition:
- *     - iterates columns and maps column properties (primaryKey, autoIncrement, notNull,
- *       unique, default, defaultSQL, references and onDelete) to Kysely column builder calls;
- *     - executes the CREATE TABLE statement via the Kysely schema builder;
- *     - creates any defined indexes and triggers after the table creation.
- *   Note: defaultSQL and trigger bodies are executed as raw SQL (sql.raw), so they must be valid
- *   for the target dialect.
- *
- * - createIndex(index: IndexDefinition): Promise<void>
- *   Creates an index on the managed table. Supports multi-column indexes and unique indexes.
- *   @internal
- *
- * - createTrigger(trigger: TriggerDefinition): Promise<void>
- *   Creates a trigger on the managed table. Behavior is dialect-aware:
- *     - PostgreSQL: creates a helper function (plpgsql) then a trigger that executes the function.
- *     - SQLite/MySQL: creates the trigger with an inline body.
- *   Raw SQL fragments are used for function/trigger bodies and names; ensure names and bodies
- *   are safe and valid for the dialect.
- *   @internal
- *
- * - initialize(): Promise<void>
- *   Public entry point to ensure the table exists. If the table does not exist:
- *     - logs (unless silent),
- *     - creates the table (columns/indexes/triggers),
- *     - calls onTableCreated with the table name.
- *   If the table already exists:
- *     - logs a debug message (unless silent),
- *     - calls onTableExists with the table name.
- *
- * - dropTable(): Promise<void>
- *   Drops the managed table if it exists (uses schema.dropTable(...).ifExists()).
- *
- * - recreateTable(): Promise<void>
- *   Convenience method that drops the table (if present) and then creates it again.
- *
  * Errors and side effects:
  * - Throws an Error when an unsupported or unrecognized dialect is encountered.
  * - All DDL operations and any raw SQL used for defaults or triggers are executed against the
