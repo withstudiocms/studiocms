@@ -9,7 +9,7 @@ import type { MiddlewareHandler } from 'astro';
 export const onRequest: MiddlewareHandler = async ({ params, url }, next) => {
 	const response = await next();
 	const contentType = response.headers.get('Content-Type');
-	if (contentType !== 'text/html') return response;
+	if (!contentType?.startsWith('text/html')) return response;
 	const webVitalsMetaTag = getMetaTag(url, params);
 	return new Response(
 		response.body

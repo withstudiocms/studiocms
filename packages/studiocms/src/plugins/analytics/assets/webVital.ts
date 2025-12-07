@@ -119,6 +119,7 @@ export async function getWebVitals(): Promise<GetWebVitalsData> {
 	try {
 		return await runEffect(program);
 	} catch (_error) {
+		console.error('Failed to retrieve web vitals:', _error);
 		return EmptyReturn;
 	}
 }
