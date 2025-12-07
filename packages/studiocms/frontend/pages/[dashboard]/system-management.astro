@@ -6,89 +6,26 @@ import { pluginList } from 'studiocms:plugins/list';
 import { Button } from 'studiocms:ui/components/button';
 import { Card } from 'studiocms:ui/components/card';
 import { Icon } from 'studiocms:ui/components/icon';
+import { DebugInfoProvider } from '@withstudiocms/internal_helpers/debug-info-provider';
 import { getConfig } from '#db-studio/config';
 import PageHeader from '../../components/dashboard/PageHeader.astro';
 import Layout from '../../layouts/DashboardLayout.astro';
-import { DebugStyler } from '../../scripts/debug-styler.js';
 
-const {
-	siteConfig: config,
-	defaultLang: lang,
-	security,
-	SCMSGenerator,
-	SCMSUiGenerator,
-} = Astro.locals.StudioCMS;
+const { siteConfig: config, defaultLang: lang, security } = Astro.locals.StudioCMS;
 const currentUser = security?.userSessionData ?? null;
 const t = useTranslations(lang, '@studiocms/dashboard:system-management');
 
 // Get user database configuration
 const userConfig = getConfig();
 
-/**
- * Strips namespace prefixes from version strings.
- *
- * @param versionString - The version string to process.
- * @returns The version string without namespace prefixes.
- *
- * @example
- * stripNamespace('Astro v3.5.0'); // Returns '3.5.0'
- */
-function stripNamespace(versionString: string) {
-	return versionString.replace(/^[^\d]*/, 'v');
-}
+const debugProvider = new DebugInfoProvider({
+	Astro,
+	databaseDialect: db.dialect,
+	adapterName: adapter,
+	installedPlugins: pluginList,
+});
 
-// Database dialect labels
-const dbDialectLabels = {
-	libsql: 'LibSQL',
-	mysql: 'MySQL',
-	postgres: 'PostgreSQL',
-	sqlite: 'SQLite',
-};
-
-const nodeProcessLabels = {
-	win32: 'Windows',
-	darwin: 'macOS',
-	linux: 'Linux',
-	aix: 'AIX',
-	freebsd: 'FreeBSD',
-	openbsd: 'OpenBSD',
-	sunos: 'SunOS',
-};
-
-const nodeArchLabels = {
-	x64: 'x64',
-	arm64: 'ARM64',
-	ia32: 'x86',
-	arm: 'ARM',
-	mips: 'MIPS',
-	ppc: 'PowerPC',
-};
-
-function formatHost(platform: string, arch: string): string {
-	const platformLabel = nodeProcessLabels[platform as keyof typeof nodeProcessLabels] || platform;
-	const archLabel = nodeArchLabels[arch as keyof typeof nodeArchLabels] || arch;
-	return `${platformLabel} (${archLabel})`;
-}
-
-// Gather debug information
-const getDebugInfo = {
-	Astro: stripNamespace(Astro.generator),
-	'Astro Adapter': adapter,
-	'Database Dialect': dbDialectLabels[db.dialect] || db.dialect,
-	'Node.js': process.version,
-	System: formatHost(process.platform, process.arch),
-	StudioCMS: stripNamespace(SCMSGenerator),
-	'StudioCMS UI': stripNamespace(SCMSUiGenerator),
-	'StudioCMS Plugins': pluginList
-		.map((plugin) => `${plugin.name} (${plugin.identifier})`)
-		.join('\n'),
-};
-
-// Initialize DebugStyler with desired indentation
-const styler = new DebugStyler(4);
-
-// Format the debug information
-const debugOutput = styler.format(getDebugInfo);
+const debugOutput = await debugProvider.getDebugInfoString();
 ---
 
 <Layout
