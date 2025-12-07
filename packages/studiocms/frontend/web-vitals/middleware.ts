@@ -10,14 +10,21 @@ export const onRequest: MiddlewareHandler = async ({ params, url }, next) => {
 	const response = await next();
 	const contentType = response.headers.get('Content-Type');
 	if (!contentType?.startsWith('text/html')) return response;
+	if (!response.body) {
+		return response;
+	}
+
 	const webVitalsMetaTag = getMetaTag(url, params);
-	return new Response(
-		response.body
-			?.pipeThrough(new TextDecoderStream())
-			.pipeThrough(HeadInjectionTransformStream(webVitalsMetaTag))
-			.pipeThrough(new TextEncoderStream()),
-		response
-	);
+	const transformedBody = response.body
+		.pipeThrough(new TextDecoderStream())
+		.pipeThrough(HeadInjectionTransformStream(webVitalsMetaTag))
+		.pipeThrough(new TextEncoderStream());
+
+	return new Response(transformedBody, {
+		status: response.status,
+		statusText: response.statusText,
+		headers: response.headers,
+	});
 };
 
 /** TransformStream which injects the passed HTML just before the closing </head> tag.  */
