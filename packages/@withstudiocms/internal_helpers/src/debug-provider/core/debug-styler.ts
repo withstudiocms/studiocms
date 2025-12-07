@@ -7,7 +7,7 @@ interface KeyValuePair {
 
 type StyleTextFormatColor = Parameters<typeof styleText>[0];
 
-type FormatOptions = {
+export type FormatOptions = {
 	keyStyle?: StyleTextFormatColor;
 	valueStyle?: StyleTextFormatColor;
 };

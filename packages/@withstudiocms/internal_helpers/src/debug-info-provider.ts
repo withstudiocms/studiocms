@@ -1,5 +1,5 @@
 import type { AstroGlobal } from 'astro';
-import { DebugStyler } from './debug-provider/core/debug-styler.js';
+import { DebugStyler, type FormatOptions } from './debug-provider/core/debug-styler.js';
 
 /**
  * Represents debug information about the Astro and StudioCMS environment.
@@ -116,18 +116,20 @@ export class DebugInfoProvider {
 	 *
 	 * @returns A promise that resolves to the debug information string.
 	 */
-	async getDebugInfoString(): Promise<string> {
-		const styler = new DebugStyler(4);
+	async getDebugInfoString(indent?: number): Promise<string> {
+		const styler = new DebugStyler(indent);
 		const debugInfo = await this.getDebugInfoObj();
 		return styler.format(debugInfo);
 	}
 
-	async getDebugInfoStyledString(): Promise<string> {
-		const styler = new DebugStyler(4);
+	/**
+	 * Gathers debug information as a formatted and styled string.
+	 *
+	 * @returns A promise that resolves to the styled debug information string.
+	 */
+	async getDebugInfoStyledString(indent?: number, options?: FormatOptions): Promise<string> {
+		const styler = new DebugStyler(indent);
 		const debugInfo = await this.getDebugInfoObj();
-		return styler.formatStyled(debugInfo, {
-			keyStyle: 'cyan',
-			valueStyle: 'white',
-		});
+		return styler.formatStyled(debugInfo, options);
 	}
 }

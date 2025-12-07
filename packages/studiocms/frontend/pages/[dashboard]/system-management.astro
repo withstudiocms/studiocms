@@ -18,6 +18,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:system-management');
 // Get user database configuration
 const userConfig = getConfig();
 
+// Initialize DebugInfoProvider
 const debugProvider = new DebugInfoProvider({
 	Astro,
 	databaseDialect: db.dialect,
@@ -25,6 +26,7 @@ const debugProvider = new DebugInfoProvider({
 	installedPlugins: pluginList,
 });
 
+// Gather debug information
 const debugOutput = await debugProvider.getDebugInfoString();
 ---
 
