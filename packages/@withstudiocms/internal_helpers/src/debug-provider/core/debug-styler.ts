@@ -7,11 +7,17 @@ interface KeyValuePair {
 
 type StyleTextFormatColor = Parameters<typeof styleText>[0];
 
+/**
+ * Options for formatting and styling debug information.
+ */
 export type FormatOptions = {
 	keyStyle?: StyleTextFormatColor;
 	valueStyle?: StyleTextFormatColor;
 };
 
+/**
+ * A utility class for formatting and styling debug information.
+ */
 export class DebugStyler {
 	private indent: number;
 
