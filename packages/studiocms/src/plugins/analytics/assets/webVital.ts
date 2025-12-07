@@ -36,51 +36,71 @@ export type {
 };
 
 /**
- * Fetches web vitals data from the Astro database.
+ * Retrieves and processes web vitals metrics data from the analytics database.
  *
- * @returns {Promise<GetWebVitalsData>} A promise that resolves to an object containing web vitals data.
+ * Fetches all web vitals metrics and organizes them into different time-based summaries:
+ * - Last 24 hours
+ * - Last 7 days
+ * - Last 30 days
  *
- * The returned object contains the following properties:
- * - `raw`: The raw web vitals data.
- * - `routeSummary`: A summary of web vitals data by route.
- * - `summary`: A general summary of web vitals data.
- * - `twentyFourHours`: An object containing web vitals data for the last 24 hours, with `summary` and `routeSummary` properties.
- * - `sevenDays`: An object containing web vitals data for the last 7 days, with `summary` and `routeSummary` properties.
- * - `thirtyDays`: An object containing web vitals data for the last 30 days, with `summary` and `routeSummary` properties.
+ * Each time range includes both an overall summary and a route-specific summary of web vitals metrics.
  *
- * If the web vitals metric table is not found in the Astro database, or if an error occurs, an empty return object is returned.
+ * @returns {Promise<GetWebVitalsData>} A promise that resolves to an object containing:
+ * - `raw`: All raw metrics data from the database
+ * - `routeSummary`: Summary of metrics grouped by route
+ * - `summary`: Overall summary of all metrics
+ * - `twentyFourHours`: Metrics and summaries for the last 24 hours
+ * - `sevenDays`: Metrics and summaries for the last 7 days
+ * - `thirtyDays`: Metrics and summaries for the last 30 days
  *
- * @throws {Error} If there is an issue with fetching or processing the web vitals data.
+ * @throws Returns `EmptyReturn` if an error occurs during execution
+ *
+ * @example
+ * ```typescript
+ * const vitals = await getWebVitals();
+ * console.log(vitals.summary); // Overall web vitals summary
+ * console.log(vitals.twentyFourHours.routeSummary); // Route-specific metrics for last 24 hours
+ * ```
  */
 export async function getWebVitals(): Promise<GetWebVitalsData> {
 	const program = Effect.gen(function* () {
+		// Get the analytics database client
 		const dbClient = yield* getAnalyticsDbClient(config.db.dialect);
 
+		/**
+		 * Fetches all web vitals metrics from the database.
+		 */
 		const getMetrics = dbClient.withDecoder({
 			decoder: Schema.Array(StudioCMSMetricTable.Select),
 			callbackFn: (client) =>
 				client((db) => db.selectFrom('StudioCMSMetric').selectAll().execute()),
 		});
 
+		// Fetch all metrics
 		const raw = yield* getMetrics();
 
+		// Filter data for different time ranges
 		const last24HoursData = raw.filter((item) => checkDate(item.timestamp).isInLast24Hours());
 		const last7DaysData = raw.filter((item) => checkDate(item.timestamp).isInLast7Days());
 		const last30DaysData = raw.filter((item) => checkDate(item.timestamp).isInLast30Days());
 
+		// Process summaries and route summaries
 		const routeSummary = processWebVitalsRouteSummary(raw as WebVitalsResponseItem[]);
 		const summary = processWebVitalsSummary(raw as WebVitalsResponseItem[]);
 
+		// Process time range specific summaries
 		const twentyFourHours = {
 			summary: processWebVitalsSummary(last24HoursData),
 			routeSummary: processWebVitalsRouteSummary(last24HoursData),
 		};
 
+		// Process 7 days summary
 		const sevenDays = {
 			summary: processWebVitalsSummary(last7DaysData),
 			routeSummary: processWebVitalsRouteSummary(last7DaysData),
 		};
 
+		// Process 30 days summary
 		const thirtyDays = {
 			summary: processWebVitalsSummary(last30DaysData),
 			routeSummary: processWebVitalsRouteSummary(last30DaysData),
@@ -97,9 +117,7 @@ export async function getWebVitals(): Promise<GetWebVitalsData> {
 	});
 
 	try {
-		const result = await runEffect(program);
-
-		return result;
+		return await runEffect(program);
 	} catch (_error) {
 		return EmptyReturn;
 	}

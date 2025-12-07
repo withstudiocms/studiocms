@@ -29,6 +29,7 @@ export const ServerMetricSchema = ClientMetricSchema.transform((metric) => {
 	return { ...metric, timestamp };
 });
 
+/** Transformed server data with ISO string timestamp for DB storage. */
 export const DBServerMetricConversionSchema = ServerMetricSchema.transform(
 	({ timestamp, ...metric }) => {
 		return {
@@ -38,4 +39,5 @@ export const DBServerMetricConversionSchema = ServerMetricSchema.transform(
 	}
 );
 
+/** Type representing the shape of client-submitted metrics. */
 export type ClientMetric = z.input<typeof ClientMetricSchema>;

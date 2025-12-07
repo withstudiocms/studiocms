@@ -1,6 +1,9 @@
 import { Database, DateFromString, encodeDatabase, Schema, Table } from '@withstudiocms/kysely';
 import type { TableDefinition } from '#db/plugins';
 
+/**
+ * StudioCMS Metric Table Definition
+ */
 export const StudioCMSMetricTable = Table({
 	id: Schema.String,
 	pathname: Schema.String,
@@ -11,14 +14,26 @@ export const StudioCMSMetricTable = Table({
 	timestamp: DateFromString,
 });
 
+/**
+ * StudioCMS Metric Database Schema Definition
+ */
 export const StudioCMSMetricDBSchema = Database({
 	StudioCMSMetric: StudioCMSMetricTable,
 });
 
+/**
+ * Encoded StudioCMS Metric Database Schema
+ */
 const StudioCMSMetricDBSchemaEncoded = encodeDatabase(StudioCMSMetricDBSchema);
 
+/**
+ * Type representing the StudioCMS Metric Database Schema.
+ */
 export type StudioCMSMetricDB = typeof StudioCMSMetricDBSchemaEncoded;
 
+/**
+ * Definition of the StudioCMS Metric Table for Kysely.
+ */
 export const StudioCMSMetricTableDefinition: TableDefinition = {
 	name: 'StudioCMSMetric',
 	columns: [

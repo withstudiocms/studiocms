@@ -8,8 +8,19 @@
 import type { WebVitalsMetricType } from './schemas.js';
 import type { GetWebVitalsData } from './types.js';
 
+/**
+ * List of core web vitals metrics.
+ */
 export const CoreWebVitals: WebVitalsMetricType[] = ['LCP', 'CLS', 'INP'];
 
+/**
+ * Labels for Web Vitals metrics.
+ *
+ * This object maps each Web Vitals metric type to its corresponding human-readable label.
+ *
+ * @constant
+ * @type {Record<WebVitalsMetricType, string>}
+ */
 export const WEB_VITALS_METRIC_LABELS: Record<WebVitalsMetricType, string> = {
 	LCP: 'Largest Contentful Paint',
 	INP: 'Interaction to Next Paint',
