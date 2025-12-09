@@ -68,7 +68,7 @@ const t = await buildTranslations(translations);
  * @see The [StudioCMS Docs](https://docs.studiocms.dev) for more information on how to use StudioCMS.
  */
 export const defaultPlugin: StudioCMSPlugin = {
-	name: 'StudioCMS (Built-in)',
+	name: 'Core (built-in)',
 	identifier: 'studiocms',
 	studiocmsMinimumVersion: pkgVersion,
 	hooks: {
@@ -1248,6 +1248,17 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 				{
 					id: 'studiocms:dashboard/augments/scripts',
 					content: dashboardAugmentScripts.map((script) => `import '${script}';`).join('\n'),
+				},
+				{
+					id: 'studiocms:plugins/list',
+					content: `
+						export const pluginList = ${JSON.stringify(
+							safePluginList.map(({ name, identifier }) => ({
+								name,
+								identifier,
+							}))
+						)};
+					`,
 				}
 			);
 		}

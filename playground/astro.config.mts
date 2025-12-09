@@ -1,6 +1,5 @@
 import { globSync } from 'node:fs';
 import node from '@astrojs/node';
-import devApps from '@studiocms/devapps';
 import { defineConfig } from 'astro/config';
 import { hmrIntegration } from 'astro-integration-kit/dev';
 import studioCMS from 'studiocms';
@@ -22,8 +21,7 @@ function appendDistPath(paths: string[]) {
 
 function appendDistFrontendPaths(path: string): string[] {
 	const distPath = `${path}/dist`;
-	const frontendPath = `${path}/frontend`;
-	return [distPath, frontendPath];
+	return [distPath];
 }
 
 const packagePaths = [
@@ -47,7 +45,6 @@ export default defineConfig({
 			directories: packagePaths,
 		}),
 		studioCMS(),
-		devApps(),
 	],
 
 	// Used for devcontainer/docker development
