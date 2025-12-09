@@ -12,6 +12,10 @@ declare module 'studiocms:logger' {
 	) => Response;
 }
 
+declare module 'studiocms:astro-config/adapter' {
+	export const adapter: string;
+}
+
 declare module 'studiocms:dashboard/augments/components' {
 	export const componentKeys: string[];
 }
@@ -56,6 +60,13 @@ declare module 'studiocms:plugins/renderers' {
 
 declare module 'studiocms:plugins/augments' {
 	export const renderAugments: import('./types.js').RenderAugment[];
+}
+
+declare module 'studiocms:plugins/list' {
+	export const pluginList: {
+		identifier: string;
+		name: string;
+	}[];
 }
 
 declare module 'studiocms:mailer' {
@@ -107,6 +118,7 @@ declare module 'studiocms:config' {
 	export const authConfig: import('./schemas/index.js').StudioCMSConfig['features']['authConfig'];
 	export const developerConfig: import('./schemas/index.js').StudioCMSConfig['features']['developerConfig'];
 	export const sdk: import('./schemas/index.js').StudioCMSConfig['features']['sdk'];
+	export const db: import('./schemas/index.js').StudioCMSConfig['db'];
 }
 
 declare module 'studiocms:version' {

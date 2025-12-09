@@ -946,12 +946,18 @@ importers:
       '@inox-tools/runtime-logger':
         specifier: ^0.7.0
         version: 0.7.0(astro@5.16.2(@types/node@22.19.1)(jiti@2.6.1)(rollup@4.53.3)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))
+      '@libsql/client':
+        specifier: catalog:kysely
+        version: 0.15.15
       '@nanostores/i18n':
         specifier: ^1.2.2
         version: 1.2.2(nanostores@1.1.0)
       '@nanostores/persistent':
         specifier: ^1.2.0
         version: 1.2.0(nanostores@1.1.0)
+      '@outerbase/sdk-transform':
+        specifier: ^1.0.8
+        version: 1.0.8
       '@studiocms/ui':
         specifier: catalog:studiocms
         version: 1.0.0-beta.4(astro@5.16.2(@types/node@22.19.1)(jiti@2.6.1)(rollup@4.53.3)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1))(vite@6.4.1(@types/node@22.19.1)(jiti@2.6.1)(tsx@4.20.6)(yaml@2.8.1))
@@ -1030,12 +1036,18 @@ importers:
       mrmime:
         specifier: ^2.0.1
         version: 2.0.1
+      mysql2:
+        specifier: catalog:kysely
+        version: 3.15.3
       nanostores:
         specifier: ^1.1.0
         version: 1.1.0
       package-manager-detector:
         specifier: ^1.6.0
         version: 1.6.0
+      pg:
+        specifier: catalog:kysely
+        version: 8.16.3
       semver:
         specifier: ^7.7.3
         version: 7.7.3
@@ -1058,6 +1070,9 @@ importers:
       '@types/node':
         specifier: 'catalog:'
         version: 22.19.1
+      '@types/pg':
+        specifier: catalog:kysely
+        version: 8.15.6
       '@types/semver':
         specifier: ^7.7.1
         version: 7.7.1
@@ -1082,9 +1097,6 @@ importers:
       '@studiocms/blog':
         specifier: workspace:*
         version: link:../packages/@studiocms/blog
-      '@studiocms/devapps':
-        specifier: workspace:*
-        version: link:../packages/@studiocms/devapps
       '@studiocms/md':
         specifier: workspace:*
         version: link:../packages/@studiocms/md
@@ -2318,6 +2330,9 @@ packages:
 
   '@oslojs/jwt@0.2.0':
     resolution: {integrity: sha512-bLE7BtHrURedCn4Mco3ma9L4Y1GR2SMBuIvjWr7rmQ4/W/4Jy70TIAgZ+0nIlk0xHz1vNP8x8DCns45Sb2XRbg==}
+
+  '@outerbase/sdk-transform@1.0.8':
+    resolution: {integrity: sha512-M9EGGwRXUZ7xuX012sIZpsT92Bx1dewac9iubTHsC+/6IGVM678+Vkv44bcDL5Lx6ol+FQ2Exq1TU+OGOmYFEg==}
 
   '@oxc-resolver/binding-android-arm-eabi@11.14.0':
     resolution: {integrity: sha512-jB47iZ/thvhE+USCLv+XY3IknBbkKr/p7OBsQDTHode/GPw+OHRlit3NQ1bjt1Mj8V2CS7iHdSDYobZ1/0gagQ==}
@@ -7851,6 +7866,8 @@ snapshots:
   '@oslojs/jwt@0.2.0':
     dependencies:
       '@oslojs/encoding': 0.4.1
+
+  '@outerbase/sdk-transform@1.0.8': {}
 
   '@oxc-resolver/binding-android-arm-eabi@11.14.0':
     optional: true

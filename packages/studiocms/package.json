@@ -94,6 +94,18 @@
 			"types": "./dist/utils/*.d.ts",
 			"default": "./dist/utils/*.js"
 		},
+		"#toolbar/db-studio": {
+			"types": "./dist/toolbar/db-viewer/studio/index.d.ts",
+			"default": "./dist/toolbar/db-viewer/studio/index.js"
+		},
+		"#db-studio/config": {
+			"types": "./dist/toolbar/db-viewer/config.d.ts",
+			"default": "./dist/toolbar/db-viewer/config.js"
+		},
+		"#db-studio/viewer": {
+			"types": "./dist/toolbar/db-viewer/viewer.d.ts",
+			"default": "./dist/toolbar/db-viewer/viewer.js"
+		},
 		"#frontend/*": "./frontend/*"
 	},
 	"exports": {
@@ -193,6 +205,7 @@
 		"@inox-tools/runtime-logger": "^0.7.0",
 		"@nanostores/i18n": "^1.2.2",
 		"@nanostores/persistent": "^1.2.0",
+		"@outerbase/sdk-transform": "^1.0.8",
 		"@studiocms/ui": "catalog:studiocms",
 		"@withstudiocms/internal_helpers": "workspace:*",
 		"@withstudiocms/auth-kit": "workspace:*",
@@ -229,11 +242,15 @@
 		"@types/node": "catalog:",
 		"@types/semver": "^7.7.1",
 		"@types/three": "0.169.0",
+    	"@types/pg": "catalog:kysely",
 		"typescript": "catalog:"
 	},
 	"peerDependencies": {
 		"astro": "catalog:min",
 		"effect": "catalog:effect",
-		"vite": "catalog:min"
+		"vite": "catalog:min",
+		"@libsql/client": "catalog:kysely",
+		"pg": "catalog:kysely",
+		"mysql2": "catalog:kysely"
 	}
 }
