@@ -15,7 +15,7 @@
       "translation": "/packages/studiocms/src/handlers/plugin-i18n/%two_letters_code%.ts",
     },
     {
-      "source": "/packages/studiocms/src/integrations/webVitals/i18n/en.ts",
-      "translation": "/packages/studiocms/src/integrations/webVitals/i18n/%two_letters_code%.ts",
+      "source": "/packages/studiocms/src/plugins/analytics/i18n/en.ts",
+      "translation": "/packages/studiocms/src/plugins/analytics/i18n/%two_letters_code%.ts",
     },
   ]

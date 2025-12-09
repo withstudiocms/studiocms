@@ -97,6 +97,13 @@ export interface FeaturesConfig {
 	 * Requires an Image Service to be installed such as 'cloudinary-js'
 	 */
 	preferredImageService?: string;
+
+	/**
+	 * Enable Web Vitals Collection and Dashboard
+	 *
+	 * @default false
+	 */
+	webVitals?: boolean;
 }
 
 export interface StudioCMSOptions {
@@ -204,6 +211,7 @@ export const StudioCMSOptionsSchema = z
 				authConfig: authConfigSchema,
 				developerConfig: developerConfigSchema,
 				preferredImageService: z.string().optional(),
+				webVitals: z.boolean().optional().default(false),
 			})
 			.optional()
 			.default({}),

@@ -21,6 +21,7 @@ import { loadEnv } from 'vite';
 import { StudioCMSDefaultRobotsConfig } from '../consts.js';
 import { StudioCMSError } from '../errors.js';
 import { dynamicSitemap, type RobotsConfig, robotsTXT } from '../integrations/plugins.js';
+import { studioCMSAnalyticsPlugin } from '../plugins/analytics/index.js';
 import type {
 	AvailableDashboardPages,
 	BasePluginHooks,
@@ -28,6 +29,7 @@ import type {
 	RenderAugmentSchema,
 	SafePluginListItemType,
 	SafePluginListType,
+	StudioCMSConfig,
 	StudioCMSPlugin,
 } from '../schemas/index.js';
 import type {
@@ -215,6 +217,8 @@ type Options = {
 	plugins: StudioCMSPlugin[] | undefined;
 	robotsTXTConfig: boolean | RobotsConfig;
 	dashboardRoute: (path: string) => string;
+	webVitals: boolean;
+	dialect: StudioCMSConfig['db']['dialect'];
 };
 
 /**
@@ -244,8 +248,17 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 	async (params, options: Options) => {
 		const { logger, config } = params;
 
-		const { dbStartPage, verbose, name, pkgVersion, plugins, robotsTXTConfig, dashboardRoute } =
-			options;
+		const {
+			dbStartPage,
+			verbose,
+			name,
+			pkgVersion,
+			plugins,
+			robotsTXTConfig,
+			dashboardRoute,
+			dialect,
+			webVitals,
+		} = options;
 
 		const logInfo = { logger, logLevel: 'info' as const, verbose };
 
@@ -432,6 +445,14 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 		function getPlugins() {
 			// Initialize and Add the default StudioCMS Plugin to the Safe Plugin List
 			const pluginsToProcess: StudioCMSPlugin[] = [defaultPlugin];
+
+			if (webVitals)
+				pluginsToProcess.push(
+					studioCMSAnalyticsPlugin({
+						driverDialect: dialect,
+						version: pkgVersion,
+					})
+				);
 
 			// Add any user-defined plugins to the list
 			if (plugins) pluginsToProcess.push(...plugins);
