@@ -41,7 +41,7 @@ export interface DebugInfoContext {
  * @returns The version string without namespace prefixes.
  *
  * @example
- * stripNamespace('Astro v3.5.0'); // Returns '3.5.0'
+ * stripNamespace('Astro v3.5.0'); // Returns 'v3.5.0'
  */
 function stripNamespace(versionString: string) {
 	return versionString.replace(/^[^\d]*/, 'v');
