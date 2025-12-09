@@ -66,6 +66,10 @@
     "./pathResolver": {
       "types": "./dist/pathResolver.d.ts",
       "default": "./dist/pathResolver.js"
+    },
+    "./debug-info-provider": {
+      "types": "./dist/debug-info-provider.d.ts",
+      "default": "./dist/debug-info-provider.js"
     }
   },
   "type": "module",
