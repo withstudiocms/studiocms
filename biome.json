@@ -16,8 +16,7 @@
       "!**/dashboard-code.css",
       "!**/i18n/translations/**/*.json",
       "!**/handlers/plugin-i18n/*.ts",
-      "!**/integrations/webVitals/i18n/*.ts",
-      "!**/archive/webVitals/i18n/*.ts"
+      "!**/plugins/**/i18n/*.ts"
     ]
   },
   "formatter": {

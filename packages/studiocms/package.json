@@ -94,6 +94,14 @@
 			"types": "./dist/utils/*.d.ts",
 			"default": "./dist/utils/*.js"
 		},
+		"#analytics/*": {
+			"types": "./dist/plugins/analytics/*.d.ts",
+			"default": "./dist/plugins/analytics/*.js"
+		},
+		"#db/*": {
+			"types": "./dist/db/*.d.ts",
+			"default": "./dist/db/*.js"
+    },
 		"#toolbar/db-studio": {
 			"types": "./dist/toolbar/db-viewer/studio/index.d.ts",
 			"default": "./dist/toolbar/db-viewer/studio/index.js"
@@ -235,7 +243,8 @@
 		"semver": "^7.7.3",
 		"three": "0.170.0",
 		"tinyglobby": "catalog:",
-		"ultrahtml": "^1.6.0"
+		"ultrahtml": "^1.6.0",
+		"web-vitals": "^5.1.0"
 	},
 	"devDependencies": {
 		"@types/mdast": "^4.0.4",

@@ -5,15 +5,22 @@
   are not available outside of the Astro runtime with the `@astrojs/db` package installed.
 
 */
-import { column, defineTable } from 'astro:db';
-import { asDrizzleTable } from '@astrojs/db/utils';
 import type { WebVitalsMetricType } from './schemas.js';
 import type { GetWebVitalsData } from './types.js';
 
-export const WEB_VITALS_METRIC_TABLE = 'AstrojsWebVitals_Metric';
-
+/**
+ * List of core web vitals metrics.
+ */
 export const CoreWebVitals: WebVitalsMetricType[] = ['LCP', 'CLS', 'INP'];
 
+/**
+ * Labels for Web Vitals metrics.
+ *
+ * This object maps each Web Vitals metric type to its corresponding human-readable label.
+ *
+ * @constant
+ * @type {Record<WebVitalsMetricType, string>}
+ */
 export const WEB_VITALS_METRIC_LABELS: Record<WebVitalsMetricType, string> = {
 	LCP: 'Largest Contentful Paint',
 	INP: 'Interaction to Next Paint',
@@ -22,21 +29,6 @@ export const WEB_VITALS_METRIC_LABELS: Record<WebVitalsMetricType, string> = {
 	FID: 'First Input Delay',
 	TTFB: 'Time to First Byte',
 };
-
-const Metric = defineTable({
-	columns: {
-		pathname: column.text(),
-		route: column.text(),
-		name: column.text(),
-		id: column.text({ primaryKey: true }),
-		value: column.number(),
-		rating: column.text(),
-		timestamp: column.date(),
-	},
-	deprecated: Boolean(process.env.DEPRECATE_WEB_VITALS) ?? false,
-});
-
-export const tsMetric = asDrizzleTable(WEB_VITALS_METRIC_TABLE, Metric);
 
 /**
  * An object representing the default empty return value for web vitals data.

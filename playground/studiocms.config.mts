@@ -8,6 +8,7 @@ export default defineStudioCMSConfig({
 	verbose: true,
 	plugins: [md(), blog(), wysiwyg()],
 	features: {
+		webVitals: false,
 		developerConfig: {
 			demoMode: false,
 		},

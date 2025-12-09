@@ -586,6 +586,10 @@ declare module 'studiocms:plugins/imageService' {
 	}[];
 }
 
+declare module 'studiocms-dashboard:web-vitals' {
+	export const getWebVitals: typeof import('./plugins/analytics/assets/webVital').getWebVitals;
+}
+
 declare module 'studiocms:plugins/auth/providers' {
 	export type OAuthButtons = {
 		enabled: boolean;
