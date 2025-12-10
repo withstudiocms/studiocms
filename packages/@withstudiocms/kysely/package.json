@@ -87,7 +87,7 @@
   "devDependencies": {
     "@types/node": "catalog:",
     "@types/pg": "catalog:kysely",
-    "tsx": "^4.20.6"
+    "tsx": "^4.21.0"
   },
   "peerDependencies": {
 		"effect": "catalog:effect",
