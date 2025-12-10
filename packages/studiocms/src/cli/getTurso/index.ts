@@ -18,12 +18,12 @@ export const getTurso = Cli.Command.make('get-turso', { shell }, ({ shell: rawSh
 
 		const command = `curl -sSfL https://get.tur.so/install.sh | ${shell ? shell : 'bash'}`;
 
-		yield* Effect.tryPromise({
+		return yield* Effect.tryPromise({
 			try: () =>
 				runInteractiveCommand(command).then(() =>
 					console.log('Turso CLI install command completed.')
 				),
-			catch: (error) => console.error(`Failed to run Turso install: ${(error as Error).message}`),
+			catch: (error) => new Error(`Failed to install Turso CLI: ${String(error)}`),
 		});
 	})
 ).pipe(Cli.Command.withDescription('Install the Turso CLI'));
