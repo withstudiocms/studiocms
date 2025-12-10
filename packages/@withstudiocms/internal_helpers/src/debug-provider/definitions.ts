@@ -1,8 +1,11 @@
+import type { StdioOptions } from 'node:child_process';
+
 /**
  * Defines interfaces for package managers, Node.js version, and system information providers.
  */
 export interface PackageManager {
 	readonly name: string;
+	getPackageVersion: (name: string) => Promise<string | undefined>;
 }
 
 /**
@@ -25,4 +28,20 @@ export interface NodeVersionProvider {
 export interface SystemInfoProvider {
 	readonly name: NodeJS.Platform;
 	readonly displayName: string;
+}
+
+export interface CommandExecutorOptions {
+	cwd?: string;
+	env?: Record<string, string | undefined>;
+	shell?: boolean;
+	input?: string;
+	stdio?: StdioOptions;
+}
+
+export interface CommandExecutor {
+	execute: (
+		command: string,
+		args?: Array<string>,
+		options?: CommandExecutorOptions
+	) => Promise<{ stdout: string }>;
 }

@@ -11,8 +11,13 @@ type StyleTextFormatColor = Parameters<typeof styleText>[0];
  * Options for formatting and styling debug information.
  */
 export type FormatOptions = {
-	keyStyle?: StyleTextFormatColor;
-	valueStyle?: StyleTextFormatColor;
+	keyStyle: StyleTextFormatColor;
+	valueStyle: StyleTextFormatColor;
+};
+
+export type DebugStylerOptions = {
+	indent?: number;
+	style?: FormatOptions;
 };
 
 /**
@@ -20,16 +25,24 @@ export type FormatOptions = {
  */
 export class DebugStyler {
 	private indent: number;
+	private obj: Record<string, string>;
+	private style: FormatOptions;
 
-	constructor(indent = 2) {
-		this.indent = indent;
+	constructor(obj: Record<string, string>, opts?: DebugStylerOptions) {
+		this.indent = opts?.indent ?? 2;
+		this.obj = obj;
+		this.style = opts?.style ?? {
+			keyStyle: 'cyan',
+			valueStyle: 'white',
+		};
 	}
 
-	/**
-	 * Format an object into aligned key-value pairs
-	 */
-	format(obj: Record<string, string>): string {
-		const pairs: KeyValuePair[] = Object.entries(obj).map(([key, value]) => ({ key, value }));
+	get #data(): KeyValuePair[] {
+		return Object.entries(this.obj).map(([key, value]) => ({ key, value }));
+	}
+
+	format(styled?: boolean) {
+		const pairs = this.#data;
 		if (pairs.length === 0) return '';
 
 		const maxKeyLength = Math.max(...pairs.map((p) => p.key.length));
@@ -39,44 +52,10 @@ export class DebugStyler {
 			const padding = ' '.repeat(maxKeyLength - key.length + this.indent);
 			const valueLines = value.split('\n');
 
-			// First line with key
-			lines.push(`${key}${padding}${valueLines[0]}`);
+			// Apply styles to key and value if styled is true
+			const styledKey = styled ? styleText(this.style.keyStyle, key) : key;
 
-			// Additional lines indented to align with first value
-			for (let i = 1; i < valueLines.length; i++) {
-				const indent = ' '.repeat(maxKeyLength + this.indent);
-				lines.push(`${indent}${valueLines[i]}`);
-			}
-		}
-
-		return lines.join('\n');
-	}
-
-	/**
-	 * Format and style an object with colors using Node.js styleText
-	 */
-	formatStyled(obj: Record<string, string>, options: FormatOptions = {}): string {
-		const pairs: KeyValuePair[] = Object.entries(obj).map(([key, value]) => ({ key, value }));
-		if (pairs.length === 0) return '';
-
-		const maxKeyLength = Math.max(...pairs.map((p) => p.key.length));
-		const lines: string[] = [];
-
-		const keyStyle = options.keyStyle || 'cyan';
-		const valueStyle = options.valueStyle || 'white';
-
-		for (const { key, value } of pairs) {
-			const padding = ' '.repeat(maxKeyLength - key.length + this.indent);
-			const valueLines = value.split('\n');
-
-			// Apply styles to key and value
-			const styledKey = Array.isArray(keyStyle)
-				? keyStyle.reduce((acc, style) => styleText(style, acc), key)
-				: styleText(keyStyle, key);
-
-			const styledValue = Array.isArray(valueStyle)
-				? valueStyle.reduce((acc, style) => styleText(style, acc), valueLines[0])
-				: styleText(valueStyle, valueLines[0]);
+			const styledValue = styled ? styleText(this.style.valueStyle, valueLines[0]) : valueLines[0];
 
 			// First line with key
 			lines.push(`${styledKey}${padding}${styledValue}`);
@@ -84,9 +63,7 @@ export class DebugStyler {
 			// Additional lines indented to align with first value
 			for (let i = 1; i < valueLines.length; i++) {
 				const indent = ' '.repeat(maxKeyLength + this.indent);
-				const styledLine = Array.isArray(valueStyle)
-					? valueStyle.reduce((acc, style) => styleText(style, acc), valueLines[i])
-					: styleText(valueStyle, valueLines[i]);
+				const styledLine = styled ? styleText(this.style.valueStyle, valueLines[i]) : valueLines[i];
 				lines.push(`${indent}${styledLine}`);
 			}
 		}
