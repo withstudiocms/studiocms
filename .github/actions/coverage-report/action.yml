@@ -18,7 +18,7 @@ runs:
   using: "composite"
   steps:
     - name: Upload coverage report to Codecov
-      uses: codecov/codecov-action@96b38e9e60ee60a8c3911f4612407bba2f9195fb
+      uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de
       if: always() && (github.event.pull_request.head.repo.full_name == github.repository || github.ref == 'refs/heads/main')
       with:
         slug: ${{ inputs.slug }}
