@@ -79,9 +79,9 @@
       "types": "./dist/cli-providers/definitions.d.ts",
       "default": "./dist/cli-providers/definitions.js"
     },
-    "./cli-providers/*": {
-      "types": "./dist/cli-providers/*.d.ts",
-      "default": "./dist/cli-providers/*.js"
+    "./cli-providers/core/*": {
+      "types": "./dist/cli-providers/core/*.d.ts",
+      "default": "./dist/cli-providers/core/*.js"
     }
   },
   "type": "module",
