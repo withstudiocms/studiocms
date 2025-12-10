@@ -65,14 +65,15 @@ export const toIdent = (name: string) => {
 	return `${ident[0].toLowerCase()}${ident.slice(1)}`;
 };
 
-export const createPrettyError = (err: Error) => {
-	err.message = `StudioCMS could not update your studiocms.config.mjs file safely.
-	Reason: ${err.message}
-	
-	You will need to add these plugins(s) manually.
-	Documentation: https://docs.studiocms.dev`;
-	return err;
-};
+export const createPrettyError = (err: Error) =>
+	new Error(
+		`StudioCMS could not update your studiocms.config.mjs file safely.
+Reason: ${err.message}
+
+You will need to add these plugin(s) manually.
+Documentation: https://docs.studiocms.dev`,
+		{ cause: err }
+	);
 
 export const resolveConfigPath = (root: URL) =>
 	genLogger('studiocms/cli/add.resolveConfigPath')(function* () {
