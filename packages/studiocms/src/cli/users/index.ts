@@ -5,6 +5,7 @@ import { type Kysely, sql } from '@withstudiocms/kysely/kysely';
 import { Cli, Effect, genLogger } from '../../effect.js';
 import { checkRequiredEnvVarsEffect } from '../utils/checkRequiredEnvVars.js';
 import { type BaseContext, CliContext, genContext, parseDebug } from '../utils/context.js';
+import { debug } from '../utils/debugOpt.js';
 import { getCliDbClient } from '../utils/getCliDbClient.js';
 import { intro as SCMS_Intro } from '../utils/intro.js';
 import { buildDebugLogger } from '../utils/logger.js';
@@ -12,12 +13,6 @@ import type { EffectStepFn } from '../utils/types.js';
 import { createUsers } from './steps/createUsers.js';
 import { modifyUsers } from './steps/modifyUsers.js';
 import { next } from './steps/next.js';
-
-export const debug = Cli.Options.boolean('debug').pipe(
-	Cli.Options.optional,
-	Cli.Options.withDefault(false),
-	Cli.Options.withDescription('Enable debug mode')
-);
 
 export const dryRun = Cli.Options.boolean('dry-run').pipe(
 	Cli.Options.optional,

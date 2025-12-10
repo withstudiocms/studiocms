@@ -11,6 +11,7 @@ import { importPKCS8 } from 'jose/key/import';
 import { Cli, Effect, genLogger } from '../../../effect.js';
 import { genContext } from '../../utils/context.js';
 import { dateAdd } from '../../utils/dateAdd.js';
+import { debug } from '../../utils/debugOpt.js';
 import { logger } from '../../utils/logger.js';
 
 /**
@@ -29,12 +30,6 @@ export const expire = Cli.Options.integer('exp').pipe(
 	Cli.Options.optional,
 	Cli.Options.withDefault(OneYear),
 	Cli.Options.withDescription('Expiry date in seconds (>=0) from issued at (iat) time')
-);
-
-export const debug = Cli.Options.boolean('debug').pipe(
-	Cli.Options.optional,
-	Cli.Options.withDefault(false),
-	Cli.Options.withDescription('Enable debug mode')
 );
 
 /**

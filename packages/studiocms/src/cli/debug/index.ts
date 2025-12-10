@@ -8,6 +8,7 @@ import { DebugInfoProvider } from '@withstudiocms/internal_helpers/debug-info-pr
 import type { AstroUserConfig } from 'astro';
 import chalk from 'chalk';
 import type { StudioCMSOptions } from '#schemas';
+import { debug } from '../utils/debugOpt.js';
 
 const astroConfigPaths = [
 	'astro.config.mjs',
@@ -51,12 +52,6 @@ const loadConfig = <K extends 'astro' | 'studiocms'>(
 			throw new Error(`Failed to load config: ${(error as Error).message}`);
 		},
 	});
-
-export const debug = Cli.Options.boolean('debug').pipe(
-	Cli.Options.optional,
-	Cli.Options.withDefault(false),
-	Cli.Options.withDescription('Enable debug mode')
-);
 
 export const debugCMD = Cli.Command.make('debug', { debug }, ({ debug: _debug }) =>
 	Effect.gen(function* () {
