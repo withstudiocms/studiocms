@@ -1,4 +1,4 @@
-import { DebugStyler, type FormatOptions } from './debug-provider/core/debug-styler.js';
+import type { FormatOptions } from './cli-providers/core/formatter.js';
 
 /**
  * Represents debug information about the Astro and StudioCMS environment.
@@ -55,19 +55,13 @@ export class DebugInfoProvider {
 	async getDebugInfoObj(): Promise<DebugInfo> {
 		const { adapterName, databaseDialect, installedPlugins } = this.#ctx;
 
-		const [
-			{ getPackageManager },
-			{ ProcessNodeVersionProvider },
-			{ ProcessPackageManagerUserAgentProvider },
-			{ ProcessSystemInfoProvider },
-			{ TinyexecCommandExecutor },
-		] = await Promise.all([
-			import('./debug-provider/core/get-package-manger.js'),
-			import('./debug-provider/core/process-node-version-provider.js'),
-			import('./debug-provider/core/process-package-manager-user-agent-provider.js'),
-			import('./debug-provider/core/system-info-provider.js'),
-			import('./debug-provider/core/tinyexec.js'),
-		]);
+		const {
+			getPackageManager,
+			ProcessNodeVersionProvider,
+			ProcessPackageManagerUserAgentProvider,
+			ProcessSystemInfoProvider,
+			TinyexecCommandExecutor,
+		} = await import('./cli-providers/index.js');
 
 		const nodeVersionProvider = new ProcessNodeVersionProvider();
 		const packageManagerUserAgentProvider = new ProcessPackageManagerUserAgentProvider();
@@ -127,8 +121,10 @@ export class DebugInfoProvider {
 			styled: false,
 		}
 	): Promise<string> {
+		const { Formatter } = await import('./cli-providers/core/formatter.js');
+
 		const debugInfo = await this.getDebugInfoObj();
-		const styler = new DebugStyler(debugInfo, { indent, style });
+		const styler = new Formatter(debugInfo, { indent, style });
 		return styler.format(styled);
 	}
 }

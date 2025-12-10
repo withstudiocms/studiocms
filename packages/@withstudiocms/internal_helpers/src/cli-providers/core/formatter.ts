@@ -1,4 +1,5 @@
 import { styleText } from 'node:util';
+import type { TextFormatter } from '../definitions';
 
 interface KeyValuePair {
 	key: string;
@@ -23,7 +24,7 @@ export type DebugStylerOptions = {
 /**
  * A utility class for formatting and styling debug information.
  */
-export class DebugStyler {
+export class Formatter implements TextFormatter {
 	#indent: number;
 	#obj: Record<string, string>;
 	#style: FormatOptions;
@@ -50,7 +51,7 @@ export class DebugStyler {
 		return (text: string, type: 'key' | 'value') => this.#textProcessor(text, type, styled);
 	}
 
-	format(styled?: boolean) {
+	format(styled?: boolean): string {
 		const pairs = this.#getKeyPair;
 		if (pairs.length === 0) return '';
 

@@ -70,6 +70,18 @@
     "./debug-info-provider": {
       "types": "./dist/debug-info-provider.d.ts",
       "default": "./dist/debug-info-provider.js"
+    },
+    "./cli-providers": {
+      "types": "./dist/cli-providers/index.d.ts",
+      "default": "./dist/cli-providers/index.js"
+    },
+    "./cli-providers/definitions": {
+      "types": "./dist/cli-providers/definitions.d.ts",
+      "default": "./dist/cli-providers/definitions.js"
+    },
+    "./cli-providers/*": {
+      "types": "./dist/cli-providers/*.d.ts",
+      "default": "./dist/cli-providers/*.js"
     }
   },
   "type": "module",

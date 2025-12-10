@@ -59,3 +59,10 @@ export interface BareNpmLikeVersionOutput {
 	version: string;
 	dependencies: Record<string, BareNpmLikeVersionOutput>;
 }
+
+/**
+ * Represents a text formatter for styling output.
+ */
+export interface TextFormatter {
+	format: (styled?: boolean) => string;
+}
