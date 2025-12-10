@@ -52,28 +52,6 @@ export default defineConfig({
 
 All tools will only be available during `astro dev` and will not be available during production deployments!
 
-### libSQL Viewer
-
-#### Requires
-
-The following env variables set (`@astrojs/db`):
-- **`ASTRO_DB_REMOTE_URL`**
-- **`ASTRO_DB_APP_TOKEN`**
-
-#### Preview
-
-- Toolbar app
-
-![toolbar](./assets/preview-toolbar.png)
-
-- Toolbar app Embedded
-
-![toolbar-embedded](./assets/preview-embeddedapp.png)
-
-- Full page View
-
-![pageview](./assets/preview-page.png)
-
 ### WordPress Importer
 
 #### Requires

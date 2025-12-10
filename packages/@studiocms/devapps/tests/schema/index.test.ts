@@ -9,38 +9,31 @@ describe(parentSuiteName, () => {
 	[
 		{
 			input: {
-				libSQLViewer: true,
 				wpImporter: { endpoint: 'https://example.com/wp-json/wp/v2' },
 			},
 			expected: {
-				libSQLViewer: { enabled: true, endpoint: 'outerbase' },
 				wpImporter: { enabled: true, endpoint: 'https://example.com/wp-json/wp/v2' },
 			},
 		},
 		{
 			input: {
-				libSQLViewer: false,
 				wpImporter: true,
 			},
 			expected: {
-				libSQLViewer: { enabled: false, endpoint: 'outerbase' },
 				wpImporter: { enabled: true, endpoint: 'wp-api-importer' },
 			},
 		},
 		{
 			input: {
-				libSQLViewer: { endpoint: 'https://example.com/api' },
 				wpImporter: { endpoint: 'https://example.com/wp-json/wp/v2' },
 			},
 			expected: {
-				libSQLViewer: { enabled: true, endpoint: 'https://example.com/api' },
 				wpImporter: { enabled: true, endpoint: 'https://example.com/wp-json/wp/v2' },
 			},
 		},
 		{
 			input: undefined,
 			expected: {
-				libSQLViewer: { enabled: true, endpoint: 'outerbase' },
 				wpImporter: { enabled: true, endpoint: 'wp-api-importer' },
 			},
 		},
@@ -68,13 +61,6 @@ describe(parentSuiteName, () => {
 	[
 		{
 			input: {
-				libSQLViewer: 'invalid',
-				wpImporter: true,
-			},
-		},
-		{
-			input: {
-				libSQLViewer: true,
 				wpImporter: 123,
 			},
 		},
@@ -110,7 +96,6 @@ describe(parentSuiteName, () => {
 				endpoint: 'https://example.com',
 				verbose: true,
 				appsConfig: {
-					libSQLViewer: true,
 					wpImporter: { endpoint: 'https://example.com/wp-json/wp/v2' },
 				},
 			},
@@ -118,7 +103,6 @@ describe(parentSuiteName, () => {
 				endpoint: 'https://example.com',
 				verbose: true,
 				appsConfig: {
-					libSQLViewer: { enabled: true, endpoint: 'outerbase' },
 					wpImporter: { enabled: true, endpoint: 'https://example.com/wp-json/wp/v2' },
 				},
 			},
@@ -129,7 +113,6 @@ describe(parentSuiteName, () => {
 				endpoint: '_studiocms-devapps',
 				verbose: false,
 				appsConfig: {
-					libSQLViewer: { enabled: true, endpoint: 'outerbase' },
 					wpImporter: { enabled: true, endpoint: 'wp-api-importer' },
 				},
 			},
@@ -142,7 +125,6 @@ describe(parentSuiteName, () => {
 				endpoint: 'custom-endpoint',
 				verbose: false,
 				appsConfig: {
-					libSQLViewer: { enabled: true, endpoint: 'outerbase' },
 					wpImporter: { enabled: true, endpoint: 'wp-api-importer' },
 				},
 			},
