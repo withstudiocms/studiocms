@@ -1,19 +1,64 @@
+import { pathToFileURL } from 'node:url';
 import { StudioCMSColorwayBg } from '@withstudiocms/cli-kit/colors';
 import { label } from '@withstudiocms/cli-kit/messages';
+import { loadConfigFile } from '@withstudiocms/config-utils';
 import { Cli, Effect } from '@withstudiocms/effect';
 import { intro, log, outro } from '@withstudiocms/effect/clack';
 import { DebugInfoProvider } from '@withstudiocms/internal_helpers/debug-info-provider';
+import type { AstroUserConfig } from 'astro';
 import chalk from 'chalk';
-import { loadAstroConfig } from './utils/loadAstroConfig.js';
-import { loadStudioCMSConfig } from './utils/loadStudioCMSConfig.js';
+import type { StudioCMSOptions } from '#schemas';
+
+const astroConfigPaths = [
+	'astro.config.mjs',
+	'astro.config.js',
+	'astro.config.ts',
+	'astro.config.cts',
+	'astro.config.mts',
+	'astro.config.cjs',
+];
+
+const studiocmsConfigPaths = [
+	'studiocms.config.mjs',
+	'studiocms.config.js',
+	'studiocms.config.ts',
+	'studiocms.config.cts',
+	'studiocms.config.mts',
+	'studiocms.config.cjs',
+];
+
+/**
+ * Loads the configuration for the specified key ('astro' or 'studiocms').
+ *
+ * @param key - The configuration key to load ('astro' or 'studiocms').
+ * @returns An Effect that resolves to the loaded configuration or undefined.
+ */
+const loadConfig = <K extends 'astro' | 'studiocms'>(
+	key: K
+): Effect.Effect<(K extends 'astro' ? AstroUserConfig : StudioCMSOptions) | undefined> =>
+	Effect.tryPromise({
+		try: async () => {
+			const cwd = process.cwd();
+			const rootURL = pathToFileURL(`${cwd}/`);
+			const configPaths = key === 'astro' ? astroConfigPaths : studiocmsConfigPaths;
+			return await loadConfigFile<K extends 'astro' ? AstroUserConfig : StudioCMSOptions>(
+				rootURL,
+				configPaths,
+				key
+			);
+		},
+		catch: (error) => {
+			throw new Error(`Failed to load config: ${(error as Error).message}`);
+		},
+	});
 
 export const debugCMD = Cli.Command.make('debug', {}, () =>
 	Effect.gen(function* () {
 		yield* Effect.logDebug('Getting debug info for StudioCMS...');
 
 		const [AstroConfig, StudioCMSConfig] = yield* Effect.all([
-			loadAstroConfig,
-			loadStudioCMSConfig,
+			loadConfig('astro'),
+			loadConfig('studiocms'),
 		]);
 
 		const adapterName = AstroConfig?.adapter?.name ?? 'No adapter configured';
@@ -27,10 +72,15 @@ export const debugCMD = Cli.Command.make('debug', {}, () =>
 			`Installed Plugins: ${installedPlugins.length}`
 		);
 
-		const infoProvider = new DebugInfoProvider({
-			adapterName,
-			databaseDialect,
-			installedPlugins,
+		const infoProvider = yield* Effect.try({
+			try: () =>
+				new DebugInfoProvider({
+					adapterName,
+					databaseDialect,
+					installedPlugins,
+				}),
+			catch: (error) =>
+				new Error(`Failed to create DebugInfoProvider: ${(error as Error).message}`),
 		});
 
 		const debugInfo = yield* Effect.tryPromise({
