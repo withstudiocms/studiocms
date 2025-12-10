@@ -61,11 +61,6 @@ describe(parentSuiteName, () => {
 	[
 		{
 			input: {
-				wpImporter: true,
-			},
-		},
-		{
-			input: {
 				wpImporter: 123,
 			},
 		},
