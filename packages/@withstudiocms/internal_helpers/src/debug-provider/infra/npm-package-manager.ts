@@ -40,7 +40,9 @@ export class NpmPackageManager implements PackageManager {
 			}
 
 			const astro = parsedNpmOutput.dependencies.astro;
-			return astro ? `v${astro.dependencies[name].version}` : undefined;
+			return astro?.dependencies?.[name]?.version
+				? `v${astro.dependencies[name].version}`
+				: undefined;
 		} catch {
 			return undefined;
 		}

@@ -90,7 +90,7 @@ export class DebugInfoProvider {
 		const fallbackValue = 'Unavailable';
 
 		const AstroVersion = (await packageManagerProvider.getPackageVersion('astro')) || fallbackValue;
-		const AstroAdapter = (await getVersionWithIdentifier(adapterName)) || fallbackValue;
+		const AstroAdapter = await getVersionWithIdentifier(adapterName);
 		const DatabaseDialect =
 			dbDialectLabels[databaseDialect as keyof typeof dbDialectLabels] ?? databaseDialect;
 

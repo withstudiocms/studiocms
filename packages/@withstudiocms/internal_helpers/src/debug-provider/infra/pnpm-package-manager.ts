@@ -32,9 +32,13 @@ export class PnpmPackageManager implements PackageManager {
 	#processPnpmWhyOutput(name: string, pnpmWhy: string) {
 		const parsedOutput = JSON.parse(pnpmWhy) as Array<BareNpmLikeVersionOutput>;
 
+		if (parsedOutput.length === 0) {
+			return undefined;
+		}
+
 		const deps = parsedOutput[0].dependencies;
 
-		if (parsedOutput.length === 0 || !deps) {
+		if (!deps) {
 			return undefined;
 		}
 
@@ -56,9 +60,13 @@ export class PnpmPackageManager implements PackageManager {
 	#processPnpmLsOutput(name: string, pnpmLs: string) {
 		const parsedOutput = JSON.parse(pnpmLs) as Array<BareNpmLikeVersionOutput>;
 
+		if (parsedOutput.length === 0) {
+			return undefined;
+		}
+
 		const deps = parsedOutput[0].dependencies;
 
-		if (parsedOutput.length === 0 || !deps) {
+		if (!deps) {
 			return undefined;
 		}
 
