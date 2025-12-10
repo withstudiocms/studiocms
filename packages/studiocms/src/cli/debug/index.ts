@@ -35,7 +35,7 @@ const studiocmsConfigPaths = [
  */
 const loadConfig = <K extends 'astro' | 'studiocms'>(
 	key: K
-): Effect.Effect<(K extends 'astro' ? AstroUserConfig : StudioCMSOptions) | undefined> =>
+): Effect.Effect<(K extends 'astro' ? AstroUserConfig : StudioCMSOptions) | undefined, Error> =>
 	Effect.tryPromise({
 		try: async () => {
 			const cwd = process.cwd();
