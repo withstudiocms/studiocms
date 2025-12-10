@@ -1,12 +1,4 @@
-import type { CommandExecutor, PackageManager } from '../definitions.js';
-
-/**
- * Represents the structure of a bare NPM-like version output.
- */
-interface BareNpmLikeVersionOutput {
-	version: string;
-	dependencies: Record<string, BareNpmLikeVersionOutput>;
-}
+import type { BareNpmLikeVersionOutput, CommandExecutor, PackageManager } from '../definitions.js';
 
 /**
  * Represents the NPM package manager.
@@ -37,6 +29,11 @@ export class NpmPackageManager implements PackageManager {
 
 			if (parsedNpmOutput.dependencies[name]) {
 				return `v${parsedNpmOutput.dependencies[name].version}`;
+			}
+
+			const studiocms = parsedNpmOutput.dependencies.studiocms;
+			if (studiocms?.dependencies?.[name]?.version) {
+				return `v${studiocms.dependencies[name].version}`;
 			}
 
 			const astro = parsedNpmOutput.dependencies.astro;

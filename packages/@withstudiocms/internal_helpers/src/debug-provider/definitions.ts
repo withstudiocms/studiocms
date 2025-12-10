@@ -51,3 +51,11 @@ export interface CommandExecutor {
 		options?: CommandExecutorOptions
 	) => Promise<{ stdout: string }>;
 }
+
+/**
+ * Represents the structure of a bare NPM-like version output.
+ */
+export interface BareNpmLikeVersionOutput {
+	version: string;
+	dependencies: Record<string, BareNpmLikeVersionOutput>;
+}

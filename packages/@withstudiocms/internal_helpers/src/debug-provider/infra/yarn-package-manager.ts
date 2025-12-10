@@ -46,6 +46,8 @@ export class YarnPackageManager implements PackageManager {
 			for (const line of stdout.split('\n')) {
 				if (hasUserDefinition && line.includes('workspace:.'))
 					return getYarnOutputDepVersion(name, line);
+				if (hasUserDefinition && line.includes('studiocms@'))
+					return getYarnOutputDepVersion(name, line);
 				if (!hasUserDefinition && line.includes('astro@'))
 					return getYarnOutputDepVersion(name, line);
 			}

@@ -1,4 +1,4 @@
-import type { CommandExecutor, PackageManager } from '../definitions.js';
+import type { BareNpmLikeVersionOutput, CommandExecutor, PackageManager } from '../definitions.js';
 
 /**
  * Extracts and formats the version string from PNPM output.
@@ -8,14 +8,6 @@ import type { CommandExecutor, PackageManager } from '../definitions.js';
  */
 function formatPnpmVersionOutput(versionOutput: string): string {
 	return versionOutput.startsWith('link:') ? 'Local' : `v${versionOutput}`;
-}
-
-/**
- * Represents the structure of a bare NPM-like version output.
- */
-interface BareNpmLikeVersionOutput {
-	version: string;
-	dependencies: Record<string, BareNpmLikeVersionOutput>;
 }
 
 /**
@@ -48,12 +40,12 @@ export class PnpmPackageManager implements PackageManager {
 			return formatPnpmVersionOutput(userProvidedDependency.version);
 		}
 
-		const studiocmsDependency = deps.studiocms?.dependencies[name];
+		const studiocmsDependency = deps.studiocms?.dependencies?.[name];
 		if (studiocmsDependency) {
 			return formatPnpmVersionOutput(studiocmsDependency.version);
 		}
 
-		const astroDependency = deps.astro?.dependencies[name];
+		const astroDependency = deps.astro?.dependencies?.[name];
 		return astroDependency ? formatPnpmVersionOutput(astroDependency.version) : undefined;
 	}
 
