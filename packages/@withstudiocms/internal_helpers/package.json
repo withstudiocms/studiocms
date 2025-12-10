@@ -70,6 +70,18 @@
     "./debug-info-provider": {
       "types": "./dist/debug-info-provider.d.ts",
       "default": "./dist/debug-info-provider.js"
+    },
+    "./cli-providers": {
+      "types": "./dist/cli-providers/index.d.ts",
+      "default": "./dist/cli-providers/index.js"
+    },
+    "./cli-providers/definitions": {
+      "types": "./dist/cli-providers/definitions.d.ts",
+      "default": "./dist/cli-providers/definitions.js"
+    },
+    "./cli-providers/core/*": {
+      "types": "./dist/cli-providers/core/*.d.ts",
+      "default": "./dist/cli-providers/core/*.js"
     }
   },
   "type": "module",
@@ -77,7 +89,8 @@
     "astro-integration-kit": "catalog:",
     "mdast-util-from-markdown": "^2.0.2",
     "mdast-util-to-string": "^4.0.0",
-    "unist-util-visit": "^5.0.0"
+    "unist-util-visit": "^5.0.0",
+    "tinyexec": "^1.0.2"
   },
   "devDependencies": {
     "@types/mdast": "catalog:",

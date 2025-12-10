@@ -1,5 +1,4 @@
-import type { AstroGlobal } from 'astro';
-import { DebugStyler, type FormatOptions } from './debug-provider/core/debug-styler.js';
+import type { FormatOptions } from './cli-providers/core/formatter.js';
 
 /**
  * Represents debug information about the Astro and StudioCMS environment.
@@ -28,23 +27,9 @@ type PluginList = {
  * Represents the context required to gather debug information.
  */
 export interface DebugInfoContext {
-	Astro: Pick<AstroGlobal, 'generator' | 'locals'>;
 	adapterName: string;
 	databaseDialect: string;
 	installedPlugins: PluginList;
-}
-
-/**
- * Strips namespace prefixes from version strings.
- *
- * @param versionString - The version string to process.
- * @returns The version string without namespace prefixes.
- *
- * @example
- * stripNamespace('Astro v3.5.0'); // Returns 'v3.5.0'
- */
-function stripNamespace(versionString: string) {
-	return versionString.replace(/^[^\d]*/, 'v');
 }
 
 // Database dialect labels
@@ -68,33 +53,45 @@ export class DebugInfoProvider {
 	 * @returns A promise that resolves to the debug information object.
 	 */
 	async getDebugInfoObj(): Promise<DebugInfo> {
-		const { Astro, adapterName, databaseDialect, installedPlugins } = this.#ctx;
+		const { adapterName, databaseDialect, installedPlugins } = this.#ctx;
 
-		const [
-			{ getPackageManager },
-			{ ProcessNodeVersionProvider },
-			{ ProcessPackageManagerUserAgentProvider },
-			{ ProcessSystemInfoProvider },
-		] = await Promise.all([
-			import('./debug-provider/core/get-package-manger.js'),
-			import('./debug-provider/core/process-node-version-provider.js'),
-			import('./debug-provider/core/process-package-manager-user-agent-provider.js'),
-			import('./debug-provider/core/system-info-provider.js'),
-		]);
+		const {
+			getPackageManager,
+			ProcessNodeVersionProvider,
+			ProcessPackageManagerUserAgentProvider,
+			ProcessSystemInfoProvider,
+			TinyexecCommandExecutor,
+		} = await import('./cli-providers/index.js');
 
 		const nodeVersionProvider = new ProcessNodeVersionProvider();
 		const packageManagerUserAgentProvider = new ProcessPackageManagerUserAgentProvider();
 		const systemInfoProvider = new ProcessSystemInfoProvider();
+		const commandExecutor = new TinyexecCommandExecutor();
 
-		const packageManagerProvider = await getPackageManager({ packageManagerUserAgentProvider });
+		const packageManagerProvider = await getPackageManager({
+			packageManagerUserAgentProvider,
+			commandExecutor,
+		});
 
-		const AstroVersion = stripNamespace(Astro.generator);
-		const AstroAdapter = adapterName;
+		async function getVersionWithIdentifier(identifier: string): Promise<string> {
+			const version = await packageManagerProvider.getPackageVersion(identifier);
+			if (!version) {
+				return identifier;
+			}
+			return `${identifier} (${version})`;
+		}
+
+		const fallbackValue = 'Unavailable';
+
+		const AstroVersion = (await packageManagerProvider.getPackageVersion('astro')) || fallbackValue;
+		const AstroAdapter = await getVersionWithIdentifier(adapterName);
 		const DatabaseDialect =
 			dbDialectLabels[databaseDialect as keyof typeof dbDialectLabels] ?? databaseDialect;
 
-		const StudioCMSVersion = stripNamespace(Astro.locals.StudioCMS.SCMSGenerator);
-		const StudioCMSUiVersion = stripNamespace(Astro.locals.StudioCMS.SCMSUiGenerator);
+		const StudioCMSVersion =
+			(await packageManagerProvider.getPackageVersion('studiocms')) || fallbackValue;
+		const StudioCMSUiVersion =
+			(await packageManagerProvider.getPackageVersion('@studiocms/ui')) || fallbackValue;
 
 		return {
 			Astro: AstroVersion,
@@ -105,9 +102,11 @@ export class DebugInfoProvider {
 			System: systemInfoProvider.displayName,
 			StudioCMS: StudioCMSVersion,
 			'StudioCMS UI': StudioCMSUiVersion,
-			'StudioCMS Plugins': installedPlugins
-				.map(({ identifier, name }) => `${name} (${identifier})`)
-				.join('\n'),
+			'StudioCMS Plugins': await Promise.all(
+				installedPlugins.map(
+					async ({ identifier, name }) => `${name} - ${await getVersionWithIdentifier(identifier)}`
+				)
+			).then((versions) => versions.join('\n')),
 		};
 	}
 
@@ -116,20 +115,16 @@ export class DebugInfoProvider {
 	 *
 	 * @returns A promise that resolves to the debug information string.
 	 */
-	async getDebugInfoString(indent?: number): Promise<string> {
-		const styler = new DebugStyler(indent);
-		const debugInfo = await this.getDebugInfoObj();
-		return styler.format(debugInfo);
-	}
+	async getDebugInfoString(
+		indent?: number,
+		{ styled, styles: style }: { styled: boolean; styles?: FormatOptions } = {
+			styled: false,
+		}
+	): Promise<string> {
+		const { Formatter } = await import('./cli-providers/core/formatter.js');
 
-	/**
-	 * Gathers debug information as a formatted and styled string.
-	 *
-	 * @returns A promise that resolves to the styled debug information string.
-	 */
-	async getDebugInfoStyledString(indent?: number, options?: FormatOptions): Promise<string> {
-		const styler = new DebugStyler(indent);
 		const debugInfo = await this.getDebugInfoObj();
-		return styler.formatStyled(debugInfo, options);
+		const styler = new Formatter(debugInfo, { indent, style });
+		return styler.format(styled);
 	}
 }

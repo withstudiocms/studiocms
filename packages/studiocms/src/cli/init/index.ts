@@ -3,17 +3,12 @@ import { label } from '@withstudiocms/cli-kit/messages';
 import { intro, log, multiselect, tasks } from '@withstudiocms/effect/clack';
 import { Cli, Effect, genLogger } from '../../effect.js';
 import { type BaseContext, CliContext, genContext, parseDebug } from '../utils/context.js';
+import { debug } from '../utils/debugOpt.js';
 import { intro as SCMS_Intro } from '../utils/intro.js';
 import { buildDebugLogger } from '../utils/logger.js';
 import { appendOptionsToSteps, type EffectStepFn, type StepMap } from '../utils/types.js';
 import { env } from './steps/env.js';
 import { next } from './steps/next.js';
-
-export const debug = Cli.Options.boolean('debug').pipe(
-	Cli.Options.optional,
-	Cli.Options.withDefault(false),
-	Cli.Options.withDescription('Enable debug mode')
-);
 
 export const dryRun = Cli.Options.boolean('dry-run').pipe(
 	Cli.Options.optional,

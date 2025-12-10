@@ -862,6 +862,9 @@ importers:
       mdast-util-to-string:
         specifier: ^4.0.0
         version: 4.0.0
+      tinyexec:
+        specifier: ^1.0.2
+        version: 1.0.2
       unist-util-visit:
         specifier: ^5.0.0
         version: 5.0.0

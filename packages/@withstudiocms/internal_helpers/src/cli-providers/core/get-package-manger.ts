@@ -1,7 +1,12 @@
-import type { PackageManager, PackageManagerUserAgentProvider } from '../definitions.js';
+import type {
+	CommandExecutor,
+	PackageManager,
+	PackageManagerUserAgentProvider,
+} from '../definitions.js';
 
 interface Options {
 	packageManagerUserAgentProvider: PackageManagerUserAgentProvider;
+	commandExecutor: CommandExecutor;
 }
 
 /**
@@ -12,6 +17,7 @@ interface Options {
  */
 export async function getPackageManager({
 	packageManagerUserAgentProvider,
+	commandExecutor,
 }: Options): Promise<PackageManager> {
 	if (!packageManagerUserAgentProvider.userAgent) {
 		const { NoopPackageManager } = await import('../infra/noop-package-manager.js');
@@ -24,15 +30,15 @@ export async function getPackageManager({
 	switch (name) {
 		case 'pnpm': {
 			const { PnpmPackageManager } = await import('../infra/pnpm-package-manager.js');
-			return new PnpmPackageManager();
+			return new PnpmPackageManager({ commandExecutor });
 		}
 		case 'npm': {
 			const { NpmPackageManager } = await import('../infra/npm-package-manager.js');
-			return new NpmPackageManager();
+			return new NpmPackageManager({ commandExecutor });
 		}
 		case 'yarn': {
 			const { YarnPackageManager } = await import('../infra/yarn-package-manager.js');
-			return new YarnPackageManager();
+			return new YarnPackageManager({ commandExecutor });
 		}
 		case 'bun': {
 			const { BunPackageManager } = await import('../infra/bun-package-manager.js');
