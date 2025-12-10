@@ -52,9 +52,25 @@ const loadConfig = <K extends 'astro' | 'studiocms'>(
 		},
 	});
 
-export const debugCMD = Cli.Command.make('debug', {}, () =>
+export const debug = Cli.Options.boolean('debug').pipe(
+	Cli.Options.optional,
+	Cli.Options.withDefault(false),
+	Cli.Options.withDescription('Enable debug mode')
+);
+
+export const debugCMD = Cli.Command.make('debug', { debug }, ({ debug: _debug }) =>
 	Effect.gen(function* () {
-		yield* Effect.logDebug('Getting debug info for StudioCMS...');
+		let debug: boolean;
+
+		if (typeof _debug !== 'boolean') {
+			debug = yield* _debug;
+		} else {
+			debug = _debug;
+		}
+
+		if (debug) {
+			yield* Effect.log('Getting debug info for StudioCMS...');
+		}
 
 		const [AstroConfig, StudioCMSConfig] = yield* Effect.all([
 			loadConfig('astro'),
@@ -66,11 +82,13 @@ export const debugCMD = Cli.Command.make('debug', {}, () =>
 		const installedPlugins =
 			StudioCMSConfig?.plugins?.map(({ identifier, name }) => ({ identifier, name })) ?? [];
 
-		yield* Effect.logDebug(
-			`Astro Adapter Name: ${adapterName}`,
-			`Database Dialect: ${databaseDialect}`,
-			`Installed Plugins: ${installedPlugins.length}`
-		);
+		if (debug) {
+			yield* Effect.log(
+				`Astro Adapter Name: ${adapterName}`,
+				`Database Dialect: ${databaseDialect}`,
+				`Installed Plugins: ${installedPlugins.length}`
+			);
+		}
 
 		const infoProvider = yield* Effect.try({
 			try: () =>
@@ -88,10 +106,18 @@ export const debugCMD = Cli.Command.make('debug', {}, () =>
 			catch: (error) => new Error(`Failed to gather debug info: ${(error as Error).message}`),
 		});
 
+		if (debug) {
+			yield* Effect.log('Debug info gathered successfully.');
+		}
+
 		console.log(''); // Add a blank line before debug info output
 
 		yield* intro(`${label('StudioCMS Debug Information', StudioCMSColorwayBg, chalk.black)}`);
 		yield* log.info(debugInfo);
 		yield* outro();
+
+		if (debug) {
+			yield* Effect.log('Debug command completed.');
+		}
 	})
 ).pipe(Cli.Command.withDescription('Debug info for StudioCMS'));
