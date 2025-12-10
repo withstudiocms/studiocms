@@ -30,6 +30,9 @@ export interface SystemInfoProvider {
 	readonly displayName: string;
 }
 
+/**
+ * Represents debug information about the environment.
+ */
 export interface CommandExecutorOptions {
 	cwd?: string;
 	env?: Record<string, string | undefined>;
@@ -38,6 +41,9 @@ export interface CommandExecutorOptions {
 	stdio?: StdioOptions;
 }
 
+/**
+ * Represents a command executor that can run shell commands.
+ */
 export interface CommandExecutor {
 	execute: (
 		command: string,

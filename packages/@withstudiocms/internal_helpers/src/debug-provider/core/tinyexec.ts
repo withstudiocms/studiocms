@@ -1,11 +1,17 @@
 import { NonZeroExitError, x } from 'tinyexec';
 import type { CommandExecutor, CommandExecutorOptions } from '../definitions.js';
 
+/**
+ * Represents an error that occurs during command execution.
+ */
 class TinyExecError extends Error {
 	stderr?: string;
 	stdout?: string;
 }
 
+/**
+ * Provides a command executor that uses the Tinyexec library to run shell commands.
+ */
 export class TinyexecCommandExecutor implements CommandExecutor {
 	async execute(
 		command: string,

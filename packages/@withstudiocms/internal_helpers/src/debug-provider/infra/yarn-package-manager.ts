@@ -1,9 +1,19 @@
 import type { CommandExecutor, PackageManager } from '../definitions.js';
 
+/**
+ * Represents the structure of a single line of output from the `yarn why --json` command.
+ */
 interface YarnVersionOutputLine {
 	children: Record<string, { locator: string }>;
 }
 
+/**
+ * Extracts the version of a specified dependency from a line of Yarn output.
+ *
+ * @param dependency - The name of the dependency to find.
+ * @param outputLine - A line of output from the `yarn why --json` command.
+ * @returns The version string of the dependency, or undefined if not found.
+ */
 function getYarnOutputDepVersion(dependency: string, outputLine: string) {
 	const parsed = JSON.parse(outputLine) as YarnVersionOutputLine;
 

@@ -1,9 +1,18 @@
 import type { CommandExecutor, PackageManager } from '../definitions.js';
 
+/**
+ * Extracts and formats the version string from PNPM output.
+ *
+ * @param versionOutput - The raw version output from PNPM.
+ * @returns A formatted version string.
+ */
 function formatPnpmVersionOutput(versionOutput: string): string {
 	return versionOutput.startsWith('link:') ? 'Local' : `v${versionOutput}`;
 }
 
+/**
+ * Represents the structure of a bare NPM-like version output.
+ */
 interface BareNpmLikeVersionOutput {
 	version: string;
 	dependencies: Record<string, BareNpmLikeVersionOutput>;

@@ -1,5 +1,8 @@
 import type { CommandExecutor, PackageManager } from '../definitions.js';
 
+/**
+ * Represents the structure of a bare NPM-like version output.
+ */
 interface BareNpmLikeVersionOutput {
 	version: string;
 	dependencies: Record<string, BareNpmLikeVersionOutput>;
