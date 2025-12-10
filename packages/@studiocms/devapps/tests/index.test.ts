@@ -39,7 +39,6 @@ describe(parentSuiteName, () => {
 					wpImporter: {
 						endpoint: '/wp-import',
 					},
-					libSQLViewer: false,
 				},
 				verbose: true,
 			};
@@ -73,7 +72,6 @@ describe(parentSuiteName, () => {
 						wpImporter: {
 							endpoint: null as any,
 						},
-						libSQLViewer: 'invalid' as any,
 					},
 				});
 			}).toThrow();

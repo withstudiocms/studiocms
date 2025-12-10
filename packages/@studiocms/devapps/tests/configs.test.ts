@@ -247,7 +247,7 @@ describe(parentSuiteName, () => {
 				description: 'A test page',
 				content: 'Test content',
 				slug: 'test-page',
-			} as PageData;
+			} as unknown as PageData;
 			const config = FullPageData.of({ pageData });
 
 			await ctx.parameter('config', JSON.stringify(config, null, 2));

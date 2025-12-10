@@ -1,7 +1,7 @@
 {
   "name": "@studiocms/devapps",
   "version": "0.1.0-beta.30",
-  "description": "A dedicated CMS for Astro DB. Built from the ground up by the Astro community.",
+  "description": "Devapps for StudioCMS Astro projects, including a WordPress importer.",
   "author": {
     "name": "withstudiocms",
     "url": "https://studiocms.dev"
@@ -20,18 +20,12 @@
   "license": "MIT",
   "keywords": [
     "astro",
-    "astrodb",
-    "astrolicious",
     "astro-integration",
     "studiocms",
     "withastro",
     "wordpress",
     "wordpress-import",
     "wordpress-importer",
-    "libsql",
-    "libsql-viewer",
-    "libsql-client",
-    "libsqlstudio",
     "devapp",
     "astro-devapp",
     "astro-devtoolbarapp"
