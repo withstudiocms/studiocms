@@ -18,11 +18,11 @@ const command = Cli.Command.make('studiocms').pipe(
 	Cli.Command.withSubcommands([
 		addPlugin,
 		cryptoCMD,
+		debugCMD,
 		getTurso,
 		initCMD,
-		usersCMD,
 		migratorCMD,
-		debugCMD,
+		usersCMD,
 	])
 );
 
