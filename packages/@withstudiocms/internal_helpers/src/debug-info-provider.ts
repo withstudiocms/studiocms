@@ -27,7 +27,7 @@ type PluginList = {
  * Represents the context required to gather debug information.
  */
 export interface DebugInfoContext {
-	adapterName?: string;
+	adapterName: string;
 	databaseDialect: string;
 	installedPlugins: PluginList;
 }
@@ -90,9 +90,7 @@ export class DebugInfoProvider {
 		const fallbackValue = 'Unavailable';
 
 		const AstroVersion = (await packageManagerProvider.getPackageVersion('astro')) || fallbackValue;
-		const AstroAdapter = adapterName
-			? (await getVersionWithIdentifier(adapterName)) || fallbackValue
-			: fallbackValue;
+		const AstroAdapter = (await getVersionWithIdentifier(adapterName)) || fallbackValue;
 		const DatabaseDialect =
 			dbDialectLabels[databaseDialect as keyof typeof dbDialectLabels] ?? databaseDialect;
 
@@ -125,8 +123,8 @@ export class DebugInfoProvider {
 	 */
 	async getDebugInfoString(
 		indent?: number,
-		{ enabled: styled, styles: style }: { enabled: boolean; styles?: FormatOptions } = {
-			enabled: false,
+		{ styled, styles: style }: { styled: boolean; styles?: FormatOptions } = {
+			styled: false,
 		}
 	): Promise<string> {
 		const debugInfo = await this.getDebugInfoObj();

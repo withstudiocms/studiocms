@@ -8,7 +8,7 @@ const site = process.env.DOKPLOY_DEPLOY_URL
 	? `https://${process.env.DOKPLOY_DEPLOY_URL}`
 	: 'https://playground.studiocms.dev';
 
-console.log('Site URL:', site);
+// console.log('Site URL:', site);
 
 const studiocmsScopedPackages = globSync('../packages/@studiocms/*');
 const withstudiocmsScopedPackages = globSync('../packages/@withstudiocms/*').filter(
@@ -29,8 +29,6 @@ const packagePaths = [
 	...appendDistPath(withstudiocmsScopedPackages),
 	...appendDistFrontendPaths('../packages/studiocms'),
 ];
-
-console.log('HMR Package Paths:', packagePaths);
 
 // https://astro.build/config
 export default defineConfig({
