@@ -50,7 +50,6 @@ export const StudioCMSPageData = defineTable({
 		showContributors: column.boolean({ default: false, optional: true }),
 		parentFolder: column.text({ optional: true }),
 		draft: column.boolean({ optional: true }),
-		augments: column.json({ default: [], optional: true }),
 	},
 });
 
