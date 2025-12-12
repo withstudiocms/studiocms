@@ -1,6 +1,6 @@
 {
   "name": "@withstudiocms/sdk",
-  "version": "0.1.0-beta.0",
+  "version": "0.1.0-beta.1",
   "description": "StudioCMS Database SDK",
   "author": {
     "name": "withstudiocms",
@@ -48,15 +48,15 @@
   },
   "type": "module",
   "dependencies": {
-		"diff": "catalog:",
-		"diff2html": "^3.4.52",
+    "diff": "catalog:",
+    "diff2html": "^3.4.52",
     "zod": "^3.25.76"
   },
   "devDependencies": {
     "@types/node": "catalog:"
   },
   "peerDependencies": {
-		"@withstudiocms/effect": "workspace:*",
+    "@withstudiocms/effect": "workspace:*",
     "@withstudiocms/kysely": "workspace:*"
   }
 }

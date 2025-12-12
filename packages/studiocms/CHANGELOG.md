@@ -1,5 +1,78 @@
 # studiocms
 
+## 0.1.0-beta.31
+
+### Patch Changes
+
+- [#1022](https://github.com/withstudiocms/studiocms/pull/1022) [`746c717`](https://github.com/withstudiocms/studiocms/commit/746c717fed390e0e9aaea7f3db147afcee42820f) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Implements the ability to set default language from StudioCMS config file
+
+- [#1052](https://github.com/withstudiocms/studiocms/pull/1052) [`b81924e`](https://github.com/withstudiocms/studiocms/commit/b81924ebc2e6656eaf8117988a33819196b04aed) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Implements System Management dashboard page, and new built-in database viewer utility
+
+- [#1046](https://github.com/withstudiocms/studiocms/pull/1046) [`39cf90d`](https://github.com/withstudiocms/studiocms/commit/39cf90dc8acdaff624f4a170e82bd97f7dd5703a) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Updates usage of createResolver to use createPathResolver from @withstudiocms/internal_helpers package
+
+- [#1047](https://github.com/withstudiocms/studiocms/pull/1047) [`9a8bfed`](https://github.com/withstudiocms/studiocms/commit/9a8bfeda461dbc7e3188222db3adeffca1c29f6a) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Refactors code structure to move all code that does not need to be built into it's own frontend folder, allowing us to no longer ship both SRC and DIST, instead having DIST and FRONTEND folders instead. Frontend folder being specific to serving and handling Astro pages and endpoints
+
+- [#1018](https://github.com/withstudiocms/studiocms/pull/1018) [`cb027b2`](https://github.com/withstudiocms/studiocms/commit/cb027b20d2620410ecde80b06a66f57b964fb4b1) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update dependency nanostores to ^1.1.0
+
+- [#1040](https://github.com/withstudiocms/studiocms/pull/1040) [`86d2825`](https://github.com/withstudiocms/studiocms/commit/86d2825f8f077eed158ddd3e9d25e02ff0794804) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update studiocms dependencies
+
+- [#1063](https://github.com/withstudiocms/studiocms/pull/1063) [`52758e0`](https://github.com/withstudiocms/studiocms/commit/52758e0fc518dcb10d2416b9cec7cc1287e71408) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update studiocms dependencies
+
+- [#998](https://github.com/withstudiocms/studiocms/pull/998) [`25d5f6e`](https://github.com/withstudiocms/studiocms/commit/25d5f6ef79c39f4d69418b1dd0cae87f8d646dd1) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update studiocms dependencies
+
+- [#1030](https://github.com/withstudiocms/studiocms/pull/1030) [`66480a1`](https://github.com/withstudiocms/studiocms/commit/66480a19943ca42b8471c76984321a9f6bd13d94) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Introduces new plugin helpers for DB interactions
+
+- [#1023](https://github.com/withstudiocms/studiocms/pull/1023) [`43483c4`](https://github.com/withstudiocms/studiocms/commit/43483c455a648f804b4c6f418878830c396bc6f5) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Implements dynamic components/scripts for the StudioCMS dashboard injectable through plugins
+
+- [#1048](https://github.com/withstudiocms/studiocms/pull/1048) [`27fd297`](https://github.com/withstudiocms/studiocms/commit/27fd2975d8390728dc8af582ddff1a7691c9a3d2) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Refactors StudioCMS config processing and loading to simplify how and where configs can load. StudioCMS now no longer supports in-line config, you MUST use a `studiocms.config.*` file.
+
+- [#1053](https://github.com/withstudiocms/studiocms/pull/1053) [`5f406bc`](https://github.com/withstudiocms/studiocms/commit/5f406bc8cb4324e75dfc8b5b3140b6a73a1cbf08) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Implements new internal helpers for handling debug info
+
+- [#1045](https://github.com/withstudiocms/studiocms/pull/1045) [`2e2886d`](https://github.com/withstudiocms/studiocms/commit/2e2886d59646660e04dc9d0d4d2d1c08c607f733) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Adds new middleware to handle and display errors to prevent dead pages
+
+- [#1033](https://github.com/withstudiocms/studiocms/pull/1033) [`262442b`](https://github.com/withstudiocms/studiocms/commit/262442bab6538b91b9959449b4aa473d70e0126a) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - fixes broken type
+
+- [#1044](https://github.com/withstudiocms/studiocms/pull/1044) [`72e1359`](https://github.com/withstudiocms/studiocms/commit/72e1359d9081f33f6a3d73e1f44774cdf9be0afd) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Cleans up CLI utilities and refactors initCMD env step to work with new kysely based SDK
+
+- [#1054](https://github.com/withstudiocms/studiocms/pull/1054) [`c7c9b91`](https://github.com/withstudiocms/studiocms/commit/c7c9b918b426d253c4e33b5e8c7ead9c650339da) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Integrates option Analytics plugin into StudioCMS to replace previous web vitals astrodb integration
+
+- [#1031](https://github.com/withstudiocms/studiocms/pull/1031) [`1359631`](https://github.com/withstudiocms/studiocms/commit/13596311bfbb6e64ff862dc2d1b902eb6a9199e9) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Modifies types and schemas to allow proper JSDoc comments to be present
+
+- [#1029](https://github.com/withstudiocms/studiocms/pull/1029) [`da369c7`](https://github.com/withstudiocms/studiocms/commit/da369c7bd8f40670cb56821d74686c79840f06e4) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Integrates new Kysely based SDK into StudioCMS
+
+- [#1021](https://github.com/withstudiocms/studiocms/pull/1021) [`015a509`](https://github.com/withstudiocms/studiocms/commit/015a5095279680384143db8422ae0032ee8360b2) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Implements testers for plugin renderers as well as augments
+
+- [#1036](https://github.com/withstudiocms/studiocms/pull/1036) [`ddae77d`](https://github.com/withstudiocms/studiocms/commit/ddae77dbb22376803c4c166323dff161fe30d030) Thanks [@renovate](https://github.com/apps/renovate)! - lint
+
+- [#1026](https://github.com/withstudiocms/studiocms/pull/1026) [`85727e5`](https://github.com/withstudiocms/studiocms/commit/85727e51a1c90a8f82ce8ca6f1ff6fabc9f3f090) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Refactors and unifies base page layout for all layouts for StudioCMS dashboard/auth/first-time setup pages
+
+- [#1069](https://github.com/withstudiocms/studiocms/pull/1069) [`a5ba52e`](https://github.com/withstudiocms/studiocms/commit/a5ba52e9c06e6aa7318d40561c6e3a919d6b1988) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Move template editor logic into component instead of built script
+
+- [#1028](https://github.com/withstudiocms/studiocms/pull/1028) [`dd259eb`](https://github.com/withstudiocms/studiocms/commit/dd259eb714fde4f1708cb9ad1f3dcb8b3f6b7661) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Allows disabling generator head tags in the dashboard via the `security.hideGeneratorTags` option in the dashboard config
+
+- [#1010](https://github.com/withstudiocms/studiocms/pull/1010) [`a416585`](https://github.com/withstudiocms/studiocms/commit/a4165851f3ae44c43aa21c270ecfe9ea1dfa5f59) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Refactors plugin hooks
+
+- [#1050](https://github.com/withstudiocms/studiocms/pull/1050) [`c24b655`](https://github.com/withstudiocms/studiocms/commit/c24b655e74a53fbf0b7a5a47f9d65270f0c3defc) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Cleans up unused mailer template code from before the new template engine system was implemented
+
+- [#1049](https://github.com/withstudiocms/studiocms/pull/1049) [`962d5ae`](https://github.com/withstudiocms/studiocms/commit/962d5aebb1c4e44d2fc4fe4d652300776ebaed35) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Refactors and cleans up Folder structure system to ensure urlRoute property on CombinedPageData return resolves correctly
+
+- [#1024](https://github.com/withstudiocms/studiocms/pull/1024) [`5756c15`](https://github.com/withstudiocms/studiocms/commit/5756c156d9adb4036029f930308606338fb39b6a) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Implements migrator CLI
+
+- [#1025](https://github.com/withstudiocms/studiocms/pull/1025) [`455a82a`](https://github.com/withstudiocms/studiocms/commit/455a82aff8f6430df3a40b2edbcf6f05bb4d4c9d) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Update ghost image url and cleanup lint/type weirdness
+
+- [#1067](https://github.com/withstudiocms/studiocms/pull/1067) [`747e0e2`](https://github.com/withstudiocms/studiocms/commit/747e0e2b9e3a1b9de3933ab0c153f44ece66d454) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Adds `studiocms debug` command for displaying debug information similar to `astro debug`
+
+- [#1001](https://github.com/withstudiocms/studiocms/pull/1001) [`a0f45c5`](https://github.com/withstudiocms/studiocms/commit/a0f45c5d9c034cf63d0d36a1c4c1eef598533bb6) Thanks [@apollo-git-bot](https://github.com/apps/apollo-git-bot)! - Translation Updated (PR: #1001)
+
+- Updated dependencies [[`262442b`](https://github.com/withstudiocms/studiocms/commit/262442bab6538b91b9959449b4aa473d70e0126a), [`ee90810`](https://github.com/withstudiocms/studiocms/commit/ee9081053f808d4366a9c95e13539a5198b27bb5), [`a5b84c5`](https://github.com/withstudiocms/studiocms/commit/a5b84c52383bf299aa70c04b064850c7883b59b1), [`66480a1`](https://github.com/withstudiocms/studiocms/commit/66480a19943ca42b8471c76984321a9f6bd13d94), [`944e965`](https://github.com/withstudiocms/studiocms/commit/944e965e535f988ef2b9666d26739f65083bbc2d), [`27fd297`](https://github.com/withstudiocms/studiocms/commit/27fd2975d8390728dc8af582ddff1a7691c9a3d2), [`5f406bc`](https://github.com/withstudiocms/studiocms/commit/5f406bc8cb4324e75dfc8b5b3140b6a73a1cbf08), [`9a8bfed`](https://github.com/withstudiocms/studiocms/commit/9a8bfeda461dbc7e3188222db3adeffca1c29f6a), [`ba79740`](https://github.com/withstudiocms/studiocms/commit/ba797403563b8fbd381e0fc28f4ccba0ec6432a6), [`3c54788`](https://github.com/withstudiocms/studiocms/commit/3c54788df0bd548f1e3489b7c7334279ee85d5cb), [`747e0e2`](https://github.com/withstudiocms/studiocms/commit/747e0e2b9e3a1b9de3933ab0c153f44ece66d454), [`5cfd64b`](https://github.com/withstudiocms/studiocms/commit/5cfd64b743e6d716cffa05dffda6fb94d11e8251), [`1e1e6a1`](https://github.com/withstudiocms/studiocms/commit/1e1e6a1038de31bfe73070b4feb7163a3e7385a0), [`da369c7`](https://github.com/withstudiocms/studiocms/commit/da369c7bd8f40670cb56821d74686c79840f06e4), [`3fbc758`](https://github.com/withstudiocms/studiocms/commit/3fbc75812bbf4f27d8bb27a3c35c78d87616a2b6), [`ddae77d`](https://github.com/withstudiocms/studiocms/commit/ddae77dbb22376803c4c166323dff161fe30d030), [`c7c9b91`](https://github.com/withstudiocms/studiocms/commit/c7c9b918b426d253c4e33b5e8c7ead9c650339da), [`d857f5c`](https://github.com/withstudiocms/studiocms/commit/d857f5c7e76336f41541aeb0aae73f07f73d875c), [`5756c15`](https://github.com/withstudiocms/studiocms/commit/5756c156d9adb4036029f930308606338fb39b6a), [`39cf90d`](https://github.com/withstudiocms/studiocms/commit/39cf90dc8acdaff624f4a170e82bd97f7dd5703a), [`97c7847`](https://github.com/withstudiocms/studiocms/commit/97c7847c0cdd41998e0a6d8c61ab6f3c4ac4474e), [`675b7d5`](https://github.com/withstudiocms/studiocms/commit/675b7d5bbb2c40e6a204d3c7227812923e37289f), [`962d5ae`](https://github.com/withstudiocms/studiocms/commit/962d5aebb1c4e44d2fc4fe4d652300776ebaed35), [`8da7850`](https://github.com/withstudiocms/studiocms/commit/8da7850d4cf4a2a7d1634081f92d5728ca5f0d9e)]:
+  - @withstudiocms/kysely@0.1.0-beta.1
+  - @withstudiocms/effect@0.1.0-beta.7
+  - @withstudiocms/sdk@0.1.0-beta.1
+  - @withstudiocms/config-utils@0.1.0-beta.5
+  - @withstudiocms/internal_helpers@0.1.0-beta.4
+  - @withstudiocms/component-registry@0.1.0-beta.7
+  - @withstudiocms/auth-kit@0.1.0-beta.6
+
 ## 0.1.0-beta.30
 
 ### Patch Changes
