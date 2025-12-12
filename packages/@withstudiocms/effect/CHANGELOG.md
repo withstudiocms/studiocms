@@ -1,5 +1,25 @@
 # @withstudiocms/effect
 
+## 0.1.0-beta.7
+
+### Patch Changes
+
+- [#1039](https://github.com/withstudiocms/studiocms/pull/1039) [`ee90810`](https://github.com/withstudiocms/studiocms/commit/ee9081053f808d4366a9c95e13539a5198b27bb5) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update dependency nodemailer to ^7.0.11
+
+- [#1016](https://github.com/withstudiocms/studiocms/pull/1016) [`a5b84c5`](https://github.com/withstudiocms/studiocms/commit/a5b84c52383bf299aa70c04b064850c7883b59b1) Thanks [@renovate](https://github.com/apps/renovate)! - chore(deps): Updated Effect dependencies (PR: #1016)
+
+- [#1047](https://github.com/withstudiocms/studiocms/pull/1047) [`9a8bfed`](https://github.com/withstudiocms/studiocms/commit/9a8bfeda461dbc7e3188222db3adeffca1c29f6a) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Adds logger effect utils directly to this package instead of being only in StudioCMS
+
+- [#1056](https://github.com/withstudiocms/studiocms/pull/1056) [`ba79740`](https://github.com/withstudiocms/studiocms/commit/ba797403563b8fbd381e0fc28f4ccba0ec6432a6) Thanks [@renovate](https://github.com/apps/renovate)! - chore(deps): Updated Effect dependencies (PR: #1056)
+
+- [#1037](https://github.com/withstudiocms/studiocms/pull/1037) [`3c54788`](https://github.com/withstudiocms/studiocms/commit/3c54788df0bd548f1e3489b7c7334279ee85d5cb) Thanks [@renovate](https://github.com/apps/renovate)! - chore(deps): Updated Effect dependencies (PR: #1037)
+
+- [#1051](https://github.com/withstudiocms/studiocms/pull/1051) [`1e1e6a1`](https://github.com/withstudiocms/studiocms/commit/1e1e6a1038de31bfe73070b4feb7163a3e7385a0) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Removes deprecated drizzle/astrodb client wrappers and related dependencies
+
+- [#1003](https://github.com/withstudiocms/studiocms/pull/1003) [`97c7847`](https://github.com/withstudiocms/studiocms/commit/97c7847c0cdd41998e0a6d8c61ab6f3c4ac4474e) Thanks [@renovate](https://github.com/apps/renovate)! - chore(deps): Updated Effect dependencies (PR: #1003)
+
+- [#996](https://github.com/withstudiocms/studiocms/pull/996) [`675b7d5`](https://github.com/withstudiocms/studiocms/commit/675b7d5bbb2c40e6a204d3c7227812923e37289f) Thanks [@renovate](https://github.com/apps/renovate)! - chore(deps): Updated Effect dependencies (PR: #996)
+
 ## 0.1.0-beta.6
 
 ### Patch Changes

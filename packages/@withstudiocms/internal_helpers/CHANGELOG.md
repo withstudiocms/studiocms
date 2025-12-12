@@ -1,5 +1,15 @@
 # @withstudiocms/internal_helpers
 
+## 0.1.0-beta.4
+
+### Patch Changes
+
+- [#1053](https://github.com/withstudiocms/studiocms/pull/1053) [`5f406bc`](https://github.com/withstudiocms/studiocms/commit/5f406bc8cb4324e75dfc8b5b3140b6a73a1cbf08) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Implements new internal helpers for handling debug info
+
+- [#1067](https://github.com/withstudiocms/studiocms/pull/1067) [`747e0e2`](https://github.com/withstudiocms/studiocms/commit/747e0e2b9e3a1b9de3933ab0c153f44ece66d454) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Improves code structure and enhances debug helpers
+
+- [#1046](https://github.com/withstudiocms/studiocms/pull/1046) [`39cf90d`](https://github.com/withstudiocms/studiocms/commit/39cf90dc8acdaff624f4a170e82bd97f7dd5703a) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Implements new pathResolver utility
+
 ## 0.1.0-beta.3
 
 ### Patch Changes
