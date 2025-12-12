@@ -6,4 +6,6 @@ interface Window {
 		getSystemTheme: () => 'light' | 'dark';
 		getDefaultTheme: () => 'system' | 'dark' | 'light';
 	};
+
+	ace: typeof import('ace-builds');
 }
