@@ -294,9 +294,6 @@ export const studiocms = (): AstroIntegration => {
 							path: './virtuals/template-engine/index.js',
 							exportDefault: true,
 						}),
-						'studiocms:template-editor/script': ambientScripts([
-							'./virtuals/scripts/template-editor.js',
-						]),
 						'studiocms:components': astroComponentVirtual({
 							FormattedDate: './virtuals/components/FormattedDate.astro',
 							Generator: './virtuals/components/Generator.astro',
