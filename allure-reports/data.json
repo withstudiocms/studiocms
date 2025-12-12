@@ -2,6 +2,7 @@
   "links": [
     "..",
     "adam_fix-config-loader",
+    "adam_fix-migrator",
     "changeset-release_main",
     "main"
   ]
