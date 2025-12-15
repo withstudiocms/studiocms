@@ -1,24 +1,24 @@
 const en = ({
   'core-web-vitals': {
-    title: 'Core Web Vitals'
+    title: false
   },
   '@page/analytics': {
-    title: "Analystikk og ytelsesdata",
-    description: "Se Core Web Vitals og analystikken for din side.",
-    'page-header': "Analystikk og Web Vital Metrics",
-    'core-vitals.summary.header': "Core Web Vitals-oppsummering",
-    'core-vitals.by-route.header': "Core Web Vitals etter rute",
-    'core-vitals.by-route.table.th1': "Rute",
-    'core-vitals.by-route.table.th2': "Bestått?",
-    'core-vitals.by-route.table.th3': 'LCP',
-    'core-vitals.by-route.table.th4': 'INP',
-    'core-vitals.by-route.table.th5': 'CLS',
-    'analytics.summary.header': "Analystikk",
-    'analytics.table.th1': "Stien til siden",
-    'analytics.table.th2': "Visninger (24t)",
-    'analytics.table.th3': "Visninger (7 dager)",
-    'analytics.table.th4': "Visninger (30 dager)",
-    'analytics.table.th5': "Visninger (totalt)"
+    title: false,
+    description: false,
+    'page-header': false,
+    'core-vitals.summary.header': false,
+    'core-vitals.by-route.header': false,
+    'core-vitals.by-route.table.th1': false,
+    'core-vitals.by-route.table.th2': false,
+    'core-vitals.by-route.table.th3': false,
+    'core-vitals.by-route.table.th4': false,
+    'core-vitals.by-route.table.th5': false,
+    'analytics.summary.header': false,
+    'analytics.table.th1': false,
+    'analytics.table.th2': false,
+    'analytics.table.th3': false,
+    'analytics.table.th4': false,
+    'analytics.table.th5': false
   }
 } as const);
 export default en;

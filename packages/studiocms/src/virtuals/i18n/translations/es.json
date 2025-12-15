@@ -67,7 +67,8 @@
       "user-dropdown:settings": "Configuración de usuario",
       "user-dropdown:view-site": "Ver sitio",
       "user-dropdown:logout": "Cerrar sesión",
-      "mailer-configuration-label": "Configuración SMTP"
+      "mailer-configuration-label": "Configuración SMTP",
+      "system-management-label": ""
     },
     "@studiocms/dashboard:profile": {
       "title": "Perfil de usuario",
@@ -369,6 +370,16 @@
       "user_updated": "",
       "user_deleted": "",
       "new_user": ""
+    },
+    "@studiocms/dashboard:system-management": {
+      "title": "",
+      "description": "",
+      "header": "",
+      "database-management-label": "",
+      "close-button-label": "",
+      "system-utilities-label": "",
+      "debug-info-label": "",
+      "copied-to-clipboard": ""
     }
   }
 }
