@@ -18,6 +18,10 @@ const t = useTranslations(lang, '@studiocms/dashboard:system-management');
 // Get user database configuration
 const userConfig = getConfig();
 
+// TODO: Move this provider setup into integration hooks
+// The Current setup does not work when in PROD as it
+// is unable to get package manager context.
+
 // Initialize DebugInfoProvider
 const debugProvider = new DebugInfoProvider({
 	databaseDialect: db.dialect,
