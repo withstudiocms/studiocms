@@ -1,5 +1,11 @@
 # @withstudiocms/config-utils
 
+## 0.1.0-beta.5
+
+### Patch Changes
+
+- [#1048](https://github.com/withstudiocms/studiocms/pull/1048) [`27fd297`](https://github.com/withstudiocms/studiocms/commit/27fd2975d8390728dc8af582ddff1a7691c9a3d2) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Refactors StudioCMS config processing and loading to simplify how and where configs can load. StudioCMS now no longer supports in-line config, you MUST use a `studiocms.config.*` file.
+
 ## 0.1.0-beta.4
 
 ### Patch Changes

@@ -1,5 +1,14 @@
 # @withstudiocms/component-registry
 
+## 0.1.0-beta.7
+
+### Patch Changes
+
+- [#1029](https://github.com/withstudiocms/studiocms/pull/1029) [`da369c7`](https://github.com/withstudiocms/studiocms/commit/da369c7bd8f40670cb56821d74686c79840f06e4) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Integrates new Kysely based SDK into StudioCMS
+
+- Updated dependencies [[`ee90810`](https://github.com/withstudiocms/studiocms/commit/ee9081053f808d4366a9c95e13539a5198b27bb5), [`a5b84c5`](https://github.com/withstudiocms/studiocms/commit/a5b84c52383bf299aa70c04b064850c7883b59b1), [`9a8bfed`](https://github.com/withstudiocms/studiocms/commit/9a8bfeda461dbc7e3188222db3adeffca1c29f6a), [`ba79740`](https://github.com/withstudiocms/studiocms/commit/ba797403563b8fbd381e0fc28f4ccba0ec6432a6), [`3c54788`](https://github.com/withstudiocms/studiocms/commit/3c54788df0bd548f1e3489b7c7334279ee85d5cb), [`1e1e6a1`](https://github.com/withstudiocms/studiocms/commit/1e1e6a1038de31bfe73070b4feb7163a3e7385a0), [`97c7847`](https://github.com/withstudiocms/studiocms/commit/97c7847c0cdd41998e0a6d8c61ab6f3c4ac4474e), [`675b7d5`](https://github.com/withstudiocms/studiocms/commit/675b7d5bbb2c40e6a204d3c7227812923e37289f)]:
+  - @withstudiocms/effect@0.1.0-beta.7
+
 ## 0.1.0-beta.6
 
 ### Patch Changes

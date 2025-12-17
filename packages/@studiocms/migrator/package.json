@@ -1,7 +1,7 @@
 {
   "name": "@studiocms/migrator",
   "type": "module",
-  "version": "0.1.0-beta.0",
+  "version": "0.1.0-beta.1",
   "description": "Tool for migrating from AstroDB based StudioCMS to Kysely based StudioCMS.",
   "author": {
     "name": "withstudiocms",
@@ -46,12 +46,12 @@
   "dependencies": {
     "@astrojs/node": "catalog:astrojs",
     "@libsql/client": "catalog:kysely",
-		"@studiocms/ui": "catalog:studiocms",
+    "@studiocms/ui": "catalog:studiocms",
     "@withstudiocms/config-utils": "workspace:*",
-		"@withstudiocms/effect": "workspace:*",
-		"@withstudiocms/kysely": "workspace:*",
+    "@withstudiocms/effect": "workspace:*",
+    "@withstudiocms/kysely": "workspace:*",
     "astro": "catalog:astrojs",
-		"dotenv": "^17.2.3",
+    "dotenv": "^17.2.3",
     "drizzle-orm": "catalog:min",
     "sharp": "catalog:"
   },
