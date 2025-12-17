@@ -20,7 +20,6 @@ const userConfig = getConfig();
 
 // Initialize DebugInfoProvider
 const debugProvider = new DebugInfoProvider({
-	Astro,
 	databaseDialect: db.dialect,
 	adapterName: adapter,
 	installedPlugins: pluginList,
@@ -116,7 +115,8 @@ const debugOutput = await debugProvider.getDebugInfoString();
     </div>
 
     <script>
-        import {
+        import { DbStudioElement } from "#db-studio/viewer";
+import {
             $i18n,
             $localeSettings,
             baseTranslation,
@@ -227,6 +227,11 @@ const debugOutput = await debugProvider.getDebugInfoString();
             openButton: accessDbStudioButton,
             closeButton: closeDbStudioButton,
         });
+
+		// Define the custom element if not already defined
+		if (!customElements.get('db-studio')) {
+			customElements.define('db-studio', DbStudioElement);
+		}
 
         // =========================================
         // Debug Output Copy Logic
