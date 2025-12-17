@@ -67,7 +67,8 @@
       "user-dropdown:settings": "Paramètres utilisateur",
       "user-dropdown:view-site": "Voir le site",
       "user-dropdown:logout": "Se déconnecter",
-      "mailer-configuration-label": "Configuration SMTP"
+      "mailer-configuration-label": "Configuration SMTP",
+      "system-management-label": "Gestion du système"
     },
     "@studiocms/dashboard:profile": {
       "title": "Profil utilisateur",
@@ -369,6 +370,16 @@
       "user_updated": "Admin : Utilisateur mis à jour",
       "user_deleted": "Admin : Utilisateur supprimé",
       "new_user": "Admin : Nouvel utilisateur"
+    },
+    "@studiocms/dashboard:system-management": {
+      "title": "Gestion du système",
+      "description": "Gestion du système StudioCMS",
+      "header": "Gestion du système",
+      "database-management-label": "Gestion de la base de données",
+      "close-button-label": "Fermer",
+      "system-utilities-label": "Utilitaires du système",
+      "debug-info-label": "Informations de débogage",
+      "copied-to-clipboard": "Copié !"
     }
   }
 }
