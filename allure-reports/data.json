@@ -2,7 +2,10 @@
   "links": [
     "..",
     "adam_fix-config-loader",
-    "changeset-release_main",
-    "main"
+    "l10n_main",
+    "main",
+    "renovate_effect-dependencies",
+    "renovate_html-@studiocms-plugin-dependencies",
+    "renovate_studiocms-studiocms-dependencies"
   ]
 }
