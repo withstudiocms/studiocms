@@ -12,6 +12,11 @@ declare module 'studiocms:logger' {
 	) => Response;
 }
 
+declare module 'studiocms:storage-manager/module' {
+	const module: typeof import('./handlers/storage-manager/core/no-op-storage-manager').default;
+	export default module;
+}
+
 declare module 'studiocms:debug-info' {
 	export const debugInfo: string;
 	export default debugInfo;

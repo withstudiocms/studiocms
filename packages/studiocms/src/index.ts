@@ -161,6 +161,7 @@ export const studiocms = (): AstroIntegration => {
 				const {
 					dbStartPage,
 					plugins,
+					storageManager,
 					verbose,
 					componentRegistry,
 					db: { dialect },
@@ -232,6 +233,7 @@ export const studiocms = (): AstroIntegration => {
 					verbose,
 					webVitals,
 					dialect,
+					storageManager,
 				});
 
 				// Setup Routes

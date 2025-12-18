@@ -114,6 +114,14 @@
 			"types": "./dist/toolbar/db-viewer/viewer.d.ts",
 			"default": "./dist/toolbar/db-viewer/viewer.js"
 		},
+		"#storage-manager/core/*": {
+			"types": "./dist/handlers/storage-manager/core/*.d.ts",
+			"default": "./dist/handlers/storage-manager/core/*.js"
+		},
+		"#storage-manager/definitions": {
+			"types": "./dist/handlers/storage-manager/definitions.d.ts",
+			"default": "./dist/handlers/storage-manager/definitions.js"
+		},
 		"#frontend/*": "./frontend/*"
 	},
 	"exports": {
@@ -197,6 +205,10 @@
 		"./test-utils": {
 			"types": "./dist/test-utils.d.ts",
 			"default": "./dist/test-utils.js"
+		},
+		"./storage-manager/definitions": {
+			"types": "./dist/handlers/storage-manager/definitions.d.ts",
+			"default": "./dist/handlers/storage-manager/definitions.js"
 		},
 		"./Renderer": "./dist/virtuals/components/Renderer.astro",
 		"./frontend/*": "./frontend/*",

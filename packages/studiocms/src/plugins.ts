@@ -14,6 +14,7 @@ export {
 	type SafePluginListType,
 	type SettingsField,
 	type StudioCMSPlugin,
+	type StudioCMSStorageManager,
 } from './schemas/index.js';
 
 export * from './utils/lang-helper.js';

@@ -70,6 +70,10 @@ export const setupRoutes: InjectedRoute[] = [
 		pattern: '/studiocms_api/dashboard/step-2',
 		entrypoint: 'setup-pages/studiocms_api/dashboard/step-2.ts',
 	},
+	{
+		pattern: '/studiocms_api/storage/manager',
+		entrypoint: 'pages/studiocms_api/storage/manager.ts',
+	},
 ];
 
 /**
@@ -240,6 +244,10 @@ export const dashboardEnabledRoutes = (
 	{
 		pattern: '/studiocms_api/auth/logout',
 		entrypoint: 'pages/studiocms_api/auth/logout.ts',
+	},
+	{
+		pattern: '/studiocms_api/storage/manager',
+		entrypoint: 'pages/studiocms_api/storage/manager.ts',
 	},
 
 	// Dashboard Frontend Route
