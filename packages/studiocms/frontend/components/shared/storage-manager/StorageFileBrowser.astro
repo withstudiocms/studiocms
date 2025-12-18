@@ -37,10 +37,13 @@ const {
 	returnType = 'url',
 } = Astro.props;
 
+// Generate translation map for the component
 const rawTranslationMap = generateComponentTranslationMap('@studiocms/storage-file-browser');
 
 // Convert fileTypes array to JSON string for the custom element
 const fileTypesJson = JSON.stringify(fileTypes);
+
+// Convert translation map to JSON string for the custom element
 const translationMap = JSON.stringify(rawTranslationMap);
 ---
 
@@ -57,6 +60,7 @@ const translationMap = JSON.stringify(rawTranslationMap);
   import 'studiocms:client-scripts/StorageFileBrowser';
   import { $locale } from 'studiocms:i18n/client';
 
+  // Dispatch locale change event to the StorageFileBrowser component
   $locale.subscribe((locale) => {
     const event = new CustomEvent('storage-browser:locale-change', {
         detail: { locale },

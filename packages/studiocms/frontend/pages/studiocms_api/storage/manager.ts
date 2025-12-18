@@ -7,6 +7,14 @@ import UrlMappingService from '#storage-manager/core/url-mapping';
 
 let apiCore: APICore<APIContext, Response>;
 
+/**
+ * Retrieves the singleton instance of the APICore.
+ *
+ * This function initializes the APICore instance if it hasn't been created yet,
+ * setting up the necessary context driver, URL mapping service, and API service module.
+ *
+ * @returns The singleton APICore instance.
+ */
 function getAPICore() {
 	// Instantiate the Astro context driver
 	const astroContextDriver = new AstroContextDriver();
