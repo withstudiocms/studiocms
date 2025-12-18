@@ -527,6 +527,16 @@ export function definePlugin(options: StudioCMSPlugin): StudioCMSPlugin {
 	return options;
 }
 
+/**
+ * Defines a storage manager plugin for StudioCMS.
+ *
+ * @param options - The configuration options for the storage manager plugin.
+ * @returns The storage manager plugin configuration.
+ */
+export function defineStorageManager(options: StudioCMSStorageManager): StudioCMSStorageManager {
+	return options;
+}
+
 export type ImageServiceExtraProps = {
 	alt: string;
 	width: number;

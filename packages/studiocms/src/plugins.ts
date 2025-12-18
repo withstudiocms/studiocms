@@ -10,6 +10,7 @@ export {
 	type AvailableDashboardPages,
 	type DashboardPage,
 	definePlugin,
+	defineStorageManager,
 	type FinalDashboardPage,
 	type SafePluginListType,
 	type SettingsField,

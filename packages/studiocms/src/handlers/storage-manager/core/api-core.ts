@@ -6,6 +6,15 @@ import type {
 	UrlMappingServiceDefinition,
 } from '../definitions';
 
+/**
+ * API Core implementation.
+ *
+ * This class serves as the central core for the Storage Manager API,
+ * integrating the context driver, URL mapping service, and storage API builder.
+ *
+ * @typeParam C - The context type.
+ * @typeParam R - The response type.
+ */
 export default class APICore<C, R> implements APICoreDefinition<C, R> {
 	driver: ContextDriverDefinition<C, R>;
 	urlMappingService: UrlMappingServiceDefinition;

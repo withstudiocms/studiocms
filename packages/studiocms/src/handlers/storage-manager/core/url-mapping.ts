@@ -6,6 +6,13 @@ import type {
 	UrlMetadata,
 } from '../definitions';
 
+/**
+ * URL Mapping Service implementation.
+ *
+ * This service manages the mapping between storage file identifiers and their corresponding URLs.
+ * It handles URL resolution, automatic refreshing of expired URLs, registration of new mappings,
+ * deletion of mappings, and cleanup of expired entries.
+ */
 export default class UrlMappingService implements UrlMappingServiceDefinition {
 	database;
 

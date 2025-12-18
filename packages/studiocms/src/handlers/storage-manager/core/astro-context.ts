@@ -8,6 +8,12 @@ import type {
 	ParsedContext,
 } from '../definitions';
 
+/**
+ * Astro Context Driver implementation.
+ *
+ * This class implements the ContextDriverDefinition interface for Astro,
+ * providing methods to parse the context, build responses, and handle endpoints.
+ */
 export default class AstroContextDriver implements ContextDriverDefinition<APIContext, Response> {
 	parseContext({ request, locals }: APIContext): ParsedContext {
 		return {
