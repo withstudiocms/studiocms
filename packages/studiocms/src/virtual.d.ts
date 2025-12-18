@@ -17,6 +17,8 @@ declare module 'studiocms:storage-manager/module' {
 	export default module;
 }
 
+declare module 'studiocms:client-scripts/StorageFileBrowser' {}
+
 declare module 'studiocms:debug-info' {
 	export const debugInfo: string;
 	export default debugInfo;
@@ -177,6 +179,7 @@ declare module 'studiocms:i18n' {
 	export const switchLanguage: typeof import('./virtuals/i18n/server').switchLanguage;
 	export const defaultLang: typeof import('./virtuals/i18n/server').defaultLang;
 	export const LanguageSelector: typeof import('./virtuals/i18n/LanguageSelector.astro').default;
+	export const generateComponentTranslationMap: typeof import('./virtuals/i18n/server').generateComponentTranslationMap;
 }
 
 declare module 'studiocms:i18n/client' {

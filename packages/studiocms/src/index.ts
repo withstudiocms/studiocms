@@ -358,6 +358,9 @@ export const studiocms = (): AstroIntegration => {
 							config.adapter?.name || 'unknown'
 						)}`,
 						'studiocms:debug-info': `export const debugInfo = ${JSON.stringify(debugOutput)};export default debugInfo;`,
+						'studiocms:client-scripts/StorageFileBrowser': ambientScripts([
+							'./virtuals/scripts/StorageFileBrowser.js',
+						]),
 					},
 				});
 
