@@ -2,23 +2,7 @@
   "$schema": "../node_modules/@changesets/config/schema.json",
   "changelog": ["@changesets/changelog-github", { "repo": "withstudiocms/studiocms" }],
   "commit": false,
-  "fixed": [
-    [
-      "studiocms",
-      "@studiocms/auth0",
-      "@studiocms/blog",
-      "@studiocms/cloudinary-image-service",
-      "@studiocms/devapps",
-      "@studiocms/discord",
-      "@studiocms/github",
-      "@studiocms/google",
-      "@studiocms/html",
-      "@studiocms/markdoc",
-      "@studiocms/md",
-      "@studiocms/mdx",
-      "@studiocms/wysiwyg"
-    ]
-  ],
+  "fixed": [],
   "linked": [],
   "access": "public",
   "baseBranch": "origin/main",
