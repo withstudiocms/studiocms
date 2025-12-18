@@ -18,9 +18,12 @@ const t = useTranslations(lang, '@studiocms/dashboard:system-management');
 // Get user database configuration
 const userConfig = getConfig();
 
+// TODO: Move this provider setup into integration hooks
+// The Current setup does not work when in PROD as it
+// is unable to get package manager context.
+
 // Initialize DebugInfoProvider
 const debugProvider = new DebugInfoProvider({
-	Astro,
 	databaseDialect: db.dialect,
 	adapterName: adapter,
 	installedPlugins: pluginList,
@@ -116,6 +119,7 @@ const debugOutput = await debugProvider.getDebugInfoString();
     </div>
 
     <script>
+        import { DbStudioElement } from "#db-studio/viewer";
         import {
             $i18n,
             $localeSettings,
@@ -227,6 +231,11 @@ const debugOutput = await debugProvider.getDebugInfoString();
             openButton: accessDbStudioButton,
             closeButton: closeDbStudioButton,
         });
+
+		// Define the custom element if not already defined
+		if (!customElements.get('db-studio')) {
+			customElements.define('db-studio', DbStudioElement);
+		}
 
         // =========================================
         // Debug Output Copy Logic
