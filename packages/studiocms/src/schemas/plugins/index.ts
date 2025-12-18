@@ -451,9 +451,6 @@ export interface BasePluginHooks {
 }
 
 export interface StorageManagerPluginHooks {
-	/**
-	 * Hook for configuring the storage manager.
-	 */
 	'studiocms:storage-manager': PluginHook<StudioCMSStorageManagerHook>;
 }
 
