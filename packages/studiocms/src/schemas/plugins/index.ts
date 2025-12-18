@@ -451,6 +451,9 @@ export interface BasePluginHooks {
 }
 
 export interface StorageManagerPluginHooks {
+	/**
+	 * Hook for configuring the storage manager.
+	 */
 	'studiocms:storage-manager': PluginHook<StudioCMSStorageManagerHook>;
 }
 
@@ -491,6 +494,9 @@ export type PluginHookParameters<
 	// biome-ignore lint/suspicious/noExplicitAny: This is a valid use case for explicit any.
 > = Fn extends (...args: any) => any ? Parameters<Fn>[0] : never;
 
+/**
+ * Interface representing a StudioCMS plugin that provides storage management functionality.
+ */
 export interface StudioCMSStorageManager extends StudioCMSPlugin {
 	hooks: {
 		[K in keyof StudioCMS.StorageManagerHooks]?: StudioCMS.StorageManagerHooks[K];
