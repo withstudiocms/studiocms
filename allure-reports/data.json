@@ -2,7 +2,7 @@
   "links": [
     "..",
     "adam_fix-config-loader",
-    "fix-db-viewer-in-prod",
+    "changeset-release_main",
     "main",
     "renovate_effect-dependencies",
     "renovate_html-@studiocms-plugin-dependencies",
