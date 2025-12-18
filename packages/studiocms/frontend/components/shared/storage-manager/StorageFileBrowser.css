@@ -10,24 +10,16 @@ but with default fallbacks to ensure proper theming even if those variables are 
 
 */
 
-/* Theme Support */
-[data-theme="light"],
-[data-theme="light"] * {
-	--storage-browser-theme: light;
+[data-theme="light"] storage-file-browser,
+[data-theme="light"] storage-file-browser * {
+	color-scheme: light;
 }
-
-[data-theme="dark"],
-[data-theme="dark"] * {
-	--storage-browser-theme: dark;
-}
-
-/* Root Styles and CSS Variables */
-storage-file-browser {
-	font-family:
-		var(--scms-font-onest, -apple-system), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-		Oxygen, Ubuntu, Cantarell, sans-serif;
+[data-theme="dark"] storage-file-browser,
+[data-theme="dark"] storage-file-browser * {
 	color-scheme: dark;
+}
 
+:root {
 	/* Background Colors */
 	--storage-browser-bg-base: var(--background-base, hsl(0 0% 6%));
 	--storage-browser-bg-step-1: var(--background-step-1, hsl(0 0% 8%));
@@ -122,71 +114,77 @@ storage-file-browser {
 	/* Z-Index */
 	--storage-browser-z-modal: 10000;
 	--storage-browser-z-tooltip: 10001;
+}
 
-	@container style(--storage-browser-theme: light) {
-		color-scheme: light;
-		/* Background Colors */
-		--storage-browser-bg-base: var(--background-base, hsl(0 0% 97%));
-		--storage-browser-bg-step-1: var(--background-step-1, hsl(0 0% 95%));
-		--storage-browser-bg-step-2: var(--background-step-2, hsl(0 0% 92%));
-		--storage-browser-bg-step-3: var(--background-step-3, hsl(0 0% 89%));
+[data-theme="light"] {
+	/* Background Colors */
+	--storage-browser-bg-base: var(--background-base, hsl(0 0% 97%));
+	--storage-browser-bg-step-1: var(--background-step-1, hsl(0 0% 95%));
+	--storage-browser-bg-step-2: var(--background-step-2, hsl(0 0% 92%));
+	--storage-browser-bg-step-3: var(--background-step-3, hsl(0 0% 89%));
 
-		/* Text Colors */
-		--storage-browser-text-normal: var(--text-normal, hsl(0 0% 0%));
-		--storage-browser-text-dimmed: var(--text-dimmed, hsl(0 0% 0% / 0.8));
-		--storage-browser-text-muted: var(--text-muted, hsl(0 0% 0% / 0.75));
-		--storage-browser-text-inverted: var(--text-inverted, var(--storage-browser-white));
+	/* Text Colors */
+	--storage-browser-text-normal: var(--text-normal, hsl(0 0% 0%));
+	--storage-browser-text-dimmed: var(--text-dimmed, hsl(0 0% 0% / 0.8));
+	--storage-browser-text-muted: var(--text-muted, hsl(0 0% 0% / 0.75));
+	--storage-browser-text-inverted: var(--text-inverted, var(--storage-browser-white));
 
-		/* Border & Shadow */
-		--storage-browser-border: var(--border, hsl(263 5% 68%));
-		--storage-browser-shadow: var(--shadow, hsl(0 0% 65% / 0.6));
+	/* Border & Shadow */
+	--storage-browser-border: var(--border, hsl(263 5% 68%));
+	--storage-browser-shadow: var(--shadow, hsl(0 0% 65% / 0.6));
 
-		/* Default Button Colors */
-		--storage-browser-default-base: var(--default-base, hsl(0, 0%, 82%));
-		--storage-browser-default-hover: var(--default-hover, hsl(0, 0%, 91%));
-		--storage-browser-default-active: var(--default-active, hsl(0, 0%, 86%));
+	/* Default Button Colors */
+	--storage-browser-default-base: var(--default-base, hsl(0, 0%, 82%));
+	--storage-browser-default-hover: var(--default-hover, hsl(0, 0%, 91%));
+	--storage-browser-default-active: var(--default-active, hsl(0, 0%, 86%));
 
-		/* Primary Colors */
-		--storage-browser-primary-base: var(--primary-base, hsl(259, 74%, 25%));
-		--storage-browser-primary-hover: var(--primary-hover, hsl(259, 76%, 35%));
-		--storage-browser-primary-active: var(--primary-active, hsl(259, 76%, 32%));
-		--storage-browser-primary-vibrant: var(--primary-vibrant, hsl(259, 75%, 45%));
+	/* Primary Colors */
+	--storage-browser-primary-base: var(--primary-base, hsl(259, 74%, 25%));
+	--storage-browser-primary-hover: var(--primary-hover, hsl(259, 76%, 35%));
+	--storage-browser-primary-active: var(--primary-active, hsl(259, 76%, 32%));
+	--storage-browser-primary-vibrant: var(--primary-vibrant, hsl(259, 75%, 45%));
 
-		/* Success Colors */
-		--storage-browser-success-base: var(--success-base, hsl(142, 60%, 44%));
-		--storage-browser-success-hover: var(--success-hover, hsl(142, 60%, 55%));
-		--storage-browser-success-active: var(--success-active, hsl(142 60% 50%));
+	/* Success Colors */
+	--storage-browser-success-base: var(--success-base, hsl(142, 60%, 44%));
+	--storage-browser-success-hover: var(--success-hover, hsl(142, 60%, 55%));
+	--storage-browser-success-active: var(--success-active, hsl(142 60% 50%));
 
-		/* Warning Colors */
-		--storage-browser-warning-base: var(--warning-base, hsl(48, 84%, 42%));
-		--storage-browser-warning-hover: var(--warning-hover, hsl(48, 85%, 49%));
-		--storage-browser-warning-active: var(--warning-active, hsl(48, 86%, 45%));
+	/* Warning Colors */
+	--storage-browser-warning-base: var(--warning-base, hsl(48, 84%, 42%));
+	--storage-browser-warning-hover: var(--warning-hover, hsl(48, 85%, 49%));
+	--storage-browser-warning-active: var(--warning-active, hsl(48, 86%, 45%));
 
-		/* Danger Colors */
-		--storage-browser-danger-base: var(--danger-base, hsl(339, 93%, 15%));
-		--storage-browser-danger-hover: var(--danger-hover, hsl(337, 88%, 22%));
-		--storage-browser-danger-active: var(--danger-active, hsl(337, 89%, 19%));
-		--storage-browser-danger-vibrant: var(--danger-vibrant, hsl(339, 86%, 38%));
+	/* Danger Colors */
+	--storage-browser-danger-base: var(--danger-base, hsl(339, 93%, 15%));
+	--storage-browser-danger-hover: var(--danger-hover, hsl(337, 88%, 22%));
+	--storage-browser-danger-active: var(--danger-active, hsl(337, 89%, 19%));
+	--storage-browser-danger-vibrant: var(--danger-vibrant, hsl(339, 86%, 38%));
 
-		/* Info Colors */
-		--storage-browser-info-base: var(--info-base, hsl(214, 96%, 22%));
-		--storage-browser-info-hover: var(--info-hover, hsl(214, 92%, 26%));
-		--storage-browser-info-active: var(--info-active, hsl(214, 94%, 24%));
-		--storage-browser-info-vibrant: var(--info-vibrant, hsl(214, 88%, 39%));
+	/* Info Colors */
+	--storage-browser-info-base: var(--info-base, hsl(214, 96%, 22%));
+	--storage-browser-info-hover: var(--info-hover, hsl(214, 92%, 26%));
+	--storage-browser-info-active: var(--info-active, hsl(214, 94%, 24%));
+	--storage-browser-info-vibrant: var(--info-vibrant, hsl(214, 88%, 39%));
 
-		/* Flat Variants */
-		--storage-browser-default-flat: var(--default-flat, hsl(0 0% 70% / 0.5));
-		--storage-browser-default-flat-hover: var(--default-flat-hover, hsl(0 0% 70% / 0.85));
-		--storage-browser-primary-flat: var(--primary-flat, hsl(259 83% 73% / 0.1));
-		--storage-browser-primary-flat-hover: var(--primary-flat-hover, hsl(259 83% 73% / 0.35));
-		--storage-browser-danger-flat: var(--danger-flat, hsl(339 97% 31% / 0.1));
-		--storage-browser-danger-flat-hover: var(--danger-flat-hover, hsl(339 97% 31% / 0.35));
-		--storage-browser-info-flat: var(--info-flat, hsl(217 92% 52% / 0.1));
-		--storage-browser-info-flat-hover: var(--info-flat-hover, hsl(217 92% 52% / 0.35));
+	/* Flat Variants */
+	--storage-browser-default-flat: var(--default-flat, hsl(0 0% 70% / 0.5));
+	--storage-browser-default-flat-hover: var(--default-flat-hover, hsl(0 0% 70% / 0.85));
+	--storage-browser-primary-flat: var(--primary-flat, hsl(259 83% 73% / 0.1));
+	--storage-browser-primary-flat-hover: var(--primary-flat-hover, hsl(259 83% 73% / 0.35));
+	--storage-browser-danger-flat: var(--danger-flat, hsl(339 97% 31% / 0.1));
+	--storage-browser-danger-flat-hover: var(--danger-flat-hover, hsl(339 97% 31% / 0.35));
+	--storage-browser-info-flat: var(--info-flat, hsl(217 92% 52% / 0.1));
+	--storage-browser-info-flat-hover: var(--info-flat-hover, hsl(217 92% 52% / 0.35));
 
-		/* Utility Colors */
-		--storage-browser-overlay: hsl(0 0% 0% / 0.4);
-	}
+	/* Utility Colors */
+	--storage-browser-overlay: hsl(0 0% 0% / 0.4);
+}
+
+/* Root Styles and CSS Variables */
+storage-file-browser {
+	font-family:
+		var(--scms-font-onest, -apple-system), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+		Oxygen, Ubuntu, Cantarell, sans-serif;
 
 	& * {
 		margin: 0;

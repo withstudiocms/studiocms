@@ -455,7 +455,9 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 						).pipe(
 							Effect.catchAllCause((cause) =>
 								Effect.sync(() => {
-									pLogger.error(`Error in plugin hook '${hook}': ${Cause.pretty(cause)}`);
+									pLogger.error(
+										`Error in plugin hook 'studiocms:storage-manager': ${Cause.pretty(cause)}`
+									);
 								})
 							)
 						)

@@ -202,7 +202,7 @@ export interface UrlMappingServiceDefinition {
 	register(identifier: `storage-file://${string}`, metadata: UrlMetadata): Promise<void>;
 	delete(identifier: `storage-file://${string}`): Promise<void>;
 	cleanup(): Promise<number>;
-	getAll(): Promise<UrlMetadata[]>;
+	getAll(): Promise<UrlMapping[]>;
 	createIdentifier(key: string): `storage-file://${string}`;
 }
 

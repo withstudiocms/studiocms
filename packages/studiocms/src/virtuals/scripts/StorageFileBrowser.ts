@@ -136,6 +136,7 @@ class StorageFileBrowser extends HTMLElement {
 		status: 0,
 		message: '',
 	};
+	private escapeHandler: ((e: KeyboardEvent) => void) | null = null;
 
 	constructor() {
 		super();
@@ -481,8 +482,10 @@ class StorageFileBrowser extends HTMLElement {
 				this.selectedFile = null;
 				this.updateSelectedInfo();
 				trigger?.focus(); // Return focus to trigger
+				document.removeEventListener('keydown', handleKeyDown);
 			}
 		};
+		this.escapeHandler = handleKeyDown;
 		document.addEventListener('keydown', handleKeyDown);
 
 		// Close modal handlers

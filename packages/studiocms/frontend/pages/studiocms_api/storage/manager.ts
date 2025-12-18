@@ -16,6 +16,10 @@ let apiCore: APICore<APIContext, Response>;
  * @returns The singleton APICore instance.
  */
 function getAPICore() {
+	if (apiCore) {
+		return apiCore;
+	}
+
 	// Instantiate the Astro context driver
 	const astroContextDriver = new AstroContextDriver();
 
