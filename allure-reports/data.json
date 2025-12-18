@@ -2,6 +2,7 @@
   "links": [
     "..",
     "adam_fix-config-loader",
+    "adam_fix-debug-info",
     "changeset-release_main",
     "main",
     "renovate_effect-dependencies",
