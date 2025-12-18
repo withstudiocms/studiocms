@@ -22,6 +22,7 @@ import {
 	logMessages,
 	type Messages,
 } from '@withstudiocms/internal_helpers/astro-integration';
+import { DebugInfoProvider } from '@withstudiocms/internal_helpers/debug-info-provider';
 import createPathResolver from '@withstudiocms/internal_helpers/pathResolver';
 import { readJson } from '@withstudiocms/internal_helpers/utils';
 import { type Kysely, sql } from '@withstudiocms/kysely/kysely';
@@ -267,6 +268,16 @@ export const studiocms = (): AstroIntegration => {
 					buildVirtualConfig,
 				} = VirtualModuleBuilder(resolve);
 
+				// Initialize DebugInfoProvider
+				const debugProvider = new DebugInfoProvider({
+					databaseDialect: options.db.dialect,
+					adapterName: config.adapter?.name || 'unknown',
+					installedPlugins: safePluginList.map(({ name, identifier }) => ({ name, identifier })),
+				});
+
+				// Gather debug information
+				const debugOutput = await debugProvider.getDebugInfoString();
+
 				addVirtualImports(params, {
 					name,
 					imports: {
@@ -344,6 +355,7 @@ export const studiocms = (): AstroIntegration => {
 						'studiocms:astro-config/adapter': `export const adapter = ${JSON.stringify(
 							config.adapter?.name || 'unknown'
 						)}`,
+						'studiocms:debug-info': `export const debugInfo = ${JSON.stringify(debugOutput)};export default debugInfo;`,
 					},
 				});
 

@@ -12,6 +12,11 @@ declare module 'studiocms:logger' {
 	) => Response;
 }
 
+declare module 'studiocms:debug-info' {
+	export const debugInfo: string;
+	export default debugInfo;
+}
+
 declare module 'studiocms:astro-config/adapter' {
 	export const adapter: string;
 }
