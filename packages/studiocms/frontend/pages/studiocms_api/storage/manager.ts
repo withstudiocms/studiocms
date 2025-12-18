@@ -5,8 +5,7 @@ import AstroContextDriver from '#storage-manager/core/astro-context';
 import UrlMappingDatabase from '#storage-manager/core/database';
 import UrlMappingService from '#storage-manager/core/url-mapping';
 
-// biome-ignore lint/suspicious/noExplicitAny: This is required for Astro APIContext
-let apiCore: APICore<APIContext<Record<string, any>, Record<string, string | undefined>>, Response>;
+let apiCore: APICore<APIContext, Response>;
 
 function getAPICore() {
 	// Instantiate the Astro context driver
