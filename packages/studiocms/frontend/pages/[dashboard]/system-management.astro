@@ -1,12 +1,9 @@
 ---
-import { adapter } from 'studiocms:astro-config/adapter';
-import { db } from 'studiocms:config';
+import debugInfo from 'studiocms:debug-info';
 import { useTranslations } from 'studiocms:i18n';
-import { pluginList } from 'studiocms:plugins/list';
 import { Button } from 'studiocms:ui/components/button';
 import { Card } from 'studiocms:ui/components/card';
 import { Icon } from 'studiocms:ui/components/icon';
-import { DebugInfoProvider } from '@withstudiocms/internal_helpers/debug-info-provider';
 import { getConfig } from '#db-studio/config';
 import PageHeader from '../../components/dashboard/PageHeader.astro';
 import Layout from '../../layouts/DashboardLayout.astro';
@@ -17,20 +14,6 @@ const t = useTranslations(lang, '@studiocms/dashboard:system-management');
 
 // Get user database configuration
 const userConfig = getConfig();
-
-// TODO: Move this provider setup into integration hooks
-// The Current setup does not work when in PROD as it
-// is unable to get package manager context.
-
-// Initialize DebugInfoProvider
-const debugProvider = new DebugInfoProvider({
-	databaseDialect: db.dialect,
-	adapterName: adapter,
-	installedPlugins: pluginList,
-});
-
-// Gather debug information
-const debugOutput = await debugProvider.getDebugInfoString();
 ---
 
 <Layout
@@ -112,8 +95,8 @@ const debugOutput = await debugProvider.getDebugInfoString();
                         height={16}
                     />
                 </Button>
-                <pre class="debug-content"><code>{debugOutput}</code></pre>
-                <div id="debug-data" style="display: none;">{debugOutput}</div>
+                <pre class="debug-content"><code>{debugInfo}</code></pre>
+                <div id="debug-data" style="display: none;">{debugInfo}</div>
             </div>
         </div>
     </div>
