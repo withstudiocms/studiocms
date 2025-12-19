@@ -82,6 +82,7 @@ export class DebugInfoProvider {
 		}
 
 		const fallbackValue = 'Unavailable';
+		const pkgId = 'studiocms';
 
 		const AstroVersion = (await packageManagerProvider.getPackageVersion('astro')) || fallbackValue;
 		const AstroAdapter = await getVersionWithIdentifier(adapterName);
@@ -89,7 +90,7 @@ export class DebugInfoProvider {
 			dbDialectLabels[databaseDialect as keyof typeof dbDialectLabels] ?? databaseDialect;
 
 		const StudioCMSVersion =
-			(await packageManagerProvider.getPackageVersion('studiocms')) || fallbackValue;
+			(await packageManagerProvider.getPackageVersion(pkgId)) || fallbackValue;
 		const StudioCMSUiVersion =
 			(await packageManagerProvider.getPackageVersion('@studiocms/ui')) || fallbackValue;
 
@@ -103,9 +104,21 @@ export class DebugInfoProvider {
 			StudioCMS: StudioCMSVersion,
 			'StudioCMS UI': StudioCMSUiVersion,
 			'StudioCMS Plugins': await Promise.all(
-				installedPlugins.map(
-					async ({ identifier, name }) => `${name} - ${await getVersionWithIdentifier(identifier)}`
-				)
+				installedPlugins
+					// Sort core package first, then alphabetically
+					.sort((a, b) => {
+						const aIsCore = a.identifier === pkgId;
+						const bIsCore = b.identifier === pkgId;
+						if (aIsCore !== bIsCore) {
+							return aIsCore ? -1 : 1;
+						}
+						return a.name.localeCompare(b.name);
+					})
+					// Map to formatted strings
+					.map(
+						async ({ identifier, name }) =>
+							`${name} - ${await getVersionWithIdentifier(identifier)}`
+					)
 			).then((versions) => versions.join('\n')),
 		};
 	}
