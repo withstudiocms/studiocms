@@ -40,10 +40,6 @@ const dbDialectLabels = {
 	sqlite: 'SQLite',
 };
 
-function boolToNum(predicate: boolean): number {
-	return predicate ? -1 : 0;
-}
-
 export class DebugInfoProvider {
 	#ctx: DebugInfoContext;
 
@@ -109,13 +105,14 @@ export class DebugInfoProvider {
 			'StudioCMS UI': StudioCMSUiVersion,
 			'StudioCMS Plugins': await Promise.all(
 				installedPlugins
-					// Sort plugins alphabetically by name
-					.sort((a, b) => a.name.localeCompare(b.name))
-					// Ensure all core plugins are listed first
-					.sort(({ identifier: a }, { identifier: b }) => {
-						const aIsCore = boolToNum(a === pkgId);
-						const bIsCore = boolToNum(b === pkgId);
-						return aIsCore - bIsCore;
+					// Sort core package first, then alphabetically
+					.sort((a, b) => {
+						const aIsCore = a.identifier === pkgId;
+						const bIsCore = b.identifier === pkgId;
+						if (aIsCore !== bIsCore) {
+							return aIsCore ? -1 : 1;
+						}
+						return a.name.localeCompare(b.name);
 					})
 					// Map to formatted strings
 					.map(
