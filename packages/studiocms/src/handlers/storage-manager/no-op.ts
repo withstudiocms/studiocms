@@ -13,7 +13,7 @@ const { resolve } = createPathResolver(import.meta.url);
  */
 export const NoOpStorageManager = (version: string): StudioCMSStorageManager =>
 	defineStorageManager({
-		identifier: 'studiocms/no-op-storage',
+		identifier: 'studiocms',
 		name: 'Core No-Op Storage (built-in)',
 		studiocmsMinimumVersion: version,
 		hooks: {
