@@ -27,15 +27,15 @@ export default class NoOpStorageService<C, R> implements StorageApiBuilderDefini
 		this.urlMappingService = urlMappingService;
 	}
 
+	#sharedResponse() {
+		return { data: { error: 'noStorageConfigured' }, status: 501 };
+	}
+
 	getPOST(_?: AuthorizationType): StorageAPIEndpointFn<C, R> {
-		return this.driver.handleEndpoint(async () => {
-			return { data: { error: 'noStorageConfigured' }, status: 501 };
-		});
+		return this.driver.handleEndpoint(async () => this.#sharedResponse());
 	}
 
 	getPUT(_?: AuthorizationType): StorageAPIEndpointFn<C, R> {
-		return this.driver.handleEndpoint(async () => {
-			return { data: { error: 'noStorageConfigured' }, status: 501 };
-		});
+		return this.driver.handleEndpoint(async () => this.#sharedResponse());
 	}
 }
