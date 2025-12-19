@@ -40,6 +40,10 @@ const dbDialectLabels = {
 	sqlite: 'SQLite',
 };
 
+function boolToNum(predicate: boolean): number {
+	return predicate ? -1 : 0;
+}
+
 export class DebugInfoProvider {
 	#ctx: DebugInfoContext;
 
@@ -82,6 +86,7 @@ export class DebugInfoProvider {
 		}
 
 		const fallbackValue = 'Unavailable';
+		const pkgId = 'studiocms';
 
 		const AstroVersion = (await packageManagerProvider.getPackageVersion('astro')) || fallbackValue;
 		const AstroAdapter = await getVersionWithIdentifier(adapterName);
@@ -89,7 +94,7 @@ export class DebugInfoProvider {
 			dbDialectLabels[databaseDialect as keyof typeof dbDialectLabels] ?? databaseDialect;
 
 		const StudioCMSVersion =
-			(await packageManagerProvider.getPackageVersion('studiocms')) || fallbackValue;
+			(await packageManagerProvider.getPackageVersion(pkgId)) || fallbackValue;
 		const StudioCMSUiVersion =
 			(await packageManagerProvider.getPackageVersion('@studiocms/ui')) || fallbackValue;
 
@@ -103,9 +108,20 @@ export class DebugInfoProvider {
 			StudioCMS: StudioCMSVersion,
 			'StudioCMS UI': StudioCMSUiVersion,
 			'StudioCMS Plugins': await Promise.all(
-				installedPlugins.map(
-					async ({ identifier, name }) => `${name} - ${await getVersionWithIdentifier(identifier)}`
-				)
+				installedPlugins
+					// Sort plugins alphabetically by name
+					.sort((a, b) => a.name.localeCompare(b.name))
+					// Ensure all core plugins are listed first
+					.sort(({ identifier: a }, { identifier: b }) => {
+						const aIsCore = boolToNum(a === pkgId);
+						const bIsCore = boolToNum(b === pkgId);
+						return aIsCore - bIsCore;
+					})
+					// Map to formatted strings
+					.map(
+						async ({ identifier, name }) =>
+							`${name} - ${await getVersionWithIdentifier(identifier)}`
+					)
 			).then((versions) => versions.join('\n')),
 		};
 	}
