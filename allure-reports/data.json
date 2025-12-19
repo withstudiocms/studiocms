@@ -2,6 +2,7 @@
   "links": [
     "..",
     "adam_fix-config-loader",
+    "adam_storage-manager",
     "changeset-release_main",
     "main",
     "renovate_effect-dependencies",
