@@ -2,7 +2,7 @@
  * - Title: URL Mapping Table Migration
  * - Created: 2025-12-21
  * - Author: Adam Matthiesen
- * - GitHub PR: // TODO
+ * - GitHub PR: #1085
  * - Description: This migration creates the URL mapping table to manage URL mappings for the StudioCMS Storage Manager.
  */
 /** biome-ignore-all lint/suspicious/noExplicitAny: Requirement from Kysely */
