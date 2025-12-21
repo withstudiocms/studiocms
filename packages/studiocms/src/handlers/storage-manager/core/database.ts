@@ -1,20 +1,89 @@
+import { runSDK, SDKCoreJs } from 'studiocms:sdk';
+import { StudioCMSStorageManagerUrlMappings } from '@withstudiocms/kysely';
+import { Schema } from 'effect';
 import type { UrlMapping, UrlMappingDatabaseDefinition } from '../definitions';
 
-// TODO: Replace logic with StudioCMS DB integration
+const { withCodec, withDecoder, withEncoder } = SDKCoreJs.dbService;
+
+/**
+ * Get URL Mapping from Database.
+ *
+ * This function retrieves a URL mapping from the database by its identifier.
+ */
+const getFromDb = withCodec({
+	encoder: Schema.String,
+	decoder: Schema.UndefinedOr(StudioCMSStorageManagerUrlMappings.Select),
+	callbackFn: (query, input) =>
+		query((db) =>
+			db
+				.selectFrom('StudioCMSStorageManagerUrlMappings')
+				.where('identifier', '=', input)
+				.selectAll()
+				.executeTakeFirst()
+		),
+});
+
+/**
+ * Set URL Mapping in Database.
+ *
+ * This function inserts or updates a URL mapping in the database.
+ */
+const setToDb = withEncoder({
+	encoder: StudioCMSStorageManagerUrlMappings.Insert,
+	callbackFn: (query, input) =>
+		query((db) =>
+			db
+				.insertInto('StudioCMSStorageManagerUrlMappings')
+				.values(input)
+				.onConflict((oc) => oc.column('identifier').doUpdateSet(input))
+				.execute()
+		),
+});
+
+/**
+ * Delete URL Mapping from Database.
+ *
+ * This function deletes a URL mapping from the database by its identifier.
+ */
+const deleteFromDb = withEncoder({
+	encoder: Schema.String,
+	callbackFn: (query, input) =>
+		query((db) =>
+			db.deleteFrom('StudioCMSStorageManagerUrlMappings').where('identifier', '=', input).execute()
+		),
+});
+
+/**
+ * Get All URL Mappings from Database.
+ *
+ * This function retrieves all URL mappings from the database.
+ */
+const getAllFromDb = withDecoder({
+	decoder: Schema.Array(StudioCMSStorageManagerUrlMappings.Select),
+	callbackFn: (query) =>
+		query((db) => db.selectFrom('StudioCMSStorageManagerUrlMappings').selectAll().execute()),
+});
 
 export default class UrlMappingDatabase implements UrlMappingDatabaseDefinition {
 	private store: Map<string, UrlMapping> = new Map();
 
 	async get(identifier: `storage-file://${string}`): Promise<UrlMapping | null> {
-		return this.store.get(identifier) || null;
+		const result = (await runSDK(getFromDb(identifier))) as UrlMapping | undefined;
+
+		return result || null;
 	}
 
 	async set(mapping: UrlMapping): Promise<void> {
-		this.store.set(mapping.identifier, mapping);
+		await runSDK(
+			setToDb({
+				...mapping,
+				isPermanent: mapping.isPermanent ? 1 : 0,
+			})
+		);
 	}
 
 	async delete(identifier: `storage-file://${string}`): Promise<void> {
-		this.store.delete(identifier);
+		await runSDK(deleteFromDb(identifier));
 	}
 
 	async cleanup(): Promise<number> {
@@ -24,7 +93,7 @@ export default class UrlMappingDatabase implements UrlMappingDatabaseDefinition 
 		for (const [identifier, mapping] of this.store.entries()) {
 			// Only cleanup non-permanent URLs that have expired
 			if (!mapping.isPermanent && mapping.expiresAt && mapping.expiresAt <= now) {
-				this.store.delete(identifier);
+				await runSDK(deleteFromDb(identifier));
 				deletedCount++;
 			}
 		}
@@ -33,6 +102,6 @@ export default class UrlMappingDatabase implements UrlMappingDatabaseDefinition 
 	}
 
 	async getAll(): Promise<UrlMapping[]> {
-		return Array.from(this.store.values());
+		return (await runSDK(getAllFromDb())) as UrlMapping[];
 	}
 }
