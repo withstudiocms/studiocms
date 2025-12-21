@@ -363,6 +363,10 @@ const AuthServiceConfigSchema = z.object({
 	}),
 });
 
+const StorageManagerConfigSchema = z.object({
+	managerPath: z.string(),
+});
+
 type BaseHookSchema = {
 	logger: typeof astroIntegrationLoggerSchema;
 };
@@ -415,6 +419,12 @@ const studiocms_AuthHookSchema = baseHookSchema.extend({
 	setAuthService: z.function(z.tuple([AuthServiceConfigSchema]), z.void()),
 });
 
+const studiocms_StorageManagerHookSchema = baseHookSchema.extend({
+	setStorageManager: z.function(z.tuple([StorageManagerConfigSchema]), z.void()),
+});
+
+type StudioCMSStorageManagerHook = z.infer<typeof studiocms_StorageManagerHookSchema>;
+
 export type SCMSSiteMapFnOpts = z.infer<typeof SitemapConfigSchema>;
 export type SCMSDashboardFnOpts = z.infer<typeof DashboardConfigSchema>;
 export type SCMSDashboardAugmentFnOpts = z.infer<typeof DashboardAugmentSchema>;
@@ -422,7 +432,7 @@ export type SCMSFrontendFnOpts = z.infer<typeof FrontendConfigSchema>;
 export type SCMSRenderingFnOpts = z.infer<typeof RenderingConfigSchema>;
 export type SCMSImageServiceFnOpts = z.infer<typeof ImageServiceConfigSchema>;
 export type SCMSAuthServiceFnOpts = z.infer<typeof AuthServiceConfigSchema>;
-
+export type SCMSStorageManagerFnOpts = z.infer<typeof StorageManagerConfigSchema>;
 type StudioCMSAuthServiceHook = z.infer<typeof studiocms_AuthHookSchema>;
 
 type PluginHook<OPT> = (options: OPT) => void | Promise<void>;
@@ -438,6 +448,10 @@ export interface BasePluginHooks {
 	'studiocms:rendering': PluginHook<StudioCMSRenderingHook>;
 	'studiocms:image-service': PluginHook<StudioCMSImageServiceHook>;
 	'studiocms:sitemap': PluginHook<StudioCMSSitemapHook>;
+}
+
+export interface StorageManagerPluginHooks {
+	'studiocms:storage-manager': PluginHook<StudioCMSStorageManagerHook>;
 }
 
 export interface StudioCMSPlugin {
@@ -471,9 +485,24 @@ export interface StudioCMSPlugin {
 	} & Partial<Record<string, unknown>>;
 }
 
-export type HookParameters<
+export type PluginHookParameters<
 	Hook extends keyof StudioCMSPlugin['hooks'],
 	Fn = StudioCMSPlugin['hooks'][Hook],
+	// biome-ignore lint/suspicious/noExplicitAny: This is a valid use case for explicit any.
+> = Fn extends (...args: any) => any ? Parameters<Fn>[0] : never;
+
+/**
+ * Interface representing a StudioCMS plugin that provides storage management functionality.
+ */
+export interface StudioCMSStorageManager extends StudioCMSPlugin {
+	hooks: {
+		[K in keyof StudioCMS.StorageManagerHooks]?: StudioCMS.StorageManagerHooks[K];
+	} & Partial<Record<string, unknown>>;
+}
+
+export type StorageManagerHookParameters<
+	Hook extends keyof StudioCMS.StorageManagerHooks,
+	Fn = StudioCMS.StorageManagerHooks[Hook],
 	// biome-ignore lint/suspicious/noExplicitAny: This is a valid use case for explicit any.
 > = Fn extends (...args: any) => any ? Parameters<Fn>[0] : never;
 
@@ -495,6 +524,16 @@ export type {
  * @returns The plugin configuration.
  */
 export function definePlugin(options: StudioCMSPlugin): StudioCMSPlugin {
+	return options;
+}
+
+/**
+ * Defines a storage manager plugin for StudioCMS.
+ *
+ * @param options - The configuration options for the storage manager plugin.
+ * @returns The storage manager plugin configuration.
+ */
+export function defineStorageManager(options: StudioCMSStorageManager): StudioCMSStorageManager {
 	return options;
 }
 

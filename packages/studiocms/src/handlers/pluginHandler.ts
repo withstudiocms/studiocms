@@ -25,12 +25,14 @@ import { studioCMSAnalyticsPlugin } from '../plugins/analytics/index.js';
 import type {
 	AvailableDashboardPages,
 	BasePluginHooks,
-	HookParameters,
+	PluginHookParameters,
 	RenderAugmentSchema,
 	SafePluginListItemType,
 	SafePluginListType,
+	StorageManagerHookParameters,
 	StudioCMSConfig,
 	StudioCMSPlugin,
+	StudioCMSStorageManager,
 } from '../schemas/index.js';
 import type {
 	PluginAugmentsTranslationCollection,
@@ -39,6 +41,7 @@ import type {
 } from '../schemas/plugins/i18n.js';
 import type { GridItemInput } from '../schemas/plugins/shared.js';
 import { buildTranslations, loadJsTranslations } from '../utils/lang-helper.js';
+import { NoOpStorageManager } from './storage-manager/no-op.js';
 
 // Resolver Function
 const { resolve } = createPathResolver(import.meta.url);
@@ -215,6 +218,7 @@ type Options = {
 	name: string;
 	pkgVersion: string;
 	plugins: StudioCMSPlugin[] | undefined;
+	storageManager: StudioCMSStorageManager | undefined;
 	robotsTXTConfig: boolean | RobotsConfig;
 	dashboardRoute: (path: string) => string;
 	webVitals: boolean;
@@ -254,6 +258,7 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 			name,
 			pkgVersion,
 			plugins,
+			storageManager,
 			robotsTXTConfig,
 			dashboardRoute,
 			dialect,
@@ -381,6 +386,8 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 		const dashboardAugmentScripts: string[] = [];
 		const dashboardAugmentComponents: Record<string, string>[] = [];
 
+		let finalStorageManagerModulePath: string | undefined;
+
 		/////
 
 		/**
@@ -402,7 +409,7 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 			 */
 			return async <H extends keyof BasePluginHooks>(
 				hook: H,
-				args: Omit<HookParameters<H>, 'logger'>
+				args: Omit<PluginHookParameters<H>, 'logger'>
 			) => {
 				if (typeof hooks[hook] === 'function') {
 					return await runEffect(
@@ -417,6 +424,40 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 							Effect.catchAllCause((cause) =>
 								Effect.sync(() => {
 									pLogger.error(`Error in plugin hook '${hook}': ${Cause.pretty(cause)}`);
+								})
+							)
+						)
+					);
+				}
+			};
+		}
+
+		function runSMHook({
+			hook,
+			identifier,
+		}: Pick<StudioCMSStorageManager, 'identifier'> & {
+			hook: StudioCMSStorageManager['hooks']['studiocms:storage-manager'];
+		}) {
+			const pLogger = pluginLogger(identifier, logger);
+
+			return async (
+				args: Omit<StorageManagerHookParameters<'studiocms:storage-manager'>, 'logger'>
+			) => {
+				if (typeof hook === 'function') {
+					return await runEffect(
+						Effect.tryPromise(
+							async () =>
+								await hook({
+									// biome-ignore lint/suspicious/noExplicitAny: needed for dynamic hook args
+									...(args as any),
+									logger: pLogger,
+								})
+						).pipe(
+							Effect.catchAllCause((cause) =>
+								Effect.sync(() => {
+									pLogger.error(
+										`Error in plugin hook 'studiocms:storage-manager': ${Cause.pretty(cause)}`
+									);
 								})
 							)
 						)
@@ -459,6 +500,45 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 
 			// Return the list of plugins to process
 			return pluginsToProcess;
+		}
+
+		function splitStorageManager(manager: StudioCMSStorageManager) {
+			const { hooks, studiocmsMinimumVersion, requires, ...shared } = manager;
+
+			const { 'studiocms:storage-manager': storageManagerHook, ...pluginHooks } = hooks;
+
+			const plugin: StudioCMSPlugin = {
+				...shared,
+				hooks: pluginHooks,
+				studiocmsMinimumVersion,
+				requires,
+			};
+
+			const storageManager = {
+				...shared,
+				hook: storageManagerHook,
+			};
+
+			return { smPlugin: plugin, smManager: storageManager };
+		}
+
+		function getPluginsAndStorageManager() {
+			const pluginsToProcess: StudioCMSPlugin[] = getPlugins();
+
+			let manager: StudioCMSStorageManager | undefined;
+
+			if (storageManager) {
+				manager = storageManager;
+			} else {
+				// If no storage manager is defined, use the No-Op Storage Manager
+				manager = NoOpStorageManager(pkgVersion);
+			}
+
+			const { smManager, smPlugin } = splitStorageManager(manager);
+
+			pluginsToProcess.push(smPlugin);
+
+			return { pluginsToProcess, storageManager: smManager };
 		}
 
 		/**
@@ -634,7 +714,19 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 		// If dbStartPage is true, we will process the plugins but only get the Auth Providers
 		// for usage during First-time-setup. No other plugins will be processed.
 		if (dbStartPage) {
-			const pluginsToProcess = getPlugins();
+			// Get the plugins to process
+			const { pluginsToProcess, storageManager } = getPluginsAndStorageManager();
+
+			// Resolve StudioCMS Storage Manager
+			const smHookRunner = runSMHook(storageManager);
+
+			await smHookRunner({
+				setStorageManager({ managerPath }) {
+					if (managerPath) {
+						finalStorageManagerModulePath = managerPath;
+					}
+				},
+			});
 
 			for (const plugin of pluginsToProcess) {
 				const { hooks, requires, safeData } = getPluginData(plugin);
@@ -691,6 +783,12 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 							initCallback: providers[safeName + '_initCallback'] || null,
 						}));
 					`,
+				},
+				{
+					id: 'studiocms:storage-manager/module',
+					content: `
+						export { default } from '${finalStorageManagerModulePath}';
+					`,
 				}
 			);
 		}
@@ -699,7 +797,18 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 		// for the StudioCMS Dashboard and Editors.
 		if (!dbStartPage) {
 			// Get the plugins to process
-			const pluginsToProcess = getPlugins();
+			const { pluginsToProcess, storageManager } = getPluginsAndStorageManager();
+
+			// Resolve StudioCMS Storage Manager
+			const smHookRunner = runSMHook(storageManager);
+
+			await smHookRunner({
+				setStorageManager({ managerPath }) {
+					if (managerPath) {
+						finalStorageManagerModulePath = managerPath;
+					}
+				},
+			});
 
 			// Resolve StudioCMS Plugins
 			for (const plugin of pluginsToProcess) {
@@ -1258,6 +1367,12 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 								identifier,
 							}))
 						)};
+					`,
+				},
+				{
+					id: 'studiocms:storage-manager/module',
+					content: `
+						export { default } from '${finalStorageManagerModulePath}';
 					`,
 				}
 			);

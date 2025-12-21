@@ -10,10 +10,12 @@ export {
 	type AvailableDashboardPages,
 	type DashboardPage,
 	definePlugin,
+	defineStorageManager,
 	type FinalDashboardPage,
 	type SafePluginListType,
 	type SettingsField,
 	type StudioCMSPlugin,
+	type StudioCMSStorageManager,
 } from './schemas/index.js';
 
 export * from './utils/lang-helper.js';

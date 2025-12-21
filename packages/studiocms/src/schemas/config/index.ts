@@ -1,7 +1,7 @@
 import { z } from 'astro/zod';
 import { RobotsTXTConfigSchema } from '../../integrations/robots/schema.js';
 import { availableTranslationsKeys } from '../../virtuals/i18n/v-files.js';
-import type { StudioCMSPlugin } from '../plugins/index.js';
+import type { StudioCMSPlugin, StudioCMSStorageManager } from '../plugins/index.js';
 import { type AuthConfig, authConfigSchema } from './auth.js';
 import { type DashboardConfig, dashboardConfigSchema } from './dashboard.js';
 import { type DBConfigSchema, dbConfigSchema } from './db.js';
@@ -136,6 +136,11 @@ export interface StudioCMSOptions {
 	plugins?: StudioCMSPlugin[];
 
 	/**
+	 * Storage Manager Configuration
+	 */
+	storageManager?: StudioCMSStorageManager;
+
+	/**
 	 * Component Registry
 	 */
 	componentRegistry?: Record<string, string>;
@@ -170,6 +175,7 @@ export const StudioCMSOptionsSchema = z
 			.default('Info'),
 		db: dbConfigSchema,
 		plugins: z.custom<StudioCMSPlugin[]>().optional(),
+		storageManager: z.custom<StudioCMSStorageManager>().optional(),
 		componentRegistry: z.record(z.string()).optional(),
 		locale: z
 			.object({

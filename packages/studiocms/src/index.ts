@@ -161,6 +161,7 @@ export const studiocms = (): AstroIntegration => {
 				const {
 					dbStartPage,
 					plugins,
+					storageManager,
 					verbose,
 					componentRegistry,
 					db: { dialect },
@@ -232,6 +233,7 @@ export const studiocms = (): AstroIntegration => {
 					verbose,
 					webVitals,
 					dialect,
+					storageManager,
 				});
 
 				// Setup Routes
@@ -356,6 +358,9 @@ export const studiocms = (): AstroIntegration => {
 							config.adapter?.name || 'unknown'
 						)}`,
 						'studiocms:debug-info': `export const debugInfo = ${JSON.stringify(debugOutput)};export default debugInfo;`,
+						'studiocms:client-scripts/StorageFileBrowser': ambientScripts([
+							'./virtuals/scripts/StorageFileBrowser.js',
+						]),
 					},
 				});
 

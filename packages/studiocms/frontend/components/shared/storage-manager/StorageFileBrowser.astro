@@ -1,0 +1,72 @@
+---
+import './StorageFileBrowser.css';
+import { generateComponentTranslationMap } from 'studiocms:i18n';
+
+/**
+ * StorageFileBrowser Component (Web Component Wrapper)
+ *
+ * A reusable file browser modal for selecting files from cloud storage.
+ * Can be triggered by any button and fills the selected file URL into an input.
+ *
+ * @example
+ * <StorageFileBrowser
+ *   triggerId="browse-btn"
+ *   targetInputId="file-url-input"
+ *   fileTypes={['image/jpeg', 'image/png', 'image/webp']}
+ * />
+ */
+
+interface Props {
+	/** ID of the button that triggers the browser */
+	triggerId: string;
+	/** ID of the input field to populate with selected file URL */
+	targetInputId?: string;
+	/** Filter by file types (MIME types) */
+	fileTypes?: string[];
+	/** Show only files (hide folders) */
+	filesOnly?: boolean;
+	/** Return type: 'url' | 'identifier' | 'key' */
+	returnType?: 'url' | 'identifier' | 'key';
+}
+
+const {
+	triggerId,
+	targetInputId,
+	fileTypes = [],
+	filesOnly = false,
+	returnType = 'url',
+} = Astro.props;
+
+// Generate translation map for the component
+const rawTranslationMap = generateComponentTranslationMap('@studiocms/storage-file-browser');
+
+// Convert fileTypes array to JSON string for the custom element
+const fileTypesJson = JSON.stringify(fileTypes);
+
+// Convert translation map to JSON string for the custom element
+const translationMap = JSON.stringify(rawTranslationMap);
+---
+
+<storage-file-browser
+  trigger-id={triggerId}
+  target-input-id={targetInputId}
+  file-types={fileTypesJson}
+  files-only={filesOnly.toString()}
+  return-type={returnType}
+  translation-map={translationMap}
+></storage-file-browser>
+
+<script>
+  import 'studiocms:client-scripts/StorageFileBrowser';
+  import { $locale } from 'studiocms:i18n/client';
+
+  // Dispatch locale change event to the StorageFileBrowser component
+  $locale.subscribe((locale) => {
+    const event = new CustomEvent('storage-browser:locale-change', {
+        detail: { locale },
+        bubbles: true,
+        composed: true,
+    });
+    window.dispatchEvent(event);
+  });
+</script>

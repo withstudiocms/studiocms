@@ -87,6 +87,43 @@ export function useTranslations<L extends UiLanguageKeys, T extends UiComponentK
 	};
 }
 
+type TranslationValue = string;
+
+/**
+ * Generates a translation map for a specific UI component across all available languages.
+ *
+ * @typeParam T - The type representing the available UI component keys.
+ *
+ * @param component - The component key for which to generate the translation map.
+ * @returns An object mapping each language key to its corresponding translations for the specified component.
+ *
+ * @example
+ * // Generate translation map for the 'button' component:
+ * const buttonTranslations = generateComponentTranslationMap('button');
+ *
+ * // Resulting structure:
+ * // {
+ * //   en: { submit: "Submit", cancel: "Cancel" },
+ * //   es: { submit: "Enviar", cancel: "Cancelar" },
+ * //   ...
+ * // }
+ */
+export function generateComponentTranslationMap<T extends UiComponentKeys>(
+	component: T
+): Record<string, Record<string, TranslationValue>> {
+	const map: Record<string, Record<string, TranslationValue>> = {};
+	for (const lang in uiTranslations) {
+		map[lang] = {};
+		const translations = uiTranslations[lang as UiLanguageKeys]?.translations?.[component];
+		if (translations) {
+			for (const key in translations) {
+				map[lang][key] = translations[key as keyof typeof translations] as TranslationValue;
+			}
+		}
+	}
+	return map;
+}
+
 /**
  * Whether to show the default language in the url path.
  *
