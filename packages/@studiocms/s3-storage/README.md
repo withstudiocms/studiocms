@@ -1,8 +1,20 @@
 # @studiocms/s3-storage Plugin
 
-## Setup
+## Usage
 
-### Required Environment variables
+Add this plugin in your StudioCMS config. (`studiocms.config.mjs`)
+
+```ts
+import { defineStudioCMSConfig } from 'studiocms/config';
+import s3Storage from '@studiocms/s3-storage';
+
+export default defineStudioCMSConfig({
+    // other options here
+    storageManager: s3Storage()
+});
+```
+
+## Required Environment variables
 
 ```env
 # ============================================
