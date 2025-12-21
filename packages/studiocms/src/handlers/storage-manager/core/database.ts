@@ -64,9 +64,21 @@ const getAllFromDb = withDecoder({
 		query((db) => db.selectFrom('StudioCMSStorageManagerUrlMappings').selectAll().execute()),
 });
 
+/**
+ * Database implementation for managing URL mappings in the storage system.
+ *
+ * This class provides CRUD operations for URL mappings, including retrieval,
+ * storage, deletion, and automatic cleanup of expired non-permanent URLs.
+ *
+ * @implements {UrlMappingDatabaseDefinition}
+ *
+ * @example
+ * ```typescript
+ * const db = new UrlMappingDatabase();
+ * const mapping = await db.get('storage-file://example');
+ * ```
+ */
 export default class UrlMappingDatabase implements UrlMappingDatabaseDefinition {
-	private store: Map<string, UrlMapping> = new Map();
-
 	async get(identifier: `storage-file://${string}`): Promise<UrlMapping | null> {
 		const result = (await runSDK(getFromDb(identifier))) as UrlMapping | undefined;
 
@@ -90,10 +102,12 @@ export default class UrlMappingDatabase implements UrlMappingDatabaseDefinition 
 		const now = Date.now();
 		let deletedCount = 0;
 
-		for (const [identifier, mapping] of this.store.entries()) {
+		const allMappings = await this.getAll();
+
+		for (const mapping of allMappings) {
 			// Only cleanup non-permanent URLs that have expired
 			if (!mapping.isPermanent && mapping.expiresAt && mapping.expiresAt <= now) {
-				await runSDK(deleteFromDb(identifier));
+				await runSDK(deleteFromDb(mapping.identifier));
 				deletedCount++;
 			}
 		}
