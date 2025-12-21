@@ -8,7 +8,6 @@ import {
 } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { Config, ConfigProvider, Effect, Redacted } from 'effect';
-import type { ConfigError } from 'effect/ConfigError';
 import type {
 	AuthorizationType,
 	ContextDriverDefinition,
@@ -17,6 +16,60 @@ import type {
 	UrlMappingServiceDefinition,
 	UrlMetadata,
 } from 'studiocms/storage-manager/definitions';
+
+/**
+ * S3 Client Builder Effect
+ *
+ * Builds and configures the S3 client using environment variables.
+ */
+const s3ClientBuilder = Effect.gen(function* () {
+	// Extract configuration values from environment variables
+	const [
+		// With default values for optional config
+		region,
+		endpoint,
+		forcePathStyle,
+		provider,
+
+		// Redacted config values
+		accessKeyId,
+		secretAccessKey,
+
+		// Required config values
+		bucketName,
+		publicEndpoint,
+	] = yield* Effect.all([
+		Config.withDefault(Config.string('REGION'), 'auto'),
+		Config.withDefault(Config.string('ENDPOINT'), undefined),
+		Config.withDefault(Config.boolean('FORCE_PATH_STYLE'), false),
+		Config.withDefault(Config.string('PROVIDER'), 'Unknown'),
+		Config.redacted('ACCESS_KEY_ID'),
+		Config.redacted('SECRET_ACCESS_KEY'),
+		Config.string('BUCKET_NAME'),
+		Config.string('PUBLIC_ENDPOINT'),
+	]);
+
+	// Create S3 client Credentials configuration
+	const credentials = {
+		accessKeyId: Redacted.value(accessKeyId),
+		secretAccessKey: Redacted.value(secretAccessKey),
+	};
+
+	// Initialize S3 Client
+	const client = new S3Client({
+		region,
+		endpoint,
+		credentials,
+		forcePathStyle,
+	});
+
+	return {
+		client,
+		bucketName,
+		publicEndpoint,
+		provider,
+	};
+}).pipe(Effect.withConfigProvider(ConfigProvider.fromEnv().pipe(ConfigProvider.nested('CMS_S3'))));
 
 /**
  * S3 Client Interface
@@ -29,61 +82,6 @@ type S3ClientInterface = {
 	publicEndpoint: string;
 	provider: string;
 };
-
-/**
- * S3 Client Builder Effect
- *
- * Builds and configures the S3 client using environment variables.
- */
-const s3ClientBuilder: Effect.Effect<S3ClientInterface, ConfigError, never> = Effect.gen(
-	function* () {
-		const [
-			// With default values for optional config
-			region,
-			endpoint,
-			forcePathStyle,
-			provider,
-
-			// Redacted config values
-			accessKeyId,
-			secretAccessKey,
-
-			// Required config values
-			bucketName,
-			publicEndpoint,
-		] = yield* Effect.all([
-			Config.withDefault(Config.string('REGION'), 'auto'),
-			Config.withDefault(Config.string('ENDPOINT'), undefined),
-			Config.withDefault(Config.boolean('FORCE_PATH_STYLE'), false),
-			Config.withDefault(Config.string('PROVIDER'), 'Unknown'),
-			Config.redacted('ACCESS_KEY_ID'),
-			Config.redacted('SECRET_ACCESS_KEY'),
-			Config.string('BUCKET_NAME'),
-			Config.string('PUBLIC_ENDPOINT'),
-		]);
-
-		// Create S3 client Credentials configuration
-		const credentials = {
-			accessKeyId: Redacted.value(accessKeyId),
-			secretAccessKey: Redacted.value(secretAccessKey),
-		};
-
-		// Initialize S3 Client
-		const client = new S3Client({
-			region,
-			endpoint,
-			credentials,
-			forcePathStyle,
-		});
-
-		return {
-			client,
-			bucketName,
-			publicEndpoint,
-			provider,
-		};
-	}
-).pipe(Effect.withConfigProvider(ConfigProvider.fromEnv().pipe(ConfigProvider.nested('CMS_S3'))));
 
 // Singleton S3 Client Instance
 let s3ClientInterface: S3ClientInterface | null = null;
@@ -124,9 +122,11 @@ const generateUrlMetadata = ({ publicEndpoint, bucketName, client }: S3ClientInt
 		const SevenDaysInSeconds = 7 * 24 * 60 * 60;
 		const inSevenDays = new Date();
 
+		// Generate presigned URL
 		const url = await getSignedUrl(client, command, { expiresIn: SevenDaysInSeconds });
 		inSevenDays.setSeconds(inSevenDays.getSeconds() + SevenDaysInSeconds);
 
+		// Return URL metadata with expiration
 		return { url, isPermanent: false, expiresAt: inSevenDays.getTime() };
 	};
 
