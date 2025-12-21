@@ -7,6 +7,7 @@ import {
 	DateFromString,
 	encodeDatabase,
 	JSONObjectFromString,
+	NumberFromBoolean,
 	StringArrayFromString,
 	Table,
 } from './core/schema.js';
@@ -180,6 +181,15 @@ export const StudioCMSDynamicConfigSettings = Table({
 	data: ColumnType(JSONObjectFromString, Schema.String, Schema.String),
 });
 
+export const StudioCMSStorageManagerUrlMappings = Table({
+	identifier: Schema.String,
+	url: Schema.String,
+	isPermanent: ColumnType(BooleanFromNumber, NumberFromBoolean, NumberFromBoolean),
+	expiresAt: Schema.NullishOr(Schema.Number),
+	createdAt: ColumnType(Schema.Number, Schema.Number, Schema.Never),
+	updatedAt: Schema.Number,
+});
+
 /**
  * Complete StudioCMS Database Schema Definition
  */
@@ -199,6 +209,7 @@ export const StudioCMSDatabaseSchema = Database({
 	StudioCMSEmailVerificationTokens,
 	StudioCMSPluginData,
 	StudioCMSDynamicConfigSettings,
+	StudioCMSStorageManagerUrlMappings,
 });
 
 /**

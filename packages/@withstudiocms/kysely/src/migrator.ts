@@ -34,6 +34,7 @@ const importMigration = async (name: string): Promise<Migration> => {
 const migrationIndex: Record<string, Migration> = {
 	'20251025T040912_init': await importMigration('20251025T040912_init'),
 	'20251130T150847_drop_deprecated': await importMigration('20251130T150847_drop_deprecated'),
+	'20251221T002125_url-mapping': await importMigration('20251221T002125_url-mapping'),
 };
 
 /**
