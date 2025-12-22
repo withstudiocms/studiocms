@@ -5,7 +5,6 @@
     "changeset-release_main",
     "main",
     "renovate_effect-dependencies",
-    "renovate_html-@studiocms-plugin-dependencies",
-    "renovate_studiocms-studiocms-dependencies"
+    "renovate_html-@studiocms-plugin-dependencies"
   ]
 }
