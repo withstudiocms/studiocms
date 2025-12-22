@@ -20,7 +20,7 @@ jobs:
       contents: write
       pull-requests: write
     secrets: inherit
-    uses: withstudiocms/automations/.github/workflows/renovate-changeset.yml@a08b74527cb0ddb4a392bf44d3e28b36bf282a8a # main
+    uses: withstudiocms/automations/.github/workflows/renovate-changeset.yml@b488fa91598547478e170a4742916293a91a4410 # main
 
   renovate-effect:
     name: Update Renovate Effect PR
@@ -45,7 +45,7 @@ jobs:
           token: ${{ steps.bot-token.outputs.token }}
 
       - name: Install Tools & Dependencies
-        uses: withstudiocms/automations/.github/actions/install@a08b74527cb0ddb4a392bf44d3e28b36bf282a8a # main
+        uses: withstudiocms/automations/.github/actions/install@b488fa91598547478e170a4742916293a91a4410 # main
         
       - name: Create Effect Changesets
         run: node .github/scripts/effect-changeset.mjs
@@ -53,7 +53,7 @@ jobs:
           CI_PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}
     
       - name: Commit changes
-        uses: stefanzweifel/git-auto-commit-action@28e16e81777b558cc906c8750092100bbb34c5e3 # v7.0.0
+        uses: stefanzweifel/git-auto-commit-action@04702edda442b2e678b25b537cec683a1493fcb9 # v7.1.0
         with:
           commit_message: '[ci] changesets'
           branch: ${{ github.head_ref }}
@@ -84,7 +84,7 @@ jobs:
           token: ${{ steps.bot-token.outputs.token }}
 
       - name: Install Tools & Dependencies
-        uses: withstudiocms/automations/.github/actions/install@a08b74527cb0ddb4a392bf44d3e28b36bf282a8a # main
+        uses: withstudiocms/automations/.github/actions/install@b488fa91598547478e170a4742916293a91a4410 # main
 
       - name: Create Translation Changesets
         run: node .github/scripts/translation-changeset.mjs
@@ -92,7 +92,7 @@ jobs:
           CI_PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}
     
       - name: Commit changes
-        uses: stefanzweifel/git-auto-commit-action@28e16e81777b558cc906c8750092100bbb34c5e3 # v7.0.0
+        uses: stefanzweifel/git-auto-commit-action@04702edda442b2e678b25b537cec683a1493fcb9 # v7.1.0
         with:
           commit_message: '[ci] changesets'
           branch: ${{ github.head_ref }}
