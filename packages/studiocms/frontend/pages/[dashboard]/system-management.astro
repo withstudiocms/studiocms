@@ -90,7 +90,7 @@ const userConfig = getConfig();
                 <Button
                     id="access-file-manager"
                     variant="outlined"
-                    color="info"
+                    color={isDefaultManager ? 'danger' : 'info'}
                     size="md"
                 >
                     <Icon
