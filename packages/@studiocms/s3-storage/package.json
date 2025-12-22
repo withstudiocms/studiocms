@@ -1,0 +1,68 @@
+{
+  "name": "@studiocms/s3-storage",
+  "version": "0.1.0-beta.31",
+  "description": "Add S3 Storage Support into your StudioCMS project.",
+  "author": {
+    "name": "withstudiocms",
+    "url": "https://studiocms.dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/withstudiocms/studiocms.git",
+    "directory": "packages/@studiocms/s3-storage"
+  },
+  "contributors": [
+    "Adammatthiesen",
+    "jdtjenkins",
+    "dreyfus92",
+    "code.spirit"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "astro",
+    "astrocms",
+    "astrodb",
+    "astrostudio",
+    "astro-studio",
+    "astro-studiocms",
+    "cms",
+    "studiocms",
+    "studiocms-storage-manager"
+  ],
+  "homepage": "https://studiocms.dev",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "buildkit build 'src/**/*.{ts,astro,css,json,png}'",
+    "dev": "buildkit dev 'src/**/*.{ts,astro,css,json,png}'",
+    "typecheck": "tspc -p tsconfig.tspc.json",
+    "test": "vitest"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "type": "module",
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.946.0",
+    "@aws-sdk/s3-request-presigner": "^3.946.0",
+    "astro-integration-kit": "catalog:"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:"
+  },
+  "peerDependencies": {
+    "astro": "catalog:min",
+    "effect": "catalog:effect",
+    "studiocms": "workspace:*",
+    "vite": "catalog:min"
+  }
+}
