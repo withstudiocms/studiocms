@@ -39,6 +39,11 @@
       "groupName": "@withstudiocms Dependencies",
       "matchManagers": ["npm"],
       "matchFileNames": ["packages/@withstudiocms/**"]
+    },
+    {
+      "groupName": "AWS S3 Dependencies",
+      "matchManagers": ["npm"],
+      "matchPackageNames": ["@aws-sdk/client-s3", "@aws-sdk/s3-request-presigner"]
     }
   ],
   "ignoreDeps": [
