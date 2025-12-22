@@ -2,9 +2,11 @@
   "links": [
     "..",
     "adam_fix-config-loader",
-    "adam_s3-storage-plugin",
     "changeset-release_main",
     "main",
+    "renovate_bundle-analysis-github-actions",
+    "renovate_coverage-report-github-actions",
+    "renovate_devcontainer-mcr_microsoft_com-devcontainers-typescript-node-dev-22-bookworm",
     "renovate_effect-dependencies",
     "renovate_html-@studiocms-plugin-dependencies",
     "renovate_studiocms-studiocms-dependencies"
