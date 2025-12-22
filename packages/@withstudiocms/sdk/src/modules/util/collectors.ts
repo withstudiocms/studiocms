@@ -337,7 +337,9 @@ export const SDKCollectors = Effect.gen(function* () {
 
 			if (!returnData) {
 				return yield* Effect.fail(
-					new CollectorError({ cause: new Error('Failed to resolve storage manager URL') })
+					new CollectorError({
+						cause: 'Unknown error occurred while resolving storage manager URL',
+					})
 				);
 			}
 
