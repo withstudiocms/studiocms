@@ -1,3 +1,4 @@
+import { site } from 'astro:config/server';
 import config from 'studiocms:config';
 import {
 	type SDKCoreLive as _SDKLive,
@@ -6,6 +7,7 @@ import {
 } from '@withstudiocms/sdk';
 import type { CacheEntry } from '@withstudiocms/sdk/cache.js';
 import { Data, Effect } from 'effect';
+import type { UrlMetadata } from '#storage-manager/definitions';
 import { GhostUserDefaults, NotificationSettingsDefaults } from '../../consts.js';
 import { getDbClient } from '../../db/index.js';
 import { runEffect } from '../../effect.js';
@@ -62,6 +64,32 @@ export const buildSDKContext = Effect.fn((db: SDKContext['db']) =>
 				cache: {
 					store: cacheStore,
 					tagIndex: cacheTagIndex,
+				},
+				storageManagerResolver: async (identifier: string) => {
+					// Get the storage manager URL for the StudioCMS API
+					const host = site || 'http://localhost:4321';
+					const endpoint = new URL('/studiocms_api/storage/manager', host);
+
+					// Make a request to resolve the storage manager URL
+					const response = await fetch(endpoint, {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json',
+						},
+						body: JSON.stringify({ identifier, action: 'resolveUrl' }),
+					});
+
+					// Handle non-OK responses
+					if (!response.ok) {
+						console.error(`Failed to resolve storage manager for identifier: ${identifier}`);
+						return '';
+					}
+
+					// Parse the response to get the URL metadata
+					const data: UrlMetadata = await response.json();
+
+					// Return the resolved URL
+					return data.url;
 				},
 			}) as SDKContext
 	)
