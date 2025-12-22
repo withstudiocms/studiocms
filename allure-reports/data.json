@@ -3,6 +3,8 @@
     "..",
     "adam_fix-config-loader",
     "changeset-release_main",
-    "main"
+    "main",
+    "renovate_actions-core-2_x",
+    "renovate_s3-storage-all-minor-patch"
   ]
 }
