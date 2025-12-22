@@ -218,6 +218,12 @@ importers:
       '@codecov/astro-plugin':
         specifier: 'catalog:'
         version: 1.9.1(astro@5.16.6(@types/node@22.19.3)(jiti@2.6.1)(rollup@4.53.5)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))(vite@6.4.1(@types/node@22.19.3)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.2))
+      '@libsql/client':
+        specifier: catalog:kysely
+        version: 0.15.15
+      '@libsql/kysely-libsql':
+        specifier: catalog:kysely
+        version: 0.4.1(kysely@0.28.9)
       '@studiocms/blog':
         specifier: workspace:*
         version: link:../../packages/@studiocms/blog
@@ -252,6 +258,12 @@ importers:
       '@codecov/astro-plugin':
         specifier: 'catalog:'
         version: 1.9.1(astro@5.16.6(@types/node@22.19.3)(jiti@2.6.1)(rollup@4.53.5)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))(vite@6.4.1(@types/node@22.19.3)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.2))
+      '@libsql/client':
+        specifier: catalog:kysely
+        version: 0.15.15
+      '@libsql/kysely-libsql':
+        specifier: catalog:kysely
+        version: 0.4.1(kysely@0.28.9)
       '@studiocms/md':
         specifier: workspace:*
         version: link:../../packages/@studiocms/md

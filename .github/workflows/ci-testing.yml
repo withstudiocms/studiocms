@@ -92,8 +92,8 @@ jobs:
     env:
       NODE_OPTIONS: "--max_old_space_size=4096"
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-      ASTRO_DB_REMOTE_URL: ${{ secrets.ASTRO_DB_REMOTE_URL }}
-      ASTRO_DB_APP_TOKEN: ${{ secrets.ASTRO_DB_APP_TOKEN }}
+      CMS_LIBSQL_URL: ${{ secrets.CMS_LIBSQL_URL }}
+      CMS_LIBSQL_AUTH_TOKEN: ${{ secrets.CMS_LIBSQL_AUTH_TOKEN }}
       CMS_ENCRYPTION_KEY: ${{ secrets.CMS_ENCRYPTION_KEY }}
     steps:
       - name: Check out code using Git
