@@ -2,6 +2,7 @@
   "links": [
     "..",
     "adam_fix-config-loader",
+    "adam_s3-storage-plugin",
     "changeset-release_main",
     "main",
     "renovate_effect-dependencies",
