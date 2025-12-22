@@ -28,7 +28,7 @@ runs:
         token: ${{ inputs.codecov_token }}
 
     - name: Upload test results to Codecov
-      uses: codecov/test-results-action@3fef12b33cff40c3ba4a721741678dd3abebcd67
+      uses: codecov/test-results-action@0fa95f0e1eeaafde2c782583b36b28ad0d8c77d3
       if: always() && (github.event.pull_request.head.repo.full_name == github.repository || github.ref == 'refs/heads/main')
       with:
         slug: ${{ inputs.slug }}
