@@ -27,8 +27,8 @@ export const resolveStorageManagerUrls =
 				const entryData = initialObject[attr];
 
 				// Check if the attribute value is a string and starts with the storage-file prefix
-				if (typeof entryData !== 'string') return;
-				if (!entryData.startsWith('storage-file://')) return;
+				if (typeof entryData !== 'string') continue;
+				if (!entryData.startsWith('storage-file://')) continue;
 
 				// Resolve the new URL using the storage manager resolver
 				const newData = yield* Effect.tryPromise(() => smResolver(entryData));
