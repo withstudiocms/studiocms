@@ -68,6 +68,7 @@ export interface SDKContext {
 		store: Map<string, CacheEntry<unknown>>;
 		tagIndex: Map<string, Set<string>>;
 	};
+	storageManagerResolver: (identifier: string) => Promise<string>;
 }
 
 export class CacheStores extends Context.Tag('@withstudiocms/sdk/context/CacheStores')<
@@ -75,6 +76,18 @@ export class CacheStores extends Context.Tag('@withstudiocms/sdk/context/CacheSt
 	SDKContext['cache']
 >() {
 	static live = (cache: SDKContext['cache']) => Layer.succeed(this, cache);
+}
+
+/**
+ * Context tag representing the storage manager resolver function.
+ *
+ * This tag can be used to access the function responsible for resolving storage manager URLs
+ * based on given identifiers.
+ */
+export class StorageManagerResolver extends Context.Tag(
+	'@withstudiocms/sdk/context/StorageManagerResolver'
+)<StorageManagerResolver, SDKContext['storageManagerResolver']>() {
+	static live = (resolver: SDKContext['storageManagerResolver']) => Layer.succeed(this, resolver);
 }
 
 /**
@@ -87,5 +100,6 @@ export const makeSDKContext = (context: SDKContext) =>
 	Layer.mergeAll(
 		DBClientLive.Live(context.db),
 		SDKDefaults.live(context.defaults),
-		CacheStores.live(context.cache)
+		CacheStores.live(context.cache),
+		StorageManagerResolver.live(context.storageManagerResolver)
 	);
