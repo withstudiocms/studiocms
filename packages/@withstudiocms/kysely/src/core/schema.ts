@@ -553,6 +553,11 @@ export const BooleanFromNumber = Schema.transform(Schema.Number, Schema.Boolean,
 	encode: (b) => (b ? 1 : 0),
 });
 
+export const NumberFromBoolean = Schema.transform(Schema.Boolean, Schema.Number, {
+	encode: (n) => n === 1,
+	decode: (b) => (b ? 1 : 0),
+});
+
 /**
  * Schema transformer that maps between JSON-encoded string arrays and TypeScript string arrays.
  *
