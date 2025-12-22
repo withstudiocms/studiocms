@@ -136,7 +136,6 @@ class StorageFileBrowser extends HTMLElement {
 		status: 0,
 		message: '',
 	};
-	private escapeHandler: ((e: KeyboardEvent) => void) | null = null;
 
 	constructor() {
 		super();
@@ -222,6 +221,12 @@ class StorageFileBrowser extends HTMLElement {
 	 */
 	private t(key: keyof TranslationStrings): string {
 		return this.translations[key] || this.translationMap.en[key] || key;
+	}
+
+	private resetEventListeners(): void {
+		// Remove all event listeners by cloning the node
+		const clone = this.cloneNode(true);
+		this.replaceWith(clone);
 	}
 
 	connectedCallback(): void {
@@ -485,7 +490,6 @@ class StorageFileBrowser extends HTMLElement {
 				document.removeEventListener('keydown', handleKeyDown);
 			}
 		};
-		this.escapeHandler = handleKeyDown;
 		document.addEventListener('keydown', handleKeyDown);
 
 		// Close modal handlers
@@ -619,6 +623,7 @@ class StorageFileBrowser extends HTMLElement {
 			modal.style.display = 'none';
 			this.selectedFile = null;
 			this.updateSelectedInfo();
+			this.resetEventListeners();
 		});
 	}
 

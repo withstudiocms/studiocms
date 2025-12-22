@@ -1,10 +1,12 @@
 ---
 import debugInfo from 'studiocms:debug-info';
 import { useTranslations } from 'studiocms:i18n';
+import storageManagerName from 'studiocms:storage-manager/name';
 import { Button } from 'studiocms:ui/components/button';
 import { Card } from 'studiocms:ui/components/card';
 import { Icon } from 'studiocms:ui/components/icon';
 import { getConfig } from '#db-studio/config';
+import StorageFileBrowser from '#frontend/components/shared/storage-manager/StorageFileBrowser.astro';
 import PageHeader from '../../components/dashboard/PageHeader.astro';
 import Layout from '../../layouts/DashboardLayout.astro';
 
@@ -54,6 +56,12 @@ const userConfig = getConfig();
                 <db-studio dialect={userConfig.dialect}></db-studio>
             </div>
         </div>
+
+        {/* File Manager */}
+        <StorageFileBrowser 
+            triggerId='access-file-manager'
+            targetInputId='file-browser-url-input'
+            />
     </div>
 
     <div class="page-container">
@@ -78,8 +86,44 @@ const userConfig = getConfig();
                     />
                     <t-system-management key="database-management-label">{t('database-management-label')}</t-system-management>
                 </Button>
+
+                <Button
+                    id="access-file-manager"
+                    variant="outlined"
+                    color="info"
+                    size="md"
+                >
+                    <Icon
+                        slot="start-content"
+                        name="heroicons:folder-20-solid"
+                        width={20}
+                        height={20}
+                    />
+                    <t-system-management key="access-file-manager">{t('access-file-manager')}</t-system-management>
+                </Button>
             </div>
         </Card>
+
+        {/* File Manager Selection Output Card */ }
+        <div class="debug-output">
+            <div class="debug-header">
+                <h3><t-system-management key="file-manager-selection">{t('file-manager-selection')}</t-system-management></h3>
+            </div>
+            <div class="debug-content-wrapper">
+                {storageManagerName === 'Core No-Op Storage (built-in)' ? (
+                    <div class="notice">
+                        <p><t-system-management key="no-storage-configured">{t('no-storage-configured')}</t-system-management></p>
+                    </div>
+                ) : (
+                    <input 
+                        type="text" 
+                        id="file-browser-url-input" 
+                        readonly 
+                        placeholder={t('file-manager-url-input-placeholder')} 
+                        />
+                )}
+            </div>
+        </div>
 
         {/* Debug Information Output Card */ }
         <div class="debug-output">
@@ -113,6 +157,9 @@ const userConfig = getConfig();
             pageHeaderUpdater,
         } from "studiocms:i18n/client";
 
+        // Utility function to select elements
+        const $ = (selector: string) => document.querySelector(selector);
+
         // =========================================
         // i18n Logic
         // =========================================
@@ -133,6 +180,8 @@ const userConfig = getConfig();
             documentUpdater(comp, lang);
             pageHeaderUpdater(comp.header);
             copiedToClipboardText = comp['copied-to-clipboard'];
+            
+            $("#file-browser-url-input")?.setAttribute("placeholder", comp['file-manager-url-input-placeholder']);
         });
 
         if (!customElements.get("t-system-management")) {
@@ -145,9 +194,6 @@ const userConfig = getConfig();
         // =========================================
         // Utility functions
         // =========================================
-
-        // Utility function to select elements
-        const $ = (selector: string) => document.querySelector(selector);
 
         // Modal registration utility
         function registerModal(opts: {
@@ -301,6 +347,7 @@ const userConfig = getConfig();
             border: 1px solid var(--border);
             border-radius: var(--radius-md);
             background: var(--background-base);
+            overflow: hidden;
 
             .debug-header {
                 display: flex;
@@ -318,6 +365,33 @@ const userConfig = getConfig();
 
             .debug-content-wrapper {
                 position: relative;
+
+                & input {
+                    box-sizing: border-box;
+                    width: 100%;
+                    padding: 0.5rem;
+                    border: none;
+                    font-size: 0.875rem;
+                    background: var(--background-base);
+                    margin: 0.25rem 0;
+                }
+
+                & input:focus {
+                    outline: none;
+                    outline-offset: 0;
+                }
+
+                & .notice {
+                    padding: 1rem 0.5rem;
+                    background: color-mix(in srgb, var(--danger-base) 30%, transparent 70%);
+                    border-bottom: 1px solid var(--border);
+                    
+                    & p {
+                        margin: 0;
+                        color: var(--danger-vibrant);
+                        font-size: 0.875rem;
+                    }
+                }
             }
 
             .copy-button {
