@@ -66,7 +66,7 @@ export const SDKConfigModule = Effect.gen(function* () {
 			resolveUrls<F>(obj?.data as F, attributes).pipe(
 				Effect.map((data) => {
 					if (!data) return obj;
-					return { ...obj, data };
+					return { ...obj, data } as DynamicConfigEntry<F>;
 				})
 			);
 
