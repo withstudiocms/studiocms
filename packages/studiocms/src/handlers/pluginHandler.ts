@@ -1392,6 +1392,8 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 					content: `
 						export const storageManagerName = '${finalStorageManagerName}';
 						export default storageManagerName;
+
+						export const isDefaultManager = storageManagerName === 'Core No-Op Storage (built-in)';
 					`,
 				}
 			);
