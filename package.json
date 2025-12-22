@@ -59,14 +59,14 @@
   },
   "devDependencies": {
     "@actions/core": "^1.11.1",
-    "@biomejs/biome": "^2.3.8",
+    "@biomejs/biome": "^2.3.10",
     "@changesets/changelog-github": "^0.5.2",
     "@changesets/cli": "^2.29.8",
     "@changesets/config": "^3.1.2",
     "@changesets/write": "^0.4.0",
-    "@crowdin/crowdin-api-client": "^1.49.0",
-    "@dotenvx/dotenvx": "^1.51.1",
-    "@effect/language-service": "^0.60.0",
+    "@crowdin/crowdin-api-client": "^1.51.1",
+    "@dotenvx/dotenvx": "^1.51.2",
+    "@effect/language-service": "^0.62.4",
     "@effect/vitest": "^0.27.0",
     "@types/node": "catalog:",
     "@vitest/coverage-v8": "^3.2.4",
@@ -75,15 +75,15 @@
     "@inox-tools/astro-tests": "^0.8.0",
     "allure-js-commons": "^3.4.3",
     "allure-vitest": "^3.4.3",
-    "allure-commandline": "^2.34.1",
+    "allure-commandline": "^2.36.0",
     "execa": "^9.6.1",
-    "knip": "^5.71.0",
+    "knip": "^5.75.1",
     "pkg-pr-new": "^0.0.62",
     "studiocms": "workspace:*",
     "typescript": "catalog:",
     "ts-patch": "^3.3.0",
     "vite": "catalog:astrojs",
     "vitest": "^3.2.4",
-    "jsdom": "^27.2.0"
+    "jsdom": "^27.3.0"
   }
 }
