@@ -9,7 +9,8 @@ import {
 	StudioCMSUsersTable,
 } from '@withstudiocms/kysely';
 import type { DatabaseError } from '@withstudiocms/kysely/core/errors';
-import { DBClientLive, StorageManagerResolver } from '../../context.js';
+import { DBClientLive, type StorageManagerResolver } from '../../context.js';
+import { resolveStorageManagerUrls } from '../../lib/storage-manager.js';
 import type {
 	CombinedPageData,
 	CombinedUserData,
@@ -104,28 +105,8 @@ export const useCollectorError = <T>(_try: () => T) =>
  *   SDK modules to obtain normalized, assembled data for pages, users, tags, and categories.
  */
 export const SDKCollectors = Effect.gen(function* () {
-	const [
-		{ withCodec },
-		{ findNodesAlongPathToId },
-		{ parseIdNumberArray, parseIdStringArray },
-		smResolver,
-	] = yield* Effect.all([DBClientLive, SDKFolderTree, SDKParsers, StorageManagerResolver]);
-
-	const resolveStorageManagerUrl = <F>(obj: F, attributes: keyof F | (keyof F)[]) =>
-		Effect.tryPromise(async () => {
-			if (!obj) return;
-			const initialObject: Partial<F> = obj;
-			const attrs = Array.isArray(attributes) ? attributes : [attributes];
-			for (const attr of attrs) {
-				const entryData = initialObject[attr];
-				if (typeof entryData !== 'string') return;
-				if (!entryData.startsWith('storage-file://')) return;
-				const newData = await smResolver(entryData);
-				// biome-ignore lint/suspicious/noExplicitAny: reconstructing object
-				(initialObject as any)[attr] = newData;
-			}
-			return initialObject as F;
-		});
+	const [{ withCodec }, { findNodesAlongPathToId }, { parseIdNumberArray, parseIdStringArray }] =
+		yield* Effect.all([DBClientLive, SDKFolderTree, SDKParsers]);
 
 	// =================================================
 	// Database query helpers
@@ -278,7 +259,7 @@ export const SDKCollectors = Effect.gen(function* () {
 	): Effect.Effect<
 		MetaOnlyPageData,
 		CollectorError | FolderTreeError | DBCallbackFailure | DatabaseError | ParseResult.ParseError,
-		never
+		StorageManagerResolver
 	>;
 
 	/**
@@ -320,7 +301,7 @@ export const SDKCollectors = Effect.gen(function* () {
 						: safeSlug;
 			}
 
-			const returnData = yield* resolveStorageManagerUrl(
+			const returnData = yield* resolveStorageManagerUrls(
 				{
 					...page,
 					slug: safeSlug,
