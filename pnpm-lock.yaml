@@ -13,7 +13,7 @@ catalogs:
       specifier: ^4.0.14
       version: 4.0.14
     astro:
-      specifier: ^5.16.4
+      specifier: ^5.16.6
       version: 5.16.6
     vite:
       specifier: ^6.3.4
@@ -76,13 +76,13 @@ catalogs:
       specifier: ^0.4.1
       version: 0.4.1
     '@types/pg':
-      specifier: ^8.15.6
+      specifier: ^8.16.0
       version: 8.16.0
     kysely:
-      specifier: ^0.28.8
+      specifier: ^0.28.9
       version: 0.28.9
     mysql2:
-      specifier: ^3.15.3
+      specifier: ^3.16.0
       version: 3.16.0
     pg:
       specifier: ^8.16.3
@@ -108,10 +108,10 @@ catalogs:
       specifier: ^19.2.3
       version: 19.2.3
     react:
-      specifier: ^19.2.1
+      specifier: ^19.2.3
       version: 19.2.3
     react-dom:
-      specifier: ^19.2.1
+      specifier: ^19.2.3
       version: 19.2.3
   studiocms:
     '@studiocms/markdown-remark-processor':

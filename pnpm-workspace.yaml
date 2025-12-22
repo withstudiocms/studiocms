@@ -27,7 +27,7 @@ catalogs:
     "@astrojs/db": ^0.18.3
     "@astrojs/node": ^9.5.1
     "@astrojs/rss": ^4.0.14
-    astro: ^5.16.4
+    astro: ^5.16.6
     vite: ^6.3.4
   effect:
     "@effect/cli": ^0.73.0
@@ -37,10 +37,10 @@ catalogs:
   kysely:
     "@libsql/client": ^0.15.15
     "@libsql/kysely-libsql": ^0.4.1
-    "@types/pg": ^8.15.6
-    kysely: ^0.28.8
+    "@types/pg": ^8.16.0
+    kysely: ^0.28.9
     pg: ^8.16.3
-    mysql2: ^3.15.3
+    mysql2: ^3.16.0
   min:
     "@astrojs/markdown-remark": ^6.3.3
     "@libsql/client": ^0.15.15
@@ -53,8 +53,8 @@ catalogs:
     "@astrojs/react": ^4.4.2
     "@types/react": ^19.2.7
     "@types/react-dom": ^19.2.3
-    react: ^19.2.1
-    react-dom: ^19.2.1
+    react: ^19.2.3
+    react-dom: ^19.2.3
   studiocms:
     "@studiocms/markdown-remark-processor": ^1.2.0
     "@studiocms/ui": ^1.0.0-beta.4
