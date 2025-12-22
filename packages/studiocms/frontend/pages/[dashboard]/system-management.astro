@@ -1,7 +1,7 @@
 ---
 import debugInfo from 'studiocms:debug-info';
 import { useTranslations } from 'studiocms:i18n';
-import storageManagerName from 'studiocms:storage-manager/name';
+import { isDefaultManager } from 'studiocms:storage-manager/name';
 import { Button } from 'studiocms:ui/components/button';
 import { Card } from 'studiocms:ui/components/card';
 import { Icon } from 'studiocms:ui/components/icon';
@@ -110,7 +110,7 @@ const userConfig = getConfig();
                 <h3><t-system-management key="file-manager-selection">{t('file-manager-selection')}</t-system-management></h3>
             </div>
             <div class="debug-content-wrapper">
-                {storageManagerName === 'Core No-Op Storage (built-in)' ? (
+                {isDefaultManager ? (
                     <div class="notice">
                         <p><t-system-management key="no-storage-configured">{t('no-storage-configured')}</t-system-management></p>
                     </div>
