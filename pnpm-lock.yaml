@@ -665,10 +665,10 @@ importers:
   packages/@studiocms/s3-storage:
     dependencies:
       '@aws-sdk/client-s3':
-        specifier: ^3.946.0
+        specifier: ^3.955.0
         version: 3.955.0
       '@aws-sdk/s3-request-presigner':
-        specifier: ^3.946.0
+        specifier: ^3.955.0
         version: 3.955.0
       astro:
         specifier: catalog:min
