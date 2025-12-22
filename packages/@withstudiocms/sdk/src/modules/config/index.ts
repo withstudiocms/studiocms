@@ -45,12 +45,14 @@ const cacheOpts = { tags: cacheTags.dynamicConfig };
  * StudioCMS Configuration Modules
  */
 export const SDKConfigModule = Effect.gen(function* () {
-	const [{ withCodec }, { merge }, cache] = yield* Effect.all([
+	const [{ withCodec }, { merge }, cache, smResolver] = yield* Effect.all([
 		DBClientLive,
 		Deepmerge,
 		CacheService,
 		StorageManagerResolver,
 	]);
+
+	const resolveUrls = resolveStorageManagerUrls(smResolver);
 
 	/**
 	 * Resolves storage manager URLs in the given dynamic configuration entry.
@@ -61,7 +63,7 @@ export const SDKConfigModule = Effect.gen(function* () {
 	const resolveStorageManagerUrl =
 		<F>(attributes: keyof F | (keyof F)[]) =>
 		(obj: DynamicConfigEntry<F> | undefined) =>
-			resolveStorageManagerUrls<F>(obj?.data as F, attributes).pipe(
+			resolveUrls<F>(obj?.data as F, attributes).pipe(
 				Effect.map((data) => {
 					if (!data) return obj;
 					return { ...obj, data };

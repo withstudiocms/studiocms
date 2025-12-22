@@ -9,7 +9,7 @@ import {
 	StudioCMSUsersTable,
 } from '@withstudiocms/kysely';
 import type { DatabaseError } from '@withstudiocms/kysely/core/errors';
-import { DBClientLive, type StorageManagerResolver } from '../../context.js';
+import { DBClientLive, StorageManagerResolver } from '../../context.js';
 import { resolveStorageManagerUrls } from '../../lib/storage-manager.js';
 import type {
 	CombinedPageData,
@@ -105,8 +105,14 @@ export const useCollectorError = <T>(_try: () => T) =>
  *   SDK modules to obtain normalized, assembled data for pages, users, tags, and categories.
  */
 export const SDKCollectors = Effect.gen(function* () {
-	const [{ withCodec }, { findNodesAlongPathToId }, { parseIdNumberArray, parseIdStringArray }] =
-		yield* Effect.all([DBClientLive, SDKFolderTree, SDKParsers]);
+	const [
+		{ withCodec },
+		{ findNodesAlongPathToId },
+		{ parseIdNumberArray, parseIdStringArray },
+		smResolver,
+	] = yield* Effect.all([DBClientLive, SDKFolderTree, SDKParsers, StorageManagerResolver]);
+
+	const resolveUrls = resolveStorageManagerUrls(smResolver);
 
 	// =================================================
 	// Database query helpers
@@ -259,7 +265,7 @@ export const SDKCollectors = Effect.gen(function* () {
 	): Effect.Effect<
 		MetaOnlyPageData,
 		CollectorError | FolderTreeError | DBCallbackFailure | DatabaseError | ParseResult.ParseError,
-		StorageManagerResolver
+		never
 	>;
 
 	/**
@@ -301,7 +307,7 @@ export const SDKCollectors = Effect.gen(function* () {
 						: safeSlug;
 			}
 
-			const returnData = yield* resolveStorageManagerUrls(
+			const returnData = yield* resolveUrls(
 				{
 					...page,
 					slug: safeSlug,
