@@ -96,8 +96,7 @@ async function walkAndResolve(node: Node, attributes: string[], site: string): P
  */
 async function resolveUrl(identifier: string, site: string): Promise<string> {
 	// Get the storage manager URL for the StudioCMS API
-	const host = site || 'http://localhost:4321';
-	const endpoint = new URL('/studiocms_api/storage/manager', host);
+	const endpoint = new URL('/studiocms_api/storage/manager', site);
 
 	// Make a request to resolve the storage manager URL
 	const response = await fetch(endpoint, {
@@ -111,11 +110,17 @@ async function resolveUrl(identifier: string, site: string): Promise<string> {
 	// Handle non-OK responses
 	if (!response.ok) {
 		console.error(`Failed to resolve storage manager for identifier: ${identifier}`);
-		return '';
+		return identifier;
 	}
 
-	// Parse the response to get the URL metadata
-	const data: UrlMetadata = await response.json();
+	// Parse the response to get the URL metadata (may throw on malformed JSON)
+	let data: UrlMetadata;
+	try {
+		data = await response.json();
+	} catch {
+		console.error(`Failed to parse response for identifier: ${identifier}`);
+		return identifier;
+	}
 
 	// Return the resolved URL or the original identifier if not found
 	return data.url || identifier;
