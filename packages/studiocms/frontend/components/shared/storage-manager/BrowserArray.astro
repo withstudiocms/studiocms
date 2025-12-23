@@ -1,0 +1,50 @@
+---
+import type { ComponentProps } from 'astro/types';
+import StorageFileBrowser from './StorageFileBrowser.astro';
+
+interface Props {
+	triggerInputs: string[];
+	fileTypes?: string[];
+}
+
+const { triggerInputs, fileTypes } = Astro.props;
+
+interface TriggerConfig {
+	triggerId: string;
+	targetInputId?: string;
+}
+
+const baseTriggerConfigs: TriggerConfig[] = triggerInputs.map((triggerId) => ({
+	triggerId: `storage-input-button-${triggerId}`,
+	targetInputId: triggerId,
+}));
+
+type BrowserProps = ComponentProps<typeof StorageFileBrowser>;
+
+const imageFileTypes = [
+	'image/jpeg',
+	'image/png',
+	'image/webp',
+	'image/gif',
+	'image/svg+xml',
+	'image/avif',
+	'image/tiff',
+	'image/bmp',
+	'image/x-icon',
+];
+
+const defaultProps: Partial<BrowserProps> = {
+	fileTypes: fileTypes ?? imageFileTypes,
+	filesOnly: false,
+	returnType: 'identifier',
+};
+
+const triggerConfigs: BrowserProps[] = baseTriggerConfigs.map((config) => ({
+	...defaultProps,
+	...config,
+}));
+---
+
+{triggerConfigs.map((props) => (
+    <StorageFileBrowser {...props} />
+))}

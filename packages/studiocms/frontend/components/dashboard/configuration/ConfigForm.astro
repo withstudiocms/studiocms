@@ -8,6 +8,7 @@ import { Divider } from 'studiocms:ui/components/divider';
 import { Input } from 'studiocms:ui/components/input';
 import { Select } from 'studiocms:ui/components/select';
 import { Toggle } from 'studiocms:ui/components/toggle';
+import StorageInput from '#frontend/components/shared/storage-manager/StorageInput.astro';
 import LoginPreview from './LoginPreview.astro';
 
 interface Props {
@@ -69,8 +70,8 @@ const t = useTranslations(lang, '@studiocms/dashboard:configuration');
         </div>
 
         <div class="form-row">
-            <Input label={t('input-og-image')} name="default-og-image" placeholder="'https://...' for local, or '/...' for public/ folder" value={data.defaultOgImage} />
-            <Input label="Site Icon (Public facing Favicon)" name="site-icon" placeholder="'https://...' for local, or '/...' for public/ folder" value={data.siteIcon} />
+            <StorageInput label={t('input-og-image')} name="default-og-image" placeholder="'https://...' for local, or '/...' for public/ folder" value={data.defaultOgImage} />
+            <StorageInput label="Site Icon (Public facing Favicon)" name="site-icon" placeholder="'https://...' for local, or '/...' for public/ folder" value={data.siteIcon} />
         </div>
 
         <div class="form-row">
@@ -103,7 +104,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:configuration');
 
         <div class="form-row">
             <Select label={t('select-login-page-bg')} name='login-page-background' defaultValue={data.loginPageBackground} options={ogSelectOptions} fullWidth />
-            <Input label={t('input-custom-login-page')} name="login-page-background-custom" placeholder="'https://...' for local, or '/...' for public/ folder" value={data.loginPageCustomImage} disabled={data.loginPageBackground !== 'custom'} />
+            <StorageInput label={t('input-custom-login-page')} name="login-page-background-custom" placeholder="'https://...' for local, or '/...' for public/ folder" value={data.loginPageCustomImage} disabled={data.loginPageBackground !== 'custom'} />
         </div>
 
         <LoginPreview light={currentLoginPageBg?.light} dark={currentLoginPageBg?.dark} />
