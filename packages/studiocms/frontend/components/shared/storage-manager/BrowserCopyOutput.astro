@@ -1,0 +1,16 @@
+---
+import StorageFileBrowser from '#frontend/components/shared/storage-manager/StorageFileBrowser.astro';
+
+interface Props {
+	id: string;
+}
+
+const { id } = Astro.props;
+
+const triggerId = `storage-copy-output-trigger-${id}`;
+---
+
+<StorageFileBrowser 
+  triggerId={triggerId} 
+  targetInputId={id} 
+/>

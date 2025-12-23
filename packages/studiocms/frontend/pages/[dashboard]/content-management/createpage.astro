@@ -1,6 +1,6 @@
 ---
 import { useTranslations } from 'studiocms:i18n';
-import BrowserArray from '#frontend/components/shared/storage-manager/BrowserArray.astro';
+import BrowserInputArray from '#frontend/components/shared/storage-manager/BrowserInputArray.astro';
 import CreatePage from '../../../components/dashboard/content-mgmt/CreatePage.astro';
 import InnerSidebarElement from '../../../components/dashboard/content-mgmt/InnerSidebarElement.astro';
 import PageHeader from '../../../components/dashboard/content-mgmt/PageHeader.astro';
@@ -24,7 +24,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-index');
   >
 
   <div slot="external">
-    <BrowserArray triggerInputs={['page-hero-image']} />
+    <BrowserInputArray triggerInputs={['page-hero-image']} />
   </div>
 
   <div slot="double-sidebar" class="inner-sidebar-container">

@@ -450,7 +450,11 @@
       "original": "Original",
       "size": "Size",
       "andAllItsContents": "and all its contents",
-      "filePreview": "File preview"
+      "filePreview": "File preview",
+      "copy-output-input-label": "Storage Manager URL Generator",
+      "copy-output-copy-button": "Copy",
+      "copy-output-copy-button-success": "Copied to clipboard!",
+      "copy-output-copy-button-failure": "Failed to copy"
     }
   }
 }
