@@ -2,7 +2,7 @@
   "links": [
     "..",
     "adam_content-editor-helper",
-    "adam_fix-crowdin-ci",
+    "adam_tweak-ci",
     "changeset-release_main",
     "main"
   ]
