@@ -1,0 +1,196 @@
+---
+import { useTranslations } from 'studiocms:i18n';
+import { isDefaultManager } from 'studiocms:storage-manager/name';
+import { Button } from 'studiocms:ui/components/button';
+import { Divider } from 'studiocms:ui/components/divider';
+import { Icon } from 'studiocms:ui/components/icon';
+import { Input } from 'studiocms:ui/components/input';
+
+interface Props {
+	id: string;
+	lang: string;
+	isDisabled?: boolean;
+}
+
+const { id, isDisabled, lang } = Astro.props;
+
+const triggerId = `storage-copy-output-trigger-${id}`;
+
+const disabled = isDisabled ?? isDefaultManager;
+
+const t = useTranslations(lang, '@studiocms/storage-file-browser');
+---
+
+<div class="storage-copy-output-wrapper" data-disabled={`${disabled}`}>
+    <span class="storage-copy-output-label">
+        <t-storage-copy-output key="copy-output-input-label">{t("copy-output-input-label")}</t-storage-copy-output>
+    </span>
+
+    <div class="storage-copy-output-container" data-input-id={id}>
+
+        <div class="storage-copy-output-input-wrapper">
+            <Input 
+                id={id} 
+                name={id} 
+                disabled={disabled} 
+                readonly 
+                placeholder='storage-file://...'
+                icon={'heroicons:clipboard-document-list-16-solid'}
+                />
+            <Button id="storage-copy-output-copy-button" variant="flat" disabled={disabled} size='sm' type="button" color='primary'>
+                <Icon name="heroicons:clipboard-16-solid" slot="start-content" width={16} height={16} />
+                <t-storage-copy-output key="copy-output-copy-button">{t("copy-output-copy-button")}</t-storage-copy-output>
+            </Button>
+        </div>
+
+        <Button variant='outlined' color={isDefaultManager ? "danger" : "info"} size="md" id={triggerId} type={'button'} disabled={disabled} aria-label='Browse Files'>
+            <Icon name="heroicons:folder-open-20-solid" width={20} height={20} />
+        </Button>
+
+    </div>
+</div>
+
+<div class="storage-copy-output-divider" data-disabled={`${disabled}`}>
+    <Divider />
+</div>
+
+<script>
+    import {
+        $i18n,
+        baseTranslation,
+        makeTranslation,
+    } from "studiocms:i18n/client";
+
+    const $ = <T extends HTMLElement>(selector: string, parent: HTMLElement | Document = document) => parent.querySelector<T>(selector);
+
+    const currentPage = "@studiocms/storage-file-browser";
+
+    const i18n = $i18n(currentPage, baseTranslation[currentPage]);
+
+    let copiedSuccessText = 'Copied!';
+    let copiedFailureText = 'Failed!';
+
+    i18n.subscribe((comp) => {
+        copiedSuccessText = comp['copy-output-copy-button-success'];
+        copiedFailureText = comp['copy-output-copy-button-failure'];
+    })
+
+    if (!customElements.get('t-storage-copy-output')) {
+        customElements.define('t-storage-copy-output', makeTranslation(currentPage, i18n));
+    }
+
+    const copyButton = $<HTMLButtonElement>('#storage-copy-output-copy-button');
+    
+    copyButton?.addEventListener('click', async () => {
+        // Get current button text to restore later
+        const initialInnerHTML = copyButton.innerHTML;
+        try {
+            // Prevent multiple clicks
+            copyButton.disabled = true;
+
+            // Find the associated input field
+            const parent = copyButton.parentElement!;
+            const inputField = $<HTMLInputElement>('input', parent);
+
+            // Sanity check
+            if (!inputField) {
+                console.error('Input field not found');
+                return;
+            }
+
+            // Select the text and copy to clipboard
+            inputField.select();
+            inputField.setSelectionRange(0, 99999); // For mobile devices
+            await navigator.clipboard.writeText(inputField.value);
+
+            // Provide user feedback
+            copyButton.classList.add('success');
+            copyButton.classList.remove('primary');
+            copyButton.innerHTML = copiedSuccessText;
+            setTimeout(() => {
+                // Restore button state after 3 seconds
+                copyButton.classList.add('primary');
+                copyButton.classList.remove('success');
+                copyButton.innerHTML = initialInnerHTML;
+
+                copyButton.disabled = false;
+            }, 3000);
+        } catch (error) {
+            console.error('Failed to copy text: ', error);
+            copyButton!.classList.add('danger');
+            copyButton!.classList.remove('primary');
+            copyButton!.innerHTML = copiedFailureText;
+            copyButton!.disabled = false;
+            setTimeout(() => {
+                // Restore button state after 3 seconds
+                copyButton!.classList.add('primary');
+                copyButton!.classList.remove('danger');
+                copyButton!.innerHTML = initialInnerHTML;
+            }, 3000);
+        }
+    });
+</script>
+
+<style is:global>
+    .storage-copy-output-wrapper {
+        width: 100%;
+        padding: 0.5rem;
+        box-sizing: border-box;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        background-color: var(--background-step-2);
+    }
+
+    .storage-copy-output-label {
+        display: block;
+        font-size: 0.875rem;
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+    }
+
+    .storage-copy-output-container {
+        display: flex;
+        gap: 0.5rem;
+        align-items: end;
+        width: 100%;
+
+        & .storage-copy-output-input-wrapper {
+            position: relative;
+            flex-grow: 1;
+            z-index: 1;
+
+            & .sui-input {
+                background-color: var(--background-base);
+            }
+
+            & .sui-button {
+                position: absolute;
+                top: 50%;
+                right: 0.5rem;
+                transform: translateY(-50%);
+                z-index: 2;
+            }
+        }
+
+        & .sui-button {
+            flex-shrink: 0;
+        }
+
+        & button[id^="storage-copy-output-trigger-"] {
+            background-color: var(--background-base) !important;
+
+            &:hover {
+                background-color: var(--background-step-2) !important;
+            }
+        }
+    }
+
+    .storage-copy-output-wrapper,
+    .storage-copy-output-divider {
+        margin-bottom: 1rem;
+
+        &[data-disabled="true"] {
+            display: none;
+        }
+    }
+</style>

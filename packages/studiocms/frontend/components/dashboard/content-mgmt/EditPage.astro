@@ -15,6 +15,7 @@ import { Select } from 'studiocms:ui/components/select';
 import { TabItem, Tabs } from 'studiocms:ui/components/tabs';
 import { editorKeys } from 'virtual:studiocms/components/Editors';
 import { Effect } from 'effect';
+import StorageCopyOutput from '#frontend/components/shared/storage-manager/StorageCopyOutput.astro';
 import StorageInput from '#frontend/components/shared/storage-manager/StorageInput.astro';
 import PageEditorSwapper from './PageEditorSwapper.astro';
 import PageTypeHandler from './PageTypeHandler.astro';
@@ -296,6 +297,8 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
               name="page-content-id"
               value={pageData.defaultContent?.id}
             />
+
+            <StorageCopyOutput {lang} id="storage-file-copy-output" />
 
             <div class="tab-section">
               <div class="page-content-editor">
