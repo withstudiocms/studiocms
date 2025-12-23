@@ -2,6 +2,7 @@ import * as registry from 'virtual:component-registry-internal-proxy';
 import { componentKeys, componentProps } from 'virtual:component-registry-internal-proxy';
 import { name } from 'virtual:component-registry-internal-proxy/name';
 import type { SSRResult } from 'astro';
+import type { Transformer } from 'ultrahtml';
 import type { SanitizeOptions } from 'ultrahtml/transformers/sanitize';
 import { createComponentProxy } from './component-proxy/index.js';
 import { toComponentProxyError } from './errors.js';
@@ -78,7 +79,8 @@ export async function setupRendererComponentProxy(result: SSRResult) {
 export async function createRenderer(
 	result: SSRResult,
 	sanitizeOpts?: SanitizeOptions,
-	preRenderer?: (content: string) => Promise<string>
+	preRenderer?: (content: string) => Promise<string>,
+	transformers?: Transformer[]
 ) {
 	const components = await setupRendererComponentProxy(result);
 	return async (content: string) => {
@@ -88,6 +90,6 @@ export async function createRenderer(
 		} else {
 			html = content;
 		}
-		return await transformHTML(html, components, sanitizeOpts);
+		return await transformHTML(html, components, sanitizeOpts, transformers);
 	};
 }
