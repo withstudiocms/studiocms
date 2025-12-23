@@ -12,16 +12,16 @@ interface Props {
 	isDisabled?: boolean;
 }
 
-let { id, isDisabled, lang } = Astro.props;
+const { id, isDisabled, lang } = Astro.props;
 
 const triggerId = `storage-copy-output-trigger-${id}`;
 
-isDisabled = isDefaultManager;
+const disabled = isDisabled ?? isDefaultManager;
 
 const t = useTranslations(lang, '@studiocms/storage-file-browser');
 ---
 
-<div class="storage-copy-output-wrapper" data-disabled={`${isDisabled}`}>
+<div class="storage-copy-output-wrapper" data-disabled={`${disabled}`}>
     <span class="storage-copy-output-label">
         <t-storage-copy-output key="copy-output-input-label">{t("copy-output-input-label")}</t-storage-copy-output>
     </span>
@@ -32,25 +32,25 @@ const t = useTranslations(lang, '@studiocms/storage-file-browser');
             <Input 
                 id={id} 
                 name={id} 
-                disabled={isDisabled} 
+                disabled={disabled} 
                 readonly 
                 placeholder='storage-file://...'
                 icon={'heroicons:clipboard-document-list-16-solid'}
                 />
-            <Button id="storage-copy-output-copy-button" variant="flat" disabled={isDisabled} size='sm' type="button" color='primary'>
+            <Button id="storage-copy-output-copy-button" variant="flat" disabled={disabled} size='sm' type="button" color='primary'>
                 <Icon name="heroicons:clipboard-16-solid" slot="start-content" width={16} height={16} />
                 <t-storage-copy-output key="copy-output-copy-button">{t("copy-output-copy-button")}</t-storage-copy-output>
             </Button>
         </div>
 
-        <Button variant='outlined' color={isDefaultManager ? "danger" : "info"} size="md" id={triggerId} type={'button'} disabled={isDisabled} aria-label='Browse Files'>
+        <Button variant='outlined' color={isDefaultManager ? "danger" : "info"} size="md" id={triggerId} type={'button'} disabled={disabled} aria-label='Browse Files'>
             <Icon name="heroicons:folder-open-20-solid" width={20} height={20} />
         </Button>
 
     </div>
 </div>
 
-<div class="storage-copy-output-divider" data-disabled={`${isDisabled}`}>
+<div class="storage-copy-output-divider" data-disabled={`${disabled}`}>
     <Divider />
 </div>
 
@@ -81,7 +81,7 @@ const t = useTranslations(lang, '@studiocms/storage-file-browser');
 
     const copyButton = $<HTMLButtonElement>('#storage-copy-output-copy-button');
     
-    copyButton?.addEventListener('click', () => {
+    copyButton?.addEventListener('click', async () => {
         // Get current button text to restore later
         const initialInnerHTML = copyButton.innerHTML;
         try {
@@ -101,7 +101,7 @@ const t = useTranslations(lang, '@studiocms/storage-file-browser');
             // Select the text and copy to clipboard
             inputField.select();
             inputField.setSelectionRange(0, 99999); // For mobile devices
-            navigator.clipboard.writeText(inputField.value);
+            await navigator.clipboard.writeText(inputField.value);
 
             // Provide user feedback
             copyButton.classList.add('success');
@@ -176,11 +176,11 @@ const t = useTranslations(lang, '@studiocms/storage-file-browser');
             flex-shrink: 0;
         }
 
-        & #storage-copy-output-trigger-storage-file-copy-output {
-            background-color: var(--background-base);
+        & button[id^="storage-copy-output-trigger-"] {
+            background-color: var(--background-base) !important;
 
             &:hover {
-                background-color: var(--background-step-2);
+                background-color: var(--background-step-2) !important;
             }
         }
     }
