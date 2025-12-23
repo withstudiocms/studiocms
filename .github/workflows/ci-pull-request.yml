@@ -2,6 +2,11 @@ name: CI - Pull Request
 
 on:
   pull_request:
+    paths-ignore: 
+      - '.github/**/**'
+      - 'README.md'
+      - 'LICENSE'
+      - '**/**.md'
 
 concurrency:
   group: >-
@@ -29,25 +34,6 @@ jobs:
     with:
       commands: > 
         ["ci:lint"]
-
-  check-changeset:
-    name: Check Changesets Status
-    if: github.event_name == 'pull_request' && github.event.pull_request.user.login != 'apollo-git-bot[bot]'
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    steps:
-      - name: Check out code using Git
-        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
-        with:
-          fetch-depth: 0
-          persist-credentials: false
-
-      - name: Install Tools & Dependencies
-        uses: withstudiocms/automations/.github/actions/install@b488fa91598547478e170a4742916293a91a4410 # main
-
-      - name: Check Changeset Status
-        run: pnpm changeset:status
         
   preview-changeset-release:
     name: Pre-Release Snapshot

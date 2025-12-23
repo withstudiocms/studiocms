@@ -2,7 +2,6 @@ name: CI - Bot Changesets
 
 on:
   pull_request:
-    types: [opened, synchronize, labeled]
 
 permissions: {}
 
