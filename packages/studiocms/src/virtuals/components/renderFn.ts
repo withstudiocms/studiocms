@@ -58,9 +58,7 @@ export const renderFn = async (args: RenderFnOptions) => {
 	const { result, sanitizeOpts, preRenderer } = renderOpts;
 
 	// Create the initial renderer
-	const render = await createRenderer(result, sanitizeOpts, preRenderer, [
-		transformStorageAPI({ site }),
-	]);
+	const render = await createRenderer(result, sanitizeOpts, preRenderer);
 
 	// Render content to HTML before applying augments
 	let renderedContent = await render(content);
@@ -99,6 +97,11 @@ export const renderFn = async (args: RenderFnOptions) => {
 
 	// Transform the content with the new components and update renderedContent
 	renderedContent = await transformHTML(renderedContent, components);
+
+	// Final transformation with Storage API transformer
+	// Running this last to ensure any StorageInput/StorageImage components
+	// added via augments are also transformed correctly preserving any needed storage-file:// URLs
+	renderedContent = await transformHTML(renderedContent, {}, {}, [transformStorageAPI({ site })]);
 
 	// Return the final rendered content
 	return renderedContent;
