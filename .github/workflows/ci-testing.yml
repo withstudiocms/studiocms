@@ -3,9 +3,17 @@ name: CI - Testing
 on:
   workflow_dispatch:
   push:
+    paths:
+      - 'packages/**/**'
+      - 'playground/**/**'
+      - '.github/workflows/ci-testing.yml'
     branches:
       - main
   pull_request:
+    paths:
+      - 'packages/**/**'
+      - 'playground/**/**'
+      - '.github/workflows/ci-testing.yml'
     types:
       - opened
       - reopened
