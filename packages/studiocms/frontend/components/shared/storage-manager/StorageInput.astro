@@ -31,13 +31,13 @@ const buttonDisabled = isDefaultManager || disabled;
         gap: 0.5rem;
         align-items: end;
         width: 100%;
-    }
 
-    .storage-input-container .sui-button {
-        flex-shrink: 0;
-    }
+        & .sui-button {
+            flex-shrink: 0;
 
-    .storage-input-container .sui-button:disabled {
-        display: none;
+            &:disabled {
+                display: none;
+            }
+        }
     }
 </style>
