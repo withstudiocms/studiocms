@@ -1,8 +1,7 @@
 {
   "links": [
     "..",
-    "adam_fix-config-loader",
-    "adam_more-storage-manager",
+    "adam_storage-manager-inputs",
     "changeset-release_main",
     "main"
   ]
