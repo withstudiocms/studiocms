@@ -15,6 +15,7 @@ import { Select } from 'studiocms:ui/components/select';
 import { TabItem, Tabs } from 'studiocms:ui/components/tabs';
 import { editorKeys } from 'virtual:studiocms/components/Editors';
 import { Effect } from 'effect';
+import StorageInput from '#frontend/components/shared/storage-manager/StorageInput.astro';
 import PageEditorSwapper from './PageEditorSwapper.astro';
 import PageTypeHandler from './PageTypeHandler.astro';
 import PluginFields from './PluginFields.astro';
@@ -195,7 +196,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
 
               <div class="form-row-single">
                 <div class="form-row-item">
-                  <Input
+                  <StorageInput
                     label={t("input-page-hero-image")}
                     name="page-hero-image"
                     placeholder="https://..."
