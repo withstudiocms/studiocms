@@ -387,6 +387,7 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 		const dashboardAugmentComponents: Record<string, string>[] = [];
 
 		let finalStorageManagerModulePath: string | undefined;
+		let finalStorageManagerName: string | undefined;
 
 		/////
 
@@ -724,6 +725,7 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 				setStorageManager({ managerPath }) {
 					if (managerPath) {
 						finalStorageManagerModulePath = managerPath;
+						finalStorageManagerName = storageManager.name;
 					}
 				},
 			});
@@ -789,6 +791,15 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 					content: `
 						export { default } from '${finalStorageManagerModulePath}';
 					`,
+				},
+				{
+					id: 'studiocms:storage-manager/name',
+					content: `
+						export const storageManagerName = '${finalStorageManagerName}';
+						export default storageManagerName;
+
+						export const isDefaultManager = storageManagerName === 'Core No-Op Storage (built-in)';
+					`,
 				}
 			);
 		}
@@ -806,6 +817,7 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 				setStorageManager({ managerPath }) {
 					if (managerPath) {
 						finalStorageManagerModulePath = managerPath;
+						finalStorageManagerName = storageManager.name;
 					}
 				},
 			});
@@ -1373,6 +1385,15 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 					id: 'studiocms:storage-manager/module',
 					content: `
 						export { default } from '${finalStorageManagerModulePath}';
+					`,
+				},
+				{
+					id: 'studiocms:storage-manager/name',
+					content: `
+						export const storageManagerName = '${finalStorageManagerName}';
+						export default storageManagerName;
+
+						export const isDefaultManager = storageManagerName === 'Core No-Op Storage (built-in)';
 					`,
 				}
 			);

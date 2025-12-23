@@ -217,7 +217,7 @@ const config: KnipConfig = {
 		...bundleTestPackages.reduce(
 			(acc, pkg) => {
 				acc[`bundle-tests/${pkg}`] = {
-					ignoreDependencies: ['sharp'],
+					ignoreDependencies: ['sharp', '@libsql/client', '@libsql/kysely-libsql'],
 					astro: {
 						entry: [
 							'studiocms.config.{js,cjs,mjs,ts,mts}',

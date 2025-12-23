@@ -379,7 +379,11 @@
       "close-button-label": "Close",
       "system-utilities-label": "System Utilities",
       "debug-info-label": "Debug Information",
-      "copied-to-clipboard": "Copied!"
+      "copied-to-clipboard": "Copied!",
+      "access-file-manager": "Access File Manager",
+      "file-manager-selection": "File Manager Selected Identifier",
+      "file-manager-url-input-placeholder": "Selected file URL will appear here",
+      "no-storage-configured": "No Storage manager installed."
     },
     "@studiocms/storage-file-browser": {
       "selectFile": "Select File",

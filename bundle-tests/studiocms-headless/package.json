@@ -21,6 +21,8 @@
 		"astro": "catalog:astrojs",
 		"sharp": "catalog:",
 		"studiocms": "workspace:*",
-		"vite": "catalog:astrojs"
+		"vite": "catalog:astrojs",
+		"@libsql/kysely-libsql": "catalog:kysely",
+		"@libsql/client": "catalog:kysely"
 	}
 }

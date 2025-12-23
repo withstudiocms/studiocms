@@ -17,6 +17,12 @@ declare module 'studiocms:storage-manager/module' {
 	export default module;
 }
 
+declare module 'studiocms:storage-manager/name' {
+	export const storageManagerName: string;
+	export const isDefaultManager: boolean;
+	export default storageManagerName;
+}
+
 declare module 'studiocms:client-scripts/StorageFileBrowser' {}
 
 declare module 'studiocms:debug-info' {
