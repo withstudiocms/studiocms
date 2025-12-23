@@ -1,4 +1,4 @@
-import { transform } from 'ultrahtml';
+import { type Transformer, transform } from 'ultrahtml';
 import type { SanitizeOptions } from 'ultrahtml/transformers/sanitize';
 import sanitize from 'ultrahtml/transformers/sanitize';
 import swap from 'ultrahtml/transformers/swap';
@@ -16,7 +16,9 @@ import { dedent } from './utils.js';
 export async function transformHTML(
 	html: string,
 	components: ComponentType,
-	sanitizeOpts?: SanitizeOptions
+	sanitizeOpts?: SanitizeOptions,
+	transformers?: Transformer[]
 ): Promise<string> {
-	return await transform(dedent(html), [sanitize(sanitizeOpts), swap(components)]);
+	const allTransformers = [...(transformers ?? []), sanitize(sanitizeOpts), swap(components)];
+	return await transform(dedent(html), allTransformers);
 }

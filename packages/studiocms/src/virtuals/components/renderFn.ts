@@ -1,3 +1,4 @@
+import { site } from 'astro:config/server';
 import { createRenderer } from 'studiocms:component-registry/runtime';
 import { createComponentProxy, transformHTML } from '@withstudiocms/component-registry';
 import type { SSRResult } from 'astro';
@@ -7,7 +8,8 @@ import type {
 	Internal_SCMS_AstroComponent,
 	PrefixSuffixAugment,
 	RenderAugment,
-} from '../../types';
+} from '../../types.js';
+import transformStorageAPI from './ultrahtml-transformers/storage-api.js';
 
 /**
  * Concatenates the provided HTML string as either a prefix or suffix to the given content.
@@ -61,8 +63,10 @@ export const renderFn = async (args: RenderFnOptions) => {
 	// Render content to HTML before applying augments
 	let renderedContent = await render(content);
 
+	// Collection of all components from augments
 	const componentsCollection: Record<string, Internal_SCMS_AstroComponent> = {};
 
+	// Collections for prefix and suffix augments
 	const augmentCollections = {
 		prefix: [] as PrefixSuffixAugment[],
 		suffix: [] as PrefixSuffixAugment[],
@@ -93,6 +97,11 @@ export const renderFn = async (args: RenderFnOptions) => {
 
 	// Transform the content with the new components and update renderedContent
 	renderedContent = await transformHTML(renderedContent, components);
+
+	// Final transformation with Storage API transformer
+	// Running this last to ensure any StorageInput/StorageImage components
+	// added via augments are also transformed correctly preserving any needed storage-file:// URLs
+	renderedContent = await transformHTML(renderedContent, {}, {}, [transformStorageAPI({ site })]);
 
 	// Return the final rendered content
 	return renderedContent;
