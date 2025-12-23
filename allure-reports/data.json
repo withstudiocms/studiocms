@@ -3,7 +3,6 @@
     "..",
     "adam_fix-config-loader",
     "adam_more-storage-manager",
-    "adam_sdk-storage-manager",
     "changeset-release_main",
     "main"
   ]
