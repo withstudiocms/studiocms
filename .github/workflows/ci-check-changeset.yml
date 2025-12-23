@@ -1,4 +1,4 @@
-name: CI - Pull Request
+name: CI - Pull Request Check Changeset
 
 on:
   pull_request:
