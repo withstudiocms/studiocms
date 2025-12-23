@@ -72,7 +72,7 @@ jobs:
         uses: peter-evans/repository-dispatch@28959ce8df70de7be546dd1250a005dd32156697 # v4.0.1
         with:
           event-type: crowdin.create
-          client-payload: '{ "pull_request_url": "${{ steps.crowdin-pull.outputs.pull_request_url }}" }'
+          client-payload: '{ "pull_request_url": ${{ toJSON(steps.crowdin-pull.outputs.pull_request_url) }} }'
 
   crowdin-upload:
     name: Upload Crowdin Sources
