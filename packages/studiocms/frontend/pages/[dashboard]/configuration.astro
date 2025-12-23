@@ -2,6 +2,7 @@
 import { useTranslations } from 'studiocms:i18n';
 import { Button } from 'studiocms:ui/components/button';
 import { Icon } from 'studiocms:ui/components/icon';
+import BrowserArray from '#frontend/components/shared/storage-manager/BrowserArray.astro';
 import ConfigForm from '../../components/dashboard/configuration/ConfigForm.astro';
 import PageHeader from '../../components/dashboard/PageHeader.astro';
 import Layout from '../../layouts/DashboardLayout.astro';
@@ -21,6 +22,10 @@ const t = useTranslations(lang, '@studiocms/dashboard:configuration');
   {config}
   {currentUser}
   >
+
+  <div slot="external">
+    <BrowserArray triggerInputs={['default-og-image', 'site-icon', 'login-page-background-custom']} />
+  </div>
 
   <div slot="header">
     <PageHeader title={t('header')}>

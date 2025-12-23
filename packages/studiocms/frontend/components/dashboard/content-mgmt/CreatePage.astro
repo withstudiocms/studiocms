@@ -7,6 +7,7 @@ import { Card } from 'studiocms:ui/components/card';
 import { Input } from 'studiocms:ui/components/input';
 import { Select } from 'studiocms:ui/components/select';
 import { TabItem, Tabs } from 'studiocms:ui/components/tabs';
+import StorageInput from '#frontend/components/shared/storage-manager/StorageInput.astro';
 import PageTypeHandler from './PageTypeHandler.astro';
 import { categoriesOptions, pageTypeOptions, tagsOptions, trueFalse } from './shared.js';
 
@@ -129,7 +130,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
 
             <div class="form-row-single">
               <div class="form-row-item">
-                <Input
+                <StorageInput
                   label={t("input-page-hero-image")}
                   name="page-hero-image"
                   placeholder="https://..."
