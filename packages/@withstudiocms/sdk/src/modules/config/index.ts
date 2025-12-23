@@ -4,7 +4,8 @@ import type { DatabaseError } from '@withstudiocms/kysely/core/errors';
 import { StudioCMSDynamicConfigSettings } from '@withstudiocms/kysely/tables';
 import { CacheMissError, CacheService } from '../../cache.js';
 import { cacheKeyGetters, cacheTags } from '../../consts.js';
-import { DBClientLive } from '../../context.js';
+import { DBClientLive, StorageManagerResolver } from '../../context.js';
+import { resolveStorageManagerUrls } from '../../lib/storage-manager.js';
 import type {
 	ConfigFinal,
 	DbQueryFn,
@@ -44,11 +45,30 @@ const cacheOpts = { tags: cacheTags.dynamicConfig };
  * StudioCMS Configuration Modules
  */
 export const SDKConfigModule = Effect.gen(function* () {
-	const [{ withCodec }, { merge }, cache] = yield* Effect.all([
+	const [{ withCodec }, { merge }, cache, smResolver] = yield* Effect.all([
 		DBClientLive,
 		Deepmerge,
 		CacheService,
+		StorageManagerResolver,
 	]);
+
+	const resolveUrls = resolveStorageManagerUrls(smResolver);
+
+	/**
+	 * Resolves storage manager URLs in the given dynamic configuration entry.
+	 *
+	 * @param attributes - The attribute or attributes to resolve.
+	 * @returns A function that takes a dynamic configuration entry and returns an effect that yields the entry with resolved URLs.
+	 */
+	const resolveStorageManagerUrl =
+		<F>(attributes: keyof F | (keyof F)[]) =>
+		(obj: DynamicConfigEntry<F> | undefined) =>
+			resolveUrls<F>(obj?.data as F, attributes).pipe(
+				Effect.map((data) => {
+					if (!data) return obj;
+					return { ...obj, data } as DynamicConfigEntry<F>;
+				})
+			);
 
 	// =================================================================
 	// Database Operation Utilities
@@ -210,7 +230,12 @@ export const SDKConfigModule = Effect.gen(function* () {
 		 *
 		 * @returns An effect that yields the site configuration entry or undefined if not found, or a database error.
 		 */
-		get: () => get<StudioCMSSiteConfig>(SiteConfigId),
+		get: <T extends StudioCMSSiteConfig>() =>
+			get<T>(SiteConfigId).pipe(
+				Effect.flatMap(
+					resolveStorageManagerUrl<T>(['siteIcon', 'defaultOgImage', 'loginPageCustomImage'])
+				)
+			),
 
 		/**
 		 * Updates the site configuration.
