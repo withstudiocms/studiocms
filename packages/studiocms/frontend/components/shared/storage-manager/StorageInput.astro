@@ -1,0 +1,43 @@
+---
+import { isDefaultManager } from 'studiocms:storage-manager/name';
+import { Button } from 'studiocms:ui/components/button';
+import { Icon } from 'studiocms:ui/components/icon';
+import { Input } from 'studiocms:ui/components/input';
+import type { ComponentProps } from 'astro/types';
+
+type InputProps = ComponentProps<typeof Input>;
+
+interface Props extends InputProps {}
+
+const { id, name, disabled, ...inputProps } = Astro.props;
+
+const inputId = id || name;
+
+const buttonId = `storage-input-button-${inputId}`;
+
+const buttonDisabled = isDefaultManager || disabled;
+---
+
+<div class="storage-input-container">
+    <Input {...inputProps} id={inputId} name={name} disabled={disabled} />
+    <Button variant='outlined' color={isDefaultManager ? "danger" : "info"} size="md" id={buttonId} type={'button'} disabled={buttonDisabled}>
+        <Icon name="heroicons:folder-open-20-solid" width={20} height={20} />
+    </Button>
+</div>
+
+<style is:global>
+    .storage-input-container {
+        display: flex;
+        gap: 0.5rem;
+        align-items: end;
+        width: 100%;
+    }
+
+    .storage-input-container .sui-button {
+        flex-shrink: 0;
+    }
+
+    .storage-input-container .sui-button:disabled {
+        display: none;
+    }
+</style>
