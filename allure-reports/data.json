@@ -3,9 +3,7 @@
     "..",
     "adam_content-editor-helper",
     "adam_fix-crowdin-ci",
-    "adam_storage-api-transformer",
     "changeset-release_main",
-    "l10n_main",
     "main"
   ]
 }
