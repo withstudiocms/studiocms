@@ -13,6 +13,7 @@ export type StorageFileIdentifier = `storage-file://${string}`;
 export interface ResolveUrlOptions {
 	baseUrl: string | URL;
 	verbose?: boolean;
+	timeoutMs?: number;
 }
 
 /**
@@ -24,6 +25,27 @@ export interface ResolveUrlOptions {
 const keyToIdentifier = (key: string): StorageFileIdentifier => `storage-file://${key}`;
 
 /**
+ * Creates a fetch request with timeout support.
+ */
+const fetchWithTimeout = async (
+	url: URL,
+	options: RequestInit,
+	timeoutMs = 5000
+): Promise<Response> => {
+	const controller = new AbortController();
+	const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
+	try {
+		return await fetch(url, {
+			...options,
+			signal: controller.signal,
+		});
+	} finally {
+		clearTimeout(timeoutId);
+	}
+};
+
+/**
  * Resolves a storage-file:// identifier to its actual URL by calling the StudioCMS storage manager API.
  *
  * @param identifier - The storage-file:// identifier to resolve.
@@ -32,19 +54,23 @@ const keyToIdentifier = (key: string): StorageFileIdentifier => `storage-file://
  */
 export async function resolveStorageIdentifier(
 	identifier: StorageFileIdentifier,
-	{ baseUrl, verbose = false }: ResolveUrlOptions
+	{ baseUrl, verbose = false, timeoutMs }: ResolveUrlOptions
 ): Promise<string> {
 	// Get the storage manager URL for the StudioCMS API
 	const endpoint = new URL('/studiocms_api/storage/manager', baseUrl);
 
 	// Make a request to resolve the storage manager URL
-	const response = await fetch(endpoint, {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
+	const response = await fetchWithTimeout(
+		endpoint,
+		{
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({ identifier, action: 'resolveUrl' }),
 		},
-		body: JSON.stringify({ identifier, action: 'resolveUrl' }),
-	});
+		timeoutMs
+	);
 
 	// Handle non-OK responses
 	if (!response.ok) {
@@ -62,7 +88,7 @@ export async function resolveStorageIdentifier(
 	}
 
 	// Return the resolved URL or the original identifier if not found
-	return data.url || identifier;
+	return data.url ?? identifier;
 }
 
 /**
