@@ -64,7 +64,7 @@ async function walkAndResolve(node: Node, attributes: string[], site: string): P
 
 		for (const attr of attributes) {
 			const value = node.attributes[attr];
-			if (isStorageIdentifier(value)) {
+			if (typeof value === 'string' && isStorageIdentifier(value)) {
 				try {
 					const resolved = await resolveStorageIdentifier(value, { baseUrl: site });
 					updates[attr] = resolved;
