@@ -94,7 +94,7 @@ async function walkAndResolve(node: Node, attributes: string[], site: string): P
  * @param site - The server endpoint to call for resolution.
  * @returns A promise that resolves to the actual URL.
  */
-async function resolveUrl(identifier: string, site: string): Promise<string> {
+export async function resolveUrl(identifier: string, site: string): Promise<string> {
 	// Get the storage manager URL for the StudioCMS API
 	const endpoint = new URL('/studiocms_api/storage/manager', site);
 

@@ -1,10 +1,12 @@
 ---
 /// <reference types="astro/client" />
 import { Image } from 'astro:assets';
+import { site } from 'astro:config/server';
 import config from 'studiocms:config';
 import * as imageServices from 'studiocms:plugins/imageService';
 import { imageServiceKeys } from 'studiocms:plugins/imageService';
 import type { StudioCMSImageService } from '../../schemas/index.js';
+import { resolveUrl } from './ultrahtml-transformers/storage-api';
 
 const {
 	features: { preferredImageService },
@@ -25,6 +27,12 @@ async function getImageSrc() {
 
 	if (keys.length === 0 || !preferredImageService) {
 		return src;
+	}
+
+	if (src.startsWith('storage-file://')) {
+		// Process storage files differently
+		const resolved = await resolveUrl(src, site || 'http://localhost:4321');
+		return resolved;
 	}
 
 	/* v8 ignore start */
