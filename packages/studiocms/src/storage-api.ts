@@ -25,6 +25,15 @@ export interface ResolveUrlOptions {
 const keyToIdentifier = (key: string): StorageFileIdentifier => `storage-file://${key}`;
 
 /**
+ * Type guard to check if a string is a StorageFileIdentifier.
+ *
+ * @param identifier - The string to check.
+ * @returns True if the string is a StorageFileIdentifier, false otherwise.
+ */
+export const isStorageIdentifier = (identifier: string): identifier is StorageFileIdentifier =>
+	identifier.startsWith('storage-file://');
+
+/**
  * Creates a fetch request with timeout support.
  */
 const fetchWithTimeout = async (

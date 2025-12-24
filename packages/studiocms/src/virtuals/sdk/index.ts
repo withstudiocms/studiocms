@@ -7,10 +7,10 @@ import {
 } from '@withstudiocms/sdk';
 import type { CacheEntry } from '@withstudiocms/sdk/cache.js';
 import { Data, Effect } from 'effect';
-import type { UrlMetadata } from '#storage-manager/definitions';
 import { GhostUserDefaults, NotificationSettingsDefaults } from '../../consts.js';
 import { getDbClient } from '../../db/index.js';
 import { runEffect } from '../../effect.js';
+import { isStorageIdentifier, resolveStorageIdentifier } from '../../storage-api.js';
 
 /**
  * Error thrown when the database client fails to initialize
@@ -66,30 +66,16 @@ export const buildSDKContext = Effect.fn((db: SDKContext['db']) =>
 					tagIndex: cacheTagIndex,
 				},
 				storageManagerResolver: async (identifier: string) => {
-					// Get the storage manager URL for the StudioCMS API
-					const host = site || 'http://localhost:4321';
-					const endpoint = new URL('/studiocms_api/storage/manager', host);
-
-					// Make a request to resolve the storage manager URL
-					const response = await fetch(endpoint, {
-						method: 'POST',
-						headers: {
-							'Content-Type': 'application/json',
-						},
-						body: JSON.stringify({ identifier, action: 'resolveUrl' }),
-					});
-
-					// Handle non-OK responses
-					if (!response.ok) {
-						console.error(`Failed to resolve storage manager for identifier: ${identifier}`);
-						return '';
+					// Validate the identifier format
+					if (!isStorageIdentifier(identifier)) {
+						console.error(`Invalid storage-file identifier: ${identifier}`);
+						return identifier;
 					}
 
-					// Parse the response to get the URL metadata
-					const data: UrlMetadata = await response.json();
-
-					// Return the resolved URL
-					return data.url;
+					// Resolve the storage identifier to a URL
+					return await resolveStorageIdentifier(identifier, {
+						baseUrl: site || 'http://localhost:4321',
+					});
 				},
 			}) as SDKContext
 	)

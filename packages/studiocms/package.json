@@ -122,6 +122,10 @@
 			"types": "./dist/handlers/storage-manager/definitions.d.ts",
 			"default": "./dist/handlers/storage-manager/definitions.js"
 		},
+		"#storage-api": {
+			"types": "./dist/storage-api.d.ts",
+			"default": "./dist/storage-api.js"
+		},
 		"#frontend/*": "./frontend/*"
 	},
 	"exports": {
