@@ -66,7 +66,7 @@ export const buildSDKContext = Effect.fn((db: SDKContext['db']) =>
 					tagIndex: cacheTagIndex,
 				},
 				storageManagerResolver: async (identifier: string) => {
-					// Validate the identifier format
+					// Validate the identifier format before resolving
 					if (!isStorageIdentifier(identifier)) {
 						console.error(`Invalid storage-file identifier: ${identifier}`);
 						return identifier;
