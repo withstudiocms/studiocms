@@ -31,8 +31,13 @@ async function getImageSrc() {
 
 	if (src.startsWith('storage-file://')) {
 		// Process storage files differently
-		const resolved = await resolveUrl(src, site || 'http://localhost:4321');
-		return resolved;
+		try {
+			const resolved = await resolveUrl(src, site || 'http://localhost:4321');
+			return resolved;
+		} catch (error) {
+			console.error(`Failed to resolve storage URL ${src}:`, error);
+			return src; // Fallback to original identifier
+		}
 	}
 
 	/* v8 ignore start */
