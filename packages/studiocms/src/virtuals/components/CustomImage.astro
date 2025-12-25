@@ -6,7 +6,7 @@ import config from 'studiocms:config';
 import * as imageServices from 'studiocms:plugins/imageService';
 import { imageServiceKeys } from 'studiocms:plugins/imageService';
 import type { StudioCMSImageService } from '../../schemas/index.js';
-import { resolveUrl } from './ultrahtml-transformers/storage-api';
+import { isStorageIdentifier, resolveStorageIdentifier } from '../../storage-api.js';
 
 const {
 	features: { preferredImageService },
@@ -29,11 +29,12 @@ async function getImageSrc() {
 		return src;
 	}
 
-	if (src.startsWith('storage-file://')) {
+	if (isStorageIdentifier(src)) {
 		// Process storage files differently
 		try {
-			const resolved = await resolveUrl(src, site || 'http://localhost:4321');
-			return resolved;
+			return await resolveStorageIdentifier(src, {
+				baseUrl: site || 'http://localhost:4321',
+			});
 		} catch (error) {
 			console.error(`Failed to resolve storage URL ${src}:`, error);
 			return src; // Fallback to original identifier
