@@ -4,15 +4,11 @@ import { generateComponentTranslationMap } from 'studiocms:i18n';
 
 interface Props {
 	registryData: ComponentRegistryEntry[];
+	triggerId: string;
 	noOutput?: boolean;
-	triggerId?: string;
 }
 
 const { registryData, noOutput, triggerId } = Astro.props;
-
-if (!triggerId) {
-	throw new Error('ComponentRegistryUI: triggerId prop is required when using a trigger.');
-}
 
 const translations = generateComponentTranslationMap('@studiocms/component-registry-ui');
 ---
