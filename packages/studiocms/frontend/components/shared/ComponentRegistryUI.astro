@@ -881,15 +881,6 @@ const translations = generateComponentTranslationMap('@studiocms/component-regis
       div.textContent = text;
       return div.innerHTML;
     }
-
-    // Static method to change language from outside
-    static changeLanguage(lang: string) {
-      window.dispatchEvent(
-        new CustomEvent("component-registry:language-change", {
-          detail: { lang },
-        }),
-      );
-    }
   }
 
   if (!customElements.get("component-registry-modal")) {
