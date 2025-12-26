@@ -1,6 +1,7 @@
 ---
 import type { ComponentRegistryEntry } from 'studiocms:component-registry/runtime';
 import { generateComponentTranslationMap } from 'studiocms:i18n';
+import '../../styles/code-component.css';
 
 interface Props {
 	registryData: ComponentRegistryEntry[];
@@ -362,17 +363,8 @@ const translations = generateComponentTranslationMap('@studiocms/component-regis
     }
 
     .output-code {
-      padding: var(--component-registry-spacing-lg);
-      background-color: var(--component-registry-bg-step-3);
-      border: 1px solid var(--component-registry-border);
-      border-radius: var(--component-registry-radius-sm);
-      font-family: "Courier New", monospace;
-      font-size: 0.875rem;
-      color: var(--component-registry-success-base);
-      white-space: pre-wrap;
-      word-break: break-all;
-      max-height: 200px;
-      overflow-y: auto;
+      padding: var(--component-registry-spacing-md);
+      background-color: var(--component-registry-bg-base) !important;
     }
 
     .button-group {
@@ -861,7 +853,7 @@ const translations = generateComponentTranslationMap('@studiocms/component-regis
 
       outputSection.innerHTML = `
         <h3 class="output-title">${this.t("generatedHtmlTitle")}</h3>
-        <div class="output-code">${this.escapeHtml(htmlString)}</div>
+        <pre class="code-container scrollbar output-code"><code class="custom-code">${this.escapeHtml(htmlString)}</code></pre>
         <div class="button-group">
           <button class="button button-success copy-button" type="button">
             ${this.t("copyToClipboard")}
