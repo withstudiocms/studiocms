@@ -298,7 +298,33 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
               value={pageData.defaultContent?.id}
             />
 
-            <StorageCopyOutput {lang} id="storage-file-copy-output" />
+            <div class="content-utils">
+              <span>
+                <t-content-edit-page key="content-utils-label"
+                  >{t("content-utils-label")}</t-content-edit-page
+                >
+              </span>
+              <div>
+                <Button 
+                  type="button"
+                  id="access-component-registry"
+                  variant="outlined"
+                  color="info"
+                  size="sm"
+                >
+                  <Icon
+                    slot="start-content"
+                    name="simpleicons:astro"
+                    width={18}
+                    height={18}
+                  />
+                  <t-content-edit-page key="access-component-registry">
+                    {t("access-component-registry")}
+                  </t-content-edit-page>
+                </Button>
+              </div>
+              <StorageCopyOutput {lang} id="storage-file-copy-output" />
+            </div>
 
             <div class="tab-section">
               <div class="page-content-editor">
@@ -746,6 +772,27 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
       & .card-icon {
         color: var(--text-muted);
       }
+    }
+  }
+
+  .content-utils {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
+    padding: 0.5rem 1rem;
+    background-color: var(--background-step-1);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    gap: 0.5rem;
+
+    & > span {
+      font-weight: 600;
+      font-size: 1rem;
+    }
+
+    & > div {
+      display: flex;
+      gap: 0.5rem;
     }
   }
 </style>

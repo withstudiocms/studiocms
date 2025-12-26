@@ -1299,6 +1299,7 @@ declare module 'studiocms:ui/icons' {
 		| 'simpleicons:auth0'
 		| 'simpleicons:discord'
 		| 'simpleicons:github'
+		| 'simpleicons:astro'
 		| 'lang-flags:lang-de'
 		| 'lang-flags:lang-en-us'
 		| 'lang-flags:lang-es-mx'

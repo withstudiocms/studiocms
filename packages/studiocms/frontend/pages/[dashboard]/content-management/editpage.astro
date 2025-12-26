@@ -1,5 +1,7 @@
 ---
+import { getRegistryComponents } from 'studiocms:component-registry/runtime';
 import { useTranslations } from 'studiocms:i18n';
+import ComponentRegistryUI from '#frontend/components/shared/ComponentRegistryUI.astro';
 import BrowserCopyOutput from '#frontend/components/shared/storage-manager/BrowserCopyOutput.astro';
 import BrowserInputArray from '#frontend/components/shared/storage-manager/BrowserInputArray.astro';
 import EditPage from '../../../components/dashboard/content-mgmt/EditPage.astro';
@@ -12,6 +14,8 @@ const { siteConfig: config, defaultLang: lang, security } = Astro.locals.StudioC
 const currentUser = security?.userSessionData ?? null;
 
 const t = useTranslations(lang, '@studiocms/dashboard:content-index');
+
+const registryData = getRegistryComponents();
 ---
 
 <Layout 
@@ -27,6 +31,10 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-index');
   <div slot="external">
     <BrowserInputArray triggerInputs={['page-hero-image']} />
     <BrowserCopyOutput id='storage-file-copy-output' />
+    <ComponentRegistryUI 
+      registryData={registryData} 
+      triggerId='access-component-registry' 
+      />
   </div>
 
   <div slot="double-sidebar" class="inner-sidebar-container">

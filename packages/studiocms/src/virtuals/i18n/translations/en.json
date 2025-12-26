@@ -327,7 +327,9 @@
       "false-label": "False",
       "requires-supported-frontend": "Requires Supported Frontend",
       "select-augments-label": "Page Augments",
-      "no-augments": "No Augments Available"
+      "no-augments": "No Augments Available",
+      "content-utils-label": "Tools & Utilities",
+      "access-component-registry": "Access Component Registry"
     },
     "@studiocms/dashboard:404": {
       "title": "Error 404",
@@ -383,7 +385,8 @@
       "access-file-manager": "Access File Manager",
       "file-manager-selection": "File Manager Selected Identifier",
       "file-manager-url-input-placeholder": "Selected file URL will appear here",
-      "no-storage-configured": "No Storage manager installed."
+      "no-storage-configured": "No Storage manager installed.",
+      "access-component-registry": "Access Component Registry"
     },
     "@studiocms/storage-file-browser": {
       "selectFile": "Select File",
@@ -455,6 +458,23 @@
       "copy-output-copy-button": "Copy",
       "copy-output-copy-button-success": "Copied to clipboard!",
       "copy-output-copy-button-failure": "Failed to copy"
+    },
+    "@studiocms/component-registry-ui": {
+      "modalTitle": "Component Registry",
+      "closeButton": "Close",
+      "noComponentsFound": "No components found in registry",
+      "tagLabel": "Tag",
+      "componentPropsTitle": "Component Props",
+      "noPropsAvailable": "No props available",
+      "optionalLabel": "optional",
+      "noDefaultValue": "No default value",
+      "enterPlaceholder": "Enter",
+      "generatedHtmlTitle": "Generated HTML",
+      "copyToClipboard": "Copy to Clipboard",
+      "resetProps": "Reset Props",
+      "copiedSuccess": "Copied to clipboard!",
+      "copyFailed": "Failed to copy",
+      "fallbackTriggerButtonText": "Open Component Registry"
     }
   }
 }
