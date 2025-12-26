@@ -10,9 +10,7 @@ interface Props {
 
 const { registryData, noOutput, triggerId } = Astro.props;
 
-const triggerIdExists = !!triggerId;
-
-if (triggerIdExists && !triggerId) {
+if (!triggerId) {
 	throw new Error('ComponentRegistryUI: triggerId prop is required when using a trigger.');
 }
 
@@ -203,7 +201,6 @@ const translations = generateComponentTranslationMap('@studiocms/component-regis
       padding: var(--component-registry-spacing-xl);
       flex: 1;
       min-height: 0;
-      position:;
       display: flex;
       flex-direction: column;
       gap: var(--component-registry-spacing-xl);
@@ -581,11 +578,6 @@ const translations = generateComponentTranslationMap('@studiocms/component-regis
       $locale.subscribe((locale) => {
         this.handleLanguageChange(locale);
       });
-    }
-
-    disconnectedCallback() {
-      // Clean up event listener
-      $locale.off();
     }
 
     handleLanguageChange(newLang: string) {
