@@ -557,18 +557,13 @@ const translations = generateComponentTranslationMap('@studiocms/component-regis
           triggerElement.addEventListener("click", () => this.openModal());
         } else {
           console.warn(
-            `Trigger element with ID "${this.triggerId}" not found. looking for button inside component instead.`,
+            `ComponentRegistryUI: Trigger element with ID "${this.triggerId}" not found.`,
           );
-          const trigger = this.querySelector("button");
-          if (trigger) {
-            trigger.addEventListener("click", () => this.openModal());
-          }
         }
       } else {
-        const trigger = this.querySelector("button");
-        if (trigger) {
-          trigger.addEventListener("click", () => this.openModal());
-        }
+        throw new Error(
+          "ComponentRegistryUI: triggerId attribute is required when using a trigger.",
+        );
       }
 
       $locale.subscribe((locale) => {
