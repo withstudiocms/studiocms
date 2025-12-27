@@ -418,3 +418,81 @@ folder-tree-leaf {
 		opacity: 0.8;
 	}
 }
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+	/* Disable all animations */
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
+		scroll-behavior: auto !important;
+	}
+
+	/* Remove transforms on hover/interaction */
+	.context-menu-item:hover {
+		transform: none;
+	}
+
+	.context-menu-item:active {
+		transform: none;
+	}
+
+	.context-menu-item:hover svg {
+		transform: none;
+	}
+
+	.tree-node-toggle .chevron-icon {
+		transition: none;
+	}
+
+	.tree-node[aria-expanded="true"] > .tree-node-header > .tree-node-toggle .chevron-icon {
+		transform: rotate(90deg);
+	}
+
+	.folder-icon {
+		transition: color 0.01ms;
+	}
+
+	.tree-node-header:hover .folder-icon {
+		transform: none;
+	}
+
+	.tree-node[aria-expanded="true"] > .tree-node-header .folder-icon.open {
+		animation: none;
+	}
+
+	.tree-node-children {
+		transition: none;
+	}
+
+	.tree-node-children-inner {
+		transition: none;
+	}
+
+	.tree-leaf:hover {
+		transform: none;
+	}
+
+	.tree-leaf:hover .leaf-icon {
+		transform: none;
+	}
+
+	.tree-leaf:hover .draft-badge {
+		transform: none;
+	}
+
+	.leaf-icon {
+		transition: color 0.01ms;
+	}
+
+	.draft-badge {
+		animation: none;
+	}
+
+	.context-menu.active {
+		animation: none;
+	}
+}
