@@ -1,0 +1,40 @@
+---
+import type { FolderNode } from 'studiocms:sdk/types';
+import FolderTreeLeaf from './FolderTreeLeaf.astro';
+import FolderTreeNode from './FolderTreeNode.astro';
+import type { TreeProps } from './shared';
+
+interface Props extends TreeProps {}
+
+const { data, depth = 0, ...props } = Astro.props;
+
+/**
+ * Recursively sorts a tree of pages and folders by name (A to Z).
+ * @param data - The array of folders and pages to sort.
+ * @returns A new array with the sorted structure.
+ */
+function sortTree(data: FolderNode[]): FolderNode[] {
+	return data
+		.map((node) => ({
+			...node,
+			children: sortTree(node.children),
+		}))
+		.sort((a, b) => a.name.localeCompare(b.name));
+}
+
+const sortedData = sortTree(data);
+---
+
+{
+    sortedData.map((node) =>
+        node.page ? (
+            <FolderTreeLeaf node={node} depth={depth} {...props} />
+        ) : (
+            <FolderTreeNode node={node} depth={depth} {...props}>
+                {node.children && node.children.length > 0 && (
+                    <Astro.self data={node.children} depth={depth + 1} {...props} />
+                )}
+            </FolderTreeNode>
+        ),
+    )
+}

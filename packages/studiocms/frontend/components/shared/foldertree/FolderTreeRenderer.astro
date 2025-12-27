@@ -1,0 +1,252 @@
+---
+import { Icon } from 'studiocms:ui/components/icon';
+import FolderTreeNodeTree from './FolderTreeNodeTree.astro';
+import type { TreeProps } from './shared';
+
+interface Props extends TreeProps {
+	class?: string;
+	id?: string;
+}
+
+const {
+	class: className,
+	id,
+	createFolderLink,
+	createPageLink,
+	editFolderLink,
+	...props
+} = Astro.props;
+
+const containerId = `folder-tree-${crypto.randomUUID()}`;
+const menuId = `${containerId}-menu`;
+
+const containerMenuId = `${containerId}-container-menu`;
+
+const sharedProps = {
+	createFolderLink,
+	createPageLink,
+	editFolderLink,
+	...props,
+};
+---
+
+<folder-tree-container class={className} id={id}
+    data-create-folder-link={createFolderLink}
+    data-create-page-link={createPageLink}
+    data-container-id={containerId}
+    data-container-menu-id={containerMenuId}
+    data-menu-id={menuId}
+>
+    <div id={containerMenuId} class="folder-tree-container-menu">
+        <button
+            class="container-menu-item"
+            role="menuitem"
+            data-action="collapse-all"
+        >
+            <Icon name="heroicons:minus-16-solid" width={12} height={12} />
+            <span>Collapse All</span>
+        </button>
+
+        <button
+            class="container-menu-item"
+            role="menuitem"
+            data-action="expand-all"
+        >
+            <Icon name="heroicons:plus-16-solid" width={12} height={12} />
+            <span>Expand All</span>
+        </button>
+    </div>
+
+    <FolderTreeNodeTree {...sharedProps} />
+</folder-tree-container>
+
+<div id={menuId} class="context-menu" role="menu">
+    <button
+        class="context-menu-item"
+        role="menuitem"
+        data-action="create-folder"
+    >
+        <Icon name="heroicons:folder-plus" width={16} height={16} />
+        <span>Create Folder</span>
+    </button>
+    <button class="context-menu-item" role="menuitem" data-action="create-page">
+        <Icon name="heroicons:document-plus" width={16} height={16} />
+        <span>Create Page</span>
+    </button>
+    <button
+        class="context-menu-item"
+        role="menuitem"
+        data-action="collapse-all"
+    >
+        <Icon name="heroicons:minus" width={16} height={16} />
+        <span>Collapse All</span>
+    </button>
+    <button class="context-menu-item" role="menuitem" data-action="expand-all">
+        <Icon name="heroicons:plus" width={16} height={16} />
+        <span>Expand All</span>
+    </button>
+</div>
+
+<script>
+    class FolderTreeContainer extends HTMLElement {
+        private contextMenu: HTMLElement | null = null;
+        private containerMenu: HTMLElement | null = null;
+
+        constructor() {
+            super();
+        }
+
+        connectedCallback() {
+            const menuId = this.getAttribute("data-menu-id");
+            this.contextMenu = document.getElementById(menuId || "");
+            const containerMenuId = this.getAttribute("data-container-menu-id");
+            this.containerMenu = document.getElementById(containerMenuId || "");
+            this.setupContextMenu();
+            this.setupContainerMenu();
+        }
+
+        setupContextMenu() {
+            // Show context menu on right-click
+            this.addEventListener("contextmenu", (e) => {
+                const target = e.target as HTMLElement;
+
+                // Only show menu if NOT clicking on nodes or leaves
+                if (
+                    target.closest("folder-tree-node") ||
+                    target.closest("folder-tree-leaf")
+                ) {
+                    return;
+                }
+
+                e.preventDefault();
+                this.showContextMenu(e as MouseEvent);
+            });
+
+            // Hide context menu when clicking outside
+            document.addEventListener("click", (e) => {
+                if (
+                    this.contextMenu &&
+                    !this.contextMenu.contains(e.target as Node)
+                ) {
+                    this.hideContextMenu();
+                }
+            });
+
+            // Handle context menu actions
+            const menuItems =
+                this.contextMenu?.querySelectorAll(".context-menu-item");
+            menuItems?.forEach((item) => {
+                item.addEventListener("click", (e) => {
+                    e.stopPropagation();
+                    const action = (item as HTMLElement).getAttribute(
+                        "data-action",
+                    );
+                    this.handleContextMenuAction(action);
+                    this.hideContextMenu();
+                });
+            });
+
+            // Close menu on Escape key
+            document.addEventListener("keydown", (e) => {
+                if (e.key === "Escape") {
+                    this.hideContextMenu();
+                }
+            });
+        }
+
+        setupContainerMenu() {
+            // Handle container menu actions
+            const menuItems = this.containerMenu?.querySelectorAll(
+                ".container-menu-item",
+            );
+            menuItems?.forEach((item) => {
+                item.addEventListener("click", (e) => {
+                    e.stopPropagation();
+                    const action = (item as HTMLElement).getAttribute(
+                        "data-action",
+                    );
+                    this.handleContainerMenuAction(action);
+                });
+            });
+        }
+
+        showContextMenu(e: MouseEvent) {
+            if (!this.contextMenu) {
+                console.error("Context menu not found");
+                return;
+            }
+
+            // Position the menu at cursor (using clientX/clientY for fixed positioning)
+            this.contextMenu.style.left = `${e.clientX}px`;
+            this.contextMenu.style.top = `${e.clientY}px`;
+            this.contextMenu.classList.add("active");
+
+            // Adjust if menu goes off-screen
+            requestAnimationFrame(() => {
+                if (!this.contextMenu) return;
+                const rect = this.contextMenu.getBoundingClientRect();
+                const viewportWidth = window.innerWidth;
+                const viewportHeight = window.innerHeight;
+
+                if (rect.right > viewportWidth) {
+                    this.contextMenu.style.left = `${e.clientX - rect.width}px`;
+                }
+
+                if (rect.bottom > viewportHeight) {
+                    this.contextMenu.style.top = `${e.clientY - rect.height}px`;
+                }
+            });
+        }
+
+        hideContextMenu() {
+            this.contextMenu?.classList.remove("active");
+        }
+
+        handleSharedActions(action: "collapse-all" | "expand-all") {
+            switch (action) {
+                case "collapse-all":
+                    window.dispatchEvent(
+                        new CustomEvent("folderTreeNode-collapseAllFolders"),
+                    );
+                    break;
+                case "expand-all":
+                    window.dispatchEvent(
+                        new CustomEvent("folderTreeNode-expandAllFolders"),
+                    );
+                    break;
+            }
+        }
+
+        handleContextMenuAction(action: string | null) {
+            switch (action) {
+                case "create-folder":
+                    const createFolderLink =
+                        this.getAttribute("data-create-folder-link") || "#";
+                    window.location.href = createFolderLink;
+                    break;
+                case "create-page":
+                    const createPageLink =
+                        this.getAttribute("data-create-page-link") || "#";
+                    window.location.href = createPageLink;
+                    break;
+                case "collapse-all":
+                case "expand-all":
+                    this.handleSharedActions(action);
+                    break;
+            }
+        }
+
+        handleContainerMenuAction(action: string | null) {
+            switch (action) {
+                case "collapse-all":
+                case "expand-all":
+                    this.handleSharedActions(action);
+                    break;
+            }
+        }
+    }
+
+    if (!customElements.get("folder-tree-container")) {
+        customElements.define("folder-tree-container", FolderTreeContainer);
+    }
+</script>

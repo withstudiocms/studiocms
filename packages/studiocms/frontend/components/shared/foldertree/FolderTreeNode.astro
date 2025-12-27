@@ -1,0 +1,403 @@
+---
+import { Icon } from 'studiocms:ui/components/icon';
+import type { NodeLeafProps } from './shared';
+
+interface Props extends NodeLeafProps {}
+
+const { createFolderLink, createPageLink, editFolderLink, node, depth = 0 } = Astro.props;
+
+const nodeId = `folder-${node.id}`;
+const contentId = `content-${node.id}`;
+const href = node.page === false ? editFolderLink : '#';
+---
+
+<folder-tree-node
+    data-node-id={nodeId}
+    data-depth={depth}
+    data-href={href}
+    data-folder-id={node.id}
+    data-create-subfolder-link={createFolderLink}
+    data-create-page-link={createPageLink}
+    class="tree-node"
+    role="treeitem"
+    aria-expanded="false"
+>
+    <div id={`${nodeId}-tree-node-header`} class="tree-node-header">
+        <button
+            id={`${nodeId}-tree-node-toggle`}
+            class="tree-node-toggle"
+            type="button"
+            aria-controls={contentId}
+            aria-label={`Toggle ${node.name} folder`}
+        >
+            <Icon
+                name="heroicons:chevron-right"
+                class="chevron-icon"
+                width={16}
+                height={16}
+            />
+        </button>
+        <div class="tree-node-content">
+            <Icon
+                name="heroicons:folder"
+                class="folder-icon closed"
+                width={20}
+                height={20}
+            />
+            <Icon
+                name="heroicons:folder-open"
+                class="folder-icon open"
+                width={20}
+                height={20}
+            />
+            <Icon
+                name="heroicons:folder-open-solid"
+                class="folder-icon selected"
+                width={20}
+                height={20}
+            />
+            <span class="tree-node-label">{node.name}</span>
+        </div>
+    </div>
+    <div class="tree-node-children" id={contentId}>
+        <div class="tree-node-children-inner">
+            <slot />
+        </div>
+    </div>
+    <div id={`${nodeId}-context-menu`} class="context-menu" role="menu">
+        <button class="context-menu-item" role="menuitem" data-action="edit">
+            <Icon name="heroicons:pencil" width={16} height={16} />
+            <span>Edit Folder</span>
+        </button>
+        <button
+            class="context-menu-item"
+            role="menuitem"
+            data-action="create-folder"
+        >
+            <Icon name="heroicons:folder-plus" width={16} height={16} />
+            <span>Create Subfolder</span>
+        </button>
+        <button
+            class="context-menu-item"
+            role="menuitem"
+            data-action="create-page"
+        >
+            <Icon name="heroicons:document-plus" width={16} height={16} />
+            <span>Create Subpage</span>
+        </button>
+    </div>
+</folder-tree-node>
+
+<script>
+    class FolderTreeNode extends HTMLElement {
+        private toggleButton: HTMLButtonElement | null = null;
+        private header: HTMLElement | null = null;
+        private contextMenu: HTMLElement | null = null;
+        private isExpanded = false;
+        private href: string;
+
+        constructor() {
+            super();
+            this.href = this.getAttribute("data-href") || "#";
+        }
+
+        connectedCallback() {
+            const nodeId = this.getAttribute("data-node-id");
+
+            this.toggleButton = this.querySelector(
+                `#${nodeId}-tree-node-toggle`,
+            );
+            this.header = this.querySelector(`#${nodeId}-tree-node-header`);
+            this.contextMenu = this.querySelector(`#${nodeId}-context-menu`);
+            this.setupEventListeners();
+            this.loadExpandedState();
+            this.setupContextMenu();
+            this.setupActiveState();
+        }
+
+        setupEventListeners() {
+            // Toggle on button click
+            this.toggleButton?.addEventListener("click", (e) => {
+                e.stopPropagation();
+                this.toggle();
+            });
+
+            // Toggle on header click (but not the button)
+            this.header?.addEventListener("click", (e) => {
+                if (
+                    e.target !== this.toggleButton &&
+                    !this.toggleButton?.contains(e.target as Node)
+                ) {
+                    this.toggle();
+                }
+            });
+
+            // Keyboard support
+            this.addEventListener("keydown", (e) => {
+                switch (e.key) {
+                    case "Enter":
+                    case " ":
+                        e.preventDefault();
+                        this.toggle();
+                        break;
+                    case "ArrowRight":
+                        if (!this.isExpanded) {
+                            e.preventDefault();
+                            this.expand();
+                        }
+                        break;
+                    case "ArrowLeft":
+                        if (this.isExpanded) {
+                            e.preventDefault();
+                            this.collapse();
+                        }
+                        break;
+                }
+            });
+
+            // Custom window event for mass-collapse
+            window.addEventListener("folderTreeNode-collapseAllFolders", () => {
+                this.collapse();
+            });
+
+            window.addEventListener("folderTreeNode-expandAllFolders", () => {
+                this.expand();
+            });
+        }
+
+        disconnectedCallback() {
+            window.removeEventListener(
+                "folderTreeNode-collapseAllFolders",
+                () => {
+                    this.collapse();
+                },
+            );
+            window.removeEventListener(
+                "folderTreeNode-expandAllFolders",
+                () => {
+                    this.expand();
+                },
+            );
+        }
+
+        setupContextMenu() {
+            // Show context menu on right-click
+            this.header?.addEventListener("contextmenu", (e) => {
+                e.preventDefault();
+                this.showContextMenu(e as MouseEvent);
+            });
+
+            // Hide context menu when clicking outside
+            document.addEventListener("click", (e) => {
+                if (
+                    this.contextMenu &&
+                    !this.contextMenu.contains(e.target as Node)
+                ) {
+                    this.hideContextMenu();
+                }
+            });
+
+            // Handle context menu actions
+            const menuItems =
+                this.contextMenu?.querySelectorAll(".context-menu-item");
+            menuItems?.forEach((item) => {
+                item.addEventListener("click", (e) => {
+                    e.stopPropagation();
+                    const action = (item as HTMLElement).getAttribute(
+                        "data-action",
+                    );
+                    this.handleContextMenuAction(action);
+                    this.hideContextMenu();
+                });
+            });
+
+            // Close menu on Escape key
+            document.addEventListener("keydown", (e) => {
+                if (e.key === "Escape") {
+                    this.hideContextMenu();
+                }
+            });
+        }
+
+        genUrl(base: string, params?: Record<string, string>) {
+            const url = new URL(base, window.location.origin);
+
+            if (params) {
+                for (const [key, value] of Object.entries(params)) {
+                    url.searchParams.set(key, value);
+                }
+            }
+
+            return url.href;
+        }
+
+        setupActiveState() {
+            let hrefEdit = null;
+            try {
+                const url = this.genUrl(this.href, {
+                    folder: this.getAttribute("data-folder-id") || "",
+                });
+
+                hrefEdit = new URL(url).searchParams.get("folder");
+            } catch {}
+            const currentEdit = new URL(window.location.href).searchParams.get(
+                "folder",
+            );
+
+            const isActive =
+                hrefEdit !== null &&
+                currentEdit !== null &&
+                hrefEdit === currentEdit;
+
+            if (isActive) {
+                this.setAttribute("aria-current", "page");
+            } else {
+                this.removeAttribute("aria-current");
+            }
+        }
+
+        showContextMenu(e: MouseEvent) {
+            if (!this.contextMenu) return;
+
+            // Position the menu at cursor (using clientX/clientY for fixed positioning)
+            this.contextMenu.style.left = `${e.clientX}px`;
+            this.contextMenu.style.top = `${e.clientY}px`;
+            this.contextMenu.classList.add("active");
+
+            // Adjust if menu goes off-screen
+            requestAnimationFrame(() => {
+                if (!this.contextMenu) return;
+                const rect = this.contextMenu.getBoundingClientRect();
+                const viewportWidth = window.innerWidth;
+                const viewportHeight = window.innerHeight;
+
+                if (rect.right > viewportWidth) {
+                    this.contextMenu.style.left = `${e.clientX - rect.width}px`;
+                }
+
+                if (rect.bottom > viewportHeight) {
+                    this.contextMenu.style.top = `${e.pageY - rect.height}px`;
+                }
+            });
+        }
+
+        hideContextMenu() {
+            this.contextMenu?.classList.remove("active");
+        }
+
+        handleContextMenuAction(action: string | null) {
+            const href = this.getAttribute("data-href") || "#";
+            const folderId = this.getAttribute("data-folder-id") || "null";
+
+            const createFolderUrl =
+                this.getAttribute("data-create-subfolder-link") || "#";
+            const createPageUrl =
+                this.getAttribute("data-create-page-link") || "#";
+
+            switch (action) {
+                case "edit":
+                    const editLink = this.genUrl(href, { folder: folderId });
+                    window.location.href = editLink;
+                    break;
+
+                case "create-folder":
+                    const createFolderLink = this.genUrl(createFolderUrl, {
+                        folder: folderId,
+                    });
+                    window.location.href = createFolderLink;
+                    break;
+
+                case "create-page":
+                    const createPageLink = this.genUrl(createPageUrl, {
+                        folder: folderId,
+                    });
+                    window.location.href = createPageLink;
+                    break;
+            }
+        }
+
+        toggle() {
+            if (this.isExpanded) {
+                this.collapse();
+            } else {
+                this.expand();
+            }
+        }
+
+        expand() {
+            this.isExpanded = true;
+            this.setAttribute("aria-expanded", "true");
+            this.saveExpandedState();
+        }
+
+        collapse() {
+            this.isExpanded = false;
+            this.setAttribute("aria-expanded", "false");
+            this.saveExpandedState();
+        }
+
+        interactWithDB(onsuccess: IDBOpenDBRequest["onsuccess"]) {
+            const result = indexedDB.open("studiocms-folder-tree-node", 1);
+
+            result.onupgradeneeded = (event) => {
+                const db = (event.target as IDBOpenDBRequest).result;
+                db.createObjectStore("nodes", { keyPath: "id" });
+            };
+
+            result.onsuccess = onsuccess;
+
+            result.onerror = (event) => {
+                console.error(
+                    "IndexedDB error:",
+                    (event.target as IDBOpenDBRequest).error,
+                );
+            };
+        }
+
+        saveExpandedState() {
+            const nodeId = this.getAttribute("data-node-id");
+            if (!nodeId) return;
+            return this.interactWithDB((event) => {
+                const db = (event.target as IDBOpenDBRequest).result;
+                const transaction = db.transaction("nodes", "readwrite");
+                const store = transaction.objectStore("nodes");
+
+                store.put({ id: nodeId, expanded: this.isExpanded });
+
+                transaction.oncomplete = () => {
+                    db.close();
+                };
+            });
+        }
+
+        loadExpandedState() {
+            const nodeId = this.getAttribute("data-node-id");
+            if (!nodeId) return;
+            return this.interactWithDB((event) => {
+                const db = (event.target as IDBOpenDBRequest).result;
+                const transaction = db.transaction("nodes", "readonly");
+                const store = transaction.objectStore("nodes");
+
+                const getRequest = store.get(nodeId);
+                getRequest.onsuccess = (event) => {
+                    const result = (event.target as IDBRequest).result;
+                    if (result) {
+                        this.isExpanded = result.expanded;
+                        this.setAttribute(
+                            "aria-expanded",
+                            String(this.isExpanded),
+                        );
+                    }
+                };
+
+                transaction.oncomplete = () => {
+                    db.close();
+                };
+            });
+        }
+    }
+
+    if (!customElements.get("folder-tree-node")) {
+        customElements.define("folder-tree-node", FolderTreeNode);
+    }
+</script>

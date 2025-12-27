@@ -29,7 +29,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-index');
 
   <div slot="double-sidebar" class="inner-sidebar-container">
     <div class="sidebar-links-container">
-      <InnerSidebarElement isNewPage {lang} {config} />
+      <InnerSidebarElement {lang} />
     </div>
   </div>
 
@@ -66,24 +66,25 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-index');
 </script>
 
 <style>
-  .inner-sidebar-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    min-height: 100vh;
-    max-height: 100%;
-    padding: 1.5rem;
-  }
 
   .sidebar-links-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     width: 100%;
-    min-height: 100%;
+    min-height: 99vh;
     height: 100%;
+    gap: 0; /* Removed gap between items (this overrides a site-wide setting) */
   }
 
+  .inner-sidebar-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 100vh;
+    max-height: 100%;
+    padding: 0.5rem;
+  }
 
   .placeholder-info {
     display: flex;
