@@ -350,7 +350,7 @@ function getDefaultUiOpts(currentFlags: Array<{ key: string; flag: `lang-${strin
 			}),
 			simpleicons: stripIconify({
 				src: simpleIcons,
-				icons: ['github', 'discord', 'auth0'],
+				icons: ['github', 'discord', 'auth0', 'astro'],
 			}),
 			'lang-flags': stripIconify({
 				src: circleFlags,

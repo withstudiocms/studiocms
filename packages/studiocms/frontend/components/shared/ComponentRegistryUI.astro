@@ -1,0 +1,889 @@
+---
+import type { ComponentRegistryEntry } from 'studiocms:component-registry/runtime';
+import { generateComponentTranslationMap } from 'studiocms:i18n';
+import '../../styles/code-component.css';
+
+interface Props {
+	registryData: ComponentRegistryEntry[];
+	triggerId: string;
+	noOutput?: boolean;
+}
+
+const { registryData, noOutput, triggerId } = Astro.props;
+
+const translations = generateComponentTranslationMap('@studiocms/component-registry-ui');
+---
+
+<component-registry-modal
+  data-registry={JSON.stringify(registryData)}
+  data-no-output={noOutput ? "true" : "false"}
+  data-trigger-id={triggerId}
+  data-translations={JSON.stringify(translations)}
+  data-lang-storage-key={'studiocms-i18n-locale'}
+>
+</component-registry-modal>
+
+<style is:global>
+  :root {
+    --component-registry-bg-base: var(--background-base, hsl(0 0% 6%));
+    --component-registry-bg-step-1: var(--background-step-1, hsl(0 0% 8%));
+    --component-registry-bg-step-2: var(--background-step-2, hsl(0, 0%, 9%));
+    --component-registry-bg-step-3: var(--background-step-3, hsl(0, 0%, 12%));
+
+    --component-registry-text-normal: var(--text-normal, hsl(0 0% 100%));
+    --component-registry-text-dimmed: var(--text-dimmed, hsl(0 0% 100% / 0.8));
+    --component-registry-text-muted: var(--text-muted, hsl(0 0% 100% / 0.75));
+    --component-registry-text-inverted: var(--text-inverted, hsl(0 0% 0%));
+
+    --component-registry-border: var(--border, hsl(240 5% 17%));
+    --component-registry-shadow: var(--shadow, hsl(0 0% 0% / 0.6));
+
+    --component-registry-default-base: var(--default-base, hsl(0, 0%, 12%));
+    --component-registry-default-hover: var(--default-hover, hsl(0, 0%, 17%));
+    --component-registry-default-active: var(--default-active, hsl(0, 0%, 14%));
+
+    --component-registry-primary-base: var(--primary-base, hsl(259, 60%, 75%));
+    --component-registry-primary-hover: var(
+      --primary-hover,
+      hsl(259, 71%, 82%)
+    );
+    --component-registry-primary-active: var(
+      --primary-active,
+      hsl(259, 75%, 77%)
+    );
+    --component-registry-primary-flat: var(
+      --primary-flat,
+      hsl(259 83% 73% / 0.1)
+    );
+
+    --component-registry-success-base: var(--success-base, hsl(142, 69%, 46%));
+    --component-registry-success-hover: var(
+      --success-hover,
+      hsl(142, 67%, 59%)
+    );
+
+    --component-registry-overlay: hsl(0 0% 0% / 0.6);
+    --component-registry-white: hsl(0 0% 100%);
+
+    --component-registry-spacing-xs: 0.25rem;
+    --component-registry-spacing-sm: 0.375rem;
+    --component-registry-spacing-md: 0.5rem;
+    --component-registry-spacing-lg: 0.75rem;
+    --component-registry-spacing-xl: 1rem;
+    --component-registry-spacing-2xl: 1.25rem;
+
+    --component-registry-radius-sm: 4px;
+    --component-registry-radius-md: 6px;
+    --component-registry-radius-lg: 8px;
+  }
+
+  [data-theme="light"] {
+    --component-registry-bg-base: var(--background-base, hsl(0 0% 97%));
+    --component-registry-bg-step-1: var(--background-step-1, hsl(0 0% 95%));
+    --component-registry-bg-step-2: var(--background-step-2, hsl(0, 0%, 92%));
+    --component-registry-bg-step-3: var(--background-step-3, hsl(0, 0%, 89%));
+
+    --component-registry-text-normal: var(--text-normal, hsl(0 0% 0%));
+    --component-registry-text-dimmed: var(--text-dimmed, hsl(0 0% 0% / 0.8));
+    --component-registry-text-muted: var(--text-muted, hsl(0 0% 0% / 0.75));
+    --component-registry-text-inverted: var(
+      --text-inverted,
+      var(--component-registry-white)
+    );
+
+    --component-registry-border: var(--border, hsl(263 5% 68%));
+    --component-registry-shadow: var(--shadow, hsl(0 0% 65% / 0.6));
+
+    --component-registry-default-base: var(--default-base, hsl(0, 0%, 82%));
+    --component-registry-default-hover: var(--default-hover, hsl(0, 0%, 91%));
+    --component-registry-default-active: var(--default-active, hsl(0, 0%, 86%));
+
+    --component-registry-primary-base: var(--primary-base, hsl(259, 74%, 25%));
+    --component-registry-primary-hover: var(
+      --primary-hover,
+      hsl(259, 76%, 35%)
+    );
+    --component-registry-primary-active: var(
+      --primary-active,
+      hsl(259, 76%, 32%)
+    );
+    --component-registry-primary-flat: var(
+      --primary-flat,
+      hsl(259 83% 73% / 0.1)
+    );
+
+    --component-registry-success-base: var(--success-base, hsl(142, 60%, 44%));
+    --component-registry-success-hover: var(
+      --success-hover,
+      hsl(142, 60%, 55%)
+    );
+
+    --component-registry-overlay: hsl(0 0% 0% / 0.4);
+  }
+
+  component-registry-modal {
+    display: inline-block;
+
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: var(--component-registry-overlay);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      opacity: 1;
+      transition: opacity 0.2s ease;
+
+      &.hidden {
+        opacity: 0;
+        pointer-events: none;
+      }
+    }
+
+    .modal-container {
+      background-color: var(--component-registry-bg-step-1);
+      border: 1px solid var(--component-registry-border);
+      border-radius: var(--component-registry-radius-lg);
+      box-shadow: 0 10px 50px var(--component-registry-shadow);
+      width: 90%;
+      max-width: 1200px;
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transform: translateY(0);
+      transition: transform 0.3s ease;
+    }
+
+    .modal-overlay.hidden .modal-container {
+      transform: translateY(20px);
+    }
+
+    .modal-header {
+      padding: var(--component-registry-spacing-lg)
+        var(--component-registry-spacing-xl);
+      border-bottom: 1px solid var(--component-registry-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--component-registry-text-normal);
+      margin: 0;
+    }
+
+    .close-button {
+      background: transparent;
+      border: none;
+      color: var(--component-registry-text-dimmed);
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: var(--component-registry-spacing-xs);
+      line-height: 1;
+      transition: color 0.2s ease;
+
+      &:hover {
+        color: var(--component-registry-text-normal);
+      }
+    }
+
+    .modal-body {
+      padding: var(--component-registry-spacing-xl);
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--component-registry-spacing-xl);
+      overflow: hidden;
+    }
+
+    .modal-content-row {
+      display: flex;
+      flex-direction: column;
+      gap: var(--component-registry-spacing-xl);
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
+
+      @media (min-width: 768px) {
+        flex-direction: row;
+      }
+    }
+
+    .component-list-wrapper {
+      flex: 1;
+      min-width: 0;
+      min-height: 0;
+      overflow-y: auto;
+      padding-right: var(--component-registry-spacing-xs);
+
+      @media (min-width: 768px) {
+        padding-right: var(--component-registry-spacing-lg);
+      }
+
+      &::-webkit-scrollbar {
+        width: 8px;
+      }
+
+      &::-webkit-scrollbar-track {
+        background: var(--component-registry-bg-step-2);
+        border-radius: var(--component-registry-radius-sm);
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background: var(--component-registry-border);
+        border-radius: var(--component-registry-radius-sm);
+
+        &:hover {
+          background: var(--component-registry-text-muted);
+        }
+      }
+    }
+
+    .props-wrapper {
+      flex: 1;
+      min-width: 0;
+      min-height: 0;
+      padding: var(--component-registry-spacing-lg);
+      background-color: var(--component-registry-bg-step-2);
+      border: 1px solid var(--component-registry-border);
+      border-radius: var(--component-registry-radius-md);
+      max-width: 100%;
+      display: flex;
+      flex-direction: column;
+
+      &[style*="display: none"] {
+        display: none !important;
+      }
+    }
+
+    .output-wrapper {
+      flex-shrink: 0;
+    }
+
+    .component-list {
+      display: grid;
+      gap: var(--component-registry-spacing-md);
+    }
+
+    .component-card {
+      padding: var(--component-registry-spacing-lg);
+      background-color: var(--component-registry-bg-step-2);
+      border: 1px solid var(--component-registry-border);
+      border-radius: var(--component-registry-radius-md);
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      &:hover {
+        background-color: var(--component-registry-bg-step-3);
+        border-color: var(--component-registry-primary-base);
+      }
+
+      &.selected {
+        display: block;
+        border-color: var(--component-registry-primary-base);
+        background-color: var(--component-registry-primary-flat);
+      }
+    }
+
+    .component-name {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--component-registry-text-normal);
+      margin: 0 0 var(--component-registry-spacing-xs) 0;
+    }
+
+    .component-safe-name {
+      font-size: 0.875rem;
+      color: var(--component-registry-text-muted);
+      font-family: "Courier New", monospace;
+    }
+
+    .props-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--component-registry-text-normal);
+      margin: 0 0 var(--component-registry-spacing-lg) 0;
+    }
+
+    .prop-group {
+      margin-bottom: var(--component-registry-spacing-lg);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .prop-label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--component-registry-text-dimmed);
+      margin-bottom: var(--component-registry-spacing-xs);
+    }
+
+    .prop-info {
+      font-size: 0.75rem;
+      color: var(--component-registry-text-muted);
+      margin-left: var(--component-registry-spacing-xs);
+    }
+
+    .prop-input {
+      padding: var(--component-registry-spacing-md);
+      background-color: var(--component-registry-bg-step-3);
+      border: 1px solid var(--component-registry-border);
+      border-radius: var(--component-registry-radius-sm);
+      color: var(--component-registry-text-normal);
+      font-size: 0.875rem;
+      font-family: "Courier New", monospace;
+
+      &:focus {
+        outline: none;
+        border-color: var(--component-registry-primary-base);
+      }
+    }
+
+    .output-section {
+      padding: var(--component-registry-spacing-lg);
+      background-color: var(--component-registry-bg-step-2);
+      border: 1px solid var(--component-registry-border);
+      border-radius: var(--component-registry-radius-md);
+    }
+
+    .output-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--component-registry-text-normal);
+      margin: 0 0 var(--component-registry-spacing-lg) 0;
+    }
+
+    .output-code {
+      padding: var(--component-registry-spacing-md);
+      background-color: var(--component-registry-bg-base) !important;
+    }
+
+    .button-group {
+      display: flex;
+      gap: var(--component-registry-spacing-md);
+      margin-top: var(--component-registry-spacing-lg);
+    }
+
+    .button {
+      padding: var(--component-registry-spacing-md)
+        var(--component-registry-spacing-xl);
+      border: 1px solid var(--component-registry-border);
+      border-radius: var(--component-registry-radius-sm);
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .button-primary {
+      background-color: var(--component-registry-primary-base);
+      color: var(--component-registry-text-inverted);
+
+      &:hover {
+        background-color: var(--component-registry-primary-hover);
+      }
+    }
+
+    .button-success {
+      background-color: var(--component-registry-success-base);
+      color: var(--component-registry-text-inverted);
+
+      &:hover {
+        background-color: var(--component-registry-success-hover);
+      }
+    }
+
+    .button-secondary {
+      background-color: var(--component-registry-default-base);
+      color: var(--component-registry-text-normal);
+
+      &:hover {
+        background-color: var(--component-registry-default-hover);
+      }
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: var(--component-registry-spacing-2xl);
+      color: var(--component-registry-text-muted);
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes slideUp {
+      from {
+        transform: translateY(20px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+  }
+</style>
+
+<script>
+  import type { ComponentRegistryEntry } from "@withstudiocms/component-registry/types";
+  import { $locale } from 'studiocms:i18n/client';
+
+  export interface TranslationStrings {
+    // Modal
+    modalTitle: string;
+    closeButton: string;
+
+    // Component List
+    noComponentsFound: string;
+    tagLabel: string;
+
+    // Props Section
+    componentPropsTitle: string;
+    noPropsAvailable: string;
+    optionalLabel: string;
+    noDefaultValue: string;
+    enterPlaceholder: string;
+
+    // Output Section
+    generatedHtmlTitle: string;
+    copyToClipboard: string;
+    resetProps: string;
+    copiedSuccess: string;
+    copyFailed: string;
+
+    // Fallback Trigger
+    fallbackTriggerButtonText: string;
+  }
+
+  export interface ComponentTranslations {
+    [lang: string]: TranslationStrings;
+  }
+
+  class ComponentRegistryModal extends HTMLElement {
+    private registryData: ComponentRegistryEntry[] = [];
+    private selectedComponent: ComponentRegistryEntry | null = null;
+    private propValues: Map<string, string> = new Map();
+    private modalOpen = false;
+    private noOutput = false;
+    private triggerId: string | null = null;
+    private translations: ComponentTranslations = {};
+    private currentLang = "en";
+    private localStorageLangKey: string | null = null;
+
+    private t(key: keyof TranslationStrings): string {
+      return (
+        this.translations[this.currentLang]?.[key] ??
+        this.translations["en"][key] ?? key
+      );
+    }
+
+    private getCurrentLocale(): string {
+      if (this.localStorageLangKey) {
+        // Check local storage for value
+        const localValue = localStorage.getItem(this.localStorageLangKey);
+        if (localValue) {
+          return localValue;
+        }
+      }
+      // Check Document language
+      const docLang = document.documentElement.lang;
+      if (docLang && this.translations[docLang]) {
+        return docLang;
+      }
+      // Default to English
+      return "en";
+    }
+
+    connectedCallback() {
+      const dataAttr = this.getAttribute("data-registry");
+      if (dataAttr) {
+        try {
+          this.registryData = JSON.parse(dataAttr);
+        } catch (e) {
+          console.error("Failed to parse registry data:", e);
+        }
+      }
+
+      const languageStorageKeyOverride = this.getAttribute(
+        "data-lang-storage-key",
+      );
+      if (languageStorageKeyOverride) {
+        this.localStorageLangKey = languageStorageKeyOverride;
+      }
+
+      // Initialize translations
+      const translationsAttr = this.getAttribute("data-translations");
+      if (translationsAttr) {
+        try {
+          this.translations = JSON.parse(translationsAttr);
+          this.currentLang = this.getCurrentLocale();
+        } catch (e) {
+          console.error("Failed to parse translations:", e);
+        }
+      } else {
+        throw new Error("No translations provided");
+      }
+
+      const noOutputAttr = this.getAttribute("data-no-output");
+      this.noOutput = noOutputAttr === "true";
+
+      this.triggerId = this.getAttribute("data-trigger-id");
+      if (this.triggerId) {
+        const triggerElement = document.getElementById(this.triggerId);
+        if (triggerElement) {
+          triggerElement.addEventListener("click", () => this.openModal());
+        } else {
+          console.warn(
+            `ComponentRegistryUI: Trigger element with ID "${this.triggerId}" not found.`,
+          );
+        }
+      } else {
+        throw new Error(
+          "ComponentRegistryUI: triggerId attribute is required.",
+        );
+      }
+
+      $locale.subscribe((locale) => {
+        this.handleLanguageChange(locale);
+      });
+    }
+
+    handleLanguageChange(newLang: string) {
+      // Update current language
+      if (this.translations[newLang]) {
+        this.currentLang = newLang;
+
+        // Rerender modal if it's open
+        if (this.modalOpen) {
+          this.rerenderModal();
+        }
+      } else {
+        console.warn(
+          `Translation for language "${newLang}" not found. Available languages: ${Object.keys(this.translations).join(", ")}`,
+        );
+      }
+    }
+
+    rerenderModal() {
+      const overlay = this.querySelector(".modal-overlay");
+      if (!overlay) return;
+
+      // Store current state
+      const wasHidden = overlay.classList.contains("hidden");
+
+      // Remove old modal
+      overlay.remove();
+
+      // Recreate modal with new translations
+      this.renderModal();
+
+      // Restore visibility state
+      const newOverlay = this.querySelector(".modal-overlay");
+      if (newOverlay && !wasHidden) {
+        newOverlay.classList.remove("hidden");
+      }
+
+      // Restore selected component if any
+      if (this.selectedComponent) {
+        this.renderComponentList();
+        this.renderPropsSection();
+        this.renderOutputSection();
+      } else {
+        this.renderComponentList();
+      }
+    }
+
+    openModal() {
+      if (this.modalOpen) return;
+      this.modalOpen = true;
+
+      // Create modal if it doesn't exist
+      let overlay = this.querySelector(".modal-overlay");
+      if (!overlay) {
+        this.renderModal();
+        overlay = this.querySelector(".modal-overlay");
+      }
+
+      if (overlay) {
+        // Force reflow for animation
+        overlay.classList.add("hidden");
+        requestAnimationFrame(() => {
+          overlay?.classList.remove("hidden");
+        });
+      }
+    }
+
+    closeModal() {
+      this.modalOpen = false;
+      const overlay = this.querySelector(".modal-overlay");
+      if (overlay) {
+        overlay.classList.add("hidden");
+      }
+      this.selectedComponent = null;
+      this.propValues.clear();
+    }
+
+    selectComponent(component: ComponentRegistryEntry) {
+      this.selectedComponent = component;
+      this.propValues.clear();
+
+      // Initialize prop values with defaults
+      component.props.forEach((prop) => {
+        if (prop.defaultValue) {
+          this.propValues.set(prop.name, prop.defaultValue);
+        } else {
+          this.propValues.set(prop.name, "");
+        }
+      });
+
+      this.updateModalContent();
+    }
+
+    generateHTMLString(): string {
+      if (!this.selectedComponent) return "";
+
+      const tagName = this.selectedComponent.name;
+      const attributes: string[] = [];
+
+      this.selectedComponent.props.forEach((prop) => {
+        const value = this.propValues.get(prop.name);
+        if (value) {
+          attributes.push(`${prop.name}="${value}"`);
+        }
+      });
+
+      if (attributes.length > 0) {
+        return `<${tagName} ${attributes.join(" ")}></${tagName}>`;
+      }
+      return `<${tagName}></${tagName}>`;
+    }
+
+    copyToClipboard() {
+      const htmlString = this.generateHTMLString();
+      const copyButton = this.querySelector(
+        ".copy-button",
+      ) as HTMLButtonElement;
+      if (!copyButton) return;
+
+      const originalText = copyButton.textContent;
+
+      navigator.clipboard
+        .writeText(htmlString)
+        .then(() => {
+          copyButton.textContent = this.t("copiedSuccess");
+          setTimeout(() => {
+            copyButton.textContent = originalText;
+          }, 2000);
+        })
+        .catch((err) => {
+          console.error(this.t("copyFailed"), err);
+          copyButton.textContent = this.t("copyFailed");
+          setTimeout(() => {
+            copyButton.textContent = originalText;
+          }, 2000);
+        });
+    }
+
+    renderModal() {
+      const overlay = document.createElement("div");
+      overlay.className = "modal-overlay hidden";
+      overlay.innerHTML = `
+        <div class="modal-container">
+          <div class="modal-header">
+            <h2 class="modal-title">${this.t("modalTitle")}</h2>
+            <button class="close-button" type="button" aria-label="${this.t("closeButton")}">&times;</button>
+          </div>
+          <div class="modal-body">
+            <div class="modal-content-row">
+              <div class="component-list-wrapper">
+                <div class="component-list"></div>
+              </div>
+              <div class="props-wrapper" style="display: none;">
+              </div>
+            </div>
+            <div class="output-wrapper">
+              <div class="output-section" style="display: none;"></div>
+            </div>
+          </div>
+        </div>
+      `;
+
+      overlay
+        .querySelector(".close-button")
+        ?.addEventListener("click", () => this.closeModal());
+      overlay.addEventListener("click", (e) => {
+        if (e.target === overlay) {
+          this.closeModal();
+        }
+      });
+
+      this.appendChild(overlay);
+      this.renderComponentList();
+    }
+
+    // create a formatted display name for an Astro Component
+    // e.g. <cms-img> => CMS Image
+    createDisplayName(tagName: string): string {
+      const formattedName = tagName
+        .replace(/-/g, " ")
+        .replace(/\b\w/g, (char) => char.toUpperCase());
+      return formattedName;
+    }
+
+    renderComponentList() {
+      const listContainer = this.querySelector(".component-list");
+      if (!listContainer) return;
+
+      listContainer.innerHTML = "";
+
+      if (this.registryData.length === 0) {
+        listContainer.innerHTML = `<div class="empty-state">${this.t("noComponentsFound")}</div>`;
+        return;
+      }
+
+      this.registryData.forEach((component) => {
+        const card = document.createElement("div");
+        card.className = "component-card";
+        if (this.selectedComponent?.name === component.name) {
+          card.classList.add("selected");
+        }
+
+        card.innerHTML = `
+          <h3 class="component-name">${this.createDisplayName(component.name)}</h3>
+          <div class="component-tag-display">${this.t("tagLabel")}: &lt;${component.name}&gt;</div>
+        `;
+
+        card.addEventListener("click", () => this.selectComponent(component));
+        listContainer.appendChild(card);
+      });
+    }
+
+    updateModalContent() {
+      this.renderComponentList();
+      this.renderPropsSection();
+      this.renderOutputSection();
+    }
+
+    renderPropsSection() {
+      const propsWrapper = this.querySelector(".props-wrapper") as HTMLElement;
+      if (!propsWrapper || !this.selectedComponent) return;
+
+      propsWrapper.style.display = "block";
+      propsWrapper.innerHTML = `<h3 class="props-title">${this.t("componentPropsTitle")}</h3>`;
+
+      if (this.selectedComponent.props.length === 0) {
+        propsWrapper.innerHTML += `<div class="empty-state">${this.t("noPropsAvailable")}</div>`;
+        return;
+      }
+
+      this.selectedComponent.props.forEach((prop) => {
+        const propGroup = document.createElement("div");
+        propGroup.className = "prop-group";
+
+        const optionalText = this.t("optionalLabel");
+        const typeInfo = prop.optional
+          ? `${prop.type} (${optionalText})`
+          : prop.type;
+        const description = prop.description ? ` - ${prop.description}` : "";
+
+        const propId = `prop-${prop.name}-${Date.now()}`;
+
+        const inputPlaceholder = this.noOutput
+          ? prop.defaultValue
+            ? prop.defaultValue
+            : this.t("noDefaultValue")
+          : `${this.t("enterPlaceholder")} ${prop.name}...`;
+
+        propGroup.innerHTML = `
+          <label class="prop-label" for="${propId}">
+            ${prop.name}
+            <span class="prop-info">${typeInfo}${description}</span>
+          </label>
+          <input 
+            type="text" 
+            class="prop-input" 
+            id="${propId}"
+            name="${prop.name}"
+            data-prop-name="${prop.name}"
+            value="${this.noOutput ? "" : this.propValues.get(prop.name)}"
+            placeholder="${inputPlaceholder}"
+            ${this.noOutput ? "readonly disabled" : ""}
+          />
+        `;
+
+        const input = propGroup.querySelector("input");
+        input?.addEventListener("input", (e) => {
+          const target = e.target as HTMLInputElement;
+          this.propValues.set(prop.name, target.value);
+          this.renderOutputSection();
+        });
+
+        propsWrapper.appendChild(propGroup);
+      });
+    }
+
+    renderOutputSection() {
+      const outputSection = this.querySelector(
+        ".output-section",
+      ) as HTMLElement;
+      if (!outputSection || !this.selectedComponent) return;
+
+      if (this.noOutput) {
+        outputSection.style.display = "none";
+        return;
+      }
+
+      outputSection.style.display = "block";
+      const htmlString = this.generateHTMLString();
+
+      outputSection.innerHTML = `
+        <h3 class="output-title">${this.t("generatedHtmlTitle")}</h3>
+        <pre class="code-container scrollbar output-code"><code class="custom-code">${this.escapeHtml(htmlString)}</code></pre>
+        <div class="button-group">
+          <button class="button button-success copy-button" type="button">
+            ${this.t("copyToClipboard")}
+          </button>
+          <button class="button button-secondary reset-button" type="button">
+            ${this.t("resetProps")}
+          </button>
+        </div>
+      `;
+
+      outputSection
+        .querySelector(".copy-button")
+        ?.addEventListener("click", () => this.copyToClipboard());
+      outputSection
+        .querySelector(".reset-button")
+        ?.addEventListener("click", () => {
+          if (this.selectedComponent) {
+            this.selectComponent(this.selectedComponent);
+          }
+        });
+    }
+
+    escapeHtml(text: string): string {
+      const div = document.createElement("div");
+      div.textContent = text;
+      return div.innerHTML;
+    }
+  }
+
+  if (!customElements.get("component-registry-modal")) {
+    customElements.define("component-registry-modal", ComponentRegistryModal);
+  }
+</script>

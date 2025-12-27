@@ -50,10 +50,6 @@ const t = useTranslations(lang, '@studiocms/storage-file-browser');
     </div>
 </div>
 
-<div class="storage-copy-output-divider" data-disabled={`${disabled}`}>
-    <Divider />
-</div>
-
 <script>
     import {
         $i18n,
@@ -138,7 +134,7 @@ const t = useTranslations(lang, '@studiocms/storage-file-browser');
         box-sizing: border-box;
         border: 1px solid var(--border);
         border-radius: var(--radius-md);
-        background-color: var(--background-step-2);
+        background-color: var(--background-step-3);
     }
 
     .storage-copy-output-label {
@@ -185,12 +181,7 @@ const t = useTranslations(lang, '@studiocms/storage-file-browser');
         }
     }
 
-    .storage-copy-output-wrapper,
-    .storage-copy-output-divider {
-        margin-bottom: 1rem;
-
-        &[data-disabled="true"] {
-            display: none;
-        }
+    .storage-copy-output-wrapper [data-disabled="true"] {
+        display: none;
     }
 </style>

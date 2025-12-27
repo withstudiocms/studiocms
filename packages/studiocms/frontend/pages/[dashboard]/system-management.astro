@@ -1,4 +1,5 @@
 ---
+import { getRegistryComponents } from 'studiocms:component-registry/runtime';
 import debugInfo from 'studiocms:debug-info';
 import { useTranslations } from 'studiocms:i18n';
 import { isDefaultManager } from 'studiocms:storage-manager/name';
@@ -6,6 +7,7 @@ import { Button } from 'studiocms:ui/components/button';
 import { Card } from 'studiocms:ui/components/card';
 import { Icon } from 'studiocms:ui/components/icon';
 import { getConfig } from '#db-studio/config';
+import ComponentRegistryUI from '#frontend/components/shared/ComponentRegistryUI.astro';
 import StorageFileBrowser from '#frontend/components/shared/storage-manager/StorageFileBrowser.astro';
 import PageHeader from '../../components/dashboard/PageHeader.astro';
 import Layout from '../../layouts/DashboardLayout.astro';
@@ -16,6 +18,9 @@ const t = useTranslations(lang, '@studiocms/dashboard:system-management');
 
 // Get user database configuration
 const userConfig = getConfig();
+
+// Get component registry data
+const registryData = getRegistryComponents();
 ---
 
 <Layout
@@ -62,6 +67,13 @@ const userConfig = getConfig();
             triggerId='access-file-manager'
             targetInputId='file-browser-url-input'
             />
+
+        {/* Component Registry */}
+        <ComponentRegistryUI 
+            registryData={registryData} 
+            triggerId='access-component-registry' 
+            noOutput 
+            />
     </div>
 
     <div class="page-container">
@@ -100,6 +112,21 @@ const userConfig = getConfig();
                         height={20}
                     />
                     <t-system-management key="access-file-manager">{t('access-file-manager')}</t-system-management>
+                </Button>
+
+                <Button
+                    id="access-component-registry"
+                    variant="outlined"
+                    color="info"
+                    size="md"
+                >
+                    <Icon
+                        slot="start-content"
+                        name="simpleicons:astro"
+                        width={18}
+                        height={18}
+                    />
+                    <t-system-management key="access-component-registry">{t('access-component-registry')}</t-system-management>
                 </Button>
             </div>
         </Card>
