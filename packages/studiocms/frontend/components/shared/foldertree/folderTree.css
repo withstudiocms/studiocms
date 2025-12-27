@@ -29,7 +29,7 @@ folder-tree-container {
 	border: 1px solid var(--border);
 	border-radius: var(--radius-sm);
 	color: var(--text-normal);
-	font-size: 10px;
+	font-size: 12px;
 	cursor: pointer;
 	transition:
 		background-color 0.15s ease,
@@ -255,7 +255,7 @@ folder-tree-leaf {
 }
 
 .tree-node-label {
-	font-size: 0.875rem;
+	font-size: 1rem;
 	color: var(--text-muted);
 	overflow: hidden;
 	text-overflow: ellipsis;
@@ -365,7 +365,7 @@ folder-tree-leaf {
 }
 
 .tree-leaf-label {
-	font-size: 0.875rem;
+	font-size: 1rem;
 	flex: 1;
 	min-width: 0;
 	overflow: hidden;
@@ -375,7 +375,7 @@ folder-tree-leaf {
 
 /* Badges */
 .leaf-badge {
-	font-size: 0.625rem;
+	font-size: 0.875rem;
 	padding: 0.125rem 0.375rem;
 	border-radius: var(--radius-sm);
 	font-weight: 600;
