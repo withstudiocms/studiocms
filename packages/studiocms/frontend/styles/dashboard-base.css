@@ -325,7 +325,6 @@ main {
 	width: 100%;
 	gap: 1rem;
 	align-items: center;
-	padding: 1rem;
 
 	& input {
 		width: 100%;
