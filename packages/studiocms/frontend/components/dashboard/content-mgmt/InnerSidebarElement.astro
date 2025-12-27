@@ -15,7 +15,7 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang, '@studiocms/dashboard:content-sidebar');
 
-const PageFolderTree = await runSDK(SDKCoreJs.GET.pageFolderTree(false));
+const PageFolderTree = await runSDK(SDKCoreJs.GET.pageFolderTree(/* Deprecated feature */ false));
 ---
 
 <div class="inner-sidebar-header">
@@ -60,6 +60,7 @@ const PageFolderTree = await runSDK(SDKCoreJs.GET.pageFolderTree(false));
 <FolderTreeRenderer
   class="scrollbar"
   id="inner-sidebar-items"
+  lang={lang}
   data={PageFolderTree}
   createFolderLink={Astro.locals.StudioCMS.routeMap.mainLinks.contentManagementFolderCreate}
   createPageLink={Astro.locals.StudioCMS.routeMap.mainLinks.contentManagementCreate}

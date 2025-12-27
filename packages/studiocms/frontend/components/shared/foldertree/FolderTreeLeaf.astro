@@ -1,11 +1,14 @@
 ---
+import { type UiLanguageKeys, useTranslations } from 'studiocms:i18n';
 import { Icon } from 'studiocms:ui/components/icon';
 import type { AvailableIcons } from 'studiocms:ui/icons';
 import type { NodeLeafProps } from './shared';
 
-interface Props extends NodeLeafProps {}
+interface Props extends NodeLeafProps {
+	lang: UiLanguageKeys;
+}
 
-const { node, depth = 0, editPageLink } = Astro.props;
+const { node, depth = 0, editPageLink, lang } = Astro.props;
 
 /**
  * Determine the appropriate icon based on page data
@@ -27,6 +30,8 @@ function getPageIcon(): AvailableIcons {
 const icon = getPageIcon();
 const activeIcon = `${icon}-solid` as AvailableIcons;
 const href = node.page ? editPageLink : '#';
+
+const t = useTranslations(lang, '@studiocms/dashboard:file-tree-renderer');
 ---
 
 <folder-tree-leaf
@@ -41,14 +46,37 @@ const href = node.page ? editPageLink : '#';
     <Icon name={icon} class="leaf-icon default" width={20} height={20} />
     <Icon name={activeIcon} class="leaf-icon active" width={20} height={20} />
     <span class="tree-leaf-label">{node.name}</span>
-    {node.pageData?.draft && <span class="leaf-badge draft-badge">Draft</span>}
+    {node.pageData?.draft && <span class="leaf-badge draft-badge">
+        <t-file-tree-renderer key="badge-draft">
+            {t('badge-draft')}
+        </t-file-tree-renderer>
+    </span>}
 </folder-tree-leaf>
 <div id={`${node.id}-context-menu`} class="context-menu" role="menu">
     <button class="context-menu-item" role="menuitem" data-action="edit">
         <Icon name="heroicons:pencil" width={16} height={16} />
-        <span>Edit Page</span>
+        <span>
+            <t-file-tree-renderer key="edit-page">
+                {t('edit-page')}
+            </t-file-tree-renderer>
+        </span>
     </button>
 </div>
+
+<script>
+    import { $i18n, baseTranslation, makeTranslation } from 'studiocms:i18n/client';
+
+    const currentPage = "@studiocms/dashboard:file-tree-renderer";
+
+    const i18n = $i18n(currentPage, baseTranslation[currentPage]);
+
+    if (!customElements.get("t-file-tree-renderer")) {
+        customElements.define(
+            "t-file-tree-renderer",
+            makeTranslation(currentPage, i18n),
+        );
+    }
+</script>
 
 <script>
     class FolderTreeLeaf extends HTMLElement {

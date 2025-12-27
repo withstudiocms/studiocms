@@ -475,6 +475,17 @@
       "copiedSuccess": "Copied to clipboard!",
       "copyFailed": "Failed to copy",
       "fallbackTriggerButtonText": "Open Component Registry"
+    },
+    "@studiocms/dashboard:file-tree-renderer": {
+      "badge-draft": "Draft",
+      "collapse-all": "Collapse All",
+      "create-folder": "Create Folder",
+      "create-sub-folder": "Create Sub-Folder",
+      "create-page": "Create Page",
+      "create-sub-page": "Create Sub-Page",
+      "expand-all": "Expand All",
+      "edit-folder": "Edit Folder",
+      "edit-page": "Edit Page"
     }
   }
 }

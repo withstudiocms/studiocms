@@ -1,4 +1,5 @@
 ---
+import { type UiLanguageKeys, useTranslations } from 'studiocms:i18n';
 import { Icon } from 'studiocms:ui/components/icon';
 import FolderTreeNodeTree from './FolderTreeNodeTree.astro';
 import type { TreeProps } from './shared';
@@ -6,6 +7,7 @@ import type { TreeProps } from './shared';
 interface Props extends TreeProps {
 	class?: string;
 	id?: string;
+	lang: UiLanguageKeys;
 }
 
 const {
@@ -14,6 +16,7 @@ const {
 	createFolderLink,
 	createPageLink,
 	editFolderLink,
+	lang,
 	...props
 } = Astro.props;
 
@@ -26,8 +29,11 @@ const sharedProps = {
 	createFolderLink,
 	createPageLink,
 	editFolderLink,
+	lang,
 	...props,
 };
+
+const t = useTranslations(lang, '@studiocms/dashboard:file-tree-renderer');
 ---
 
 <folder-tree-container
@@ -46,7 +52,11 @@ const sharedProps = {
             data-action="collapse-all"
         >
             <Icon name="heroicons:minus-16-solid" width={14} height={14} />
-            <span>Collapse All</span>
+            <span>
+                <t-file-tree-renderer key="collapse-all">
+                    {t('collapse-all')}
+                </t-file-tree-renderer>
+            </span>
         </button>
 
         <button
@@ -55,7 +65,11 @@ const sharedProps = {
             data-action="expand-all"
         >
             <Icon name="heroicons:plus-16-solid" width={14} height={14} />
-            <span>Expand All</span>
+            <span>
+                <t-file-tree-renderer key="expand-all">
+                    {t('expand-all')}
+                </t-file-tree-renderer>
+            </span>
         </button>
     </div>
 
@@ -69,11 +83,19 @@ const sharedProps = {
         data-action="create-folder"
     >
         <Icon name="heroicons:folder-plus" width={16} height={16} />
-        <span>Create Folder</span>
+        <span>
+            <t-file-tree-renderer key="create-folder">
+                {t('create-folder')}
+            </t-file-tree-renderer>
+        </span>
     </button>
     <button class="context-menu-item" role="menuitem" data-action="create-page">
         <Icon name="heroicons:document-plus" width={16} height={16} />
-        <span>Create Page</span>
+        <span>
+            <t-file-tree-renderer key="create-page">
+                {t('create-page')}
+            </t-file-tree-renderer>
+        </span>
     </button>
     <button
         class="context-menu-item"
@@ -81,13 +103,36 @@ const sharedProps = {
         data-action="collapse-all"
     >
         <Icon name="heroicons:minus" width={16} height={16} />
-        <span>Collapse All</span>
+        <span>
+            <t-file-tree-renderer key="collapse-all">
+                {t('collapse-all')}
+            </t-file-tree-renderer>
+        </span>
     </button>
     <button class="context-menu-item" role="menuitem" data-action="expand-all">
         <Icon name="heroicons:plus" width={16} height={16} />
-        <span>Expand All</span>
+        <span>
+            <t-file-tree-renderer key="expand-all">
+                {t('expand-all')}
+            </t-file-tree-renderer>
+        </span>
     </button>
 </div>
+
+<script>
+    import { $i18n, baseTranslation, makeTranslation } from 'studiocms:i18n/client';
+
+    const currentPage = "@studiocms/dashboard:file-tree-renderer";
+
+    const i18n = $i18n(currentPage, baseTranslation[currentPage]);
+
+    if (!customElements.get("t-file-tree-renderer")) {
+        customElements.define(
+            "t-file-tree-renderer",
+            makeTranslation(currentPage, i18n),
+        );
+    }
+</script>
 
 <script>
     class FolderTreeContainer extends HTMLElement {

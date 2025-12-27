@@ -1,14 +1,19 @@
 ---
+import { type UiLanguageKeys, useTranslations } from 'studiocms:i18n';
 import { Icon } from 'studiocms:ui/components/icon';
 import type { NodeLeafProps } from './shared';
 
-interface Props extends NodeLeafProps {}
+interface Props extends NodeLeafProps {
+	lang: UiLanguageKeys;
+}
 
-const { createFolderLink, createPageLink, editFolderLink, node, depth = 0 } = Astro.props;
+const { createFolderLink, createPageLink, editFolderLink, node, depth = 0, lang } = Astro.props;
 
 const nodeId = `folder-${node.id}`;
 const contentId = `content-${node.id}`;
 const href = node.page === false ? editFolderLink : '#';
+
+const t = useTranslations(lang, '@studiocms/dashboard:file-tree-renderer');
 ---
 
 <folder-tree-node
@@ -67,7 +72,11 @@ const href = node.page === false ? editFolderLink : '#';
     <div id={`${nodeId}-context-menu`} class="context-menu" role="menu">
         <button class="context-menu-item" role="menuitem" data-action="edit">
             <Icon name="heroicons:pencil" width={16} height={16} />
-            <span>Edit Folder</span>
+            <span>
+                <t-file-tree-renderer key="edit-folder">
+                    {t('edit-folder')}
+                </t-file-tree-renderer>
+            </span>
         </button>
         <button
             class="context-menu-item"
@@ -75,7 +84,11 @@ const href = node.page === false ? editFolderLink : '#';
             data-action="create-folder"
         >
             <Icon name="heroicons:folder-plus" width={16} height={16} />
-            <span>Create Subfolder</span>
+            <span>
+                <t-file-tree-renderer key="create-sub-folder">
+                    {t('create-sub-folder')}
+                </t-file-tree-renderer>
+            </span>
         </button>
         <button
             class="context-menu-item"
@@ -83,10 +96,29 @@ const href = node.page === false ? editFolderLink : '#';
             data-action="create-page"
         >
             <Icon name="heroicons:document-plus" width={16} height={16} />
-            <span>Create Subpage</span>
+            <span>
+                <t-file-tree-renderer key="create-sub-page">
+                    {t('create-sub-page')}
+                </t-file-tree-renderer>
+            </span>
         </button>
     </div>
 </folder-tree-node>
+
+<script>
+    import { $i18n, baseTranslation, makeTranslation } from 'studiocms:i18n/client';
+
+    const currentPage = "@studiocms/dashboard:file-tree-renderer";
+
+    const i18n = $i18n(currentPage, baseTranslation[currentPage]);
+
+    if (!customElements.get("t-file-tree-renderer")) {
+        customElements.define(
+            "t-file-tree-renderer",
+            makeTranslation(currentPage, i18n),
+        );
+    }
+</script>
 
 <script>
     class FolderTreeNode extends HTMLElement {

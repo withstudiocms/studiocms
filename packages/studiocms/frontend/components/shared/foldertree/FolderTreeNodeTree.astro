@@ -1,10 +1,13 @@
 ---
+import type { UiLanguageKeys } from 'studiocms:i18n';
 import type { FolderNode } from 'studiocms:sdk/types';
 import FolderTreeLeaf from './FolderTreeLeaf.astro';
 import FolderTreeNode from './FolderTreeNode.astro';
 import type { TreeProps } from './shared';
 
-interface Props extends TreeProps {}
+interface Props extends TreeProps {
+	lang: UiLanguageKeys;
+}
 
 const { data, depth = 0, ...props } = Astro.props;
 
