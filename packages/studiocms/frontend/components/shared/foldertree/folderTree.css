@@ -375,7 +375,7 @@ folder-tree-leaf {
 
 /* Badges */
 .leaf-badge {
-	font-size: 0.875rem;
+	font-size: 0.625rem;
 	padding: 0.125rem 0.375rem;
 	border-radius: var(--radius-sm);
 	font-weight: 600;
