@@ -319,14 +319,14 @@ const href = node.page === false ? editFolderLink : '#';
 
                 case "create-folder":
                     const createFolderLink = this.genUrl(createFolderUrl, {
-                        folder: folderId,
+                        'parent-folder': folderId,
                     });
                     window.location.href = createFolderLink;
                     break;
 
                 case "create-page":
                     const createPageLink = this.genUrl(createPageUrl, {
-                        folder: folderId,
+                        'parent-folder': folderId,
                     });
                     window.location.href = createPageLink;
                     break;

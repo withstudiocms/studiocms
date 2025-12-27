@@ -27,6 +27,10 @@ interface Props {
 const { lang } = Astro.props;
 
 const t = useTranslations(lang, '@studiocms/dashboard:content-page');
+
+const searchParams = Astro.url.searchParams;
+
+const preselectedParentFolder = searchParams.get('parent-folder') ?? 'null';
 ---
 
 <PageTypeHandler pluginFields={pluginFields}>
@@ -82,7 +86,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
                 name="parent-folder"
                 fullWidth
                 options={parentFolderOptions}
-                defaultValue="null"
+                defaultValue={preselectedParentFolder}
               />
               <Select
                 label={t("select-augments-label")}

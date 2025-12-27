@@ -21,7 +21,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-folder');
 
 const searchParams = Astro.url.searchParams;
 
-const preselectedParentFolder = searchParams.get('folder') ?? 'null';
+const preselectedParentFolder = searchParams.get('parent-folder') ?? 'null';
 ---
 <div id="create-folder-container" data-content-management-url={Astro.locals.StudioCMS.routeMap.mainLinks.contentManagement}>
 
