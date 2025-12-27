@@ -175,6 +175,7 @@ const sharedProps = {
                 console.error("Context menu not found");
                 return;
             }
+            const containerRect = this.getBoundingClientRect();
 
             // Position the menu at cursor (using clientX/clientY for fixed positioning)
             this.contextMenu.style.left = `${e.clientX}px`;
@@ -184,17 +185,30 @@ const sharedProps = {
             // Adjust if menu goes off-screen
             requestAnimationFrame(() => {
                 if (!this.contextMenu) return;
-                const rect = this.contextMenu.getBoundingClientRect();
-                const viewportWidth = window.innerWidth;
-                const viewportHeight = window.innerHeight;
+                const menuRect = this.contextMenu.getBoundingClientRect();
+                
+                // Calculate constrained position
+                let left = e.clientX;
+                let top = e.clientY;
 
-                if (rect.right > viewportWidth) {
-                    this.contextMenu.style.left = `${e.clientX - rect.width}px`;
+                // Check right boundary (viewport and container)
+                const maxRight = Math.min(window.innerWidth, containerRect.right);
+                if (left + menuRect.width > maxRight) {
+                    left = Math.max(containerRect.left, maxRight - menuRect.width);
                 }
 
-                if (rect.bottom > viewportHeight) {
-                    this.contextMenu.style.top = `${e.clientY - rect.height}px`;
+                // Check bottom boundary (viewport and container)
+                const maxBottom = Math.min(window.innerHeight, containerRect.bottom);
+                if (top + menuRect.height > maxBottom) {
+                    top = Math.max(containerRect.top, maxBottom - menuRect.height);
                 }
+
+                // Ensure menu doesn't go outside left/top of container
+                left = Math.max(containerRect.left, left);
+                top = Math.max(containerRect.top, top);
+
+                this.contextMenu.style.left = `${left}px`;
+                this.contextMenu.style.top = `${top}px`;
             });
         }
 

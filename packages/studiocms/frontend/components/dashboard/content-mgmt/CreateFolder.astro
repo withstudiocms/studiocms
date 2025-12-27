@@ -18,6 +18,10 @@ interface Props {
 const { lang } = Astro.props;
 
 const t = useTranslations(lang, '@studiocms/dashboard:content-folder');
+
+const searchParams = Astro.url.searchParams;
+
+const preselectedParentFolder = searchParams.get('folder') ?? 'null';
 ---
 <div id="create-folder-container" data-content-management-url={Astro.locals.StudioCMS.routeMap.mainLinks.contentManagement}>
 
@@ -25,7 +29,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-folder');
 
         <Input label={t('input-folder-name')} name="folder-name" isRequired />
         
-        <Select label={t('input-folder-parent')} name="parent-folder" fullWidth options={parentFolderOptions} defaultValue='null' />
+        <Select label={t('input-folder-parent')} name="parent-folder" fullWidth options={parentFolderOptions} defaultValue={preselectedParentFolder} />
     
     </form>
 
