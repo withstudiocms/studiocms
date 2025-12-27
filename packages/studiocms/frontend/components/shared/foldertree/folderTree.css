@@ -70,6 +70,7 @@ folder-tree-leaf {
 	box-shadow: 0 4px 12px var(--shadow);
 	padding: 0.25rem;
 	min-width: 180px;
+	width: max-content;
 	z-index: 1000;
 
 	&.active {
@@ -154,6 +155,22 @@ folder-tree-leaf {
 		.tree-node-label {
 			color: var(--text-normal);
 		}
+	}
+}
+
+.tree-node-menu-trigger {
+	margin-left: auto;
+	padding: 0.25rem;
+	background: inherit;
+	border: none;
+	border-radius: var(--radius-md);
+	cursor: pointer;
+	color: var(--text-muted);
+	transition: color 0.15s ease;
+
+	&:hover {
+		color: var(--text-normal);
+		background: var(--background-step-3);
 	}
 }
 

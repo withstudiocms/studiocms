@@ -63,6 +63,20 @@ const t = useTranslations(lang, '@studiocms/dashboard:file-tree-renderer');
             />
             <span class="tree-node-label">{node.name}</span>
         </div>
+        <button
+            id={`${nodeId}-tree-node-menu-trigger`}
+            class="tree-node-menu-trigger"
+            type="button"
+            aria-label={`Open menu for ${node.name}`}
+            aria-haspopup="menu"
+            aria-controls={`${nodeId}-context-menu`}
+        >
+            <Icon
+                name="heroicons:ellipsis-vertical"
+                width={16}
+                height={16}
+            />
+        </button>
     </div>
     <div class="tree-node-children" id={contentId}>
         <div class="tree-node-children-inner">
@@ -123,6 +137,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:file-tree-renderer');
 <script>
     class FolderTreeNode extends HTMLElement {
         private toggleButton: HTMLButtonElement | null = null;
+        private menuTriggerButton: HTMLButtonElement | null = null;
         private header: HTMLElement | null = null;
         private contextMenu: HTMLElement | null = null;
         private isExpanded = false;
@@ -139,6 +154,9 @@ const t = useTranslations(lang, '@studiocms/dashboard:file-tree-renderer');
             this.toggleButton = this.querySelector(
                 `#${nodeId}-tree-node-toggle`,
             );
+            this.menuTriggerButton = this.querySelector(
+                `#${nodeId}-tree-node-menu-trigger`,
+            );
             this.header = this.querySelector(`#${nodeId}-tree-node-header`);
             this.contextMenu = this.querySelector(`#${nodeId}-context-menu`);
             this.setupEventListeners();
@@ -154,14 +172,22 @@ const t = useTranslations(lang, '@studiocms/dashboard:file-tree-renderer');
                 this.toggle();
             });
 
-            // Toggle on header click (but not the button)
+            // Toggle on header click (but not the button or menu trigger)
             this.header?.addEventListener("click", (e) => {
                 if (
                     e.target !== this.toggleButton &&
-                    !this.toggleButton?.contains(e.target as Node)
+                    !this.toggleButton?.contains(e.target as Node) &&
+                    e.target !== this.menuTriggerButton &&
+                    !this.menuTriggerButton?.contains(e.target as Node)
                 ) {
                     this.toggle();
                 }
+            });
+
+            // Menu trigger button click
+            this.menuTriggerButton?.addEventListener("click", (e) => {
+                e.stopPropagation();
+                this.toggleContextMenu(e as MouseEvent);
             });
 
             // Keyboard support
@@ -223,7 +249,9 @@ const t = useTranslations(lang, '@studiocms/dashboard:file-tree-renderer');
             document.addEventListener("click", (e) => {
                 if (
                     this.contextMenu &&
-                    !this.contextMenu.contains(e.target as Node)
+                    !this.contextMenu.contains(e.target as Node) &&
+                    e.target !== this.menuTriggerButton &&
+                    !this.menuTriggerButton?.contains(e.target as Node)
                 ) {
                     this.hideContextMenu();
                 }
@@ -288,17 +316,36 @@ const t = useTranslations(lang, '@studiocms/dashboard:file-tree-renderer');
             }
         }
 
+        toggleContextMenu(e: MouseEvent) {
+            if (this.contextMenu?.classList.contains("active")) {
+                this.hideContextMenu();
+            } else {
+                this.showContextMenu(e);
+            }
+        }
+
         showContextMenu(e: MouseEvent) {
             if (!this.contextMenu) {
                 console.error("Context menu not found");
                 return;
             }
-            const containerRect = this.getBoundingClientRect();
 
+            // Get the folder tree container
+            const container = this.closest("folder-tree-container");
+            if (!container) {
+                console.error("Folder tree container not found");
+                return;
+            }
+
+            const containerRect = container.getBoundingClientRect();
+            
             // Position the menu at cursor (using clientX/clientY for fixed positioning)
             this.contextMenu.style.left = `${e.clientX}px`;
             this.contextMenu.style.top = `${e.clientY}px`;
             this.contextMenu.classList.add("active");
+
+            // Update aria attributes
+            this.menuTriggerButton?.setAttribute("aria-expanded", "true");
 
             // Adjust if menu goes off-screen
             requestAnimationFrame(() => {
@@ -332,6 +379,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:file-tree-renderer');
 
         hideContextMenu() {
             this.contextMenu?.classList.remove("active");
+            this.menuTriggerButton?.setAttribute("aria-expanded", "false");
         }
 
         handleContextMenuAction(action: string | null) {
