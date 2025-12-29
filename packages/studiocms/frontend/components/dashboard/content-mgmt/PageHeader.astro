@@ -26,6 +26,8 @@ let pageTitle = title;
 let pageSlug: string | undefined;
 let currentId = '';
 let folderName = '';
+let exists = false;
+let searched = false;
 
 const urlParams = Astro.url.searchParams;
 
@@ -34,45 +36,57 @@ async function getParams() {
 	const folderId = urlParams.get('folder');
 
 	if (folderId) {
+		searched = true;
 		const res = await runSDK(SDKCoreJs.GET.folderList());
 
 		const folder = res.find((folder) => folder.id === folderId);
 
 		if (editFolder && folder) {
+			exists = true;
 			pageTitle = `${folder.name}`;
 			currentId = folder.id;
 			folderName = folder.name;
 		}
+
+		return;
 	}
 
 	if (editId) {
+		searched = true;
+		exists = false;
 		const res = await runSDK(SDKCoreJs.GET.page.byId(editId));
 
 		if (!res) {
-			return new Response(null, { status: 404, statusText: 'Page Not Found' });
+			return;
 		}
 
-		if (editPage) {
+		if (editPage && res) {
 			pageTitle = `${res.title}`;
 			pageSlug = res.slug;
 			currentId = res.id;
+			exists = true;
 		}
 	}
 
-	return '';
+	return;
 }
 
 await getParams();
 
-const currentMode = editPage
-	? 'edit-page'
-	: editFolder
-		? 'edit-folder'
-		: createFolder
-			? 'create-folder'
-			: createPage
-				? 'create-page'
-				: 'none';
+function getCurrentMode() {
+	const hasSearched = searched;
+	const itemExists = exists;
+
+	if (hasSearched && !itemExists) return 'not-found';
+	if (editFolder && editPage) return 'edit-folder';
+	if (editFolder) return 'edit-folder';
+	if (editPage) return 'edit-page';
+	if (createFolder) return 'create-folder';
+	if (createPage) return 'create-page';
+	return 'none';
+}
+
+const currentMode = getCurrentMode();
 ---
 <header class="page-header">
   <div class="page-title-container">
@@ -91,6 +105,10 @@ const currentMode = editPage
       ) : currentMode === 'create-folder' ? (
         <t-content-header key="create-folder-title">
           {t('create-folder-title')}
+        </t-content-header>
+      ) : currentMode === 'not-found' ? (
+        <t-content-header key="title">
+          {pageTitle}
         </t-content-header>
       ) : (
         <t-content-header key="create-page-title">
@@ -413,6 +431,14 @@ const currentMode = editPage
       case "create-folder":
         break;
       case "create-page":
+        break;
+      case "not-found":
+        toast({
+          title: 'Error',
+          description: 'The requested item could not be found.',
+          type: 'danger',
+          persistent: true,
+        })
         break;
       default:
         break;

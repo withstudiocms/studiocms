@@ -246,7 +246,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-sidebar');
             await runSearch(form, innerSidebarItemsSearch);
         });
 
-        let debounceTimeout: NodeJS.Timeout;
+        let debounceTimeout: ReturnType<typeof setTimeout>;
         searchInput.addEventListener("input", () => {
             if (searchInput.value.length < 2) {
                 clearSearchParams(innerSidebarItemsSearch);
