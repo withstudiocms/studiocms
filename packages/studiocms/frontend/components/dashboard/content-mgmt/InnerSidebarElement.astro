@@ -1,22 +1,20 @@
 ---
 import { type UiLanguageKeys, useTranslations } from 'studiocms:i18n';
-import type { DynamicConfigEntry, StudioCMSSiteConfig } from 'studiocms:sdk/types';
+import { runSDK, SDKCoreJs } from 'studiocms:sdk';
 import { Button } from 'studiocms:ui/components/button';
-import { Divider } from 'studiocms:ui/components/divider';
 import { Dropdown } from 'studiocms:ui/components/dropdown';
 import { Icon } from 'studiocms:ui/components/icon';
 import { Input } from 'studiocms:ui/components/input';
-import PageList from './PageList.astro';
+import FolderTreeRenderer from '#frontend/components/shared/foldertree/FolderTreeRenderer.astro';
 
 interface Props {
-	config: DynamicConfigEntry<StudioCMSSiteConfig>;
 	lang: UiLanguageKeys;
-	isNewFolder?: boolean;
-	isNewPage?: boolean;
 }
 
-const { isNewFolder, isNewPage, lang, config } = Astro.props;
+const { lang } = Astro.props;
 const t = useTranslations(lang, '@studiocms/dashboard:content-sidebar');
+
+const PageFolderTree = await runSDK(SDKCoreJs.GET.pageFolderTree(/* Deprecated feature */ false));
 ---
 
 <div class="inner-sidebar-header">
@@ -58,14 +56,16 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-sidebar');
   </Button>
 </div>
 
-<Divider background={'background-step-2'}><span id="sidebar-divider-title"><t-content-sidebar key="items-divider">{t('items-divider')}</t-content-sidebar></span></Divider>
-
-<div 
-  class="inner-sidebar-items scrollbar" 
-  id="inner-sidebar-items" 
-  >
-  <PageList {isNewFolder} {isNewPage} {config} />
-</div>
+<FolderTreeRenderer
+  class="scrollbar"
+  id="inner-sidebar-items"
+  lang={lang}
+  data={PageFolderTree}
+  createFolderLink={Astro.locals.StudioCMS.routeMap.mainLinks.contentManagementFolderCreate}
+  createPageLink={Astro.locals.StudioCMS.routeMap.mainLinks.contentManagementCreate}
+  editFolderLink={Astro.locals.StudioCMS.routeMap.mainLinks.contentManagementFolderEdit}
+  editPageLink={Astro.locals.StudioCMS.routeMap.mainLinks.contentManagementEdit}
+  />
 
 <div
   class="inner-sidebar-items scrollbar"
@@ -220,17 +220,16 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-sidebar');
     return data;
   }
 
-  function clearSearchParams(dividerTitle: HTMLSpanElement, innerSidebarItemsSearch: HTMLDivElement) {
+  function clearSearchParams(innerSidebarItemsSearch: HTMLDivElement) {
     const url = new URL(window.location.href);
     url.searchParams.delete('search');
     window.history.pushState({}, '', url);
     innerSidebarItemsSearch.innerHTML = '';
     document.getElementById('inner-sidebar-items')!.style.display = 'block';
     innerSidebarItemsSearch.style.display = 'none';
-    dividerTitle.innerText = 'Items';
   }
 
-  async function runSearch(form: HTMLFormElement, divider: HTMLSpanElement, searchItems: HTMLDivElement) {
+  async function runSearch(form: HTMLFormElement, searchItems: HTMLDivElement) {
     const formData = new FormData(form);
 
     const searchTerm = DOMPurify.sanitize(formData.get('search')?.toString() || '');
@@ -259,7 +258,6 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-sidebar');
 
     document.getElementById('inner-sidebar-items')!.style.display = 'none';
     searchItems.style.display = 'block';
-    divider.innerText = `Search Results (${results.length})`;
 
   const searchResultSelectors = document.querySelectorAll('#search-selector') as NodeListOf<HTMLDivElement>;
 
@@ -279,33 +277,32 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-sidebar');
   const searchInput = form.querySelector('input[name=search]') as HTMLInputElement;
 
   const innerSidebarItemsSearch = document.getElementById('inner-sidebar-items-search') as HTMLDivElement;
-  const dividerTitle = document.getElementById('sidebar-divider-title') as HTMLSpanElement;
 
     const url = new URL(window.location.href);
     const searchTerm = url.searchParams.get('search');
     if (searchTerm) {
       const input = searchInput;
       input.value = searchTerm;
-      await runSearch(form, dividerTitle, innerSidebarItemsSearch);
+      await runSearch(form, innerSidebarItemsSearch);
     }
 
     // if the user submits the form, run the search
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      await runSearch(form, dividerTitle, innerSidebarItemsSearch);
+      await runSearch(form, innerSidebarItemsSearch);
     });
 
     // if the user stops typing for 500ms, run the search
     let timeout: NodeJS.Timeout;
     form.addEventListener('input', () => {
-      if (searchInput.value.length === 0) clearSearchParams(dividerTitle, innerSidebarItemsSearch);
+      if (searchInput.value.length === 0) clearSearchParams(innerSidebarItemsSearch);
 
       clearTimeout(timeout);
-      timeout = setTimeout(async () => await runSearch(form, dividerTitle, innerSidebarItemsSearch), 500);
+      timeout = setTimeout(async () => await runSearch(form, innerSidebarItemsSearch), 500);
     });
 
     // if the user clears the search, clear the query params
-    searchInput.addEventListener('search', () => clearSearchParams(dividerTitle, innerSidebarItemsSearch));
+    searchInput.addEventListener('search', () => clearSearchParams(innerSidebarItemsSearch));
   }
 
   searchSetup();

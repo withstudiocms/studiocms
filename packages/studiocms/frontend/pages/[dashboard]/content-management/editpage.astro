@@ -39,7 +39,7 @@ const registryData = getRegistryComponents();
 
   <div slot="double-sidebar" class="inner-sidebar-container">
     <div class="sidebar-links-container">
-      <InnerSidebarElement {lang} {config} />
+      <InnerSidebarElement {lang} />
     </div>
   </div>
 
@@ -76,6 +76,17 @@ const registryData = getRegistryComponents();
 </script>
 
 <style>
+
+  .sidebar-links-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    min-height: 99vh;
+    height: 100%;
+    gap: 0.5rem;
+  }
+
   .inner-sidebar-container {
     display: flex;
     flex-direction: column;
@@ -84,15 +95,4 @@ const registryData = getRegistryComponents();
     max-height: 100%;
     padding: 1.5rem;
   }
-
-  .sidebar-links-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    min-height: 100%;
-    height: 100%;
-  }
-
-
 </style>

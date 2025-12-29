@@ -24,7 +24,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-index');
 
   <div slot="double-sidebar" class="inner-sidebar-container">
     <div class="sidebar-links-container">
-      <InnerSidebarElement isNewFolder {lang} {config} />
+      <InnerSidebarElement {lang} />
     </div>
   </div>
 
@@ -61,6 +61,17 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-index');
 </script>
 
 <style>
+
+  .sidebar-links-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    min-height: 99vh;
+    height: 100%;
+    gap: 0.5rem;
+  }
+
   .inner-sidebar-container {
     display: flex;
     flex-direction: column;
@@ -69,16 +80,6 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-index');
     max-height: 100%;
     padding: 1.5rem;
   }
-
-  .sidebar-links-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    min-height: 100%;
-    height: 100%;
-  }
-
 
   .placeholder-info {
     display: flex;

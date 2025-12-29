@@ -1,0 +1,287 @@
+---
+import { type UiLanguageKeys, useTranslations } from 'studiocms:i18n';
+import { Icon } from 'studiocms:ui/components/icon';
+import type { AvailableIcons } from 'studiocms:ui/icons';
+import type { NodeLeafProps } from './shared';
+
+interface Props extends NodeLeafProps {
+	lang: UiLanguageKeys;
+}
+
+const { node, depth = 0, editPageLink, lang } = Astro.props;
+
+/**
+ * Determine the appropriate icon based on page data
+ */
+function getPageIcon(): AvailableIcons {
+	if (!node.pageData) return 'heroicons:document-text';
+
+	if (node.pageData.slug === 'index') {
+		return 'heroicons:home-modern';
+	}
+
+	if (node.pageData.draft) {
+		return 'heroicons:pencil';
+	}
+
+	return 'heroicons:document-text';
+}
+
+const icon = getPageIcon();
+const activeIcon = `${icon}-solid` as AvailableIcons;
+const href = node.page ? editPageLink : '#';
+
+const t = useTranslations(lang, '@studiocms/dashboard:file-tree-renderer');
+---
+
+<folder-tree-leaf
+    data-node-id={node.id}
+    data-page-id={node.pageData?.id}
+    data-depth={depth}
+    data-href={href}
+    class="tree-leaf"
+    role="treeitem"
+    tabindex="0"
+>
+    <Icon name={icon} class="leaf-icon default" width={20} height={20} />
+    <Icon name={activeIcon} class="leaf-icon active" width={20} height={20} />
+    <span class="tree-leaf-label">{node.name}</span>
+    {node.pageData?.draft && <span class="leaf-badge draft-badge">
+        <t-file-tree-renderer key="badge-draft">
+            {t('badge-draft')}
+        </t-file-tree-renderer>
+    </span>}
+</folder-tree-leaf>
+<div id={`${node.id}-context-menu`} class="context-menu" role="menu">
+    <button class="context-menu-item" role="menuitem" data-action="edit">
+        <Icon name="heroicons:pencil" width={16} height={16} />
+        <span>
+            <t-file-tree-renderer key="edit-page">
+                {t('edit-page')}
+            </t-file-tree-renderer>
+        </span>
+    </button>
+</div>
+
+<script>
+    import { $i18n, baseTranslation, makeTranslation } from 'studiocms:i18n/client';
+
+    const currentPage = "@studiocms/dashboard:file-tree-renderer";
+
+    const i18n = $i18n(currentPage, baseTranslation[currentPage]);
+
+    if (!customElements.get("t-file-tree-renderer")) {
+        customElements.define(
+            "t-file-tree-renderer",
+            makeTranslation(currentPage, i18n),
+        );
+    }
+</script>
+
+<script>
+    class FolderTreeLeaf extends HTMLElement {
+        private href: string;
+        private contextMenu: HTMLElement | null = null;
+        private boundDocumentClick = (e: MouseEvent) => {
+            if (
+                    this.contextMenu &&
+                    !this.contextMenu.contains(e.target as Node)
+                ) {
+                    this.hideContextMenu();
+                }
+        };
+        private boundDocumentKeydown = (e: KeyboardEvent) => {
+            if (e.key === "Escape") this.hideContextMenu();
+        };
+
+        constructor() {
+            super();
+            this.href = this.getAttribute("data-href") || "#";
+        }
+
+        connectedCallback() {
+            this.setAttribute("role", "link");
+            this.contextMenu = document.getElementById(
+                `${this.getAttribute("data-node-id")}-context-menu`,
+            );
+            this.setupActiveState();
+            this.setupEventListeners();
+            this.setupContextMenu();
+        }
+
+        genUrl(base: string, params?: Record<string, string>) {
+            const url = new URL(base, window.location.origin);
+
+            if (params) {
+                for (const [key, value] of Object.entries(params)) {
+                    url.searchParams.set(key, value);
+                }
+            }
+
+            return url.href;
+        }
+
+        setupActiveState() {
+            // Icons live in light DOM (projected via slot)
+            const notSelectedIcon = this.querySelector(".default");
+            const selectedIcon = this.querySelector(".active");
+
+            let hrefEdit = null;
+            try {
+                const url = this.genUrl(this.href, {
+                    edit: this.getAttribute("data-page-id") || "",
+                });
+
+                hrefEdit = new URL(url).searchParams.get("edit");
+            } catch {}
+            const currentEdit = new URL(window.location.href).searchParams.get(
+                "edit",
+            );
+
+            const isActive =
+                hrefEdit !== null &&
+                currentEdit !== null &&
+                hrefEdit === currentEdit;
+
+            this.classList.toggle("active", !!isActive);
+            if (notSelectedIcon)
+                (notSelectedIcon as HTMLElement).style.display = isActive
+                    ? "none"
+                    : "block";
+            if (selectedIcon)
+                (selectedIcon as HTMLElement).style.display = isActive
+                    ? "block"
+                    : "none";
+            if (isActive) {
+                this.setAttribute("aria-current", "page");
+            } else {
+                this.removeAttribute("aria-current");
+            }
+        }
+
+        setupEventListeners() {
+            this.addEventListener("click", (event) => {
+                const e = event as MouseEvent;
+
+                if (this.href === "#") return;
+
+                const openInNewTab = e.ctrlKey || e.metaKey || e.button === 1;
+
+                e.preventDefault();
+
+                const url = this.genUrl(this.href, {
+                    edit: this.getAttribute("data-page-id") || "",
+                });
+
+                if (openInNewTab) {
+                    window.open(url, "_blank");
+                } else {
+                    window.location.href = url;
+                }
+            });
+
+            this.addEventListener("keydown", (e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    this.click();
+                }
+            });
+        }
+
+        disconnectedCallback() {
+            // Clean up event listeners if necessary
+            document.removeEventListener("click", this.boundDocumentClick);
+            document.removeEventListener("keydown", this.boundDocumentKeydown);
+        }
+
+        setupContextMenu() {
+            // Show context menu on right-click
+            this.addEventListener("contextmenu", (e) => {
+                e.preventDefault();
+                this.showContextMenu(e as MouseEvent);
+            });
+
+            // Hide context menu when clicking outside
+            document.addEventListener("click", this.boundDocumentClick);
+
+            // Handle context menu actions
+            const menuItems =
+                this.contextMenu?.querySelectorAll(".context-menu-item");
+            menuItems?.forEach((item) => {
+                item.addEventListener("click", (e) => {
+                    e.stopPropagation();
+                    const action = (item as HTMLElement).getAttribute(
+                        "data-action",
+                    );
+                    this.handleContextMenuAction(action);
+                    this.hideContextMenu();
+                });
+            });
+
+            // Close menu on Escape key
+            document.addEventListener("keydown", this.boundDocumentKeydown);
+        }
+
+        showContextMenu(e: MouseEvent) {
+            if (!this.contextMenu) {
+                console.error("Context menu not found");
+                return;
+            }
+            const containerRect = this.getBoundingClientRect();
+
+            // Position the menu at cursor (using clientX/clientY for fixed positioning)
+            this.contextMenu.style.left = `${e.clientX}px`;
+            this.contextMenu.style.top = `${e.clientY}px`;
+            this.contextMenu.classList.add("active");
+
+            // Adjust if menu goes off-screen
+            requestAnimationFrame(() => {
+                if (!this.contextMenu) return;
+                const menuRect = this.contextMenu.getBoundingClientRect();
+                
+                // Calculate constrained position
+                let left = e.clientX;
+                let top = e.clientY;
+
+                // Check right boundary (viewport and container)
+                const maxRight = Math.min(window.innerWidth, containerRect.right);
+                if (left + menuRect.width > maxRight) {
+                    left = Math.max(containerRect.left, maxRight - menuRect.width);
+                }
+
+                // Check bottom boundary (viewport and container)
+                const maxBottom = Math.min(window.innerHeight, containerRect.bottom);
+                if (top + menuRect.height > maxBottom) {
+                    top = Math.max(containerRect.top, maxBottom - menuRect.height);
+                }
+
+                // Ensure menu doesn't go outside left/top of container
+                left = Math.max(containerRect.left, left);
+                top = Math.max(containerRect.top, top);
+
+                this.contextMenu.style.left = `${left}px`;
+                this.contextMenu.style.top = `${top}px`;
+            });
+        }
+
+        hideContextMenu() {
+            this.contextMenu?.classList.remove("active");
+        }
+
+        handleContextMenuAction(action: string | null) {
+            const href = this.getAttribute("data-href") || "#";
+            const pageId = this.getAttribute("data-page-id") || "";
+
+            switch (action) {
+                case "edit":
+                    const editLink = this.genUrl(href, { edit: pageId });
+                    window.location.href = editLink;
+                    break;
+            }
+        }
+    }
+
+    if (!customElements.get("folder-tree-leaf")) {
+        customElements.define("folder-tree-leaf", FolderTreeLeaf);
+    }
+</script>
