@@ -28,35 +28,41 @@ let currentId = '';
 let folderName = '';
 
 const urlParams = Astro.url.searchParams;
-const editId = urlParams.get('edit') || '';
 
-if (editId) {
-	const res = await runSDK(SDKCoreJs.GET.page.byId(editId));
+async function getParams() {
+	const editId = urlParams.get('edit');
+	const folderId = urlParams.get('folder');
 
-	if (!res) {
-		return new Response(null, { status: 404, statusText: 'Page Not Found' });
+	if (folderId) {
+		const res = await runSDK(SDKCoreJs.GET.folderList());
+
+		const folder = res.find((folder) => folder.id === folderId);
+
+		if (editFolder && folder) {
+			pageTitle = `${folder.name}`;
+			currentId = folder.id;
+			folderName = folder.name;
+		}
 	}
 
-	if (editPage) {
-		pageTitle = `${res.title}`;
-		pageSlug = res.slug;
-		currentId = res.id;
+	if (editId) {
+		const res = await runSDK(SDKCoreJs.GET.page.byId(editId));
+
+		if (!res) {
+			return new Response(null, { status: 404, statusText: 'Page Not Found' });
+		}
+
+		if (editPage) {
+			pageTitle = `${res.title}`;
+			pageSlug = res.slug;
+			currentId = res.id;
+		}
 	}
+
+	return '';
 }
 
-const folderId = urlParams.get('folder') || '';
-
-if (folderId) {
-	const res = await runSDK(SDKCoreJs.GET.folderList());
-
-	const folder = res.find((folder) => folder.id === folderId);
-
-	if (editFolder && folder) {
-		pageTitle = `${folder.name}`;
-		currentId = folder.id;
-		folderName = folder.name;
-	}
-}
+await getParams();
 
 const currentMode = editPage
 	? 'edit-page'

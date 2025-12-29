@@ -1,5 +1,7 @@
 ---
 import { useTranslations } from 'studiocms:i18n';
+import { runSDK, SDKCoreJs } from 'studiocms:sdk';
+import { Effect } from '@withstudiocms/effect';
 import EditFolder from '../../../components/dashboard/content-mgmt/EditFolder.astro';
 import InnerSidebarElement from '../../../components/dashboard/content-mgmt/InnerSidebarElement.astro';
 import PageHeader from '../../../components/dashboard/content-mgmt/PageHeader.astro';
@@ -10,6 +12,18 @@ const { siteConfig: config, defaultLang: lang, security } = Astro.locals.StudioC
 const currentUser = security?.userSessionData ?? null;
 
 const t = useTranslations(lang, '@studiocms/dashboard:content-index');
+
+const urlParams = Astro.url.searchParams;
+const editId = urlParams.get('folder') || '';
+
+const [currentFolder, folderList] = await runSDK(
+	Effect.all([SDKCoreJs.GET.folder(editId), SDKCoreJs.GET.folderList()])
+);
+
+if (!currentFolder) {
+	console.warn(`Folder with ID ${editId} not found.`);
+	return new Response(null, { status: 404 });
+}
 ---
 
 <Layout 
@@ -32,7 +46,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-index');
     <PageHeader {lang} editFolder />
   </div>
 
-  <EditFolder {lang} />
+  <EditFolder {lang} {currentFolder} {folderList} />
 
 </Layout>
 

@@ -1,25 +1,20 @@
 ---
 import { type UiLanguageKeys, useTranslations } from 'studiocms:i18n';
-import { runSDK, SDKCoreJs } from 'studiocms:sdk';
+import type { FolderListItem } from 'studiocms:sdk/types';
 import { Input } from 'studiocms:ui/components/input';
 import { Select } from 'studiocms:ui/components/select';
-import { Effect } from 'effect';
 
-const urlParams = Astro.url.searchParams;
-const editId = urlParams.get('folder') || '';
-
-const [currentFolder, folderList] = await runSDK(
-	Effect.all([SDKCoreJs.GET.folder(editId), SDKCoreJs.GET.folderList()])
-);
-
-if (!currentFolder) {
-	return new Response(null, { status: 404 });
-}
 interface Props {
 	lang: UiLanguageKeys;
+	currentFolder: {
+		readonly name: string;
+		readonly id: string;
+		readonly parent: string | null | undefined;
+	};
+	folderList: FolderListItem[];
 }
 
-const { lang } = Astro.props;
+const { lang, currentFolder, folderList } = Astro.props;
 
 const t = useTranslations(lang, '@studiocms/dashboard:content-folder');
 
