@@ -4,8 +4,8 @@ import { runSDK, SDKCoreJs } from 'studiocms:sdk';
 import { Button } from 'studiocms:ui/components/button';
 import { Dropdown } from 'studiocms:ui/components/dropdown';
 import { Icon } from 'studiocms:ui/components/icon';
-import { Input } from 'studiocms:ui/components/input';
 import FolderTreeRenderer from '#frontend/components/shared/foldertree/FolderTreeRenderer.astro';
+import ContentSearch from './ContentSearch.astro';
 
 interface Props {
 	lang: UiLanguageKeys;
@@ -18,40 +18,56 @@ const PageFolderTree = await runSDK(SDKCoreJs.GET.pageFolderTree(/* Deprecated f
 ---
 
 <div class="inner-sidebar-header">
-  <Button variant="solid" color="primary" size='md' id="back-to-outer" class="mobile-btn mid-size-btn">
-    <Icon name="heroicons:arrow-left" width={24} height={24} slot="start-content" />
-  </Button>
-  <form id="search-form">
-    <Input
-      name="search"
-      placeholder={t('input-placeholder-search')}
-      type="search"
-      required
-      icon="heroicons:magnifying-glass-16-solid"
+  <Button
+    variant="solid"
+    color="primary"
+    size="md"
+    id="back-to-outer"
+    class="mobile-btn mid-size-btn"
+  >
+    <Icon
+      name="heroicons:arrow-left"
+      width={24}
+      height={24}
+      slot="start-content"
     />
-  </form>
+  </Button>
+  <ContentSearch
+    lang={lang}
+    treeRenderElId="inner-sidebar-items"
+    searchOutputElId="inner-sidebar-items-search"
+  />
   <Dropdown
-    id='create-new-dropdown'
+    id="create-new-dropdown"
     options={[
-      { 
-        label: t('dropdown-create-page'), 
-        icon: 'heroicons:document', 
-        value: Astro.locals.StudioCMS.routeMap.mainLinks.contentManagementCreate 
+      {
+        label: t("dropdown-create-page"),
+        icon: "heroicons:document",
+        value:
+          Astro.locals.StudioCMS.routeMap.mainLinks.contentManagementCreate,
       },
-      { 
-        label: t('dropdown-create-folder'), 
-        icon: 'heroicons:folder', 
-        value: Astro.locals.StudioCMS.routeMap.mainLinks.contentManagementFolderCreate 
+      {
+        label: t("dropdown-create-folder"),
+        icon: "heroicons:folder",
+        value:
+          Astro.locals.StudioCMS.routeMap.mainLinks
+            .contentManagementFolderCreate,
       },
     ]}
-    align={'end'}
+    align={"end"}
     offset={8}
   >
-    <Button variant="solid" color="primary" size='md' class="add-button">
+    <Button variant="solid" color="primary" size="md" class="add-button">
       <Icon name="heroicons:plus" width={24} height={24} slot="start-content" />
     </Button>
   </Dropdown>
-  <Button variant="solid" color="primary" size='md' class="mobile-btn" id="show-page">
+  <Button
+    variant="solid"
+    color="primary"
+    size="md"
+    class="mobile-btn"
+    id="show-page"
+  >
     <Icon name="heroicons:x-mark" width={24} height={24} slot="start-content" />
   </Button>
 </div>
@@ -61,249 +77,107 @@ const PageFolderTree = await runSDK(SDKCoreJs.GET.pageFolderTree(/* Deprecated f
   id="inner-sidebar-items"
   lang={lang}
   data={PageFolderTree}
-  createFolderLink={Astro.locals.StudioCMS.routeMap.mainLinks.contentManagementFolderCreate}
-  createPageLink={Astro.locals.StudioCMS.routeMap.mainLinks.contentManagementCreate}
-  editFolderLink={Astro.locals.StudioCMS.routeMap.mainLinks.contentManagementFolderEdit}
+  createFolderLink={Astro.locals.StudioCMS.routeMap.mainLinks
+    .contentManagementFolderCreate}
+  createPageLink={Astro.locals.StudioCMS.routeMap.mainLinks
+    .contentManagementCreate}
+  editFolderLink={Astro.locals.StudioCMS.routeMap.mainLinks
+    .contentManagementFolderEdit}
   editPageLink={Astro.locals.StudioCMS.routeMap.mainLinks.contentManagementEdit}
-  />
+/>
 
 <div
-  class="inner-sidebar-items scrollbar"
+  class="folder-tree-search-container scrollbar"
   id="inner-sidebar-items-search"
   style="display: none;"
   data-searchlist={Astro.locals.StudioCMS.routeMap.endpointLinks.searchList}
-  data-editpage={Astro.locals.StudioCMS.routeMap.mainLinks.contentManagementEdit}
-  data-editfolder={Astro.locals.StudioCMS.routeMap.mainLinks.contentManagementFolderEdit}
-  ></div>
+  data-editpage={Astro.locals.StudioCMS.routeMap.mainLinks
+    .contentManagementEdit}
+  data-editfolder={Astro.locals.StudioCMS.routeMap.mainLinks
+    .contentManagementFolderEdit}
+>
+</div>
 
-
-<div id="i-dropdown-options"
-  data-createpage={Astro.locals.StudioCMS.routeMap.mainLinks.contentManagementCreate}
-  data-createfolder={Astro.locals.StudioCMS.routeMap.mainLinks.contentManagementFolderCreate}
-  ></div>
-
-  <script>
-    import { 
-        $i18n,
-        baseTranslation,
-        makeTranslation,
-        updateElmPlaceholder
-    } from 'studiocms:i18n/client';
-
-    const i18nOptions = document.getElementById('i-dropdown-options') as HTMLDivElement;
-
-    const createPage = i18nOptions.getAttribute('data-createpage') as string;
-    const createFolder = i18nOptions.getAttribute('data-createfolder') as string;
-
-    const dropdownKeys: Record<string, string> = {
-      [createPage]: 'dropdown-create-page',
-      [createFolder]: 'dropdown-create-folder',
-    };
-
-    const getDropdownOptions = () => {
-        const dropdownElm = document.getElementById('create-new-dropdown-dropdown') as HTMLUListElement;
-        const options = dropdownElm?.querySelectorAll('.sui-dropdown-option') as NodeListOf<HTMLLIElement>;
-
-        const returnData: Record<string, HTMLSpanElement> = {};
-
-        for (const option of options) {
-            const value = option.dataset.value as string;
-            const key = dropdownKeys[value];
-
-            if (!key) continue;
-
-            const SelectedElm = (option.querySelector('.sui-dropdown-line-container') as HTMLDivElement).querySelector('span');
-
-            if (!SelectedElm) continue;
-
-            returnData[key] = SelectedElm;
-        }
-
-        return returnData;
-    }
-
-    const currentPage = '@studiocms/dashboard:content-sidebar';
-
-    const i18n = $i18n(currentPage, baseTranslation[currentPage]);
-    
-    i18n.subscribe(comp => {
-      updateElmPlaceholder('search', comp['input-placeholder-search']);
-
-      const dropdownOptions = getDropdownOptions();
-
-      for (const [key, elm] of Object.entries(dropdownOptions)) {
-          // @ts-ignore
-          elm.textContent = comp[key];
-      }
-    });
-    
-    if (!customElements.get('t-content-sidebar')) {
-        customElements.define('t-content-sidebar', makeTranslation(currentPage, i18n));
-    }
-</script>
+<div
+  id="i-dropdown-options"
+  data-createpage={Astro.locals.StudioCMS.routeMap.mainLinks
+    .contentManagementCreate}
+  data-createfolder={Astro.locals.StudioCMS.routeMap.mainLinks
+    .contentManagementFolderCreate}
+>
+</div>
 
 <script>
-  import { DropdownHelper } from 'studiocms:ui/components/dropdown/client';
+  import {
+    $i18n,
+    baseTranslation,
+    makeTranslation,
+  } from "studiocms:i18n/client";
+  import { DropdownHelper } from "studiocms:ui/components/dropdown/client";
 
-  const createNewDropdown = new DropdownHelper('create-new-dropdown');
+  const createNewDropdown = new DropdownHelper("create-new-dropdown");
 
   createNewDropdown.registerClickCallback((value) => {
     window.location.assign(value);
   });
-</script>
 
-<script>
-  import DOMPurify from 'dompurify';
-  import Fuse from 'fuse.js';
-    
-  type SearchItem = {
-    id: string;
-    name: string;
-    slug?: string;
-    type: 'folder' | 'page';
-    isDraft?: boolean;
+  const i18nOptions = document.getElementById(
+    "i-dropdown-options",
+  ) as HTMLDivElement;
+
+  const createPage = i18nOptions.getAttribute("data-createpage") as string;
+  const createFolder = i18nOptions.getAttribute("data-createfolder") as string;
+
+  const dropdownKeys: Record<string, string> = {
+    [createPage]: "dropdown-create-page",
+    [createFolder]: "dropdown-create-folder",
   };
 
-  type SearchList = SearchItem[];
+  const getDropdownOptions = () => {
+    const dropdownElm = document.getElementById(
+      "create-new-dropdown-dropdown",
+    ) as HTMLUListElement;
+    const options = dropdownElm?.querySelectorAll(
+      ".sui-dropdown-option",
+    ) as NodeListOf<HTMLLIElement>;
 
-  function getIcon(item: SearchItem) {
-    if (item.type === 'folder') {
-      // heroicons:folder
-      return `<svg xmlns="http://www.w3.org/2000/svg" height="24" width="24" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6"> <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12.75V12A2.25 2.25 0 0 1 4.5 9.75h15A2.25 2.25 0 0 1 21.75 12v.75m-8.69-6.44-2.12-2.12a1.5 1.5 0 0 0-1.061-.44H4.5A2.25 2.25 0 0 0 2.25 6v12a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9a2.25 2.25 0 0 0-2.25-2.25h-5.379a1.5 1.5 0 0 1-1.06-.44Z" /> </svg> `;
+    const returnData: Record<string, HTMLSpanElement> = {};
+
+    for (const option of options) {
+      const value = option.dataset.value as string;
+      const key = dropdownKeys[value];
+
+      if (!key) continue;
+
+      const SelectedElm = (
+        option.querySelector(".sui-dropdown-line-container") as HTMLDivElement
+      ).querySelector("span");
+
+      if (!SelectedElm) continue;
+
+      returnData[key] = SelectedElm;
     }
 
-    if (item.slug === 'index') {
-      // heroicons:home-modern
-      return `<svg xmlns="http://www.w3.org/2000/svg" height="24" width="24" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6"> <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 21v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21m0 0h4.5V3.545M12.75 21h7.5V10.75M2.25 21h1.5m18 0h-18M2.25 9l4.5-1.636M18.75 3l-1.5.545m0 6.205 3 1m1.5.5-1.5-.5M6.75 7.364V3h-3v18m3-13.636 10.5-3.819" /> </svg> `;
-    }
-
-    if (item.isDraft) {
-      // heroicons:pencil-square
-      return `<svg xmlns="http://www.w3.org/2000/svg" height="24" width="24" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6"> <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" /> </svg> `;
-    }
-
-    // heroicons:document-text
-    return `<svg xmlns="http://www.w3.org/2000/svg" height="24" width="24" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6"> <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" /> </svg>`;
-  }
-
-  const itemTemplate = (item: SearchItem, searchTerm: string) => {
-    const base = document.getElementById('inner-sidebar-items-search') as HTMLDivElement;
-    const safeSearch = encodeURIComponent(searchTerm);
-    const safeId = encodeURIComponent(item.id);
-    const url = item.type === 'folder'
-      ? `${base?.dataset.editfolder}?folder=${safeId}&search=${safeSearch}`
-      : `${base?.dataset.editpage}/?edit=${safeId}&search=${safeSearch}`;
-    const safeName = DOMPurify.sanitize(item.name, { ALLOWED_TAGS: [], ALLOWED_ATTR: [] });
-    return `
-  <div id="search-selector" data-href="${url}" class="inner-sidebar-link">
-    ${ getIcon(item) }
-    <span class="sidebar-link-text">
-      ${safeName}
-    </span>
-  </div>
-  `;
+    return returnData;
   };
 
-  async function getSearchList(searchItems: HTMLDivElement) {
+  const currentPage = "@studiocms/dashboard:content-sidebar";
 
-    console.log(`Fetching search list from ${searchItems.dataset.searchlist}`);
+  const i18n = $i18n(currentPage, baseTranslation[currentPage]);
 
-    const response = await fetch(searchItems.dataset.searchlist as string);
+  i18n.subscribe((comp) => {
+    const dropdownOptions = getDropdownOptions();
 
-    if (!response.ok) {
-      console.error('Failed to fetch search list');
-      return [];
+    for (const [key, elm] of Object.entries(dropdownOptions)) {
+      // @ts-ignore
+      elm.textContent = comp[key];
     }
+  });
 
-    const data: SearchList = await response.json();
-
-    return data;
-  }
-
-  function clearSearchParams(innerSidebarItemsSearch: HTMLDivElement) {
-    const url = new URL(window.location.href);
-    url.searchParams.delete('search');
-    window.history.pushState({}, '', url);
-    innerSidebarItemsSearch.innerHTML = '';
-    document.getElementById('inner-sidebar-items')!.style.display = 'block';
-    innerSidebarItemsSearch.style.display = 'none';
-  }
-
-  async function runSearch(form: HTMLFormElement, searchItems: HTMLDivElement) {
-    const formData = new FormData(form);
-
-    const searchTerm = DOMPurify.sanitize(formData.get('search')?.toString() || '');
-
-    if (!searchTerm || searchTerm.length === 0) return;
-
-    const url = new URL(window.location.href);
-    url.searchParams.set('search', searchTerm);
-    window.history.pushState({}, '', url);
-
-    const searchList = await getSearchList(searchItems);
-
-    const fuse = new Fuse(searchList, {
-      keys: ['name', 'slug'],
-      isCaseSensitive: false,
-      threshold: 0.5,
-    });
-
-    const results = fuse.search(searchTerm);
-
-    console.log(`Search Results (${results.length}) `, results);
-
-    searchItems.innerHTML = DOMPurify.sanitize(
-      results.map(({ item }) => itemTemplate(item, searchTerm)).join('')
+  if (!customElements.get("t-content-sidebar")) {
+    customElements.define(
+      "t-content-sidebar",
+      makeTranslation(currentPage, i18n),
     );
-
-    document.getElementById('inner-sidebar-items')!.style.display = 'none';
-    searchItems.style.display = 'block';
-
-  const searchResultSelectors = document.querySelectorAll('#search-selector') as NodeListOf<HTMLDivElement>;
-
-    for (const selector of searchResultSelectors) {
-      selector.addEventListener('click', (e) => {
-        const url = selector.dataset.href;
-        window.location.assign(url!);
-      });
-    }
   }
-
-  // Main Functions
-
-  // Event Listeners
-  async function searchSetup() {
-  const form = document.getElementById('search-form') as HTMLFormElement;
-  const searchInput = form.querySelector('input[name=search]') as HTMLInputElement;
-
-  const innerSidebarItemsSearch = document.getElementById('inner-sidebar-items-search') as HTMLDivElement;
-
-    const url = new URL(window.location.href);
-    const searchTerm = url.searchParams.get('search');
-    if (searchTerm) {
-      const input = searchInput;
-      input.value = searchTerm;
-      await runSearch(form, innerSidebarItemsSearch);
-    }
-
-    // if the user submits the form, run the search
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      await runSearch(form, innerSidebarItemsSearch);
-    });
-
-    // if the user stops typing for 500ms, run the search
-    let timeout: NodeJS.Timeout;
-    form.addEventListener('input', () => {
-      if (searchInput.value.length === 0) clearSearchParams(innerSidebarItemsSearch);
-
-      clearTimeout(timeout);
-      timeout = setTimeout(async () => await runSearch(form, innerSidebarItemsSearch), 500);
-    });
-
-    // if the user clears the search, clear the query params
-    searchInput.addEventListener('search', () => clearSearchParams(innerSidebarItemsSearch));
-  }
-
-  searchSetup();
 </script>

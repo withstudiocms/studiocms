@@ -26,7 +26,7 @@ export const { GET, OPTIONS, ALL } = createEffectAPIRoutes(
 					sdk.GET.folderList().pipe(
 						Effect.map((res) => res.map(({ id, name }) => ({ id, name, type: 'folder' })))
 					),
-					sdk.GET.pages().pipe(
+					sdk.GET.pages(true).pipe(
 						Effect.map((res) =>
 							res.map(({ id, title, slug, draft }) => ({
 								id,

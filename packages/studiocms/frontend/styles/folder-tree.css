@@ -1,4 +1,5 @@
 /* Folder Tree Container */
+.folder-tree-search-container,
 folder-tree-container {
 	display: flex;
 	flex-direction: column;
