@@ -498,7 +498,10 @@
       "categories.edit-title": "Edit Category: {name}",
       "categories.create-title": "Create Category",
       "tags.edit-title": "Edit Tag: {name}",
-      "tags.create-title": "Create Tag"
+      "tags.create-title": "Create Tag",
+      "delete-button": "Delete",
+      "save-button": "Save Changes",
+      "create-button": "Create"
     },
     "@studiocms/dashboard:taxonomy-sidebar": {
       "input-placeholder-search": "Search...",

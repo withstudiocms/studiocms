@@ -16,8 +16,7 @@ const categories = mockCategories; // TODO: Replace with SDK call to fetch categ
 ---
 
 <TaxonomyLayout type="categories">
-    <form id="category-form">
-
+    <form id="category-form" action="/#">
         <input type="hidden" name="mode" value="create" />
         <input type="hidden" name="id" value="" />
 
@@ -34,31 +33,35 @@ const categories = mockCategories; // TODO: Replace with SDK call to fetch categ
                 fullWidth
                 defaultValue="null"
                 options={[
-                    { label: 'None', value: 'null' },
+                    { label: "None", value: "null" },
                     ...categories.map((cat) => ({
                         label: cat.name,
                         value: String(cat.id),
                     })),
                 ]}
             />
-            <Input
-                name="description"
-                label="Description"
-            />
+            <Input name="description" label="Description" />
         </div>
 
         <MetaContainer name="meta" />
-
     </form>
 </TaxonomyLayout>
 
 <script>
-    import { getCurrentEntryData } from "./shared-client.js";
+    import {
+        getCurrentEntryData,
+        parseFormDataToJson,
+    } from "./shared-client.js";
+    import { toast } from "studiocms:ui/components/toaster/client";
 
-    const $ = <E extends HTMLElement>(selector: string, context: Document | Element = document) =>
-        context.querySelector(selector) as E;
-    const $$ = <E extends HTMLElement>(selector: string, context: Document | Element = document) =>
-        context.querySelectorAll(selector) as NodeListOf<E>;
+    const $ = <E extends HTMLElement>(
+        selector: string,
+        context: Document | Element = document,
+    ) => context.querySelector(selector) as E;
+    const $$ = <E extends HTMLElement>(
+        selector: string,
+        context: Document | Element = document,
+    ) => context.querySelectorAll(selector) as NodeListOf<E>;
 
     const dataEl = $("#current-taxonomy-entry-data");
     const modeInput = $<HTMLInputElement>('input[name="mode"]');
@@ -67,16 +70,11 @@ const categories = mockCategories; // TODO: Replace with SDK call to fetch categ
     const slugInput = $<HTMLInputElement>('input[name="slug"]');
     const descriptionInput = $<HTMLInputElement>('input[name="description"]');
     const parentSelect = $<HTMLSelectElement>('select[name="parent"]');
-    const parentSelectOptions = $$<HTMLOptionElement>('option', parentSelect);
-    const parentSelectDropdown = $<HTMLUListElement>(
-        `#parent-dropdown`,
-    );
-    const parentValueDisplay = $<HTMLSpanElement>(
-        `#parent-value-span`,
-    );
-    const metaContainer = $<HTMLElement>(
-        `dynamic-key-value-pair[name="meta"]`,
-    );
+    const parentSelectOptions = $$<HTMLOptionElement>("option", parentSelect);
+    const parentSelectDropdown = $<HTMLUListElement>(`#parent-dropdown`);
+    const parentValueDisplay = $<HTMLSpanElement>(`#parent-value-span`);
+    const metaContainer = $<HTMLElement>(`dynamic-key-value-pair[name="meta"]`);
+    const form = $("#category-form") as HTMLFormElement;
 
     const currentData = getCurrentEntryData<"categories">(dataEl);
 
@@ -91,21 +89,21 @@ const categories = mockCategories; // TODO: Replace with SDK call to fetch categ
 
         for (const li of parentSelectDropdown.children) {
             const liElement = li as HTMLElement;
-            const liValue = liElement.getAttribute('value');
+            const liValue = liElement.getAttribute("value");
 
             if (liValue === value) {
                 liElement.id = "parent-selected";
-                liElement.classList.add('selected');
+                liElement.classList.add("selected");
                 parentValueDisplay.textContent = liElement.textContent;
             } else {
                 liElement.id = "";
-                liElement.classList.remove('selected');
+                liElement.classList.remove("selected");
             }
         }
     }
 
     function populate() {
-        modeInput.value = dataEl.dataset.mode || 'create';
+        modeInput.value = dataEl.dataset.mode || "create";
 
         if (dataEl.dataset.mode === "create") {
             if (currentData.parent) {
@@ -125,12 +123,70 @@ const categories = mockCategories; // TODO: Replace with SDK call to fetch categ
 
             const parentId = currentData.currentEntry.parent;
 
-            updateSelectDisplay(parentId ? String(parentId) : 'null');
+            updateSelectDisplay(parentId ? String(parentId) : "null");
         }
+    }
+
+    function loadForm() {
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const formData = new FormData(form);
+            const jsonData = parseFormDataToJson(formData);
+
+            let response: Response;
+
+            try {
+                response = await fetch(form.action, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(jsonData),
+                });
+            } catch (error) {
+                toast({
+                    title: "Error",
+                    description:
+                        "An error occurred while saving the category",
+                    type: "danger",
+                });
+                return;
+            }
+
+            if (response.ok) {
+                const result: { success: boolean; message: string } =
+                    await response.json();
+                if (result.success) {
+                    toast({
+                        title: "Success",
+                        description:
+                            result.message || "Category saved successfully",
+                        type: "success",
+                    });
+                } else {
+                    toast({
+                        title: "Error",
+                        description:
+                            result.message ||
+                            "An error occurred while saving the category",
+                        type: "danger",
+                    });
+                }
+            } else {
+                toast({
+                    title: "Error",
+                    description:
+                        "An error occurred while saving the category",
+                    type: "danger",
+                });
+            }
+        });
     }
 
     document.addEventListener("DOMContentLoaded", () => {
         populate();
+        loadForm();
     });
 </script>
 

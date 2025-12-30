@@ -9,7 +9,7 @@ const { defaultLang: lang } = Astro.locals.StudioCMS;
 const t = useTranslations(lang, '@studiocms/dashboard:taxonomy-index');
 ---
 <TaxonomyLayout type='tags'>
-    <form id="tag-form">
+    <form id="tag-form" action="#">
 
         <input type="hidden" name="mode" value="create" />
         <input type="hidden" name="id" value="" />
@@ -30,7 +30,8 @@ const t = useTranslations(lang, '@studiocms/dashboard:taxonomy-index');
 </TaxonomyLayout>
 
 <script>
-    import { getCurrentEntryData } from "./shared-client.js";
+    import { getCurrentEntryData, parseFormDataToJson } from "./shared-client.js";
+    import { toast } from 'studiocms:ui/components/toaster/client';
 
     const $ = <E extends HTMLElement>(selector: string, context: Document | Element = document) =>
         context.querySelector(selector) as E;
@@ -44,6 +45,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:taxonomy-index');
     const metaContainer = $<HTMLElement>(
         `dynamic-key-value-pair[name="meta"]`,
     );
+    const form = $("#tag-form") as HTMLFormElement;
 
     const currentData = getCurrentEntryData<"tags">(dataEl);
 
@@ -62,8 +64,66 @@ const t = useTranslations(lang, '@studiocms/dashboard:taxonomy-index');
         }
     }
 
+    function loadForm() {
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const formData = new FormData(form);
+            const jsonData = parseFormDataToJson(formData);
+
+            let response: Response;
+
+            try {
+                response = await fetch(form.action, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(jsonData),
+                });
+            } catch (error) {
+                toast({
+                    title: "Error",
+                    description:
+                        "An error occurred while saving the tag",
+                    type: "danger",
+                });
+                return;
+            }
+
+            if (response.ok) {
+                const result: { success: boolean; message: string } =
+                    await response.json();
+                if (result.success) {
+                    toast({
+                        title: "Success",
+                        description:
+                            result.message || "Tag saved successfully",
+                        type: "success",
+                    });
+                } else {
+                    toast({
+                        title: "Error",
+                        description:
+                            result.message ||
+                            "An error occurred while saving the tag",
+                        type: "danger",
+                    });
+                }
+            } else {
+                toast({
+                    title: "Error",
+                    description:
+                        "An error occurred while saving the tag",
+                    type: "danger",
+                });
+            }
+        })
+    }
+
     document.addEventListener("DOMContentLoaded", () => {
         populate();
+        loadForm();
     });
 </script>
 

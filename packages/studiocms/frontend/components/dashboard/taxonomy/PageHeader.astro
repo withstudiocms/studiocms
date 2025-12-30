@@ -2,6 +2,7 @@
 import type { UiLanguageKeys } from 'studiocms:i18n';
 import { useTranslations } from 'studiocms:i18n';
 import { Button } from 'studiocms:ui/components/button';
+import { Group } from 'studiocms:ui/components/group';
 import { Icon } from 'studiocms:ui/components/icon';
 
 interface Props {
@@ -43,7 +44,82 @@ const replaceNameParam = (str: string) => str.replace('{name}', pageTitle);
         </h1>
     </div>
     <div id="page-actions-container" class="page-actions-container">
+        {
 
+            mode === 'edit' && (
+                <Group>
+                    <Button 
+                        form={
+                            type === 'categories' 
+                                ? 'category-form' 
+                                : type === 'tags' 
+                                    ? 'tag-form' 
+                                    : ''
+                        }
+                        variant="outlined"
+                        color="danger"
+                        id="delete-taxonomy-entry-btn"
+                        type={'button'}
+                        disabled
+                    >
+                        <Icon
+                            name="heroicons:trash"
+                            width={20}
+                            height={20}
+                            slot="start-content"
+                        />
+                        {t('delete-button')}
+                    </Button>
+                    <Button
+                        form={
+                            type === 'categories' 
+                                ? 'category-form' 
+                                : type === 'tags' 
+                                    ? 'tag-form' 
+                                    : ''
+                        }
+                        variant="solid"
+                        color="primary"
+                        id="save-taxonomy-entry-btn"
+                        type={'submit'}
+                    >
+                        <Icon
+                            name="heroicons:check-circle"
+                            width={20}
+                            height={20}
+                            slot="start-content"
+                        />
+                        {t('save-button')}
+                    </Button>
+                </Group>
+            )
+        }
+
+        {
+            mode === 'create' && (
+                <Button
+                    form={
+                        type === 'categories' 
+                            ? 'category-form' 
+                            : type === 'tags' 
+                                ? 'tag-form' 
+                                : ''
+                    }
+                    variant="solid"
+                    color="primary"
+                    id="create-taxonomy-entry-btn"
+                    type={'submit'}
+                >
+                    <Icon
+                        name="heroicons:plus-circle"
+                        width={20}
+                        height={20}
+                        slot="start-content"
+                    />
+                    {t('create-button')}
+                </Button>
+            )
+        }
     </div>
 </header>
 

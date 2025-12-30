@@ -240,7 +240,6 @@ const { name, entries } = Astro.props;
             this.setupInputObservers();
             this.render();
             this.setupAttributeWatchers();
-            this.setupDebug();
         }
 
         updateValue(newValue: string) {
@@ -276,15 +275,6 @@ const { name, entries } = Astro.props;
 
             observer.observe(this, {
                 attributes: true,
-            });
-        }
-
-        setupDebug() {
-            const logButton = this.querySelector(
-                ".log-entries-button",
-            ) as HTMLButtonElement;
-            logButton.addEventListener("click", () => {
-                console.log(this.value);
             });
         }
 
