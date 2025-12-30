@@ -80,8 +80,38 @@ const categories = mockCategories; // TODO: Replace with SDK call to fetch categ
 
     const currentData = getCurrentEntryData<"categories">(dataEl);
 
+    function updateSelectDisplay(value: string) {
+        for (const option of parentSelectOptions) {
+            if (option.value === value) {
+                option.setAttribute("selected", "");
+            } else {
+                option.removeAttribute("selected");
+            }
+        }
+
+        for (const li of parentSelectDropdown.children) {
+            const liElement = li as HTMLElement;
+            const liValue = liElement.getAttribute('value');
+
+            if (liValue === value) {
+                liElement.id = "parent-category-selected";
+                liElement.classList.add('selected');
+                parentValueDisplay.textContent = liElement.textContent;
+            } else {
+                liElement.id = "";
+                liElement.classList.remove('selected');
+            }
+        }
+    }
+
     function populate() {
         modeInput.value = dataEl.dataset.mode || 'create';
+
+        if (dataEl.dataset.mode === "create") {
+            if (currentData.parent) {
+                updateSelectDisplay(String(currentData.parent));
+            }
+        }
 
         if (dataEl.dataset.mode === "edit") {
             idInput.value = String(currentData.currentEntry.id || "");
@@ -95,27 +125,7 @@ const categories = mockCategories; // TODO: Replace with SDK call to fetch categ
 
             const parentId = currentData.currentEntry.parent;
 
-            for (const option of parentSelectOptions) {
-                if (option.value === String(parentId)) {
-                    option.setAttribute("selected", "");
-                } else {
-                    option.removeAttribute("selected");
-                }
-            }
-
-            for (const li of parentSelectDropdown.children) {
-                const liElement = li as HTMLElement;
-                const liValue = liElement.getAttribute('value');
-
-                if (liValue === String(parentId)) {
-                    liElement.id = "parent-category-selected";
-                    liElement.classList.add('selected');
-                    parentValueDisplay.textContent = liElement.textContent;
-                } else {
-                    liElement.id = "";
-                    liElement.classList.remove('selected');
-                }
-            }
+            updateSelectDisplay(parentId ? String(parentId) : 'null');
         }
     }
 

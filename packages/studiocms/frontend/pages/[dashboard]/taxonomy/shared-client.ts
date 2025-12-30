@@ -26,11 +26,15 @@ type CurrentEntry<T> = T extends 'categories'
 		: // biome-ignore lint/complexity/noBannedTypes: false positive
 			{};
 
-export interface CurrentEntryData<T extends 'categories' | 'tags'> {
+type WithParent<T extends 'categories' | 'tags'> = T extends 'categories'
+	? { parent?: number }
+	: { parent?: never };
+
+export type CurrentEntryData<T extends 'categories' | 'tags'> = WithParent<T> & {
 	type: T;
 	mode: 'create' | 'edit' | '';
 	currentEntry: CurrentEntry<T>;
-}
+};
 
 export function getCurrentEntryData<T extends 'categories' | 'tags'>(
 	dataEl?: HTMLElement
@@ -43,9 +47,13 @@ export function getCurrentEntryData<T extends 'categories' | 'tags'>(
 	const currentEntryAttr = dataEl?.getAttribute('data-current-entry') ?? '{}';
 	const currentEntry = JSON.parse(currentEntryAttr) as CurrentEntry<T>;
 
+	const parentId = dataEl?.getAttribute('data-parent-id');
+	const parent = parentId ? Number.parseInt(parentId, 10) : undefined;
+
 	return {
 		type,
 		mode,
 		currentEntry,
-	};
+		...(type === 'categories' ? { parent } : {}),
+	} as CurrentEntryData<T>;
 }

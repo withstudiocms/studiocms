@@ -25,6 +25,9 @@ const searchParams = Astro.url.searchParams;
 const mode = (searchParams.get('mode') as 'create' | 'edit' | null) ?? undefined;
 const editId = searchParams.get('edit') ?? undefined;
 const parsedEditId = editId ? Number.parseInt(editId, 10) : undefined;
+const parentId = searchParams.get('parent')
+	? Number.parseInt(searchParams.get('parent') as string, 10)
+	: undefined;
 
 // const [categories, tags] = await runSDK(
 // 	Effect.all([SDKCoreJs.GET.categories.getAll(), SDKCoreJs.GET.tags.getAll()])
@@ -89,6 +92,7 @@ if (type === 'categories') {
         data-type={type}
         data-mode={mode ?? ''}
         data-current-entry={JSON.stringify(currentEntry ?? {})}
+        data-parent-id={parentId ?? ''}
     ></div>
 
     <slot />
