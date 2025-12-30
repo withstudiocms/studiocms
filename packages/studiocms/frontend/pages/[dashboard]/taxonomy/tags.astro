@@ -7,6 +7,8 @@ import TaxonomyLayout from '#frontend/layouts/TaxonomyLayout.astro';
 const { defaultLang: lang } = Astro.locals.StudioCMS;
 
 const t = useTranslations(lang, '@studiocms/dashboard:taxonomy-index');
+
+// TODO: Replace action URL with actual endpoint
 ---
 <TaxonomyLayout type='tags'>
     <form id="tag-form" action="#">
