@@ -125,6 +125,11 @@ export function getSidebarLinks(lang: UiLanguageKeys): GetSidebarLinksReturn {
 			icon: 'heroicons:pencil-square',
 			href: StudioCMSRoutes.mainLinks.contentManagement,
 		},
+		{
+			key: 'taxonomy-label',
+			icon: 'heroicons:tag',
+			href: StudioCMSRoutes.mainLinks.taxonomy,
+		},
 		...filterAndProcessPages(userPages, false, ['editor'], lang),
 	];
 

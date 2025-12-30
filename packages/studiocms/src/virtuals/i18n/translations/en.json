@@ -68,7 +68,8 @@
       "user-dropdown:view-site": "View Site",
       "user-dropdown:logout": "Log Out",
       "mailer-configuration-label": "SMTP Configuration",
-      "system-management-label": "System Management"
+      "system-management-label": "System Management",
+      "taxonomy-label": "Taxonomy Management"
     },
     "@studiocms/dashboard:profile": {
       "title": "User Profile",
@@ -486,6 +487,23 @@
       "expand-all": "Expand All",
       "edit-folder": "Edit Folder",
       "edit-page": "Edit Page"
+    },
+    "@studiocms/dashboard:taxonomy-index": {
+      "title": "Taxonomy Management",
+      "description": "Manage your taxonomies here.",
+      "placeholder": "Select or create a taxonomy to get started."
+    },
+    "@studiocms/dashboard:taxonomy-header": {
+      "index.title": "Taxonomy Management",
+      "categories.edit-title": "Edit Category: {name}",
+      "categories.create-title": "Create Category",
+      "tags.edit-title": "Edit Tag: {name}",
+      "tags.create-title": "Create Tag"
+    },
+    "@studiocms/dashboard:taxonomy-sidebar": {
+      "input-placeholder-search": "Search...",
+      "dropdown-create-category": "Create Category",
+      "dropdown-create-tag": "Create Tag"
     }
   }
 }

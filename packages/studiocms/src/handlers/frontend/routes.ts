@@ -281,6 +281,18 @@ export const dashboardEnabledRoutes = (
 			entrypoint: 'pages/[dashboard]/content-management/diff.astro',
 		},
 		{
+			pattern: 'taxonomy',
+			entrypoint: 'pages/[dashboard]/taxonomy/index.astro',
+		},
+		{
+			pattern: 'taxonomy/categories',
+			entrypoint: 'pages/[dashboard]/taxonomy/categories.astro',
+		},
+		{
+			pattern: 'taxonomy/tags',
+			entrypoint: 'pages/[dashboard]/taxonomy/tags.astro',
+		},
+		{
 			pattern: 'profile',
 			entrypoint: 'pages/[dashboard]/profile.astro',
 		},

@@ -1,0 +1,116 @@
+---
+import type { UiLanguageKeys } from 'studiocms:i18n';
+import { useTranslations } from 'studiocms:i18n';
+import { Button } from 'studiocms:ui/components/button';
+import { Icon } from 'studiocms:ui/components/icon';
+
+interface Props {
+	lang: UiLanguageKeys;
+	type: 'index' | 'categories' | 'tags';
+	mode?: 'edit' | 'create';
+	pageTitle?: string;
+}
+
+const { lang, type, mode, pageTitle = '' } = Astro.props;
+
+// Validation checks for required props
+if (['categories', 'tags'].includes(type) && !mode) {
+	throw new Error('Mode is required when type is categories or tags');
+}
+
+// Additional check for pageTitle when editing categories or tags
+if (['categories', 'tags'].includes(type) && mode === 'edit' && !pageTitle) {
+	throw new Error('pageTitle is required when type is categories or tags and mode is edit');
+}
+
+const t = useTranslations(lang, '@studiocms/dashboard:taxonomy-header');
+
+const replaceNameParam = (str: string) => str.replace('{name}', pageTitle);
+---
+<tabs-context-updater {type}></tabs-context-updater>
+
+<header class="page-header">
+    <div class="page-title-container">
+        <Button color='primary' id='nav-open' class='mobile-btn'>
+            <Icon name="heroicons:bars-3" height={24} width={24} slot="start-content" />
+        </Button>
+        <h1 class="page-title">
+            {type === 'index' && t('index.title')}
+            {type === 'categories' && mode === 'edit' && replaceNameParam(t('categories.edit-title'))}
+            {type === 'categories' && mode === 'create' && t('categories.create-title')}
+            {type === 'tags' && mode === 'edit' && replaceNameParam(t('tags.edit-title'))}
+            {type === 'tags' && mode === 'create' && t('tags.create-title')}
+        </h1>
+    </div>
+    <div id="page-actions-container" class="page-actions-container">
+
+    </div>
+</header>
+
+<script>
+    type AllowedTypes = 'categories' | 'tags';
+    type FullTypeOptions = 'index' | AllowedTypes;
+
+    class TabsContextUpdater extends HTMLElement {
+        #type: FullTypeOptions = 'index';
+        #labelToLocalStorageMap = {
+            categories: 0,
+            tags: 1,
+        } as const;
+        #allowedTypes: FullTypeOptions[] = ['categories', 'tags'];
+
+        constructor() {
+            super();
+            this.#type = (this.getAttribute('type') as FullTypeOptions | null) || 'index';
+
+            this.style.display = 'none';
+        }
+
+        connectedCallback() {
+            if (this.#allowedTypes.includes(this.#type)) {
+                this.setTaxonomyLocalStorageValue(this.#type as AllowedTypes);
+            }
+        }
+
+        setTaxonomyLocalStorageValue(value: AllowedTypes): void {
+            const key = 'sui-tabs-taxonomy-selection';
+            const mappedValue = this.#labelToLocalStorageMap[value];
+            localStorage.setItem(key, mappedValue.toString());
+        }
+    }
+
+    if (!customElements.get('tabs-context-updater')) {
+        customElements.define('tabs-context-updater', TabsContextUpdater);
+    }
+</script>
+
+<style>
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .page-title-container {
+        display: flex;
+        flex-direction: row;
+        gap: 1rem;
+        width: fit-content;
+    }
+
+    .page-title {
+        display: block;
+        width: fit-content;
+        margin: 0;
+    }
+
+    .page-actions-container {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 1rem;
+    }
+</style>

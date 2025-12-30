@@ -1,0 +1,365 @@
+---
+import { Icon } from 'studiocms:ui/components/icon';
+import type { TaxonomyTreeProps } from './shared.js';
+import TaxonomyTreeNodeTree from './TaxonomyTreeNodeTree.astro';
+
+interface Props extends TaxonomyTreeProps {
+	type: 'category' | 'tag';
+	id?: string;
+	class?: string;
+}
+
+const {
+	type,
+	baseTagLink = '/',
+	baseCategoryLink = '/',
+	id,
+	class: className,
+	...props
+} = Astro.props;
+
+const containerId = `taxonomy-tree-${type}-${crypto.randomUUID()}`;
+const menuId = `${containerId}-menu`;
+const containerMenuId = `${containerId}-container-menu`;
+
+const sharedProps = {
+	baseCategoryLink,
+	baseTagLink,
+	...props,
+};
+---
+
+<taxonomy-tree-container
+    data-type={type}
+    data-create-link={type === "category" ? baseCategoryLink : baseTagLink}
+    data-container-id={containerId}
+    data-container-menu-id={containerMenuId}
+    data-menu-id={menuId}
+    id={id}
+    class={className}
+>
+    {
+        type === "category" && (
+            <div
+                id={containerMenuId}
+                class="folder-tree-container-menu"
+            >
+                <button
+                    class="container-menu-item"
+                    role="menuitem"
+                    data-action="collapse-all"
+                >
+                    <Icon
+                        name="heroicons:minus-16-solid"
+                        width={12}
+                        height={12}
+                    />
+                    <span>Collapse All</span>
+                </button>
+
+                <button
+                    class="container-menu-item"
+                    role="menuitem"
+                    data-action="expand-all"
+                >
+                    <Icon
+                        name="heroicons:plus-16-solid"
+                        width={12}
+                        height={12}
+                    />
+                    <span>Expand All</span>
+                </button>
+            </div>
+        )
+    }
+
+    <TaxonomyTreeNodeTree {...sharedProps} />
+</taxonomy-tree-container>
+
+<div id={menuId} class="context-menu" role="menu">
+    {
+        type === "category" && (
+            <button
+                class="context-menu-item"
+                role="menuitem"
+                data-action="create-category"
+            >
+                <Icon name="heroicons:folder-plus" width={16} height={16} />
+                <span>Create Category</span>
+            </button>
+        )
+    }
+    {
+        type === "tag" && (
+            <button
+                class="context-menu-item"
+                role="menuitem"
+                data-action="create-tag"
+            >
+                <Icon name="heroicons:tag" width={16} height={16} />
+                <span>Create Tag</span>
+            </button>
+        )
+    }
+    {
+        type === 'category' && (
+            <button
+                class="context-menu-item"
+                role="menuitem"
+                data-action="collapse-all"
+            >
+                <Icon name="heroicons:minus" width={16} height={16} />
+                <span>Collapse All</span>
+            </button>
+            <button class="context-menu-item" role="menuitem" data-action="expand-all">
+                <Icon name="heroicons:plus" width={16} height={16} />
+                <span>Expand All</span>
+            </button>
+        )
+    }
+</div>
+
+<script>
+    class TaxonomyTreeContainer extends HTMLElement {
+        private contextMenu: HTMLElement | null = null;
+        private containerMenu: HTMLElement | null = null;
+        private menuTrigger: HTMLButtonElement | null = null;
+
+        constructor() {
+            super();
+        }
+
+        connectedCallback() {
+            const menuId = this.getAttribute("data-menu-id");
+            this.contextMenu = document.getElementById(menuId || "");
+            const containerMenuId = this.getAttribute("data-container-menu-id");
+            this.containerMenu = document.getElementById(containerMenuId || "");
+            this.menuTrigger = this.querySelector(
+                '[data-trigger="container-menu"]',
+            );
+
+            this.setupContextMenu();
+            this.setupContainerMenu();
+        }
+
+        setupContextMenu() {
+            // Show context menu on right-click
+            this.addEventListener("contextmenu", (e) => {
+                const target = e.target as HTMLElement;
+
+                // Only show menu if NOT clicking on nodes or leaves
+                if (
+                    target.closest("taxonomy-tree-node") ||
+                    target.closest("taxonomy-tree-leaf")
+                ) {
+                    return;
+                }
+
+                e.preventDefault();
+                this.showContextMenu(e as MouseEvent);
+            });
+
+            // Hide context menu when clicking outside
+            document.addEventListener("click", (e) => {
+                if (
+                    this.contextMenu &&
+                    !this.contextMenu.contains(e.target as Node)
+                ) {
+                    this.hideContextMenu();
+                }
+            });
+
+            // Handle context menu actions
+            const menuItems =
+                this.contextMenu?.querySelectorAll(".context-menu-item");
+            menuItems?.forEach((item) => {
+                item.addEventListener("click", (e) => {
+                    e.stopPropagation();
+                    const action = (item as HTMLElement).getAttribute(
+                        "data-action",
+                    );
+                    this.handleContextMenuAction(action);
+                    this.hideContextMenu();
+                });
+            });
+
+            // Close menu on Escape key
+            document.addEventListener("keydown", (e) => {
+                if (e.key === "Escape") {
+                    this.hideContextMenu();
+                    this.hideContainerMenu();
+                }
+            });
+        }
+
+        setupContainerMenu() {
+            // Toggle container menu on trigger click
+            this.menuTrigger?.addEventListener("click", (e) => {
+                e.stopPropagation();
+                this.toggleContainerMenu(e as MouseEvent);
+            });
+
+            // Hide container menu when clicking outside
+            document.addEventListener("click", (e) => {
+                if (
+                    this.containerMenu &&
+                    !this.containerMenu.contains(e.target as Node) &&
+                    e.target !== this.menuTrigger
+                ) {
+                    this.hideContainerMenu();
+                }
+            });
+
+            // Handle container menu actions
+            const menuItems = this.containerMenu?.querySelectorAll(
+                ".container-menu-item",
+            );
+            menuItems?.forEach((item) => {
+                item.addEventListener("click", (e) => {
+                    e.stopPropagation();
+                    const action = (item as HTMLElement).getAttribute(
+                        "data-action",
+                    );
+                    this.handleContainerMenuAction(action);
+                    this.hideContainerMenu();
+                });
+            });
+        }
+
+        showContextMenu(e: MouseEvent) {
+            if (!this.contextMenu) return;
+
+            this.contextMenu.style.left = `${e.clientX}px`;
+            this.contextMenu.style.top = `${e.clientY}px`;
+            this.contextMenu.classList.add("active");
+            const containerRect = this.getBoundingClientRect();
+
+            requestAnimationFrame(() => {
+                if (!this.contextMenu) return;
+                const menuRect = this.contextMenu.getBoundingClientRect();
+                
+                // Calculate constrained position
+                let left = e.clientX;
+                let top = e.clientY;
+
+                // Check right boundary (viewport and container)
+                const maxRight = Math.min(window.innerWidth, containerRect.right);
+                if (left + menuRect.width > maxRight) {
+                    left = Math.max(containerRect.left, maxRight - menuRect.width);
+                }
+
+                // Check bottom boundary (viewport and container)
+                const maxBottom = Math.min(window.innerHeight, containerRect.bottom);
+                if (top + menuRect.height > maxBottom) {
+                    top = Math.max(containerRect.top, maxBottom - menuRect.height);
+                }
+
+                // Ensure menu doesn't go outside left/top of container
+                left = Math.max(containerRect.left, left);
+                top = Math.max(containerRect.top, top);
+
+                this.contextMenu.style.left = `${left}px`;
+                this.contextMenu.style.top = `${top}px`;
+            });
+        }
+
+        hideContextMenu() {
+            this.contextMenu?.classList.remove("active");
+        }
+
+        toggleContainerMenu(_e: MouseEvent) {
+            if (!this.containerMenu || !this.menuTrigger) return;
+
+            const isActive = this.containerMenu.classList.contains("active");
+
+            if (isActive) {
+                this.hideContainerMenu();
+            } else {
+                // Position menu relative to trigger button
+                const triggerRect = this.menuTrigger.getBoundingClientRect();
+                this.containerMenu.style.left = `${triggerRect.right - 180}px`; // 180px = menu width
+                this.containerMenu.style.top = `${triggerRect.bottom + 4}px`;
+                this.containerMenu.classList.add("active");
+
+                // Adjust if menu goes off-screen
+                requestAnimationFrame(() => {
+                    if (!this.containerMenu) return;
+                    const rect = this.containerMenu.getBoundingClientRect();
+                    const viewportWidth = window.innerWidth;
+                    const viewportHeight = window.innerHeight;
+
+                    if (rect.right > viewportWidth) {
+                        this.containerMenu.style.left = `${viewportWidth - rect.width - 16}px`;
+                    }
+
+                    if (rect.left < 0) {
+                        this.containerMenu.style.left = `16px`;
+                    }
+
+                    if (rect.bottom > viewportHeight) {
+                        this.containerMenu.style.top = `${triggerRect.top - rect.height - 4}px`;
+                    }
+                });
+            }
+        }
+
+        hideContainerMenu() {
+            this.containerMenu?.classList.remove("active");
+        }
+
+        handleSharedActions(action: "collapse-all" | "expand-all") {
+            if (action === "collapse-all") {
+                window.dispatchEvent(new Event("taxonomyTreeNode-collapseAll"));
+            } else if (action === "expand-all") {
+                window.dispatchEvent(new Event("taxonomyTreeNode-expandAll"));
+            }
+        }
+
+        genUrl(base: string, params?: Record<string, string>) {
+            const url = new URL(base, window.location.origin);
+
+            if (params) {
+                for (const [key, value] of Object.entries(params)) {
+                    url.searchParams.set(key, value);
+                }
+            }
+
+            return url.href;
+        }
+
+        handleContextMenuAction(action: string | null) {
+            if (!action) return;
+
+            switch (action) {
+                case "create-category":
+                case "create-tag":
+                    const createLink = this.getAttribute(
+                        "data-create-link",
+                    )!
+                    window.location.href = this.genUrl(createLink, {
+                        mode: "create",
+                    });
+                    break;
+                case "collapse-all":
+                case "expand-all":
+                    this.handleSharedActions(action);
+                    break;
+            }
+        }
+
+        handleContainerMenuAction(action: string | null) {
+            if (!action) return;
+
+            switch (action) {
+                case "collapse-all":
+                case "expand-all":
+                    this.handleSharedActions(action);
+                    break;
+            }
+        }
+    }
+
+    if (!customElements.get("taxonomy-tree-container")) {
+        customElements.define("taxonomy-tree-container", TaxonomyTreeContainer);
+    }
+</script>

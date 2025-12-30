@@ -1,0 +1,106 @@
+---
+import { useTranslations } from 'studiocms:i18n';
+import InnerSidebarElement from '#frontend/components/dashboard/taxonomy/InnerSidebarElement.astro';
+import PageHeader from '#frontend/components/dashboard/taxonomy/PageHeader.astro';
+import DashboardLayout from '#frontend/layouts/DashboardLayout.astro';
+
+const { siteConfig: config, defaultLang: lang, security } = Astro.locals.StudioCMS;
+
+const currentUser = security?.userSessionData ?? null;
+
+const t = useTranslations(lang, '@studiocms/dashboard:taxonomy-index');
+---
+
+<DashboardLayout
+    title={t("title")}
+    description={t("description")}
+    requiredPermission="editor"
+    sidebar="double"
+    {lang}
+    {config}
+    {currentUser}
+>
+    <div slot="double-sidebar" class="inner-sidebar-container">
+        <div class="sidebar-links-container">
+            <InnerSidebarElement {lang} />
+        </div>
+    </div>
+
+    <div slot="header">
+        <PageHeader {lang} type='index' />
+    </div>
+
+    <div id="placeholder-info" class="placeholder-info">
+        <p>
+            <t-taxonomy key="placeholder"
+                >{t("placeholder")}</t-taxonomy
+            >
+        </p>
+    </div>
+</DashboardLayout>
+
+<style>
+    .inner-sidebar-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        min-height: 100vh;
+        max-height: 100%;
+        padding: 1.5rem;
+    }
+
+    .sidebar-links-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        min-height: 95vh;
+        height: 100%;
+        gap: 0.5rem;
+    }
+
+    .placeholder-info {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 40vh;
+        margin-left: auto;
+        margin-right: auto;
+        margin-bottom: 30vh;
+        z-index: -1;
+
+        p {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+        }
+    }
+</style>
+
+<script>
+    import {
+        $i18n,
+        $localeSettings,
+        baseTranslation,
+        defaultLang,
+        documentUpdater,
+        makeTranslation,
+    } from "studiocms:i18n/client";
+
+    let lang = defaultLang;
+
+    const currentPage = "@studiocms/dashboard:taxonomy-index";
+
+    $localeSettings.subscribe((locale) => {
+        lang = locale || defaultLang;
+    });
+
+    const i18n = $i18n(currentPage, baseTranslation[currentPage]);
+
+    i18n.subscribe((comp) => {
+        documentUpdater(comp, lang);
+    });
+
+    if (!customElements.get("t-taxonomy")) {
+        customElements.define("t-taxonomy", makeTranslation(currentPage, i18n));
+    }
+</script>
