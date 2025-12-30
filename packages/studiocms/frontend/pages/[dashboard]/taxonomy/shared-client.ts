@@ -80,7 +80,7 @@ export const parseFormDataToJson = <
 		// 'meta' should be parsed as JSON
 		// Other values should be assigned directly, converting 'null' string to null
 		if (key === 'id' || key === 'parent') {
-			entry[key] = Number(value);
+			entry[key] = value !== 'null' ? Number(value) : null;
 		} else if (key === 'meta') {
 			// Attempt to parse JSON, default to empty object on failure
 			try {
