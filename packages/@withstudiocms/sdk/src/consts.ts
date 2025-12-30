@@ -11,6 +11,9 @@ export const cacheTags = {
 	pages: ['pages'],
 	pageFolderTree: ['page-folder-tree'],
 	middleware: ['middleware'],
+	taxonomy: ['taxonomy'],
+	tags: ['tags'],
+	categories: ['categories'],
 };
 
 /**
@@ -26,4 +29,10 @@ export const cacheKeyGetters = {
 	page: (pageId: string) => `page:${pageId}`,
 	pageFolderTree: (hideDefaultIndex: boolean) => `page-folder-tree:${hideDefaultIndex}`,
 	middleware: () => 'middleware',
+	tags: () => 'tags',
+	categories: () => 'categories',
+	categoryById: (categoryId: number) => `category:${categoryId}`,
+	categoryBySlug: (slug: string) => `category-slug:${slug}`,
+	tagById: (tagId: number) => `tag:${tagId}`,
+	tagBySlug: (slug: string) => `tag-slug:${slug}`,
 };

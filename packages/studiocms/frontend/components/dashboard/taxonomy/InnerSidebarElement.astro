@@ -1,6 +1,7 @@
 ---
 import type { UiLanguageKeys } from 'studiocms:i18n';
 import { useTranslations } from 'studiocms:i18n';
+import type { tsPageDataCategoriesSelect, tsPageDataTagsSelect } from 'studiocms:sdk/types';
 import { Button } from 'studiocms:ui/components/button';
 import { Dropdown } from 'studiocms:ui/components/dropdown';
 import { Icon } from 'studiocms:ui/components/icon';
@@ -11,19 +12,20 @@ import {
 	tagsToTaxonomyNodes,
 } from '#frontend/components/shared/taxonomy/shared.js';
 import TaxonomyTreeRenderer from '#frontend/components/shared/taxonomy/TaxonomyTreeRenderer.astro';
-import { mockCategories, mockTags } from './temp';
 import { appendQueryParamsToPath } from './utils.js';
 
 interface Props {
 	lang: UiLanguageKeys;
+	categories: tsPageDataCategoriesSelect[];
+	tags: tsPageDataTagsSelect[];
 }
 
-const { lang } = Astro.props;
+const { lang, categories, tags } = Astro.props;
 
 const t = useTranslations(lang, '@studiocms/dashboard:taxonomy-sidebar');
 
-const categoryData = categoriesToTaxonomyNodes(mockCategories);
-const tagData = tagsToTaxonomyNodes(mockTags);
+const categoryData = categoriesToTaxonomyNodes(categories);
+const tagData = tagsToTaxonomyNodes(tags);
 ---
 <div class="inner-sidebar-header">
     <Button

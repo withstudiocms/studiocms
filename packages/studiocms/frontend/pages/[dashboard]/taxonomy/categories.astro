@@ -1,7 +1,11 @@
 ---
 import { useTranslations } from 'studiocms:i18n';
+// import { runSDK, SDKCoreJs } from 'studiocms:sdk';
+import type { tsPageDataCategoriesSelect, tsPageDataTagsSelect } from 'studiocms:sdk/types';
+// import { Effect } from 'effect';
 import InnerSidebarElement from '#frontend/components/dashboard/taxonomy/InnerSidebarElement.astro';
 import PageHeader from '#frontend/components/dashboard/taxonomy/PageHeader.astro';
+import { mockCategories, mockTags } from '#frontend/components/dashboard/taxonomy/temp.js';
 import DashboardLayout from '#frontend/layouts/DashboardLayout.astro';
 
 const { siteConfig: config, defaultLang: lang, security } = Astro.locals.StudioCMS;
@@ -15,11 +19,24 @@ const searchParams = Astro.url.searchParams;
 const mode = (searchParams.get('mode') as 'create' | 'edit' | null) ?? undefined;
 const editId = searchParams.get('edit') ?? undefined;
 
+// const [categories, tags] = await runSDK(
+// 	Effect.all([SDKCoreJs.GET.categories.getAll(), SDKCoreJs.GET.tags.getAll()])
+// );
+
+const allCategories: tsPageDataCategoriesSelect[] = mockCategories; // TODO: Replace with SDK call to fetch categories
+const allTags: tsPageDataTagsSelect[] = mockTags; // TODO: Replace with SDK call to fetch tags
+
 let pageTitle: string | undefined;
+let currentCategory: tsPageDataCategoriesSelect | undefined;
 
 if (mode === 'edit') {
-	// TODO: get the actual category name from the ID
-	pageTitle = editId;
+	const parsedEditId = editId ? Number.parseInt(editId, 10) : undefined;
+	currentCategory = allCategories.find((cat) => cat.id === parsedEditId);
+	pageTitle = currentCategory ? currentCategory.name : undefined;
+
+	if (!currentCategory) {
+		throw new Error('Category to edit not found');
+	}
 }
 ---
 
@@ -34,7 +51,7 @@ if (mode === 'edit') {
 >
     <div slot="double-sidebar" class="inner-sidebar-container">
         <div class="sidebar-links-container">
-            <InnerSidebarElement {lang} />
+            <InnerSidebarElement {lang} categories={allCategories} tags={allTags} />
         </div>
     </div>
 

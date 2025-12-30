@@ -364,7 +364,10 @@ export const SDKPostModule = Effect.gen(function* () {
 	 * @returns An effect that resolves to the ID of the newly inserted tag.
 	 */
 	const _insertNewTag = Effect.fn((tag: OptionalId<number, tsPageDataTags['Insert']['Type']>) =>
-		_pickIdOrGenerate(tag).pipe(Effect.flatMap(_insertTagData))
+		_pickIdOrGenerate(tag).pipe(
+			Effect.flatMap(_insertTagData),
+			Effect.tap(() => invalidateTags(cacheTags.tags))
+		)
 	);
 
 	/**
@@ -386,7 +389,10 @@ export const SDKPostModule = Effect.gen(function* () {
 	 */
 	const _insertNewCategory = Effect.fn(
 		(category: OptionalId<number, tsPageDataCategories['Insert']['Type']>) =>
-			_pickIdOrGenerate(category).pipe(Effect.flatMap(_insertCategoryData))
+			_pickIdOrGenerate(category).pipe(
+				Effect.flatMap(_insertCategoryData),
+				Effect.tap(() => invalidateTags(cacheTags.categories))
+			)
 	);
 
 	/**
