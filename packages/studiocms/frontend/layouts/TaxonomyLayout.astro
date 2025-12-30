@@ -89,8 +89,6 @@ if (type === 'categories') {
         data-type={type}
         data-mode={mode ?? ''}
         data-current-entry={JSON.stringify(currentEntry ?? {})}
-        data-all-categories={JSON.stringify(allCategories.map(({ id, name }) => ({ id, name })))}
-        data-all-tags={JSON.stringify(allTags.map(({ id, name }) => ({ id, name })))}
     ></div>
 
     <slot />

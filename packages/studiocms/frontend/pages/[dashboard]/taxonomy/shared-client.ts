@@ -30,8 +30,6 @@ export interface CurrentEntryData<T extends 'categories' | 'tags'> {
 	type: T;
 	mode: 'create' | 'edit' | '';
 	currentEntry: CurrentEntry<T>;
-	allCategories: Pick<tsPageDataCategoriesSelect, 'id' | 'name'>[];
-	allTags: Pick<tsPageDataTagsSelect, 'id' | 'name'>[];
 }
 
 export function getCurrentEntryData<T extends 'categories' | 'tags'>(
@@ -45,20 +43,9 @@ export function getCurrentEntryData<T extends 'categories' | 'tags'>(
 	const currentEntryAttr = dataEl?.getAttribute('data-current-entry') ?? '{}';
 	const currentEntry = JSON.parse(currentEntryAttr) as CurrentEntry<T>;
 
-	const allCategoriesAttr = dataEl?.getAttribute('data-all-categories') ?? '[]';
-	const allCategories = JSON.parse(allCategoriesAttr) as Pick<
-		tsPageDataCategoriesSelect,
-		'id' | 'name'
-	>[];
-
-	const allTagsAttr = dataEl?.getAttribute('data-all-tags') ?? '[]';
-	const allTags = JSON.parse(allTagsAttr) as Pick<tsPageDataTagsSelect, 'id' | 'name'>[];
-
 	return {
 		type,
 		mode,
 		currentEntry,
-		allCategories,
-		allTags,
 	};
 }

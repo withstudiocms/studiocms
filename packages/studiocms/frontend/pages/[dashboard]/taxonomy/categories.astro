@@ -1,28 +1,157 @@
 ---
 import { useTranslations } from 'studiocms:i18n';
+import { Input } from 'studiocms:ui/components/input';
+import { Select } from 'studiocms:ui/components/select';
+import MetaContainer from '#frontend/components/dashboard/taxonomy/MetaContainer.astro';
+import { mockCategories } from '#frontend/components/dashboard/taxonomy/temp.js';
 import TaxonomyLayout from '#frontend/layouts/TaxonomyLayout.astro';
 
 const { defaultLang: lang } = Astro.locals.StudioCMS;
 
 const t = useTranslations(lang, '@studiocms/dashboard:taxonomy-index');
+
+// const categories = await runSDK(SDKCoreJs.GET.categories.getAll());
+
+const categories = mockCategories; // TODO: Replace with SDK call to fetch categories
 ---
 
 <TaxonomyLayout type="categories">
-    {/* Page Content Placeholder */}
+    <form id="category-form">
+
+        <input type="hidden" name="mode" value="create" />
+        <input type="hidden" name="id" value="" />
+
+        <div class="form-row">
+            <Input name="name" label="Name" isRequired />
+            <Input name="slug" label="Slug" isRequired />
+        </div>
+
+        <div class="form-row">
+            <Select
+                name="parent-category"
+                label="Parent Category"
+                placeholder="Select Parent Category"
+                fullWidth
+                defaultValue="null"
+                options={[
+                    { label: 'None', value: 'null' },
+                    ...categories.map((cat) => ({
+                        label: cat.name,
+                        value: String(cat.id),
+                    })),
+                ]}
+            />
+            <Input
+                name="description"
+                label="Description"
+            />
+        </div>
+
+        <MetaContainer name="meta" />
+
+    </form>
 </TaxonomyLayout>
 
 <script>
     import { getCurrentEntryData } from "./shared-client.js";
 
-    const $ = <E extends HTMLElement>(selector: string) =>
-        document.querySelector(selector) as E;
+    const $ = <E extends HTMLElement>(selector: string, context: Document | Element = document) =>
+        context.querySelector(selector) as E;
+
+    const $$ = <E extends HTMLElement>(selector: string, context: Document | Element = document) =>
+        context.querySelectorAll(selector) as NodeListOf<E>;
 
     const dataEl = $("#current-taxonomy-entry-data");
 
     const currentData = getCurrentEntryData<"categories">(dataEl);
 
-    console.log(
-        "Current Taxonomy Entry Data:",
-        JSON.stringify(currentData, null, 2),
+    const modeInput = $<HTMLInputElement>('input[name="mode"]');
+    const idInput = $<HTMLInputElement>('input[name="id"]');
+    const titleInput = $<HTMLInputElement>('input[name="name"]');
+    const slugInput = $<HTMLInputElement>('input[name="slug"]');
+    const descriptionInput = $<HTMLInputElement>('input[name="description"]');
+    const parentSelect = $<HTMLSelectElement>('select[name="parent-category"]');
+    const parentSelectOptions = $$<HTMLOptionElement>('option', parentSelect);
+    const parentSelectDropdown = $<HTMLUListElement>(
+        `#parent-category-dropdown`,
     );
+    const parentValueDisplay = $<HTMLSpanElement>(
+        `#parent-category-value-span`,
+    );
+
+    const metaContainer = $<HTMLElement>(
+        `dynamic-key-value-pair[name="meta"]`,
+    );
+
+    function select(el: HTMLElement) {
+        el.id="parent-category-selected";
+        el.classList.add('selected');
+        parentValueDisplay.textContent = el.textContent;
+    }
+
+    function deselect(el: HTMLElement) {
+        el.id="";
+        el.classList.remove('selected');
+    }
+
+    function populate() {
+        modeInput.value = dataEl.dataset.mode || 'create';
+
+        if (dataEl.dataset.mode === "edit") {
+            idInput.value = String(currentData.currentEntry.id || "");
+            titleInput.value = currentData.currentEntry.name || "";
+            slugInput.value = currentData.currentEntry.slug || "";
+            descriptionInput.value = currentData.currentEntry.description || "";
+            metaContainer.setAttribute(
+                "entries",
+                JSON.stringify(currentData.currentEntry.meta || {}),
+            );
+
+            const parentId = currentData.currentEntry.parent;
+
+            for (const option of parentSelectOptions) {
+                if (option.value === String(parentId)) {
+                    option.setAttribute("selected", "");
+                } else {
+                    option.removeAttribute("selected");
+                }
+            }
+
+            for (const li of parentSelectDropdown.children) {
+                const liElement = li as HTMLElement;
+                const liValue = liElement.getAttribute('value');
+
+                if (liValue === String(parentId)) {
+                    select(liElement);
+                } else {
+                    deselect(liElement);
+                }
+            }
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        populate();
+    });
 </script>
+
+<style>
+    #category-form {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+    }
+
+    @media (max-width: 600px) {
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>

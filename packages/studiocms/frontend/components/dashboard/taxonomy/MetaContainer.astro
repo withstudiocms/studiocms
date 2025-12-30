@@ -1,0 +1,285 @@
+---
+import { Icon } from 'studiocms:ui/components/icon';
+
+interface Props {
+	name: string;
+	entries?: Record<string, string>;
+}
+
+const { name, entries } = Astro.props;
+---
+
+<dynamic-key-value-pair name={name} entries={entries ? JSON.stringify(entries) : undefined}>
+    <template>
+        <div class="dynamic-entry">
+            <div class="key">
+                <div class="key-label"> Key </div>
+                <span class="key-value-span" contenteditable></span>
+            </div>
+            <div class="value">
+                <div class="value-label"> Value </div>
+                <span class="key-value-span" contenteditable></span>
+            </div>
+            <button class="remove-pair-button" title="Remove Key-Value Pair" type="button">
+                <Icon name="heroicons:trash" width={24} height={24} />
+            </button>
+        </div>
+    </template>
+
+    <div class="header">
+        <div class="header-title">Metadata</div>
+        <div class="header-actions">
+            <button class="add-pair-button" title="Add Key-Value Pair" type="button">
+                <Icon name="heroicons:plus-circle" width={24} height={24} />
+            </button>
+        </div>
+    </div>
+
+    <div class="pairs-container">
+        <slot></slot>
+    </div>
+</dynamic-key-value-pair>
+
+<style>
+    dynamic-key-value-pair {
+        display: block;
+        border: 1px solid var(--border);
+        border-radius: 0.5rem;
+        padding: 1rem;
+        background-color: var(--background-step-2);
+
+        & .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.5rem;
+
+            & .header-title {
+                font-weight: 600;
+                font-size: 1.125rem;
+            }
+
+            & .header-actions {
+                display: flex;
+                gap: 0.5rem;
+
+                & .add-pair-button {
+                    background: none;
+                    border: none;
+                    cursor: pointer;
+                    padding: 0.25rem 0.5rem;
+                    color: var(--text-muted);
+
+                    &:hover {
+                        color: var(--success-base);
+                    }
+                }
+            }
+        }
+
+        & .pairs-container {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+
+            & .dynamic-entry {
+                display: flex;
+                gap: 0.5rem;
+                align-items: center;
+
+                &:not(:last-child) {
+                    border-bottom: 1px solid var(--border);
+                    padding-bottom: 0.75rem;
+                }
+
+                & .key,
+                .value {
+                    flex: 1;
+                    display: flex;
+                    flex-direction: column;
+                }
+
+                & .key-label,
+                .value-label {
+                    font-size: 0.875rem;
+                    margin-bottom: 0.25rem;
+                    color: var(--text-muted);
+                }
+
+                & .key-value-span {
+                    min-height: 1.5rem;
+                    padding: 0.5rem;
+                    border: 1px solid var(--border);
+                    border-radius: 0.375rem;
+                    background-color: var(--background-base);
+                    outline: none;
+                }
+
+                & .key-value-span:focus {
+                    border-color: var(--primary-base);
+                }
+
+                & .remove-pair-button {
+                    background: none;
+                    border: none;
+                    cursor: pointer;
+                    margin-top: 1.5rem;
+                    padding: 0.25rem;
+                    color: var(--text-muted);
+                }
+
+                & .remove-pair-button:hover {
+                    color: var(--danger-hover);
+                }
+            }
+        }
+    }
+</style>
+
+<script>
+    class DynamicKeyValuePair extends HTMLElement {
+        static formAssociated = true;
+        #internals: ElementInternals;
+        private template: HTMLTemplateElement;
+        private pairsContainer: HTMLElement;
+        private addButton: HTMLButtonElement;
+        private entries: Map<string, { key: string; value: string }> = new Map();
+        private idCounter: number = 0;
+        private _value: string | null = null;
+
+        constructor() {
+            super();
+            this.#internals = this.attachInternals();
+            this.template = this.querySelector('template') as HTMLTemplateElement;
+            this.pairsContainer = this.querySelector('.pairs-container') as HTMLElement;
+            this.addButton = this.querySelector('.add-pair-button') as HTMLButtonElement;
+
+            const entries = this.getAttribute('entries');
+            if (entries) {
+                const parsed = JSON.parse(entries) as Record<string, string>;
+                for (const [key, value] of Object.entries(parsed)) {
+                    this.entries.set(key, { key, value });
+                }
+            }
+
+            this._value = JSON.stringify(this.getEntries());
+        }
+
+        connectedCallback() {
+            this.setupEventListeners();
+            this.setupInputObservers();
+            this.render();
+            this.setupAttributeWatchers();
+            this.setupDebug();
+        }
+
+        updateValue(newValue: string) {
+            this.#internals.setFormValue(newValue);
+        }
+
+        get value() {
+            return this._value as string | null;
+        }
+
+        setupAttributeWatchers() {
+            const observer = new MutationObserver((mutations) => {
+                mutations.forEach((mutation) => {
+                    if (mutation.type === 'attributes' && mutation.attributeName === 'entries') {
+                        const entries = this.getAttribute('entries');
+                        if (entries) {
+                            const parsed = JSON.parse(entries) as Record<string, string>;
+                            this.entries.clear();
+                            for (const [key, value] of Object.entries(parsed)) {
+                                this.entries.set(key, { key, value });
+                            }
+                            this.render();
+                        }
+                    }
+                });
+            });
+
+            observer.observe(this, {
+                attributes: true,
+            });
+        }
+
+        setupDebug() {
+            const logButton = this.querySelector('.log-entries-button') as HTMLButtonElement;
+            logButton.addEventListener('click', () => {
+                console.log(this.value);
+            });
+        }
+
+        render() {
+            this.pairsContainer.innerHTML = '';
+            this.entries.forEach(({ key, value }) => {
+                const clone = this.template.content.cloneNode(true) as HTMLElement;
+                const keySpan = clone.querySelector('.key .key-value-span') as HTMLElement;
+                const valueSpan = clone.querySelector('.value .key-value-span') as HTMLElement;
+                keySpan.textContent = key;
+                valueSpan.textContent = value;
+                clone.id = `dynamic-entry-${this.idCounter++}`;
+                this.pairsContainer.appendChild(clone);
+            });
+        }
+
+        setupEventListeners() {
+            this.addButton.addEventListener('click', () => this.addPair());
+            this.pairsContainer.addEventListener('click', (event) => {
+                const target = event.target as HTMLElement;
+                if (target.closest('.remove-pair-button')) {
+                    const pair = target.closest('.dynamic-entry');
+                    pair?.remove();
+                }
+            });
+        }
+
+        addPair() {
+            const clone = this.template.content.cloneNode(true) as HTMLElement;
+            clone.id = `dynamic-entry-${this.idCounter++}`;
+            this.pairsContainer.appendChild(clone);
+        }
+
+        getEntries(): Record<string, string> {
+            const result: Record<string, string> = {};
+            this.entries.forEach((entry) => {
+                result[entry.key] = entry.value;
+            });
+            return result;
+        }
+
+        updateEntriesFromDOM() {
+            this.entries.clear();
+            const pairElements = this.pairsContainer.querySelectorAll('.dynamic-entry');
+            pairElements.forEach((pairEl) => {
+                const keySpan = pairEl.querySelector('.key .key-value-span') as HTMLElement;
+                const valueSpan = pairEl.querySelector('.value .key-value-span') as HTMLElement;
+                const key = keySpan.textContent?.trim() || '';
+                const value = valueSpan.textContent?.trim() || '';
+                if (key) {
+                    this.entries.set(key, { key, value });
+                }
+            });
+            this._value = JSON.stringify(this.getEntries());
+            this.updateValue(this._value);
+        }
+
+        setupInputObservers() {
+            const observer = new MutationObserver(() => {
+                this.updateEntriesFromDOM();
+            });
+
+            observer.observe(this.pairsContainer, {
+                childList: true,
+                subtree: true,
+                characterData: true,
+            });
+        }
+    }
+
+    if (!customElements.get('dynamic-key-value-pair')) {
+        customElements.define('dynamic-key-value-pair', DynamicKeyValuePair);
+    }
+</script>
