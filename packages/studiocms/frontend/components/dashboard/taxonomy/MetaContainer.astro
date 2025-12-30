@@ -101,6 +101,7 @@ const { name, entries } = Astro.props;
 
             & .header-actions {
                 display: flex;
+                align-items: center;
                 gap: 0.5rem;
 
                 & .add-pair-button {
@@ -109,9 +110,13 @@ const { name, entries } = Astro.props;
                     cursor: pointer;
                     padding: 0.25rem 0.5rem;
                     color: var(--text-muted);
+                    display: flex;
+                    align-items: center;
+                    border-radius: var(--radius-md);
 
                     &:hover {
                         color: var(--success-base);
+                        background-color: var(--background-step-3);
                     }
                 }
             }
@@ -180,10 +185,12 @@ const { name, entries } = Astro.props;
                     margin-top: 1.5rem;
                     padding: 0.25rem;
                     color: var(--text-muted);
+                    border-radius: var(--radius-md);
                 }
 
                 & .remove-pair-button:hover {
                     color: var(--danger-hover);
+                    background-color: var(--background-step-3);
                 }
             }
         }
