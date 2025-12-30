@@ -1,46 +1,13 @@
 ---
 import { useTranslations } from 'studiocms:i18n';
-// import { runSDK, SDKCoreJs } from 'studiocms:sdk';
-import type { tsPageDataCategoriesSelect, tsPageDataTagsSelect } from 'studiocms:sdk/types';
-// import { Effect } from 'effect';
-import InnerSidebarElement from '#frontend/components/dashboard/taxonomy/InnerSidebarElement.astro';
-import PageHeader from '#frontend/components/dashboard/taxonomy/PageHeader.astro';
-import { mockCategories, mockTags } from '#frontend/components/dashboard/taxonomy/temp.js';
-import DashboardLayout from '#frontend/layouts/DashboardLayout.astro';
+import TaxonomyLayout from '#frontend/layouts/TaxonomyLayout.astro';
 
-const { siteConfig: config, defaultLang: lang, security } = Astro.locals.StudioCMS;
-
-const currentUser = security?.userSessionData ?? null;
+const { defaultLang: lang } = Astro.locals.StudioCMS;
 
 const t = useTranslations(lang, '@studiocms/dashboard:taxonomy-index');
-
-// const [categories, tags] = await runSDK(
-// 	Effect.all([SDKCoreJs.GET.categories.getAll(), SDKCoreJs.GET.tags.getAll()])
-// );
-
-const allCategories: tsPageDataCategoriesSelect[] = mockCategories; // TODO: Replace with SDK call to fetch categories
-const allTags: tsPageDataTagsSelect[] = mockTags; // TODO: Replace with SDK call to fetch tags
 ---
 
-<DashboardLayout
-    title={t("title")}
-    description={t("description")}
-    requiredPermission="editor"
-    sidebar="double"
-    {lang}
-    {config}
-    {currentUser}
->
-    <div slot="double-sidebar" class="inner-sidebar-container">
-        <div class="sidebar-links-container">
-            <InnerSidebarElement {lang} categories={allCategories} tags={allTags} />
-        </div>
-    </div>
-
-    <div slot="header">
-        <PageHeader {lang} type='index' />
-    </div>
-
+<TaxonomyLayout type='index'>
     <div id="placeholder-info" class="placeholder-info">
         <p>
             <t-taxonomy key="placeholder"
@@ -48,28 +15,9 @@ const allTags: tsPageDataTagsSelect[] = mockTags; // TODO: Replace with SDK call
             >
         </p>
     </div>
-</DashboardLayout>
+</TaxonomyLayout>
 
 <style>
-    .inner-sidebar-container {
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        min-height: 100vh;
-        max-height: 100%;
-        padding: 1.5rem;
-    }
-
-    .sidebar-links-container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        width: 100%;
-        min-height: 95vh;
-        height: 100%;
-        gap: 0.5rem;
-    }
-
     .placeholder-info {
         display: flex;
         justify-content: center;
@@ -86,32 +34,3 @@ const allTags: tsPageDataTagsSelect[] = mockTags; // TODO: Replace with SDK call
         }
     }
 </style>
-
-<script>
-    import {
-        $i18n,
-        $localeSettings,
-        baseTranslation,
-        defaultLang,
-        documentUpdater,
-        makeTranslation,
-    } from "studiocms:i18n/client";
-
-    let lang = defaultLang;
-
-    const currentPage = "@studiocms/dashboard:taxonomy-index";
-
-    $localeSettings.subscribe((locale) => {
-        lang = locale || defaultLang;
-    });
-
-    const i18n = $i18n(currentPage, baseTranslation[currentPage]);
-
-    i18n.subscribe((comp) => {
-        documentUpdater(comp, lang);
-    });
-
-    if (!customElements.get("t-taxonomy")) {
-        customElements.define("t-taxonomy", makeTranslation(currentPage, i18n));
-    }
-</script>
