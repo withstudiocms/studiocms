@@ -28,7 +28,7 @@ const categories = mockCategories; // TODO: Replace with SDK call to fetch categ
 
         <div class="form-row">
             <Select
-                name="parent-category"
+                name="parent"
                 label="Parent Category"
                 placeholder="Select Parent Category"
                 fullWidth
@@ -66,13 +66,13 @@ const categories = mockCategories; // TODO: Replace with SDK call to fetch categ
     const titleInput = $<HTMLInputElement>('input[name="name"]');
     const slugInput = $<HTMLInputElement>('input[name="slug"]');
     const descriptionInput = $<HTMLInputElement>('input[name="description"]');
-    const parentSelect = $<HTMLSelectElement>('select[name="parent-category"]');
+    const parentSelect = $<HTMLSelectElement>('select[name="parent"]');
     const parentSelectOptions = $$<HTMLOptionElement>('option', parentSelect);
     const parentSelectDropdown = $<HTMLUListElement>(
-        `#parent-category-dropdown`,
+        `#parent-dropdown`,
     );
     const parentValueDisplay = $<HTMLSpanElement>(
-        `#parent-category-value-span`,
+        `#parent-value-span`,
     );
     const metaContainer = $<HTMLElement>(
         `dynamic-key-value-pair[name="meta"]`,
@@ -94,7 +94,7 @@ const categories = mockCategories; // TODO: Replace with SDK call to fetch categ
             const liValue = liElement.getAttribute('value');
 
             if (liValue === value) {
-                liElement.id = "parent-category-selected";
+                liElement.id = "parent-selected";
                 liElement.classList.add('selected');
                 parentValueDisplay.textContent = liElement.textContent;
             } else {

@@ -57,3 +57,42 @@ export function getCurrentEntryData<T extends 'categories' | 'tags'>(
 		...(type === 'categories' ? { parent } : {}),
 	} as CurrentEntryData<T>;
 }
+
+type ParseFormDataReturnType<T extends 'categories' | 'tags'> = T extends 'categories'
+	? tsPageDataCategoriesSelect
+	: T extends 'tags'
+		? tsPageDataTagsSelect
+		: never;
+
+export const parseFormDataToJson = <
+	T extends 'categories' | 'tags',
+	R extends ParseFormDataReturnType<T> & { mode: 'create' | 'edit' },
+>(
+	formData: FormData
+): R => {
+	// Construct the entry object
+	const entry: Record<string, unknown> = {};
+
+	// Iterate over each key-value pair in the FormData
+	for (const [key, value] of formData.entries()) {
+		// Handle specific keys with type conversions
+		// 'id' and 'parent' should be numbers
+		// 'meta' should be parsed as JSON
+		// Other values should be assigned directly, converting 'null' string to null
+		if (key === 'id' || key === 'parent') {
+			entry[key] = Number(value);
+		} else if (key === 'meta') {
+			// Attempt to parse JSON, default to empty object on failure
+			try {
+				entry[key] = JSON.parse(value as string);
+			} catch {
+				entry[key] = {};
+			}
+		} else {
+			entry[key] = value === 'null' ? null : value;
+		}
+	}
+
+	// Type assertion to the expected return type
+	return entry as R;
+};
