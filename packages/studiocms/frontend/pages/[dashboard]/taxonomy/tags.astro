@@ -1,5 +1,7 @@
 ---
 import { useTranslations } from 'studiocms:i18n';
+import { Input } from 'studiocms:ui/components/input';
+import MetaContainer from '#frontend/components/dashboard/taxonomy/MetaContainer.astro';
 import TaxonomyLayout from '#frontend/layouts/TaxonomyLayout.astro';
 
 const { defaultLang: lang } = Astro.locals.StudioCMS;
@@ -7,21 +9,81 @@ const { defaultLang: lang } = Astro.locals.StudioCMS;
 const t = useTranslations(lang, '@studiocms/dashboard:taxonomy-index');
 ---
 <TaxonomyLayout type='tags'>
-    {/* Page Content Placeholder */}
+    <form id="tag-form">
+
+        <input type="hidden" name="mode" value="create" />
+        <input type="hidden" name="id" value="" />
+
+        <div class="form-row">
+            <Input name="name" label="Name" isRequired />
+            <Input name="slug" label="Slug" isRequired />
+        </div>
+
+        <Input
+            name="description"
+            label="Description"
+        />
+
+        <MetaContainer name="meta" />
+
+    </form>
 </TaxonomyLayout>
 
 <script>
     import { getCurrentEntryData } from "./shared-client.js";
 
-    const $ = <E extends HTMLElement>(selector: string) =>
-        document.querySelector(selector) as E;
+    const $ = <E extends HTMLElement>(selector: string, context: Document | Element = document) =>
+        context.querySelector(selector) as E;
 
     const dataEl = $("#current-taxonomy-entry-data");
+    const modeInput = $<HTMLInputElement>('input[name="mode"]');
+    const idInput = $<HTMLInputElement>('input[name="id"]');
+    const titleInput = $<HTMLInputElement>('input[name="name"]');
+    const slugInput = $<HTMLInputElement>('input[name="slug"]');
+    const descriptionInput = $<HTMLInputElement>('input[name="description"]');
+    const metaContainer = $<HTMLElement>(
+        `dynamic-key-value-pair[name="meta"]`,
+    );
 
     const currentData = getCurrentEntryData<"tags">(dataEl);
 
-    console.log(
-        "Current Taxonomy Entry Data:",
-        JSON.stringify(currentData, null, 2),
-    );
+    function populate() {
+        modeInput.value = dataEl.dataset.mode || 'create';
+        if (dataEl.dataset.mode === "edit") {
+            idInput.value = String(currentData.currentEntry.id || "");
+            titleInput.value = currentData.currentEntry.name || "";
+            slugInput.value = currentData.currentEntry.slug || "";
+            descriptionInput.value = currentData.currentEntry.description || "";
+            metaContainer.setAttribute(
+                "entries",
+                JSON.stringify(currentData.currentEntry.meta || {}),
+            );
+
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        populate();
+    });
 </script>
+
+<style>
+    #tag-form {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+    }
+
+    @media (max-width: 600px) {
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>

@@ -57,14 +57,10 @@ const categories = mockCategories; // TODO: Replace with SDK call to fetch categ
 
     const $ = <E extends HTMLElement>(selector: string, context: Document | Element = document) =>
         context.querySelector(selector) as E;
-
     const $$ = <E extends HTMLElement>(selector: string, context: Document | Element = document) =>
         context.querySelectorAll(selector) as NodeListOf<E>;
 
     const dataEl = $("#current-taxonomy-entry-data");
-
-    const currentData = getCurrentEntryData<"categories">(dataEl);
-
     const modeInput = $<HTMLInputElement>('input[name="mode"]');
     const idInput = $<HTMLInputElement>('input[name="id"]');
     const titleInput = $<HTMLInputElement>('input[name="name"]');
@@ -78,21 +74,11 @@ const categories = mockCategories; // TODO: Replace with SDK call to fetch categ
     const parentValueDisplay = $<HTMLSpanElement>(
         `#parent-category-value-span`,
     );
-
     const metaContainer = $<HTMLElement>(
         `dynamic-key-value-pair[name="meta"]`,
     );
 
-    function select(el: HTMLElement) {
-        el.id="parent-category-selected";
-        el.classList.add('selected');
-        parentValueDisplay.textContent = el.textContent;
-    }
-
-    function deselect(el: HTMLElement) {
-        el.id="";
-        el.classList.remove('selected');
-    }
+    const currentData = getCurrentEntryData<"categories">(dataEl);
 
     function populate() {
         modeInput.value = dataEl.dataset.mode || 'create';
@@ -122,9 +108,12 @@ const categories = mockCategories; // TODO: Replace with SDK call to fetch categ
                 const liValue = liElement.getAttribute('value');
 
                 if (liValue === String(parentId)) {
-                    select(liElement);
+                    liElement.id = "parent-category-selected";
+                    liElement.classList.add('selected');
+                    parentValueDisplay.textContent = liElement.textContent;
                 } else {
-                    deselect(liElement);
+                    liElement.id = "";
+                    liElement.classList.remove('selected');
                 }
             }
         }
