@@ -513,7 +513,8 @@
       "label-meta": "Metadata",
       "label-meta-key": "Key",
       "label-meta-value": "Value",
-      "meta-alert-message": "Keys cannot be empty.",
+      "meta-alert-message-keys-empty": "Keys cannot be empty.",
+      "meta-alert-message-duplicate-keys": "Duplicate keys are not allowed.",
       "label-parent-category": "Parent Category",
       "placeholder-parent-category": "Select Parent Category"
     },

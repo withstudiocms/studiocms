@@ -46,17 +46,28 @@ const categories = await runSDK(SDKCoreJs.GET.categories.getAll());
 
         <MetaContainer name="meta">
             <Fragment slot="title">
-                <t-taxonomy key="label-meta">{t('label-meta')}</t-taxonomy>
+                <t-taxonomy key="label-meta">
+                    {t('label-meta')}
+                </t-taxonomy>
             </Fragment>
             <Fragment slot="key-label">
-                <t-taxonomy key="label-meta-key">{t('label-meta-key')}</t-taxonomy>
+                <t-taxonomy key="label-meta-key">
+                    {t('label-meta-key')}
+                </t-taxonomy>
             </Fragment>
             <Fragment slot="value-label">
-                <t-taxonomy key="label-meta-value">{t('label-meta-value')}</t-taxonomy>
+                <t-taxonomy key="label-meta-value">
+                    {t('label-meta-value')}
+                </t-taxonomy>
             </Fragment>
-            <Fragment slot="alert-message">
-                <t-taxonomy key="meta-alert-message">
-                    {t('meta-alert-message')}
+            <Fragment slot="alert-message-keys-empty">
+                <t-taxonomy key="meta-alert-message-keys-empty">
+                    {t('meta-alert-message-keys-empty')}
+                </t-taxonomy>
+            </Fragment>
+            <Fragment slot="alert-message-duplicate-keys">
+                <t-taxonomy key="meta-alert-message-duplicate-keys">
+                    {t('meta-alert-message-duplicate-keys')}
                 </t-taxonomy>
             </Fragment>
         </MetaContainer>

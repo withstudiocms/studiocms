@@ -47,8 +47,12 @@ const { name, entries } = Astro.props;
         </div>
     </template>
 
-    <template id="alert-message">
-        <slot name="alert-message">Keys cannot be empty.</slot>
+    <template id="alert-message-keys-empty">
+        <slot name="alert-message-keys-empty">Keys cannot be empty.</slot>
+    </template>
+
+    <template id="alert-message-duplicate-keys">
+        <slot name="alert-message-duplicate-keys">Duplicate keys are not allowed.</slot>
     </template>
 
     <div class="header">
@@ -212,6 +216,8 @@ const { name, entries } = Astro.props;
 </style>
 
 <script>
+import { keys } from "effect/Record";
+
     class DynamicKeyValuePair extends HTMLElement {
         static formAssociated = true;
         #internals: ElementInternals;
@@ -355,9 +361,14 @@ const { name, entries } = Astro.props;
             return result;
         }
 
-        getAlertMessageTemplate(): string {
+        getAlertMessageTemplate(type: 'keysEmpty' | 'duplicateKeys'): string {
+            const map = {
+                keysEmpty: 'alert-message-keys-empty',
+                duplicateKeys: 'alert-message-duplicate-keys',
+            } as const;
+
             const template = this.querySelector(
-                'template#alert-message',
+                `template#${map[type]}`,
             ) as HTMLTemplateElement;
 
             return template ? template.innerHTML.trim() : "Keys cannot be empty.";
@@ -382,11 +393,11 @@ const { name, entries } = Astro.props;
 
                 if (!key) {
                     hasErrors = true;
-                    errorMessage = this.getAlertMessageTemplate();
+                    errorMessage = this.getAlertMessageTemplate('keysEmpty');
                     keySpan.classList.add("invalid");
                 } else if (seenKeys.has(key)) {
                     hasErrors = true;
-                    errorMessage = "Duplicate keys are not allowed.";
+                    errorMessage = this.getAlertMessageTemplate('duplicateKeys');
                 } else {
                     keySpan.classList.remove("invalid");
                 }

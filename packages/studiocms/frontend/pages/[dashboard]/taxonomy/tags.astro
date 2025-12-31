@@ -45,9 +45,14 @@ const t = useTranslations(lang, '@studiocms/dashboard:taxonomy-index');
                     {t('label-meta-value')}
                 </t-taxonomy>
             </Fragment>
-            <Fragment slot="alert-message">
-                <t-taxonomy key="meta-alert-message">
-                    {t('meta-alert-message')}
+            <Fragment slot="alert-message-keys-empty">
+                <t-taxonomy key="meta-alert-message-keys-empty">
+                    {t('meta-alert-message-keys-empty')}
+                </t-taxonomy>
+            </Fragment>
+            <Fragment slot="alert-message-duplicate-keys">
+                <t-taxonomy key="meta-alert-message-duplicate-keys">
+                    {t('meta-alert-message-duplicate-keys')}
                 </t-taxonomy>
             </Fragment>
         </MetaContainer>
