@@ -134,9 +134,9 @@ const replaceNameParam = (str: string) => str.replace('{name}', pageTitle);
                             <Input name="confirm-slug" placeholder={`${pageSlug.slice(0, pageSlug.length-2)}...`} label={t('delete-modal-input-label')} required />
 
                             <span style="color: var(--danger-base)">
-                                <t-content-header key="delete-modal-warning">
+                                <t-taxonomy-header key="delete-modal-warning">
                                     {t('delete-modal-warning')}
-                                </t-content-header>
+                                </t-taxonomy-header>
                             </span>
                         </div>
                     </Center>

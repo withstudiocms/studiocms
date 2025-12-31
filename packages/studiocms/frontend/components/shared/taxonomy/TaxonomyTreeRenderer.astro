@@ -169,6 +169,17 @@ const t = useTranslations(lang, '@studiocms/dashboard:taxonomy-tree-renderer');
         private contextMenu: HTMLElement | null = null;
         private containerMenu: HTMLElement | null = null;
         private menuTrigger: HTMLButtonElement | null = null;
+        private boundDocumentClick = (e: MouseEvent) => {
+            if (
+                    this.contextMenu &&
+                    !this.contextMenu.contains(e.target as Node)
+                ) {
+                    this.hideContextMenu();
+                }
+        };
+        private boundDocumentKeydown = (e: KeyboardEvent) => {
+            if (e.key === "Escape") this.hideContextMenu();
+        };
 
         constructor() {
             super();
@@ -185,6 +196,11 @@ const t = useTranslations(lang, '@studiocms/dashboard:taxonomy-tree-renderer');
 
             this.setupContextMenu();
             this.setupContainerMenu();
+        }
+
+        disconnectedCallback() {
+            document.removeEventListener("click", this.boundDocumentClick);
+            document.removeEventListener("keydown", this.boundDocumentKeydown);
         }
 
         setupContextMenu() {
@@ -205,14 +221,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:taxonomy-tree-renderer');
             });
 
             // Hide context menu when clicking outside
-            document.addEventListener("click", (e) => {
-                if (
-                    this.contextMenu &&
-                    !this.contextMenu.contains(e.target as Node)
-                ) {
-                    this.hideContextMenu();
-                }
-            });
+            document.addEventListener("click", this.boundDocumentClick);
 
             // Handle context menu actions
             const menuItems =
@@ -229,12 +238,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:taxonomy-tree-renderer');
             });
 
             // Close menu on Escape key
-            document.addEventListener("keydown", (e) => {
-                if (e.key === "Escape") {
-                    this.hideContextMenu();
-                    this.hideContainerMenu();
-                }
-            });
+            document.addEventListener("keydown", this.boundDocumentKeydown);
         }
 
         setupContainerMenu() {
@@ -380,7 +384,8 @@ const t = useTranslations(lang, '@studiocms/dashboard:taxonomy-tree-renderer');
                 case "create-tag":
                     const createLink = this.getAttribute(
                         "data-create-link",
-                    )!
+                    );
+                    if (!createLink) return;
                     window.location.href = this.genUrl(createLink, {
                         mode: "create",
                     });

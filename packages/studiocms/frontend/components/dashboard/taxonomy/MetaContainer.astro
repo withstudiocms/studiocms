@@ -288,6 +288,7 @@ const { name, entries } = Astro.props;
                 const clone = this.template.content.cloneNode(
                     true,
                 ) as HTMLElement;
+                const entryEl = clone.querySelector('.dynamic-entry') as HTMLElement;
                 const keySpan = clone.querySelector(
                     ".key .key-value-span",
                 ) as HTMLElement;
@@ -296,7 +297,9 @@ const { name, entries } = Astro.props;
                 ) as HTMLElement;
                 keySpan.textContent = key;
                 valueSpan.textContent = value;
-                clone.id = `dynamic-entry-${this.idCounter++}`;
+                if (entryEl) {
+                    entryEl.id = `dynamic-entry-${this.idCounter++}`;
+                }
                 this.pairsContainer.appendChild(clone);
             });
         }
@@ -313,8 +316,11 @@ const { name, entries } = Astro.props;
         }
 
         addPair() {
-            const clone = this.template.content.cloneNode(true) as HTMLElement;
-            clone.id = `dynamic-entry-${this.idCounter++}`;
+            const clone = this.template.content.cloneNode(true) as DocumentFragment;
+            const entryEl = clone.querySelector('.dynamic-entry') as HTMLElement;
+            if (entryEl) {
+                entryEl.id = `dynamic-entry-${this.idCounter++}`;
+            }
             this.pairsContainer.appendChild(clone);
         }
 

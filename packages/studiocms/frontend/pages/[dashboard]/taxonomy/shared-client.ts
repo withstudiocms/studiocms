@@ -45,7 +45,12 @@ export function getCurrentEntryData<T extends 'categories' | 'tags'>(
 	const mode = modeAttr === 'create' || modeAttr === 'edit' ? modeAttr : '';
 
 	const currentEntryAttr = dataEl?.getAttribute('data-current-entry') ?? '{}';
-	const currentEntry = JSON.parse(currentEntryAttr) as CurrentEntry<T>;
+	let currentEntry: CurrentEntry<T>;
+	try {
+		currentEntry = JSON.parse(currentEntryAttr) as CurrentEntry<T>;
+	} catch {
+		currentEntry = {} as CurrentEntry<T>;
+	}
 
 	const parentId = dataEl?.getAttribute('data-parent-id');
 	const parent = parentId ? Number.parseInt(parentId, 10) : undefined;

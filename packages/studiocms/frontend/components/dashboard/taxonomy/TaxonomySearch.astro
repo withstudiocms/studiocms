@@ -86,8 +86,6 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-sidebar');
     }
 
     async function getSearchList(searchItems: HTMLDivElement) {
-        console.log('fetching search list from ' + searchItems.dataset.searchlist);
-
         const response = await fetch(
             searchItems.dataset.searchlist as string,
             {
