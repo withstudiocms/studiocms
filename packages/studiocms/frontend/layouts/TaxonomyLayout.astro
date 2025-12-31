@@ -80,7 +80,14 @@ if (type === 'categories') {
     </div>
 
     <div slot="header">
-        <PageHeader {lang} type={type} {mode} {pageTitle} />
+        <PageHeader
+            {lang}
+            {mode}
+            {pageTitle}
+            type={type}
+            pageId={currentEntry ? String(currentEntry.id) : undefined}
+            pageSlug={currentEntry ? currentEntry.slug : undefined}
+        />
     </div>
 
     <div
