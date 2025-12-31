@@ -283,11 +283,11 @@ const t = useTranslations(lang, '@studiocms/dashboard:taxonomy-tree-renderer');
 
         disconnectedCallback() {
             window.removeEventListener(
-                "taxonomyTreeNode-collapseAllFolders",
+                "taxonomyTreeNode-collapseAll",
                 this.boundCollapseAll,
             );
             window.removeEventListener(
-                "taxonomyTreeNode-expandAllFolders",
+                "taxonomyTreeNode-expandAll",
                 this.boundExpandAll,
             );
 
