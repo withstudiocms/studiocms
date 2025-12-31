@@ -2,17 +2,22 @@
 import type { UiLanguageKeys } from 'studiocms:i18n';
 import { useTranslations } from 'studiocms:i18n';
 import { Button } from 'studiocms:ui/components/button';
+import { Center } from 'studiocms:ui/components/center';
 import { Group } from 'studiocms:ui/components/group';
 import { Icon } from 'studiocms:ui/components/icon';
+import { Input } from 'studiocms:ui/components/input';
+import { Modal } from 'studiocms:ui/components/modal';
 
 interface Props {
 	lang: UiLanguageKeys;
 	type: 'index' | 'categories' | 'tags';
 	mode?: 'edit' | 'create';
 	pageTitle?: string;
+	pageId?: string;
+	pageSlug?: string;
 }
 
-const { lang, type, mode, pageTitle = '' } = Astro.props;
+const { lang, type, mode, pageTitle = '', pageId = '', pageSlug = '' } = Astro.props;
 
 // Validation checks for required props
 if (['categories', 'tags'].includes(type) && !mode) {
@@ -56,7 +61,6 @@ const replaceNameParam = (str: string) => str.replace('{name}', pageTitle);
 
             mode === 'edit' && (
                 <Group>
-                    {/* TODO: Implement delete functionality */}
                     <Button 
                         form={
                             type === 'categories' 
@@ -69,7 +73,6 @@ const replaceNameParam = (str: string) => str.replace('{name}', pageTitle);
                         color="danger"
                         id="delete-taxonomy-entry-btn"
                         type={'button'}
-                        disabled
                     >
                         <Icon
                             name="heroicons:trash"
@@ -101,6 +104,43 @@ const replaceNameParam = (str: string) => str.replace('{name}', pageTitle);
                         <t-taxonomy-header key="save-button">{t('save-button')}</t-taxonomy-header>
                     </Button>
                 </Group>
+                <Modal
+                    id="delete-taxonomy-modal"
+                    isForm
+                    cancelButton={{ label: 'Cancel', color: 'default' }}
+                    actionButton={{ label: 'Delete', color: 'danger' }}
+                >
+                    <h2 slot="header">
+                        <t-text-replacer key="delete-modal-header" replace-param="{type}" replace-value={type === 'categories' ? 'delete-modal-type-category' : 'delete-modal-type-tag'}>
+                            {replaceNameParam(t('delete-modal-header').replace('{type}', type === 'categories' ? t('delete-modal-type-category') : t('delete-modal-type-tag')))}
+                        </t-text-replacer>
+                    </h2>
+                    <Center>
+                        <div class="modal-body">
+                            <input type="hidden" name="type" value={type} />
+                            <input type="hidden" name="id" value={pageId} />
+                            <input type="hidden" name="slug" value={pageSlug} />
+                            <input type="hidden" name="action-route" value={Astro.locals.StudioCMS.routeMap.endpointLinks.taxonomy} />
+
+                            <span>
+                                <t-text-replacer key="delete-modal-desc-1" replace-param="{slug}" replace-value={pageSlug}>
+                                    {t('delete-modal-desc-1').replace('{slug}', pageSlug)}
+                                </t-text-replacer>
+                                <t-taxonomy-header key="delete-modal-desc-2">
+                                    {t('delete-modal-desc-2')}
+                                </t-taxonomy-header>
+                            </span>
+
+                            <Input name="confirm-slug" placeholder={`${pageSlug.slice(0, pageSlug.length-2)}...`} label={t('delete-modal-input-label')} required />
+
+                            <span style="color: var(--danger-base)">
+                                <t-content-header key="delete-modal-warning">
+                                    {t('delete-modal-warning')}
+                                </t-content-header>
+                            </span>
+                        </div>
+                    </Center>
+                </Modal>
             )
         }
 
@@ -132,6 +172,178 @@ const replaceNameParam = (str: string) => str.replace('{name}', pageTitle);
     </div>
 </header>
 
+<div
+    id="current-mode-selector"
+    style="display: none;"
+    data-mode={`${mode}-${type}`}
+    data-index={Astro.locals.StudioCMS.routeMap.mainLinks.taxonomy}
+></div>
+
+<script>
+    import { ModalHelper } from 'studiocms:ui/components/modal/client';
+    import { toast } from "studiocms:ui/components/toaster/client";
+
+    function setup() {
+        const modeSelectorEl = document.getElementById('current-mode-selector') as HTMLDivElement;
+        const currentMode = modeSelectorEl.dataset.mode;
+        const indexPage = modeSelectorEl.dataset.index as string;
+
+        if (currentMode === 'edit-categories' || currentMode === 'edit-tags') {
+            const ModeParts = currentMode.split('-');
+            const type = ModeParts[1];
+
+            if (!type) {
+                console.error('Taxonomy type is missing for deletion setup.');
+                return;
+            }
+
+            const triggerButton = document.getElementById('delete-taxonomy-entry-btn') as HTMLButtonElement;
+
+            if (!triggerButton) {
+                console.error('Delete button not found for taxonomy deletion setup.');
+                return;
+            }
+
+            const formAttribute = triggerButton.getAttribute('form');
+
+            if (!formAttribute || formAttribute === '') {
+                console.error('Delete button form attribute is missing.');
+                return;
+            }
+
+            let modal: ModalHelper;
+
+            if (['categories', 'tags'].includes(type)) {
+                modal = new ModalHelper('delete-taxonomy-modal', 'delete-taxonomy-entry-btn');
+            }
+
+            switch (type) {
+                case 'tags':
+                case 'categories': {
+                    modal!.registerConfirmCallback(async (formData) => {
+                        if (!formData) {
+                            toast({
+                                title: 'Error',
+                                description: 'No data provided for deletion.',
+                                type: 'danger',
+                            });
+                            return;
+                        }
+
+                        const { actionRoute, slug, confirmSlug, ...jsonData } = {
+                            type: type,
+                            id: formData.get('id'),
+                            actionRoute: formData.get('action-route'),
+                            slug: formData.get('slug'),
+                            confirmSlug: formData.get('confirm-slug'),
+                        }
+
+                        if (!actionRoute || typeof actionRoute !== 'string') {
+                            toast({
+                                title: 'Error',
+                                description: 'Action route is missing or invalid.',
+                                type: 'danger',
+                            });
+                            return;
+                        }
+
+                        if (!slug || typeof slug !== 'string') {
+                            toast({
+                                title: 'Error',
+                                description: 'Slug is missing or invalid.',
+                                type: 'danger',
+                            });
+                            return;
+                        }
+
+                        if (!confirmSlug || typeof confirmSlug !== 'string') {
+                            toast({
+                                title: 'Error',
+                                description: 'Confirmation slug is missing or invalid.',
+                                type: 'danger',
+                            });
+                            return;
+                        }
+
+                        if (!jsonData.id || typeof jsonData.id !== 'string') {
+                            toast({
+                                title: 'Error',
+                                description: `${type === 'categories' ? 'Category' : 'Tag'} ID is missing or invalid.`,
+                                type: 'danger',
+                            });
+                            return;
+                        }
+
+                        if (slug.trim() !== confirmSlug.trim()) {
+                            toast({
+                                title: 'Error',
+                                description: 'The provided slug does not match.',
+                                type: 'danger',
+                            });
+                            return;
+                        }
+
+                        const parsedJsonData = {
+                            type: jsonData.type,
+                            id: Number.parseInt(jsonData.id, 10),
+                        }
+
+                        const response = await fetch(actionRoute, {
+                            method: 'DELETE',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(parsedJsonData),
+                        });
+
+                        if (!response.ok) {
+                            const errorData = await response.json();
+                            toast({
+                                title: 'Error',
+                                description: errorData.message || `Failed to delete ${type === 'categories' ? 'category' : 'tag'}.`,
+                                type: 'danger',
+                            });
+                            return;
+                        }
+
+                        if (response.ok) {
+                            toast({
+                                title: 'Success',
+                                description: `Deleted ${type === 'categories' ? 'category' : 'tag'} successfully.`,
+                                type: 'success',
+                            });
+
+                            // Redirect to categories index page after deletion
+                            window.location.href = indexPage;
+                            return;
+                        }
+
+                        toast({
+                            title: 'Error',
+                            description: 'An unexpected error occurred during deletion.',
+                            type: 'danger',
+                        });
+                        return;
+                    })
+                    break;
+                }
+                default:
+                    toast({
+                        title: 'Error',
+                        description: 'Unknown taxonomy type for deletion.',
+                        type: 'danger',
+                    })
+                    break;
+            }
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        setup();
+    });
+
+</script>
+
 <script>
     import {
         $i18n,
@@ -158,6 +370,37 @@ const replaceNameParam = (str: string) => str.replace('{name}', pageTitle);
             pageTitleEl.textContent = replaceNameParam(comp[titleTranslationKey as keyof typeof comp]);
         }
     });
+
+    class TranslationTextReplacer extends HTMLElement {
+        constructor() {
+            super();
+        }
+
+        connectedCallback() {
+            const key = this.getAttribute('key');
+            const replaceParam = this.getAttribute('replace-param');
+            const replaceValue = this.getAttribute('replace-value');
+            if (key) {
+                i18n.subscribe((comp) => {
+                    if (replaceParam && replaceValue) {
+                        if (!comp[replaceValue as keyof typeof comp]) {
+                            this.textContent = comp[key as keyof typeof comp].replace(replaceParam, replaceValue);
+                            return;
+                        }
+                        this.textContent = comp[key as keyof typeof comp].replace(replaceParam, comp[replaceValue as keyof typeof comp]);
+                        return;
+                    } else {
+                        this.textContent = comp[key as keyof typeof comp];
+                        return;
+                    }
+                });
+            }
+        }
+    }
+
+    if (!customElements.get("t-text-replacer")) {
+        customElements.define("t-text-replacer", TranslationTextReplacer);
+    }
 
     if (!customElements.get("t-taxonomy-header")) {
         customElements.define("t-taxonomy-header", makeTranslation(currentPage, i18n));
@@ -229,5 +472,15 @@ const replaceNameParam = (str: string) => str.replace('{name}', pageTitle);
         flex-direction: row;
         align-items: center;
         gap: 1rem;
+    }
+
+    .modal-body {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+
+        span {
+            font-size: .875rem;
+        }
     }
 </style>
