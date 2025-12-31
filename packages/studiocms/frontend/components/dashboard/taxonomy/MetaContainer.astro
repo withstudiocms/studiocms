@@ -293,7 +293,7 @@ const { name, entries } = Astro.props;
             this.entries.forEach(({ key, value }) => {
                 const clone = this.template.content.cloneNode(
                     true,
-                ) as HTMLElement;
+                ) as DocumentFragment;
                 const entryEl = clone.querySelector('.dynamic-entry') as HTMLElement;
                 const keySpan = clone.querySelector(
                     ".key .key-value-span",
