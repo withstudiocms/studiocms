@@ -5,19 +5,19 @@ import type { tsPageDataCategoriesSelect, tsPageDataTagsSelect } from 'studiocms
 import { Button } from 'studiocms:ui/components/button';
 import { Dropdown } from 'studiocms:ui/components/dropdown';
 import { Icon } from 'studiocms:ui/components/icon';
-import { Input } from 'studiocms:ui/components/input';
 import { TabItem, Tabs } from 'studiocms:ui/components/tabs';
 import {
 	categoriesToTaxonomyNodes,
 	tagsToTaxonomyNodes,
 } from '#frontend/components/shared/taxonomy/shared.js';
 import TaxonomyTreeRenderer from '#frontend/components/shared/taxonomy/TaxonomyTreeRenderer.astro';
+import TaxonomySearch from './TaxonomySearch.astro';
 import { appendQueryParamsToPath } from './utils.js';
 
 interface Props {
 	lang: UiLanguageKeys;
-	categories: tsPageDataCategoriesSelect[];
-	tags: tsPageDataTagsSelect[];
+	categories: readonly tsPageDataCategoriesSelect[];
+	tags: readonly tsPageDataTagsSelect[];
 }
 
 const { lang, categories, tags } = Astro.props;
@@ -42,18 +42,7 @@ const tagData = tagsToTaxonomyNodes(tags);
             slot="start-content"
         />
     </Button>
-    <form
-        id="taxonomy-search-form"
-    >
-        <Input
-            name="taxonomy-search"
-            placeholder={t("input-placeholder-search")}
-            type="search"
-            required
-            icon="heroicons:magnifying-glass-16-solid"
-            disabled
-        />
-    </form>
+    <TaxonomySearch {lang} treeRenderElId='inner-sidebar-items' searchOutputElId='inner-sidebar-items-search' />
     <Dropdown
         id="taxonomy-create-new"
         options={[
@@ -117,6 +106,9 @@ const tagData = tagsToTaxonomyNodes(tags);
     id="inner-sidebar-items-search" 
     class="folder-tree-search-container scrollbar"
     style="display: none;"
+    data-searchlist={Astro.locals.StudioCMS.routeMap.endpointLinks.taxonomySearch}
+    data-base-category-link={Astro.locals.StudioCMS.routeMap.mainLinks.taxonomyCategories}
+    data-base-tag-link={Astro.locals.StudioCMS.routeMap.mainLinks.taxonomyTags}
 >
     {/* Placeholder for search results */}
 </div>

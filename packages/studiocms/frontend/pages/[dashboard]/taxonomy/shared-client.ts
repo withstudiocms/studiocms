@@ -66,9 +66,10 @@ type ParseFormDataReturnType<T extends 'categories' | 'tags'> = T extends 'categ
 
 export const parseFormDataToJson = <
 	T extends 'categories' | 'tags',
-	R extends ParseFormDataReturnType<T> & { mode: 'create' | 'edit' },
+	R extends ParseFormDataReturnType<T> & { mode: 'create' | 'edit'; type: T },
 >(
-	formData: FormData
+	formData: FormData,
+	type: T
 ): R => {
 	// Construct the entry object
 	const entry: Record<string, unknown> = {};
@@ -92,6 +93,9 @@ export const parseFormDataToJson = <
 			entry[key] = value === 'null' ? null : value;
 		}
 	}
+
+	// Add the type to the entry
+	entry.type = type;
 
 	// Type assertion to the expected return type
 	return entry as R;

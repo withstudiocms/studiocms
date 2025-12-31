@@ -379,6 +379,14 @@ export const dashboardAPIEnabledRoutes = (
 		entrypoint: 'pages/studiocms_api/dashboard/content/diff.ts',
 	},
 	{
+		pattern: '/studiocms_api/dashboard/taxonomy',
+		entrypoint: 'pages/studiocms_api/dashboard/taxonomy.ts',
+	},
+	{
+		pattern: '/studiocms_api/dashboard/taxonomy-search',
+		entrypoint: 'pages/studiocms_api/dashboard/taxonomy-search.ts',
+	},
+	{
 		pattern: '/studiocms_api/dashboard/create-reset-link',
 		entrypoint: 'pages/studiocms_api/dashboard/create-reset-link.ts',
 	},

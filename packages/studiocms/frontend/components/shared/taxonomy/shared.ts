@@ -34,7 +34,7 @@ export interface TaxonomyTreeProps extends BaseTaxonomyProps {
  * Convert category data to taxonomy nodes
  */
 export function categoriesToTaxonomyNodes(
-	categories: tsPageDataCategoriesSelect[]
+	categories: readonly tsPageDataCategoriesSelect[]
 ): TaxonomyNode[] {
 	const nodes: TaxonomyNode[] = categories.map((cat) => ({
 		id: cat.id,
@@ -72,7 +72,7 @@ export function categoriesToTaxonomyNodes(
 /**
  * Convert tag data to taxonomy nodes (flat structure)
  */
-export function tagsToTaxonomyNodes(tags: tsPageDataTagsSelect[]): TaxonomyNode[] {
+export function tagsToTaxonomyNodes(tags: readonly tsPageDataTagsSelect[]): TaxonomyNode[] {
 	return tags.map((tag) => ({
 		id: tag.id,
 		name: tag.name,

@@ -78,10 +78,12 @@ const href = node.type === 'category' ? baseCategoryLink : baseTagLink;
     class TaxonomyTreeLeaf extends HTMLElement {
         private href: string;
         private contextMenu: HTMLElement | null = null;
+        private searchTerm: string | null = null;
 
         constructor() {
             super();
             this.href = this.getAttribute("data-href") || "#";
+            this.searchTerm = this.getAttribute("data-search-term") || null;
         }
 
         connectedCallback() {
@@ -141,14 +143,14 @@ const href = node.type === 'category' ? baseCategoryLink : baseTagLink;
         setupEventListeners() {
             this.addEventListener("click", () => {
                 const taxonomyId = this.getAttribute("data-taxonomy-id");
-                window.location.href = `${this.href}?edit=${taxonomyId}&mode=edit`;
+                window.location.href = `${this.href}?edit=${taxonomyId}&mode=edit${this.searchTerm ? `&search=${encodeURIComponent(this.searchTerm)}` : ''}`;
             });
 
             this.addEventListener("keydown", (e) => {
                 if (e.key === "Enter" || e.key === " ") {
                     e.preventDefault();
                     const taxonomyId = this.getAttribute("data-taxonomy-id");
-                    window.location.href = `${this.href}?edit=${taxonomyId}&mode=edit`;
+                    window.location.href = `${this.href}?edit=${taxonomyId}&mode=edit${this.searchTerm ? `&search=${encodeURIComponent(this.searchTerm)}` : ''}`;
                 }
             });
         }
@@ -243,6 +245,7 @@ const href = node.type === 'category' ? baseCategoryLink : baseTagLink;
                     window.location.href = this.genUrl(this.href, {
                         edit: taxonomyId || "",
                         mode: "edit",
+                        ...(this.searchTerm ? { search: this.searchTerm } : {}),
                     });
                     break;
                 case "create-subcategory":
@@ -253,6 +256,7 @@ const href = node.type === 'category' ? baseCategoryLink : baseTagLink;
                         window.location.href = this.genUrl(createCategoryLink, {
                             parent: taxonomyId || "",
                             mode: "create",
+                            ...(this.searchTerm ? { search: this.searchTerm } : {}),
                         });
                     }
                     break;

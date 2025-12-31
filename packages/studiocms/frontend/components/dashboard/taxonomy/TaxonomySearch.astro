@@ -1,0 +1,277 @@
+---
+import { type UiLanguageKeys, useTranslations } from 'studiocms:i18n';
+import { Input } from 'studiocms:ui/components/input';
+
+interface Props {
+	lang: UiLanguageKeys;
+	treeRenderElId: string;
+	searchOutputElId: string;
+}
+
+const { lang, treeRenderElId, searchOutputElId } = Astro.props;
+const t = useTranslations(lang, '@studiocms/dashboard:content-sidebar');
+---
+
+<form 
+    id="taxonomy-search-form"
+    data-tree-render-el-id={treeRenderElId}
+    data-search-output-el-id={searchOutputElId}>
+    <Input
+        name="taxonomy-search"
+        placeholder={t("input-placeholder-search")}
+        type="search"
+        required
+        icon="heroicons:magnifying-glass-16-solid"
+    />
+</form>
+
+<script>
+    import DOMPurify from "dompurify";
+    import Fuse from "fuse.js";
+    import {
+        $i18n,
+        baseTranslation,
+        updateElmPlaceholder,
+    } from "studiocms:i18n/client";
+
+    const currentPage = "@studiocms/dashboard:content-sidebar";
+
+    const i18n = $i18n(currentPage, baseTranslation[currentPage]);
+
+    i18n.subscribe((comp) => {
+        updateElmPlaceholder("taxonomy-search", comp["input-placeholder-search"]);
+    });
+
+    const $ = <E extends HTMLElement>(selector: string, context = document) =>
+        context.querySelector(selector) as E;
+
+    const form = $("#taxonomy-search-form") as HTMLFormElement;
+    const treeRenderElId = form.dataset.treeRenderElId as string;
+    const searchOutputElId = form.dataset.searchOutputElId as string;
+
+    const treeRenderEl = $<HTMLElement>(`#${treeRenderElId}`);
+    const searchOutputEl = $<HTMLDivElement>(`#${searchOutputElId}`);
+    
+    interface TaxonomyNode {
+        id: number;
+        name: string;
+        slug: string;
+        description: string;
+        meta: {
+            readonly [x: string]: unknown;
+        };
+        parent: number | null | undefined;
+        children: TaxonomyNode[];
+        type: 'category' | 'tag';
+    }
+
+    type SearchList = TaxonomyNode[];
+
+    function getIcons(item: TaxonomyNode) {
+        switch (item.type) {
+            case 'category':
+                // heroicons:folder and heroicons:folder-solid
+                return `<svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="leaf-icon default"> <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12.75V12A2.25 2.25 0 0 1 4.5 9.75h15A2.25 2.25 0 0 1 21.75 12v.75m-8.69-6.44-2.12-2.12a1.5 1.5 0 0 0-1.061-.44H4.5A2.25 2.25 0 0 0 2.25 6v12a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9a2.25 2.25 0 0 0-2.25-2.25h-5.379a1.5 1.5 0 0 1-1.06-.44Z" /> </svg> 
+            
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" height="20" width="20" fill="currentColor" class="leaf-icon active"><path d="M19.5 21a3 3 0 0 0 3-3v-4.5a3 3 0 0 0-3-3h-15a3 3 0 0 0-3 3V18a3 3 0 0 0 3 3h15ZM1.5 10.146V6a3 3 0 0 1 3-3h5.379a2.25 2.25 0 0 1 1.59.659l2.122 2.121c.14.141.331.22.53.22H19.5a3 3 0 0 1 3 3v1.146A4.483 4.483 0 0 0 19.5 9h-15a4.483 4.483 0 0 0-3 1.146Z" /></svg>`;
+
+            case 'tag':
+                // heroicons:tag and heroicons:tag-solid
+                return `<svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="leaf-icon default"><path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6Z" /></svg>
+
+                <svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="0 0 24 24" fill="currentColor" class="leaf-icon active"><path fill-rule="evenodd" d="M5.25 2.25a3 3 0 0 0-3 3v4.318a3 3 0 0 0 .879 2.121l9.58 9.581c.92.92 2.39 1.186 3.548.428a18.849 18.849 0 0 0 5.441-5.44c.758-1.16.492-2.629-.428-3.548l-9.58-9.581a3 3 0 0 0-2.122-.879H5.25ZM6.375 7.5a1.125 1.125 0 1 0 0-2.25 1.125 1.125 0 0 0 0 2.25Z" clip-rule="evenodd" /></svg>`;
+            default:
+                return '';
+        }
+    }
+
+    async function getSearchList(searchItems: HTMLDivElement) {
+        console.log('fetching search list from ' + searchItems.dataset.searchlist);
+
+        const response = await fetch(
+            searchItems.dataset.searchlist as string,
+            {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            },
+        );
+
+        if (response.ok) {
+            const data: SearchList = await response.json();
+            return data;
+        } else {
+            console.error("Failed to fetch search list");
+            return [];
+        }
+    }
+
+    function clearSearchParams(innerSidebarItemsSearch: HTMLDivElement) {
+        const url = new URL(window.location.href);
+        url.searchParams.delete("search");
+        window.history.pushState({}, "", url);
+        innerSidebarItemsSearch.innerHTML = "";
+        treeRenderEl.style.display = "flex";
+        innerSidebarItemsSearch.style.display = "none";
+    }
+
+    const itemTemplate = (item: TaxonomyNode, searchTerm: string) => {
+        const base = searchOutputEl;
+        const safeSearch = encodeURIComponent(searchTerm);
+        const url = item.type === 'category'
+            ? base?.dataset.baseCategoryLink
+            : base?.dataset.baseTagLink;
+
+        const safeName = DOMPurify.sanitize(item.name, {
+            ALLOWED_TAGS: [],
+            ALLOWED_ATTR: [],
+        });
+
+        const nodeId = `search-node-${item.type}-${item.id}`;
+
+        return `
+        <taxonomy-tree-leaf
+            data-node-id="${nodeId}"
+            data-taxonomy-id="${item.id}"
+            data-taxonomy-type="${item.type}"
+            data-search-term="${safeSearch}"
+            data-depth="0"
+            data-href="${url}"
+            data-create-category-link="${base?.dataset.baseCategoryLink}"
+            class="tree-leaf"
+            role="treeitem"
+            tabindex="0"
+        >
+            ${getIcons(item)}
+            <span class="tree-leaf-label">${safeName}</span>
+        </taxonomy-tree-leaf>
+        <div
+            id="${nodeId}-context-menu"
+            class="context-menu"
+            role="menu"
+        >
+            <button class="context-menu-item" role="menuitem" data-action="edit">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="leaf-icon default"><path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" /></svg>
+                <span>Edit ${item.type === "category" ? "Category" : "Tag"}</span>
+            </button>
+        </div>
+        `;
+    }
+
+    async function runSearch(
+        form: HTMLFormElement,
+        searchItems: HTMLDivElement,
+    ) {
+        const formData = new FormData(form);
+
+        const query = formData.get("taxonomy-search") as string;
+
+        const searchTerm = DOMPurify.sanitize(query.trim());
+
+        if (!searchTerm || searchTerm.length < 2) {
+            clearSearchParams(searchItems);
+            return;
+        }
+
+        const currentUrl = new URL(window.location.href);
+        currentUrl.searchParams.set("search", searchTerm);
+        window.history.pushState({}, "", currentUrl);
+
+        const searchList = await getSearchList(searchItems);
+
+        const fuse = new Fuse(searchList, {
+            keys: ["name", "slug"],
+            threshold: 0.3,
+            isCaseSensitive: false,
+        });
+
+        const results = fuse.search(searchTerm);
+
+        const newHTML = DOMPurify.sanitize(
+            results.map(({ item }) => itemTemplate(item, searchTerm)).join(""),
+            {
+                ALLOWED_TAGS: [
+                    "div",
+                    "span",
+                    "svg",
+                    "path",
+                    "taxonomy-tree-leaf",
+                    "t-file-tree-renderer",
+                    "button",
+                ],
+                ALLOWED_ATTR: [
+                    "class",
+                    "data-node-id",
+                    "data-taxonomy-id",
+                    "data-taxonomy-type",
+                    "data-depth",
+                    "data-href",
+                    "data-create-category-link",
+                    "role",
+                    "tabindex",
+                    "fill",
+                    "viewBox",
+                    "stroke-width",
+                    "stroke",
+                    "d",
+                    "height",
+                    "width",
+                    "id",
+                    "data-action",
+                    "data-edit-id",
+                    "data-folder-id",
+                    "key",
+                ],
+            },
+        );
+
+        searchItems.innerHTML = newHTML;
+
+        treeRenderEl.style.display = "none";
+        searchItems.style.display = "flex";
+    }
+
+    async function searchInit() {
+        const searchInput = form.querySelector(
+            'input[name="taxonomy-search"]',
+        ) as HTMLInputElement;
+
+        const innerSidebarItemsSearch = searchOutputEl;
+
+        const url = new URL(window.location.href);
+        const searchParam = url.searchParams.get("search") || "";
+
+        if (searchParam.length >= 2) {
+            const input = searchInput;
+            input.value = searchParam;
+            await runSearch(form, innerSidebarItemsSearch);
+        }
+
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            await runSearch(form, innerSidebarItemsSearch);
+        });
+
+        let debounceTimeout: ReturnType<typeof setTimeout>;
+        searchInput.addEventListener("input", () => {
+            if (searchInput.value.length < 2) {
+                clearSearchParams(innerSidebarItemsSearch);
+                return;
+            }
+
+            clearTimeout(debounceTimeout);
+            debounceTimeout = setTimeout(
+                async () => await runSearch(form, innerSidebarItemsSearch),
+                500,
+            );
+        });
+
+        // if the user clears the search, clear the query params
+        searchInput.addEventListener("search", () =>
+            clearSearchParams(innerSidebarItemsSearch),
+        );
+    }
+
+    searchInit();
+</script>

@@ -7,11 +7,13 @@ import TaxonomyLayout from '#frontend/layouts/TaxonomyLayout.astro';
 const { defaultLang: lang } = Astro.locals.StudioCMS;
 
 const t = useTranslations(lang, '@studiocms/dashboard:taxonomy-index');
-
-// TODO: Replace action URL with actual endpoint
 ---
 <TaxonomyLayout type='tags'>
-    <form id="tag-form" action="#">
+    <form 
+        id="tag-form" 
+        action={Astro.locals.StudioCMS.routeMap.endpointLinks.taxonomy} 
+        method="post"
+    >
 
         <input type="hidden" name="mode" value="create" />
         <input type="hidden" name="id" value="" />
@@ -71,7 +73,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:taxonomy-index');
             e.preventDefault();
 
             const formData = new FormData(form);
-            const jsonData = parseFormDataToJson(formData);
+            const jsonData = parseFormDataToJson(formData, 'tags');
 
             let response: Response;
 
@@ -94,9 +96,9 @@ const t = useTranslations(lang, '@studiocms/dashboard:taxonomy-index');
             }
 
             if (response.ok) {
-                const result: { success: boolean; message: string } =
+                const result: { message: string } =
                     await response.json();
-                if (result.success) {
+                if (response.status === 200) {
                     toast({
                         title: "Success",
                         description:

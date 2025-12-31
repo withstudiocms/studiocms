@@ -309,6 +309,13 @@ export const StudioCMSRoutes = {
 		},
 
 		/**
+		 * API route for taxonomy management.
+		 */
+		taxonomy: dashboardAPIRoute('taxonomy'),
+
+		taxonomySearch: dashboardAPIRoute('taxonomy-search'),
+
+		/**
 		 * API route for fetching plugins.
 		 */
 		plugins: dashboardAPIRoute('plugins/'),
