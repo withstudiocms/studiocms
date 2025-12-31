@@ -24,6 +24,13 @@ const editorNotifications = {
 	folder_updated: (name: string) => `The folder "${name}" has been updated.`,
 	folder_deleted: (name: string) => `The folder "${name}" has been deleted.`,
 	new_folder: (name: string) => `A new folder "${name}" has been created.`,
+
+	new_tag: (tagName: string) => `A new tag "${tagName}" has been created.`,
+	update_tag: (tagName: string) => `The tag "${tagName}" has been updated.`,
+	delete_tag: (tagName: string) => `The tag "${tagName}" has been deleted.`,
+	new_category: (categoryName: string) => `A new category "${categoryName}" has been created.`,
+	update_category: (categoryName: string) => `The category "${categoryName}" has been updated.`,
+	delete_category: (categoryName: string) => `The category "${categoryName}" has been deleted.`,
 };
 
 /**
@@ -51,6 +58,12 @@ export const notificationTitleStrings: Record<UserNotificationOptions, string> =
 	user_updated: 'User Updated',
 	user_deleted: 'User Deleted',
 	new_user: 'New User',
+	new_tag: 'Tag Created',
+	update_tag: 'Tag Updated',
+	delete_tag: 'Tag Deleted',
+	new_category: 'Category Created',
+	update_category: 'Category Updated',
+	delete_category: 'Category Deleted',
 };
 
 /**

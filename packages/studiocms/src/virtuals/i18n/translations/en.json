@@ -372,7 +372,13 @@
       "new_folder": "Editor: New Folder",
       "user_updated": "Admin: User Updated",
       "user_deleted": "Admin: User Deleted",
-      "new_user": "Admin: New User"
+      "new_user": "Admin: New User",
+      "new_tag": "Editor: Tag Created",
+      "update_tag": "Editor: Tag Updated",
+      "delete_tag": "Editor: Tag Deleted",
+      "new_category": "Editor: Category Created",
+      "update_category": "Editor: Category Updated",
+      "delete_category": "Editor: Category Deleted"
     },
     "@studiocms/dashboard:system-management": {
       "title": "System Management",

@@ -75,8 +75,7 @@ export const { POST, DELETE } = createEffectAPIRoutes(
 									return apiResponseLogger(500, 'Failed to create tag');
 								}
 
-								// TODO: Implement notification for new tag
-								// yield* notify.sendEditorNotification('new_tag', tagData.name);
+								yield* notify.sendEditorNotification('new_tag', tagData.name);
 
 								return apiResponseLogger(200, 'Tag created successfully');
 							}
@@ -90,8 +89,7 @@ export const { POST, DELETE } = createEffectAPIRoutes(
 									return apiResponseLogger(500, 'Failed to update tag');
 								}
 
-								// TODO: Implement notification for updated tag
-								// yield* notify.sendEditorNotification('update_tag', tagData.name);
+								yield* notify.sendEditorNotification('update_tag', tagData.name);
 
 								return apiResponseLogger(200, 'Tag updated successfully');
 							}
@@ -116,8 +114,7 @@ export const { POST, DELETE } = createEffectAPIRoutes(
 									return apiResponseLogger(500, 'Failed to create category');
 								}
 
-								// TODO: Implement notification for new category
-								// yield* notify.sendEditorNotification('new_category', categoryData.name);
+								yield* notify.sendEditorNotification('new_category', categoryData.name);
 
 								return apiResponseLogger(200, 'Category created successfully');
 							}
@@ -131,8 +128,7 @@ export const { POST, DELETE } = createEffectAPIRoutes(
 									return apiResponseLogger(500, 'Failed to update category');
 								}
 
-								// TODO: Implement notification for updated category
-								// yield* notify.sendEditorNotification('update_category', categoryData.name);
+								yield* notify.sendEditorNotification('update_category', categoryData.name);
 
 								return apiResponseLogger(200, 'Category updated successfully');
 							}
@@ -181,7 +177,7 @@ export const { POST, DELETE } = createEffectAPIRoutes(
 							return apiResponseLogger(500, 'Failed to delete tag');
 						}
 
-						// yield* notify.sendEditorNotification('delete_tag', foundTag.name);
+						yield* notify.sendEditorNotification('delete_tag', foundTag.name);
 
 						return apiResponseLogger(200, 'Tag deleted successfully');
 					}
@@ -206,7 +202,7 @@ export const { POST, DELETE } = createEffectAPIRoutes(
 							return apiResponseLogger(500, 'Failed to delete category');
 						}
 
-						// yield* notify.sendEditorNotification('delete_category', foundCategory.name);
+						yield* notify.sendEditorNotification('delete_category', foundCategory.name);
 
 						return apiResponseLogger(200, 'Category deleted successfully');
 					}
