@@ -371,7 +371,7 @@ import { keys } from "effect/Record";
                 `template#${map[type]}`,
             ) as HTMLTemplateElement;
 
-            return template ? template.innerHTML.trim() : "Keys cannot be empty.";
+            return template ? template.innerHTML.trim() : "Unknown error.";
         }
 
         updateEntriesFromDOM() {
