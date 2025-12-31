@@ -223,6 +223,8 @@ const { name, entries } = Astro.props;
         private idCounter: number = 0;
         private _value: string | null = null;
         private alertContainer: HTMLDivElement;
+        private attributeObserver?: MutationObserver;
+        private inputObserver?: MutationObserver;
 
         constructor() {
             super();
@@ -261,6 +263,11 @@ const { name, entries } = Astro.props;
             this.setupAttributeWatchers();
         }
 
+        disconnectedCallback() {
+            this.attributeObserver?.disconnect();
+            this.inputObserver?.disconnect();
+        }
+
         updateValue(newValue: string) {
             this.#internals.setFormValue(newValue);
         }
@@ -270,7 +277,7 @@ const { name, entries } = Astro.props;
         }
 
         setupAttributeWatchers() {
-            const observer = new MutationObserver((mutations) => {
+            this.attributeObserver = new MutationObserver((mutations) => {
                 mutations.forEach((mutation) => {
                     if (
                         mutation.type === "attributes" &&
@@ -293,7 +300,7 @@ const { name, entries } = Astro.props;
                 });
             });
 
-            observer.observe(this, {
+            this.attributeObserver.observe(this, {
                 attributes: true,
             });
         }
@@ -359,7 +366,8 @@ const { name, entries } = Astro.props;
         updateEntriesFromDOM() {
             this.entries.clear();
             const seenKeys = new Set<string>();
-            let hasDuplicates = false;
+            let hasErrors = false;
+            let errorMessage = "";
             const pairElements =
                 this.pairsContainer.querySelectorAll(".dynamic-entry");
             pairElements.forEach((pairEl) => {
@@ -373,35 +381,14 @@ const { name, entries } = Astro.props;
                 const value = valueSpan.textContent?.trim() || "";
 
                 if (!key) {
+                    hasErrors = true;
+                    errorMessage = this.getAlertMessageTemplate();
                     keySpan.classList.add("invalid");
-                    this.alertContainer.querySelector(
-                        ".alert-message",
-                    )!.innerHTML = this.getAlertMessageTemplate();
-                    this.alertContainer.classList.add("visible");
-                    this.#internals.setValidity(
-                        { customError: true },
-                        "Keys cannot be empty.",
-                    );
                 } else if (seenKeys.has(key)) {
-                    hasDuplicates = true;
-                    keySpan.classList.add("invalid");
-                    this.alertContainer.querySelector(
-                        ".alert-message",
-                    )!.textContent = "Duplicate keys are not allowed.";
-                    this.alertContainer.classList.add("visible");
-                    this.#internals.setValidity(
-                        { customError: true },
-                        "Duplicate keys are not allowed.",
-                    );
+                    hasErrors = true;
+                    errorMessage = "Duplicate keys are not allowed.";
                 } else {
                     keySpan.classList.remove("invalid");
-                    if (!hasDuplicates) {
-                        this.alertContainer.querySelector(
-                            ".alert-message",
-                        )!.textContent = "";
-                        this.alertContainer.classList.remove("visible");
-                        this.#internals.setValidity({}, "");
-                    }
                 }
 
                 if (key) {
@@ -409,16 +396,28 @@ const { name, entries } = Astro.props;
                     this.entries.set(key, { key, value });
                 }
             });
+            
+            // Set final validation state after processing all entries
+            if (hasErrors) {
+                this.alertContainer.querySelector(".alert-message")!.innerHTML = errorMessage;
+                this.alertContainer.classList.add("visible");
+                this.#internals.setValidity({ customError: true }, errorMessage);
+            } else {
+                this.alertContainer.querySelector(".alert-message")!.innerHTML = "";
+                this.alertContainer.classList.remove("visible");
+                this.#internals.setValidity({}, "");
+            }
+    
             this._value = JSON.stringify(this.getEntries());
             this.updateValue(this._value);
         }
 
         setupInputObservers() {
-            const observer = new MutationObserver(() => {
+            this.inputObserver = new MutationObserver(() => {
                 this.updateEntriesFromDOM();
             });
 
-            observer.observe(this.pairsContainer, {
+            this.inputObserver.observe(this.pairsContainer, {
                 childList: true,
                 subtree: true,
                 characterData: true,
