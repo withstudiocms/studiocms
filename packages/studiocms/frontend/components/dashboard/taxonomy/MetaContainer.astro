@@ -19,15 +19,27 @@ const { name, entries } = Astro.props;
                 <div class="key-label">
                     <slot name="key-label">Key</slot> <span class="required-star">*</span>
                 </div>
-                <span class="key-value-span" contenteditable></span>
+                <span 
+                    class="key-value-span" 
+                    contenteditable
+                    role="textbox"
+                    aria-label="Metadata key"
+                    aria-required="true"
+                ></span>
             </div>
             <div class="value">
                 <div class="value-label"><slot name="value-label">Value</slot></div>
-                <span class="key-value-span" contenteditable></span>
+                <span 
+                    class="key-value-span" 
+                    contenteditable
+                    role="textbox"
+                    aria-label="Metadata value"
+                ></span>
             </div>
             <button
                 class="remove-pair-button"
                 title="Remove Key-Value Pair"
+                aria-label="Remove this key-value pair"
                 type="button"
             >
                 <Icon name="heroicons:trash" width={24} height={24} />
@@ -348,6 +360,8 @@ const { name, entries } = Astro.props;
 
         updateEntriesFromDOM() {
             this.entries.clear();
+            const seenKeys = new Set<string>();
+            let hasDuplicates = false;
             const pairElements =
                 this.pairsContainer.querySelectorAll(".dynamic-entry");
             pairElements.forEach((pairEl) => {
@@ -370,16 +384,30 @@ const { name, entries } = Astro.props;
                         { customError: true },
                         "Keys cannot be empty.",
                     );
-                } else {
-                    keySpan.classList.remove("invalid");
+                } else if (seenKeys.has(key)) {
+                    hasDuplicates = true;
+                    keySpan.classList.add("invalid");
                     this.alertContainer.querySelector(
                         ".alert-message",
-                    )!.textContent = "";
-                    this.alertContainer.classList.remove("visible");
-                    this.#internals.setValidity({}, "");
+                    )!.textContent = "Duplicate keys are not allowed.";
+                    this.alertContainer.classList.add("visible");
+                    this.#internals.setValidity(
+                        { customError: true },
+                        "Duplicate keys are not allowed.",
+                    );
+                } else {
+                    keySpan.classList.remove("invalid");
+                    if (!hasDuplicates) {
+                        this.alertContainer.querySelector(
+                            ".alert-message",
+                        )!.textContent = "";
+                        this.alertContainer.classList.remove("visible");
+                        this.#internals.setValidity({}, "");
+                    }
                 }
 
                 if (key) {
+                    seenKeys.add(key);
                     this.entries.set(key, { key, value });
                 }
             });
