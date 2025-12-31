@@ -488,6 +488,15 @@
       "edit-folder": "Edit Folder",
       "edit-page": "Edit Page"
     },
+    "@studiocms/dashboard:taxonomy-tree-renderer": {
+      "collapse-all": "Collapse All",
+      "expand-all": "Expand All",
+      "create-category": "Create Category",
+      "create-sub-category": "Create Sub-Category",
+      "edit-category": "Edit Category",
+      "create-tag": "Create Tag",
+      "edit-tag": "Edit Tag"
+    },
     "@studiocms/dashboard:taxonomy-index": {
       "title": "Taxonomy Management",
       "description": "Manage your taxonomies here.",

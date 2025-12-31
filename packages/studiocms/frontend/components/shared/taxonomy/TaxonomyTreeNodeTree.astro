@@ -1,9 +1,12 @@
 ---
+import type { UiLanguageKeys } from 'studiocms:i18n';
 import type { TaxonomyNode, TaxonomyTreeProps } from './shared.js';
 import TaxonomyTreeLeaf from './TaxonomyTreeLeaf.astro';
 import TaxonomyTreeNode from './TaxonomyTreeNode.astro';
 
-interface Props extends TaxonomyTreeProps {}
+interface Props extends TaxonomyTreeProps {
+	lang: UiLanguageKeys;
+}
 
 const { data, depth = 0, ...props } = Astro.props;
 

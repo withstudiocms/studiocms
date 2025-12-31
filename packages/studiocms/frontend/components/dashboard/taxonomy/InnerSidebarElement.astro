@@ -87,6 +87,7 @@ const tagData = tagsToTaxonomyNodes(tags);
                 baseCategoryLink={Astro.locals.StudioCMS.routeMap.mainLinks.taxonomyCategories}
                 baseTagLink={Astro.locals.StudioCMS.routeMap.mainLinks.taxonomyTags}
                 data={categoryData}
+                lang={lang}
             />
         </TabItem>
         <TabItem id='tags-tab' label={t('tab-label-tags')} icon='heroicons:tag'>
@@ -97,6 +98,7 @@ const tagData = tagsToTaxonomyNodes(tags);
                 baseCategoryLink={Astro.locals.StudioCMS.routeMap.mainLinks.taxonomyCategories}
                 baseTagLink={Astro.locals.StudioCMS.routeMap.mainLinks.taxonomyTags}
                 data={tagData}
+                lang={lang}
             />
         </TabItem>
     </Tabs>

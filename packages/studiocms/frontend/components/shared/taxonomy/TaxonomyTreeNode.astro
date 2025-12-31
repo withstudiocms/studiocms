@@ -1,15 +1,20 @@
 ---
+import { type UiLanguageKeys, useTranslations } from 'studiocms:i18n';
 import { Icon } from 'studiocms:ui/components/icon';
 import type { TaxonomyNodeProps } from './shared.js';
 
-interface Props extends TaxonomyNodeProps {}
+interface Props extends TaxonomyNodeProps {
+	lang: UiLanguageKeys;
+}
 
-const { baseTagLink = '/', baseCategoryLink = '/', node, depth = 0 } = Astro.props;
+const { baseTagLink = '/', baseCategoryLink = '/', node, depth = 0, lang } = Astro.props;
 
 const nodeId = `taxonomy-${node.type}-${node.id}`;
 const contentId = `content-${nodeId}`;
 const href = node.type === 'category' ? baseCategoryLink : baseTagLink;
 const hasChildren = node.children.length > 0;
+
+const t = useTranslations(lang, '@studiocms/dashboard:taxonomy-tree-renderer');
 ---
 
 <taxonomy-tree-node
@@ -104,7 +109,11 @@ const hasChildren = node.children.length > 0;
     <div id={`${nodeId}-context-menu`} class="context-menu" role="menu">
         <button class="context-menu-item" role="menuitem" data-action="edit">
             <Icon name="heroicons:pencil" width={16} height={16} />
-            <span>Edit {node.type === "category" ? "Category" : "Tag"}</span>
+            <span>
+                <t-taxonomy-tree-node key={node.type === "category" ? 'edit-category' : 'edit-tag'}>
+                    {t(node.type === "category" ? 'edit-category' : 'edit-tag')}
+                </t-taxonomy-tree-node>
+            </span>
         </button>
         {
             node.type === "category" && (
@@ -114,12 +123,31 @@ const hasChildren = node.children.length > 0;
                     data-action="create-subcategory"
                 >
                     <Icon name="heroicons:folder-plus" width={16} height={16} />
-                    <span>Create Subcategory</span>
+                    <span>
+                        <t-taxonomy-tree-node key="create-sub-category">
+                            {t('create-sub-category')}
+                        </t-taxonomy-tree-node>
+                    </span>
                 </button>
             )
         }
     </div>
 </taxonomy-tree-node>
+
+<script>
+    import { $i18n, baseTranslation, makeTranslation } from 'studiocms:i18n/client';
+
+    const currentPage = "@studiocms/dashboard:taxonomy-tree-renderer";
+
+    const i18n = $i18n(currentPage, baseTranslation[currentPage]);
+
+    if (!customElements.get("t-taxonomy-tree-renderer")) {
+        customElements.define(
+            "t-taxonomy-tree-renderer",
+            makeTranslation(currentPage, i18n),
+        );
+    }
+</script>
 
 <script>
     class TaxonomyTreeNode extends HTMLElement {

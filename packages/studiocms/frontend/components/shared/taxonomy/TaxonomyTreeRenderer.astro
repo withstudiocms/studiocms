@@ -1,4 +1,5 @@
 ---
+import { type UiLanguageKeys, useTranslations } from 'studiocms:i18n';
 import { Icon } from 'studiocms:ui/components/icon';
 import type { TaxonomyTreeProps } from './shared.js';
 import TaxonomyTreeNodeTree from './TaxonomyTreeNodeTree.astro';
@@ -7,6 +8,7 @@ interface Props extends TaxonomyTreeProps {
 	type: 'category' | 'tag';
 	id?: string;
 	class?: string;
+	lang: UiLanguageKeys;
 }
 
 const {
@@ -15,6 +17,7 @@ const {
 	baseCategoryLink = '/',
 	id,
 	class: className,
+	lang,
 	...props
 } = Astro.props;
 
@@ -25,8 +28,11 @@ const containerMenuId = `${containerId}-container-menu`;
 const sharedProps = {
 	baseCategoryLink,
 	baseTagLink,
+	lang,
 	...props,
 };
+
+const t = useTranslations(lang, '@studiocms/dashboard:taxonomy-tree-renderer');
 ---
 
 <taxonomy-tree-container
@@ -54,7 +60,11 @@ const sharedProps = {
                         width={12}
                         height={12}
                     />
-                    <span>Collapse All</span>
+                    <span>
+                        <t-taxonomy-tree-renderer key="collapse-all">
+                            {t('collapse-all')}
+                        </t-taxonomy-tree-renderer>
+                    </span>
                 </button>
 
                 <button
@@ -67,7 +77,11 @@ const sharedProps = {
                         width={12}
                         height={12}
                     />
-                    <span>Expand All</span>
+                    <span>
+                        <t-taxonomy-tree-renderer key="expand-all">
+                            {t('expand-all')}
+                        </t-taxonomy-tree-renderer>
+                    </span>
                 </button>
             </div>
         )
@@ -85,7 +99,11 @@ const sharedProps = {
                 data-action="create-category"
             >
                 <Icon name="heroicons:folder-plus" width={16} height={16} />
-                <span>Create Category</span>
+                <span>
+                    <t-taxonomy-tree-renderer key="create-category">
+                        {t('create-category')}
+                    </t-taxonomy-tree-renderer>
+                </span>
             </button>
         )
     }
@@ -97,7 +115,11 @@ const sharedProps = {
                 data-action="create-tag"
             >
                 <Icon name="heroicons:tag" width={16} height={16} />
-                <span>Create Tag</span>
+                <span>
+                    <t-taxonomy-tree-renderer key="create-tag">
+                        {t('create-tag')}
+                    </t-taxonomy-tree-renderer>
+                </span>
             </button>
         )
     }
@@ -109,15 +131,38 @@ const sharedProps = {
                 data-action="collapse-all"
             >
                 <Icon name="heroicons:minus" width={16} height={16} />
-                <span>Collapse All</span>
+                <span>
+                    <t-taxonomy-tree-renderer key="collapse-all">
+                        {t('collapse-all')}
+                    </t-taxonomy-tree-renderer>
+                </span>
             </button>
             <button class="context-menu-item" role="menuitem" data-action="expand-all">
                 <Icon name="heroicons:plus" width={16} height={16} />
-                <span>Expand All</span>
+                <span>
+                    <t-taxonomy-tree-renderer key="expand-all">
+                        {t('expand-all')}
+                    </t-taxonomy-tree-renderer>
+                </span>
             </button>
         )
     }
 </div>
+
+<script>
+    import { $i18n, baseTranslation, makeTranslation } from 'studiocms:i18n/client';
+
+    const currentPage = "@studiocms/dashboard:taxonomy-tree-renderer";
+
+    const i18n = $i18n(currentPage, baseTranslation[currentPage]);
+
+    if (!customElements.get("t-taxonomy-tree-renderer")) {
+        customElements.define(
+            "t-taxonomy-tree-renderer",
+            makeTranslation(currentPage, i18n),
+        );
+    }
+</script>
 
 <script>
     class TaxonomyTreeContainer extends HTMLElement {
