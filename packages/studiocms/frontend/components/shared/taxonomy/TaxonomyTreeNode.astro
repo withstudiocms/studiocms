@@ -283,11 +283,11 @@ const t = useTranslations(lang, '@studiocms/dashboard:taxonomy-tree-renderer');
 
         disconnectedCallback() {
             window.removeEventListener(
-                "folderTreeNode-collapseAllFolders",
+                "taxonomyTreeNode-collapseAllFolders",
                 this.boundCollapseAll,
             );
             window.removeEventListener(
-                "folderTreeNode-expandAllFolders",
+                "taxonomyTreeNode-expandAllFolders",
                 this.boundExpandAll,
             );
 
@@ -400,7 +400,8 @@ const t = useTranslations(lang, '@studiocms/dashboard:taxonomy-tree-renderer');
                 case "create-subcategory": {
                     const createLink = this.getAttribute(
                         "data-create-category-link",
-                    )!;
+                    );
+                    if (!createLink) return;
                     window.location.href = this.genUrl(createLink, {
                         parent: taxonomyId || "",
                         mode: "create",

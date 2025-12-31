@@ -230,9 +230,14 @@ const { name, entries } = Astro.props;
 
             const entries = this.getAttribute("entries");
             if (entries) {
-                const parsed = JSON.parse(entries) as Record<string, string>;
-                for (const [key, value] of Object.entries(parsed)) {
-                    this.entries.set(key, { key, value });
+                try {
+                    const parsed = JSON.parse(entries) as Record<string, string>;
+                    for (const [key, value] of Object.entries(parsed)) {
+                        this.entries.set(key, { key, value });
+                    }
+                } catch (error) {
+                    console.error('Failed to parse entries attribute:', error);
+                    // Continue with empty entries map
                 }
             }
 
@@ -263,13 +268,14 @@ const { name, entries } = Astro.props;
                     ) {
                         const entries = this.getAttribute("entries");
                         if (entries) {
-                            const parsed = JSON.parse(entries) as Record<
-                                string,
-                                string
-                            >;
-                            this.entries.clear();
-                            for (const [key, value] of Object.entries(parsed)) {
-                                this.entries.set(key, { key, value });
+                            try {
+                                const parsed = JSON.parse(entries) as Record<string, string>;
+                                this.entries.clear();
+                                for (const [key, value] of Object.entries(parsed)) {
+                                    this.entries.set(key, { key, value });
+                                }
+                            } catch (error) {
+                                console.error('Failed to parse entries attribute:', error);
                             }
                             this.render();
                         }

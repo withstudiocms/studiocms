@@ -39,7 +39,11 @@ export type CurrentEntryData<T extends 'categories' | 'tags'> = WithParent<T> & 
 export function getCurrentEntryData<T extends 'categories' | 'tags'>(
 	dataEl?: HTMLElement
 ): CurrentEntryData<T> {
-	const type = dataEl?.getAttribute('data-type') as T;
+	const typeAttr = dataEl?.getAttribute('data-type');
+	if (typeAttr !== 'categories' && typeAttr !== 'tags') {
+		throw new Error(`Invalid taxonomy type: ${typeAttr}`);
+	}
+	const type = typeAttr as T;
 
 	const modeAttr = dataEl?.getAttribute('data-mode');
 	const mode = modeAttr === 'create' || modeAttr === 'edit' ? modeAttr : '';
@@ -86,7 +90,14 @@ export const parseFormDataToJson = <
 		// 'meta' should be parsed as JSON
 		// Other values should be assigned directly, converting 'null' string to null
 		if (key === 'id' || key === 'parent') {
-			entry[key] = value !== 'null' ? Number(value) : null;
+			const num = Number(value);
+			if (value !== 'null' && !Number.isNaN(num)) {
+				entry[key] = num;
+			} else if (value === 'null') {
+				entry[key] = null;
+			} else {
+				throw new Error(`Invalid numeric value for ${key}: ${value}`);
+			}
 		} else if (key === 'meta') {
 			// Attempt to parse JSON, default to empty object on failure
 			try {
