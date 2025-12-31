@@ -77,10 +77,11 @@ const { name, entries } = Astro.props;
 <style>
     dynamic-key-value-pair {
         display: block;
-        border: 1px solid var(--border);
+        margin-top: 1rem;
+        /* padding: 1rem; */
+        /* border: 1px solid var(--border);
         border-radius: 0.5rem;
-        padding: 1rem;
-        background-color: var(--background-step-2);
+        background-color: var(--background-step-2); */
 
         & .alert-container {
             display: none;
@@ -107,8 +108,9 @@ const { name, entries } = Astro.props;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 1rem;
-            border-bottom: 1px solid var(--border);
+            border-top: 1px solid var(--border);
             padding-bottom: 0.5rem;
+            padding-top: 1rem;
 
             & .header-title {
                 font-weight: 600;
@@ -177,7 +179,7 @@ const { name, entries } = Astro.props;
                     padding: 0.5rem;
                     border: 1px solid var(--border);
                     border-radius: 0.375rem;
-                    background-color: var(--background-base);
+                    background-color: var(--background-step-2);
                     outline: none;
                     padding-left: 1rem;
 
