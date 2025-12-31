@@ -491,7 +491,16 @@
     "@studiocms/dashboard:taxonomy-index": {
       "title": "Taxonomy Management",
       "description": "Manage your taxonomies here.",
-      "placeholder": "Select or create a taxonomy to get started."
+      "placeholder": "Select or create a taxonomy to get started.",
+      "label-name": "Name",
+      "label-slug": "Slug",
+      "label-description": "Description",
+      "label-meta": "Metadata",
+      "label-meta-key": "Key",
+      "label-meta-value": "Value",
+      "meta-alert-message": "Keys cannot be empty.",
+      "label-parent-category": "Parent Category",
+      "placeholder-parent-category": "Select Parent Category"
     },
     "@studiocms/dashboard:taxonomy-header": {
       "index.title": "Taxonomy Management",
@@ -506,7 +515,9 @@
     "@studiocms/dashboard:taxonomy-sidebar": {
       "input-placeholder-search": "Search...",
       "dropdown-create-category": "Create Category",
-      "dropdown-create-tag": "Create Tag"
+      "dropdown-create-tag": "Create Tag",
+      "tab-label-categories": "Categories",
+      "tab-label-tags": "Tags"
     }
   }
 }

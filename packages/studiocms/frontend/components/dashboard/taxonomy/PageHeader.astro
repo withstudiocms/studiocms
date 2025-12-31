@@ -31,16 +31,24 @@ const replaceNameParam = (str: string) => str.replace('{name}', pageTitle);
 <tabs-context-updater {type}></tabs-context-updater>
 
 <header class="page-header">
-    <div class="page-title-container">
+    <div class="page-title-container" id="page-header-data" data-page-title={pageTitle} data-title-translation-key={
+        type === 'tags' && mode === 'edit' ? 'tags.edit-title' : type === 'categories' && mode === 'edit' ? 'categories.edit-title' : ''
+    } data-type={type} data-mode={mode}>
         <Button color='primary' id='nav-open' class='mobile-btn'>
             <Icon name="heroicons:bars-3" height={24} width={24} slot="start-content" />
         </Button>
-        <h1 class="page-title">
-            {type === 'index' && t('index.title')}
-            {type === 'categories' && mode === 'edit' && replaceNameParam(t('categories.edit-title'))}
-            {type === 'categories' && mode === 'create' && t('categories.create-title')}
+        <h1 id="page-title" class="page-title">
+            {type === 'index' && (
+                <t-taxonomy-header key="index.title">{t('index.title')}</t-taxonomy-header>
+            )}
+            {type === 'categories' && mode === 'create' && (
+                <t-taxonomy-header key="categories.create-title">{t('categories.create-title')}</t-taxonomy-header>
+            )}
+            {type === 'tags' && mode === 'create' && (
+                <t-taxonomy-header key="tags.create-title">{t('tags.create-title')}</t-taxonomy-header>
+            )}
             {type === 'tags' && mode === 'edit' && replaceNameParam(t('tags.edit-title'))}
-            {type === 'tags' && mode === 'create' && t('tags.create-title')}
+            {type === 'categories' && mode === 'edit' && replaceNameParam(t('categories.edit-title'))}
         </h1>
     </div>
     <div id="page-actions-container" class="page-actions-container">
@@ -69,7 +77,7 @@ const replaceNameParam = (str: string) => str.replace('{name}', pageTitle);
                             height={20}
                             slot="start-content"
                         />
-                        {t('delete-button')}
+                        <t-taxonomy-header key="delete-button">{t('delete-button')}</t-taxonomy-header>
                     </Button>
                     <Button
                         form={
@@ -90,7 +98,7 @@ const replaceNameParam = (str: string) => str.replace('{name}', pageTitle);
                             height={20}
                             slot="start-content"
                         />
-                        {t('save-button')}
+                        <t-taxonomy-header key="save-button">{t('save-button')}</t-taxonomy-header>
                     </Button>
                 </Group>
             )
@@ -117,12 +125,44 @@ const replaceNameParam = (str: string) => str.replace('{name}', pageTitle);
                         height={20}
                         slot="start-content"
                     />
-                    {t('create-button')}
+                    <t-taxonomy-header key="create-button">{t('create-button')}</t-taxonomy-header>
                 </Button>
             )
         }
     </div>
 </header>
+
+<script>
+    import {
+        $i18n,
+        baseTranslation,
+        makeTranslation,
+    } from "studiocms:i18n/client";
+
+    const currentPage = "@studiocms/dashboard:taxonomy-header";
+
+    const i18n = $i18n(currentPage, baseTranslation[currentPage]);
+
+    const pageDataEl = document.getElementById('page-header-data') as HTMLDivElement;
+    const pageTitle = pageDataEl.dataset.pageTitle;
+    const type = pageDataEl.dataset.type;
+    const mode = pageDataEl.dataset.mode;
+    const titleTranslationKey = pageDataEl.dataset.titleTranslationKey;
+
+    const pageTitleEl = document.getElementById('page-title') as HTMLHeadingElement;
+
+    const replaceNameParam = (str: string) => str.replace('{name}', pageTitle || '');
+
+    i18n.subscribe((comp) => {
+        if (type && ['categories', 'tags'].includes(type) && mode === 'edit' && titleTranslationKey) {
+            pageTitleEl.textContent = replaceNameParam(comp[titleTranslationKey as keyof typeof comp]);
+        }
+    });
+
+    if (!customElements.get("t-taxonomy-header")) {
+        customElements.define("t-taxonomy-header", makeTranslation(currentPage, i18n));
+    }
+</script>
 
 <script>
     type AllowedTypes = 'categories' | 'tags';

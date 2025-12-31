@@ -23,15 +23,14 @@ const categories = await runSDK(SDKCoreJs.GET.categories.getAll());
         <input type="hidden" name="id" value="" />
 
         <div class="form-row">
-            <Input name="name" label="Name" isRequired />
-            <Input name="slug" label="Slug" isRequired />
+            <Input id="name" name="name" label={t('label-name')} isRequired />
+            <Input id="slug" name="slug" label={t('label-slug')} isRequired />
         </div>
 
         <div class="form-row">
             <Select
                 name="parent"
-                label="Parent Category"
-                placeholder="Select Parent Category"
+                label={t('label-parent-category')}
                 fullWidth
                 defaultValue="null"
                 options={[
@@ -42,12 +41,47 @@ const categories = await runSDK(SDKCoreJs.GET.categories.getAll());
                     })),
                 ]}
             />
-            <Input name="description" label="Description" />
+            <Input id="description" name="description" label={t('label-description')} />
         </div>
 
-        <MetaContainer name="meta" />
+        <MetaContainer name="meta">
+            <Fragment slot="title">
+                <t-taxonomy key="label-meta">{t('label-meta')}</t-taxonomy>
+            </Fragment>
+            <Fragment slot="key-label">
+                <t-taxonomy key="label-meta-key">{t('label-meta-key')}</t-taxonomy>
+            </Fragment>
+            <Fragment slot="value-label">
+                <t-taxonomy key="label-meta-value">{t('label-meta-value')}</t-taxonomy>
+            </Fragment>
+            <Fragment slot="alert-message">
+                <t-taxonomy key="meta-alert-message">
+                    {t('meta-alert-message')}
+                </t-taxonomy>
+            </Fragment>
+        </MetaContainer>
     </form>
 </TaxonomyLayout>
+
+<script>
+    import {
+        $i18n,
+        baseTranslation,
+        updateElmLabel,
+        updateSelectElmLabel,
+    } from "studiocms:i18n/client";
+
+    const currentPage = "@studiocms/dashboard:taxonomy-index";
+
+    const i18n = $i18n(currentPage, baseTranslation[currentPage]);
+
+    i18n.subscribe((comp) => {
+        updateElmLabel('name', comp['label-name']);
+        updateElmLabel('slug', comp['label-slug']);
+        updateElmLabel('description', comp['label-description']);
+        updateSelectElmLabel('parent', comp['label-parent-category']);
+    });
+</script>
 
 <script>
     import {

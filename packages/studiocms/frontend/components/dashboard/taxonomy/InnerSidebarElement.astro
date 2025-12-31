@@ -79,7 +79,7 @@ const tagData = tagsToTaxonomyNodes(tags);
 
 <div id="inner-sidebar-items">
     <Tabs storage='persistent' syncKey='taxonomy-selection' variant='starlight'>
-        <TabItem label='Categories' icon='heroicons:folder'>
+        <TabItem id='categories-tab' label={t('tab-label-categories')} icon='heroicons:folder'>
             <TaxonomyTreeRenderer
                 type='category'
                 class="scrollbar"
@@ -89,7 +89,7 @@ const tagData = tagsToTaxonomyNodes(tags);
                 data={categoryData}
             />
         </TabItem>
-        <TabItem label='Tags' icon='heroicons:tag'>
+        <TabItem id='tags-tab' label={t('tab-label-tags')} icon='heroicons:tag'>
             <TaxonomyTreeRenderer
                 type='tag'
                 class="scrollbar"
@@ -112,6 +112,13 @@ const tagData = tagsToTaxonomyNodes(tags);
 >
     {/* Placeholder for search results */}
 </div>
+
+<div
+    id="i-dropdown-options"
+    style="display: none;"
+    data-create-category={appendQueryParamsToPath(Astro.locals.StudioCMS.routeMap.mainLinks.taxonomyCategories, { mode: 'create' })}
+    data-create-tag={appendQueryParamsToPath(Astro.locals.StudioCMS.routeMap.mainLinks.taxonomyTags, { mode: 'create' })}
+></div>
 
 <style>
     #inner-sidebar-items {
@@ -181,6 +188,69 @@ const tagData = tagsToTaxonomyNodes(tags);
         margin-bottom: 0.5rem;
     }
 </style>
+
+<script>
+    import {
+        $i18n,
+        baseTranslation,
+        updateTabLabel
+    } from "studiocms:i18n/client";
+
+    const currentPage = "@studiocms/dashboard:taxonomy-sidebar";
+
+    const i18n = $i18n(currentPage, baseTranslation[currentPage]);
+
+    const i18nOptions = document.getElementById(
+        "i-dropdown-options",
+    ) as HTMLDivElement;
+
+    const createCategory = i18nOptions.getAttribute("data-create-category") as string;
+    const createTag = i18nOptions.getAttribute("data-create-tag") as string;
+
+    const dropdownKeys: Record<string, string> = {
+        [createCategory]: "dropdown-create-category",
+        [createTag]: "dropdown-create-tag",
+    };
+
+    const getDropdownOptions = () => {
+        const dropdownElm = document.getElementById(
+        "taxonomy-create-new-dropdown",
+        ) as HTMLUListElement;
+        const options = dropdownElm?.querySelectorAll(
+        ".sui-dropdown-option",
+        ) as NodeListOf<HTMLLIElement>;
+
+        const returnData: Record<string, HTMLSpanElement> = {};
+
+        for (const option of options) {
+        const value = option.dataset.value as string;
+        const key = dropdownKeys[value];
+
+        if (!key) continue;
+
+        const SelectedElm = (
+            option.querySelector(".sui-dropdown-line-container") as HTMLDivElement
+        ).querySelector("span");
+
+        if (!SelectedElm) continue;
+
+        returnData[key] = SelectedElm;
+        }
+
+        return returnData;
+    };
+
+    i18n.subscribe((comp) => {
+        updateTabLabel('categories-tab', comp['tab-label-categories']);
+        updateTabLabel('tags-tab', comp['tab-label-tags']);
+        const dropdownOptions = getDropdownOptions();
+
+        for (const [key, elm] of Object.entries(dropdownOptions)) {
+            // @ts-ignore
+            elm.textContent = comp[key];
+        }
+    });
+</script>
 
 <script>
     import { DropdownHelper } from "studiocms:ui/components/client";

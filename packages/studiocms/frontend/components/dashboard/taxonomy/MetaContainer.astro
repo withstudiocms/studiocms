@@ -17,12 +17,12 @@ const { name, entries } = Astro.props;
         <div class="dynamic-entry">
             <div class="key">
                 <div class="key-label">
-                    Key <span class="required-star">*</span>
+                    <slot name="key-label">Key</slot> <span class="required-star">*</span>
                 </div>
                 <span class="key-value-span" contenteditable></span>
             </div>
             <div class="value">
-                <div class="value-label">Value</div>
+                <div class="value-label"><slot name="value-label">Value</slot></div>
                 <span class="key-value-span" contenteditable></span>
             </div>
             <button
@@ -35,8 +35,12 @@ const { name, entries } = Astro.props;
         </div>
     </template>
 
+    <template id="alert-message">
+        <slot name="alert-message">Keys cannot be empty.</slot>
+    </template>
+
     <div class="header">
-        <div class="header-title">Metadata</div>
+        <div class="header-title"><slot name="title">Metadata</slot></div>
         <div class="header-actions">
             <button
                 class="add-pair-button"
@@ -322,6 +326,14 @@ const { name, entries } = Astro.props;
             return result;
         }
 
+        getAlertMessageTemplate(): string {
+            const template = this.querySelector(
+                'template#alert-message',
+            ) as HTMLTemplateElement;
+
+            return template ? template.innerHTML.trim() : "Keys cannot be empty.";
+        }
+
         updateEntriesFromDOM() {
             this.entries.clear();
             const pairElements =
@@ -340,7 +352,7 @@ const { name, entries } = Astro.props;
                     keySpan.classList.add("invalid");
                     this.alertContainer.querySelector(
                         ".alert-message",
-                    )!.textContent = "Keys cannot be empty.";
+                    )!.innerHTML = this.getAlertMessageTemplate();
                     this.alertContainer.classList.add("visible");
                     this.#internals.setValidity(
                         { customError: true },
