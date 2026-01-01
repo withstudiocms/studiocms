@@ -1,6 +1,7 @@
 {
   "links": [
     "..",
+    "adam_taxonomy-rest-api",
     "changeset-release_main",
     "main",
     "renovate_effect-@withstudiocms-dependencies"
