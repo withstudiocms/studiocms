@@ -136,6 +136,21 @@ export const StudioCMSRoutes = {
 		contentManagementDiff: makeDashboardRoute('content-management/diff'),
 
 		/**
+		 * URL for the taxonomy page.
+		 */
+		taxonomy: makeDashboardRoute('taxonomy'),
+
+		/**
+		 * URL for the taxonomy categories page.
+		 */
+		taxonomyCategories: makeDashboardRoute('taxonomy/categories'),
+
+		/**
+		 * URL for the taxonomy tags page.
+		 */
+		taxonomyTags: makeDashboardRoute('taxonomy/tags'),
+
+		/**
 		 * URL for creating a new page.
 		 */
 		createPage: makeDashboardRoute('create-page'),
@@ -292,6 +307,13 @@ export const StudioCMSRoutes = {
 
 			diff: dashboardAPIRoute('content/diff'),
 		},
+
+		/**
+		 * API route for taxonomy management.
+		 */
+		taxonomy: dashboardAPIRoute('taxonomy'),
+
+		taxonomySearch: dashboardAPIRoute('taxonomy-search'),
 
 		/**
 		 * API route for fetching plugins.

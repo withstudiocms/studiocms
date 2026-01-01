@@ -9,6 +9,12 @@ export const notificationOptions = [
 	'user_updated',
 	'user_deleted',
 	'new_user',
+	'new_tag',
+	'update_tag',
+	'delete_tag',
+	'new_category',
+	'update_category',
+	'delete_category',
 ] as const;
 
 export type UserNotificationOptions = (typeof notificationOptions)[number];

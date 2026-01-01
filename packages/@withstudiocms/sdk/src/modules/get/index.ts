@@ -2,6 +2,8 @@ import { Effect, type ParseResult, Schema } from '@withstudiocms/effect';
 import {
 	type DBCallbackFailure,
 	StudioCMSPageData,
+	StudioCMSPageDataCategories,
+	StudioCMSPageDataTags,
 	StudioCMSPageFolderStructure,
 	StudioCMSPermissions,
 	StudioCMSUsersTable,
@@ -845,6 +847,104 @@ export const SDKGetModule = Effect.gen(function* () {
 			return tree;
 		});
 
+	const getAllCategories = () =>
+		memoize(
+			cacheKeyGetters.categories(),
+			withDecoder({
+				decoder: Schema.Array(StudioCMSPageDataCategories.Select),
+				callbackFn: (db) =>
+					db((client) => client.selectFrom('StudioCMSPageDataCategories').selectAll().execute()),
+			})(),
+			{ tags: [...cacheTags.categories, ...cacheTags.taxonomy] }
+		);
+
+	const getCategoryById = Effect.fn((categoryId: number) =>
+		memoize(
+			cacheKeyGetters.categoryById(categoryId),
+			withCodec({
+				encoder: Schema.Number,
+				decoder: Schema.UndefinedOr(StudioCMSPageDataCategories.Select),
+				callbackFn: (db, categoryId) =>
+					db((client) =>
+						client
+							.selectFrom('StudioCMSPageDataCategories')
+							.selectAll()
+							.where('id', '=', categoryId)
+							.executeTakeFirst()
+					),
+			})(categoryId),
+			{ tags: [...cacheTags.categories, ...cacheTags.taxonomy] }
+		)
+	);
+
+	const getCategoryBySlug = Effect.fn((slug: string) =>
+		memoize(
+			cacheKeyGetters.categoryBySlug(slug),
+			withCodec({
+				encoder: Schema.String,
+				decoder: Schema.UndefinedOr(StudioCMSPageDataCategories.Select),
+				callbackFn: (db, slug) =>
+					db((client) =>
+						client
+							.selectFrom('StudioCMSPageDataCategories')
+							.selectAll()
+							.where('slug', '=', slug)
+							.executeTakeFirst()
+					),
+			})(slug),
+			{ tags: [...cacheTags.categories, ...cacheTags.taxonomy] }
+		)
+	);
+
+	const getAllTags = () =>
+		memoize(
+			cacheKeyGetters.tags(),
+			withDecoder({
+				decoder: Schema.Array(StudioCMSPageDataTags.Select),
+				callbackFn: (db) =>
+					db((client) => client.selectFrom('StudioCMSPageDataTags').selectAll().execute()),
+			})(),
+			{ tags: [...cacheTags.tags, ...cacheTags.taxonomy] }
+		);
+
+	const getTagById = Effect.fn((tagId: number) =>
+		memoize(
+			cacheKeyGetters.tagById(tagId),
+			withCodec({
+				encoder: Schema.Number,
+				decoder: Schema.UndefinedOr(StudioCMSPageDataTags.Select),
+				callbackFn: (db, tagId) =>
+					db((client) =>
+						client
+							.selectFrom('StudioCMSPageDataTags')
+							.selectAll()
+							.where('id', '=', tagId)
+							.executeTakeFirst()
+					),
+			})(tagId),
+			{ tags: [...cacheTags.tags, ...cacheTags.taxonomy] }
+		)
+	);
+
+	const getTagBySlug = Effect.fn((slug: string) =>
+		memoize(
+			cacheKeyGetters.tagBySlug(slug),
+			withCodec({
+				encoder: Schema.String,
+				decoder: Schema.UndefinedOr(StudioCMSPageDataTags.Select),
+				callbackFn: (db, slug) =>
+					db((client) =>
+						client
+							.selectFrom('StudioCMSPageDataTags')
+							.selectAll()
+							.where('slug', '=', slug)
+							.executeTakeFirst()
+					),
+			})(slug),
+			{ tags: [...cacheTags.tags, ...cacheTags.taxonomy] }
+		)
+	);
+
 	// ===================================================
 	// GET Operations
 	// ===================================================
@@ -1000,6 +1100,62 @@ export const SDKGetModule = Effect.gen(function* () {
 		 * @returns The page folder tree structure.
 		 */
 		pageFolderTree: _pageFolderTree,
+
+		/**
+		 * Category-related GET operations.
+		 */
+		categories: {
+			/**
+			 * Retrieves all categories.
+			 *
+			 * @returns An array of category records.
+			 */
+			getAll: getAllCategories,
+
+			/**
+			 * Retrieves a category by its ID.
+			 *
+			 * @param categoryId - The ID of the category to fetch.
+			 * @returns The category record if found, otherwise undefined.
+			 */
+			byId: getCategoryById,
+
+			/**
+			 * Retrieves a category by its slug.
+			 *
+			 * @param slug - The slug of the category to fetch.
+			 * @returns The category record if found, otherwise undefined.
+			 */
+			bySlug: getCategoryBySlug,
+		},
+
+		/**
+		 * Tag-related GET operations.
+		 */
+		tags: {
+			/**
+			 * Retrieves all tags.
+			 *
+			 * @returns An array of tag records.
+			 */
+			getAll: getAllTags,
+
+			/**
+			 * Retrieves a tag by its ID.
+			 *
+			 * @param tagId - The ID of the tag to fetch.
+			 * @returns The tag record if found, otherwise undefined.
+			 */
+			byId: getTagById,
+
+			/**
+			 * Retrieves a tag by its slug.
+			 *
+			 * @param slug - The slug of the tag to fetch.
+			 * @returns The tag record if found, otherwise undefined.
+			 */
+			bySlug: getTagBySlug,
+		},
 	};
 
 	return GET;

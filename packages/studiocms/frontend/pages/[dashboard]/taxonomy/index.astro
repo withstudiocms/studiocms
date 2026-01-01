@@ -1,0 +1,36 @@
+---
+import { useTranslations } from 'studiocms:i18n';
+import TaxonomyLayout from '#frontend/layouts/TaxonomyLayout.astro';
+
+const { defaultLang: lang } = Astro.locals.StudioCMS;
+
+const t = useTranslations(lang, '@studiocms/dashboard:taxonomy-index');
+---
+
+<TaxonomyLayout type='index'>
+    <div id="placeholder-info" class="placeholder-info">
+        <p>
+            <t-taxonomy key="placeholder"
+                >{t("placeholder")}</t-taxonomy
+            >
+        </p>
+    </div>
+</TaxonomyLayout>
+
+<style>
+    .placeholder-info {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 40vh;
+        margin-left: auto;
+        margin-right: auto;
+        margin-bottom: 30vh;
+        z-index: -1;
+
+        p {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+        }
+    }
+</style>

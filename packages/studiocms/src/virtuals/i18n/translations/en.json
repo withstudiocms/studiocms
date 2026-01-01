@@ -68,7 +68,8 @@
       "user-dropdown:view-site": "View Site",
       "user-dropdown:logout": "Log Out",
       "mailer-configuration-label": "SMTP Configuration",
-      "system-management-label": "System Management"
+      "system-management-label": "System Management",
+      "taxonomy-label": "Taxonomy Management"
     },
     "@studiocms/dashboard:profile": {
       "title": "User Profile",
@@ -371,7 +372,13 @@
       "new_folder": "Editor: New Folder",
       "user_updated": "Admin: User Updated",
       "user_deleted": "Admin: User Deleted",
-      "new_user": "Admin: New User"
+      "new_user": "Admin: New User",
+      "new_tag": "Editor: Tag Created",
+      "update_tag": "Editor: Tag Updated",
+      "delete_tag": "Editor: Tag Deleted",
+      "new_category": "Editor: Category Created",
+      "update_category": "Editor: Category Updated",
+      "delete_category": "Editor: Category Deleted"
     },
     "@studiocms/dashboard:system-management": {
       "title": "System Management",
@@ -486,6 +493,54 @@
       "expand-all": "Expand All",
       "edit-folder": "Edit Folder",
       "edit-page": "Edit Page"
+    },
+    "@studiocms/dashboard:taxonomy-tree-renderer": {
+      "collapse-all": "Collapse All",
+      "expand-all": "Expand All",
+      "create-category": "Create Category",
+      "create-sub-category": "Create Sub-Category",
+      "edit-category": "Edit Category",
+      "create-tag": "Create Tag",
+      "edit-tag": "Edit Tag"
+    },
+    "@studiocms/dashboard:taxonomy-index": {
+      "title": "Taxonomy Management",
+      "description": "Manage your taxonomies here.",
+      "placeholder": "Select or create a taxonomy to get started.",
+      "label-name": "Name",
+      "label-slug": "Slug",
+      "label-description": "Description",
+      "label-meta": "Metadata",
+      "label-meta-key": "Key",
+      "label-meta-value": "Value",
+      "meta-alert-message-keys-empty": "Keys cannot be empty.",
+      "meta-alert-message-duplicate-keys": "Duplicate keys are not allowed.",
+      "label-parent-category": "Parent Category",
+      "placeholder-parent-category": "Select Parent Category"
+    },
+    "@studiocms/dashboard:taxonomy-header": {
+      "index.title": "Taxonomy Management",
+      "categories.edit-title": "Edit Category: {name}",
+      "categories.create-title": "Create Category",
+      "tags.edit-title": "Edit Tag: {name}",
+      "tags.create-title": "Create Tag",
+      "delete-button": "Delete",
+      "save-button": "Save Changes",
+      "create-button": "Create",
+      "delete-modal-header": "Are you sure you want to delete this {type}?",
+      "delete-modal-type-category": "category",
+      "delete-modal-type-tag": "tag",
+      "delete-modal-warning": "This action cannot be undone.",
+      "delete-modal-desc-1": "Enter the slug: {slug}",
+      "delete-modal-desc-2": "to confirm.",
+      "delete-modal-input-label": "Slug"
+    },
+    "@studiocms/dashboard:taxonomy-sidebar": {
+      "input-placeholder-search": "Search...",
+      "dropdown-create-category": "Create Category",
+      "dropdown-create-tag": "Create Tag",
+      "tab-label-categories": "Categories",
+      "tab-label-tags": "Tags"
     }
   }
 }

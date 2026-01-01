@@ -1,6 +1,8 @@
 import { Effect, Schema } from '@withstudiocms/effect';
 import type { DBCallbackFailure } from '@withstudiocms/kysely';
 import type { DatabaseError, QueryError, QueryParseError } from '@withstudiocms/kysely/core/errors';
+import CacheService from '../../cache.js';
+import { cacheTags } from '../../consts.js';
 import { DBClientLive, SDKDefaults } from '../../context.js';
 import SDKClearModule from '../clear/index.js';
 import SDKUpdateModule from '../update/index.js';
@@ -135,13 +137,15 @@ const _handleErrors = Effect.catchTags<
  * - yield* deleteModule.page('page-id-123') // returns a DeletionResponse effect
  */
 export const SDKDeleteModule = Effect.gen(function* () {
-	const [{ withEncoder }, clear, users, update, { GhostUserDefaults }] = yield* Effect.all([
-		DBClientLive,
-		SDKClearModule,
-		SDKUsers,
-		SDKUpdateModule,
-		SDKDefaults,
-	]);
+	const [{ withEncoder }, clear, users, update, { GhostUserDefaults }, { invalidateTags }] =
+		yield* Effect.all([
+			DBClientLive,
+			SDKClearModule,
+			SDKUsers,
+			SDKUpdateModule,
+			SDKDefaults,
+			CacheService,
+		]);
 
 	// ===========================================
 	// DB Operations
@@ -383,6 +387,7 @@ export const SDKDeleteModule = Effect.gen(function* () {
 	const _deletePageTag = Effect.fn(
 		(id: number): DeletionResponse =>
 			_deleteTagsById(id).pipe(
+				Effect.tap(() => invalidateTags(cacheTags.tags)),
 				Effect.map(() => ({
 					status: 'success' as const,
 					message: `Tag with ID ${id} has been deleted successfully`,
@@ -400,6 +405,7 @@ export const SDKDeleteModule = Effect.gen(function* () {
 	const _deletePageCategory = Effect.fn(
 		(id: number): DeletionResponse =>
 			_deleteCategoriesById(id).pipe(
+				Effect.tap(() => invalidateTags(cacheTags.categories)),
 				Effect.map(() => ({
 					status: 'success' as const,
 					message: `Category with ID ${id} has been deleted successfully`,

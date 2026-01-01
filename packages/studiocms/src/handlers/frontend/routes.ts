@@ -281,6 +281,18 @@ export const dashboardEnabledRoutes = (
 			entrypoint: 'pages/[dashboard]/content-management/diff.astro',
 		},
 		{
+			pattern: 'taxonomy',
+			entrypoint: 'pages/[dashboard]/taxonomy/index.astro',
+		},
+		{
+			pattern: 'taxonomy/categories',
+			entrypoint: 'pages/[dashboard]/taxonomy/categories.astro',
+		},
+		{
+			pattern: 'taxonomy/tags',
+			entrypoint: 'pages/[dashboard]/taxonomy/tags.astro',
+		},
+		{
 			pattern: 'profile',
 			entrypoint: 'pages/[dashboard]/profile.astro',
 		},
@@ -365,6 +377,14 @@ export const dashboardAPIEnabledRoutes = (
 	{
 		pattern: '/studiocms_api/dashboard/content/diff',
 		entrypoint: 'pages/studiocms_api/dashboard/content/diff.ts',
+	},
+	{
+		pattern: '/studiocms_api/dashboard/taxonomy',
+		entrypoint: 'pages/studiocms_api/dashboard/taxonomy.ts',
+	},
+	{
+		pattern: '/studiocms_api/dashboard/taxonomy-search',
+		entrypoint: 'pages/studiocms_api/dashboard/taxonomy-search.ts',
 	},
 	{
 		pattern: '/studiocms_api/dashboard/create-reset-link',

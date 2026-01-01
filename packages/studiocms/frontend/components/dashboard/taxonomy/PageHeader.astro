@@ -1,0 +1,486 @@
+---
+import type { UiLanguageKeys } from 'studiocms:i18n';
+import { useTranslations } from 'studiocms:i18n';
+import { Button } from 'studiocms:ui/components/button';
+import { Center } from 'studiocms:ui/components/center';
+import { Group } from 'studiocms:ui/components/group';
+import { Icon } from 'studiocms:ui/components/icon';
+import { Input } from 'studiocms:ui/components/input';
+import { Modal } from 'studiocms:ui/components/modal';
+
+interface Props {
+	lang: UiLanguageKeys;
+	type: 'index' | 'categories' | 'tags';
+	mode?: 'edit' | 'create';
+	pageTitle?: string;
+	pageId?: string;
+	pageSlug?: string;
+}
+
+const { lang, type, mode, pageTitle = '', pageId = '', pageSlug = '' } = Astro.props;
+
+// Validation checks for required props
+if (['categories', 'tags'].includes(type) && !mode) {
+	throw new Error('Mode is required when type is categories or tags');
+}
+
+// Additional check for pageTitle when editing categories or tags
+if (['categories', 'tags'].includes(type) && mode === 'edit' && !pageTitle) {
+	throw new Error('pageTitle is required when type is categories or tags and mode is edit');
+}
+
+const t = useTranslations(lang, '@studiocms/dashboard:taxonomy-header');
+
+const replaceNameParam = (str: string) => str.replace('{name}', pageTitle);
+---
+<tabs-context-updater {type}></tabs-context-updater>
+
+<header class="page-header">
+    <div class="page-title-container" id="page-header-data" data-page-title={pageTitle} data-title-translation-key={
+        type === 'tags' && mode === 'edit' ? 'tags.edit-title' : type === 'categories' && mode === 'edit' ? 'categories.edit-title' : ''
+    } data-type={type} data-mode={mode}>
+        <Button color='primary' id='nav-open' class='mobile-btn'>
+            <Icon name="heroicons:bars-3" height={24} width={24} slot="start-content" />
+        </Button>
+        <h1 id="page-title" class="page-title">
+            {type === 'index' && (
+                <t-taxonomy-header key="index.title">{t('index.title')}</t-taxonomy-header>
+            )}
+            {type === 'categories' && mode === 'create' && (
+                <t-taxonomy-header key="categories.create-title">{t('categories.create-title')}</t-taxonomy-header>
+            )}
+            {type === 'tags' && mode === 'create' && (
+                <t-taxonomy-header key="tags.create-title">{t('tags.create-title')}</t-taxonomy-header>
+            )}
+            {type === 'tags' && mode === 'edit' && replaceNameParam(t('tags.edit-title'))}
+            {type === 'categories' && mode === 'edit' && replaceNameParam(t('categories.edit-title'))}
+        </h1>
+    </div>
+    <div id="page-actions-container" class="page-actions-container">
+        {
+
+            mode === 'edit' && (
+                <Group>
+                    <Button 
+                        form={
+                            type === 'categories' 
+                                ? 'category-form' 
+                                : type === 'tags' 
+                                    ? 'tag-form' 
+                                    : ''
+                        }
+                        variant="outlined"
+                        color="danger"
+                        id="delete-taxonomy-entry-btn"
+                        type={'button'}
+                    >
+                        <Icon
+                            name="heroicons:trash"
+                            width={20}
+                            height={20}
+                            slot="start-content"
+                        />
+                        <t-taxonomy-header key="delete-button">{t('delete-button')}</t-taxonomy-header>
+                    </Button>
+                    <Button
+                        form={
+                            type === 'categories' 
+                                ? 'category-form' 
+                                : type === 'tags' 
+                                    ? 'tag-form' 
+                                    : ''
+                        }
+                        variant="solid"
+                        color="primary"
+                        id="save-taxonomy-entry-btn"
+                        type={'submit'}
+                    >
+                        <Icon
+                            name="heroicons:check-circle"
+                            width={20}
+                            height={20}
+                            slot="start-content"
+                        />
+                        <t-taxonomy-header key="save-button">{t('save-button')}</t-taxonomy-header>
+                    </Button>
+                </Group>
+                <Modal
+                    id="delete-taxonomy-modal"
+                    isForm
+                    cancelButton={{ label: 'Cancel', color: 'default' }}
+                    actionButton={{ label: 'Delete', color: 'danger' }}
+                >
+                    <h2 slot="header">
+                        <t-text-replacer key="delete-modal-header" replace-param="{type}" replace-value={type === 'categories' ? 'delete-modal-type-category' : 'delete-modal-type-tag'}>
+                            {replaceNameParam(t('delete-modal-header').replace('{type}', type === 'categories' ? t('delete-modal-type-category') : t('delete-modal-type-tag')))}
+                        </t-text-replacer>
+                    </h2>
+                    <Center>
+                        <div class="modal-body">
+                            <input type="hidden" name="type" value={type} />
+                            <input type="hidden" name="id" value={pageId} />
+                            <input type="hidden" name="slug" value={pageSlug} />
+                            <input type="hidden" name="action-route" value={Astro.locals.StudioCMS.routeMap.endpointLinks.taxonomy} />
+
+                            <span>
+                                <t-text-replacer key="delete-modal-desc-1" replace-param="{slug}" replace-value={pageSlug}>
+                                    {t('delete-modal-desc-1').replace('{slug}', pageSlug)}
+                                </t-text-replacer>
+                                <t-taxonomy-header key="delete-modal-desc-2">
+                                    {t('delete-modal-desc-2')}
+                                </t-taxonomy-header>
+                            </span>
+
+                            <Input name="confirm-slug" placeholder={`${pageSlug.slice(0, pageSlug.length-2)}...`} label={t('delete-modal-input-label')} required />
+
+                            <span style="color: var(--danger-base)">
+                                <t-taxonomy-header key="delete-modal-warning">
+                                    {t('delete-modal-warning')}
+                                </t-taxonomy-header>
+                            </span>
+                        </div>
+                    </Center>
+                </Modal>
+            )
+        }
+
+        {
+            mode === 'create' && (
+                <Button
+                    form={
+                        type === 'categories' 
+                            ? 'category-form' 
+                            : type === 'tags' 
+                                ? 'tag-form' 
+                                : ''
+                    }
+                    variant="solid"
+                    color="primary"
+                    id="create-taxonomy-entry-btn"
+                    type={'submit'}
+                >
+                    <Icon
+                        name="heroicons:plus-circle"
+                        width={20}
+                        height={20}
+                        slot="start-content"
+                    />
+                    <t-taxonomy-header key="create-button">{t('create-button')}</t-taxonomy-header>
+                </Button>
+            )
+        }
+    </div>
+</header>
+
+<div
+    id="current-mode-selector"
+    style="display: none;"
+    data-mode={`${mode}-${type}`}
+    data-index={Astro.locals.StudioCMS.routeMap.mainLinks.taxonomy}
+></div>
+
+<script>
+    import { ModalHelper } from 'studiocms:ui/components/modal/client';
+    import { toast } from "studiocms:ui/components/toaster/client";
+
+    function setup() {
+        const modeSelectorEl = document.getElementById('current-mode-selector') as HTMLDivElement;
+        const currentMode = modeSelectorEl.dataset.mode;
+        const indexPage = modeSelectorEl.dataset.index as string;
+
+        if (currentMode === 'edit-categories' || currentMode === 'edit-tags') {
+            const ModeParts = currentMode.split('-');
+            const type = ModeParts[1];
+
+            if (!type) {
+                console.error('Taxonomy type is missing for deletion setup.');
+                return;
+            }
+
+            const triggerButton = document.getElementById('delete-taxonomy-entry-btn') as HTMLButtonElement;
+
+            if (!triggerButton) {
+                console.error('Delete button not found for taxonomy deletion setup.');
+                return;
+            }
+
+            const formAttribute = triggerButton.getAttribute('form');
+
+            if (!formAttribute || formAttribute === '') {
+                console.error('Delete button form attribute is missing.');
+                return;
+            }
+
+            let modal: ModalHelper;
+
+            if (['categories', 'tags'].includes(type)) {
+                modal = new ModalHelper('delete-taxonomy-modal', 'delete-taxonomy-entry-btn');
+            }
+
+            switch (type) {
+                case 'tags':
+                case 'categories': {
+                    modal!.registerConfirmCallback(async (formData) => {
+                        if (!formData) {
+                            toast({
+                                title: 'Error',
+                                description: 'No data provided for deletion.',
+                                type: 'danger',
+                            });
+                            return;
+                        }
+
+                        const { actionRoute, slug, confirmSlug, ...jsonData } = {
+                            type: type,
+                            id: formData.get('id'),
+                            actionRoute: formData.get('action-route'),
+                            slug: formData.get('slug'),
+                            confirmSlug: formData.get('confirm-slug'),
+                        }
+
+                        if (!actionRoute || typeof actionRoute !== 'string') {
+                            toast({
+                                title: 'Error',
+                                description: 'Action route is missing or invalid.',
+                                type: 'danger',
+                            });
+                            return;
+                        }
+
+                        if (!slug || typeof slug !== 'string') {
+                            toast({
+                                title: 'Error',
+                                description: 'Slug is missing or invalid.',
+                                type: 'danger',
+                            });
+                            return;
+                        }
+
+                        if (!confirmSlug || typeof confirmSlug !== 'string') {
+                            toast({
+                                title: 'Error',
+                                description: 'Confirmation slug is missing or invalid.',
+                                type: 'danger',
+                            });
+                            return;
+                        }
+
+                        if (!jsonData.id || typeof jsonData.id !== 'string') {
+                            toast({
+                                title: 'Error',
+                                description: `${type === 'categories' ? 'Category' : 'Tag'} ID is missing or invalid.`,
+                                type: 'danger',
+                            });
+                            return;
+                        }
+
+                        if (slug.trim() !== confirmSlug.trim()) {
+                            toast({
+                                title: 'Error',
+                                description: 'The provided slug does not match.',
+                                type: 'danger',
+                            });
+                            return;
+                        }
+
+                        const parsedJsonData = {
+                            type: jsonData.type,
+                            id: Number.parseInt(jsonData.id, 10),
+                        }
+
+                        const response = await fetch(actionRoute, {
+                            method: 'DELETE',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(parsedJsonData),
+                        });
+
+                        if (!response.ok) {
+                            const errorData = await response.json();
+                            toast({
+                                title: 'Error',
+                                description: errorData.message || `Failed to delete ${type === 'categories' ? 'category' : 'tag'}.`,
+                                type: 'danger',
+                            });
+                            return;
+                        }
+
+                        if (response.ok) {
+                            toast({
+                                title: 'Success',
+                                description: `Deleted ${type === 'categories' ? 'category' : 'tag'} successfully.`,
+                                type: 'success',
+                            });
+
+                            // Redirect to categories index page after deletion
+                            window.location.href = indexPage;
+                            return;
+                        }
+
+                        toast({
+                            title: 'Error',
+                            description: 'An unexpected error occurred during deletion.',
+                            type: 'danger',
+                        });
+                        return;
+                    })
+                    break;
+                }
+                default:
+                    toast({
+                        title: 'Error',
+                        description: 'Unknown taxonomy type for deletion.',
+                        type: 'danger',
+                    })
+                    break;
+            }
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        setup();
+    });
+
+</script>
+
+<script>
+    import {
+        $i18n,
+        baseTranslation,
+        makeTranslation,
+    } from "studiocms:i18n/client";
+
+    const currentPage = "@studiocms/dashboard:taxonomy-header";
+
+    const i18n = $i18n(currentPage, baseTranslation[currentPage]);
+
+    const pageDataEl = document.getElementById('page-header-data') as HTMLDivElement;
+    const pageTitle = pageDataEl.dataset.pageTitle;
+    const type = pageDataEl.dataset.type;
+    const mode = pageDataEl.dataset.mode;
+    const titleTranslationKey = pageDataEl.dataset.titleTranslationKey;
+
+    const pageTitleEl = document.getElementById('page-title') as HTMLHeadingElement;
+
+    const replaceNameParam = (str: string) => str.replace('{name}', pageTitle || '');
+
+    i18n.subscribe((comp) => {
+        if (type && ['categories', 'tags'].includes(type) && mode === 'edit' && titleTranslationKey) {
+            pageTitleEl.textContent = replaceNameParam(comp[titleTranslationKey as keyof typeof comp]);
+        }
+    });
+
+    class TranslationTextReplacer extends HTMLElement {
+        constructor() {
+            super();
+        }
+
+        connectedCallback() {
+            const key = this.getAttribute('key');
+            const replaceParam = this.getAttribute('replace-param');
+            const replaceValue = this.getAttribute('replace-value');
+            if (key) {
+                i18n.subscribe((comp) => {
+                    if (replaceParam && replaceValue) {
+                        if (!comp[replaceValue as keyof typeof comp]) {
+                            this.textContent = comp[key as keyof typeof comp].replace(replaceParam, replaceValue);
+                            return;
+                        }
+                        this.textContent = comp[key as keyof typeof comp].replace(replaceParam, comp[replaceValue as keyof typeof comp]);
+                        return;
+                    } else {
+                        this.textContent = comp[key as keyof typeof comp];
+                        return;
+                    }
+                });
+            }
+        }
+    }
+
+    if (!customElements.get("t-text-replacer")) {
+        customElements.define("t-text-replacer", TranslationTextReplacer);
+    }
+
+    if (!customElements.get("t-taxonomy-header")) {
+        customElements.define("t-taxonomy-header", makeTranslation(currentPage, i18n));
+    }
+</script>
+
+<script>
+    type AllowedTypes = 'categories' | 'tags';
+    type FullTypeOptions = 'index' | AllowedTypes;
+
+    class TabsContextUpdater extends HTMLElement {
+        #type: FullTypeOptions = 'index';
+        #labelToLocalStorageMap = {
+            categories: 0,
+            tags: 1,
+        } as const;
+        #allowedTypes: FullTypeOptions[] = ['categories', 'tags'];
+
+        constructor() {
+            super();
+            this.#type = (this.getAttribute('type') as FullTypeOptions | null) || 'index';
+
+            this.style.display = 'none';
+        }
+
+        connectedCallback() {
+            if (this.#allowedTypes.includes(this.#type)) {
+                this.setTaxonomyLocalStorageValue(this.#type as AllowedTypes);
+            }
+        }
+
+        setTaxonomyLocalStorageValue(value: AllowedTypes): void {
+            const key = 'sui-tabs-taxonomy-selection';
+            const mappedValue = this.#labelToLocalStorageMap[value];
+            localStorage.setItem(key, mappedValue.toString());
+        }
+    }
+
+    if (!customElements.get('tabs-context-updater')) {
+        customElements.define('tabs-context-updater', TabsContextUpdater);
+    }
+</script>
+
+<style>
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .page-title-container {
+        display: flex;
+        flex-direction: row;
+        gap: 1rem;
+        width: fit-content;
+    }
+
+    .page-title {
+        display: block;
+        width: fit-content;
+        margin: 0;
+    }
+
+    .page-actions-container {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .modal-body {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+
+        span {
+            font-size: .875rem;
+        }
+    }
+</style>

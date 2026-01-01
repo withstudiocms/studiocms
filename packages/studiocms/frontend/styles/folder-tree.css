@@ -1,6 +1,7 @@
 /* Folder Tree Container */
 .folder-tree-search-container,
-folder-tree-container {
+folder-tree-container,
+taxonomy-tree-container {
 	display: flex;
 	flex-direction: column;
 	gap: 0.125rem;

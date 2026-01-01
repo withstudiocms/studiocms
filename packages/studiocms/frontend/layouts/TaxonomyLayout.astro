@@ -1,0 +1,152 @@
+---
+import { useTranslations } from 'studiocms:i18n';
+import { runSDK, SDKCoreJs } from 'studiocms:sdk';
+import type { tsPageDataCategoriesSelect, tsPageDataTagsSelect } from 'studiocms:sdk/types';
+import { Effect } from 'effect';
+import InnerSidebarElement from '#frontend/components/dashboard/taxonomy/InnerSidebarElement.astro';
+import PageHeader from '#frontend/components/dashboard/taxonomy/PageHeader.astro';
+import DashboardLayout from '#frontend/layouts/DashboardLayout.astro';
+
+interface Props {
+	type: 'index' | 'categories' | 'tags';
+}
+
+const { type } = Astro.props;
+
+const { siteConfig: config, defaultLang: lang, security } = Astro.locals.StudioCMS;
+
+const currentUser = security?.userSessionData ?? null;
+
+const t = useTranslations(lang, '@studiocms/dashboard:taxonomy-index');
+
+const searchParams = Astro.url.searchParams;
+
+const mode = (searchParams.get('mode') as 'create' | 'edit' | null) ?? undefined;
+const editId = searchParams.get('edit') ?? undefined;
+const parsedEditId = editId ? Number.parseInt(editId, 10) : undefined;
+const parentId = searchParams.get('parent')
+	? Number.parseInt(searchParams.get('parent') as string, 10)
+	: undefined;
+
+const [allCategories, allTags] = await runSDK(
+	Effect.all([SDKCoreJs.GET.categories.getAll(), SDKCoreJs.GET.tags.getAll()])
+);
+
+let pageTitle: string | undefined;
+let currentCategory: tsPageDataCategoriesSelect | undefined;
+let currentTag: tsPageDataTagsSelect | undefined;
+
+if (type === 'categories' && mode === 'edit') {
+	currentCategory = allCategories.find((cat) => cat.id === parsedEditId);
+	pageTitle = currentCategory ? currentCategory.name : undefined;
+
+	if (!currentCategory) {
+		throw new Error('Category to edit not found');
+	}
+}
+
+if (type === 'tags' && mode === 'edit') {
+	currentTag = allTags.find((tag) => tag.id === parsedEditId);
+	pageTitle = currentTag ? currentTag.name : undefined;
+
+	if (!currentTag) {
+		throw new Error('Tag to edit not found');
+	}
+}
+
+let currentEntry: tsPageDataCategoriesSelect | tsPageDataTagsSelect | undefined;
+if (type === 'categories') {
+	currentEntry = currentCategory;
+} else if (type === 'tags') {
+	currentEntry = currentTag;
+} else {
+	currentEntry = undefined;
+}
+---
+
+<DashboardLayout
+    title={t("title")}
+    description={t("description")}
+    requiredPermission="editor"
+    sidebar="double"
+    {lang}
+    {config}
+    {currentUser}
+>
+    <div slot="double-sidebar" class="inner-sidebar-container">
+        <div class="sidebar-links-container">
+            <InnerSidebarElement {lang} categories={allCategories} tags={allTags} />
+        </div>
+    </div>
+
+    <div slot="header">
+        <PageHeader
+            {lang}
+            {mode}
+            {pageTitle}
+            type={type}
+            pageId={currentEntry ? String(currentEntry.id) : undefined}
+            pageSlug={currentEntry ? currentEntry.slug : undefined}
+        />
+    </div>
+
+    <div
+        id="current-taxonomy-entry-data"
+        data-type={type}
+        data-mode={mode ?? ''}
+        data-current-entry={JSON.stringify(currentEntry ?? {})}
+        data-parent-id={parentId ?? ''}
+    ></div>
+
+    <slot />
+</DashboardLayout>
+
+<style>
+    .inner-sidebar-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        min-height: 100vh;
+        max-height: 100%;
+        padding: 1.5rem;
+    }
+
+    .sidebar-links-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        min-height: 95vh;
+        height: 100%;
+        gap: 0.5rem;
+    }
+</style>
+
+<script>
+    import {
+        $i18n,
+        $localeSettings,
+        baseTranslation,
+        defaultLang,
+        documentUpdater,
+        makeTranslation,
+    } from "studiocms:i18n/client";
+
+    let lang = defaultLang;
+
+    const currentPage = "@studiocms/dashboard:taxonomy-index";
+
+    $localeSettings.subscribe((locale) => {
+        lang = locale || defaultLang;
+    });
+
+    const i18n = $i18n(currentPage, baseTranslation[currentPage]);
+
+    i18n.subscribe((comp) => {
+        documentUpdater(comp, lang);
+    });
+
+    if (!customElements.get("t-taxonomy")) {
+        customElements.define("t-taxonomy", makeTranslation(currentPage, i18n));
+    }
+</script>
