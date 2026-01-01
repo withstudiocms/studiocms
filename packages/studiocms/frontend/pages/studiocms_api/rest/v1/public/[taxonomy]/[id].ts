@@ -32,7 +32,7 @@ const paramSchema = paramSchemaBase.annotations({
 export const { GET, OPTIONS, ALL } = createEffectAPIRoutes(
 	{
 		GET: extractParams(paramSchema)(({ taxonomy, id }) =>
-			genLogger(`studiocms:rest:v1:${taxonomy}:[id]:GET`)(function* () {
+			genLogger(`studiocms:rest:v1:${taxonomy}:${id}:GET`)(function* () {
 				const sdk = yield* SDKCore;
 
 				switch (taxonomy) {
