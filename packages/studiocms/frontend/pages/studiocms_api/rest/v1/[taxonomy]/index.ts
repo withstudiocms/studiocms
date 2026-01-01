@@ -127,7 +127,7 @@ export const { GET, POST, OPTIONS, ALL } = createEffectAPIRoutes(
 						);
 					}
 					default: {
-						return createJsonResponse({ error: 'Unknown taxonomy type' }, { status: 501 });
+						return createJsonResponse({ error: 'Unknown taxonomy type' }, { status: 400 });
 					}
 				}
 			}).pipe(Notifications.Provide)

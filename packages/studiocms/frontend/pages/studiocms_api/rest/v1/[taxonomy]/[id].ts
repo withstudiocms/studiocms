@@ -126,10 +126,6 @@ export const { GET, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 					case 'categories': {
 						const jsonData = yield* parseAPIContextJson(ctx, PartialCategories);
 
-						if (!jsonData) {
-							return apiResponseLogger(400, 'Invalid JSON data');
-						}
-
 						if (jsonData.id) {
 							return apiResponseLogger(400, 'Cannot update ID field');
 						}
@@ -141,10 +137,6 @@ export const { GET, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 					}
 					case 'tags': {
 						const jsonData = yield* parseAPIContextJson(ctx, PartialTags);
-
-						if (!jsonData) {
-							return apiResponseLogger(400, 'Invalid JSON data');
-						}
 
 						if (jsonData.id) {
 							return apiResponseLogger(400, 'Cannot update ID field');
