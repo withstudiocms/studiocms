@@ -7,7 +7,7 @@ import {
 	OptionsResponse,
 } from '@withstudiocms/effect';
 import { Effect, type ParseResult, Schema } from 'effect';
-import { extractParams } from '../../../utils/param-extractor';
+import { extractParams } from '../../../utils/param-extractor.js';
 
 const paramSchemaBase = Schema.Struct({
 	taxonomy: Schema.Literal('categories', 'tags'),

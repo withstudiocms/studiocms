@@ -11,8 +11,8 @@ import {
 } from '@withstudiocms/effect';
 import { StudioCMSPageDataCategories, StudioCMSPageDataTags } from '@withstudiocms/kysely';
 import { Effect, type ParseResult, Schema } from 'effect';
-import { verifyAuthTokenFromHeader } from '../../utils/auth-token';
-import { extractParams } from '../../utils/param-extractor';
+import { verifyAuthTokenFromHeader } from '../../utils/auth-token.js';
+import { extractParams } from '../../utils/param-extractor.js';
 
 const paramSchemaBase = Schema.Struct({
 	taxonomy: Schema.Literal('categories', 'tags'),
