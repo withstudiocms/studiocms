@@ -73,15 +73,3 @@ export const extractParams: ExtractEndpointParams = <T, E>(
 		};
 	};
 };
-
-// const testSchema = Schema.Struct({
-// 	id: Schema.String,
-// 	optionalParam: Schema.NullishOr(Schema.Number),
-// }).annotations({ title: 'Test' });
-
-// const testEndpoint = extractParams(testSchema)(({ id, optionalParam }) => {
-// 	// Here you can handle the Effect and return a Response
-// 	return Effect.succeed(
-// 		new Response(`Parameters extracted ${JSON.stringify({ id, optionalParam })}`)
-// 	);
-// });
