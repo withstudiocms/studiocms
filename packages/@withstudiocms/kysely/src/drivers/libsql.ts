@@ -1,5 +1,6 @@
-import { LibsqlDialect } from '@libsql/kysely-libsql';
+import { createClient } from '@libsql/client/node';
 import { Config, Effect, Redacted } from 'effect';
+import { LibSQLDialect } from 'kysely-turso/libsql';
 
 /**
  * Effect that builds and returns a LibsqlDialect configured from environment-backed configuration.
@@ -30,17 +31,25 @@ import { Config, Effect, Redacted } from 'effect';
  */
 export const libsqlDriver = Effect.gen(function* () {
 	const rawUrl = yield* Config.redacted('CMS_LIBSQL_URL');
-	const authToken = yield* Config.withDefault(Config.redacted('CMS_LIBSQL_AUTH_TOKEN'), undefined);
+	const authToken = yield* Config.withDefault(
+		Config.redacted('CMS_LIBSQL_AUTH_TOKEN'),
+		Redacted.make(undefined)
+	);
 	const syncInterval = yield* Config.withDefault(
 		Config.number('CMS_LIBSQL_SYNC_INTERVAL'),
 		undefined
 	);
-	const syncUrl = yield* Config.withDefault(Config.redacted('CMS_LIBSQL_SYNC_URL'), undefined);
+	const syncUrl = yield* Config.withDefault(
+		Config.redacted('CMS_LIBSQL_SYNC_URL'),
+		Redacted.make(undefined)
+	);
 
-	return new LibsqlDialect({
-		url: Redacted.value(rawUrl),
-		authToken: authToken ? Redacted.value(authToken) : undefined,
-		syncInterval: syncInterval,
-		syncUrl: syncUrl ? Redacted.value(syncUrl) : undefined,
+	return new LibSQLDialect({
+		client: createClient({
+			url: Redacted.value(rawUrl),
+			authToken: Redacted.value(authToken),
+			syncUrl: Redacted.value(syncUrl),
+			syncInterval: syncInterval,
+		}),
 	});
 });

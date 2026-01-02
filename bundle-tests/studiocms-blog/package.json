@@ -23,7 +23,7 @@
 		"sharp": "catalog:",
 		"studiocms": "workspace:*",
 		"vite": "catalog:astrojs",
-		"@libsql/kysely-libsql": "catalog:kysely",
+		"kysely-turso": "catalog:kysely",
 		"@libsql/client": "catalog:kysely"
 	}
 }
