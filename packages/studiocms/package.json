@@ -228,7 +228,7 @@
 	"type": "module",
 	"dependencies": {
 		"@iconify-json/flat-color-icons": "^1.2.3",
-		"@iconify-json/simple-icons": "^1.2.63",
+		"@iconify-json/simple-icons": "^1.2.64",
 		"@iconify-json/circle-flags": "^1.2.10",
 		"@inox-tools/runtime-logger": "^0.7.0",
 		"@nanostores/i18n": "^1.2.2",
