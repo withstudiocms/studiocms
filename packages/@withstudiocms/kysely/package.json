@@ -81,8 +81,8 @@
   },
   "type": "module",
   "dependencies": {
-    "@libsql/kysely-libsql": "catalog:kysely",
-    "kysely": "catalog:kysely"
+    "kysely": "catalog:kysely",
+    "kysely-turso": "catalog:kysely"
   },
   "devDependencies": {
     "@types/node": "catalog:",

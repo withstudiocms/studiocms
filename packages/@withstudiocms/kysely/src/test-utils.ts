@@ -1,7 +1,8 @@
 import { existsSync } from 'node:fs';
 import { unlink } from 'node:fs/promises';
-import { LibsqlDialect } from '@libsql/kysely-libsql';
+import { createClient } from '@libsql/client/node';
 import { Effect } from 'effect';
+import { LibSQLDialect } from 'kysely-turso/libsql';
 import { getDBClientLive } from './client.js';
 import { getMigratorLive } from './migrator.js';
 
@@ -58,10 +59,10 @@ export class DBFixture<Schema> {
 		this.dbString = this.dbUrl.toString();
 	}
 
-	/** Creates and returns a LibsqlDialect instance for the test database. */
-	private getDialect(): LibsqlDialect {
+	/** Creates and returns a LibSQLDialect instance for the test database. */
+	private getDialect(): LibSQLDialect {
 		const url = this.dbString;
-		return new LibsqlDialect({ url });
+		return new LibSQLDialect({ client: createClient({ url }) });
 	}
 
 	/** Method to run Effect-based operations. */

@@ -272,7 +272,7 @@ export const AstroConfigViteSettings: Partial<AstroConfig['vite']> = {
 		chunkSizeWarningLimit: 700,
 		rollupOptions: {
 			// Users will need to install these peer dependencies themselves
-			external: ['@libsql/client', '@libsql/kysely-libsql', 'pg', 'mysql2'],
+			external: ['@libsql/client', 'kysely-turso', 'pg', 'mysql2'],
 		},
 	},
 };
