@@ -68,7 +68,8 @@
       "user-dropdown:view-site": "Vis side",
       "user-dropdown:logout": "Logg ut",
       "mailer-configuration-label": "SMTP-konfigurasjon",
-      "system-management-label": ""
+      "system-management-label": "",
+      "taxonomy-label": ""
     },
     "@studiocms/dashboard:profile": {
       "title": "Brukerprofil",
@@ -327,7 +328,9 @@
       "false-label": "Usant",
       "requires-supported-frontend": "Krever en kompatibel frontend",
       "select-augments-label": "Sidemodifikatorer",
-      "no-augments": "Ingen sidemodifikatorer tilgjengelig"
+      "no-augments": "Ingen sidemodifikatorer tilgjengelig",
+      "content-utils-label": "",
+      "access-component-registry": ""
     },
     "@studiocms/dashboard:404": {
       "title": "Feilmelding 404",
@@ -369,7 +372,13 @@
       "new_folder": "Redaktør: ny mappe",
       "user_updated": "Admin: bruker oppdatert",
       "user_deleted": "Admin: bruker slettet",
-      "new_user": "Admin: ny bruker"
+      "new_user": "Admin: ny bruker",
+      "new_tag": "",
+      "update_tag": "",
+      "delete_tag": "",
+      "new_category": "",
+      "update_category": "",
+      "delete_category": ""
     },
     "@studiocms/dashboard:system-management": {
       "title": "",
@@ -383,7 +392,8 @@
       "access-file-manager": "",
       "file-manager-selection": "",
       "file-manager-url-input-placeholder": "",
-      "no-storage-configured": ""
+      "no-storage-configured": "",
+      "access-component-registry": ""
     },
     "@studiocms/storage-file-browser": {
       "selectFile": "",
@@ -450,7 +460,87 @@
       "original": "",
       "size": "",
       "andAllItsContents": "",
-      "filePreview": ""
+      "filePreview": "",
+      "copy-output-input-label": "",
+      "copy-output-copy-button": "",
+      "copy-output-copy-button-success": "",
+      "copy-output-copy-button-failure": ""
+    },
+    "@studiocms/component-registry-ui": {
+      "modalTitle": "",
+      "closeButton": "",
+      "noComponentsFound": "",
+      "tagLabel": "",
+      "componentPropsTitle": "",
+      "noPropsAvailable": "",
+      "optionalLabel": "",
+      "noDefaultValue": "",
+      "enterPlaceholder": "",
+      "generatedHtmlTitle": "",
+      "copyToClipboard": "",
+      "resetProps": "",
+      "copiedSuccess": "",
+      "copyFailed": "",
+      "fallbackTriggerButtonText": ""
+    },
+    "@studiocms/dashboard:file-tree-renderer": {
+      "badge-draft": "",
+      "collapse-all": "",
+      "create-folder": "",
+      "create-sub-folder": "",
+      "create-page": "",
+      "create-sub-page": "",
+      "expand-all": "",
+      "edit-folder": "",
+      "edit-page": ""
+    },
+    "@studiocms/dashboard:taxonomy-tree-renderer": {
+      "collapse-all": "",
+      "expand-all": "",
+      "create-category": "",
+      "create-sub-category": "",
+      "edit-category": "",
+      "create-tag": "",
+      "edit-tag": ""
+    },
+    "@studiocms/dashboard:taxonomy-index": {
+      "title": "",
+      "description": "",
+      "placeholder": "",
+      "label-name": "",
+      "label-slug": "",
+      "label-description": "",
+      "label-meta": "",
+      "label-meta-key": "",
+      "label-meta-value": "",
+      "meta-alert-message-keys-empty": "",
+      "meta-alert-message-duplicate-keys": "",
+      "label-parent-category": "",
+      "placeholder-parent-category": ""
+    },
+    "@studiocms/dashboard:taxonomy-header": {
+      "index.title": "",
+      "categories.edit-title": "",
+      "categories.create-title": "",
+      "tags.edit-title": "",
+      "tags.create-title": "",
+      "delete-button": "",
+      "save-button": "",
+      "create-button": "",
+      "delete-modal-header": "",
+      "delete-modal-type-category": "",
+      "delete-modal-type-tag": "",
+      "delete-modal-warning": "",
+      "delete-modal-desc-1": "",
+      "delete-modal-desc-2": "",
+      "delete-modal-input-label": ""
+    },
+    "@studiocms/dashboard:taxonomy-sidebar": {
+      "input-placeholder-search": "",
+      "dropdown-create-category": "",
+      "dropdown-create-tag": "",
+      "tab-label-categories": "",
+      "tab-label-tags": ""
     }
   }
 }
