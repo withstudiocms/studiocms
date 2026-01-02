@@ -36,9 +36,9 @@ catalogs:
     effect: ^3.19.13
   kysely:
     "@libsql/client": ^0.15.15
-    "@libsql/kysely-libsql": ^0.4.1
     "@types/pg": ^8.16.0
     kysely: ^0.28.9
+    kysely-turso: ^0.1.1
     pg: ^8.16.3
     mysql2: ^3.16.0
   min:

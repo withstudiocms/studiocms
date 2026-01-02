@@ -68,7 +68,8 @@
       "user-dropdown:view-site": "Voir le site",
       "user-dropdown:logout": "Se déconnecter",
       "mailer-configuration-label": "Configuration SMTP",
-      "system-management-label": "Gestion du système"
+      "system-management-label": "Gestion du système",
+      "taxonomy-label": "Gestion des taxonomies"
     },
     "@studiocms/dashboard:profile": {
       "title": "Profil utilisateur",
@@ -327,7 +328,9 @@
       "false-label": "Non",
       "requires-supported-frontend": "Nécessite une interface front-end prise en charge",
       "select-augments-label": "Améliorations de page",
-      "no-augments": "Aucune amélioration disponible"
+      "no-augments": "Aucune amélioration disponible",
+      "content-utils-label": "Outils et utilitaires",
+      "access-component-registry": "Accéder au registre des composants"
     },
     "@studiocms/dashboard:404": {
       "title": "Erreur 404",
@@ -369,7 +372,13 @@
       "new_folder": "Éditeur : Nouveau dossier",
       "user_updated": "Admin : Utilisateur mis à jour",
       "user_deleted": "Admin : Utilisateur supprimé",
-      "new_user": "Admin : Nouvel utilisateur"
+      "new_user": "Admin : Nouvel utilisateur",
+      "new_tag": "Éditeur : Étiquette créée",
+      "update_tag": "Éditeur : Étiquette mise à jour",
+      "delete_tag": "Éditeur : Étiquette supprimée",
+      "new_category": "Éditeur : Catégorie créée",
+      "update_category": "Éditeur : Catégorie mise à jour",
+      "delete_category": "Éditeur : Catégorie supprimée"
     },
     "@studiocms/dashboard:system-management": {
       "title": "Gestion du système",
@@ -383,7 +392,8 @@
       "access-file-manager": "Accéder au gestionnaire de fichiers",
       "file-manager-selection": "Identifiant sélectionné du gestionnaire de fichiers",
       "file-manager-url-input-placeholder": "L'URL du fichier sélectionné apparaîtra ici",
-      "no-storage-configured": "Aucun gestionnaire de stockage installé."
+      "no-storage-configured": "Aucun gestionnaire de stockage installé.",
+      "access-component-registry": "Accéder au registre des composants"
     },
     "@studiocms/storage-file-browser": {
       "selectFile": "Choisir un fichier",
@@ -450,7 +460,87 @@
       "original": "Original",
       "size": "Taille",
       "andAllItsContents": "et tous ses contenus",
-      "filePreview": "Aperçu du fichier"
+      "filePreview": "Aperçu du fichier",
+      "copy-output-input-label": "Générateur d'URL du gestionnaire de stockage",
+      "copy-output-copy-button": "Copier",
+      "copy-output-copy-button-success": "Copié dans le presse-papiers !",
+      "copy-output-copy-button-failure": "Impossible de copier"
+    },
+    "@studiocms/component-registry-ui": {
+      "modalTitle": "Registre des composants",
+      "closeButton": "Fermer",
+      "noComponentsFound": "Aucun composant trouvé dans le registre",
+      "tagLabel": "Étiquette",
+      "componentPropsTitle": "Propriétés des composants",
+      "noPropsAvailable": "Aucune propriété disponible",
+      "optionalLabel": "facultative",
+      "noDefaultValue": "Aucune valeur par défaut",
+      "enterPlaceholder": "Saisir",
+      "generatedHtmlTitle": "HTML généré",
+      "copyToClipboard": "Copier dans le presse-papiers",
+      "resetProps": "Réinitialiser les propriétés",
+      "copiedSuccess": "Copié dans le presse-papiers !",
+      "copyFailed": "Impossible de copier",
+      "fallbackTriggerButtonText": "Ouvrir le registre des composants"
+    },
+    "@studiocms/dashboard:file-tree-renderer": {
+      "badge-draft": "Brouillon",
+      "collapse-all": "Tout replier",
+      "create-folder": "Créer un dossier",
+      "create-sub-folder": "Créer un sous-dossier",
+      "create-page": "Créer une page",
+      "create-sub-page": "Créer une sous-page",
+      "expand-all": "Tout développer",
+      "edit-folder": "Modifier le dossier",
+      "edit-page": "Modifier la page"
+    },
+    "@studiocms/dashboard:taxonomy-tree-renderer": {
+      "collapse-all": "Tout replier",
+      "expand-all": "Tout développer",
+      "create-category": "Créer une catégorie",
+      "create-sub-category": "Créer une sous-catégorie",
+      "edit-category": "Modifier la catégorie",
+      "create-tag": "Créer une étiquette",
+      "edit-tag": "Modifier l’étiquette"
+    },
+    "@studiocms/dashboard:taxonomy-index": {
+      "title": "Gestion des taxonomies",
+      "description": "Gérez vos taxonomies ici.",
+      "placeholder": "Sélectionnez ou créez une taxonomie pour commencer.",
+      "label-name": "Nom",
+      "label-slug": "Slug",
+      "label-description": "Description",
+      "label-meta": "Métadonnées",
+      "label-meta-key": "Nom de propriété",
+      "label-meta-value": "Valeur",
+      "meta-alert-message-keys-empty": "Les noms de propriété ne peuvent pas être vides.",
+      "meta-alert-message-duplicate-keys": "Les noms de propriété en double ne sont pas autorisés.",
+      "label-parent-category": "Catégorie parente",
+      "placeholder-parent-category": "Sélectionner la catégorie parente"
+    },
+    "@studiocms/dashboard:taxonomy-header": {
+      "index.title": "Gestion des taxonomies",
+      "categories.edit-title": "Modifier la catégorie : {name}",
+      "categories.create-title": "Créer une catégorie",
+      "tags.edit-title": "Modifier l’étiquette : {name}",
+      "tags.create-title": "Créer une étiquette",
+      "delete-button": "Supprimer",
+      "save-button": "Enregistrer les modifications",
+      "create-button": "Créer",
+      "delete-modal-header": "Êtes-vous sûr de vouloir supprimer cette {type}?",
+      "delete-modal-type-category": "catégorie",
+      "delete-modal-type-tag": "étiquette",
+      "delete-modal-warning": "Cette action est irréversible.",
+      "delete-modal-desc-1": "Saisissez le slug : {slug}",
+      "delete-modal-desc-2": "pour confirmer.",
+      "delete-modal-input-label": "Slug"
+    },
+    "@studiocms/dashboard:taxonomy-sidebar": {
+      "input-placeholder-search": "Rechercher...",
+      "dropdown-create-category": "Créer une catégorie",
+      "dropdown-create-tag": "Créer une étiquette",
+      "tab-label-categories": "Catégories",
+      "tab-label-tags": "Étiquettes"
     }
   }
 }
