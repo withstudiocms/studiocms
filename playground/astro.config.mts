@@ -10,7 +10,9 @@ const site = process.env.DOKPLOY_DEPLOY_URL
 
 // console.log('Site URL:', site);
 
-const studiocmsScopedPackages = globSync('../packages/@studiocms/*');
+const studiocmsScopedPackages = globSync('../packages/@studiocms/*').filter(
+	(v) => !v.endsWith('migrator')
+);
 const withstudiocmsScopedPackages = globSync('../packages/@withstudiocms/*').filter(
 	(v) => !v.endsWith('buildkit')
 );

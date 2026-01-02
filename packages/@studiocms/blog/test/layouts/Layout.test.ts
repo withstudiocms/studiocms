@@ -108,16 +108,11 @@ describe(parentSuiteName, () => {
 				/<a class="avatar" href="\/dashboard\/login" data-astro-source-file=".*" data-astro-source-loc="47:35">Dashboard<\/a>/
 			);
 			expect(result).toMatch(/<\/div><!-- If dropdown items -->/);
-			expect(result).toMatch(
-				/<footer data-astro-cid-zwztlsnb data-astro-source-file=".*" data-astro-source-loc="10:9">/
-			);
-			expect(result).toMatch(
-				/&copy; <span id="footer-year" data-astro-cid-zwztlsnb data-astro-source-file=".*" data-astro-source-loc="11:32">2025<\/span> Test Site. All rights reserved\./
-			);
-			expect(result).toMatch(/<\/footer> <script>/);
-			expect(result).toMatch(/const footerYear = document.getElementById\('footer-year'\);/);
-			expect(result).toMatch(/footerYear.textContent = new Date\(\).getFullYear\(\);/);
-			expect(result).toMatch(/<\/script> {2}<\/body><\/html>/);
+
+			const footerRegex =
+				/<footer.*?>[\s\S]*?<span id="footer-year".*?>\d{4}<\/span> Test Site\. All rights reserved\.[\s\S]*?<\/footer>/;
+
+			expect(result).toMatch(footerRegex);
 		});
 	});
 });

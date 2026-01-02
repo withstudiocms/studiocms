@@ -3,11 +3,12 @@ import { StudioCMSRoutes } from 'studiocms/lib/routeMap';
 export const parentSuiteName = '@studiocms/blog Package Tests';
 export const sharedTags = ['package:@studiocms/blog', 'type:unit', 'scope:studiocms'];
 
-export const MockAstroLocals = () => {
+export const MockAstroLocals = (): App.Locals => {
 	const date = new Date();
 	return {
 		StudioCMS: {
 			siteConfig: {
+				id: 'SCMS_SITE_CONFIG_1',
 				data: {
 					title: 'Test Site',
 					description: 'A test site for StudioCMS',
@@ -22,7 +23,6 @@ export const MockAstroLocals = () => {
 					siteIcon: null,
 					_config_version: '1.0.0',
 				},
-				lastCacheUpdate: date,
 			},
 			defaultLang: 'en',
 			latestVersion: {
