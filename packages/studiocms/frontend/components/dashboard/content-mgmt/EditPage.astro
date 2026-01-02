@@ -181,6 +181,11 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
                   label={t("select-page-categories")}
                   name="categories"
                   fullWidth
+                  placeholder={
+                    categories.length === 0
+                      ? 'No categories available'
+                      : 'Select'
+                  }
                   options={createSelectOptions(
                     categories.map(({ id: value, name: label }) => ({
                       label,
@@ -202,6 +207,11 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
                   label={t("select-page-tags")}
                   name="tags"
                   fullWidth
+                  placeholder={
+                    tags.length === 0
+                      ? 'No tags available'
+                      : 'Select'
+                  }
                   options={createSelectOptions(
                     tags.map(({ id: value, name: label }) => ({
                       label,

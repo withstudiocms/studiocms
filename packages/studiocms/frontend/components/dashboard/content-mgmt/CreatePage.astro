@@ -124,7 +124,11 @@ const preselectedParentFolder = searchParams.get('parent-folder') ?? 'null';
               <Select
                 label={t("select-page-categories")}
                 name="categories"
-                placeholder="Work in Progress"
+                placeholder={
+                  categories.length === 0
+                    ? 'No categories available'
+                    : 'Select'
+                }
                 fullWidth
                 options={createSelectOptions(
                     categories.map(({ id: value, name: label }) => ({
@@ -137,7 +141,11 @@ const preselectedParentFolder = searchParams.get('parent-folder') ?? 'null';
               <Select
                 label={t("select-page-tags")}
                 name="tags"
-                placeholder="Work in Progress"
+                placeholder={
+                  tags.length === 0
+                    ? 'No tags available'
+                    : 'Select'
+                }
                 fullWidth
                 options={createSelectOptions(
                     tags.map(({ id: value, name: label }) => ({
