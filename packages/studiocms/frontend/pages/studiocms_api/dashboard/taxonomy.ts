@@ -69,7 +69,7 @@ export const { POST, DELETE } = createEffectAPIRoutes(
 								// Handle create mode for tags
 								const newTag = yield* sdk.POST.databaseEntry.tags({
 									...tagData,
-									id: tagData.id ?? newId,
+									id: tagData.id && tagData.id > 0 ? tagData.id : newId,
 									meta: JSON.stringify(tagData.meta),
 								});
 
@@ -108,7 +108,7 @@ export const { POST, DELETE } = createEffectAPIRoutes(
 								// Handle create mode for categories
 								const newCategory = yield* sdk.POST.databaseEntry.categories({
 									...categoryData,
-									id: categoryData.id ?? newId,
+									id: categoryData.id && categoryData.id > 0 ? categoryData.id : newId,
 									meta: JSON.stringify(categoryData.meta),
 								});
 

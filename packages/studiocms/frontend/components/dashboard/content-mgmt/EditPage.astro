@@ -222,9 +222,9 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
                   multiple
                   defaultValue={
                     (() => {
-                      const categories = pageData.categories.map(({id}) => String(id));
+                      const tags = pageData.tags.map(({id}) => String(id));
 
-                      if (categories.length > 0) return categories;
+                      if (tags.length > 0) return tags;
                       return undefined;
                     })()
                   }
