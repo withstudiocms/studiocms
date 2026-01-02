@@ -7,6 +7,7 @@ import { Effect, runEffect, Schema } from '../../../effect.js';
 import { getCliDbClient } from '../../utils/getCliDbClient.js';
 import type { EffectStepFn } from '../../utils/types.js';
 import { getCheckers, hashPassword, verifyPasswordStrength } from '../../utils/user-utils.js';
+import { validateInputOrRePrompt } from '../shared.js';
 
 /**
  * Step to create new users in the database.
@@ -81,27 +82,46 @@ export const createUsers: EffectStepFn = Effect.fn(function* (context, _debug, d
 	 */
 	const currentUsers = yield* _getCurrentUsers();
 
+	const usernamePrompt = validateInputOrRePrompt({
+		prompt: text({
+			message: 'Username',
+			placeholder: 'johndoe',
+			validate: (user) => {
+				const u = user.trim();
+				const isUser = currentUsers.find(({ username }) => username === u);
+				if (isUser) return 'Username is already in use, please try another one';
+				return undefined;
+			},
+		}),
+		checkEffect: (username) =>
+			checker.username(username).pipe(
+				Effect.map((result) => {
+					// If the result is true, the username is invalid
+					if (result !== true) {
+						return true;
+					}
+					return 'Username is a commonly used username. (i.e. admin, user, test)';
+				}),
+				Effect.catchAll(() =>
+					Effect.succeed('Username is a commonly used username. (i.e. admin, user, test)')
+				)
+			),
+	});
+
+	const passwordPrompt = validateInputOrRePrompt({
+		prompt: password({
+			message: 'Password',
+		}),
+		checkEffect: (pass) =>
+			verifyPasswordStrength(pass).pipe(
+				Effect.catchAll(() => Effect.succeed('Password does not meet strength requirements'))
+			),
+	});
+
 	// Collect input data
 	const inputData = yield* group(
 		{
-			username: async () =>
-				await runEffect(
-					text({
-						message: 'Username',
-						placeholder: 'johndoe',
-						validate: (user) => {
-							const u = user.trim();
-							const isUser = currentUsers.find(({ username }) => username === u);
-							if (isUser) return 'Username is already in use, please try another one';
-							// Doing this because we can't use `await` here
-							// @effect-diagnostics-next-line runEffectInsideEffect:off
-							if (Effect.runSync(checker.username(user))) {
-								return 'Username should not be a commonly used unsafe username (admin, root, etc.)';
-							}
-							return undefined;
-						},
-					})
-				),
+			username: async () => await runEffect(usernamePrompt),
 			name: async () =>
 				await runEffect(
 					text({
@@ -130,23 +150,9 @@ export const createUsers: EffectStepFn = Effect.fn(function* (context, _debug, d
 				await runEffect(
 					password({
 						message: 'Password',
-						validate: (password) => {
-							// Doing this because we can't use `await` here
-							// @effect-diagnostics-next-line runEffectInsideEffect:off
-							const passCheck = Effect.runSync(verifyPasswordStrength(password));
-							if (passCheck !== true) {
-								return passCheck;
-							}
-							return undefined;
-						},
 					})
 				),
-			confirmPassword: async () =>
-				await runEffect(
-					password({
-						message: 'Confirm Password',
-					})
-				),
+			confirmPassword: async () => await runEffect(passwordPrompt),
 			rank: async () =>
 				await runEffect(
 					select<'owner' | 'admin' | 'editor' | 'visitor'>({
