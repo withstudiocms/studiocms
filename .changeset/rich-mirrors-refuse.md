@@ -3,8 +3,8 @@
 "studiocms": patch
 ---
 
-Replaced `@libsql/kysely-client` with `kysely-turso`
+Replaced `@libsql/kysely-libsql` with `kysely-turso`
 
 #### BREAKING UPDATE
 
-All previous installs relying on `@libsql/kysely-client` should remove the old dependency and install the new `kysely-turso` dependency.
+All previous installs relying on `@libsql/kysely-libsql` should remove the old dependency and install the new `kysely-turso` dependency.
