@@ -136,6 +136,7 @@ const preselectedParentFolder = searchParams.get('parent-folder') ?? 'null';
                       value: String(value),
                     })),
                   )}
+                multiple
                 disabled={categories.length === 0}
               />
               <Select
@@ -153,6 +154,7 @@ const preselectedParentFolder = searchParams.get('parent-folder') ?? 'null';
                       value: String(value),
                     })),
                   )}
+                multiple
                 disabled={tags.length === 0}
               />
             </div>
