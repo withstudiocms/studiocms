@@ -146,13 +146,8 @@ export const createUsers: EffectStepFn = Effect.fn(function* (context, _debug, d
 						},
 					})
 				),
-			newPassword: async () =>
-				await runEffect(
-					password({
-						message: 'Password',
-					})
-				),
-			confirmPassword: async () => await runEffect(passwordPrompt),
+			newPassword: async () => await runEffect(passwordPrompt),
+			confirmPassword: async () => await runEffect(password({ message: 'Confirm Password' })),
 			rank: async () =>
 				await runEffect(
 					select<'owner' | 'admin' | 'editor' | 'visitor'>({
