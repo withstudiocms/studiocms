@@ -62,6 +62,7 @@ export class DBFixture<Schema> {
 	/** Creates and returns a LibSQLDialect instance for the test database. */
 	private getDialect(): LibSQLDialect {
 		const url = this.dbString;
+
 		return new LibSQLDialect({ client: createClient({ url }) });
 	}
 
@@ -69,7 +70,9 @@ export class DBFixture<Schema> {
 	public run = Effect.runPromise;
 
 	/** The LibsqlDialect instance for the test database. */
-	public dialect = this.getDialect();
+	public get dialect() {
+		return this.getDialect();
+	}
 
 	/**
 	 * Effect-based utilities for managing the test database fixture.
