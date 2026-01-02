@@ -121,6 +121,10 @@ export const { POST, DELETE } = createEffectAPIRoutes(
 								return apiResponseLogger(200, 'Category created successfully');
 							}
 							case 'edit': {
+								if (categoryData.id === categoryData.parent) {
+									return apiResponseLogger(400, 'Category cannot be its own parent');
+								}
+
 								const updatedCategory = yield* sdk.UPDATE.categories({
 									...categoryData,
 									meta: JSON.stringify(categoryData.meta),

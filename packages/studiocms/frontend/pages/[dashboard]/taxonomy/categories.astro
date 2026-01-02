@@ -11,6 +11,23 @@ const { defaultLang: lang } = Astro.locals.StudioCMS;
 const t = useTranslations(lang, '@studiocms/dashboard:taxonomy-index');
 
 const categories = await runSDK(SDKCoreJs.GET.categories.getAll());
+
+const currentPath = Astro.url.pathname;
+
+console.log('Current Path:', currentPath);
+
+const pathParts = currentPath.split('/');
+const type = pathParts.includes('categories') ? 'categories' : null;
+
+const searchParams = Astro.url.searchParams;
+const editId = searchParams.get('edit') ?? undefined;
+
+const filterCurrent = (categoryId: number | undefined) => {
+	if (!type || !editId) {
+		return true;
+	}
+	return editId ? Number.parseInt(editId, 10) !== categoryId : true;
+};
 ---
 
 <TaxonomyLayout type="categories">
@@ -35,7 +52,7 @@ const categories = await runSDK(SDKCoreJs.GET.categories.getAll());
                 defaultValue="null"
                 options={[
                     { label: "None", value: "null" },
-                    ...categories.map((cat) => ({
+                    ...categories.filter((cat) => filterCurrent(cat.id)).map((cat) => ({
                         label: cat.name,
                         value: String(cat.id),
                     })),
