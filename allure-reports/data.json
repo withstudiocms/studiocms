@@ -2,6 +2,7 @@
   "links": [
     "..",
     "changeset-release_main",
-    "main"
+    "main",
+    "renovate_s3-storage-aws-s3-dependencies"
   ]
 }
