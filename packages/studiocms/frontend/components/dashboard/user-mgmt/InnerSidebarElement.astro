@@ -168,11 +168,11 @@ const t = useTranslations(lang, '@studiocms/dashboard:user-mngmt-sidebar');
     });
 
     createNewUserModal.registerConfirmCallback(async (formData) => {
-        const username = formData?.get('username');
-        const email = formData?.get('email');
-        const password = formData?.get('password');
-        const displayname = formData?.get('display_name');
-        const rank = formData?.get('rank');
+        const username = formData?.get('create-new-username');
+        const email = formData?.get('create-new-email');
+        const password = formData?.get('create-new-password');
+        const displayname = formData?.get('create-new-display_name');
+        const rank = formData?.get('create-new-rank');
 
         const data = {
             username,
@@ -210,10 +210,10 @@ const t = useTranslations(lang, '@studiocms/dashboard:user-mngmt-sidebar');
     });
 
     createUserInviteModal.registerConfirmCallback(async (formData) => {
-        const username = formData?.get('username');
-        const email = formData?.get('email');
-        const displayname = formData?.get('display_name');
-        const rank = formData?.get('rank');
+        const username = formData?.get('create-user-invite-username');
+        const email = formData?.get('create-user-invite-email');
+        const displayname = formData?.get('create-user-invite-display_name');
+        const rank = formData?.get('create-user-invite-rank');
 
         const data = {
             username,

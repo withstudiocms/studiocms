@@ -57,6 +57,8 @@ export const { POST, DELETE } = createEffectAPIRoutes(
 					return apiResponseLogger(400, 'Missing mode or type for taxonomy entry');
 				}
 
+				const newId = yield* sdk.UTIL.Generators.generateRandomIDNumber(9);
+
 				switch (data.type) {
 					case 'tags': {
 						// Handle tags
@@ -67,7 +69,7 @@ export const { POST, DELETE } = createEffectAPIRoutes(
 								// Handle create mode for tags
 								const newTag = yield* sdk.POST.databaseEntry.tags({
 									...tagData,
-									id: tagData.id ?? undefined,
+									id: tagData.id ?? newId,
 									meta: JSON.stringify(tagData.meta),
 								});
 
@@ -106,7 +108,7 @@ export const { POST, DELETE } = createEffectAPIRoutes(
 								// Handle create mode for categories
 								const newCategory = yield* sdk.POST.databaseEntry.categories({
 									...categoryData,
-									id: categoryData.id ?? undefined,
+									id: categoryData.id ?? newId,
 									meta: JSON.stringify(categoryData.meta),
 								});
 

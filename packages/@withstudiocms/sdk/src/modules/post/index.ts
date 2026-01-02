@@ -353,7 +353,12 @@ export const SDKPostModule = Effect.gen(function* () {
 	const _pickIdOrGenerate = Effect.fn(function* <T extends { id?: number }>(
 		data: OptionalId<number, T>
 	) {
-		const id = data.id || (yield* generateRandomIDNumber(9));
+		let id: number;
+		if ('id' in data && typeof data.id === 'number' && !Number.isNaN(data.id) && data.id > 0) {
+			id = data.id;
+		} else {
+			id = yield* generateRandomIDNumber(9);
+		}
 		return { id, ...data };
 	});
 

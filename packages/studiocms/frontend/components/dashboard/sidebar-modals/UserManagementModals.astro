@@ -15,11 +15,11 @@ import { Select } from 'studiocms:ui/components/select';
   <h2 slot='header'>Create New User</h2>
   <div class="modal-body">
     <p>Please save this information now. It will not be shown to you again.</p>
-    <Input label="Username" name="username" type="text" isRequired />
-    <Input label="Email Address" name="email" type="email" isRequired />
-    <Input label="Display Name" name="display_name" type="text" isRequired />
-    <Input label="Password" name="password" type="password" />
-    <Select fullWidth name='rank' label='User Rank' defaultValue='visitor' options={[
+    <Input label="Username" name="create-new-username" type="text" isRequired />
+    <Input label="Email Address" name="create-new-email" type="email" isRequired />
+    <Input label="Display Name" name="create-new-display_name" type="text" isRequired />
+    <Input label="Password" name="create-new-password" type="password" />
+    <Select fullWidth name='create-new-rank' label='User Rank' defaultValue='visitor' options={[
       { label: 'Visitor', value: 'visitor' },
       { label: 'Editor', value: 'editor' },
       { label: 'Administrator', value: 'admin' },
@@ -36,10 +36,10 @@ import { Select } from 'studiocms:ui/components/select';
 >
   <h2 slot='header'>Create User Invite</h2>
   <div class="modal-body">
-    <Input label="Username" name="username" type="text" isRequired />
-    <Input label="Email Address" name="email" type="email" isRequired />
-    <Input label="Display Name" name="display_name" type="text" isRequired />
-    <Select fullWidth name='rank' label='User Rank' defaultValue='visitor' options={[
+    <Input label="Username" name="create-user-invite-username" type="text" isRequired />
+    <Input label="Email Address" name="create-user-invite-email" type="email" isRequired />
+    <Input label="Display Name" name="create-user-invite-display_name" type="text" isRequired />
+    <Select fullWidth name='create-user-invite-rank' label='User Rank' defaultValue='visitor' options={[
       { label: 'Visitor', value: 'visitor' },
       { label: 'Editor', value: 'editor' },
       { label: 'Administrator', value: 'admin' },

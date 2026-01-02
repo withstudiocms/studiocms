@@ -85,16 +85,18 @@ const t = useTranslations(lang, '@studiocms/dashboard:taxonomy-index');
     const $ = <E extends HTMLElement>(selector: string, context: Document | Element = document) =>
         context.querySelector(selector) as E;
 
+    const form = $("#tag-form") as HTMLFormElement;
+
     const dataEl = $("#current-taxonomy-entry-data");
-    const modeInput = $<HTMLInputElement>('input[name="mode"]');
-    const idInput = $<HTMLInputElement>('input[name="id"]');
-    const titleInput = $<HTMLInputElement>('input[name="name"]');
-    const slugInput = $<HTMLInputElement>('input[name="slug"]');
-    const descriptionInput = $<HTMLInputElement>('input[name="description"]');
+    const modeInput = $<HTMLInputElement>('input[name="mode"]', form);
+    const idInput = $<HTMLInputElement>('input[name="id"]', form);
+    const titleInput = $<HTMLInputElement>('input[name="name"]', form);
+    const slugInput = $<HTMLInputElement>('input[name="slug"]', form);
+    const descriptionInput = $<HTMLInputElement>('input[name="description"]', form);
     const metaContainer = $<HTMLElement>(
         `dynamic-key-value-pair[name="meta"]`,
+        form
     );
-    const form = $("#tag-form") as HTMLFormElement;
 
     const currentData = getCurrentEntryData<"tags">(dataEl);
 
@@ -114,6 +116,8 @@ const t = useTranslations(lang, '@studiocms/dashboard:taxonomy-index');
     }
 
     function loadForm() {
+        const redirectUrl = dataEl.dataset.redirect;
+        
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
 
@@ -150,6 +154,10 @@ const t = useTranslations(lang, '@studiocms/dashboard:taxonomy-index');
                             result.message || "Tag saved successfully",
                         type: "success",
                     });
+
+                    if (redirectUrl) {
+                        window.location.href = redirectUrl;
+                    }
                 } else {
                     toast({
                         title: "Error",

@@ -24,6 +24,4 @@ export const trueFalse = [
 	{ label: 'False', value: 'false' },
 ];
 
-export const categoriesOptions = [{ label: 'None', value: 'null' }];
-
-export const tagsOptions = [{ label: 'None', value: 'null' }];
+export const createSelectOptions = (opts: { label: string; value: string }[]) => [...opts];

@@ -113,6 +113,12 @@ export const parseFormDataToJson = <
 	// Add the type to the entry
 	entry.type = type;
 
+	if ('id' in entry) {
+		if (entry.id === 0) {
+			entry.id = undefined;
+		}
+	}
+
 	// Type assertion to the expected return type
 	return entry as R;
 };

@@ -110,18 +110,20 @@ const categories = await runSDK(SDKCoreJs.GET.categories.getAll());
         context: Document | Element = document,
     ) => context.querySelectorAll(selector) as NodeListOf<E>;
 
+    const form = $("#category-form") as HTMLFormElement;
+
     const dataEl = $("#current-taxonomy-entry-data");
-    const modeInput = $<HTMLInputElement>('input[name="mode"]');
-    const idInput = $<HTMLInputElement>('input[name="id"]');
-    const titleInput = $<HTMLInputElement>('input[name="name"]');
-    const slugInput = $<HTMLInputElement>('input[name="slug"]');
-    const descriptionInput = $<HTMLInputElement>('input[name="description"]');
-    const parentSelect = $<HTMLSelectElement>('select[name="parent"]');
+    const modeInput = $<HTMLInputElement>('input[name="mode"]', form);
+    const idInput = $<HTMLInputElement>('input[name="id"]', form);
+    const titleInput = $<HTMLInputElement>('input[name="name"]', form);
+    const slugInput = $<HTMLInputElement>('input[name="slug"]', form);
+    const descriptionInput = $<HTMLInputElement>('input[name="description"]', form);
+    const parentSelect = $<HTMLSelectElement>('select[name="parent"]', form);
+    const metaContainer = $<HTMLElement>(`dynamic-key-value-pair[name="meta"]`, form);
+
     const parentSelectOptions = $$<HTMLOptionElement>("option", parentSelect);
     const parentSelectDropdown = $<HTMLUListElement>(`#parent-dropdown`);
     const parentValueDisplay = $<HTMLSpanElement>(`#parent-value-span`);
-    const metaContainer = $<HTMLElement>(`dynamic-key-value-pair[name="meta"]`);
-    const form = $("#category-form") as HTMLFormElement;
 
     const currentData = getCurrentEntryData<"categories">(dataEl);
 
@@ -175,6 +177,8 @@ const categories = await runSDK(SDKCoreJs.GET.categories.getAll());
     }
 
     function loadForm() {
+        const redirectUrl = dataEl.dataset.redirect;
+
         form.addEventListener("submit", async (e) => {
             e.preventDefault();
 
@@ -211,6 +215,10 @@ const categories = await runSDK(SDKCoreJs.GET.categories.getAll());
                             result.message || "Category saved successfully",
                         type: "success",
                     });
+
+                    if (redirectUrl) {
+                        window.location.href = redirectUrl;
+                    }
                 } else {
                     toast({
                         title: "Error",

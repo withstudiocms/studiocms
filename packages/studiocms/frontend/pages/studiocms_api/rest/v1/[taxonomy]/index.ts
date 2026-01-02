@@ -111,7 +111,16 @@ export const { GET, POST, OPTIONS, ALL } = createEffectAPIRoutes(
 
 				switch (taxonomy) {
 					case 'categories': {
-						return yield* parseAPIContextJson(ctx, StudioCMSPageDataCategories.Insert).pipe(
+						return yield* parseAPIContextJson(
+							ctx,
+							StudioCMSPageDataCategories.Insert.omit('id')
+						).pipe(
+							Effect.flatMap((data) =>
+								Effect.gen(function* () {
+									const id = yield* sdk.UTIL.Generators.generateRandomIDNumber(9);
+									return { id, ...data };
+								})
+							),
 							Effect.flatMap((data) =>
 								sdk.POST.databaseEntry.categories(data).pipe(Effect.as(data))
 							),
@@ -120,7 +129,13 @@ export const { GET, POST, OPTIONS, ALL } = createEffectAPIRoutes(
 						);
 					}
 					case 'tags': {
-						return yield* parseAPIContextJson(ctx, StudioCMSPageDataTags.Insert).pipe(
+						return yield* parseAPIContextJson(ctx, StudioCMSPageDataTags.Insert.omit('id')).pipe(
+							Effect.flatMap((data) =>
+								Effect.gen(function* () {
+									const id = yield* sdk.UTIL.Generators.generateRandomIDNumber(9);
+									return { id, ...data };
+								})
+							),
 							Effect.flatMap((data) => sdk.POST.databaseEntry.tags(data).pipe(Effect.as(data))),
 							Effect.tap((data) => notifier.sendEditorNotification('new_tag', data.name)),
 							Effect.map(createJsonResponse)
