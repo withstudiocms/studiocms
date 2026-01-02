@@ -52,8 +52,8 @@
   },
   "type": "module",
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.955.0",
-    "@aws-sdk/s3-request-presigner": "^3.955.0",
+    "@aws-sdk/client-s3": "^3.958.0",
+    "@aws-sdk/s3-request-presigner": "^3.958.0",
     "astro-integration-kit": "catalog:"
   },
   "devDependencies": {
