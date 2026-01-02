@@ -6,6 +6,7 @@ import { Effect, Schema } from 'effect';
 import { getCliDbClient } from '../../utils/getCliDbClient.js';
 import type { EffectStepFn } from '../../utils/types.js';
 import { getCheckers, hashPassword, verifyPasswordStrength } from '../../utils/user-utils.js';
+import { validateInputOrRePrompt } from '../shared.js';
 
 export enum UserFieldOption {
 	password = 'password',
@@ -96,6 +97,43 @@ export const modifyUsers: EffectStepFn = Effect.fn(function* (context, _debug, d
 
 	yield* note(`User ID Selected: ${userSelection}`);
 
+	const usernamePrompt = validateInputOrRePrompt({
+		prompt: text({
+			message: 'Enter the new username',
+			placeholder: 'johndoe',
+			validate: (user) => {
+				const u = user.trim();
+				const isUser = currentUsers.find(({ username }) => username === u);
+				if (isUser) return 'Username is already in use, please try another one';
+				return undefined;
+			},
+		}),
+		checkEffect: (username) =>
+			checker.username(username).pipe(
+				Effect.map((result) => {
+					// checkEffect expects true for valid input, otherwise a string error message
+					// we invert the logic here since the checker returns true for commonly used usernames
+					if (result !== true) {
+						return true;
+					}
+					return 'Username is a commonly used username. (i.e. admin, user, test)';
+				}),
+				Effect.catchAll(() =>
+					Effect.succeed('Username is a commonly used username. (i.e. admin, user, test)')
+				)
+			),
+	});
+
+	const passwordPrompt = validateInputOrRePrompt({
+		prompt: password({
+			message: 'Enter the new password',
+		}),
+		checkEffect: (pass) =>
+			verifyPasswordStrength(pass).pipe(
+				Effect.catchAll(() => Effect.succeed('Password does not meet strength requirements'))
+			),
+	});
+
 	const action = yield* select({
 		message: 'Which user field would you like to update?',
 		options: [
@@ -155,21 +193,7 @@ export const modifyUsers: EffectStepFn = Effect.fn(function* (context, _debug, d
 			break;
 		}
 		case UserFieldOption.username: {
-			const newUsername = yield* text({
-				message: 'Enter new username',
-				placeholder: currentUsers.find((u) => u.id === userSelection)?.username || 'johndoe',
-				validate: (user) => {
-					const u = user.trim();
-					const isUser = currentUsers.find(({ username }) => username === u);
-					if (isUser) return 'Username is already in use, please try another one';
-					// Doing this because we can't use `await` here
-					// @effect-diagnostics-next-line runEffectInsideEffect:off
-					if (Effect.runSync(checker.username(u))) {
-						return 'Username should not be a commonly used unsafe username (admin, root, etc.)';
-					}
-					return undefined;
-				},
-			});
+			const newUsername = yield* usernamePrompt;
 
 			if (typeof newUsername === 'symbol') {
 				return yield* context.pCancel(newUsername);
@@ -213,18 +237,7 @@ export const modifyUsers: EffectStepFn = Effect.fn(function* (context, _debug, d
 			break;
 		}
 		case UserFieldOption.password: {
-			const newPassword = yield* password({
-				message: `Enter the user's new password`,
-				validate: (pass) => {
-					// Doing this because we can't use `await` here
-					// @effect-diagnostics-next-line runEffectInsideEffect:off
-					const passCheck = Effect.runSync(verifyPasswordStrength(pass));
-					if (passCheck !== true) {
-						return passCheck;
-					}
-					return undefined;
-				},
-			});
+			const newPassword = yield* passwordPrompt;
 
 			if (typeof newPassword === 'symbol') {
 				return yield* context.pCancel(newPassword);
