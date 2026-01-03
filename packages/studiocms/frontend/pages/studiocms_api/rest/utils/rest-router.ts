@@ -24,6 +24,11 @@ export type RouteRegistry = {
 	[type: string]: EndpointRoute;
 };
 
+export type SubPageRouter = (
+	id: string,
+	params?: Record<string, string>
+) => Partial<Record<HTTPMethod | 'ALL', APIRoute>>;
+
 const firstLetterUppercase = (str: string) => {
 	return str.charAt(0).toUpperCase() + str.slice(1);
 };
