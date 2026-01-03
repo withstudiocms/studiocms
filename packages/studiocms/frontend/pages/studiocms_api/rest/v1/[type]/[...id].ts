@@ -1,18 +1,23 @@
 import { Schema } from 'effect';
 import { createRestRouter, type RouteRegistry } from '../../utils/rest-router.js';
+import { categoriesRouter } from './_routes/categories.js';
+import { foldersRouter } from './_routes/folders.js';
 import { pagesRouter } from './_routes/pages.js';
+import { settingsRouter } from './_routes/settings.js';
+import { tagsRouter } from './_routes/tags.js';
+import { usersRouter } from './_routes/users.js';
 
 const registry: RouteRegistry = {
-	// categories: categoriesRouter,
-	// tags: tagsRouter,
-	// folders: foldersRouter,
+	categories: categoriesRouter,
+	folders: foldersRouter, // TODO
 	pages: pagesRouter,
-	// settings: settingsRouter,
-	// users: usersRouter,
+	settings: settingsRouter, // TODO
+	tags: tagsRouter,
+	users: usersRouter, // TODO
 };
 
 export const ALL = createRestRouter(
 	'studiocms:rest:v1',
-	Schema.Literal('categories', 'tags', 'folders', 'pages', 'settings', 'users'),
+	Schema.Literal('categories', 'folders', 'pages', 'settings', 'tags', 'users'),
 	registry
 );

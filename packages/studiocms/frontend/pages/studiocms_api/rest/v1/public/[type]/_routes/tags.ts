@@ -14,7 +14,7 @@ export const tagsRouter: EndpointRoute = {
 	__index: createEffectAPIRoutes(
 		{
 			GET: (ctx) =>
-				genLogger('studiocms:rest:v1:tags:GET')(function* () {
+				genLogger('studiocms:rest:v1:public:tags:GET')(function* () {
 					const sdk = yield* SDKCore;
 
 					const searchParams = ctx.url.searchParams;
@@ -43,7 +43,7 @@ export const tagsRouter: EndpointRoute = {
 		createEffectAPIRoutes(
 			{
 				GET: () =>
-					genLogger(`studiocms:rest:v1:tags:${id}:GET`)(function* () {
+					genLogger(`studiocms:rest:v1:public:tags:${id}:GET`)(function* () {
 						const sdk = yield* SDKCore;
 						const tag = yield* sdk.GET.tags.byId(id);
 

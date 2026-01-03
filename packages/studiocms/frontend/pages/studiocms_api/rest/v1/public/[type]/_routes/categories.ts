@@ -14,7 +14,7 @@ export const categoriesRouter: EndpointRoute = {
 	__index: createEffectAPIRoutes(
 		{
 			GET: (ctx) =>
-				genLogger('studiocms:rest:v1:categories:GET')(function* () {
+				genLogger('studiocms:rest:v1:public:categories:GET')(function* () {
 					const sdk = yield* SDKCore;
 
 					const searchParams = ctx.url.searchParams;
@@ -50,7 +50,7 @@ export const categoriesRouter: EndpointRoute = {
 		createEffectAPIRoutes(
 			{
 				GET: () =>
-					genLogger(`studiocms:rest:v1:categories:${id}:GET`)(function* () {
+					genLogger(`studiocms:rest:v1:public:categories:${id}:GET`)(function* () {
 						const sdk = yield* SDKCore;
 						const category = yield* sdk.GET.categories.byId(id);
 
