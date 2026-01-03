@@ -354,7 +354,7 @@ export const usersRouter: EndpointRoute = {
 
 						const { permissionsData } = existingUser;
 
-						const existingUserRank = (permissionsData?.rank ?? 'admin') as PermissionRank;
+						const existingUserRank = (permissionsData?.rank ?? 'visitor') as PermissionRank;
 
 						const loggedInUser = yield* sdk.GET.users.byId(user.userId);
 
@@ -486,7 +486,7 @@ export const usersRouter: EndpointRoute = {
 
 						const { permissionsData } = existingUser;
 
-						const existingUserRank = (permissionsData?.rank ?? 'admin') as PermissionRank;
+						const existingUserRank = (permissionsData?.rank ?? 'visitor') as PermissionRank;
 
 						const loggedInUser = yield* sdk.GET.users.byId(user.userId);
 
