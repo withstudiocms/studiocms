@@ -157,24 +157,8 @@ export const restRoutes: InjectedRoute[] = [
 		entrypoint: 'pages/studiocms_api/rest/v1/[taxonomy]/[id].ts',
 	},
 	{
-		pattern: '/studiocms_api/rest/v1/public/pages',
-		entrypoint: 'pages/studiocms_api/rest/v1/public/pages/index.ts',
-	},
-	{
-		pattern: '/studiocms_api/rest/v1/public/pages/[id]',
-		entrypoint: 'pages/studiocms_api/rest/v1/public/pages/[id].ts',
-	},
-	{
-		pattern: '/studiocms_api/rest/v1/public/folders',
-		entrypoint: 'pages/studiocms_api/rest/v1/public/folders/index.ts',
-	},
-	{
-		pattern: '/studiocms_api/rest/v1/public/[taxonomy]',
-		entrypoint: 'pages/studiocms_api/rest/v1/public/[taxonomy]/index.ts',
-	},
-	{
-		pattern: '/studiocms_api/rest/v1/public/[taxonomy]/[id]',
-		entrypoint: 'pages/studiocms_api/rest/v1/public/[taxonomy]/[id].ts',
+		pattern: '/studiocms_api/rest/v1/public/[type]/[...id]',
+		entrypoint: 'pages/studiocms_api/rest/v1/public/[type]/[...id].ts',
 	},
 ];
 
