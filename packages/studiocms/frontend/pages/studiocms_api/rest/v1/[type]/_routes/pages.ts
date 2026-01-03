@@ -17,7 +17,7 @@ import { verifyAuthTokenFromHeader } from '../../../utils/auth-token.js';
 import {
 	type EndpointRoute,
 	idOrPathRouter,
-	type SubPageRouter,
+	type SubPathRouter,
 } from '../../../utils/rest-router.js';
 
 type UpdatePageData = Partial<tsPageDataSelect>;
@@ -34,7 +34,7 @@ interface CreatePageJson {
 	content?: tsPageContentSelect;
 }
 
-const subPathRouter: Record<string, SubPageRouter> = {
+const subPathRouter: SubPathRouter = {
 	history: (id: string, _params?: Record<string, string>) =>
 		createEffectAPIRoutes(
 			{

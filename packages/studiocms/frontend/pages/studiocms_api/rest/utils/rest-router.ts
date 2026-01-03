@@ -101,6 +101,23 @@ export type SubPageRouter = (
 	params?: Record<string, string>
 ) => Partial<Record<HTTPMethod | 'ALL', APIRoute>>;
 
+/**
+ * A record type mapping sub-path strings to their corresponding sub-page router functions.
+ *
+ * @remarks
+ * This type defines a structure for associating specific sub-paths with their
+ * respective router functions, enabling modular handling of REST API endpoints.
+ *
+ * @example
+ * ```typescript
+ * const subRouters: SubPathRouter = {
+ *   'history': (id) => ({ GET: async (ctx) => { ... } }),
+ *   'comments': (id) => ({ POST: async (ctx) => { ... } })
+ * };
+ * ```
+ */
+export type SubPathRouter = Record<string, SubPageRouter>;
+
 const firstLetterUppercase = (str: string) => {
 	return str.charAt(0).toUpperCase() + str.slice(1);
 };
@@ -136,7 +153,7 @@ function isString(value: unknown): value is string {
 export function idOrPathRouter(
 	id: string,
 	rootRoute: (id: string) => Partial<Record<HTTPMethod | 'ALL', APIRoute>>,
-	subPathRouter: Record<string, SubPageRouter>
+	subPathRouter: SubPathRouter
 ): Partial<Record<HTTPMethod | 'ALL', APIRoute>> {
 	// Handle root path
 	if (!id.includes('/')) {
