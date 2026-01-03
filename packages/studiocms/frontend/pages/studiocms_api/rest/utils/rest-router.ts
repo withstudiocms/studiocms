@@ -10,7 +10,26 @@ import { Effect, type ParseResult, Schema, type SchemaAST } from 'effect';
 import type { NonEmptyReadonlyArray } from 'effect/Array';
 import { extractParams } from './param-extractor';
 
-type RegistryEntry<IdType extends 'number' | 'string' = 'number'> = {
+/**
+ * An entry in the route registry defining handlers for a specific ID type.
+ *
+ * @template IdType - The type of ID used in the routes, either 'number' or 'string'
+ *
+ * @remarks
+ * This type defines a structure for registering API route handlers based on
+ * the type of ID used. It includes a mapping for general routes (`__index`)
+ * and a function to retrieve handlers for specific IDs.
+ *
+ * @example
+ * ```typescript
+ * const userRouteEntry: RegistryEntry<'number'> = {
+ *   __idType: 'number',
+ *   __index: { GET: async (ctx) => { ... } },
+ *   id: (id: number) => ({ GET: async (ctx) => { ... } })
+ * };
+ * ```
+ */
+export type RegistryEntry<IdType extends 'number' | 'string' = 'number'> = {
 	__idType: IdType;
 	__index: Partial<Record<HTTPMethod | 'ALL', APIRoute>>;
 	id?: (
@@ -18,12 +37,65 @@ type RegistryEntry<IdType extends 'number' | 'string' = 'number'> = {
 	) => Partial<Record<HTTPMethod | 'ALL', APIRoute>>;
 };
 
+/**
+ * A union type representing an endpoint route configuration.
+ *
+ * @remarks
+ * This type can either be a `RegistryEntry` configured for numeric IDs
+ * or for string IDs, allowing flexibility in defining API endpoint routes.
+ *
+ * @example
+ * ```typescript
+ * const numericRoute: EndpointRoute = {
+ *   __idType: 'number',
+ *   __index: { GET: async (ctx) => { ... } },
+ *   id: (id: number) => ({ GET: async (ctx) => { ... } })
+ * };
+ *
+ * const stringRoute: EndpointRoute = {
+ *   __idType: 'string',
+ *   __index: { GET: async (ctx) => { ... } },
+ *   id: (id: string) => ({ GET: async (ctx) => { ... } })
+ * };
+ * ```
+ */
 export type EndpointRoute = RegistryEntry<'number'> | RegistryEntry<'string'>;
 
+/**
+ * A registry mapping route types to their corresponding endpoint routes.
+ *
+ * @remarks
+ * This type defines a flexible registry structure where each key represents
+ * a route type identifier (string) and maps to an `EndpointRoute` configuration.
+ * It allows dynamic registration and lookup of API endpoint routes.
+ *
+ * @example
+ * ```typescript
+ * const routes: RouteRegistry = {
+ *   'user': userEndpointRoute,
+ *   'posts': postsEndpointRoute
+ * };
+ * ```
+ */
 export type RouteRegistry = {
 	[type: string]: EndpointRoute;
 };
 
+/**
+ * A function type that defines a sub-page router for REST API endpoints.
+ *
+ * @param id - The unique identifier for the route or resource
+ * @param params - Optional record of string key-value pairs representing route parameters
+ * @returns A partial record mapping HTTP methods (or 'ALL' for all methods) to their corresponding API route handlers
+ *
+ * @example
+ * ```typescript
+ * const myRouter: SubPageRouter = (id, params) => ({
+ *   GET: async (context) => { ... },
+ *   POST: async (context) => { ... }
+ * });
+ * ```
+ */
 export type SubPageRouter = (
 	id: string,
 	params?: Record<string, string>
@@ -41,6 +113,33 @@ function isString(value: unknown): value is string {
 	return typeof value === 'string';
 }
 
+/**
+ * Creates a REST router that handles HTTP requests based on route type and optional ID parameters.
+ *
+ * @template Literals - A non-empty readonly array of literal values representing valid route types
+ *
+ * @param prefix - A prefix string used for logging purposes to identify the route group
+ * @param types - A Schema.Literal containing the valid type literals that can be used in the routes
+ * @param registry - A RouteRegistry object mapping route types to their handler configurations
+ *
+ * @returns An Effect API route handler that:
+ * - Extracts and validates `type` and `id` parameters from the request
+ * - Determines the appropriate handler based on the route type and ID
+ * - Supports both numeric and string ID types based on the route configuration
+ * - Handles special `__index` routes when no ID is provided
+ * - Dispatches requests to the appropriate HTTP method handler (GET, POST, etc.) or ALL handler
+ * - Returns appropriate error responses for invalid IDs or missing handlers
+ * - Logs errors and returns 500 status for handler execution failures
+ *
+ * @example
+ * ```typescript
+ * const router = createRestRouter(
+ *   'api',
+ *   Schema.Literal('users', 'posts'),
+ *   routeRegistry
+ * );
+ * ```
+ */
 export const createRestRouter = <
 	const Literals extends NonEmptyReadonlyArray<SchemaAST.LiteralValue>,
 >(
@@ -55,7 +154,10 @@ export const createRestRouter = <
 
 	const getTypeLabel = ({ actual }: ParseResult.ParseIssue) => {
 		if (Schema.is(paramSchemaBase)(actual)) {
-			return `Type: ${firstLetterUppercase(actual.type?.toString() ?? '')}`;
+			return `Type: ${
+				// biome-ignore lint/style/noNonNullAssertion: we know it's defined here
+				firstLetterUppercase(actual.type!.toString())
+			}`;
 		}
 	};
 
