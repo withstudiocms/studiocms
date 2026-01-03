@@ -14,5 +14,6 @@ const registry: RouteRegistry = {
 
 export const ALL = createRestRouter(
 	'studiocms:rest:v1:public',
-	Schema.Literal('categories', 'tags', 'folders', 'pages')
-)(registry);
+	Schema.Literal('categories', 'tags', 'folders', 'pages'),
+	registry
+);
