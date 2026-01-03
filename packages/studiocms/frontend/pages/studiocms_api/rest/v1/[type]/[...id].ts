@@ -13,7 +13,7 @@ const registry: RouteRegistry = {
 	pages: pagesRouter,
 	settings: settingsRouter,
 	tags: tagsRouter,
-	users: usersRouter, // TODO
+	users: usersRouter,
 };
 
 export const ALL = createRestRouter(
