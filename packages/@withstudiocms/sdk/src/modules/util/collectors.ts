@@ -307,6 +307,24 @@ export const SDKCollectors = Effect.gen(function* () {
 						: safeSlug;
 			}
 
+			let authorDataTyped: Omit<tsUsersSelect, 'email' | 'password'> | undefined;
+
+			if (authorData) {
+				const { email, password, ...rest } = authorData;
+				// Exclude sensitive fields
+				authorDataTyped = {
+					...rest,
+				};
+			}
+
+			let contributorsDataTyped: Omit<tsUsersSelect, 'email' | 'password'>[] | undefined;
+
+			if (contributorsData) {
+				contributorsDataTyped = contributorsData.map(({ email, password, ...rest }) => ({
+					...rest,
+				}));
+			}
+
 			const returnData = yield* resolveUrls(
 				{
 					...page,
@@ -314,8 +332,8 @@ export const SDKCollectors = Effect.gen(function* () {
 					urlRoute,
 					categories,
 					tags,
-					authorData,
-					contributorsData,
+					authorData: authorDataTyped,
+					contributorsData: contributorsDataTyped,
 					multiLangContent,
 					defaultContent,
 				} as CombinedPageData,
