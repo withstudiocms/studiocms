@@ -155,7 +155,7 @@ export function idOrPathRouter(
 	rootRoute: (id: string) => Partial<Record<HTTPMethod | 'ALL', APIRoute>>,
 	subPathRouter: SubPathRouter
 ): Partial<Record<HTTPMethod | 'ALL', APIRoute>> {
-	// Handle root path
+	// Handle root path (e.g., /[id])
 	if (!id.includes('/')) {
 		return rootRoute(id);
 	}
