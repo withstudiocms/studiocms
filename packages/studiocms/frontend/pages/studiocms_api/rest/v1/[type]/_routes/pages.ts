@@ -8,15 +8,17 @@ import {
 	createJsonResponse,
 	Effect,
 	genLogger,
-	type HTTPMethod,
 	OptionsResponse,
 	readAPIContextJson,
 	Schema,
 } from '@withstudiocms/effect';
 import { StudioCMSPageData } from '@withstudiocms/kysely';
-import type { APIRoute } from 'astro';
 import { verifyAuthTokenFromHeader } from '../../../utils/auth-token.js';
-import type { EndpointRoute, SubPageRouter } from '../../../utils/rest-router.js';
+import {
+	type EndpointRoute,
+	idOrPathRouter,
+	type SubPageRouter,
+} from '../../../utils/rest-router.js';
 
 type UpdatePageData = Partial<tsPageDataSelect>;
 type UpdatePageContent = Partial<tsPageContentSelect>;
@@ -83,7 +85,7 @@ const subPathRouter: Record<string, SubPageRouter> = {
 				},
 			}
 		),
-	'history/[id]': (id: string, params?: Record<string, string>) =>
+	'history/[diffId]': (id: string, params?: Record<string, string>) =>
 		createEffectAPIRoutes(
 			{
 				GET: (ctx) =>
@@ -102,17 +104,17 @@ const subPathRouter: Record<string, SubPageRouter> = {
 							return apiResponseLogger(401, 'Unauthorized');
 						}
 
-						const diffid = params?.id;
+						const diffId = params?.diffId;
 
 						if (!id) {
 							return apiResponseLogger(400, 'Invalid page ID');
 						}
 
-						if (!diffid) {
+						if (!diffId) {
 							return apiResponseLogger(400, 'Invalid diff ID');
 						}
 
-						const diff = yield* sdk.diffTracking.get.single(diffid);
+						const diff = yield* sdk.diffTracking.get.single(diffId);
 
 						if (!diff) {
 							return apiResponseLogger(404, 'Diff not found');
@@ -137,7 +139,7 @@ const subPathRouter: Record<string, SubPageRouter> = {
 		),
 };
 
-export const pageIdRouter = (id: string) =>
+const pageIdRouter = (id: string) =>
 	createEffectAPIRoutes(
 		{
 			GET: (ctx) =>
@@ -344,46 +346,6 @@ export const pageIdRouter = (id: string) =>
 		}
 	);
 
-function idOrPathRouter(id: string): Partial<Record<HTTPMethod | 'ALL', APIRoute>> {
-	if (!id.includes('/')) {
-		return pageIdRouter(id);
-	}
-
-	// Handle sub-paths
-	const parts = id.split('/'); // /[id]/subpath/...
-
-	if (parts.length === 1) {
-		return subPathRouter[parts[0]](id);
-	}
-
-	const mainId = parts.shift() as string;
-	const subPath = parts;
-
-	if (subPath.length === 1) {
-		const possibleSubRouter = subPathRouter[subPath[0] as keyof typeof subPathRouter];
-		if (possibleSubRouter) {
-			return possibleSubRouter(mainId);
-		}
-		return {};
-	}
-
-	// Nested sub-paths (built from string)
-	if (subPath.length > 1 && subPath.length < 3) {
-		const firstSubPath = subPath[0] as string;
-		const secondSubPath = subPath[1] as string;
-
-		const test = `${firstSubPath}/[id]`;
-		const possibleSubRouter = subPathRouter[test as keyof typeof subPathRouter];
-		if (possibleSubRouter) {
-			return possibleSubRouter(mainId, { id: secondSubPath });
-		}
-
-		return {};
-	}
-
-	return {};
-}
-
 export const pagesRouter: EndpointRoute = {
 	__idType: 'string',
 	__index: createEffectAPIRoutes(
@@ -536,5 +498,5 @@ export const pagesRouter: EndpointRoute = {
 			},
 		}
 	),
-	id: (id: string) => idOrPathRouter(id),
+	id: (id: string) => idOrPathRouter(id, pageIdRouter, subPathRouter),
 };

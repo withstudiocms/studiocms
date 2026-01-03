@@ -114,6 +114,73 @@ function isString(value: unknown): value is string {
 }
 
 /**
+ * A router function that handles both root paths and sub-paths for REST API endpoints.
+ *
+ * @param id - The unique identifier for the route or resource, which may include sub-paths
+ * @param rootRoute - A function that generates the root route handlers based on the provided ID
+ * @param subPathRouter - A record mapping sub-path strings to their corresponding sub-page router functions
+ * @returns A partial record mapping HTTP methods (or 'ALL' for all methods) to their corresponding API route handlers
+ *
+ * @example
+ * ```typescript
+ * const router = idOrPathRouter(
+ *   '123/history/456',
+ *   (id) => ({ GET: async (ctx) => { ... } }),
+ *   {
+ *     'history': (id) => ({ GET: async (ctx) => { ... } }),
+ *     'history/[diffid]': (id, params) => ({ GET: async (ctx) => { ... } })
+ *   }
+ * );
+ * ```
+ */
+export function idOrPathRouter(
+	id: string,
+	rootRoute: (id: string) => Partial<Record<HTTPMethod | 'ALL', APIRoute>>,
+	subPathRouter: Record<string, SubPageRouter>
+): Partial<Record<HTTPMethod | 'ALL', APIRoute>> {
+	// Handle root path
+	if (!id.includes('/')) {
+		return rootRoute(id);
+	}
+
+	// Handle sub-paths
+	const parts = id.split('/'); // /[id]/subpath/...
+
+	// parse id and subpath
+	const pageId = parts[0];
+	const subPath = parts.slice(1).join('/');
+
+	// Find sub-router (e.g., /[id]/history)
+	const subRouter = subPathRouter[subPath];
+	if (subRouter) {
+		const router = subRouter(pageId);
+		return router;
+	}
+
+	// if no sub-router found, look for sub-paths with parameters (e.g., /[id]/history/[diffid])
+	for (const key in subPathRouter) {
+		if (key.includes('[') && key.includes(']')) {
+			// create a regex to match the pattern
+			const pattern = key.replace(/\[([^\]]+)\]/g, '([^/]+)');
+			const regex = new RegExp(`^${pattern}$`);
+			const match = subPath.match(regex);
+			if (match) {
+				const params: Record<string, string> = {};
+				const paramNames = Array.from(key.matchAll(/\[([^\]]+)\]/g)).map((m) => m[1]);
+				paramNames.forEach((name, index) => {
+					params[name] = match[index + 1];
+				});
+				const router = subPathRouter[key](pageId, params);
+				return router;
+			}
+		}
+	}
+
+	// If no matching sub-router found, return an empty router
+	return {};
+}
+
+/**
  * Creates a REST router that handles HTTP requests based on route type and optional ID parameters.
  *
  * @template Literals - A non-empty readonly array of literal values representing valid route types
