@@ -113,48 +113,8 @@ export const noDbSetupRoutes: InjectedRoute[] = [
  */
 export const restRoutes: InjectedRoute[] = [
 	{
-		pattern: '/studiocms_api/rest/v1/folders',
-		entrypoint: 'pages/studiocms_api/rest/v1/folders/index.ts',
-	},
-	{
-		pattern: '/studiocms_api/rest/v1/folders/[id]',
-		entrypoint: 'pages/studiocms_api/rest/v1/folders/[id].ts',
-	},
-	{
-		pattern: '/studiocms_api/rest/v1/pages',
-		entrypoint: 'pages/studiocms_api/rest/v1/pages/index.ts',
-	},
-	{
-		pattern: '/studiocms_api/rest/v1/pages/[id]',
-		entrypoint: 'pages/studiocms_api/rest/v1/pages/[id]/index.ts',
-	},
-	{
-		pattern: '/studiocms_api/rest/v1/pages/[id]/history',
-		entrypoint: 'pages/studiocms_api/rest/v1/pages/[id]/history/index.ts',
-	},
-	{
-		pattern: '/studiocms_api/rest/v1/pages/[id]/history/[diffid]',
-		entrypoint: 'pages/studiocms_api/rest/v1/pages/[id]/history/[diffid].ts',
-	},
-	{
-		pattern: '/studiocms_api/rest/v1/settings',
-		entrypoint: 'pages/studiocms_api/rest/v1/settings/index.ts',
-	},
-	{
-		pattern: '/studiocms_api/rest/v1/users',
-		entrypoint: 'pages/studiocms_api/rest/v1/users/index.ts',
-	},
-	{
-		pattern: '/studiocms_api/rest/v1/users/[id]',
-		entrypoint: 'pages/studiocms_api/rest/v1/users/[id].ts',
-	},
-	{
-		pattern: '/studiocms_api/rest/v1/[taxonomy]',
-		entrypoint: 'pages/studiocms_api/rest/v1/[taxonomy]/index.ts',
-	},
-	{
-		pattern: '/studiocms_api/rest/v1/[taxonomy]/[id]',
-		entrypoint: 'pages/studiocms_api/rest/v1/[taxonomy]/[id].ts',
+		pattern: '/studiocms_api/rest/v1/[type]/[...id]',
+		entrypoint: 'pages/studiocms_api/rest/v1/[type]/[...id].ts',
 	},
 	{
 		pattern: '/studiocms_api/rest/v1/public/[type]/[...id]',

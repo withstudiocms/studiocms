@@ -9,9 +9,9 @@ import { usersRouter } from './_routes/users.js';
 
 const registry: RouteRegistry = {
 	categories: categoriesRouter,
-	folders: foldersRouter, // TODO
+	folders: foldersRouter,
 	pages: pagesRouter,
-	settings: settingsRouter, // TODO
+	settings: settingsRouter,
 	tags: tagsRouter,
 	users: usersRouter, // TODO
 };
