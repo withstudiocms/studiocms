@@ -7,13 +7,20 @@ import { Card } from 'studiocms:ui/components/card';
 import { Input } from 'studiocms:ui/components/input';
 import { Select } from 'studiocms:ui/components/select';
 import { TabItem, Tabs } from 'studiocms:ui/components/tabs';
+import { Effect } from '@withstudiocms/effect';
 import StorageInput from '#frontend/components/shared/storage-manager/StorageInput.astro';
 import PageTypeHandler from './PageTypeHandler.astro';
-import { categoriesOptions, pageTypeOptions, tagsOptions, trueFalse } from './shared.js';
+import { createSelectOptions, pageTypeOptions, trueFalse } from './shared.js';
 
 const pluginFields = pluginList.flatMap(({ pageTypes }) => pageTypes ?? []);
 
-const folderList = await runSDK(SDKCoreJs.GET.folderList());
+const [folderList, categories, tags] = await runSDK(
+	Effect.all([
+		SDKCoreJs.GET.folderList(),
+		SDKCoreJs.GET.categories.getAll(),
+		SDKCoreJs.GET.tags.getAll(),
+	])
+);
 
 const parentFolderOptions = [
 	{ value: 'null', label: 'None' },
@@ -117,18 +124,38 @@ const preselectedParentFolder = searchParams.get('parent-folder') ?? 'null';
               <Select
                 label={t("select-page-categories")}
                 name="categories"
-                placeholder="Work in Progress"
+                placeholder={
+                  categories.length === 0
+                    ? 'No categories available'
+                    : 'Select'
+                }
                 fullWidth
-                options={categoriesOptions}
-                disabled
+                options={createSelectOptions(
+                    categories.map(({ id: value, name: label }) => ({
+                      label,
+                      value: String(value),
+                    })),
+                  )}
+                multiple
+                disabled={categories.length === 0}
               />
               <Select
                 label={t("select-page-tags")}
                 name="tags"
-                placeholder="Work in Progress"
+                placeholder={
+                  tags.length === 0
+                    ? 'No tags available'
+                    : 'Select'
+                }
                 fullWidth
-                options={tagsOptions}
-                disabled
+                options={createSelectOptions(
+                    tags.map(({ id: value, name: label }) => ({
+                      label,
+                      value: String(value),
+                    })),
+                  )}
+                multiple
+                disabled={tags.length === 0}
               />
             </div>
 

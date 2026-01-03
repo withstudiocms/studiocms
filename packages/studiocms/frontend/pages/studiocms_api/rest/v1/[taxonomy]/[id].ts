@@ -130,6 +130,11 @@ export const { GET, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 							return apiResponseLogger(400, 'Cannot update ID field');
 						}
 
+						const parentId = jsonData.parent;
+						if (parentId && parentId === id) {
+							return apiResponseLogger(400, 'Category cannot be its own parent');
+						}
+
 						return yield* updateCategory(jsonData).pipe(
 							Effect.tap((data) => notifier.sendEditorNotification('update_category', data.name)),
 							Effect.map(createJsonResponse)

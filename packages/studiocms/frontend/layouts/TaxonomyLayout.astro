@@ -96,6 +96,7 @@ if (type === 'categories') {
         data-mode={mode ?? ''}
         data-current-entry={JSON.stringify(currentEntry ?? {})}
         data-parent-id={parentId ?? ''}
+        data-redirect={Astro.locals.StudioCMS.routeMap.mainLinks.taxonomy}
     ></div>
 
     <slot />

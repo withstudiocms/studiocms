@@ -11,6 +11,8 @@ import type {
 	DynamicConfigEntry,
 	FolderListItem,
 	StudioCMSSiteConfig,
+	tsPageDataCategoriesSelect,
+	tsPageDataTagsSelect,
 } from 'studiocms:sdk/types';
 import { Button } from 'studiocms:ui/components/button';
 import { Card } from 'studiocms:ui/components/card';
@@ -26,7 +28,7 @@ import PageEditorSwapper from './PageEditorSwapper.astro';
 import PageTypeHandler from './PageTypeHandler.astro';
 import PluginFields from './PluginFields.astro';
 import { convertToSafeString, importEditorKeys } from './runtime.js';
-import { categoriesOptions, pageTypeOptions, tagsOptions, trueFalse } from './shared.js';
+import { createSelectOptions, pageTypeOptions, trueFalse } from './shared.js';
 
 interface Props {
 	lang: UiLanguageKeys;
@@ -34,9 +36,11 @@ interface Props {
 	pageData: CombinedPageData;
 	users: CombinedUserData[];
 	folderList: FolderListItem[];
+	categories: readonly tsPageDataCategoriesSelect[];
+	tags: readonly tsPageDataTagsSelect[];
 }
 
-const { lang, config, pageData, users, folderList } = Astro.props as Props;
+const { lang, config, pageData, users, folderList, categories, tags } = Astro.props as Props;
 
 const enableDiffs = config.data.enableDiffs;
 
@@ -176,18 +180,54 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
                 <Select
                   label={t("select-page-categories")}
                   name="categories"
-                  placeholder="Work in Progress"
                   fullWidth
-                  options={categoriesOptions}
-                  disabled
+                  placeholder={
+                    categories.length === 0
+                      ? 'No categories available'
+                      : 'Select'
+                  }
+                  options={createSelectOptions(
+                    categories.map(({ id: value, name: label }) => ({
+                      label,
+                      value: String(value),
+                    })),
+                  )}
+                  disabled={categories.length === 0}
+                  multiple
+                  defaultValue={
+                    (() => {
+                      const categories = pageData.categories.map(({id}) => String(id));
+
+                      if (categories.length > 0) return categories;
+                      return undefined;
+                    })()
+                  }
                 />
                 <Select
                   label={t("select-page-tags")}
                   name="tags"
-                  placeholder="Work in Progress"
                   fullWidth
-                  options={tagsOptions}
-                  disabled
+                  placeholder={
+                    tags.length === 0
+                      ? 'No tags available'
+                      : 'Select'
+                  }
+                  options={createSelectOptions(
+                    tags.map(({ id: value, name: label }) => ({
+                      label,
+                      value: String(value),
+                    })),
+                  )}
+                  disabled={tags.length === 0}
+                  multiple
+                  defaultValue={
+                    (() => {
+                      const tags = pageData.tags.map(({id}) => String(id));
+
+                      if (tags.length > 0) return tags;
+                      return undefined;
+                    })()
+                  }
                 />
               </div>
 

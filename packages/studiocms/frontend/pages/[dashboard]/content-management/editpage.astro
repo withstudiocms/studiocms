@@ -22,11 +22,13 @@ const registryData = getRegistryComponents();
 const urlParams = Astro.url.searchParams;
 const editId = urlParams.get('edit') || '';
 
-const [pageData, users, folderList] = await runSDK(
+const [pageData, users, folderList, categories, tags] = await runSDK(
 	Effect.all([
 		SDKCoreJs.GET.page.byId(editId),
 		SDKCoreJs.GET.users.all(),
 		SDKCoreJs.GET.folderList(),
+		SDKCoreJs.GET.categories.getAll(),
+		SDKCoreJs.GET.tags.getAll(),
 	])
 );
 ---
@@ -60,7 +62,7 @@ const [pageData, users, folderList] = await runSDK(
     <PageHeader {lang} editPage />
   </div>
 
-  { pageData && <EditPage {lang} {config} {pageData} {users} {folderList} />}
+  { pageData && <EditPage {lang} {config} {pageData} {users} {folderList} {categories} {tags} />}
 
 </Layout>
 
