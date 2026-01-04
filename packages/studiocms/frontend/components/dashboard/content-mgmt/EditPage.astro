@@ -704,6 +704,14 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
      	display: flex;
       flex-direction: column;
 
+      .sui-tab-header.active::after {
+				bottom: 1px;
+			}
+
+      > .sui-tabs-list {
+      	overflow-y: hidden;
+      }
+
       > .sui-tabs-content {
       	height: 100%;
 
