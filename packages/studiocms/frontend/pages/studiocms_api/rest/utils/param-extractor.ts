@@ -62,9 +62,17 @@ export const extractParams: ExtractEndpointParams = <T, E>(
 
 			// If decoding fails, format and return the errors in a Response
 			if (Either.isLeft(data)) {
-				const parsedErrors = ParseResult.TreeFormatter.formatErrorSync(data.left);
+				const parsedErrors = ParseResult.ArrayFormatter.formatErrorSync(data.left);
+
 				return Effect.succeed(
-					new Response(`API Parameters Decoding Error: ${parsedErrors}`, { status: 400 })
+					new Response(
+						JSON.stringify({ error: 'API Parameters Decoding Error', errors: parsedErrors }),
+						{
+							status: 400,
+							statusText: 'Bad Request',
+							headers: { 'Content-Type': 'application/json' },
+						}
+					)
 				);
 			}
 

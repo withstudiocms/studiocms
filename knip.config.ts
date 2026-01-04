@@ -10,12 +10,15 @@ import type { KnipConfig } from 'knip';
  * @property astro.project - Glob patterns specifying project `.astro` files within the `src` directory.
  */
 const baseAstroWorkspaceConfig = {
-	entry: ['src/**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx,astro}'],
+	entry: [
+		'src/**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx,astro}',
+		'frontend/**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx,astro}',
+	],
 	project: ['**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}'],
 	ignore: ['**/node_modules/**', '**/dist/**', '**/scratchpad/**'],
 	astro: {
-		entry: ['src/**/*.astro'],
-		project: ['src/**/*.astro'],
+		entry: ['src/**/*.astro', 'frontend/**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx,astro}'],
+		project: ['src/**/*.astro', 'frontend/**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx,astro}'],
 	},
 };
 

@@ -105,8 +105,8 @@ export interface CombinedPageData extends PageDataStripped {
 	multiLangContent: tsPageContentSelect[];
 	defaultContent: tsPageContentSelect | undefined;
 	urlRoute: string;
-	authorData: tsUsersSelect | undefined;
-	contributorsData: tsUsersSelect[];
+	authorData: Omit<tsUsersSelect, 'email' | 'password'> | undefined;
+	contributorsData: Omit<tsUsersSelect, 'email' | 'password'>[];
 }
 
 /**
