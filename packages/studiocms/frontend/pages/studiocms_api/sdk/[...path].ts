@@ -5,34 +5,30 @@ import {
 	createEffectAPIRoutes,
 	createJsonResponse,
 	Effect,
+	type HTTPMethod,
 	OptionsResponse,
 } from '@withstudiocms/effect';
 import { createSimplePathRouter } from '#frontend/utils/rest-router.js';
 import { ProcessChangelog } from './utils/changelog.js';
 
-const router = {
-	'fallback-list-pages.json': createEffectAPIRoutes(
+const optionsFn = (allowedMethods: string[]) => () =>
+	Effect.try(() => OptionsResponse({ allowedMethods }));
+
+const allFn = () => Effect.try(() => AllResponse());
+
+const cors = (method: string) => ({ methods: [method, 'OPTIONS'] }) as { methods: HTTPMethod[] };
+
+const onError = (error: unknown) => {
+	logger.error(`API Error: ${(error as Error).message}`);
+	return createJsonResponse(
+		{ error: 'Something went wrong' },
 		{
-			GET: () =>
-				SDKCore.pipe(
-					Effect.flatMap((sdk) => sdk.GET.pages()),
-					Effect.map((pages) => {
-						const lastUpdated = new Date().toISOString();
-						return { lastUpdated, pages };
-					}),
-					Effect.map((data) => createJsonResponse(data))
-				),
-			OPTIONS: () => Effect.try(() => OptionsResponse({ allowedMethods: ['GET'] })),
-			ALL: () => Effect.try(() => AllResponse()),
-		},
-		{
-			cors: { methods: ['GET', 'OPTIONS'] },
-			onError: (error) => {
-				console.error('API Error:', error);
-				return createJsonResponse({ error: 'Something went wrong' }, { status: 500 });
-			},
+			status: 500,
 		}
-	),
+	);
+};
+
+const router = {
 	'full-changelog.json': createEffectAPIRoutes(
 		{
 			POST: (ctx) =>
@@ -47,15 +43,12 @@ const router = {
 					Effect.map(createJsonResponse),
 					ProcessChangelog.Provide
 				),
-			OPTIONS: () => Effect.try(() => OptionsResponse({ allowedMethods: ['POST'] })),
-			ALL: () => Effect.try(() => AllResponse()),
+			OPTIONS: optionsFn(['POST']),
+			ALL: allFn,
 		},
 		{
-			cors: { methods: ['POST', 'OPTIONS'] },
-			onError: (error) => {
-				console.error('API Error:', error);
-				return createJsonResponse({ error: 'Something went wrong' }, { status: 500 });
-			},
+			cors: cors('POST'),
+			onError,
 		}
 	),
 	'list-pages': createEffectAPIRoutes(
@@ -69,28 +62,12 @@ const router = {
 					}),
 					Effect.map((data) => createJsonResponse(data))
 				),
-			OPTIONS: () => Effect.try(() => OptionsResponse({ allowedMethods: ['GET'] })),
-			ALL: () => Effect.try(() => AllResponse()),
+			OPTIONS: optionsFn(['GET']),
+			ALL: allFn,
 		},
 		{
-			cors: { methods: ['GET', 'OPTIONS'] },
-			onError: (error) => {
-				const status =
-					typeof error === 'object' &&
-					error !== null &&
-					// biome-ignore lint/suspicious/noExplicitAny: Allows for better error handling
-					'status' in (error as any) &&
-					// biome-ignore lint/suspicious/noExplicitAny: Allows for better error handling
-					typeof (error as any).status === 'number'
-						? // biome-ignore lint/suspicious/noExplicitAny: Allows for better error handling
-							(error as any).status
-						: 500;
-				const message =
-					// biome-ignore lint/suspicious/noExplicitAny: Allows for better error handling
-					status >= 500 ? 'Something went wrong' : ((error as any)?.message ?? 'Request failed');
-				console.error('routes/sdk/list-pages error', { status, message });
-				return createJsonResponse({ error: message }, { status });
-			},
+			cors: cors('GET'),
+			onError,
 		}
 	),
 	'update-latest-version-cache': createEffectAPIRoutes(
@@ -100,20 +77,12 @@ const router = {
 					Effect.flatMap((sdk) => sdk.UPDATE.latestVersion()),
 					Effect.map((latestVersion) => createJsonResponse({ success: true, latestVersion }))
 				),
-			OPTIONS: () => Effect.try(() => OptionsResponse({ allowedMethods: ['GET'] })),
-			ALL: () => Effect.try(() => AllResponse()),
+			OPTIONS: optionsFn(['GET']),
+			ALL: allFn,
 		},
 		{
-			cors: { methods: ['GET', 'OPTIONS'] },
-			onError: (error) => {
-				logger.error(`API Error: ${(error as Error).message}`);
-				return createJsonResponse(
-					{ error: 'Something went wrong' },
-					{
-						status: 500,
-					}
-				);
-			},
+			cors: cors('GET'),
+			onError,
 		}
 	),
 };
