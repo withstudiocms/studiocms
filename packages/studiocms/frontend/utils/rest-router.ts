@@ -5,7 +5,7 @@ import {
 	genLogger,
 	type HTTPMethod,
 } from '@withstudiocms/effect';
-import type { APIRoute } from 'astro';
+import type { APIContext, APIRoute } from 'astro';
 import { Effect, type ParseResult, Schema, type SchemaAST } from 'effect';
 import type { NonEmptyReadonlyArray } from 'effect/Array';
 import { extractParams } from './param-extractor.js';
@@ -198,6 +198,52 @@ export function idOrPathRouter(
 }
 
 /**
+ * Processes an API route handler and returns the corresponding response.
+ *
+ * @param handler - The API route handler function to be executed
+ * @param ctx - The API context containing request and other relevant information
+ * @param path - The path of the API route being processed
+ * @param method - The HTTP method of the request (e.g., GET, POST)
+ * @returns An Effect that resolves to a Response object
+ *
+ * @remarks
+ * This function executes the provided API route handler within an Effect context,
+ * handling any errors that may occur during execution. If the handler is undefined,
+ * it returns an AllResponse. In case of errors, it logs the error and returns a
+ * standardized JSON response indicating an internal server error.
+ *
+ * @example
+ * ```typescript
+ * const responseEffect = processHandler(myHandler, apiContext, '/my-path', 'GET');
+ * ```
+ */
+const processHandler = (
+	handler: APIRoute | undefined,
+	ctx: APIContext,
+	path: string,
+	method: string
+): Effect.Effect<Response, never, never> =>
+	Effect.gen(function* () {
+		if (!handler) {
+			return AllResponse();
+		}
+
+		const response = yield* Effect.tryPromise({
+			try: async () => await handler(ctx),
+			catch: (error) =>
+				new Error(`Error in handler for path ${path} [${method}]: ${String(error)}`),
+		}).pipe(
+			Effect.catchAll((error) =>
+				Effect.logError(`API Route Error: ${String(error)}`).pipe(
+					Effect.as(createJsonResponse({ error: 'Internal Server Error' }, { status: 500 }))
+				)
+			)
+		);
+
+		return response;
+	});
+
+/**
  * Creates a REST router that handles HTTP requests based on route type and optional ID parameters.
  *
  * @template Literals - A non-empty readonly array of literal values representing valid route types
@@ -292,23 +338,7 @@ export const createRestRouter = <
 
 					const handler = handlers ? handlers[method] || handlers.ALL : undefined;
 
-					if (!handler) {
-						return AllResponse();
-					}
-
-					const response = yield* Effect.tryPromise({
-						try: async () => await handler(ctx),
-						catch: (error) =>
-							new Error(`Error in handler for ${type}/${id} [${method}]: ${String(error)}`),
-					}).pipe(
-						Effect.catchAll((error) =>
-							Effect.logError(`API Route Error: ${String(error)}`).pipe(
-								Effect.as(createJsonResponse({ error: 'Internal Server Error' }, { status: 500 }))
-							)
-						)
-					);
-
-					return response;
+					return yield* processHandler(handler, ctx, `${type}/${id}`, method);
 				}
 			)
 		)
@@ -370,23 +400,7 @@ export const createSimplePathRouter = (
 
 				const handler = handlers[method] || handlers.ALL;
 
-				if (!handler) {
-					return AllResponse();
-				}
-
-				const response = yield* Effect.tryPromise({
-					try: async () => await handler(ctx),
-					catch: (error) =>
-						new Error(`Error in handler for path ${path} [${method}]: ${String(error)}`),
-				}).pipe(
-					Effect.catchAll((error) =>
-						Effect.logError(`API Route Error: ${String(error)}`).pipe(
-							Effect.as(createJsonResponse({ error: 'Internal Server Error' }, { status: 500 }))
-						)
-					)
-				);
-
-				return response;
+				return yield* processHandler(handler, ctx, path, method);
 			})
 		)
 	);
