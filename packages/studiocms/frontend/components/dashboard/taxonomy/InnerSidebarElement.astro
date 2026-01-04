@@ -104,8 +104,8 @@ const tagData = tagsToTaxonomyNodes(tags);
     </Tabs>
 </div>
 
-<div 
-    id="inner-sidebar-items-search" 
+<div
+    id="inner-sidebar-items-search"
     class="folder-tree-search-container scrollbar"
     style="display: none;"
     data-searchlist={Astro.locals.StudioCMS.routeMap.endpointLinks.taxonomySearch}
@@ -137,6 +137,11 @@ const tagData = tagsToTaxonomyNodes(tags);
     .sui-tabs-list {
         justify-content: space-evenly;
         overflow: hidden;
+
+        > button {
+        width: 100%;
+        justify-content: center;
+        }
     }
 
     .sui-tabs-container {
@@ -160,8 +165,6 @@ const tagData = tagsToTaxonomyNodes(tags);
         font-size: small;
 
         &:hover {
-            transform: translateY(-2px);
-
             & svg {
                 color: var(--text-normal);
                 transform: scale(1.1) rotate(-5deg);
@@ -183,6 +186,7 @@ const tagData = tagsToTaxonomyNodes(tags);
             width: 20px;
             height: 20px;
             color: var(--text-muted);
+            transition: all .15s ease;
         }
     }
 

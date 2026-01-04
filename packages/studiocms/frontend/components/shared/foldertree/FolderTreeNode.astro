@@ -35,12 +35,12 @@ const t = useTranslations(lang, '@studiocms/dashboard:file-tree-renderer');
             aria-controls={contentId}
             aria-label={`Toggle ${node.name} folder`}
         >
-            <Icon
+            {/*<Icon
                 name="heroicons:chevron-right"
                 class="chevron-icon"
                 width={16}
                 height={16}
-            />
+            />*/}
         </button>
         <div class="tree-node-content">
             <Icon
@@ -335,7 +335,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:file-tree-renderer');
             }
 
             const containerRect = container.getBoundingClientRect();
-            
+
             // Position the menu at cursor (using clientX/clientY for fixed positioning)
             this.contextMenu.style.left = `${e.clientX}px`;
             this.contextMenu.style.top = `${e.clientY}px`;
@@ -348,7 +348,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:file-tree-renderer');
             requestAnimationFrame(() => {
                 if (!this.contextMenu) return;
                 const menuRect = this.contextMenu.getBoundingClientRect();
-                
+
                 // Calculate constrained position
                 let left = e.clientX;
                 let top = e.clientY;

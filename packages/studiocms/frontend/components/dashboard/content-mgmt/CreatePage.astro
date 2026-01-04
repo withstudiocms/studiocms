@@ -107,11 +107,11 @@ const preselectedParentFolder = searchParams.get('parent-folder') ?? 'null';
                     : ['no-augments']
                 }
                 options={
-                  renderAugments.length > 0 
-                    ? renderAugments.map(({ id }) => ({ label: id, value: id })) 
+                  renderAugments.length > 0
+                    ? renderAugments.map(({ id }) => ({ label: id, value: id }))
                     : [
-                        { 
-                          label: t("no-augments"), 
+                        {
+                          label: t("no-augments"),
                           value: 'no-augments',
                           disabled: true,
                         }
@@ -503,7 +503,14 @@ const preselectedParentFolder = searchParams.get('parent-folder') ?? 'null';
   .form-row-booleans {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
+	  display: flex;
+	  flex-direction: row;
+    flex-wrap: wrap;
     gap: 0.75rem;
+
+    > * {
+   		flex-grow: 1;
+    }
   }
 
   .form-row,
