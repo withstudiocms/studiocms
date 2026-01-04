@@ -166,13 +166,15 @@ main {
 }
 
 .container {
-	height: 100%;
+	height: 100vh;
 	min-height: 100vh;
 	max-height: 100vh;
 	max-width: 100%;
 	padding: 1.5rem;
 	overflow-y: auto;
 	overflow-x: hidden;
+	display: flex;
+	flex-direction: column;
 
 	&::-webkit-scrollbar,
 	&::-webkit-scrollbar-track {

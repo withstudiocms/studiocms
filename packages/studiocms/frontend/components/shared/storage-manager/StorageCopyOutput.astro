@@ -29,11 +29,11 @@ const t = useTranslations(lang, '@studiocms/storage-file-browser');
     <div class="storage-copy-output-container" data-input-id={id}>
 
         <div class="storage-copy-output-input-wrapper">
-            <Input 
-                id={id} 
-                name={id} 
-                disabled={disabled} 
-                readonly 
+            <Input
+                id={id}
+                name={id}
+                disabled={disabled}
+                readonly
                 placeholder='storage-file://...'
                 icon={'heroicons:clipboard-document-list-16-solid'}
                 />
@@ -76,7 +76,7 @@ const t = useTranslations(lang, '@studiocms/storage-file-browser');
     }
 
     const copyButton = $<HTMLButtonElement>('#storage-copy-output-copy-button');
-    
+
     copyButton?.addEventListener('click', async () => {
         // Get current button text to restore later
         const initialInnerHTML = copyButton.innerHTML;
@@ -162,7 +162,7 @@ const t = useTranslations(lang, '@studiocms/storage-file-browser');
             & .sui-button {
                 position: absolute;
                 top: 50%;
-                right: 0.5rem;
+                right: 0.25rem;
                 transform: translateY(-50%);
                 z-index: 2;
             }
