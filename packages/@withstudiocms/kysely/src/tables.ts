@@ -187,7 +187,7 @@ export const StudioCMSStorageManagerUrlMappings = Table({
 	url: Schema.String,
 	isPermanent: ColumnType(BooleanFromNumber, NumberFromBoolean, NumberFromBoolean),
 	expiresAt: Schema.optional(Schema.NullishOr(Schema.Number)),
-	createdAt: OptionalColumnType(Schema.Number, Schema.Number, Schema.optional(Schema.Never)),
+	createdAt: OptionalColumnType(Schema.Number, Schema.Number, Schema.Never),
 	updatedAt: Schema.Number,
 });
 

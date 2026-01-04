@@ -9,6 +9,7 @@ import type * as kysely from 'kysely';
  * Unique identifier for ColumnTypes marker.
  */
 export const ColumnTypesId = Symbol.for('@withstudiocms/kysely/ColumnTypesId');
+export const OptionalColumnTypesId = Symbol.for('@withstudiocms/kysely/OptionalColumnTypesId');
 
 /**
  * Unique identifier type for ColumnTypes marker.
@@ -18,6 +19,7 @@ export const ColumnTypesId = Symbol.for('@withstudiocms/kysely/ColumnTypesId');
  * type-checking and branding purposes within the library.
  */
 export type ColumnTypesId = typeof ColumnTypesId;
+export type OptionalColumnTypesId = typeof OptionalColumnTypesId;
 
 /**
  * Describes the column value types for a table or view for different query contexts.
@@ -59,6 +61,37 @@ export interface ColumnTypes<
 	Insert: Insert;
 	Update: Update;
 }
+
+/**
+ * Describes column value types for optional columns that may be omitted during insert or update.
+ *
+ * This interface extends the ColumnTypes interface to specifically handle columns
+ * that are optional in the database schema.
+ */
+export interface OptionalColumnTypes<
+	Select extends Schema.Schema.All,
+	Insert extends Schema.Schema.All,
+	Update extends Schema.Schema.All,
+> {
+	readonly [OptionalColumnTypesId]: OptionalColumnTypesId;
+	readonly Select: Select;
+	Insert: Schema.optional<Insert>;
+	Update: Schema.optional<Update>;
+}
+
+export type PossiblyOptionalColumnTypes<
+	Select extends Schema.Schema.All,
+	Insert extends Schema.Schema.All | Schema.optional<Schema.Schema.All>,
+	Update extends Schema.Schema.All | Schema.optional<Schema.Schema.All>,
+> = Insert extends Schema.optional<infer InsertType>
+	? Update extends Schema.optional<infer UpdateType>
+		? OptionalColumnTypes<Select, InsertType, UpdateType>
+		: never
+	: Insert extends Schema.Schema.All
+		? Update extends Schema.Schema.All
+			? ColumnTypes<Select, Insert, Update>
+			: never
+		: never;
 
 /**
  * Create a typed ColumnType schema that describes how a single database column
@@ -139,23 +172,6 @@ export const ColumnType = <
 };
 
 /**
- * Describes column value types for optional columns that may be omitted during insert or update.
- *
- * This interface extends the ColumnTypes interface to specifically handle columns
- * that are optional in the database schema.
- */
-export interface OptionalColumnTypes<
-	Select extends Schema.Schema.All | Schema.optional<Schema.Schema.All>,
-	Insert extends Schema.Schema.All | Schema.optional<Schema.Schema.All>,
-	Update extends Schema.Schema.All | Schema.optional<Schema.Schema.All>,
-> {
-	readonly [ColumnTypesId]: ColumnTypesId;
-	readonly Select: Select;
-	Insert: Insert;
-	Update: Update;
-}
-
-/**
  * Creates a schema for an optional column that may be omitted during insert or update.
  *
  * This function wraps the provided select, insert, and update schemas in an optional
@@ -168,25 +184,25 @@ export interface OptionalColumnTypes<
  * @returns A new schema representing the optional column.
  */
 export const OptionalColumnType = <
-	Select extends Schema.Schema.All | Schema.optional<Schema.Schema.All>,
-	Insert extends Schema.Schema.All | Schema.optional<Schema.Schema.All>,
-	Update extends Schema.Schema.All | Schema.optional<Schema.Schema.All>,
+	Select extends Schema.Schema.All,
+	Insert extends Schema.Schema.All,
+	Update extends Schema.Schema.All,
 >(
 	Select: Select,
 	Insert: Insert,
 	Update: Update
 ): Schema.Schema<
 	kysely.ColumnType<
-		Select,
-		Select extends Schema.optional<Schema.Schema.All> ? Select | undefined : Select,
-		Select extends Schema.optional<Schema.Schema.All> ? Select | undefined : Select
+		Schema.Schema.Type<Select>,
+		Schema.Schema.Type<Schema.optional<Insert>>,
+		Schema.Schema.Type<Schema.optional<Update>>
 	>,
 	kysely.ColumnType<
-		Insert,
-		Insert extends Schema.optional<Schema.Schema.All> ? Insert | undefined : Insert,
-		Insert extends Schema.optional<Schema.Schema.All> ? Insert | undefined : Insert
+		Schema.Schema.Encoded<Select>,
+		Schema.Schema.Encoded<Schema.optional<Insert>>,
+		Schema.Schema.Encoded<Schema.optional<Update>>
 	>,
-	Schema.Schema.Context<Select | Insert | Update>
+	Schema.Schema.Context<Select | Schema.optional<Insert> | Schema.optional<Update>>
 > &
 	OptionalColumnTypes<Select, Insert, Update> => {
 	return Object.assign(
@@ -197,10 +213,10 @@ export const OptionalColumnType = <
 			/* v8 ignore stop */
 		}),
 		{
-			[ColumnTypesId]: ColumnTypesId,
+			[OptionalColumnTypesId]: OptionalColumnTypesId,
 			Select,
-			Insert,
-			Update,
+			Insert: Schema.optional(Insert),
+			Update: Schema.optional(Update),
 		} as const
 	);
 };
@@ -222,7 +238,7 @@ export const OptionalColumnType = <
  * }
  */
 const isColumnTypes = (value: unknown): value is ColumnTypes<any, any, any> =>
-	hasProperty(value, ColumnTypesId);
+	hasProperty(value, ColumnTypesId) || hasProperty(value, OptionalColumnTypesId);
 /* v8 ignore stop */
 
 /**
@@ -375,23 +391,31 @@ export const JsonColumnType = <
 type GetSelectType<T> =
 	T extends ColumnTypes<infer Select, any, any>
 		? Schema.Schema.Type<Select>
-		: Schema.Schema.Type<T>;
+		: T extends OptionalColumnTypes<infer OSelect, any, any>
+			? Schema.Schema.Type<OSelect>
+			: Schema.Schema.Type<T>;
 
 /**
  * Helper type function to extract the insert shapes from column types.
+ * Preserves optional wrappers from OptionalColumnTypes.
  */
 type GetInsertType<T> =
 	T extends ColumnTypes<any, infer Insert, any>
 		? Schema.Schema.Type<Insert>
-		: Schema.Schema.Type<T>;
+		: T extends OptionalColumnTypes<any, infer OInsert, any>
+			? Schema.Schema.Type<Schema.optional<OInsert>>
+			: Schema.Schema.Type<T>;
 
 /**
  * Helper type function to extract the update shapes from column types.
+ * Preserves optional wrappers from OptionalColumnTypes.
  */
 type GetUpdateType<T> =
 	T extends ColumnTypes<any, any, infer Update>
 		? Schema.Schema.Type<Update>
-		: Schema.Schema.Type<T>;
+		: T extends OptionalColumnTypes<any, any, infer OUpdate>
+			? Schema.Schema.Type<Schema.optional<OUpdate>>
+			: Schema.Schema.Type<T>;
 
 /**
  * Helper type function to extract the select encoded shapes from column types.
@@ -399,23 +423,31 @@ type GetUpdateType<T> =
 type GetSelectEncoded<T> =
 	T extends ColumnTypes<infer Select, any, any>
 		? Schema.Schema.Encoded<Select>
-		: Schema.Schema.Encoded<T>;
+		: T extends OptionalColumnTypes<infer OSelect, any, any>
+			? Schema.Schema.Encoded<OSelect>
+			: Schema.Schema.Encoded<T>;
 
 /**
  * Helper type function to extract the insert encoded shapes from column types.
+ * Preserves optional wrappers from OptionalColumnTypes.
  */
 type GetInsertEncoded<T> =
 	T extends ColumnTypes<any, infer Insert, any>
 		? Schema.Schema.Encoded<Insert>
-		: Schema.Schema.Encoded<T>;
+		: T extends OptionalColumnTypes<any, infer OInsert, any>
+			? Schema.Schema.Encoded<Schema.optional<OInsert>>
+			: Schema.Schema.Encoded<T>;
 
 /**
  * Helper type function to extract the update encoded shapes from column types.
+ * Preserves optional wrappers from OptionalColumnTypes.
  */
 type GetUpdateEncoded<T> =
 	T extends ColumnTypes<any, any, infer Update>
 		? Schema.Schema.Encoded<Update>
-		: Schema.Schema.Encoded<T>;
+		: T extends OptionalColumnTypes<any, any, infer OUpdate>
+			? Schema.Schema.Encoded<Schema.optional<OUpdate>>
+			: Schema.Schema.Encoded<T>;
 
 /**
  * Represents a strongly-typed database table definition.
@@ -471,27 +503,51 @@ type GetUpdateEncoded<T> =
  */
 export interface Table<Columns extends Schema.Struct.Fields>
 	extends Schema.Struct<Columns>,
-		ColumnTypes<
+		PossiblyOptionalColumnTypes<
 			Schema.Struct<{
-				readonly [K in keyof Columns]: Schema.Schema<
-					GetSelectType<Columns[K]>,
-					GetSelectEncoded<Columns[K]>,
-					Schema.Schema.Context<Columns[K]>
-				>;
+				readonly [K in keyof Columns]: Columns[K] extends Schema.optional<Schema.Schema.All>
+					? Schema.optional<
+							Schema.Schema<
+								GetSelectType<Columns[K]>,
+								GetSelectEncoded<Columns[K]>,
+								Schema.Schema.Context<Columns[K]>
+							>
+						>
+					: Schema.Schema<
+							GetSelectType<Columns[K]>,
+							GetSelectEncoded<Columns[K]>,
+							Schema.Schema.Context<Columns[K]>
+						>;
 			}>,
 			Schema.Struct<{
-				readonly [K in keyof Columns]: Schema.Schema<
-					GetInsertType<Columns[K]>,
-					GetInsertEncoded<Columns[K]>,
-					Schema.Schema.Context<Columns[K]>
-				>;
+				readonly [K in keyof Columns]: Columns[K] extends Schema.optional<Schema.Schema.All>
+					? Schema.optional<
+							Schema.Schema<
+								GetInsertType<Columns[K]>,
+								GetInsertEncoded<Columns[K]>,
+								Schema.Schema.Context<Columns[K]>
+							>
+						>
+					: Schema.Schema<
+							GetInsertType<Columns[K]>,
+							GetInsertEncoded<Columns[K]>,
+							Schema.Schema.Context<Columns[K]>
+						>;
 			}>,
 			Schema.Struct<{
-				readonly [K in keyof Columns]: Schema.Schema<
-					GetUpdateType<Columns[K]>,
-					GetUpdateEncoded<Columns[K]>,
-					Schema.Schema.Context<Columns[K]>
-				>;
+				readonly [K in keyof Columns]: Columns[K] extends Schema.optional<Schema.Schema.All>
+					? Schema.optional<
+							Schema.Schema<
+								GetUpdateType<Columns[K]>,
+								GetUpdateEncoded<Columns[K]>,
+								Schema.Schema.Context<Columns[K]>
+							>
+						>
+					: Schema.Schema<
+							GetUpdateType<Columns[K]>,
+							GetUpdateEncoded<Columns[K]>,
+							Schema.Schema.Context<Columns[K]>
+						>;
 			}>
 		> {}
 
@@ -748,9 +804,5 @@ export const DateFromString = ColumnType(Schema.DateFromString, Schema.String, S
  * @constant
  * @public
  */
-export const CreatedAtDate = OptionalColumnType(
-	Schema.DateFromString,
-	Schema.optional(Schema.UndefinedOr(Schema.String)),
-	Schema.optional(Schema.Never)
-);
+export const CreatedAtDate = OptionalColumnType(Schema.DateFromString, Schema.String, Schema.Never);
 /* v8 ignore stop */

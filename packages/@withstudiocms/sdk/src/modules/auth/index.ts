@@ -502,6 +502,7 @@ export const SDKAuthModule = Effect.gen(function* () {
 					: _createNewUser({
 							...GhostUserDefaults,
 							updatedAt: new Date().toISOString(),
+							createdAt: new Date().toISOString(),
 							emailVerified: false,
 						})
 			)
