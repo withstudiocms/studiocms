@@ -18,8 +18,15 @@ const allFn = () => Effect.try(() => AllResponse());
 
 const cors = (method: string) => ({ methods: [method, 'OPTIONS'] }) as { methods: HTTPMethod[] };
 
+const isError = (error: unknown): error is Error => {
+	return (
+		error instanceof Error || (typeof error === 'object' && error !== null && 'message' in error)
+	);
+};
+
 const onError = (error: unknown) => {
-	logger.error(`API Error: ${(error as Error).message}`);
+	const message = isError(error) ? error.message : String(error);
+	logger.error(`API Error: ${message}`);
 	return createJsonResponse(
 		{ error: 'Something went wrong' },
 		{
