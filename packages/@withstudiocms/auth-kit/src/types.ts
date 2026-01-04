@@ -43,28 +43,28 @@ export interface UserSession {
  */
 export interface UserData {
 	readonly username: string;
-	readonly password: string | null | undefined;
+	readonly password?: string | null | undefined;
 	readonly name: string;
-	readonly notifications: string | null | undefined;
+	readonly notifications?: string | null | undefined;
 	readonly id: string;
 	readonly updatedAt: Date;
-	readonly url: string | null | undefined;
-	readonly email: string | null | undefined;
-	readonly avatar: string | null | undefined;
+	readonly url?: string | null | undefined;
+	readonly email?: string | null | undefined;
+	readonly avatar?: string | null | undefined;
 	readonly createdAt: Date;
 	readonly emailVerified: boolean;
 }
 
 export interface UserDataInsert {
 	readonly username: string;
-	readonly password: string | null | undefined;
+	readonly password?: string | null | undefined;
 	readonly name: string;
-	readonly notifications: string | null | undefined;
+	readonly notifications?: string | null | undefined;
 	readonly id: string;
 	readonly updatedAt: string;
-	readonly url: string | null | undefined;
-	readonly email: string | null | undefined;
-	readonly avatar: string | null | undefined;
+	readonly url?: string | null | undefined;
+	readonly email?: string | null | undefined;
+	readonly avatar?: string | null | undefined;
 	readonly createdAt: string | undefined;
 	readonly emailVerified: boolean;
 }

@@ -220,7 +220,7 @@ export const { POST, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 					ContributorIds.push(userData.user!.id);
 				}
 
-				const newData: tsPageData['Insert']['Type'] = {
+				const newData: tsPageData['Update']['Type'] = {
 					...(data as tsPageDataSelect),
 					authorId: AuthorId,
 					contributorIds: JSON.stringify(ContributorIds),

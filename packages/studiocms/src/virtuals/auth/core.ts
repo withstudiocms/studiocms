@@ -51,7 +51,7 @@ const authKitConfig = AuthKitOptions.Live({
 		getUserById: async (id) => runEffect(sdk.GET.users.byId(id)),
 		getUserByEmail: async (email) => runEffect(sdk.GET.users.byEmail(email)),
 		updateLocalUser: async (userId, userData) =>
-			runEffect(sdk.AUTH.user.update({ userId, userData })),
+			runEffect(sdk.AUTH.user.update({ userId, userData: { ...userData, createdAt: undefined } })),
 		notifier: {
 			admin: (type, message) => runEffect(notifyAdmin(type, message)),
 		},
