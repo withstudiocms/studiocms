@@ -56,6 +56,7 @@ export const { GET, OPTIONS, ALL } = createEffectAPIRoutes(
 							username: existingUser.username,
 							emailVerified: true,
 							updatedAt: new Date().toISOString(),
+							createdAt: undefined,
 						},
 					}),
 					sdk.AUTH.verifyEmail.delete(userId),

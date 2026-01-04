@@ -128,6 +128,8 @@ export const onRequest = defineMiddlewareRouter([
 			`/${dashboardRoute}/logout/**`,
 			`/${dashboardRoute}/forgot-password`,
 			`/${dashboardRoute}/forgot-password/**`,
+			`/${dashboardRoute}/password-reset`,
+			`/${dashboardRoute}/password-reset/**`,
 		],
 		priority: 3,
 		handler: Effect.fn(function* (context, next) {
