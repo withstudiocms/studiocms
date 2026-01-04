@@ -138,6 +138,73 @@ export const ColumnType = <
 	);
 };
 
+/**
+ * Describes column value types for optional columns that may be omitted during insert or update.
+ *
+ * This interface extends the ColumnTypes interface to specifically handle columns
+ * that are optional in the database schema.
+ */
+export interface OptionalColumnTypes<
+	Select extends Schema.Schema.All | Schema.optional<Schema.Schema.All>,
+	Insert extends Schema.Schema.All | Schema.optional<Schema.Schema.All>,
+	Update extends Schema.Schema.All | Schema.optional<Schema.Schema.All>,
+> {
+	readonly [ColumnTypesId]: ColumnTypesId;
+	readonly Select: Select;
+	Insert: Insert;
+	Update: Update;
+}
+
+/**
+ * Creates a schema for an optional column that may be omitted during insert or update.
+ *
+ * This function wraps the provided select, insert, and update schemas in an optional
+ * schema, indicating that the column is not required.
+ *
+ * @param select - The schema for the column's selected value.
+ * @param insert - The schema for the column's value when inserting.
+ * @param update - The schema for the column's value when updating.
+ *
+ * @returns A new schema representing the optional column.
+ */
+export const OptionalColumnType = <
+	Select extends Schema.Schema.All | Schema.optional<Schema.Schema.All>,
+	Insert extends Schema.Schema.All | Schema.optional<Schema.Schema.All>,
+	Update extends Schema.Schema.All | Schema.optional<Schema.Schema.All>,
+>(
+	Select: Select,
+	Insert: Insert,
+	Update: Update
+): Schema.Schema<
+	kysely.ColumnType<
+		Select,
+		Select extends Schema.optional<Schema.Schema.All> ? Select | undefined : Select,
+		Select extends Schema.optional<Schema.Schema.All> ? Select | undefined : Select
+	>,
+	kysely.ColumnType<
+		Insert,
+		Insert extends Schema.optional<Schema.Schema.All> ? Insert | undefined : Insert,
+		Insert extends Schema.optional<Schema.Schema.All> ? Insert | undefined : Insert
+	>,
+	Schema.Schema.Context<Select | Insert | Update>
+> &
+	OptionalColumnTypes<Select, Insert, Update> => {
+	return Object.assign(
+		Schema.make<any, any, never>(Schema.Never.ast).annotations({
+			/* v8 ignore start */
+			message: () =>
+				'OptionalColumnType Schema is not intended to be used directly. Utilize ColumnType.[select|insert|update]',
+			/* v8 ignore stop */
+		}),
+		{
+			[ColumnTypesId]: ColumnTypesId,
+			Select,
+			Insert,
+			Update,
+		} as const
+	);
+};
+
 /* v8 ignore start */
 /**
  * Runtime type guard that determines whether a value conforms to the ColumnTypes shape.
@@ -681,9 +748,9 @@ export const DateFromString = ColumnType(Schema.DateFromString, Schema.String, S
  * @constant
  * @public
  */
-export const CreatedAtDate = ColumnType(
+export const CreatedAtDate = OptionalColumnType(
 	Schema.DateFromString,
-	Schema.UndefinedOr(Schema.String),
-	Schema.Never
+	Schema.optional(Schema.UndefinedOr(Schema.String)),
+	Schema.optional(Schema.Never)
 );
 /* v8 ignore stop */

@@ -8,6 +8,7 @@ import {
 	encodeDatabase,
 	JSONObjectFromString,
 	NumberFromBoolean,
+	OptionalColumnType,
 	StringArrayFromString,
 	Table,
 } from './core/schema.js';
@@ -17,16 +18,16 @@ import {
  */
 export const StudioCMSUsersTable = Table({
 	id: Schema.String,
-	url: Schema.NullishOr(Schema.String),
+	url: Schema.optional(Schema.NullishOr(Schema.String)),
 	name: Schema.String,
-	email: Schema.NullishOr(Schema.String),
-	avatar: Schema.NullishOr(Schema.String),
+	email: Schema.optional(Schema.NullishOr(Schema.String)),
+	avatar: Schema.optional(Schema.NullishOr(Schema.String)),
 	username: Schema.String,
-	password: Schema.NullishOr(Schema.String),
+	password: Schema.optional(Schema.NullishOr(Schema.String)),
 	updatedAt: DateFromString,
 	createdAt: CreatedAtDate,
 	emailVerified: BooleanFromNumber,
-	notifications: Schema.NullishOr(Schema.String),
+	notifications: Schema.optional(Schema.NullishOr(Schema.String)),
 });
 
 /**
@@ -63,7 +64,7 @@ export const StudioCMSAPIKeys = Table({
 	userId: Schema.String,
 	key: Schema.String,
 	creationDate: CreatedAtDate,
-	description: Schema.NullishOr(Schema.String),
+	description: Schema.optional(Schema.NullishOr(Schema.String)),
 });
 
 /**
@@ -81,7 +82,7 @@ export const StudioCMSUserResetTokens = Table({
 export const StudioCMSPageFolderStructure = Table({
 	id: Schema.String,
 	name: Schema.String,
-	parent: Schema.NullishOr(Schema.String),
+	parent: Schema.optional(Schema.NullishOr(Schema.String)),
 });
 
 /**
@@ -97,14 +98,14 @@ export const StudioCMSPageData = Table({
 	updatedAt: DateFromString,
 	slug: Schema.String,
 	contentLang: Schema.String,
-	heroImage: Schema.NullishOr(Schema.String),
+	heroImage: Schema.optional(Schema.NullishOr(Schema.String)),
 	categories: ColumnType(StringArrayFromString, Schema.String, Schema.String),
 	tags: ColumnType(StringArrayFromString, Schema.String, Schema.String),
 	authorId: Schema.String,
 	contributorIds: ColumnType(StringArrayFromString, Schema.String, Schema.String),
 	showAuthor: BooleanFromNumber,
 	showContributors: BooleanFromNumber,
-	parentFolder: Schema.NullishOr(Schema.String),
+	parentFolder: Schema.optional(Schema.NullishOr(Schema.String)),
 	draft: BooleanFromNumber,
 	augments: ColumnType(StringArrayFromString, Schema.String, Schema.String),
 });
@@ -119,7 +120,7 @@ export const StudioCMSDiffTracking = Table({
 	timestamp: CreatedAtDate,
 	pageMetaData: ColumnType(JSONObjectFromString, Schema.String, Schema.String),
 	pageContentStart: Schema.String,
-	diff: Schema.NullishOr(Schema.String),
+	diff: Schema.optional(Schema.NullishOr(Schema.String)),
 });
 
 /**
@@ -138,7 +139,7 @@ export const StudioCMSPageDataTags = Table({
  */
 export const StudioCMSPageDataCategories = Table({
 	id: Schema.Number,
-	parent: Schema.NullishOr(Schema.Number),
+	parent: Schema.optional(Schema.NullishOr(Schema.Number)),
 	description: Schema.String,
 	name: Schema.String,
 	slug: Schema.String,
@@ -185,8 +186,8 @@ export const StudioCMSStorageManagerUrlMappings = Table({
 	identifier: Schema.String,
 	url: Schema.String,
 	isPermanent: ColumnType(BooleanFromNumber, NumberFromBoolean, NumberFromBoolean),
-	expiresAt: Schema.NullishOr(Schema.Number),
-	createdAt: ColumnType(Schema.Number, Schema.Number, Schema.Never),
+	expiresAt: Schema.optional(Schema.NullishOr(Schema.Number)),
+	createdAt: OptionalColumnType(Schema.Number, Schema.Number, Schema.optional(Schema.Never)),
 	updatedAt: Schema.Number,
 });
 
