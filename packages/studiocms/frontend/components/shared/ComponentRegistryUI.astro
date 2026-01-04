@@ -2,6 +2,7 @@
 import type { ComponentRegistryEntry } from 'studiocms:component-registry/runtime';
 import { generateComponentTranslationMap } from 'studiocms:i18n';
 import '../../styles/code-component.css';
+import '@studiocms/ui/components/Button/button.css';
 
 interface Props {
 	registryData: ComponentRegistryEntry[];
@@ -814,9 +815,9 @@ const translations = generateComponentTranslationMap('@studiocms/component-regis
             ${prop.name}
             <span class="prop-info">${typeInfo}${description}</span>
           </label>
-          <input 
-            type="text" 
-            class="prop-input" 
+          <input
+            type="text"
+            class="prop-input"
             id="${propId}"
             name="${prop.name}"
             data-prop-name="${prop.name}"
@@ -855,10 +856,10 @@ const translations = generateComponentTranslationMap('@studiocms/component-regis
         <h3 class="output-title">${this.t("generatedHtmlTitle")}</h3>
         <pre class="code-container scrollbar output-code"><code class="custom-code">${this.escapeHtml(htmlString)}</code></pre>
         <div class="button-group">
-          <button class="button button-success copy-button" type="button">
+          <button class="sui-button md primary copy-button" type="button">
             ${this.t("copyToClipboard")}
           </button>
-          <button class="button button-secondary reset-button" type="button">
+          <button class="sui-button md danger reset-button" type="button">
             ${this.t("resetProps")}
           </button>
         </div>
