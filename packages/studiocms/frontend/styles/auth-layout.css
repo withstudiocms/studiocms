@@ -112,7 +112,7 @@ main {
 	}
 
 	#canvas-container {
-		display: none;
+		display: none !important;
 	}
 
 	.login-form-container {

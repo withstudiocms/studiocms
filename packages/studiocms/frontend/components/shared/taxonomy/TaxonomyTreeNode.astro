@@ -39,12 +39,12 @@ const t = useTranslations(lang, '@studiocms/dashboard:taxonomy-tree-renderer');
                     aria-controls={contentId}
                     aria-label={`Toggle ${node.name}`}
                 >
-                    <Icon
+                    {/*<Icon
                         name="heroicons:chevron-right"
                         class="chevron-icon"
                         width={16}
                         height={16}
-                    />
+                    />*/}
                 </button>
             )
         }
@@ -215,7 +215,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:taxonomy-tree-renderer');
 
             const currentEdit = new URL(window.location.href).searchParams.get('edit');
 
-            const isActive = 
+            const isActive =
                 hrefEdit !== null &&
                 currentEdit !== null &&
                 hrefEdit === currentEdit;
@@ -334,7 +334,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:taxonomy-tree-renderer');
             requestAnimationFrame(() => {
                 if (!this.contextMenu) return;
                 const menuRect = this.contextMenu.getBoundingClientRect();
-                
+
                 // Calculate constrained position
                 let left = e.clientX;
                 let top = e.clientY;

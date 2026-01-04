@@ -50,22 +50,22 @@ const description = propDescription ?? config.data.description;
 <BaseLayout {lang} {title} {description}>
   <Ambients />
   <SidebarModals {lang} />
-  { 
+  {
     requiredPermission !== 'none' && (
       <LoginChecker {requiredPermission} {currentUser} />
     )
   }
-  { 
+  {
     sidebar === 'single' && (
       <SingleSidebar {currentUser} />
     )
   }
-  { 
+  {
     sidebar === 'double' && (
       <DoubleSidebar {currentUser} >
         <slot name="double-sidebar" />
       </DoubleSidebar>
-    ) 
+    )
   }
 
   <slot name="external" />
@@ -80,7 +80,7 @@ const description = propDescription ?? config.data.description;
       </div>
     </div>
   </main>
-  
+
   <style>
     .page-header {
       margin-bottom: 1.5rem;
@@ -92,6 +92,24 @@ const description = propDescription ?? config.data.description;
 
     if (!customElements.get('p-translations')) {
       customElements.define('p-translations', PluginTranslations);
+    }
+
+    // Whenever the element with id "sui-sidebars" changes width, set the main content width accordingly
+    const doubleSidebar = document.getElementById("sui-sidebars") as HTMLDivElement | null;
+    const main = document.querySelector("main");
+    const body = document.querySelector("body");
+
+    if (doubleSidebar && body && main) {
+    	const resizeObserver = new ResizeObserver(() => {
+     		const newWidth = doubleSidebar.clientWidth;
+				const windowWidth = window.innerWidth;
+				const computedWidth = windowWidth - newWidth;
+
+				main.style.maxWidth = computedWidth > 840 ? `${computedWidth}px` : `100%`;
+     	});
+
+    	resizeObserver.observe(doubleSidebar);
+    	resizeObserver.observe(body);
     }
   </script>
 </BaseLayout>

@@ -306,8 +306,8 @@ const notificationSettingKeys = Object.keys(notificationSettings.data).filter(
           <div class="template-wrapper-col1">
             <div id="template-editor-container" class="template-editor-container">
               <Card fullWidth fullHeight id="template-editor-card">
-                <TemplateEditor 
-                  templates={tEngine.allTemplates} 
+                <TemplateEditor
+                  templates={tEngine.allTemplates}
                   templateKeys={tEngine.availableTemplates}
                   defaultTemplates={tEngine.defaultTemplates}
                   t={t}
@@ -696,7 +696,7 @@ const notificationSettingKeys = Object.keys(notificationSettings.data).filter(
     display: flex;
     gap: 1rem;
     padding: 1rem;
-    height: 70vh;
+    min-height: 70vh;
   }
 
   .template-wrapper-col1 {
