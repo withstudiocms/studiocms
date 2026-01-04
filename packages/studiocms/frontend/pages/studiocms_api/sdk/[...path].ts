@@ -93,7 +93,7 @@ const router = {
 			},
 		}
 	),
-	'update-latest-version-cache.ts': createEffectAPIRoutes(
+	'update-latest-version-cache': createEffectAPIRoutes(
 		{
 			GET: () =>
 				SDKCore.pipe(
