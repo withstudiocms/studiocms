@@ -12,9 +12,9 @@ import {
 	Schema,
 } from '@withstudiocms/effect';
 import { StudioCMSPageDataCategories } from '@withstudiocms/kysely';
+import { buildPartialSchema } from '../../../../../../utils/build-partial-schema.js';
+import type { EndpointRoute } from './../../../../../../utils/rest-router.js';
 import { verifyAuthTokenFromHeader } from '../../../utils/auth-token.js';
-import { buildPartialSchema } from '../../../utils/build-partial-schema.js';
-import type { EndpointRoute } from './../../../utils/rest-router.js';
 
 const PartialCategories = buildPartialSchema(StudioCMSPageDataCategories.Select);
 

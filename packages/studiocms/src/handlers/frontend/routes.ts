@@ -84,20 +84,8 @@ export const setupRoutes: InjectedRoute[] = [
 export const noDbSetupRoutes: InjectedRoute[] = [
 	// SDK API routes
 	{
-		pattern: '/studiocms_api/sdk/list-pages',
-		entrypoint: 'pages/studiocms_api/sdk/list-pages.ts',
-	},
-	{
-		pattern: '/studiocms_api/sdk/update-latest-version-cache',
-		entrypoint: 'pages/studiocms_api/sdk/update-latest-version-cache.ts',
-	},
-	{
-		pattern: '/studiocms_api/sdk/fallback-list-pages.json',
-		entrypoint: 'pages/studiocms_api/sdk/fallback-list-pages.json.ts',
-	},
-	{
-		pattern: '/studiocms_api/sdk/full-changelog.json',
-		entrypoint: 'pages/studiocms_api/sdk/full-changelog.json.ts',
+		pattern: '/studiocms_api/sdk/[...path]',
+		entrypoint: 'pages/studiocms_api/sdk/[...path].ts',
 	},
 	// Renderer service route
 	{

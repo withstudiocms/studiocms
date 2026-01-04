@@ -8,7 +8,7 @@ import {
 	genLogger,
 	OptionsResponse,
 } from '@withstudiocms/effect';
-import type { EndpointRoute } from '../../../../utils/rest-router.js';
+import type { EndpointRoute } from '../../../../../../../utils/rest-router.js';
 
 export const pagesRouter: EndpointRoute = {
 	__idType: 'string',

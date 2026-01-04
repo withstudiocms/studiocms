@@ -8,7 +8,7 @@ import {
 import type { APIRoute } from 'astro';
 import { Effect, type ParseResult, Schema, type SchemaAST } from 'effect';
 import type { NonEmptyReadonlyArray } from 'effect/Array';
-import { extractParams } from './param-extractor';
+import { extractParams } from './param-extractor.js';
 
 /**
  * An entry in the route registry defining handlers for a specific ID type.
@@ -231,23 +231,19 @@ export const createRestRouter = <
 	types: Schema.Literal<Literals>,
 	registry: RouteRegistry
 ) => {
-	const paramSchemaBase = Schema.Struct({
+	const paramSchema = Schema.Struct({
 		type: types,
 		id: Schema.optional(Schema.String),
-	});
-
-	const getTypeLabel = ({ actual }: ParseResult.ParseIssue) => {
-		if (Schema.is(paramSchemaBase)(actual)) {
-			return `Type: ${
-				// biome-ignore lint/style/noNonNullAssertion: we know it's defined here
-				firstLetterUppercase(actual.type!.toString())
-			}`;
-		}
-	};
-
-	const paramSchema = paramSchemaBase.annotations({
+	}).annotations({
 		identifier: 'TypeParams',
-		parseIssueTitle: getTypeLabel,
+		parseIssueTitle: ({ actual }: ParseResult.ParseIssue) => {
+			if (Schema.is(paramSchema)(actual)) {
+				return `Type: ${
+					// biome-ignore lint/style/noNonNullAssertion: we know it's defined here
+					firstLetterUppercase(actual.type!.toString())
+				}`;
+			}
+		},
 	});
 
 	return createEffectAPIRoute(
@@ -315,6 +311,83 @@ export const createRestRouter = <
 					return response;
 				}
 			)
+		)
+	);
+};
+
+/**
+ * Creates a simple path-based router for REST API endpoints.
+ *
+ * @param prefix - A prefix string used for logging purposes to identify the route group
+ * @param subPathRouter - A record mapping sub-path strings to their corresponding partial API route handlers
+ *
+ * @returns An Effect API route handler that:
+ * - Extracts and validates the `path` parameter from the request
+ * - Determines the appropriate handler based on the specified sub-path
+ * - Dispatches requests to the appropriate HTTP method handler (GET, POST, etc.) or ALL handler
+ * - Returns an AllResponse if no matching handler is found
+ * - Logs errors and returns 500 status for handler execution failures
+ *
+ * @example
+ * ```typescript
+ * const router = createSimplePathRouter(
+ *   'api',
+ *   {
+ *     'status': { GET: async (ctx) => { ... } },
+ *     'info': { ALL: async (ctx) => { ... } }
+ *   }
+ * );
+ * ```
+ */
+export const createSimplePathRouter = (
+	prefix: string,
+	router: Record<string, Partial<Record<HTTPMethod | 'ALL', APIRoute>>>
+) => {
+	const pathSchema = Schema.Struct({
+		path: Schema.String,
+	}).annotations({
+		identifier: 'PathParams',
+		parseIssueTitle: ({ actual }: ParseResult.ParseIssue) => {
+			if (Schema.is(pathSchema)(actual)) {
+				return `Path: ${firstLetterUppercase(actual.path.toString())}`;
+			}
+		},
+	});
+
+	return createEffectAPIRoute(
+		extractParams(pathSchema)(({ path }, ctx) =>
+			genLogger(`${prefix}:${path}:${ctx.request.method}`)(function* () {
+				const method = ctx.request.method.toUpperCase() as keyof Record<
+					HTTPMethod | 'ALL',
+					APIRoute
+				>;
+
+				const handlers = router[path];
+
+				if (!handlers) {
+					return AllResponse();
+				}
+
+				const handler = handlers[method] || handlers.ALL;
+
+				if (!handler) {
+					return AllResponse();
+				}
+
+				const response = yield* Effect.tryPromise({
+					try: async () => await handler(ctx),
+					catch: (error) =>
+						new Error(`Error in handler for path ${path} [${method}]: ${String(error)}`),
+				}).pipe(
+					Effect.catchAll((error) =>
+						Effect.logError(`API Route Error: ${String(error)}`).pipe(
+							Effect.as(createJsonResponse({ error: 'Internal Server Error' }, { status: 500 }))
+						)
+					)
+				);
+
+				return response;
+			})
 		)
 	);
 };

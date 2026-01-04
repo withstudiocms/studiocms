@@ -13,12 +13,12 @@ import {
 	Schema,
 } from '@withstudiocms/effect';
 import { StudioCMSPageData } from '@withstudiocms/kysely';
-import { verifyAuthTokenFromHeader } from '../../../utils/auth-token.js';
 import {
 	type EndpointRoute,
 	idOrPathRouter,
 	type SubPathRouter,
-} from '../../../utils/rest-router.js';
+} from '../../../../../../utils/rest-router.js';
+import { verifyAuthTokenFromHeader } from '../../../utils/auth-token.js';
 
 type UpdatePageData = Partial<tsPageDataSelect>;
 type UpdatePageContent = Partial<tsPageContentSelect>;

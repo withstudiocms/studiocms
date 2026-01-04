@@ -9,8 +9,8 @@ import {
 	OptionsResponse,
 	readAPIContextJson,
 } from '@withstudiocms/effect';
+import type { EndpointRoute } from './../../../../../../utils/rest-router.js';
 import { verifyAuthTokenFromHeader } from '../../../utils/auth-token.js';
-import type { EndpointRoute } from './../../../utils/rest-router.js';
 
 export const settingsRouter: EndpointRoute = {
 	__idType: 'string',
