@@ -1,5 +1,5 @@
 import type { Effect } from '@withstudiocms/effect';
-import type { DBCallbackFailure, OptionalNullable } from '@withstudiocms/kysely/core/client';
+import type { DBCallbackFailure } from '@withstudiocms/kysely/core/client';
 import type { DatabaseError } from '@withstudiocms/kysely/core/errors';
 import type {
 	StudioCMSAPIKeys,
@@ -167,12 +167,7 @@ export interface FolderListItem {
  * @param input - An object containing an optional nullable `id` string.
  * @returns An effect that yields the dynamic configuration entry or a database error.
  */
-export type DbQueryFn = (
-	input: OptionalNullable<{
-		readonly id: string;
-		readonly data: string;
-	}>
-) => Effect.Effect<
+export type DbQueryFn = (input: { readonly id: string; readonly data: string }) => Effect.Effect<
 	{
 		readonly id: string;
 		readonly data: {

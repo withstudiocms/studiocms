@@ -150,6 +150,7 @@ export const SDKRestAPIModule = Effect.gen(function* () {
 					key,
 					userId,
 					description,
+					creationDate: new Date().toISOString(),
 				})
 			)
 		)

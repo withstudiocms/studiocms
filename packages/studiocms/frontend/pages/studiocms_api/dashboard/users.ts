@@ -130,6 +130,7 @@ export const { POST, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 							name: existingUser.name,
 							username: existingUser.username,
 							updatedAt: new Date().toISOString(),
+							createdAt: undefined,
 							emailVerified,
 						},
 					});

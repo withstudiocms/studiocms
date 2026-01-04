@@ -93,6 +93,7 @@ export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
 						username: userData.username,
 						updatedAt: new Date().toISOString(),
 						emailVerified: userData.emailVerified,
+						createdAt: undefined,
 						...userUpdate,
 					},
 				});

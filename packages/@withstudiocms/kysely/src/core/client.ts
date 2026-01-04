@@ -4,42 +4,6 @@ import { type Dialect, Kysely, NoResultError } from 'kysely';
 import { type DatabaseError, NotFoundError, QueryError, QueryParseError } from './errors.js';
 
 /**
- * Utility type to determine if a type includes null or undefined.
- */
-type HasNullOrUndefined<T> = null extends T ? true : undefined extends T ? true : false;
-
-/**
- * Utility type to remove never from object types at any depth.
- */
-type OmitNever<T> = {
-	[K in keyof T as T[K] extends never ? never : K]: T[K];
-};
-
-/**
- * Utility type to recursively make properties that can be null or undefined optional,
- * while also processing nested objects and removing never types.
- */
-export type OptionalNullable<T> = OmitNever<
-	// Optional properties (nullable/undefined)
-	{
-		[K in keyof T as HasNullOrUndefined<T[K]> extends true ? K : never]?: T[K] extends object
-			? // biome-ignore lint/suspicious/noExplicitAny: Dynamic BS
-				T[K] extends any[]
-				? T[K] // Don't recurse into arrays
-				: OptionalNullable<T[K]> // Recurse into objects
-			: T[K];
-	} & {
-		// Required properties (non-nullable)
-		[K in keyof T as HasNullOrUndefined<T[K]> extends true ? never : K]: T[K] extends object
-			? // biome-ignore lint/suspicious/noExplicitAny: Dynamic BS
-				T[K] extends any[]
-				? T[K] // Don't recurse into arrays
-				: OptionalNullable<T[K]> // Recurse into objects
-			: T[K];
-	}
->;
-
-/**
  * Type alias for an Effect-wrapped database operation that accepts a Kysely instance and returns a result.
  *
  * This type represents a higher-order function that takes a callback function as an argument.
@@ -170,14 +134,14 @@ interface DBCodecs<Schema> {
 	 *
 	 * @returns A function that accepts input of type CIType and returns an Effect yielding O or failing with DatabaseError.
 	 */
-	readonly withEncoder: <IEncoded, IType, O, CIType = OptionalNullable<IType>>({
+	readonly withEncoder: <IEncoded, IType, O>({
 		callbackFn,
 		encoder,
 	}: {
 		encoder: Schema.Schema<IType, IEncoded>;
 		callbackFn: DBCallbackFn<Schema, IEncoded, O>;
 	}) => (
-		input: CIType
+		input: IType
 	) => Effect.Effect<O, DatabaseError | NotFoundError | QueryError | DBCallbackFailure, never>;
 
 	/**
@@ -218,7 +182,7 @@ interface DBCodecs<Schema> {
 	 *
 	 * @returns A function that accepts input of type CIType and returns an Effect yielding OType or failing with DatabaseError.
 	 */
-	readonly withCodec: <IEncoded, IType, OEncoded, OType, CIType = OptionalNullable<IType>>({
+	readonly withCodec: <IEncoded, IType, OEncoded, OType>({
 		encoder,
 		decoder,
 		callbackFn,
@@ -227,7 +191,7 @@ interface DBCodecs<Schema> {
 		decoder: Schema.Schema<OType, OEncoded, never>;
 		callbackFn: DBCallbackFn<Schema, IEncoded, OEncoded>;
 	}) => (
-		input: CIType
+		input: IType
 	) => Effect.Effect<OType, DatabaseError | NotFoundError | QueryError | DBCallbackFailure, never>;
 }
 
@@ -443,7 +407,7 @@ const dbClient = <Schema>(): KyselyDBClientRaw<Schema> =>
 		 * @returns A function that accepts input: CIType and returns Effect.Effect<O, DatabaseError>. The effect encodes the input and runs the query inside the Effect runtime.
 		 */
 		const withEncoder: DBCodecs<Schema>['withEncoder'] =
-			<IEncoded, IType, O, CIType = OptionalNullable<IType>>({
+			<IEncoded, IType, O>({
 				callbackFn,
 				encoder,
 			}: {
@@ -453,7 +417,7 @@ const dbClient = <Schema>(): KyselyDBClientRaw<Schema> =>
 					input: IEncoded
 				) => Effect.Effect<O, DatabaseError | NotFoundError | QueryError | DBCallbackFailure>;
 			}) =>
-			(input: CIType) =>
+			(input: IType) =>
 				Effect.gen(function* () {
 					const encoded = yield* encode(encoder, input as unknown as IType);
 					return yield* callbackFn(effectDb, encoded);
@@ -532,7 +496,7 @@ const dbClient = <Schema>(): KyselyDBClientRaw<Schema> =>
 		 * const effect = getUser({ id: 'abc' });
 		 */
 		const withCodec: DBCodecs<Schema>['withCodec'] =
-			<IEncoded, IType, OEncoded, OType, CIType = OptionalNullable<IType>>({
+			<IEncoded, IType, OEncoded, OType>({
 				encoder,
 				decoder,
 				callbackFn,
@@ -548,7 +512,7 @@ const dbClient = <Schema>(): KyselyDBClientRaw<Schema> =>
 				>;
 			}) =>
 			(
-				input: CIType
+				input: IType
 			): Effect.Effect<OType, DatabaseError | NotFoundError | QueryError | DBCallbackFailure> =>
 				Effect.gen(function* () {
 					const encoded = yield* encode(encoder, input as unknown as IType);
