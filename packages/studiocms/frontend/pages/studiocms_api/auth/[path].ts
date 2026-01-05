@@ -14,6 +14,7 @@ import {
 	createJsonResponse,
 	Effect,
 	genLogger,
+	type HTTPMethod,
 	Layer,
 	OptionsResponse,
 	pipe,
@@ -62,6 +63,17 @@ const onError = (error: unknown) => {
 			status: 500,
 		}
 	);
+};
+
+const sharedHandlers = {
+	OPTIONS: () => Effect.try(() => OptionsResponse({ allowedMethods: ['POST'] })),
+	ALL: () => Effect.try(() => AllResponse()),
+};
+
+const cors: {
+	methods: HTTPMethod[];
+} = {
+	methods: ['POST', 'OPTIONS'],
 };
 
 const router = {
@@ -180,11 +192,10 @@ const router = {
 						'If an account exists for this email, a reset link has been sent.'
 					);
 				}).pipe(Effect.provide(forgotPasswordDependencies)),
-			OPTIONS: () => Effect.try(() => OptionsResponse({ allowedMethods: ['POST'] })),
-			ALL: () => Effect.try(() => AllResponse()),
+			...sharedHandlers,
 		},
 		{
-			cors: { methods: ['POST', 'OPTIONS'] },
+			cors,
 			onError,
 		}
 	),
@@ -248,11 +259,10 @@ const router = {
 
 					return new Response();
 				}).pipe(Effect.provide(loginRegisterDependencies)),
-			OPTIONS: () => Effect.try(() => OptionsResponse({ allowedMethods: ['POST'] })),
-			ALL: () => Effect.try(() => AllResponse()),
+			...sharedHandlers,
 		},
 		{
-			cors: { methods: ['POST', 'OPTIONS'] },
+			cors,
 			onError,
 		}
 	),
@@ -288,11 +298,10 @@ const router = {
 
 					return redirect(StudioCMSRoutes.mainLinks.baseSiteURL);
 				}),
-			OPTIONS: () => Effect.try(() => OptionsResponse({ allowedMethods: ['POST'] })),
-			ALL: () => Effect.try(() => AllResponse()),
+			...sharedHandlers,
 		},
 		{
-			cors: { methods: ['POST', 'OPTIONS'] },
+			cors,
 			onError,
 		}
 	),
@@ -369,11 +378,10 @@ const router = {
 
 					return new Response();
 				}).pipe(Effect.provide(loginRegisterDependencies)),
-			OPTIONS: () => Effect.try(() => OptionsResponse({ allowedMethods: ['POST'] })),
-			ALL: () => Effect.try(() => AllResponse()),
+			...sharedHandlers,
 		},
 		{
-			cors: { methods: ['POST', 'OPTIONS'] },
+			cors,
 			onError,
 		}
 	),
