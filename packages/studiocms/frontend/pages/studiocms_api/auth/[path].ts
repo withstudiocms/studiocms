@@ -2,7 +2,7 @@ import { site } from 'astro:config/server';
 import { Password, Session, User, VerifyEmail } from 'studiocms:auth/lib';
 import { authConfig, developerConfig } from 'studiocms:config';
 import { StudioCMSRoutes } from 'studiocms:lib';
-import { apiResponseLogger } from 'studiocms:logger';
+import logger, { apiResponseLogger } from 'studiocms:logger';
 import { Mailer } from 'studiocms:mailer';
 import { Notifications } from 'studiocms:notifier';
 import { SDKCore } from 'studiocms:sdk';
@@ -56,7 +56,7 @@ const userRegistrationEnabled =
 
 const onError = (error: unknown) => {
 	const errorDetails = error instanceof Error ? error.message : String(error);
-	console.error('API Error:', errorDetails);
+	logger.error(`API Error: ${errorDetails}`);
 	return createJsonResponse(
 		{ error: 'Internal Server Error' },
 		{
