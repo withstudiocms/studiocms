@@ -374,11 +374,6 @@ export const StudioCMSRoutes = {
 		pages: sdkRoute('list-pages'),
 
 		/**
-		 * SDK route for fetching fallback list of pages.
-		 */
-		fallback_pages: sdkRoute('fallback-list-pages.json'),
-
-		/**
 		 * SDK route for updating the latest version cache.
 		 */
 		updateLatestVersionCache: sdkRoute('update-latest-version-cache'),

@@ -12,8 +12,8 @@ import {
 	Schema,
 } from '@withstudiocms/effect';
 import { StudioCMSPageData, StudioCMSPageFolderStructure } from '@withstudiocms/kysely';
+import type { EndpointRoute } from './../../../../../../utils/rest-router.js';
 import { verifyAuthTokenFromHeader } from '../../../utils/auth-token.js';
-import type { EndpointRoute } from './../../../utils/rest-router.js';
 
 export class FolderBase extends Schema.Class<FolderBase>('FolderBase')({
 	folderName: Schema.String,

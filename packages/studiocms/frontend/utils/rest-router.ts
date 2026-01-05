@@ -5,10 +5,10 @@ import {
 	genLogger,
 	type HTTPMethod,
 } from '@withstudiocms/effect';
-import type { APIRoute } from 'astro';
+import type { APIContext, APIRoute } from 'astro';
 import { Effect, type ParseResult, Schema, type SchemaAST } from 'effect';
 import type { NonEmptyReadonlyArray } from 'effect/Array';
-import { extractParams } from './param-extractor';
+import { extractParams } from './param-extractor.js';
 
 /**
  * An entry in the route registry defining handlers for a specific ID type.
@@ -198,6 +198,52 @@ export function idOrPathRouter(
 }
 
 /**
+ * Processes an API route handler and returns the corresponding response.
+ *
+ * @param handler - The API route handler function to be executed
+ * @param ctx - The API context containing request and other relevant information
+ * @param path - The path of the API route being processed
+ * @param method - The HTTP method of the request (e.g., GET, POST)
+ * @returns An Effect that resolves to a Response object
+ *
+ * @remarks
+ * This function executes the provided API route handler within an Effect context,
+ * handling any errors that may occur during execution. If the handler is undefined,
+ * it returns an AllResponse. In case of errors, it logs the error and returns a
+ * standardized JSON response indicating an internal server error.
+ *
+ * @example
+ * ```typescript
+ * const responseEffect = processHandler(myHandler, apiContext, '/my-path', 'GET');
+ * ```
+ */
+const processHandler = (
+	handler: APIRoute | undefined,
+	ctx: APIContext,
+	path: string,
+	method: string
+): Effect.Effect<Response, never, never> =>
+	Effect.gen(function* () {
+		if (!handler) {
+			return AllResponse();
+		}
+
+		const response = yield* Effect.tryPromise({
+			try: async () => await handler(ctx),
+			catch: (error) =>
+				new Error(`Error in handler for path ${path} [${method}]: ${String(error)}`),
+		}).pipe(
+			Effect.catchAll((error) =>
+				Effect.logError(`API Route Error: ${String(error)}`).pipe(
+					Effect.as(createJsonResponse({ error: 'Internal Server Error' }, { status: 500 }))
+				)
+			)
+		);
+
+		return response;
+	});
+
+/**
  * Creates a REST router that handles HTTP requests based on route type and optional ID parameters.
  *
  * @template Literals - A non-empty readonly array of literal values representing valid route types
@@ -231,23 +277,19 @@ export const createRestRouter = <
 	types: Schema.Literal<Literals>,
 	registry: RouteRegistry
 ) => {
-	const paramSchemaBase = Schema.Struct({
+	const paramSchema = Schema.Struct({
 		type: types,
 		id: Schema.optional(Schema.String),
-	});
-
-	const getTypeLabel = ({ actual }: ParseResult.ParseIssue) => {
-		if (Schema.is(paramSchemaBase)(actual)) {
-			return `Type: ${
-				// biome-ignore lint/style/noNonNullAssertion: we know it's defined here
-				firstLetterUppercase(actual.type!.toString())
-			}`;
-		}
-	};
-
-	const paramSchema = paramSchemaBase.annotations({
+	}).annotations({
 		identifier: 'TypeParams',
-		parseIssueTitle: getTypeLabel,
+		parseIssueTitle: ({ actual }: ParseResult.ParseIssue) => {
+			if (Schema.is(paramSchema)(actual)) {
+				return `Type: ${
+					// biome-ignore lint/style/noNonNullAssertion: we know it's defined here
+					firstLetterUppercase(actual.type!.toString())
+				}`;
+			}
+		},
 	});
 
 	return createEffectAPIRoute(
@@ -296,25 +338,70 @@ export const createRestRouter = <
 
 					const handler = handlers ? handlers[method] || handlers.ALL : undefined;
 
-					if (!handler) {
-						return AllResponse();
-					}
-
-					const response = yield* Effect.tryPromise({
-						try: async () => await handler(ctx),
-						catch: (error) =>
-							new Error(`Error in handler for ${type}/${id} [${method}]: ${String(error)}`),
-					}).pipe(
-						Effect.catchAll((error) =>
-							Effect.logError(`API Route Error: ${String(error)}`).pipe(
-								Effect.as(createJsonResponse({ error: 'Internal Server Error' }, { status: 500 }))
-							)
-						)
-					);
-
-					return response;
+					return yield* processHandler(handler, ctx, `${type}/${id}`, method);
 				}
 			)
+		)
+	);
+};
+
+/**
+ * Creates a simple path-based router for REST API endpoints.
+ *
+ * @param prefix - A prefix string used for logging purposes to identify the route group
+ * @param subPathRouter - A record mapping sub-path strings to their corresponding partial API route handlers
+ *
+ * @returns An Effect API route handler that:
+ * - Extracts and validates the `path` parameter from the request
+ * - Determines the appropriate handler based on the specified sub-path
+ * - Dispatches requests to the appropriate HTTP method handler (GET, POST, etc.) or ALL handler
+ * - Returns an AllResponse if no matching handler is found
+ * - Logs errors and returns 500 status for handler execution failures
+ *
+ * @example
+ * ```typescript
+ * const router = createSimplePathRouter(
+ *   'api',
+ *   {
+ *     'status': { GET: async (ctx) => { ... } },
+ *     'info': { ALL: async (ctx) => { ... } }
+ *   }
+ * );
+ * ```
+ */
+export const createSimplePathRouter = (
+	prefix: string,
+	router: Record<string, Partial<Record<HTTPMethod | 'ALL', APIRoute>>>
+) => {
+	const pathSchema = Schema.Struct({
+		path: Schema.String,
+	}).annotations({
+		identifier: 'PathParams',
+		parseIssueTitle: ({ actual }: ParseResult.ParseIssue) => {
+			if (Schema.is(pathSchema)(actual)) {
+				return `Path: ${firstLetterUppercase(actual.path.toString())}`;
+			}
+		},
+	});
+
+	return createEffectAPIRoute(
+		extractParams(pathSchema)(({ path }, ctx) =>
+			genLogger(`${prefix}:${path}:${ctx.request.method}`)(function* () {
+				const method = ctx.request.method.toUpperCase() as keyof Record<
+					HTTPMethod | 'ALL',
+					APIRoute
+				>;
+
+				const handlers = router[path];
+
+				if (!handlers) {
+					return AllResponse();
+				}
+
+				const handler = handlers[method] || handlers.ALL;
+
+				return yield* processHandler(handler, ctx, path, method);
+			})
 		)
 	);
 };

@@ -1,5 +1,5 @@
 import { Schema } from 'effect';
-import { createRestRouter, type RouteRegistry } from '../../utils/rest-router.js';
+import { createRestRouter, type RouteRegistry } from '../../../../../utils/rest-router.js';
 import { categoriesRouter } from './_routes/categories.js';
 import { foldersRouter } from './_routes/folders.js';
 import { pagesRouter } from './_routes/pages.js';

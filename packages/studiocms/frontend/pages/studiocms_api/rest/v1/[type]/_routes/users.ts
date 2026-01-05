@@ -13,8 +13,8 @@ import {
 } from '@withstudiocms/effect';
 import { z } from 'astro/zod';
 import { Effect, Schema } from 'effect';
+import type { EndpointRoute } from './../../../../../../utils/rest-router.js';
 import { verifyAuthTokenFromHeader } from '../../../utils/auth-token.js';
-import type { EndpointRoute } from './../../../utils/rest-router.js';
 
 export class IndexJSONData extends Schema.Class<IndexJSONData>('IndexJSONData')({
 	username: Schema.Union(Schema.String, Schema.Undefined),

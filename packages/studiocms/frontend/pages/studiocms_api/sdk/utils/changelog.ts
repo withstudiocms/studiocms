@@ -1,8 +1,11 @@
 import { Effect, genLogger, HTTPClient, Platform, readAPIContextJson } from '@withstudiocms/effect';
 import { loadChangelog, semverCategories } from '@withstudiocms/internal_helpers/utils';
 import type { APIContext } from 'astro';
+import { Data } from 'effect';
 import type { List, Root } from 'mdast';
 import { toMarkdown } from 'mdast-util-to-markdown';
+
+export class ChangelogError extends Data.TaggedError('ChangelogError')<{ message: string }> {}
 
 export class ProcessChangelog extends Effect.Service<ProcessChangelog>()('ProcessChangelog', {
 	effect: genLogger('routes/sdk/utils/changelog/ProcessChangelog/effect')(function* () {
@@ -10,19 +13,17 @@ export class ProcessChangelog extends Effect.Service<ProcessChangelog>()('Proces
 
 		const getRawChangelog = () =>
 			genLogger('routes/sdk/utils/changelog/ProcessChangelog/effect.getRawChangelog')(function* () {
-				return yield* httpClient
-					.get(
-						'https://raw.githubusercontent.com/withstudiocms/studiocms/refs/heads/main/packages/studiocms/CHANGELOG.md'
-					)
-					.pipe(
-						Effect.flatMap((res) =>
-							res.status === 200
-								? res.text
-								: Effect.fail(
-										new Error(`Failed to fetch CHANGELOG.md: ${res.status} ${res.toString()}`)
-									)
-						)
-					);
+				const data = yield* httpClient.get(
+					'https://raw.githubusercontent.com/withstudiocms/studiocms/refs/heads/main/packages/studiocms/CHANGELOG.md'
+				);
+
+				if (data.status !== 200) {
+					return yield* new ChangelogError({
+						message: `Failed to fetch CHANGELOG.md: ${data.status} ${data.toString()}`,
+					});
+				}
+
+				return yield* data.text;
 			});
 
 		const generateChangelog = (raw: string) =>
