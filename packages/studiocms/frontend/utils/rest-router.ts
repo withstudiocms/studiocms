@@ -374,12 +374,16 @@ export const createSimplePathRouter = (
 	router: Record<string, Partial<Record<HTTPMethod | 'ALL', APIRoute>>>
 ) => {
 	const pathSchema = Schema.Struct({
-		path: Schema.String,
+		path: Schema.transform(Schema.UndefinedOr(Schema.String), Schema.String, {
+			strict: true,
+			decode: (value) => (value === undefined || value === '' ? '__index' : value),
+			encode: (value) => value,
+		}),
 	}).annotations({
 		identifier: 'PathParams',
 		parseIssueTitle: ({ actual }: ParseResult.ParseIssue) => {
 			if (Schema.is(pathSchema)(actual)) {
-				return `Path: ${firstLetterUppercase(actual.path.toString())}`;
+				return `Path: ${firstLetterUppercase(actual.path?.toString() || 'index')}`;
 			}
 		},
 	});

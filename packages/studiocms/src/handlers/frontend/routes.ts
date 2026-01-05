@@ -121,12 +121,8 @@ export const restRoutes: InjectedRoute[] = [
  */
 export const oAuthEnabledRoutes: InjectedRoute[] = [
 	{
-		pattern: '/studiocms_api/auth/[provider]',
-		entrypoint: 'pages/studiocms_api/auth/[provider]/index.ts',
-	},
-	{
-		pattern: '/studiocms_api/auth/[provider]/callback',
-		entrypoint: 'pages/studiocms_api/auth/[provider]/callback.ts',
+		pattern: '/studiocms_api/auth/[provider]/[...id]',
+		entrypoint: 'pages/studiocms_api/auth/[provider]/[...id].ts',
 	},
 ];
 

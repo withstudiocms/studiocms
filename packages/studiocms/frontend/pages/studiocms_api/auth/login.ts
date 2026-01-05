@@ -10,7 +10,7 @@ import {
 	OptionsResponse,
 	pipeLogger,
 } from '@withstudiocms/effect';
-import { AuthAPIUtils } from './shared.js';
+import { AuthAPIUtils } from './_shared.js';
 
 const deps = Layer.mergeAll(AuthAPIUtils.Default, VerifyEmail.Default);
 

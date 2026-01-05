@@ -17,7 +17,7 @@ import {
 	OptionsResponse,
 	pipe,
 } from '@withstudiocms/effect';
-import { AuthAPIUtils } from './shared.js';
+import { AuthAPIUtils } from './_shared.js';
 
 /**
  * Generates a password reset link using the provided token and context.
