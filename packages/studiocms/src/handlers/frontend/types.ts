@@ -17,7 +17,6 @@ export interface ProcessedRouteConfig {
 	restAPIEnabled: boolean;
 	dashboardEnabled: boolean;
 	dashboardAPIEnabled: boolean;
-	usernameAndPasswordAPI: boolean;
 	userRegistrationEnabled: boolean;
 	oAuthEnabled: boolean;
 }
