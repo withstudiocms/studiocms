@@ -31,9 +31,9 @@ catalogs:
     vite: ^6.3.4
   effect:
     "@effect/cli": ^0.73.0
-    "@effect/platform": ^0.94.0
+    "@effect/platform": ^0.94.1
     "@effect/platform-node": ^0.104.0
-    effect: ^3.19.13
+    effect: ^3.19.14
   kysely:
     "@libsql/client": ^0.15.15
     "@types/pg": ^8.16.0
