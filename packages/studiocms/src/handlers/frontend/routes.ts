@@ -121,28 +121,8 @@ export const restRoutes: InjectedRoute[] = [
  */
 export const oAuthEnabledRoutes: InjectedRoute[] = [
 	{
-		pattern: '/studiocms_api/auth/[provider]',
-		entrypoint: 'pages/studiocms_api/auth/[provider]/index.ts',
-	},
-	{
-		pattern: '/studiocms_api/auth/[provider]/callback',
-		entrypoint: 'pages/studiocms_api/auth/[provider]/callback.ts',
-	},
-];
-
-/**
- * Username and Password API Routes
- *
- * Injected when usernameAndPasswordAPI is true.
- */
-export const usernameAndPasswordAPIRoutes: InjectedRoute[] = [
-	{
-		pattern: '/studiocms_api/auth/login',
-		entrypoint: 'pages/studiocms_api/auth/login.ts',
-	},
-	{
-		pattern: '/studiocms_api/auth/forgot-password',
-		entrypoint: 'pages/studiocms_api/auth/forgot-password.ts',
+		pattern: '/studiocms_api/auth/[provider]/[...id]',
+		entrypoint: 'pages/studiocms_api/auth/[provider]/[...id].ts',
 	},
 ];
 
@@ -154,10 +134,6 @@ export const usernameAndPasswordAPIRoutes: InjectedRoute[] = [
 export const userRegistrationEnabledRoutes = (
 	dashboardRoute: (path: string) => string
 ): InjectedRoute[] => [
-	{
-		pattern: '/studiocms_api/auth/register',
-		entrypoint: 'pages/studiocms_api/auth/register.ts',
-	},
 	{
 		pattern: dashboardRoute('signup/'),
 		entrypoint: 'pages/[dashboard]/signup.astro',
@@ -194,8 +170,8 @@ export const dashboardEnabledRoutes = (
 		entrypoint: 'pages/studiocms_api/dashboard/partials/UserListItems.astro',
 	},
 	{
-		pattern: '/studiocms_api/auth/logout',
-		entrypoint: 'pages/studiocms_api/auth/logout.ts',
+		pattern: '/studiocms_api/auth/[path]',
+		entrypoint: 'pages/studiocms_api/auth/[path].ts',
 	},
 
 	// Dashboard Frontend Route

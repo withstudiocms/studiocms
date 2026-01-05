@@ -9,7 +9,6 @@ import {
 	oAuthEnabledRoutes,
 	restRoutes,
 	setupRoutes,
-	usernameAndPasswordAPIRoutes,
 	userRegistrationEnabledRoutes,
 } from './routes.js';
 import type { InjectedRoutesWithMiddleware, ProcessedRouteConfig, RouteConfig } from './types.js';
@@ -48,7 +47,6 @@ export const processedConfig = Effect.fn(
 			restAPIEnabled: !dbStartPage && authEnabled && !developerConfig.demoMode,
 			dashboardEnabled: dashboardEnabled && !dbStartPage,
 			dashboardAPIEnabled: dashboardEnabled && !dbStartPage && authEnabled,
-			usernameAndPasswordAPI: authEnabled && usernameAndPassword,
 			userRegistrationEnabled: authEnabled && usernameAndPassword && allowUserRegistration,
 			oAuthEnabled: authEnabled && oAuthProvidersConfigured,
 		})
@@ -77,7 +75,6 @@ export const mapProcessedConfig = Effect.fn(
 		restAPIEnabled,
 		shouldInject404Route,
 		userRegistrationEnabled,
-		usernameAndPasswordAPI,
 		dashboardRoute,
 	}: ProcessedRouteConfig & { dashboardRoute: (path: string) => string }) =>
 		Effect.succeed([
@@ -100,10 +97,6 @@ export const mapProcessedConfig = Effect.fn(
 			{
 				enabled: oAuthEnabled,
 				routes: setPrerenderFalse(oAuthEnabledRoutes),
-			},
-			{
-				enabled: usernameAndPasswordAPI,
-				routes: setPrerenderFalse(usernameAndPasswordAPIRoutes),
 			},
 			{
 				enabled: userRegistrationEnabled,

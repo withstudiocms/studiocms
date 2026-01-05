@@ -232,7 +232,7 @@ export const StudioCMSRoutes = {
 		 * @param provider - The name of the OAuth provider (e.g., 'github', 'google').
 		 * @returns The complete API route for the specified OAuth provider.
 		 */
-		oAuthIndex: (provider: string) => authAPIRoute(provider),
+		oAuthIndex: (provider: string) => authAPIRoute(`${provider}/`),
 
 		/**
 		 * API route for OAuth callback.

@@ -159,13 +159,13 @@ describe(parentSuiteName, () => {
 		expect(providerData).toEqual([
 			{
 				enabled: true,
-				href: '/studiocms_api/auth/github',
+				href: '/studiocms_api/auth/github/',
 				label: 'GitHub',
 				image: 'github.png',
 			},
 			{
 				enabled: false,
-				href: '/studiocms_api/auth/discord',
+				href: '/studiocms_api/auth/discord/',
 				label: 'Discord',
 				image: 'discord.png',
 			},
