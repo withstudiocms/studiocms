@@ -405,3 +405,33 @@ export const createSimplePathRouter = (
 		)
 	);
 };
+
+/**
+ * Retrieves the router handlers for a specific ID from a sub-path router.
+ *
+ * @param id - The unique identifier for the route or resource
+ * @param subPathRouter - A record mapping sub-path strings to their corresponding sub-page router functions
+ * @returns A partial record mapping HTTP methods (or 'ALL' for all methods) to their corresponding API route handlers
+ *
+ * @example
+ * ```typescript
+
+ * const handlers = pathRouter(
+ *   '123',
+ *   {
+ *     'history': (id) => ({ GET: async (ctx) => { ... } }),
+ *     'comments': (id) => ({ POST: async (ctx) => { ... } })
+ *   }
+ * );
+ * ```
+ */
+export function pathRouter(
+	id: string,
+	subPathRouter: SubPathRouter
+): Partial<Record<HTTPMethod | 'ALL', APIRoute>> {
+	// Look for sub-router (e.g., /history)
+	if (!subPathRouter[id]) return {};
+
+	// Return the router for the specified ID
+	return subPathRouter[id](id);
+}
