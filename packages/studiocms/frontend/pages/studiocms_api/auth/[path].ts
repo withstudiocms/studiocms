@@ -53,6 +53,17 @@ const usernameAndPasswordRoutesEnabled =
 const userRegistrationEnabled =
 	authConfig.enabled && authConfig.providers.usernameAndPasswordConfig.allowUserRegistration;
 
+const onError = (error: unknown) => {
+	const errorDetails = error instanceof Error ? error.message : String(error);
+	console.error('API Error:', errorDetails);
+	return createJsonResponse(
+		{ error: 'Internal Server Error' },
+		{
+			status: 500,
+		}
+	);
+};
+
 const router = {
 	'forgot-password': createEffectAPIRoutes(
 		{
@@ -174,15 +185,7 @@ const router = {
 		},
 		{
 			cors: { methods: ['POST', 'OPTIONS'] },
-			onError: (error) => {
-				console.error('API Error:', error);
-				return createJsonResponse(
-					{ error: 'Internal Server Error' },
-					{
-						status: 500,
-					}
-				);
-			},
+			onError,
 		}
 	),
 	login: createEffectAPIRoutes(
@@ -250,15 +253,7 @@ const router = {
 		},
 		{
 			cors: { methods: ['POST', 'OPTIONS'] },
-			onError: (error) => {
-				console.error('API Error:', error);
-				return createJsonResponse(
-					{ error: 'Internal Server Error' },
-					{
-						status: 500,
-					}
-				);
-			},
+			onError,
 		}
 	),
 	logout: createEffectAPIRoutes(
@@ -298,10 +293,7 @@ const router = {
 		},
 		{
 			cors: { methods: ['POST', 'OPTIONS'] },
-			onError: (error) => {
-				console.error('API Error:', error);
-				return createJsonResponse({ error: 'Internal Server Error' }, { status: 500 });
-			},
+			onError,
 		}
 	),
 	register: createEffectAPIRoutes(
@@ -382,10 +374,7 @@ const router = {
 		},
 		{
 			cors: { methods: ['POST', 'OPTIONS'] },
-			onError: (error) => {
-				console.error('API Error:', error);
-				return createJsonResponse({ error: 'Internal Server Error' }, { status: 500 });
-			},
+			onError,
 		}
 	),
 };
