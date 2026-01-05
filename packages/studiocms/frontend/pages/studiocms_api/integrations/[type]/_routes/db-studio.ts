@@ -97,7 +97,13 @@ const dbStudioSubRouter: SubPathRouter = {
 						}
 
 						// Parse the request body
-						const body: DbQueryRequest = yield* Effect.tryPromise(() => request.json());
+						const body: DbQueryRequest = yield* Effect.tryPromise({
+							try: () => request.json(),
+							catch: (error) =>
+								new DriverError({
+									message: `Invalid JSON body: ${error instanceof Error ? error.message : String(error)}`,
+								}),
+						});
 
 						// Get the database driver instance
 						const driver = yield* getDriverInstance();
