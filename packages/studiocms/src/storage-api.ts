@@ -66,7 +66,7 @@ export async function resolveStorageIdentifier(
 	{ baseUrl, verbose = false, timeoutMs }: ResolveUrlOptions
 ): Promise<string> {
 	// Get the storage manager URL for the StudioCMS API
-	const endpoint = new URL('/studiocms_api/storage/manager', baseUrl);
+	const endpoint = new URL('/studiocms_api/integrations/storage/manager', baseUrl);
 
 	// Make a request to resolve the storage manager URL
 	const response = await fetchWithTimeout(

@@ -75,7 +75,7 @@ export class DbStudioElement extends HTMLElement {
 	 * Executes a SQL request and returns the result.
 	 */
 	async #executeQuery(request: DbQueryRequest) {
-		const response = await fetch('/studiocms_api/db-studio/query', {
+		const response = await fetch('/studiocms_api/integrations/db-studio/query', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',

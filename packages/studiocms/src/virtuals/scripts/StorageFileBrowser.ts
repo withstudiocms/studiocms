@@ -123,7 +123,7 @@ class StorageFileBrowser extends HTMLElement {
 	private modalId!: string;
 	private contentId!: string;
 	private isUploading = false;
-	private apiEndpoint = '/studiocms_api/storage/manager';
+	private apiEndpoint = '/studiocms_api/integrations/storage/manager';
 	private pendingFiles: File[] = [];
 	private fileToDelete: StorageFile | null = null;
 	private fileToRename: StorageFile | null = null;

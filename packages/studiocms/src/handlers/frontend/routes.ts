@@ -71,8 +71,8 @@ export const setupRoutes: InjectedRoute[] = [
 		entrypoint: 'setup-pages/studiocms_api/dashboard/step-2.ts',
 	},
 	{
-		pattern: '/studiocms_api/storage/manager',
-		entrypoint: 'pages/studiocms_api/storage/manager.ts',
+		pattern: '/studiocms_api/integrations/[type]/[...id]',
+		entrypoint: 'pages/studiocms_api/integrations/[type]/[...id].ts',
 	},
 ];
 
@@ -91,6 +91,10 @@ export const noDbSetupRoutes: InjectedRoute[] = [
 	{
 		pattern: '/studiocms_api/renderer/render',
 		entrypoint: 'pages/studiocms_api/renderer/render.astro',
+	},
+	{
+		pattern: '/studiocms_api/integrations/[type]/[...id]',
+		entrypoint: 'pages/studiocms_api/integrations/[type]/[...id].ts',
 	},
 ];
 
@@ -192,10 +196,6 @@ export const dashboardEnabledRoutes = (
 	{
 		pattern: '/studiocms_api/auth/logout',
 		entrypoint: 'pages/studiocms_api/auth/logout.ts',
-	},
-	{
-		pattern: '/studiocms_api/storage/manager',
-		entrypoint: 'pages/studiocms_api/storage/manager.ts',
 	},
 
 	// Dashboard Frontend Route
