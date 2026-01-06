@@ -90,7 +90,7 @@ class MigrationSchemaManager {
 	> {
 		const db = this.#db;
 		const tableName = this.schemaTableName;
-		const createSchemaTable = this.createSchemaTable;
+		const createSchemaTable = this.createSchemaTable.bind(this);
 
 		return Effect.gen(function* () {
 			const exists = yield* tableExists(db, tableName);
@@ -110,7 +110,10 @@ class MigrationSchemaManager {
 			}
 
 			const latestDefinition = rows[rows.length - 1].definition;
-			return JSON.parse(latestDefinition) as TableDefinition[];
+			return yield* Effect.try({
+				try: () => JSON.parse(latestDefinition) as TableDefinition[],
+				catch: (cause) => new SqlError({ cause }),
+			});
 		});
 	}
 
@@ -143,28 +146,19 @@ class MigrationSchemaManager {
 	 * @param schemaDefinition - The schema definition array to save.
 	 * @returns An Effect that resolves when the schema is saved.
 	 */
-	saveSchema(schemaDefinition: TableDefinition[]): Effect.Effect<
-		{
-			id: number;
-		},
-		SqlError,
-		never
-	> {
+	saveSchema(schemaDefinition: TableDefinition[]): Effect.Effect<void, SqlError, never> {
 		const db = this.#db;
 		const tableName = this.schemaTableName;
 
 		return Effect.gen(function* () {
 			const definition = JSON.stringify(schemaDefinition);
 
-			const data: {
-				id: number;
-			} = yield* Effect.tryPromise({
-				try: () =>
-					db.insertInto(tableName).values({ definition }).returning('id').executeTakeFirstOrThrow(),
+			yield* Effect.tryPromise({
+				try: () => db.insertInto(tableName).values({ definition }).executeTakeFirstOrThrow(),
 				catch: (cause) => new SqlError({ cause }),
 			});
 
-			return data;
+			return;
 		});
 	}
 }
