@@ -237,7 +237,7 @@ export const OptionalColumnType = <
  *   // Here someValue is narrowed to ColumnTypes<any, any, any>
  * }
  */
-const isColumnTypes = (value: unknown): value is ColumnTypes<any, any, any> =>
+export const isColumnTypes = (value: unknown): value is ColumnTypes<any, any, any> =>
 	hasProperty(value, ColumnTypesId) || hasProperty(value, OptionalColumnTypesId);
 /* v8 ignore stop */
 
@@ -582,8 +582,8 @@ export const Table = <Columns extends Schema.Struct.Fields>(columns: Columns): T
 	return Object.assign(Schema.Struct(columns), {
 		[ColumnTypesId]: ColumnTypesId,
 		Select,
-		Insert: Insert,
-		Update: Update,
+		Insert,
+		Update,
 	} as const);
 };
 
