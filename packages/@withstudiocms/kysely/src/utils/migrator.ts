@@ -101,7 +101,7 @@ class MigrationSchemaManager {
 			}
 
 			const rows = yield* Effect.tryPromise({
-				try: () => db.selectFrom(tableName).selectAll().execute(),
+				try: () => db.selectFrom(tableName).selectAll().orderBy('id', 'desc').limit(1).execute(),
 				catch: (cause) => new SqlError({ cause }),
 			});
 
@@ -109,7 +109,7 @@ class MigrationSchemaManager {
 				return [];
 			}
 
-			const latestDefinition = rows[rows.length - 1].definition;
+			const latestDefinition = rows[0].definition;
 			return yield* Effect.try({
 				try: () => JSON.parse(latestDefinition) as TableDefinition[],
 				catch: (cause) => new SqlError({ cause }),
