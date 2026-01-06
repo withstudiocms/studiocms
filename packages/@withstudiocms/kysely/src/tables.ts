@@ -13,6 +13,10 @@ import {
 	Table,
 } from './core/schema.js';
 
+// TODO: Migrate table definitions to the StudioCMS SDK package
+// These where not meant to be here long term, but are here temporarily
+// to facilitate the migration to Kysely without blocking early development.
+
 /**
  * StudioCMS Users Table Definition
  */

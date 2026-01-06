@@ -3,6 +3,14 @@
 import type { Dialect, Kysely, Migration } from 'kysely';
 import { makeMigratorLive } from './core/migrator.js';
 
+// TODO: Migrate custom migrations to the StudioCMS SDK package
+// These where not meant to be here long term, but are here temporarily
+// to facilitate the migration to Kysely without blocking early development.
+//
+// Note: when moving the migrations to the SDK package, don't forget to also move
+// the migration files, and the utility script for creating new migrations.
+// (i.e, packages/@withstudiocms/kysely/scripts/create-migration.ts)
+
 /**
  * Dynamically imports a migration module by its name.
  *
