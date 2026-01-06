@@ -43,9 +43,9 @@ class MigrationSchemaManager {
 	#useDBSchema = false;
 	private readonly schemaTableName = 'kysely_schema';
 
-	constructor(db: Kysely<any>, previousSchemaDefinition: TableDefinition[]) {
+	constructor(db: Kysely<any>, previousSchemaDefinition?: TableDefinition[]) {
 		this.#db = db;
-		this.#previousSchemaDefinition = previousSchemaDefinition;
+		this.#previousSchemaDefinition = previousSchemaDefinition ?? [];
 
 		if (this.#previousSchemaDefinition.length === 0) {
 			this.#useDBSchema = true;
@@ -90,7 +90,6 @@ class MigrationSchemaManager {
 	> {
 		const db = this.#db;
 		const tableName = this.schemaTableName;
-
 		const createSchemaTable = this.createSchemaTable;
 
 		return Effect.gen(function* () {
@@ -213,7 +212,7 @@ class MigrationSchemaManager {
 export const syncDatabaseSchema = (
 	db: Kysely<any>,
 	schemaDefinition: TableDefinition[],
-	previousSchemaDefinition: TableDefinition[]
+	previousSchemaDefinition?: TableDefinition[]
 ) =>
 	Effect.runPromise(
 		Effect.gen(function* () {
@@ -342,7 +341,7 @@ export const syncDatabaseSchema = (
 export const rollbackMigration = (
 	db: Kysely<any>,
 	schemaDefinition: TableDefinition[],
-	previousSchemaDefinition: TableDefinition[]
+	previousSchemaDefinition?: TableDefinition[]
 ) =>
 	Effect.runPromise(
 		Effect.gen(function* () {
