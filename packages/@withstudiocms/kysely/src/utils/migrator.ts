@@ -47,8 +47,11 @@ class MigrationSchemaManager {
 		this.#db = db;
 		this.#previousSchemaDefinition = previousSchemaDefinition ?? [];
 
-		if (this.#previousSchemaDefinition.length === 0) {
+		if (previousSchemaDefinition === undefined) {
 			this.#useDBSchema = true;
+			this.#previousSchemaDefinition = [];
+		} else {
+			this.#previousSchemaDefinition = previousSchemaDefinition;
 		}
 	}
 
