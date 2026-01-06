@@ -2,4 +2,4 @@
 "@withstudiocms/kysely": patch
 ---
 
-Reworks and improves environment variable loading for dialect drivers. also allowing both un-prefixed, and prefixed variables (with or without the `CMS_` prefix).
+Reworks and improves environment variable loading for dialect drivers, supporting both unprefixed and CMS_-prefixed environment variables.
