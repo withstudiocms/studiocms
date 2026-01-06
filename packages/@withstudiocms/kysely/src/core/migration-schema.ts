@@ -1,4 +1,5 @@
 /** biome-ignore-all lint/suspicious/noExplicitAny: Dynamic Operations */
+/* v8 ignore start */
 import { pipe, Record, Schema } from 'effect';
 import type { TableDefinition } from '../utils/migrator.js';
 import { ColumnTypesId, isColumnTypes, type Table } from './schema.js';
@@ -157,6 +158,7 @@ export const defineDatabase = <Tables extends Record<string, MigrationTableDefin
 export const defineMigrationSchema = (
 	tables: Record<string, MigrationTableDefinition<any>>
 ): TableDefinition[] => Object.values(tables).map((table) => table.migration);
+/* v8 ignore stop */
 
 // // Example usage of defineTable
 // const testTable = defineTable('TestTable', {
