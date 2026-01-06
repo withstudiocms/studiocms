@@ -1,4 +1,4 @@
-import { Config, ConfigProvider, Effect, Redacted } from 'effect';
+import { Config, Effect, Redacted } from 'effect';
 import { PostgresDialect } from 'kysely';
 import { Pool, type PoolConfig } from 'pg';
 
@@ -71,35 +71,24 @@ class PostgresEnvConfig {
  * ensuring that database connection parameters are securely handled.
  */
 const envConfig = Config.all({
-	database: Config.redacted('PG_DATABASE'),
-	host: Config.redacted('PG_HOST'),
-	port: Config.redacted(Config.number('PG_PORT')),
-	user: Config.redacted('PG_USER'),
-	password: Config.redacted('PG_PASSWORD'),
-	connectionLimit: Config.withDefault(Config.number('PG_CONNECTION_LIMIT'), undefined),
-}).pipe(
-	Config.map((opts) => new PostgresEnvConfig(opts)),
-	Effect.map((env) => env.poolConfig)
-);
-
-/**
- * Configuration provider that attempts to load configuration from environment variables.
- *
- * First tries to load configuration from the root level environment variables.
- * If that fails, falls back to loading from environment variables nested under the 'CMS' prefix.
- *
- * @example
- * // Will try to read from process.env.SOME_VAR first
- * // Then try to read from process.env.CMS_SOME_VAR
- *
- * @remarks
- * This uses a pipe-based approach with orElse to provide a fallback mechanism
- * for configuration loading, ensuring the application can find configuration
- * in either the root environment or under a 'CMS' namespace.
- */
-const envProvider = ConfigProvider.fromEnv().pipe(
-	ConfigProvider.orElse(() => ConfigProvider.fromEnv().pipe(ConfigProvider.nested('CMS')))
-);
+	database: Config.redacted('PG_DATABASE').pipe(
+		Config.orElse(() => Config.redacted('CMS_PG_DATABASE'))
+	),
+	host: Config.redacted('PG_HOST').pipe(Config.orElse(() => Config.redacted('CMS_PG_HOST'))),
+	port: Config.redacted(Config.number('PG_PORT')).pipe(
+		Config.orElse(() => Config.redacted(Config.number('CMS_PG_PORT')))
+	),
+	user: Config.redacted('PG_USER').pipe(Config.orElse(() => Config.redacted('CMS_PG_USER'))),
+	password: Config.redacted('PG_PASSWORD').pipe(
+		Config.orElse(() => Config.redacted('CMS_PG_PASSWORD'))
+	),
+	connectionLimit: Config.withDefault(
+		Config.number('PG_CONNECTION_LIMIT').pipe(
+			Config.orElse(() => Config.number('CMS_PG_CONNECTION_LIMIT'))
+		),
+		undefined
+	),
+}).pipe(Config.map((opts) => new PostgresEnvConfig(opts).poolConfig));
 
 /**
  * Creates a PostgreSQL dialect driver for Kysely using Effect.
@@ -121,4 +110,4 @@ export const postgresDriver = Effect.gen(function* () {
 	return new PostgresDialect({
 		pool: new Pool(config),
 	});
-}).pipe(Effect.withConfigProvider(envProvider));
+});

@@ -1,5 +1,5 @@
 import { createClient, type Config as LibSQLConfig } from '@libsql/client/node';
-import { Config, ConfigProvider, Effect, Redacted } from 'effect';
+import { Config, Effect, Redacted } from 'effect';
 import { LibSQLDialect } from 'kysely-turso/libsql';
 
 /**
@@ -97,38 +97,54 @@ class LibSQLEnvConfig {
  * ```
  */
 const envConfig = Config.all({
-	url: Config.redacted('LIBSQL_URL'),
-	authToken: Config.withDefault(Config.redacted('LIBSQL_AUTH_TOKEN'), undefined),
-	encryptionKey: Config.withDefault(Config.redacted('LIBSQL_ENCRYPTION_KEY'), undefined),
-	syncUrl: Config.withDefault(Config.redacted('LIBSQL_SYNC_URL'), undefined),
-	syncInterval: Config.withDefault(Config.number('LIBSQL_SYNC_INTERVAL'), undefined),
-	readYourWrites: Config.withDefault(Config.boolean('LIBSQL_READ_YOUR_WRITES'), false),
-	offline: Config.withDefault(Config.boolean('LIBSQL_OFFLINE'), false),
-	tls: Config.withDefault(Config.boolean('LIBSQL_TLS'), true),
-	concurrency: Config.withDefault(Config.number('LIBSQL_CONCURRENCY'), undefined),
-}).pipe(
-	Config.map((cfg) => new LibSQLEnvConfig(cfg)),
-	Effect.map((config) => config.clientConfig)
-);
-
-/**
- * Configuration provider that attempts to load configuration from environment variables.
- *
- * First tries to load configuration from the root level environment variables.
- * If that fails, falls back to loading from environment variables nested under the 'CMS' prefix.
- *
- * @example
- * // Will try to read from process.env.SOME_VAR first
- * // Then try to read from process.env.CMS_SOME_VAR
- *
- * @remarks
- * This uses a pipe-based approach with orElse to provide a fallback mechanism
- * for configuration loading, ensuring the application can find configuration
- * in either the root environment or under a 'CMS' namespace.
- */
-const envProvider = ConfigProvider.fromEnv().pipe(
-	ConfigProvider.orElse(() => ConfigProvider.fromEnv().pipe(ConfigProvider.nested('CMS')))
-);
+	url: Config.redacted('LIBSQL_URL').pipe(Config.orElse(() => Config.redacted('CMS_LIBSQL_URL'))),
+	authToken: Config.withDefault(
+		Config.redacted('LIBSQL_AUTH_TOKEN').pipe(
+			Config.orElse(() => Config.redacted('CMS_LIBSQL_AUTH_TOKEN'))
+		),
+		undefined
+	),
+	encryptionKey: Config.withDefault(
+		Config.redacted('LIBSQL_ENCRYPTION_KEY').pipe(
+			Config.orElse(() => Config.redacted('CMS_LIBSQL_ENCRYPTION_KEY'))
+		),
+		undefined
+	),
+	syncUrl: Config.withDefault(
+		Config.redacted('LIBSQL_SYNC_URL').pipe(
+			Config.orElse(() => Config.redacted('CMS_LIBSQL_SYNC_URL'))
+		),
+		undefined
+	),
+	syncInterval: Config.withDefault(
+		Config.number('LIBSQL_SYNC_INTERVAL').pipe(
+			Config.orElse(() => Config.number('CMS_LIBSQL_SYNC_INTERVAL'))
+		),
+		undefined
+	),
+	readYourWrites: Config.withDefault(
+		Config.boolean('LIBSQL_READ_YOUR_WRITES').pipe(
+			Config.orElse(() => Config.boolean('CMS_LIBSQL_READ_YOUR_WRITES'))
+		),
+		false
+	),
+	offline: Config.withDefault(
+		Config.boolean('LIBSQL_OFFLINE').pipe(
+			Config.orElse(() => Config.boolean('CMS_LIBSQL_OFFLINE'))
+		),
+		false
+	),
+	tls: Config.withDefault(
+		Config.boolean('LIBSQL_TLS').pipe(Config.orElse(() => Config.boolean('CMS_LIBSQL_TLS'))),
+		true
+	),
+	concurrency: Config.withDefault(
+		Config.number('LIBSQL_CONCURRENCY').pipe(
+			Config.orElse(() => Config.number('CMS_LIBSQL_CONCURRENCY'))
+		),
+		undefined
+	),
+}).pipe(Config.map((cfg) => new LibSQLEnvConfig(cfg).clientConfig));
 
 /**
  * Creates and configures a LibSQL dialect driver for Kysely database operations.
@@ -149,4 +165,4 @@ export const libsqlDriver = Effect.gen(function* () {
 	return new LibSQLDialect({
 		client: createClient(config),
 	});
-}).pipe(Effect.withConfigProvider(envProvider));
+});
