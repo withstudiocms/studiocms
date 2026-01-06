@@ -51,8 +51,8 @@
     "@withstudiocms/effect": "workspace:*",
     "@withstudiocms/kysely": "workspace:*",
     "astro": "catalog:astrojs",
-    "dotenv": "^17.2.3",
-    "drizzle-orm": "catalog:min",
+    "dotenv": "catalog:",
+    "drizzle-orm": "^0.42.0",
     "sharp": "catalog:"
   },
   "peerDependencies": {
