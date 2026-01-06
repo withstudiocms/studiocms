@@ -43,6 +43,9 @@ catalogs:
     diff:
       specifier: ^8.0.2
       version: 8.0.2
+    dotenv:
+      specifier: ^17.2.3
+      version: 17.2.3
     esbuild:
       specifier: ^0.25.8
       version: 0.25.12
@@ -94,9 +97,6 @@ catalogs:
     astro:
       specifier: ^5.12.9
       version: 5.16.6
-    drizzle-orm:
-      specifier: ^0.42.0
-      version: 0.42.0
     vite:
       specifier: ^6.3.4
       version: 6.4.1
@@ -655,10 +655,10 @@ importers:
         specifier: catalog:astrojs
         version: 5.16.6(@types/node@22.19.3)(jiti@2.6.1)(rollup@4.53.5)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
       dotenv:
-        specifier: ^17.2.3
+        specifier: 'catalog:'
         version: 17.2.3
       drizzle-orm:
-        specifier: catalog:min
+        specifier: ^0.42.0
         version: 0.42.0(@libsql/client@0.15.15)(@types/pg@8.16.0)(kysely@0.28.9)(mysql2@3.16.0)(pg@8.16.3)
       sharp:
         specifier: 'catalog:'
@@ -1053,7 +1053,7 @@ importers:
         specifier: ^3.3.1
         version: 3.3.1
       dotenv:
-        specifier: ^17.2.3
+        specifier: 'catalog:'
         version: 17.2.3
       effect:
         specifier: catalog:effect
