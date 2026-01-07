@@ -62,7 +62,8 @@
     "zod": "^3.25.76"
   },
   "devDependencies": {
-    "@types/node": "catalog:"
+    "@types/node": "catalog:",
+    "tsx": "^4.21.0"
   },
   "peerDependencies": {
     "@withstudiocms/effect": "workspace:*",
