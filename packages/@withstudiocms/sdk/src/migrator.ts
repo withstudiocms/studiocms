@@ -31,8 +31,7 @@ const importMigration = async (name: string): Promise<Migration> => {
 			throw new Error(`Migration not found: ${name}`);
 		}
 
-		const { up, down } = await migrations[migrationPath]();
-		return { up, down };
+		return await migrations[migrationPath]();
 	}
 
 	return await import(`./migrations/${name}.js`).then(({ up, down }) => ({ up, down }));
