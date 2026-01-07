@@ -7,8 +7,12 @@
  */
 /** biome-ignore-all lint/suspicious/noExplicitAny: Requirement from Kysely */
 
-import type { Kysely } from 'kysely';
-import { rollbackMigration, syncDatabaseSchema, type TableDefinition } from '../utils/migrator.js';
+import type { Kysely } from '@withstudiocms/kysely/kysely';
+import {
+	rollbackMigration,
+	syncDatabaseSchema,
+	type TableDefinition,
+} from '@withstudiocms/kysely/utils/migrator';
 
 import { schemaDefinition as previousSchema } from './20251130T150847_drop_deprecated.js';
 

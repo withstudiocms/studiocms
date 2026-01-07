@@ -4,7 +4,6 @@ import { createClient } from '@libsql/client/node';
 import { Effect } from 'effect';
 import { LibSQLDialect } from 'kysely-turso/libsql';
 import { getDBClientLive } from './client.js';
-import { getMigratorLive } from './migrator.js';
 
 type DBFixtureOptions = {
 	suiteName: string;
@@ -15,7 +14,6 @@ type DBFixtureOptions = {
 	 * Should be `import.meta.url` from the calling module.
 	 */
 	cwd: string;
-	migrationsDir?: string;
 };
 
 function normalize(str: string) {
@@ -109,15 +107,15 @@ export class DBFixture<Schema> {
 			return getDBClientLive<Schema>(dialect);
 		},
 
-		/**
-		 * Creates and returns a migrator instance configured for the test database.
-		 *
-		 * @returns A migrator instance for managing database migrations.
-		 */
-		getMigrator: () => {
-			const dialect = this.getDialect();
-			return getMigratorLive<Schema>(dialect);
-		},
+		// /**
+		//  * Creates and returns a migrator instance configured for the test database.
+		//  *
+		//  * @returns A migrator instance for managing database migrations.
+		//  */
+		// getMigrator: () => {
+		// 	const dialect = this.getDialect();
+		// 	return getMigratorLive<Schema>(dialect);
+		// },
 	};
 
 	/** JavaScript-based utilities for managing the test database fixture. */
@@ -145,6 +143,6 @@ export class DBFixture<Schema> {
 		 *
 		 * @returns A migrator instance for managing database migrations.
 		 */
-		getMigrator: () => this.run(this.effect.getMigrator()),
+		// getMigrator: () => this.run(this.effect.getMigrator()),
 	};
 }

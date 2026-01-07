@@ -1,7 +1,7 @@
 import { runEffect } from '@withstudiocms/effect';
 import { getDBClientLive } from '@withstudiocms/kysely/client';
 import { sql } from '@withstudiocms/kysely/kysely';
-import { getMigratorLive } from '@withstudiocms/kysely/migrator';
+import { getMigratorLive } from '@withstudiocms/sdk/migrator';
 import type { StudioCMSDatabaseSchema } from '@withstudiocms/sdk/tables';
 import { type KyselyTableKeys, kyselyTableKeys } from '../lib/tableMap';
 

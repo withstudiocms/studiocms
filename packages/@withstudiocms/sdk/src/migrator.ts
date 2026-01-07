@@ -1,15 +1,16 @@
 /// <reference types="vite/client" />
 /** biome-ignore-all lint/suspicious/noExplicitAny: Kysely Requirement */
-import type { Dialect, Kysely, Migration } from 'kysely';
-import { makeMigratorLive } from './core/migrator.js';
 
-// TODO: Migrate custom migrations to the StudioCMS SDK package
-// These where not meant to be here long term, but are here temporarily
-// to facilitate the migration to Kysely without blocking early development.
-//
-// Note: when moving the migrations to the SDK package, don't forget to also move
-// the migration files, and the utility script for creating new migrations.
-// (i.e, packages/@withstudiocms/kysely/scripts/create-migration.ts)
+import type { Effect } from '@withstudiocms/effect';
+import type { MigratorError } from '@withstudiocms/kysely/core/errors';
+import { makeMigratorLive } from '@withstudiocms/kysely/core/migrator';
+import type {
+	Dialect,
+	Kysely,
+	Migration,
+	MigrationInfo,
+	MigrationResultSet,
+} from '@withstudiocms/kysely/kysely';
 
 /**
  * Dynamically imports a migration module by its name.
@@ -60,5 +61,15 @@ const migrationIndex: Record<string, Migration> = {
  * const migrator = getMigratorLive<MySchema>(yourDriver);
  * await migrator.migrateToLatest();
  */
-export const getMigratorLive = <Schema>(dialect: Dialect) =>
-	makeMigratorLive<Schema>(dialect, migrationIndex);
+export const getMigratorLive = <Schema>(
+	dialect: Dialect
+): Effect.Effect<
+	{
+		readonly toLatest: Effect.Effect<MigrationResultSet, MigratorError, never>;
+		readonly down: Effect.Effect<MigrationResultSet, MigratorError, never>;
+		readonly up: Effect.Effect<MigrationResultSet, MigratorError, never>;
+		readonly status: Effect.Effect<readonly MigrationInfo[], MigratorError, never>;
+	},
+	MigratorError,
+	never
+> => makeMigratorLive<Schema>(dialect, migrationIndex);
