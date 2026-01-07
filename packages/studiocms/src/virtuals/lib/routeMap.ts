@@ -69,6 +69,8 @@ const authAPIRoute = makeAPIRoute('auth');
  */
 const dashboardAPIRoute = makeAPIRoute('dashboard');
 
+const partialsAPIRoute = makeAPIRoute('partials');
+
 /**
  * Represents the API route for the SDK.
  *
@@ -76,14 +78,6 @@ const dashboardAPIRoute = makeAPIRoute('dashboard');
  * It is used to define the endpoint for SDK-related API calls.
  */
 const sdkRoute = makeAPIRoute('sdk');
-
-/**
- * Represents the API route for the renderer service.
- *
- * This constant is generated using the `makeAPIRoute` function with 'renderer' as the argument.
- * It is used to define the endpoint for the renderer service in the application.
- */
-const rendererRoute = makeAPIRoute('renderer');
 
 /**
  * An object containing various route mappings for the StudioCMS application.
@@ -251,22 +245,22 @@ export const StudioCMSRoutes = {
 			/**
 			 * API route for live preview box rendering.
 			 */
-			livePreviewBox: dashboardAPIRoute('live-render'),
+			livePreviewBox: partialsAPIRoute('render'),
 
 			/**
 			 * API route for fetching user list items.
 			 */
-			userListItems: dashboardAPIRoute('user-list-items'),
+			userListItems: partialsAPIRoute('user-list-items'),
 
 			/**
 			 * API route for rendering content.
 			 */
-			render: rendererRoute('render'),
+			render: partialsAPIRoute('render'),
 
 			/**
 			 * API route for the editor.
 			 */
-			editor: dashboardAPIRoute('editor'),
+			editor: partialsAPIRoute('editor'),
 		},
 
 		/**
