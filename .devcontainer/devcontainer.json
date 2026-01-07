@@ -37,7 +37,10 @@
         },
         "[yaml]": {
           "editor.defaultFormatter": "redhat.vscode-yaml"
-        }
+        },
+        "knip.requireConfig": true,
+        "knip.configFilePath": "./knip.config.ts",
+        "knip.editor.exports.hover.includeImportLocationSnippet": true
       },
       "extensions": [
         "astro-build.astro-vscode",
