@@ -47,7 +47,8 @@
         "redhat.vscode-yaml",
         "ms-vscode-remote.remote-containers",
         "ms-azuretools.vscode-containers",
-        "docker.docker"
+        "docker.docker",
+        "webpro.vscode-knip"
       ]
     }
   }
