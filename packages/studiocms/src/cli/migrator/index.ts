@@ -4,7 +4,7 @@ import { label } from '@withstudiocms/cli-kit/messages';
 import { Cli, Effect, runEffect } from '@withstudiocms/effect';
 import { intro, log, outro, select, tasks } from '@withstudiocms/effect/clack';
 import type { MigrationInfo, MigrationResult } from '@withstudiocms/kysely/kysely';
-import { getMigratorLive } from '@withstudiocms/kysely/migrator';
+import { getMigratorLive } from '@withstudiocms/sdk/migrator';
 import { getDbDriver, parseDbDialect } from '../../db/index.js';
 import { genLogger } from '../../effect.js';
 import type { StudioCMSConfig } from '../../schemas/index.js';

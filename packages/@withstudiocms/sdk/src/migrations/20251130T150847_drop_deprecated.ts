@@ -1,22 +1,20 @@
 /**
- * - Title: Initial setup of StudioCMS database schema
- * - Created: Oct. 25, 2025
- * - Author: Adam Matthiesen (@Adammatthiesen)
- * - GitHub PR: #963
- * - Description: This migration initializes the database schema for StudioCMS,
- *   creating all necessary tables for users, sessions, permissions, pages, and more.
- *
- *   This re-creates the original AstroDB schema within Kysely to ensure compatibility
- *   with existing installations while transitioning to Kysely as the database layer.
+ * - Title: Drop Deprecated Tables
+ * - Created: 2025-11-30
+ * - Author: Adam Matthiesen
+ * - GitHub PR: #1033
+ * - Description: Drop previously deprecated tables from the database schema. (re-deprecate here to be fully removed in the next migration safely)
  */
 /** biome-ignore-all lint/suspicious/noExplicitAny: Requirement from Kysely */
 
-import type { Kysely } from 'kysely';
-import { rollbackMigration, syncDatabaseSchema, type TableDefinition } from '../utils/migrator.js';
+import type { Kysely } from '@withstudiocms/kysely/kysely';
+import {
+	rollbackMigration,
+	syncDatabaseSchema,
+	type TableDefinition,
+} from '@withstudiocms/kysely/utils/migrator';
 
-// import { schemaDefinition as previousSchema } from './placeholder-for-previous-migration.js';
-
-const previousSchema: TableDefinition[] = [];
+import { schemaDefinition as previousSchema } from './20251025T040912_init.js';
 
 // ============================================================================
 // DYNAMIC SCHEMA DEFINITION
@@ -227,9 +225,9 @@ export const schemaDefinition: TableDefinition[] = [
 			{ name: 'data', type: 'text', notNull: true },
 		],
 	},
-	// DEPRECATED TABLES - to be removed in future migrations
 	{
 		name: 'StudioCMSSiteConfig',
+		deprecated: true,
 		columns: [
 			{ name: 'id', type: 'text', primaryKey: true },
 			{ name: 'title', type: 'text', notNull: true },
@@ -247,6 +245,7 @@ export const schemaDefinition: TableDefinition[] = [
 	},
 	{
 		name: 'StudioCMSMailerConfig',
+		deprecated: true,
 		columns: [
 			{ name: 'id', type: 'text', primaryKey: true },
 			{ name: 'host', type: 'text', notNull: true },
@@ -262,6 +261,7 @@ export const schemaDefinition: TableDefinition[] = [
 	},
 	{
 		name: 'StudioCMSNotificationSettings',
+		deprecated: true,
 		columns: [
 			{ name: 'id', type: 'text', primaryKey: true },
 			{ name: 'emailVerification', type: 'integer', notNull: true, default: 0 },

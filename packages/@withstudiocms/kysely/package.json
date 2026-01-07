@@ -31,7 +31,6 @@
     "build": "pnpm buildkit build 'src/**/*.{ts,json}'",
     "dev": "pnpm buildkit dev 'src/**/*.{ts,json}'",
     "typecheck": "tspc -p tsconfig.tspc.json",
-    "create-migration": "tsx scripts/create-migration.ts",
     "test": "vitest"
   },
   "exports": {
@@ -46,10 +45,6 @@
     "./client": {
       "types": "./dist/client.d.ts",
       "default": "./dist/client.js"
-    },
-    "./migrator": {
-      "types": "./dist/migrator.d.ts",
-      "default": "./dist/migrator.js"
     },
     "./plugin": {
       "types": "./dist/plugin.d.ts",
@@ -71,8 +66,9 @@
       "types": "./dist/drivers/*.d.ts",
       "default": "./dist/drivers/*.js"
     },
-    "./schemas/*": {
-      "default": "./dist/schemas/*.json"
+    "./utils/*": {
+      "types": "./dist/utils/*.d.ts",
+      "default": "./dist/utils/*.js"
     }
   },
   "type": "module",
@@ -82,8 +78,7 @@
   },
   "devDependencies": {
     "@types/node": "catalog:",
-    "@types/pg": "catalog:kysely",
-    "tsx": "^4.21.0"
+    "@types/pg": "catalog:kysely"
   },
   "peerDependencies": {
     "effect": "catalog:effect",

@@ -1,18 +1,9 @@
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import * as allure from 'allure-js-commons';
 import { test as baseTest } from 'vitest';
 import { DBFixture } from '../src/test-utils';
 
 export const parentSuiteName = '@withstudiocms/kysely Package Tests';
 export const sharedTags = ['package:@withstudiocms/kysely', 'type:unit', 'scope:withstudiocms'];
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-// Path to the migrations folder for tests
-// This ensures that the migrator in tests uses the compiled migrations preventing issues with missing files while allowing correct coverage reporting.
-const migrationFolder = path.join(__dirname, '../dist/migrations');
 
 /**
  * Extends the base test fixture with Allure helpers tailored for tests.
@@ -112,6 +103,5 @@ export const DBClientFixture = <Schema>(suite: string) => {
 	return new DBFixture<Schema>({
 		suiteName: suite,
 		cwd: import.meta.url,
-		migrationsDir: migrationFolder,
 	});
 };

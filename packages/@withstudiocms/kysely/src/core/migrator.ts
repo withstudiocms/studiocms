@@ -98,13 +98,13 @@ export class PassthroughMigrationProvider implements MigrationProvider {
  * const migratorInstance = getMigrator(kyselyInstance);
  */
 const kyselyMigrator =
-	(migrationFolder: Record<string, Migration>) =>
+	(migrations: Record<string, Migration>) =>
 	<Schema>(db: Kysely<Schema>) =>
 		useWithError(
 			() =>
 				new Migrator({
 					db,
-					provider: new PassthroughMigrationProvider(migrationFolder),
+					provider: new PassthroughMigrationProvider(migrations),
 				})
 		);
 
@@ -127,11 +127,9 @@ const kyselyMigrator =
  * Note: This function returns an Effect (deferred computation). You must run/interpret the Effect
  * to obtain and invoke the migration helpers.
  */
-const makeMigrator = <Schema>(migrationFolder: Record<string, Migration>) =>
+const makeMigrator = <Schema>(migrations: Record<string, Migration>) =>
 	Effect.gen(function* () {
-		const base = yield* kyselyClient<Schema>().pipe(
-			Effect.flatMap(kyselyMigrator(migrationFolder))
-		);
+		const base = yield* kyselyClient<Schema>().pipe(Effect.flatMap(kyselyMigrator(migrations)));
 
 		const toLatest = useWithErrorPromise(() => base.migrateToLatest());
 		const down = useWithErrorPromise(() => base.migrateDown());
@@ -162,13 +160,10 @@ const makeMigrator = <Schema>(migrationFolder: Record<string, Migration>) =>
  * @example
  * // Run the returned Effect to obtain and use the migrator in your application runtime.
  */
-export const makeMigratorLive = <Schema>(
-	dialect: Dialect,
-	migrationFolder: Record<string, Migration>
-) =>
+export const makeMigratorLive = <Schema>(dialect: Dialect, migrations: Record<string, Migration>) =>
 	Effect.gen(function* () {
 		const { db } = yield* makeDBClientLive<Schema>(dialect);
-		return yield* makeMigrator<Schema>(migrationFolder).pipe(
+		return yield* makeMigrator<Schema>(migrations).pipe(
 			Effect.provideService(kyselyClient<Schema>(), db)
 		);
 	});
