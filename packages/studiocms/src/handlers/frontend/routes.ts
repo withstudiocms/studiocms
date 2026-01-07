@@ -74,6 +74,11 @@ export const setupRoutes: InjectedRoute[] = [
 		pattern: '/studiocms_api/integrations/[type]/[...id]',
 		entrypoint: 'pages/studiocms_api/integrations/[type]/[...id].ts',
 	},
+	// Renderer service routes
+	{
+		pattern: '/studiocms_api/partials/render',
+		entrypoint: 'pages/studiocms_api/partials/render.astro',
+	},
 ];
 
 /**
@@ -87,11 +92,12 @@ export const noDbSetupRoutes: InjectedRoute[] = [
 		pattern: '/studiocms_api/sdk/[...path]',
 		entrypoint: 'pages/studiocms_api/sdk/[...path].ts',
 	},
-	// Renderer service route
+	// Renderer service routes
 	{
-		pattern: '/studiocms_api/renderer/render',
-		entrypoint: 'pages/studiocms_api/renderer/render.astro',
+		pattern: '/studiocms_api/partials/render',
+		entrypoint: 'pages/studiocms_api/partials/render.astro',
 	},
+	// Integration routes
 	{
 		pattern: '/studiocms_api/integrations/[type]/[...id]',
 		entrypoint: 'pages/studiocms_api/integrations/[type]/[...id].ts',
@@ -154,20 +160,16 @@ export const dashboardEnabledRoutes = (
 		entrypoint: 'pages/studiocms_api/dashboard/templates.ts',
 	},
 	{
-		pattern: '/studiocms_api/dashboard/live-render',
-		entrypoint: 'pages/studiocms_api/dashboard/partials/LiveRender.astro',
+		pattern: '/studiocms_api/partials/editor',
+		entrypoint: 'pages/studiocms_api/partials/editor.astro',
 	},
 	{
-		pattern: '/studiocms_api/dashboard/editor',
-		entrypoint: 'pages/studiocms_api/dashboard/partials/Editor.astro',
+		pattern: '/studiocms_api/partials/user-list-items',
+		entrypoint: 'pages/studiocms_api/partials/user-list-items.astro',
 	},
 	{
 		pattern: '/studiocms_api/dashboard/search-list',
 		entrypoint: 'pages/studiocms_api/dashboard/search-list.ts',
-	},
-	{
-		pattern: '/studiocms_api/dashboard/user-list-items',
-		entrypoint: 'pages/studiocms_api/dashboard/partials/UserListItems.astro',
 	},
 	{
 		pattern: '/studiocms_api/auth/[path]',
