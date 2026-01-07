@@ -37,7 +37,10 @@
         },
         "[yaml]": {
           "editor.defaultFormatter": "redhat.vscode-yaml"
-        }
+        },
+        "knip.requireConfig": true,
+        "knip.configFilePath": "./knip.config.ts",
+        "knip.editor.exports.hover.includeImportLocationSnippet": true
       },
       "extensions": [
         "astro-build.astro-vscode",
@@ -47,7 +50,8 @@
         "redhat.vscode-yaml",
         "ms-vscode-remote.remote-containers",
         "ms-azuretools.vscode-containers",
-        "docker.docker"
+        "docker.docker",
+        "webpro.vscode-knip"
       ]
     }
   }

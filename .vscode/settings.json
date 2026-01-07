@@ -24,5 +24,8 @@
   "[yaml]": {
     "editor.defaultFormatter": "redhat.vscode-yaml"
   },
-  "vitest.disableWorkspaceWarning": true
+  "vitest.disableWorkspaceWarning": true,
+  "knip.requireConfig": true,
+  "knip.configFilePath": "./knip.config.ts",
+  "knip.editor.exports.hover.includeImportLocationSnippet": true
 }
