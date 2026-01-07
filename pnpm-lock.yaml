@@ -654,6 +654,9 @@ importers:
       '@withstudiocms/kysely':
         specifier: workspace:*
         version: link:../../@withstudiocms/kysely
+      '@withstudiocms/sdk':
+        specifier: workspace:*
+        version: link:../../@withstudiocms/sdk
       astro:
         specifier: catalog:astrojs
         version: 5.16.6(@types/node@22.19.3)(jiti@2.6.1)(rollup@4.53.5)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)

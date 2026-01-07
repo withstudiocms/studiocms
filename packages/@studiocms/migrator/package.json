@@ -56,6 +56,7 @@
     "sharp": "catalog:"
   },
   "peerDependencies": {
-    "studiocms": "workspace:*"
+    "studiocms": "workspace:*",
+    "@withstudiocms/sdk": "workspace:*"
   }
 }

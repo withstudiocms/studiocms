@@ -1,5 +1,5 @@
 import { Effect, Schema } from '@withstudiocms/effect';
-import type { DBCallbackFailure } from '@withstudiocms/kysely';
+import type { DBCallbackFailure } from '@withstudiocms/kysely/client';
 import type { DatabaseError } from '@withstudiocms/kysely/core/errors';
 import { DBClientLive, SDKDefaults } from '../../context.js';
 import {

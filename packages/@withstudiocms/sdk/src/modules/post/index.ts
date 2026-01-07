@@ -1,5 +1,5 @@
 import { Effect, pipe, Schema } from '@withstudiocms/effect';
-import { DBCallbackFailure } from '@withstudiocms/kysely';
+import { DBCallbackFailure } from '@withstudiocms/kysely/client';
 import CacheService from '../../cache.js';
 import { cacheTags } from '../../consts.js';
 import { DBClientLive } from '../../context.js';

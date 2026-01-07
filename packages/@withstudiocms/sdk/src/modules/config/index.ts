@@ -1,5 +1,5 @@
 import { Deepmerge, Effect, Schema } from '@withstudiocms/effect';
-import type { DBCallbackFailure } from '@withstudiocms/kysely';
+import type { DBCallbackFailure } from '@withstudiocms/kysely/client';
 import type { DatabaseError } from '@withstudiocms/kysely/core/errors';
 import { CacheMissError, CacheService } from '../../cache.js';
 import { cacheKeyGetters, cacheTags } from '../../consts.js';

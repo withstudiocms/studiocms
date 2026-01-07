@@ -40,7 +40,7 @@ export const remapPageDataTable = (astro: PageData['astro'][]): PageData['kysely
 		categories: JSON.stringify(item.categories),
 		tags: JSON.stringify(item.tags),
 		contributorIds: JSON.stringify(item.contributorIds),
-		augments: JSON.stringify(item.augments),
+		augments: JSON.stringify([]),
 		authorId: item.authorId ?? '',
 		draft: booleanToNumber(item.draft ?? false),
 	}));

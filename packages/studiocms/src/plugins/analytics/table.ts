@@ -1,4 +1,5 @@
-import { Database, DateFromString, encodeDatabase, Schema, Table } from '@withstudiocms/kysely';
+import { Database, Table } from '@withstudiocms/kysely/core/schema';
+import { DateFromString, encodeDatabase, Schema } from '@withstudiocms/kysely/schema';
 import type { TableDefinition } from '#db/plugins';
 
 /**

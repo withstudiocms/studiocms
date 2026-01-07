@@ -1,5 +1,5 @@
 import { Data, Effect, type ParseResult, Schema } from '@withstudiocms/effect';
-import type { DBCallbackFailure } from '@withstudiocms/kysely';
+import type { DBCallbackFailure } from '@withstudiocms/kysely/client';
 import type { DatabaseError } from '@withstudiocms/kysely/core/errors';
 import { DBClientLive, StorageManagerResolver } from '../../context.js';
 import { resolveStorageManagerUrls } from '../../lib/storage-manager.js';
