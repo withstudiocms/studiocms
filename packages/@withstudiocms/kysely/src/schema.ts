@@ -1,2 +1,2 @@
 export * as Schema from 'effect/Schema';
-export * from './core/schema.js';
+export * from './core/migration-schema.js';

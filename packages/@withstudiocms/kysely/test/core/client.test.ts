@@ -1,8 +1,8 @@
 /** biome-ignore-all lint/style/noNonNullAssertion: Allowed in tests */
 
-import { Effect } from 'effect';
+import { Effect, Schema } from 'effect';
 import { afterEach, beforeEach, describe, expect } from 'vitest';
-import { Schema, Table } from '../../src';
+import { Table } from '../../src/core/schema';
 import { allureTester, DBClientFixture, parentSuiteName, sharedTags } from '../test-utils';
 
 const localSuiteName = 'Client Core Functionality';

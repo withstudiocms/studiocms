@@ -11,7 +11,7 @@ import {
 	parseAPIContextJson,
 	Schema,
 } from '@withstudiocms/effect';
-import { StudioCMSPageDataCategories } from '@withstudiocms/kysely';
+import { StudioCMSPageDataCategories } from '@withstudiocms/sdk/tables';
 import { buildPartialSchema } from '../../../../../../utils/build-partial-schema.js';
 import type { EndpointRoute } from './../../../../../../utils/rest-router.js';
 import { verifyAuthTokenFromHeader } from '../../../utils/auth-token.js';

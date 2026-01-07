@@ -40,6 +40,10 @@
       "types": "./dist/context.d.ts",
       "default": "./dist/context.js"
     },
+    "./tables": {
+      "types": "./dist/tables.d.ts",
+      "default": "./dist/tables.js"
+    },
     "./types": {
       "types": "./dist/types.d.ts",
       "default": "./dist/types.js"

@@ -15,7 +15,7 @@ import {
 	StudioCMSSessionTable as KyselyStudioCMSSessionTable,
 	StudioCMSUserResetTokens as KyselyStudioCMSUserResetTokens,
 	StudioCMSUsersTable as KyselyStudioCMSUsersTable,
-} from '@withstudiocms/kysely/tables';
+} from '@withstudiocms/sdk/tables';
 import {
 	StudioCMSAPIKeys,
 	StudioCMSDiffTracking,

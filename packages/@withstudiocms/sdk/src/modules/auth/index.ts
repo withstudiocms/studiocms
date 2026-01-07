@@ -1,14 +1,14 @@
 import { Effect, Schema } from '@withstudiocms/effect';
+import type { DBCallbackFailure } from '@withstudiocms/kysely/client';
+import type { DatabaseError } from '@withstudiocms/kysely/core/errors';
+import { DBClientLive, SDKDefaults } from '../../context.js';
 import {
-	type DBCallbackFailure,
 	StudioCMSEmailVerificationTokens,
 	StudioCMSOAuthAccounts,
 	StudioCMSPermissions,
 	StudioCMSSessionTable,
 	StudioCMSUsersTable,
-} from '@withstudiocms/kysely';
-import type { DatabaseError } from '@withstudiocms/kysely/core/errors';
-import { DBClientLive, SDKDefaults } from '../../context.js';
+} from '../../tables.js';
 import {
 	type AuthDeletionResponse,
 	type AuthErrorHandlers,

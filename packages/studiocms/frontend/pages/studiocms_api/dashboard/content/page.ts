@@ -19,7 +19,7 @@ import {
 	readAPIContextJson,
 	Schema,
 } from '@withstudiocms/effect';
-import { StudioCMSPageData } from '@withstudiocms/kysely';
+import { StudioCMSPageData } from '@withstudiocms/sdk/tables';
 import type { PluginAPIRoute } from '#plugins';
 
 type ApiEndpoints = {

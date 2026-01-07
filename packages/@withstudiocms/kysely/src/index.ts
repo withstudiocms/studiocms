@@ -5,9 +5,6 @@
  */
 
 export * from './client.js';
-export * from './core/schema.js';
-export * from './schema.js';
-export * from './tables.js';
 
 // TODO: Create a new Astro integration to handle an Astro-DB like setup
 // but utilizing Kysely under the hood. This will allow users to also

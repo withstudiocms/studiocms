@@ -2,7 +2,8 @@ import {
 	loadConfigFile as _loadConfigFile,
 	parseAndMerge as _parseAndMerge,
 } from '@withstudiocms/config-utils';
-import { getDBClientLive, type StudioCMSDatabaseSchema } from '@withstudiocms/kysely';
+import { getDBClientLive } from '@withstudiocms/kysely/client';
+import type { StudioCMSDatabaseSchema } from '@withstudiocms/sdk/tables';
 import { configPaths } from '../consts.js';
 import { Effect } from '../effect.js';
 import { type StudioCMSOptions, StudioCMSOptionsSchema } from '../schemas/index.js';

@@ -1,7 +1,7 @@
 import path from 'node:path';
 import { SDKCore } from 'studiocms:sdk';
 import { userProjectRoot } from 'virtual:studiocms-devapps/config';
-import { StudioCMSPageDataCategories, StudioCMSPageDataTags } from '@withstudiocms/kysely';
+import { StudioCMSPageDataCategories, StudioCMSPageDataTags } from '@withstudiocms/sdk/tables';
 import { Console, Effect, genLogger, Schema } from 'studiocms/effect';
 import { decode } from 'studiocms/runtime';
 import type { CombinedInsertContent } from 'studiocms/sdk/types';

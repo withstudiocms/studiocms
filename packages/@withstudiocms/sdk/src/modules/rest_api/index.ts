@@ -1,6 +1,6 @@
 import { Effect, Schema } from '@withstudiocms/effect';
-import { StudioCMSAPIKeys, StudioCMSPermissions } from '@withstudiocms/kysely';
 import { DBClientLive } from '../../context.js';
+import { StudioCMSAPIKeys, StudioCMSPermissions } from '../../tables.js';
 import { SDKGenerators } from '../util/generators.js';
 
 /**

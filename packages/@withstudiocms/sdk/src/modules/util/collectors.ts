@@ -1,16 +1,16 @@
 import { Data, Effect, type ParseResult, Schema } from '@withstudiocms/effect';
+import type { DBCallbackFailure } from '@withstudiocms/kysely/client';
+import type { DatabaseError } from '@withstudiocms/kysely/core/errors';
+import { DBClientLive, StorageManagerResolver } from '../../context.js';
+import { resolveStorageManagerUrls } from '../../lib/storage-manager.js';
 import {
-	type DBCallbackFailure,
 	StudioCMSOAuthAccounts,
 	StudioCMSPageContent,
 	StudioCMSPageDataCategories,
 	StudioCMSPageDataTags,
 	StudioCMSPermissions,
 	StudioCMSUsersTable,
-} from '@withstudiocms/kysely';
-import type { DatabaseError } from '@withstudiocms/kysely/core/errors';
-import { DBClientLive, StorageManagerResolver } from '../../context.js';
-import { resolveStorageManagerUrls } from '../../lib/storage-manager.js';
+} from '../../tables.js';
 import type {
 	CombinedPageData,
 	CombinedUserData,

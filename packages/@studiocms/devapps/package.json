@@ -66,6 +66,7 @@
   },
   "peerDependencies": {
     "@withstudiocms/kysely": "workspace:*",
+    "@withstudiocms/sdk": "workspace:*",
     "studiocms": "workspace:*",
     "astro": "catalog:min",
     "effect": "catalog:effect",

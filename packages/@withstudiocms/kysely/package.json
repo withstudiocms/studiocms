@@ -59,10 +59,6 @@
       "types": "./dist/schema.d.ts",
       "default": "./dist/schema.js"
     },
-    "./tables": {
-      "types": "./dist/tables.d.ts",
-      "default": "./dist/tables.js"
-    },
     "./test-utils": {
       "types": "./dist/test-utils.d.ts",
       "default": "./dist/test-utils.js"
