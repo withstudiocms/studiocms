@@ -106,16 +106,6 @@ export class DBFixture<Schema> {
 			const dialect = this.getDialect();
 			return getDBClientLive<Schema>(dialect);
 		},
-
-		// /**
-		//  * Creates and returns a migrator instance configured for the test database.
-		//  *
-		//  * @returns A migrator instance for managing database migrations.
-		//  */
-		// getMigrator: () => {
-		// 	const dialect = this.getDialect();
-		// 	return getMigratorLive<Schema>(dialect);
-		// },
 	};
 
 	/** JavaScript-based utilities for managing the test database fixture. */
@@ -137,12 +127,5 @@ export class DBFixture<Schema> {
 		 * @returns A Kysely<Schema> client instance connected to the test database.
 		 */
 		getClient: () => this.run(this.effect.getClient()),
-
-		/**
-		 * Creates and returns a migrator instance configured for the test database.
-		 *
-		 * @returns A migrator instance for managing database migrations.
-		 */
-		// getMigrator: () => this.run(this.effect.getMigrator()),
 	};
 }
