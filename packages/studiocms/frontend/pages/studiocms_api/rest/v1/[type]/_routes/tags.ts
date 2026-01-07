@@ -10,7 +10,7 @@ import {
 	OptionsResponse,
 	parseAPIContextJson,
 } from '@withstudiocms/effect';
-import { StudioCMSPageDataTags } from '@withstudiocms/kysely';
+import { StudioCMSPageDataTags } from '@withstudiocms/sdk/tables';
 import { buildPartialSchema } from '../../../../../../utils/build-partial-schema.js';
 import type { EndpointRoute } from './../../../../../../utils/rest-router.js';
 import { verifyAuthTokenFromHeader } from '../../../utils/auth-token.js';

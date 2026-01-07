@@ -11,7 +11,7 @@ import {
 	readAPIContextJson,
 	Schema,
 } from '@withstudiocms/effect';
-import { StudioCMSPageData, StudioCMSPageFolderStructure } from '@withstudiocms/kysely';
+import { StudioCMSPageData, StudioCMSPageFolderStructure } from '@withstudiocms/sdk/tables';
 
 interface FolderBase {
 	folderName: string;

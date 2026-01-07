@@ -12,7 +12,7 @@ import {
 	readAPIContextJson,
 	Schema,
 } from '@withstudiocms/effect';
-import { StudioCMSPageData } from '@withstudiocms/kysely';
+import { StudioCMSPageData } from '@withstudiocms/sdk/tables';
 import {
 	type EndpointRoute,
 	idOrPathRouter,

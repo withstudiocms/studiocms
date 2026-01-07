@@ -17,7 +17,7 @@ import type {
 	StudioCMSSessionTable,
 	StudioCMSUserResetTokens,
 	StudioCMSUsersTable,
-} from '@withstudiocms/kysely/tables';
+} from './tables.js';
 
 export * from './lib/pluginUtils.js';
 

@@ -1,6 +1,6 @@
 import { Data, Effect, Schema } from '@withstudiocms/effect';
-import { StudioCMSPageFolderStructure } from '@withstudiocms/kysely';
 import { DBClientLive } from '../../context.js';
+import { StudioCMSPageFolderStructure } from '../../tables.js';
 import type { FolderListItem, FolderNode, tsPageFolderSelect } from '../../types.js';
 
 /**

@@ -1,5 +1,6 @@
-import { Database, DateFromString, encodeDatabase, Schema, Table } from '@withstudiocms/kysely';
+import { Database, DateFromString, encodeDatabase, Table } from '@withstudiocms/kysely/core/schema';
 import type { TableDefinition } from '#db/plugins';
+import { Schema } from '../../effect.js';
 
 /**
  * StudioCMS Metric Table Definition

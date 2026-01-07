@@ -1,7 +1,8 @@
 import { Effect, Schema } from '@withstudiocms/effect';
-import { type DBCallbackFailure, StudioCMSUserResetTokens } from '@withstudiocms/kysely';
+import type { DBCallbackFailure } from '@withstudiocms/kysely/client';
 import type { DatabaseError } from '@withstudiocms/kysely/core/errors';
 import { DBClientLive } from '../../context.js';
+import { StudioCMSUserResetTokens } from '../../tables.js';
 import type { JwtVerificationResult } from '../../types.js';
 import { SDKGenerators } from '../util/generators.js';
 

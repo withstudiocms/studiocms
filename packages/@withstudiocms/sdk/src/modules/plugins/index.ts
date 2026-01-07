@@ -1,5 +1,4 @@
 import { Effect, Schema } from '@withstudiocms/effect';
-import { StudioCMSPluginData } from '@withstudiocms/kysely';
 import CacheService from '../../cache.js';
 import { cacheKeyGetters, cacheTags } from '../../consts.js';
 import { DBClientLive } from '../../context.js';
@@ -14,6 +13,7 @@ import {
 	type UserPluginDataOptsImplementation,
 	type ValidatorOptions,
 } from '../../lib/pluginUtils.js';
+import { StudioCMSPluginData } from '../../tables.js';
 import type { tsPluginData } from '../../types.js';
 
 /**

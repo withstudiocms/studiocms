@@ -1,6 +1,6 @@
 import { Effect, type ParseResult, pipe, Schema } from '@withstudiocms/effect';
-import type { StudioCMSPluginData } from '@withstudiocms/kysely/tables';
 import type { z } from 'zod';
+import type { StudioCMSPluginData } from '../tables.js';
 
 /**
  * Represents a plugin data entry with a strongly-typed `data` property.
