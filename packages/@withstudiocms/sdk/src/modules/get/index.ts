@@ -1,17 +1,17 @@
 import { Effect, type ParseResult, Schema } from '@withstudiocms/effect';
+import type { DBCallbackFailure } from '@withstudiocms/kysely';
+import type { DatabaseError } from '@withstudiocms/kysely/core/errors';
+import CacheService from '../../cache.js';
+import { cacheKeyGetters, cacheTags } from '../../consts.js';
+import { DBClientLive, SDKDefaults } from '../../context.js';
 import {
-	type DBCallbackFailure,
 	StudioCMSPageData,
 	StudioCMSPageDataCategories,
 	StudioCMSPageDataTags,
 	StudioCMSPageFolderStructure,
 	StudioCMSPermissions,
 	StudioCMSUsersTable,
-} from '@withstudiocms/kysely';
-import type { DatabaseError } from '@withstudiocms/kysely/core/errors';
-import CacheService from '../../cache.js';
-import { cacheKeyGetters, cacheTags } from '../../consts.js';
-import { DBClientLive, SDKDefaults } from '../../context.js';
+} from '../../tables.js';
 import type {
 	CombinedPageData,
 	MetaOnlyPageData,

@@ -1,4 +1,5 @@
-import { getDBClientLive, type StudioCMSDatabaseSchema } from '@withstudiocms/kysely';
+import { getDBClientLive } from '@withstudiocms/kysely';
+import type { StudioCMSDatabaseSchema } from '@withstudiocms/sdk/tables';
 import { Data, Effect } from 'effect';
 
 /**

@@ -1,6 +1,7 @@
 import { Context, Layer } from '@withstudiocms/effect';
-import type { DBClientInterface, StudioCMSDatabaseSchema } from '@withstudiocms/kysely';
+import type { DBClientInterface } from '@withstudiocms/kysely';
 import type { CacheEntry } from './cache.js';
+import type { StudioCMSDatabaseSchema } from './tables.js';
 
 /**
  * Context tag representing the database client interface for StudioCMS.

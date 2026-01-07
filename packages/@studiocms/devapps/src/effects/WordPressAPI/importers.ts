@@ -2,7 +2,7 @@ import path from 'node:path';
 import { SDKCore } from 'studiocms:sdk';
 import type { ConfigFinal, StudioCMSSiteConfig } from 'studiocms:sdk/types';
 import { userProjectRoot } from 'virtual:studiocms-devapps/config';
-import type { StudioCMSPageContent, StudioCMSPageData } from '@withstudiocms/kysely';
+import type { StudioCMSPageContent, StudioCMSPageData } from '@withstudiocms/sdk/tables';
 import { Console, Effect, genLogger, Schema } from 'studiocms/effect';
 import {
 	APIEndpointConfig,

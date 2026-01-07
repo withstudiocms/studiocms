@@ -1,5 +1,5 @@
 import { runSDK, SDKCoreJs } from 'studiocms:sdk';
-import { StudioCMSStorageManagerUrlMappings } from '@withstudiocms/kysely';
+import { StudioCMSStorageManagerUrlMappings } from '@withstudiocms/sdk/tables';
 import { Schema } from 'effect';
 import type { UrlMapping, UrlMappingDatabaseDefinition } from '../definitions';
 

@@ -1,11 +1,11 @@
 import { Deepmerge, Effect, Schema } from '@withstudiocms/effect';
 import type { DBCallbackFailure } from '@withstudiocms/kysely';
 import type { DatabaseError } from '@withstudiocms/kysely/core/errors';
-import { StudioCMSDynamicConfigSettings } from '@withstudiocms/kysely/tables';
 import { CacheMissError, CacheService } from '../../cache.js';
 import { cacheKeyGetters, cacheTags } from '../../consts.js';
 import { DBClientLive, StorageManagerResolver } from '../../context.js';
 import { resolveStorageManagerUrls } from '../../lib/storage-manager.js';
+import { StudioCMSDynamicConfigSettings } from '../../tables.js';
 import type {
 	ConfigFinal,
 	DbQueryFn,

@@ -1,7 +1,7 @@
 import { getAvatarUrl } from '@withstudiocms/auth-kit/utils/libravatar';
 import { StudioCMSColorwayInfo } from '@withstudiocms/cli-kit/colors';
 import { group, log, password, select, text } from '@withstudiocms/effect/clack';
-import { StudioCMSPermissions, StudioCMSUsersTable } from '@withstudiocms/kysely';
+import { StudioCMSPermissions, StudioCMSUsersTable } from '@withstudiocms/sdk/tables';
 import { z } from 'astro/zod';
 import { Effect, runEffect, Schema } from '../../../effect.js';
 import { getCliDbClient } from '../../utils/getCliDbClient.js';
@@ -19,6 +19,7 @@ import { validateInputOrRePrompt } from '../shared.js';
  * @return An effect representing the user creation step.
  */
 export const createUsers: EffectStepFn = Effect.fn(function* (context, _debug, dryRun) {
+	// @effect-diagnostics-next-line globalErrorInEffectFailure:off
 	const [checker, dbClient] = yield* Effect.all([
 		getCheckers,
 		getCliDbClient(context).pipe(
@@ -43,11 +44,17 @@ export const createUsers: EffectStepFn = Effect.fn(function* (context, _debug, d
 	 * Create a new user in the database.
 	 */
 	const _createUser = dbClient.withCodec({
-		decoder: StudioCMSUsersTable.Select,
 		encoder: StudioCMSUsersTable.Insert,
+		decoder: StudioCMSUsersTable.Select,
 		callbackFn: (client, user) =>
-			client((db) =>
-				db.insertInto('StudioCMSUsersTable').values(user).returningAll().executeTakeFirstOrThrow()
+			client(
+				(db) =>
+					db
+						.insertInto('StudioCMSUsersTable')
+						.values(user)
+						.returningAll()
+						// Added type assertion due to weirdness with generics return types
+						.executeTakeFirstOrThrow() as Promise<(typeof StudioCMSUsersTable.Select)['Encoded']>
 			),
 	});
 

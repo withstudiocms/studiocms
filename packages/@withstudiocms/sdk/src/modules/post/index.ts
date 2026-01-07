@@ -1,6 +1,9 @@
 import { Effect, pipe, Schema } from '@withstudiocms/effect';
+import { DBCallbackFailure } from '@withstudiocms/kysely';
+import CacheService from '../../cache.js';
+import { cacheTags } from '../../consts.js';
+import { DBClientLive } from '../../context.js';
 import {
-	DBCallbackFailure,
 	StudioCMSDiffTracking,
 	StudioCMSPageContent,
 	StudioCMSPageData,
@@ -8,10 +11,7 @@ import {
 	StudioCMSPageDataTags,
 	StudioCMSPageFolderStructure,
 	StudioCMSPermissions,
-} from '@withstudiocms/kysely';
-import CacheService from '../../cache.js';
-import { cacheTags } from '../../consts.js';
-import { DBClientLive } from '../../context.js';
+} from '../../tables.js';
 import type { CombinedInsertContent, tsPageDataCategories, tsPageDataTags } from '../../types.js';
 import SDKClearModule from '../clear/index.js';
 import SDKGetModule from '../get/index.js';

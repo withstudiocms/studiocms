@@ -1,7 +1,7 @@
 import { StudioCMSColorwayError, StudioCMSColorwayInfo } from '@withstudiocms/cli-kit/colors';
 import { runEffect } from '@withstudiocms/effect';
 import { log, note, password, select, text } from '@withstudiocms/effect/clack';
-import { StudioCMSPermissions, StudioCMSUsersTable } from '@withstudiocms/kysely';
+import { StudioCMSPermissions, StudioCMSUsersTable } from '@withstudiocms/sdk/tables';
 import { Effect, Schema } from 'effect';
 import { getCliDbClient } from '../../utils/getCliDbClient.js';
 import type { EffectStepFn } from '../../utils/types.js';

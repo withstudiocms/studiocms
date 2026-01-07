@@ -1,7 +1,7 @@
 import { Data, Effect, Schema } from '@withstudiocms/effect';
-import { StudioCMSDiffTracking, StudioCMSPageData } from '@withstudiocms/kysely';
 import { DBClientLive } from '../../context.js';
 import { createTwoFilesPatch, diffHTML } from '../../lib/diff.js';
+import { StudioCMSDiffTracking, StudioCMSPageData } from '../../tables.js';
 import type { diffItem, diffReturn, tsPageDataSelect } from '../../types.js';
 import { SDKParsers } from '../util/parsers.js';
 

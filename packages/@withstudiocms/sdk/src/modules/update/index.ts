@@ -1,4 +1,7 @@
 import { Effect, Schema } from '@withstudiocms/effect';
+import CacheService from '../../cache.js';
+import { cacheKeyGetters, cacheTags } from '../../consts.js';
+import { DBClientLive } from '../../context.js';
 import {
 	StudioCMSPageContent,
 	StudioCMSPageData,
@@ -6,10 +9,7 @@ import {
 	StudioCMSPageDataTags,
 	StudioCMSPageFolderStructure,
 	StudioCMSPermissions,
-} from '@withstudiocms/kysely';
-import CacheService from '../../cache.js';
-import { cacheKeyGetters, cacheTags } from '../../consts.js';
-import { DBClientLive } from '../../context.js';
+} from '../../tables.js';
 import SDKClearModule from '../clear/index.js';
 import SDKConfigModule from '../config/index.js';
 import SDKGetModule from '../get/index.js';
