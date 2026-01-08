@@ -60,8 +60,8 @@
     "effect-check:withstudiocms": "pnpm --filter @withstudiocms/* effect-check",
 
     "ci:effect-check:studiocms": "pnpm --filter studiocms ci:effect-check",
-    "ci:effect-check:studiocms-packages": "pnpm --filter @studiocms/* -r --parallel --reporter=append-only --aggregate-output ci:effect-check",
-    "ci:effect-check:withstudiocms": "pnpm --filter @withstudiocms/* -r --parallel --reporter=append-only --aggregate-output ci:effect-check",
+    "ci:effect-check:studiocms-packages": "pnpm --filter @studiocms/* -r --workspace-concurrency=1 ci:effect-check",
+    "ci:effect-check:withstudiocms": "pnpm --filter @withstudiocms/* -r --workspace-concurrency=1 ci:effect-check",
 
     "bundle-test:blog": "pnpm --filter @bundletests/studiocms-blog build",
     "bundle-test:headless": "pnpm --filter @bundletests/studiocms-headless build"
