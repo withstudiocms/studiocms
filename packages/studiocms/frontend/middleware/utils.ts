@@ -1,6 +1,6 @@
 import { UserPermissionLevel, type UserSessionData } from '@withstudiocms/auth-kit/types';
 import { getLevel } from '@withstudiocms/auth-kit/utils/user';
-import { deepmerge, Effect, genLogger } from '@withstudiocms/effect';
+import { Data, deepmerge, Effect, genLogger } from '@withstudiocms/effect';
 import type { DynamicConfigEntry, StudioCMSSiteConfig } from '@withstudiocms/sdk/types';
 import type { APIContext } from 'astro';
 
@@ -114,6 +114,11 @@ function getGeneralLocals(StudioCMS: APIContext['locals']['StudioCMS']): SetLoca
 
 const sharedOpts = { mergeArrays: false } as const;
 
+class MiddlewareLocalsError extends Data.TaggedError('MiddlewareLocalsError')<{
+	message: string;
+	cause?: unknown;
+}> {}
+
 /**
  * Updates the `locals.StudioCMS` property of the given API context with new values for a specified key.
  *
@@ -183,6 +188,6 @@ export const setLocals = Effect.fn(function* <
 			break;
 		}
 		default:
-			return yield* Effect.fail(new Error(`Unknown key: ${key}`));
+			return yield* new MiddlewareLocalsError({ message: `Unknown key: ${key}` });
 	}
 });

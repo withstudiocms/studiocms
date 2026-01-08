@@ -9,6 +9,7 @@ import type { AstroUserConfig } from 'astro';
 import chalk from 'chalk';
 import type { StudioCMSOptions } from '#schemas';
 import { debug } from '../utils/debugOpt.js';
+import { StudioCMSCliError } from '../utils/errors.js';
 
 const astroConfigPaths = [
 	'astro.config.mjs',
@@ -93,12 +94,19 @@ export const debugCMD = Cli.Command.make('debug', { debug }, ({ debug: _debug })
 					installedPlugins,
 				}),
 			catch: (error) =>
-				new Error(`Failed to create DebugInfoProvider: ${(error as Error).message}`),
+				new StudioCMSCliError({
+					message: `Failed to create DebugInfoProvider: ${(error as Error).message}`,
+					cause: error,
+				}),
 		});
 
 		const debugInfo = yield* Effect.tryPromise({
 			try: () => infoProvider.getDebugInfoString(4, { styled: true }),
-			catch: (error) => new Error(`Failed to gather debug info: ${(error as Error).message}`),
+			catch: (error) =>
+				new StudioCMSCliError({
+					message: `Failed to gather debug info: ${(error as Error).message}`,
+					cause: error,
+				}),
 		});
 
 		if (debug) {

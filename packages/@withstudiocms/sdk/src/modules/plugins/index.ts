@@ -2,6 +2,7 @@ import { Effect, Schema } from '@withstudiocms/effect';
 import CacheService from '../../cache.js';
 import { cacheKeyGetters, cacheTags } from '../../consts.js';
 import { DBClientLive } from '../../context.js';
+import { StudioCMSSDKError } from '../../errors.js';
 import {
 	type PluginDataEntry,
 	parseData,
@@ -401,19 +402,23 @@ export const SDKPluginsModule = Effect.gen(function* () {
 			case SelectPluginDataRespondOrFail.ExistsShouldFail: {
 				// If it exists, fail with an error
 				if (existing)
-					return yield* Effect.fail(new Error(`Plugin data with ID ${id} already exists.`));
+					return yield* new StudioCMSSDKError({
+						message: `Plugin data with ID ${id} already exists.`,
+					});
 				// If it does not exist, return undefined
 				return undefined;
 			}
 			case SelectPluginDataRespondOrFail.NotExistsShouldFail: {
 				// If it does not exist, fail with an error
 				if (!existing)
-					return yield* Effect.fail(new Error(`Plugin data with ID ${id} does not exist.`));
+					return yield* new StudioCMSSDKError({
+						message: `Plugin data with ID ${id} does not exist.`,
+					});
 				// If it exists, return undefined
 				return undefined;
 			}
 			default:
-				return yield* Effect.fail(new Error(`Invalid mode: ${mode}`));
+				return yield* new StudioCMSSDKError({ message: `Invalid mode: ${mode}` });
 		}
 	});
 
@@ -582,12 +587,12 @@ export const SDKPluginsModule = Effect.gen(function* () {
 	): {
 		getEntries: (
 			filter?: (data: PluginDataEntry<R>[]) => PluginDataEntry<R>[]
-		) => Effect.Effect<PluginDataEntry<R>[], Error, never>;
+		) => Effect.Effect<PluginDataEntry<R>[], StudioCMSSDKError, never>;
 		getEntry: (id: string) => {
 			generatedId: () => Effect.Effect<string, never, never>;
-			select: () => Effect.Effect<PluginDataEntry<R> | undefined, Error, never>;
-			insert: (data: R) => Effect.Effect<PluginDataEntry<R>, Error, never>;
-			update: (data: R) => Effect.Effect<PluginDataEntry<R>, Error, never>;
+			select: () => Effect.Effect<PluginDataEntry<R> | undefined, StudioCMSSDKError, never>;
+			insert: (data: R) => Effect.Effect<PluginDataEntry<R>, StudioCMSSDKError, never>;
+			update: (data: R) => Effect.Effect<PluginDataEntry<R>, StudioCMSSDKError, never>;
 		};
 	};
 
@@ -607,9 +612,9 @@ export const SDKPluginsModule = Effect.gen(function* () {
 		opts?: UsePluginDataOpts<T>
 	): {
 		generatedId: () => Effect.Effect<string, never, never>;
-		select: () => Effect.Effect<PluginDataEntry<R> | undefined, Error, never>;
-		insert: (data: R) => Effect.Effect<PluginDataEntry<R>, Error, never>;
-		update: (data: R) => Effect.Effect<PluginDataEntry<R>, Error, never>;
+		select: () => Effect.Effect<PluginDataEntry<R> | undefined, StudioCMSSDKError, never>;
+		insert: (data: R) => Effect.Effect<PluginDataEntry<R>, StudioCMSSDKError, never>;
+		update: (data: R) => Effect.Effect<PluginDataEntry<R>, StudioCMSSDKError, never>;
 	};
 
 	/**

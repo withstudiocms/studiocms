@@ -4,6 +4,7 @@ import { detect, resolveCommand } from 'package-manager-detector';
 import { Console, Effect, genLogger } from '../../effect.js';
 import { CliContext } from '../utils/context.js';
 import { effectBoxen } from '../utils/effectBoxen.js';
+import { StudioCMSCliError } from '../utils/errors.js';
 import { type PluginInfo, UpdateResult } from './index.js';
 import { convertPluginsToInstallSpecifiers } from './npm-utils.js';
 
@@ -78,10 +79,10 @@ export class TryToInstallPlugins extends Effect.Service<TryToInstallPlugins>()(
 								return UpdateResult.updated;
 							},
 							catch: (err) =>
-								new Error(
-									`Failed to install dependencies: ${err instanceof Error ? err.message : String(err)}`,
-									{ cause: err }
-								),
+								new StudioCMSCliError({
+									message: `Failed to install dependencies: ${err instanceof Error ? err.message : String(err)}`,
+									cause: err,
+								}),
 						}).pipe(Effect.catchAll((err) => Effect.succeed(err)));
 
 						if (response === UpdateResult.updated) {

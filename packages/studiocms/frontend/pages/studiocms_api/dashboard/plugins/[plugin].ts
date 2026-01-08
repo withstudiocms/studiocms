@@ -10,6 +10,7 @@ import {
 	OptionsResponse,
 	pipe,
 } from '@withstudiocms/effect';
+import { StudioCMSAPIError } from '#frontend/utils/errors.js';
 
 export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
 	{
@@ -50,7 +51,10 @@ export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
 							}
 						),
 					catch: (cause) =>
-						new Error('An error occurred while fetching plugin settings page', { cause }),
+						new StudioCMSAPIError({
+							message: 'An error occurred while fetching plugin settings page',
+							cause,
+						}),
 				});
 
 				if (settingsPage instanceof Response) {

@@ -3,6 +3,7 @@ import { runEffect } from '@withstudiocms/effect';
 import { log, note, password, select, text } from '@withstudiocms/effect/clack';
 import { StudioCMSPermissions, StudioCMSUsersTable } from '@withstudiocms/sdk/tables';
 import { Effect, Schema } from 'effect';
+import { StudioCMSCliError } from '../../utils/errors.js';
 import { getCliDbClient } from '../../utils/getCliDbClient.js';
 import type { EffectStepFn } from '../../utils/types.js';
 import { getCheckers, hashPassword, verifyPasswordStrength } from '../../utils/user-utils.js';
@@ -18,8 +19,9 @@ export const modifyUsers: EffectStepFn = Effect.fn(function* (context, _debug, d
 	const [checker, dbClient] = yield* Effect.all([
 		getCheckers,
 		getCliDbClient(context).pipe(
-			Effect.catchAll((error) =>
-				Effect.fail(new Error(`Failed to get database client: ${error.message}`))
+			Effect.mapError(
+				(error) =>
+					new StudioCMSCliError({ message: `Failed to get database client: ${error.message}` })
 			)
 		),
 	]);

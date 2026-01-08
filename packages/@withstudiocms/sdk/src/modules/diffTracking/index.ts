@@ -375,7 +375,7 @@ export const SDKDiffTrackingModule = Effect.gen(function* () {
 
 		// If not found, fail with an error
 		if (!diffEntry) {
-			return yield* Effect.fail(new DiffTrackingError({ message: 'Diff entry not found' }));
+			return yield* new DiffTrackingError({ message: 'Diff entry not found' });
 		}
 
 		// Determine what to revert based on the type
@@ -389,9 +389,7 @@ export const SDKDiffTrackingModule = Effect.gen(function* () {
 
 			// Ensure valid IDs are present
 			if (!pageData.end.id || !pageData.start.id) {
-				return yield* Effect.fail(
-					new DiffTrackingError({ message: 'Invalid page metadata for revert' })
-				);
+				return yield* new DiffTrackingError({ message: 'Invalid page metadata for revert' });
 			}
 
 			// Update the page data to the start state

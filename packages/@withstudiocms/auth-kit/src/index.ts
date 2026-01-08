@@ -1,6 +1,7 @@
 import { Effect } from '@withstudiocms/effect';
 import { Scrypt as _Scrypt } from '@withstudiocms/effect/scrypt';
 import { AuthKitOptions, PasswordModConfigFinal, type RawAuthKitConfig } from './config.js';
+import { AuthKitError } from './errors.js';
 import { _Encryption, _Password, _Session, _User } from './modules/index.js';
 
 export { Password } from './modules/password.js';
@@ -18,7 +19,11 @@ export const makeScrypt = Effect.fn((config: PasswordModConfigFinal) =>
 				const { run } = yield* _Scrypt;
 				return { run };
 			}).pipe(Effect.provide(_Scrypt.makeLive(config.scrypt))),
-		catch: (error) => new Error(`Failed to create Scrypt instance: ${(error as Error).message}`),
+		catch: (error) =>
+			new AuthKitError({
+				message: `Failed to create Scrypt instance: ${(error as Error).message}`,
+				cause: error,
+			}),
 	})
 );
 

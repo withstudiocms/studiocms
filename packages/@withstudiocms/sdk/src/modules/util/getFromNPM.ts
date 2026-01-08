@@ -1,4 +1,4 @@
-import { Effect, HTTPClient, Schema } from '@withstudiocms/effect';
+import { Data, Effect, HTTPClient, Schema } from '@withstudiocms/effect';
 import { type CacheEntryStatus, CacheService } from '../../cache.js';
 import { cacheKeyGetters, cacheTags } from '../../consts.js';
 
@@ -81,6 +81,11 @@ export const parseNpmRegistryResponse = Effect.fn(function* (response: Response)
 	return yield* Schema.decodeUnknown(NpmRegistryResponseSchema)(data);
 });
 
+export class GetFromNPMError extends Data.TaggedError('GetFromNPMError')<{
+	message: string;
+	cause?: unknown;
+}> {}
+
 /**
  * Cache key for NPM package data.
  */
@@ -114,7 +119,11 @@ export const GetFromNPM = Effect.gen(function* () {
 	const effectFetch = Effect.fn((url: string) =>
 		Effect.tryPromise({
 			try: () => fetch(url),
-			catch: (error) => new Error(`Failed to fetch NPM package data: ${String(error)}`),
+			catch: (error) =>
+				new GetFromNPMError({
+					message: `Failed to fetch NPM package data: ${String(error)}`,
+					cause: error,
+				}),
 		})
 	);
 

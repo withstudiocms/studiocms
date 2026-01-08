@@ -91,13 +91,12 @@ export class GitHubOAuthAPI extends Effect.Service<GitHubOAuthAPI>()('GitHubOAut
 					})
 					.pipe(
 						Effect.flatMap(Platform.HttpClientResponse.schemaBodyJson(GitHubUser)),
-						Effect.catchAll((error) =>
-							Effect.fail(
+						Effect.mapError(
+							(error) =>
 								new ValidateAuthCodeError({
 									provider: GitHubOAuthAPI.ProviderID,
 									message: `Failed to fetch user info: ${error.message}`,
 								})
-							)
 						)
 					);
 			});

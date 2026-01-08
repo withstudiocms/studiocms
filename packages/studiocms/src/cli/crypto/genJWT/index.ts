@@ -12,6 +12,7 @@ import { Cli, Effect, genLogger } from '../../../effect.js';
 import { genContext } from '../../utils/context.js';
 import { dateAdd } from '../../utils/dateAdd.js';
 import { debug } from '../../utils/debugOpt.js';
+import { StudioCMSCliError } from '../../utils/errors.js';
 import { logger } from '../../utils/logger.js';
 
 /**
@@ -62,11 +63,13 @@ export const genJWT = Cli.Command.make(
 			}
 
 			if (Number.isNaN(exp)) {
-				return yield* Effect.fail(new Error(`Expiration must be a valid number, received: ${exp}`));
+				return yield* new StudioCMSCliError({
+					message: `Expiration must be a valid number, received: ${exp}`,
+				});
 			}
 
 			if (exp < 0) {
-				return yield* Effect.fail(new Error('Expiration must be greater than 0'));
+				return yield* new StudioCMSCliError({ message: 'Expiration must be greater than 0' });
 			}
 
 			if (debug) {
@@ -101,7 +104,7 @@ export const genJWT = Cli.Command.make(
 
 				if (!keyString) {
 					yield* spin.stop('Key not found, or invalid');
-					return yield* Effect.fail(new Error('Key not found, or invalid'));
+					return yield* new StudioCMSCliError({ message: 'Key not found, or invalid' });
 				}
 
 				const alg = 'EdDSA';
@@ -111,7 +114,7 @@ export const genJWT = Cli.Command.make(
 					privateKey = yield* Effect.tryPromise(() => importPKCS8(keyString, alg));
 				} catch (_e) {
 					yield* spin.stop('Invalid or unsupported private key');
-					return yield* Effect.fail(new Error('Invalid or unsupported private key'));
+					return yield* new StudioCMSCliError({ message: 'Invalid or unsupported private key' });
 				}
 
 				const NOW = new Date();
@@ -153,7 +156,7 @@ export const genJWT = Cli.Command.make(
 				} else {
 					yield* log.error(`Unexpected error generating JWT: ${err}`);
 				}
-				return yield* Effect.fail(new Error('JWT ERROR: Unknown'));
+				return yield* new StudioCMSCliError({ message: 'JWT ERROR: Unknown' });
 			}
 		})
 ).pipe(Cli.Command.withDescription('Generate a JWT token from a keyfile'));

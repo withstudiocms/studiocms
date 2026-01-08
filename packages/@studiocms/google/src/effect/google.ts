@@ -94,13 +94,12 @@ export class GoogleOAuthAPI extends Effect.Service<GoogleOAuthAPI>()('GoogleOAut
 					})
 					.pipe(
 						Effect.flatMap(Platform.HttpClientResponse.schemaBodyJson(GoogleUser)),
-						Effect.catchAll((error) =>
-							Effect.fail(
+						Effect.mapError(
+							(error) =>
 								new ValidateAuthCodeError({
 									provider: GoogleOAuthAPI.ProviderID,
 									message: `Failed to fetch user info: ${error.message}`,
 								})
-							)
 						)
 					);
 			});

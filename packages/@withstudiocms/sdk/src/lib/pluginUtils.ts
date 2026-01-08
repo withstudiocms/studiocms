@@ -1,5 +1,6 @@
 import { Effect, type ParseResult, pipe, Schema } from '@withstudiocms/effect';
 import type { z } from 'zod';
+import { StudioCMSSDKError } from '../errors.js';
 import type { StudioCMSPluginData } from '../tables.js';
 
 /**
@@ -209,7 +210,11 @@ export const getValidatorFn = Effect.fn('studiocms/sdk/effect/pluginUtils/getVal
 			return (data: unknown) =>
 				Effect.try({
 					try: () => pipe(validator.jsonFn(data), isJsonValid<T>(data)),
-					catch: (error) => new Error(`JSON validation failed: ${(error as Error).message}`),
+					catch: (cause) =>
+						new StudioCMSSDKError({
+							message: `JSON validation failed: ${(cause as Error).message}`,
+							cause,
+						}),
 				});
 		}
 		if ('effectSchema' in validator) {
@@ -217,10 +222,13 @@ export const getValidatorFn = Effect.fn('studiocms/sdk/effect/pluginUtils/getVal
 			return (data: unknown) =>
 				Schema.decodeUnknown(validator.effectSchema)(data).pipe(
 					Effect.mapError(
-						(error) =>
-							new Error(`Schema validation failed: ${(error as ParseResult.ParseError).message}`)
+						(cause) =>
+							new StudioCMSSDKError({
+								message: `Schema validation failed: ${(cause as ParseResult.ParseError).message}`,
+								cause,
+							})
 					)
-				) as Effect.Effect<T, Error, never>;
+				) as Effect.Effect<T, StudioCMSSDKError, never>;
 		}
 		if ('zodSchema' in validator) {
 			// Return the Zod schema validator function
@@ -235,17 +243,16 @@ export const getValidatorFn = Effect.fn('studiocms/sdk/effect/pluginUtils/getVal
 							cause: result.error.cause,
 						});
 					},
-					catch: (error) => new Error((error as Error).message, { cause: (error as Error).cause }),
+					catch: (cause) => new StudioCMSSDKError({ message: (cause as Error).message, cause }),
 				});
 		}
 		// If something else is provided, throw an error
 		// This ensures that the validator options are strictly typed and cannot
 		// be accidentally misconfigured or used incorrectly.
-		return yield* Effect.fail(
-			new Error(
-				'Invalid validator options provided, expected one of: jsonFn, effectSchema, or zodSchema'
-			)
-		);
+		return yield* new StudioCMSSDKError({
+			message:
+				'Invalid validator options provided, expected one of: jsonFn, effectSchema, or zodSchema',
+		});
 	}
 );
 
@@ -278,7 +285,7 @@ export const parseData = Effect.fn('studiocms/sdk/effect/pluginUtils/parseData')
 	if (typeof rawData === 'string') {
 		parsedInput = yield* Effect.try({
 			try: () => JSON.parse(rawData),
-			catch: (error) => new Error(`JSON parsing failed: ${error}`),
+			catch: (cause) => new StudioCMSSDKError({ message: `JSON parsing failed: ${cause}`, cause }),
 		});
 		// Ensure parsedInput is an object
 		// If rawData is not a string, we assume it's already an object
@@ -286,7 +293,9 @@ export const parseData = Effect.fn('studiocms/sdk/effect/pluginUtils/parseData')
 		parsedInput = rawData;
 	} else {
 		// If rawData is neither a string nor a valid object, throw an error
-		return yield* Effect.fail(new Error(`Invalid plugin data format: ${typeof rawData}`));
+		return yield* new StudioCMSSDKError({
+			message: `Invalid plugin data format: ${typeof rawData}`,
+		});
 	}
 
 	if (!validator || validator === undefined) {

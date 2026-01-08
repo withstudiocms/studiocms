@@ -8,6 +8,7 @@ import { getDefaultExportOptions } from 'magicast/helpers';
 import { configPaths } from '../../consts.js';
 import { Cli, Console, Effect, genLogger, Layer } from '../../effect.js';
 import { CliContext, genContext } from '../utils/context.js';
+import { StudioCMSCliError } from '../utils/errors.js';
 import { logger } from '../utils/logger.js';
 import { TryToInstallPlugins } from './tryToInstallPlugins.js';
 import { UpdateStudioCMSConfig } from './updateStudioCMSConfig.js';
@@ -235,7 +236,7 @@ export const addPlugin = Cli.Command.make(
 					CliContext.makeProvide(context),
 					Effect.catchAll((err) => {
 						logger.debug(`Error updating studiocms config ${err}`);
-						return Effect.fail(createPrettyError(err as Error));
+						return new StudioCMSCliError(createPrettyError(err as Error));
 					})
 				);
 			}

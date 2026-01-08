@@ -33,22 +33,20 @@ export const Session = (config: SessionConfig) =>
 		} as SessionConfig;
 
 		if (!sessionTools) {
-			return yield* Effect.fail(
-				new SessionError({ cause: 'Session tools must be provided in the configuration' })
-			);
+			return yield* new SessionError({
+				cause: 'Session tools must be provided in the configuration',
+			});
 		}
 
 		if (!Number.isFinite(expTime) || expTime <= 0) {
-			return yield* Effect.fail(
-				new SessionError({
-					cause: 'Invalid session config: expTime must be a positive number (ms)',
-				})
-			);
+			return yield* new SessionError({
+				cause: 'Invalid session config: expTime must be a positive number (ms)',
+			});
 		}
 		if (typeof cookieName !== 'string' || cookieName.trim().length === 0) {
-			return yield* Effect.fail(
-				new SessionError({ cause: 'Invalid session config: cookieName must be a non-empty string' })
-			);
+			return yield* new SessionError({
+				cause: 'Invalid session config: cookieName must be a non-empty string',
+			});
 		}
 
 		const expTimeHalf = expTime / 2;

@@ -15,6 +15,7 @@ import {
 	StringConfig,
 	UseBlogPkgConfig,
 } from './configs.js';
+import { WPAPIError } from './errors.js';
 import type { PageData } from './importers.js';
 import { Page, Post } from './schema.js';
 import { WordPressAPIUtils } from './utils.js';
@@ -52,6 +53,7 @@ const sharedMeta = (data: Post | Page) => ({
 	showContributors: false,
 });
 
+// @effect-diagnostics-next-line leakingRequirements:off
 export class WordPressAPIConverters extends Effect.Service<WordPressAPIConverters>()(
 	'WordPressAPIConverters',
 	{
@@ -149,10 +151,10 @@ export class WordPressAPIConverters extends Effect.Service<WordPressAPIConverter
 				const [{ endpoint }, { page }] = yield* Effect.all([ImportEndpointConfig, RawPageData]);
 
 				if (!endpoint) {
-					yield* Effect.fail(new Error('Missing endpoint configuration'));
+					return yield* new WPAPIError({ message: 'Missing endpoint configuration' });
 				}
 				if (!page) {
-					yield* Effect.fail(new Error('Missing page data'));
+					return yield* new WPAPIError({ message: 'Missing page data' });
 				}
 
 				const data = yield* Schema.decodeUnknown(Page)(page);
@@ -225,7 +227,7 @@ export class WordPressAPIConverters extends Effect.Service<WordPressAPIConverter
 				const data = yield* Schema.decodeUnknown(Page)(page);
 
 				if (!pageId) {
-					return yield* Effect.fail(new Error('pageData is missing id'));
+					return yield* new WPAPIError({ message: 'pageData is missing id' });
 				}
 
 				const cleanUpContent = yield* cleanUpHtml.pipe(
@@ -434,7 +436,7 @@ export class WordPressAPIConverters extends Effect.Service<WordPressAPIConverter
 				const data = yield* Schema.decodeUnknown(Post)(post);
 
 				if (!pageId) {
-					return yield* Effect.fail(new Error('pageData is missing id'));
+					return yield* new WPAPIError({ message: 'pageData is missing id' });
 				}
 
 				const cleanupContent = yield* cleanUpHtml.pipe(

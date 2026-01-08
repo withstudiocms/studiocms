@@ -56,7 +56,7 @@ export const User = ({ Scrypt, session, userTools }: UserConfig) =>
 
 		/* v8 ignore next 3 */
 		if (!userTools) {
-			return yield* Effect.fail(new UserError({ cause: 'User tools are not available' }));
+			return yield* new UserError({ cause: 'User tools are not available' });
 		}
 
 		const notifier = userTools.notifier;
@@ -189,7 +189,7 @@ export const User = ({ Scrypt, session, userTools }: UserConfig) =>
 				const newHash = yield* Password.hashPassword(password);
 				const data = yield* useUserErrorPromise(() => userTools.getUserById(userId));
 				if (!data) {
-					return yield* Effect.fail(new UserError({ cause: 'User not found' }));
+					return yield* new UserError({ cause: 'User not found' });
 				}
 				const { avatar, email, emailVerified, name, notifications, id, username, url } = data;
 				return yield* useUserErrorPromise(() =>
@@ -222,9 +222,8 @@ export const User = ({ Scrypt, session, userTools }: UserConfig) =>
 		)(function* (userId: string) {
 			const user = yield* useUserErrorPromise(() => userTools.getUserById(userId));
 
-			if (!user) return yield* Effect.fail(new UserError({ cause: 'User not found' }));
-			if (!user.password)
-				return yield* Effect.fail(new UserError({ cause: 'User has no password' }));
+			if (!user) return yield* new UserError({ cause: 'User not found' });
+			if (!user.password) return yield* new UserError({ cause: 'User has no password' });
 
 			return user.password;
 		});

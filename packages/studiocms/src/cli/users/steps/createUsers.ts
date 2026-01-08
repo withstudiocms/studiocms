@@ -4,6 +4,7 @@ import { group, log, password, select, text } from '@withstudiocms/effect/clack'
 import { StudioCMSPermissions, StudioCMSUsersTable } from '@withstudiocms/sdk/tables';
 import { z } from 'astro/zod';
 import { Effect, runEffect, Schema } from '../../../effect.js';
+import { StudioCMSCliError } from '../../utils/errors.js';
 import { getCliDbClient } from '../../utils/getCliDbClient.js';
 import type { EffectStepFn } from '../../utils/types.js';
 import { getCheckers, hashPassword, verifyPasswordStrength } from '../../utils/user-utils.js';
@@ -19,12 +20,12 @@ import { validateInputOrRePrompt } from '../shared.js';
  * @return An effect representing the user creation step.
  */
 export const createUsers: EffectStepFn = Effect.fn(function* (context, _debug, dryRun) {
-	// @effect-diagnostics-next-line globalErrorInEffectFailure:off
 	const [checker, dbClient] = yield* Effect.all([
 		getCheckers,
 		getCliDbClient(context).pipe(
-			Effect.catchAll((error) =>
-				Effect.fail(new Error(`Failed to get database client: ${error.message}`))
+			Effect.mapError(
+				(error) =>
+					new StudioCMSCliError({ message: `Failed to get database client: ${error.message}` })
 			)
 		),
 	]);
@@ -190,7 +191,7 @@ export const createUsers: EffectStepFn = Effect.fn(function* (context, _debug, d
 		hashPassword(newPassword),
 		Effect.tryPromise({
 			try: () => getAvatarUrl({ email, https: true, size: 400, default: 'retro' }),
-			catch: (cause) => new Error('Failed to fetch avatar URL', { cause }),
+			catch: (cause) => new StudioCMSCliError({ message: 'Failed to fetch avatar URL', cause }),
 		}),
 	]);
 

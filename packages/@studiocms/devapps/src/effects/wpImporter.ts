@@ -4,6 +4,7 @@ import {
 	ImportEndpointConfig,
 	ImportPostsEndpointConfig,
 } from './WordPressAPI/configs.js';
+import { WPAPIError } from './WordPressAPI/errors.js';
 import { WordPressAPI } from './WordPressAPI/importers.js';
 
 const createResponse = (status: number, statusText: string) =>
@@ -35,7 +36,7 @@ export class WPImporter extends Effect.Service<WPImporter>()('WPImporter', {
 				const data = formData.get(name);
 
 				if ((!optional && !data) || data === null) {
-					throw yield* Effect.fail(new Error(`Missing required form field: ${name}`));
+					return yield* new WPAPIError({ message: `Missing required form field: ${name}` });
 				}
 
 				switch (type) {
@@ -46,11 +47,11 @@ export class WPImporter extends Effect.Service<WPImporter>()('WPImporter', {
 						return (value === 'true' || value === '1' || value === 'yes') as InferType<T>;
 					}
 					default:
-						throw yield* Effect.fail(
-							new Error(`Unsupported type '${type}' for form field: ${name}`)
-						);
+						return yield* new WPAPIError({
+							message: `Unsupported type '${type}' for form field: ${name}`,
+						});
 				}
-			}) as Effect.Effect<InferType<T>, Error, never>;
+			}) as Effect.Effect<InferType<T>, WPAPIError, never>;
 
 		/**
 		 * Handles the POST request for importing data from a WordPress site.

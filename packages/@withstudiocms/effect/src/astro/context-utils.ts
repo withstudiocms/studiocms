@@ -1,5 +1,13 @@
 import type { APIContext } from 'astro';
-import { Effect, Schema } from '../effect.js';
+import { Data, Effect, Schema } from '../effect.js';
+
+/**
+ * Error class for Astro API context related errors.
+ */
+export class AstroAPIContextError extends Data.TaggedError('AstroAPIContextError')<{
+	message: string;
+	cause?: unknown;
+}> {}
 
 /**
  * Reads and parses the JSON body from an API request within the given context.
@@ -11,7 +19,8 @@ import { Effect, Schema } from '../effect.js';
 export const readAPIContextJson = <A>({ request }: APIContext): Effect.Effect<A, Error, never> =>
 	Effect.tryPromise({
 		try: () => request.json(),
-		catch: () => new Error('Failed to parse JSON from Request'),
+		catch: (cause) =>
+			new AstroAPIContextError({ message: 'Failed to parse JSON from Request', cause }),
 	});
 
 /**
@@ -28,7 +37,7 @@ export const readAPIContextJson = <A>({ request }: APIContext): Effect.Effect<A,
 export const parseAPIContextJson = <A, E, R>(
 	context: APIContext,
 	schema?: Schema.Schema<A, E, R>
-): Effect.Effect<A, Error, R> =>
+): Effect.Effect<A, AstroAPIContextError, R> =>
 	Effect.gen(function* () {
 		const json = yield* readAPIContextJson<A>(context);
 		if (schema) return yield* Schema.decodeUnknown(schema)(json);
@@ -36,7 +45,9 @@ export const parseAPIContextJson = <A, E, R>(
 	}).pipe(
 		Effect.catchAll((error) => {
 			console.error('Failed to read JSON:', error);
-			return Effect.fail(new Error('Failed to read JSON'));
+			return Effect.fail(
+				new AstroAPIContextError({ message: 'Failed to read JSON', cause: error })
+			);
 		})
 	);
 
@@ -51,10 +62,11 @@ export const parseAPIContextJson = <A, E, R>(
  */
 export const readAPIContextFormData = ({
 	request,
-}: APIContext): Effect.Effect<FormData, Error, never> =>
+}: APIContext): Effect.Effect<FormData, AstroAPIContextError, never> =>
 	Effect.tryPromise({
 		try: () => request.formData(),
-		catch: () => new Error('Failed to parse formData from Request'),
+		catch: (cause) =>
+			new AstroAPIContextError({ message: 'Failed to parse formData from Request', cause }),
 	});
 
 /**
@@ -70,7 +82,7 @@ export const readAPIContextFormData = ({
 export const parseAPIContextFormDataToObject = <A, E, R>(
 	context: APIContext,
 	schema?: Schema.Schema<A, E, R>
-): Effect.Effect<A, Error, R> =>
+): Effect.Effect<A, AstroAPIContextError, R> =>
 	Effect.gen(function* () {
 		const formData = yield* readAPIContextFormData(context);
 		const entries = Object.fromEntries(formData.entries());
@@ -81,7 +93,9 @@ export const parseAPIContextFormDataToObject = <A, E, R>(
 	}).pipe(
 		Effect.catchAll((error) => {
 			console.error('Failed to read form data:', error);
-			return Effect.fail(new Error('Failed to read form data'));
+			return Effect.fail(
+				new AstroAPIContextError({ message: 'Failed to read form data', cause: error })
+			);
 		})
 	);
 
@@ -97,7 +111,7 @@ export const parseAPIContextFormDataToObject = <A, E, R>(
 export const parseFormDataEntryToString = (
 	formData: FormData,
 	key: string
-): Effect.Effect<string | null, Error, never> =>
+): Effect.Effect<string | null, AstroAPIContextError, never> =>
 	Effect.try({
 		try: () => {
 			const value = formData.get(key);
@@ -106,5 +120,9 @@ export const parseFormDataEntryToString = (
 			}
 			return value;
 		},
-		catch: () => new Error(`Failed to parse FormData entry for key: ${key}`),
+		catch: (cause) =>
+			new AstroAPIContextError({
+				message: `Failed to parse FormData entry for key: ${key}`,
+				cause,
+			}),
 	});
