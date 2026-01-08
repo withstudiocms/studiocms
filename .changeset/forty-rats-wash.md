@@ -20,4 +20,4 @@
 "studiocms": patch
 ---
 
-Update scripts to include a Effect diagnostic check
+Add effect-language-service diagnostics scripts to all workspace packages
