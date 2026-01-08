@@ -1,7 +1,7 @@
 import { Effect } from '@withstudiocms/effect';
 import type { AstroIntegrationLogger } from 'astro';
 import { createResolver } from 'astro-integration-kit';
-import { ComponentRegistryError } from './errors';
+import { ComponentRegistryError } from './errors.js';
 
 /**
  * Options for configuring the logger.
