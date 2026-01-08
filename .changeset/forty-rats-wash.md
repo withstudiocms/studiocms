@@ -1,9 +1,6 @@
 ---
 "@studiocms/cloudinary-image-service": patch
 "@withstudiocms/component-registry": patch
-"@withstudiocms/internal_helpers": patch
-"@withstudiocms/template-lang": patch
-"@withstudiocms/config-utils": patch
 "@withstudiocms/auth-kit": patch
 "@studiocms/s3-storage": patch
 "@withstudiocms/effect": patch
