@@ -43,6 +43,8 @@
     "build": "buildkit build 'src/**/*.{ts,astro,css,js}'",
     "dev": "buildkit dev 'src/**/*.{ts,astro,css,js}'",
     "test": "vitest",
+    "effect-check": "pnpm effect-language-service diagnostics --project tsconfig.tspc.json",
+    "ci:effect-check": "pnpm effect-check --format github-actions",
     "typecheck": "tspc -p tsconfig.tspc.json"
   },
   "exports": {

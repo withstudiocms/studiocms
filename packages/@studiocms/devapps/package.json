@@ -50,6 +50,8 @@
     "build": "buildkit build 'src/**/*.{ts,astro,css,json,png,d.ts}'",
     "dev": "buildkit dev 'src/**/*.{ts,astro,css,json,png,d.ts}'",
     "typecheck": "tspc -p tsconfig.tspc.json",
+    "effect-check": "pnpm effect-language-service diagnostics --project tsconfig.tspc.json",
+    "ci:effect-check": "pnpm effect-check --format github-actions",
     "test": "vitest"
   },
   "type": "module",

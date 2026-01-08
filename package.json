@@ -6,6 +6,7 @@
     "node": "22.20.0"
   },
   "scripts": {
+    "effect-language-service": "effect-language-service",
     "start": "node ./playground/dist/server/entry.mjs",
     "start:env": "dotenvx run -- node ./playground/dist/server/entry.mjs",
 
@@ -53,6 +54,14 @@
     "ci:typecheck:studiocms": "pnpm --filter studiocms typecheck",
     "ci:typecheck:studiocms-packages": "pnpm --filter @studiocms/* typecheck",
     "ci:typecheck:withstudiocms": "pnpm --filter @withstudiocms/* typecheck",
+
+    "effect-check:studiocms": "pnpm --filter studiocms effect-check",
+    "effect-check:studiocms-packages": "pnpm --filter @studiocms/* effect-check",
+    "effect-check:withstudiocms": "pnpm --filter @withstudiocms/* effect-check",
+
+    "ci:effect-check:studiocms": "pnpm --filter studiocms ci:effect-check",
+    "ci:effect-check:studiocms-packages": "pnpm --filter @studiocms/* ci:effect-check",
+    "ci:effect-check:withstudiocms": "pnpm --filter @withstudiocms/* ci:effect-check",
 
     "bundle-test:blog": "pnpm --filter @bundletests/studiocms-blog build",
     "bundle-test:headless": "pnpm --filter @bundletests/studiocms-headless build"

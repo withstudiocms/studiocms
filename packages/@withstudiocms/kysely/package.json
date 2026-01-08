@@ -31,6 +31,8 @@
     "build": "pnpm buildkit build 'src/**/*.{ts,json}'",
     "dev": "pnpm buildkit dev 'src/**/*.{ts,json}'",
     "typecheck": "tspc -p tsconfig.tspc.json",
+    "effect-check": "pnpm effect-language-service diagnostics --project tsconfig.tspc.json",
+    "ci:effect-check": "pnpm effect-check --format github-actions",
     "test": "vitest"
   },
   "exports": {

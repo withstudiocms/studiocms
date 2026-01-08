@@ -30,6 +30,8 @@
     "build": "pnpm buildkit build 'src/**/*.{ts,json}'",
     "dev": "pnpm buildkit dev 'src/**/*.{ts,json}'",
     "create-migration": "tsx scripts/create-migration.ts",
+    "effect-check": "pnpm effect-language-service diagnostics --project tsconfig.tspc.json",
+    "ci:effect-check": "pnpm effect-check --format github-actions",
     "typecheck": "tspc -p tsconfig.tspc.json"
   },
   "exports": {
