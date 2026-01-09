@@ -126,11 +126,15 @@ export const SDKPostModule = Effect.gen(function* () {
 		}),
 		callbackFn: (db, data) =>
 			db((client) =>
-				client
-					.insertInto('StudioCMSPageData')
-					.values(data)
-					.returning('id')
-					.executeTakeFirstOrThrow()
+				client.transaction().execute(async (trx) => {
+					await trx.insertInto('StudioCMSPageData').values(data).executeTakeFirstOrThrow();
+
+					return await trx
+						.selectFrom('StudioCMSPageData')
+						.select(['id'])
+						.where('id', '=', data.id)
+						.executeTakeFirstOrThrow();
+				})
 			),
 	});
 
@@ -147,11 +151,15 @@ export const SDKPostModule = Effect.gen(function* () {
 		}),
 		callbackFn: (db, data) =>
 			db((client) =>
-				client
-					.insertInto('StudioCMSPageContent')
-					.values(data)
-					.returning('id')
-					.executeTakeFirstOrThrow()
+				client.transaction().execute(async (trx) => {
+					await trx.insertInto('StudioCMSPageContent').values(data).executeTakeFirstOrThrow();
+
+					return await trx
+						.selectFrom('StudioCMSPageContent')
+						.select(['id'])
+						.where('id', '=', data.id)
+						.executeTakeFirstOrThrow();
+				})
 			),
 	});
 
@@ -168,11 +176,15 @@ export const SDKPostModule = Effect.gen(function* () {
 		}),
 		callbackFn: (db, data) =>
 			db((client) =>
-				client
-					.insertInto('StudioCMSPageDataTags')
-					.values(data)
-					.returning('id')
-					.executeTakeFirstOrThrow()
+				client.transaction().execute(async (trx) => {
+					await trx.insertInto('StudioCMSPageDataTags').values(data).executeTakeFirstOrThrow();
+
+					return await trx
+						.selectFrom('StudioCMSPageDataTags')
+						.select(['id'])
+						.where('id', '=', data.id)
+						.executeTakeFirstOrThrow();
+				})
 			),
 	});
 
@@ -189,11 +201,18 @@ export const SDKPostModule = Effect.gen(function* () {
 		}),
 		callbackFn: (db, data) =>
 			db((client) =>
-				client
-					.insertInto('StudioCMSPageDataCategories')
-					.values(data)
-					.returning('id')
-					.executeTakeFirstOrThrow()
+				client.transaction().execute(async (trx) => {
+					await trx
+						.insertInto('StudioCMSPageDataCategories')
+						.values(data)
+						.executeTakeFirstOrThrow();
+
+					return await trx
+						.selectFrom('StudioCMSPageDataCategories')
+						.select(['id'])
+						.where('id', '=', data.id)
+						.executeTakeFirstOrThrow();
+				})
 			),
 	});
 
@@ -227,11 +246,15 @@ export const SDKPostModule = Effect.gen(function* () {
 		decoder: StudioCMSPermissions.Select,
 		callbackFn: (db, data) =>
 			db((client) =>
-				client
-					.insertInto('StudioCMSPermissions')
-					.values(data)
-					.returningAll()
-					.executeTakeFirstOrThrow()
+				client.transaction().execute(async (trx) => {
+					await trx.insertInto('StudioCMSPermissions').values(data).executeTakeFirstOrThrow();
+
+					return await trx
+						.selectFrom('StudioCMSPermissions')
+						.selectAll()
+						.where('user', '=', data.user)
+						.executeTakeFirstOrThrow();
+				})
 			),
 	});
 
@@ -246,11 +269,15 @@ export const SDKPostModule = Effect.gen(function* () {
 		decoder: StudioCMSDiffTracking.Select,
 		callbackFn: (db, data) =>
 			db((client) =>
-				client
-					.insertInto('StudioCMSDiffTracking')
-					.values(data)
-					.returningAll()
-					.executeTakeFirstOrThrow()
+				client.transaction().execute(async (trx) => {
+					await trx.insertInto('StudioCMSDiffTracking').values(data).executeTakeFirstOrThrow();
+
+					return await trx
+						.selectFrom('StudioCMSDiffTracking')
+						.selectAll()
+						.where('id', '=', data.id)
+						.executeTakeFirstOrThrow();
+				})
 			),
 	});
 
@@ -265,11 +292,18 @@ export const SDKPostModule = Effect.gen(function* () {
 		decoder: StudioCMSPageFolderStructure.Select,
 		callbackFn: (db, data) =>
 			db((client) =>
-				client
-					.insertInto('StudioCMSPageFolderStructure')
-					.values(data)
-					.returningAll()
-					.executeTakeFirstOrThrow()
+				client.transaction().execute(async (trx) => {
+					await trx
+						.insertInto('StudioCMSPageFolderStructure')
+						.values(data)
+						.executeTakeFirstOrThrow();
+
+					return await trx
+						.selectFrom('StudioCMSPageFolderStructure')
+						.selectAll()
+						.where('id', '=', data.id)
+						.executeTakeFirstOrThrow();
+				})
 			),
 	});
 

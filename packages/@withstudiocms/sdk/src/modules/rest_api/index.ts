@@ -70,11 +70,15 @@ export const SDKRestAPIModule = Effect.gen(function* () {
 		decoder: StudioCMSAPIKeys.Select,
 		callbackFn: (db, tokenData) =>
 			db((client) =>
-				client
-					.insertInto('StudioCMSAPIKeys')
-					.values(tokenData)
-					.returningAll()
-					.executeTakeFirstOrThrow()
+				client.transaction().execute(async (trx) => {
+					await trx.insertInto('StudioCMSAPIKeys').values(tokenData).executeTakeFirstOrThrow();
+
+					return await trx
+						.selectFrom('StudioCMSAPIKeys')
+						.selectAll()
+						.where('id', '=', tokenData.id)
+						.executeTakeFirstOrThrow();
+				})
 			),
 	});
 

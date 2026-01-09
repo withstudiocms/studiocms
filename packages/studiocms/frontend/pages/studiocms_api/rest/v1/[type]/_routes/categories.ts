@@ -137,14 +137,21 @@ export const categoriesRouter: EndpointRoute = {
 						const updateCategory = sdk.dbService.withCodec({
 							encoder: PartialCategories,
 							decoder: StudioCMSPageDataCategories.Select,
-							callbackFn: (client, data) =>
-								client((db) =>
-									db
-										.updateTable('StudioCMSPageDataCategories')
-										.set(data)
-										.where('id', '=', id)
-										.returningAll()
-										.executeTakeFirstOrThrow()
+							callbackFn: (db, data) =>
+								db((client) =>
+									client.transaction().execute(async (trx) => {
+										await trx
+											.updateTable('StudioCMSPageDataCategories')
+											.set(data)
+											.where('id', '=', id)
+											.executeTakeFirstOrThrow();
+
+										return await trx
+											.selectFrom('StudioCMSPageDataCategories')
+											.selectAll()
+											.where('id', '=', id)
+											.executeTakeFirstOrThrow();
+									})
 								),
 						});
 

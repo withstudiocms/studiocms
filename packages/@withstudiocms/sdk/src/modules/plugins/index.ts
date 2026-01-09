@@ -224,11 +224,15 @@ export const SDKPluginsModule = Effect.gen(function* () {
 		decoder: StudioCMSPluginData.Select,
 		callbackFn: (db, entry) =>
 			db((client) =>
-				client
-					.insertInto('StudioCMSPluginData')
-					.values(entry)
-					.returningAll()
-					.executeTakeFirstOrThrow()
+				client.transaction().execute(async (trx) => {
+					await trx.insertInto('StudioCMSPluginData').values(entry).executeTakeFirstOrThrow();
+
+					return await trx
+						.selectFrom('StudioCMSPluginData')
+						.selectAll()
+						.where('id', '=', entry.id)
+						.executeTakeFirstOrThrow();
+				})
 			),
 	});
 
@@ -246,12 +250,19 @@ export const SDKPluginsModule = Effect.gen(function* () {
 		decoder: StudioCMSPluginData.Select,
 		callbackFn: (db, entry) =>
 			db((client) =>
-				client
-					.updateTable('StudioCMSPluginData')
-					.set(entry)
-					.where('id', '=', entry.id)
-					.returningAll()
-					.executeTakeFirstOrThrow()
+				client.transaction().execute(async (trx) => {
+					await trx
+						.updateTable('StudioCMSPluginData')
+						.set(entry)
+						.where('id', '=', entry.id)
+						.executeTakeFirstOrThrow();
+
+					return await trx
+						.selectFrom('StudioCMSPluginData')
+						.selectAll()
+						.where('id', '=', entry.id)
+						.executeTakeFirstOrThrow();
+				})
 			),
 	});
 
