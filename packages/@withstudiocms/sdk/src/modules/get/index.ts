@@ -137,9 +137,10 @@ export class KillSwitch {
  *   - Returns pages that belong to the given folder (identified by id or name).
  *   - Supports same filtering, metaOnly and pagination semantics as GET.pages.
  *
- * - GET.pageFolderTree()
+ * - GET.pageFolderTree(excludeDrafts?)
  *   - Returns a full folder tree structure enriched with pages placed into their folders.
  *   - Built by merging folder definitions and page data, memoized for efficiency.
+ *   - Supports excluding draft pages when `excludeDrafts` is true.
  *
  * Implementation notes
  * - Internal helpers:
@@ -793,11 +794,12 @@ export const SDKGetModule = Effect.gen(function* () {
 	/**
 	 * Retrieves the page folder tree structure.
 	 *
+	 * @param excludeDrafts - If `true`, excludes draft pages from the tree.
 	 * @returns The page folder tree structure.
 	 */
-	const _pageFolderTree = () =>
+	const _pageFolderTree = (excludeDrafts = false) =>
 		Effect.gen(function* () {
-			const [tree, pages] = yield* Effect.all([GET.folderTree(), _getAllPages(true)]);
+			const [tree, pages] = yield* Effect.all([GET.folderTree(), _getAllPages(!excludeDrafts)]);
 
 			for (const page of pages) {
 				if (page.parentFolder) {
