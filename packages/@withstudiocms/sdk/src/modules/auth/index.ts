@@ -181,7 +181,9 @@ export const SDKAuthModule = Effect.gen(function* () {
 					return await trx
 						.selectFrom('StudioCMSOAuthAccounts')
 						.selectAll()
-						.where('userId', '=', data.userId)
+						.where((eb) =>
+							eb.and([eb('userId', '=', data.userId), eb('provider', '=', data.provider)])
+						)
 						.executeTakeFirstOrThrow();
 				})
 			),

@@ -93,7 +93,11 @@ export const SDKUpdateModule = Effect.gen(function* () {
 		callbackFn: (db, data) =>
 			db((client) =>
 				client.transaction().execute(async (trx) => {
-					await trx.insertInto('StudioCMSPageContent').values(data).executeTakeFirstOrThrow();
+					await trx
+						.updateTable('StudioCMSPageContent')
+						.set(data)
+						.where('id', '=', data.id)
+						.executeTakeFirstOrThrow();
 
 					return await trx
 						.selectFrom('StudioCMSPageContent')
@@ -113,7 +117,11 @@ export const SDKUpdateModule = Effect.gen(function* () {
 		callbackFn: (db, data) =>
 			db((client) =>
 				client.transaction().execute(async (trx) => {
-					await trx.insertInto('StudioCMSPageDataTags').values(data).executeTakeFirstOrThrow();
+					await trx
+						.updateTable('StudioCMSPageDataTags')
+						.set(data)
+						.where('id', '=', data.id)
+						.executeTakeFirstOrThrow();
 
 					return await trx
 						.selectFrom('StudioCMSPageDataTags')
@@ -134,8 +142,9 @@ export const SDKUpdateModule = Effect.gen(function* () {
 			db((client) =>
 				client.transaction().execute(async (trx) => {
 					await trx
-						.insertInto('StudioCMSPageDataCategories')
-						.values(data)
+						.updateTable('StudioCMSPageDataCategories')
+						.set(data)
+						.where('id', '=', data.id)
 						.executeTakeFirstOrThrow();
 
 					return await trx
@@ -156,7 +165,11 @@ export const SDKUpdateModule = Effect.gen(function* () {
 		callbackFn: (db, data) =>
 			db((client) =>
 				client.transaction().execute(async (trx) => {
-					await trx.insertInto('StudioCMSPermissions').values(data).executeTakeFirstOrThrow();
+					await trx
+						.updateTable('StudioCMSPermissions')
+						.set(data)
+						.where('user', '=', data.user)
+						.executeTakeFirstOrThrow();
 
 					return await trx
 						.selectFrom('StudioCMSPermissions')
@@ -177,8 +190,9 @@ export const SDKUpdateModule = Effect.gen(function* () {
 			db((client) =>
 				client.transaction().execute(async (trx) => {
 					await trx
-						.insertInto('StudioCMSPageFolderStructure')
-						.values(data)
+						.updateTable('StudioCMSPageFolderStructure')
+						.set(data)
+						.where('id', '=', data.id)
 						.executeTakeFirstOrThrow();
 
 					return await trx
@@ -199,7 +213,11 @@ export const SDKUpdateModule = Effect.gen(function* () {
 		callbackFn: (db, data) =>
 			db((client) =>
 				client.transaction().execute(async (trx) => {
-					await trx.insertInto('StudioCMSPageData').values(data).executeTakeFirstOrThrow();
+					await trx
+						.updateTable('StudioCMSPageData')
+						.set(data)
+						.where('id', '=', data.id)
+						.executeTakeFirstOrThrow();
 
 					return await trx
 						.selectFrom('StudioCMSPageData')
