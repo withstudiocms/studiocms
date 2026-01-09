@@ -328,7 +328,6 @@ export const SDKCollectors = Effect.gen(function* () {
 			const returnData = yield* resolveUrls(
 				{
 					...page,
-					slug: safeSlug,
 					urlRoute,
 					categories,
 					tags,
