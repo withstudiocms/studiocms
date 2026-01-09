@@ -1,0 +1,22 @@
+name: Run Effect Diagnostics
+description: This action runs Effect diagnostics for specified commands.
+
+inputs:
+  cmd:
+    description: "The command to run effect diagnostics for."
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Install Tools & Dependencies
+      uses: withstudiocms/automations/.github/actions/install@fe2d43b13c8a63e34ba8b0b9e16008149d8af55f # main
+
+    - name: run Build for Effect Diagnostics
+      shell: bash
+      run: pnpm ci:build
+
+    - name: Run ${{ inputs.cmd }} Effect Diagnostics
+      shell: bash
+      run: | # zizmor: ignore[template-injection]
+        pnpm ci:effect-check:${{ inputs.cmd }}

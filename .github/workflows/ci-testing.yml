@@ -45,6 +45,24 @@ jobs:
         with:
           cmd: ${{ matrix.cmd }}
 
+  effect-check:
+    name: Effect Diagnostics
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        cmd: ["withstudiocms", "studiocms", "studiocms-packages"]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        with:
+          persist-credentials: false
+
+      - name: Run ${{ matrix.cmd }} Effect Diagnostics
+        uses: ./.github/actions/effect-check
+        with:
+          cmd: ${{ matrix.cmd }}
+
   vitest-tests:
     name: Code Coverage & Test Report
     runs-on: ubuntu-latest
