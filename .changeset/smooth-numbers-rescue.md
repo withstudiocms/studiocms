@@ -2,4 +2,4 @@
 "@withstudiocms/component-registry": patch
 ---
 
-Tweaks transformHTML sanitize options to enforce CustomElements and Components are always passed that exist as part of StudioCMS.
+Tweaks `transformHTML` sanitization so StudioCMS components and custom elements are always passed through (caller-provided `sanitizeOpts` cannot disable `allowComponents`/`allowCustomElements`).

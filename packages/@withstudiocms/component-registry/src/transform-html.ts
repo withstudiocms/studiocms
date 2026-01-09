@@ -20,12 +20,12 @@ export async function transformHTML(
 	transformers?: Transformer[]
 ): Promise<string> {
 	const allTransformers = [
-		...(transformers ?? []),
 		// We enable allowComponents and allowCustomElements to ensure that custom components are not stripped out during sanitization.
 		// This is important because the swap transformer relies on these elements being present to perform the component swapping.
 		// Users can still control other aspects of sanitization via the sanitizeOpts parameter.
 		sanitize({ ...sanitizeOpts, allowComponents: true, allowCustomElements: true }),
 		swap(components),
+		...(transformers ?? []),
 	];
 	return await transform(dedent(html), allTransformers);
 }
