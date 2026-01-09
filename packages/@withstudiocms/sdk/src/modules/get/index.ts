@@ -159,7 +159,6 @@ export class KillSwitch {
  * Example usage (conceptual)
  * - GET.users.all()            -> Effect yielding collected user list
  * - GET.page.byId("abc")       -> Effect yielding CombinedPageData | undefined
- * - GET.pages(undefined, true) -> Effect yielding page list with default-index hidden
  *
  * Returns
  * - An object (`GET`) with the described grouped read-only operations; each operation is an Effect-producing function.
@@ -541,7 +540,7 @@ export const SDKGetModule = Effect.gen(function* () {
 	});
 
 	/**
-	 * Filters pages based on draft status and default index slug.
+	 * Filters pages based on draft status.
 	 *
 	 * @param pages - The array of page data objects to filter.
 	 * @param includeDrafts - If `true`, includes draft pages; otherwise, excludes them.
@@ -549,9 +548,7 @@ export const SDKGetModule = Effect.gen(function* () {
 	 */
 	const __filterPagesByDraft = Effect.fn(
 		(pages: readonly tsPageDataSelect[], includeDrafts: boolean) =>
-			Effect.succeed(
-				pages.filter(({ draft }) => includeDrafts || draft === false || draft === null)
-			)
+			Effect.succeed(pages.filter(({ draft }) => includeDrafts || draft !== true))
 	);
 
 	/**
