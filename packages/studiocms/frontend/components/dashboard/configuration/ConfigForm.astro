@@ -81,7 +81,6 @@ const t = useTranslations(lang, '@studiocms/dashboard:configuration');
 
         <div class="form-row">
             <Select label={t('select-smtp-mailer')} name="enable-mailer" defaultValue={`${data.enableMailer}`} options={[{ label: 'True', value: 'true' }, { label: 'False', value: 'false' }]} fullWidth />
-            <input type="hidden" name="hide-default-index" value={`${data.hideDefaultIndex}`}  />
         </div>
 
         <Divider />
@@ -215,10 +214,9 @@ updateTrueFalseSelectOptions,
                     loginPageBackground: formData.get('login-page-background') as string,
                     loginPageCustomImage: formData.get('login-page-background-custom') ?? null,
                     enableDiffs: formData.get('diff-enabled') === 'true',
-                   diffPerPage: Number.isNaN(diffPerPageParsed) ? 10 : diffPerPageParsed,
+                    diffPerPage: Number.isNaN(diffPerPageParsed) ? 10 : diffPerPageParsed,
                     gridItems: enabledGridItems,
                     enableMailer: formData.get('enable-mailer') === 'true',
-                    hideDefaultIndex: formData.get('hide-default-index') === 'true'
                 };
                 const response = await fetch(configForm.action, {
                     method: 'POST',

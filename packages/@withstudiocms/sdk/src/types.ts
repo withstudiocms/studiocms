@@ -232,7 +232,6 @@ export interface StudioCMSSiteConfig extends StudioCMSDynamicConfigBase {
 	diffPerPage?: number | undefined;
 	gridItems?: string[];
 	enableMailer?: boolean | undefined;
-	hideDefaultIndex?: boolean | undefined;
 }
 
 /**
