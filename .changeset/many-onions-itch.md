@@ -2,4 +2,4 @@
 "@withstudiocms/sdk": patch
 ---
 
-Implements the draft exclusion for GET.pageFolderTree() on the SDK
+Implements draft exclusion for GET.pageFolderTree(excludeDrafts?) in the SDK.

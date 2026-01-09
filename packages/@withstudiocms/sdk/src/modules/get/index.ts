@@ -799,7 +799,8 @@ export const SDKGetModule = Effect.gen(function* () {
 	 */
 	const _pageFolderTree = (excludeDrafts = false) =>
 		Effect.gen(function* () {
-			const [tree, pages] = yield* Effect.all([GET.folderTree(), _getAllPages(!excludeDrafts)]);
+			const includeDrafts = !excludeDrafts;
+			const [tree, pages] = yield* Effect.all([GET.folderTree(), _getAllPages(includeDrafts)]);
 
 			for (const page of pages) {
 				if (page.parentFolder) {
