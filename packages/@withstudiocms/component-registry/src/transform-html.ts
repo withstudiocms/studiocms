@@ -16,9 +16,16 @@ import { dedent } from './utils.js';
 export async function transformHTML(
 	html: string,
 	components: ComponentType,
-	sanitizeOpts?: SanitizeOptions,
+	sanitizeOpts: SanitizeOptions = {},
 	transformers?: Transformer[]
 ): Promise<string> {
-	const allTransformers = [...(transformers ?? []), sanitize(sanitizeOpts), swap(components)];
+	const allTransformers = [
+		...(transformers ?? []),
+		// We enable allowComponents and allowCustomElements to ensure that custom components are not stripped out during sanitization.
+		// This is important because the swap transformer relies on these elements being present to perform the component swapping.
+		// Users can still control other aspects of sanitization via the sanitizeOpts parameter.
+		sanitize({ ...sanitizeOpts, allowComponents: true, allowCustomElements: true }),
+		swap(components),
+	];
 	return await transform(dedent(html), allTransformers);
 }
