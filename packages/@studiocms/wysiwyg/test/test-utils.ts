@@ -37,6 +37,7 @@ export const MockAstroLocals = (): App.Locals => {
 	return {
 		StudioCMS: {
 			siteConfig: {
+				id: 'SCMS_SITE_CONFIG_1',
 				data: {
 					title: 'Test Site',
 					description: 'A test site for StudioCMS',
@@ -45,13 +46,11 @@ export const MockAstroLocals = (): App.Locals => {
 					enableDiffs: false,
 					enableMailer: false,
 					gridItems: [],
-					hideDefaultIndex: false,
 					loginPageBackground: 'studiocms-curves',
 					loginPageCustomImage: null,
 					siteIcon: null,
 					_config_version: '1.0.0',
 				},
-				lastCacheUpdate: date,
 			},
 			defaultLang: 'en',
 			latestVersion: {

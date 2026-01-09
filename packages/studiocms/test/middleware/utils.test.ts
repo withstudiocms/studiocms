@@ -97,7 +97,6 @@ describe(parentSuiteName, () => {
 				enableDiffs: false,
 				enableMailer: false,
 				gridItems: [],
-				hideDefaultIndex: false,
 				loginPageBackground: 'studiocms-curves',
 				loginPageCustomImage: null,
 				siteIcon: null,

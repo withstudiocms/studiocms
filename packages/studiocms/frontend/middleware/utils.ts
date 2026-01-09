@@ -60,7 +60,6 @@ export const makeFallbackSiteConfig = (): DynamicConfigEntry<StudioCMSSiteConfig
 		enableDiffs: false,
 		enableMailer: false,
 		gridItems: [],
-		hideDefaultIndex: false,
 		loginPageBackground: 'studiocms-curves',
 		loginPageCustomImage: null,
 		siteIcon: null,

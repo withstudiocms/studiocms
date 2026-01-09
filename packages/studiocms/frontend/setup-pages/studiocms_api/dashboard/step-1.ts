@@ -110,7 +110,6 @@ export const { ALL, OPTIONS, POST } = createEffectAPIRoutes(
 					siteIcon,
 					enableMailer: false,
 					gridItems: [],
-					hideDefaultIndex: false,
 				});
 
 				yield* sdk.INIT.ghostUser();
