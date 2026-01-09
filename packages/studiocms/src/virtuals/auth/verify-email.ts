@@ -8,7 +8,10 @@ import { CMSNotificationSettingsId } from '../../consts.js';
 import { Data, Effect, genLogger, pipeLogger } from '../../effect.js';
 import type { UserSessionData } from './types.js';
 
-export class VerifyEmailError extends Data.TaggedError('VerifyEmailError')<{ message: string }> {}
+export class VerifyEmailError extends Data.TaggedError('VerifyEmailError')<{
+	message: string;
+	cause?: unknown;
+}> {}
 
 /**
  * The `VerifyEmail` service provides functionality for managing email verification
@@ -164,7 +167,7 @@ export class VerifyEmail extends Effect.Service<VerifyEmail>()(
 						const siteConfig = yield* sdk.GET.siteConfig();
 
 						if (!siteConfig) {
-							return yield* Effect.fail(new Error('Site configuration not found'));
+							return yield* new VerifyEmailError({ message: 'Site configuration not found' });
 						}
 
 						const { data: config } = siteConfig;
@@ -174,17 +177,19 @@ export class VerifyEmail extends Effect.Service<VerifyEmail>()(
 						}
 
 						if (!user) {
-							return yield* Effect.fail(new Error('User not found'));
+							return yield* new VerifyEmailError({ message: 'User not found' });
 						}
 
 						const verificationToken = yield* createEmailVerificationRequest(userId);
 						if (!verificationToken) {
-							return yield* Effect.fail(new Error('Failed to create verification token'));
+							return yield* new VerifyEmailError({
+								message: 'Failed to create verification token',
+							});
 						}
 
 						const email = user.email;
 						if (!email) {
-							return yield* Effect.fail(new Error('User does not have an email'));
+							return yield* new VerifyEmailError({ message: 'User does not have an email' });
 						}
 
 						const verifyLink = yield* generateUrl(

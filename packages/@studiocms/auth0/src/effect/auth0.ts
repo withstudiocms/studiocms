@@ -120,13 +120,12 @@ export class Auth0OAuthAPI extends Effect.Service<Auth0OAuthAPI>()('Auth0OAuthAP
 					})
 					.pipe(
 						Effect.flatMap(Platform.HttpClientResponse.schemaBodyJson(Auth0User)),
-						Effect.catchAll((error) =>
-							Effect.fail(
+						Effect.mapError(
+							(error) =>
 								new ValidateAuthCodeError({
 									provider: Auth0OAuthAPI.ProviderID,
 									message: `Failed to fetch user info: ${error.message}`,
 								})
-							)
 						)
 					);
 			});

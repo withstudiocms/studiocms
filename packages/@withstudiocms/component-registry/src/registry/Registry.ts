@@ -109,7 +109,7 @@ export class ComponentRegistry extends Effect.Service<ComponentRegistry>()('Comp
 		const _getComponentProps = Effect.fn(function* (componentName: string) {
 			const component = components.get(componentName);
 			if (!component) {
-				return yield* Effect.fail(new ComponentNotFoundError({ componentName }));
+				return yield* new ComponentNotFoundError({ componentName });
 			}
 			return component;
 		});

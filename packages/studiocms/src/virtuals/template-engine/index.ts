@@ -5,7 +5,7 @@
  */
 import { SDKCore } from 'studiocms:sdk';
 import TemplateEngine from '@withstudiocms/template-lang';
-import { Effect } from '../../effect.js';
+import { Data, Effect } from '../../effect.js';
 import defaultTemplates from './default-templates.js';
 
 export type EngineContext = {
@@ -18,6 +18,11 @@ export type EngineContext = {
 };
 
 const engine = new TemplateEngine({ strict: true });
+
+export class TemplateEngineError extends Data.TaggedError('TemplateEngineError')<{
+	message: string;
+	cause?: unknown;
+}> {}
 
 /**
  * The template engine provides functionality to manage and render email templates.
@@ -33,7 +38,9 @@ export const templateEngine = Effect.gen(function* () {
 		config = yield* sdk.CONFIG.templateConfig.init(defaultTemplates);
 	}
 	if (!config) {
-		return yield* Effect.fail(new Error('Failed to initialize template configuration.'));
+		return yield* new TemplateEngineError({
+			message: 'Failed to initialize template configuration.',
+		});
 	}
 
 	// Extract the templates from the configuration data
@@ -84,8 +91,11 @@ export const templateEngine = Effect.gen(function* () {
 			const template = templates[key] || defaultTemplates[key];
 			return Effect.try({
 				try: () => engine.render(template, context),
-				catch: (error) =>
-					new Error(`Failed to render template "${key}": ${(error as Error).message}`),
+				catch: (cause) =>
+					new TemplateEngineError({
+						message: `Failed to render template "${key}": ${(cause as Error).message}`,
+						cause,
+					}),
 			});
 		},
 	} as const;

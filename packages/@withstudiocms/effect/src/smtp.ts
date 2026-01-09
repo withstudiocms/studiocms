@@ -2,9 +2,14 @@ import _nodemailer from 'nodemailer';
 import type Mail from 'nodemailer/lib/mailer';
 import type SMTPTransport from 'nodemailer/lib/smtp-transport';
 import socks from 'socks';
-import { Brand, Context, Effect, Layer } from './effect.js';
+import { Brand, Context, Data, Effect, Layer } from './effect.js';
 
 export type { Mail, SMTPTransport };
+
+export class SMTPError extends Data.TaggedError('SMTPError')<{
+	message: string;
+	cause?: unknown;
+}> {}
 
 /**
  * Custom Transport interface for nodemailer that extends the SMTPTransport.Options to
@@ -84,9 +89,10 @@ const convertTransporterConfig = Effect.fn((config: TransportConfig) =>
 			};
 		},
 		catch: (cause) =>
-			new Error(
-				`Failed to convert TransportConfig: ${cause instanceof Error ? cause.message : String(cause)}`
-			),
+			new SMTPError({
+				message: `Failed to convert TransportConfig: ${cause instanceof Error ? cause.message : String(cause)}`,
+				cause,
+			}),
 	})
 );
 
@@ -155,9 +161,10 @@ export class SMTPService extends Effect.Service<SMTPService>()('SMTPService', {
 				// The cause is checked to see if it's an instance of Error, and if so,
 				// we use its message; otherwise, we convert it to a string.
 				catch: (cause) =>
-					new Error(
-						`Failed to run nodemailer function: ${cause instanceof Error ? cause.message : String(cause)}`
-					),
+					new SMTPError({
+						message: `Failed to run nodemailer function: ${cause instanceof Error ? cause.message : String(cause)}`,
+						cause,
+					}),
 			})
 		);
 
@@ -203,11 +210,12 @@ export class SMTPService extends Effect.Service<SMTPService>()('SMTPService', {
 			return yield* Effect.tryPromise({
 				try: () => Promise.resolve().then(() => fn(_mailer)),
 				catch: (cause) =>
-					new Error(
-						`Failed to run Mailer function: ${
+					new SMTPError({
+						message: `Failed to run Mailer function: ${
 							cause instanceof Error ? cause.message : String(cause)
-						}`
-					),
+						}`,
+						cause,
+					}),
 			});
 		});
 
@@ -225,9 +233,10 @@ export class SMTPService extends Effect.Service<SMTPService>()('SMTPService', {
 				// If an error occurs during verification, we throw a new Error with a custom message.
 				// This helps in debugging SMTP configuration issues.
 				catch: (cause) =>
-					new Error(
-						`Failed to verify SMTP transport: ${cause instanceof Error ? cause.message : String(cause)}`
-					),
+					new SMTPError({
+						message: `Failed to verify SMTP transport: ${cause instanceof Error ? cause.message : String(cause)}`,
+						cause,
+					}),
 			});
 		});
 
@@ -243,9 +252,10 @@ export class SMTPService extends Effect.Service<SMTPService>()('SMTPService', {
 			Effect.tryPromise({
 				try: () => _mailer.sendMail(mailOptions),
 				catch: (cause) =>
-					new Error(
-						`Failed to send mail: ${cause instanceof Error ? cause.message : String(cause)}`
-					),
+					new SMTPError({
+						message: `Failed to send mail: ${cause instanceof Error ? cause.message : String(cause)}`,
+						cause,
+					}),
 			});
 
 		/**
@@ -259,9 +269,10 @@ export class SMTPService extends Effect.Service<SMTPService>()('SMTPService', {
 			return yield* Effect.try({
 				try: () => _mailer.isIdle(),
 				catch: (cause) =>
-					new Error(
-						`Failed to check if SMTP transport is idle: ${cause instanceof Error ? cause.message : String(cause)}`
-					),
+					new SMTPError({
+						message: `Failed to check if SMTP transport is idle: ${cause instanceof Error ? cause.message : String(cause)}`,
+						cause,
+					}),
 			});
 		});
 
@@ -276,9 +287,10 @@ export class SMTPService extends Effect.Service<SMTPService>()('SMTPService', {
 			return yield* Effect.try({
 				try: () => _mailer.getVersionString(),
 				catch: (cause) =>
-					new Error(
-						`Failed to get SMTP transport version string: ${cause instanceof Error ? cause.message : String(cause)}`
-					),
+					new SMTPError({
+						message: `Failed to get SMTP transport version string: ${cause instanceof Error ? cause.message : String(cause)}`,
+						cause,
+					}),
 			});
 		});
 
@@ -293,11 +305,12 @@ export class SMTPService extends Effect.Service<SMTPService>()('SMTPService', {
 			Effect.try({
 				try: () => _mailer.close(),
 				catch: (cause) =>
-					new Error(
-						`Failed to close SMTP transport: ${
+					new SMTPError({
+						message: `Failed to close SMTP transport: ${
 							cause instanceof Error ? cause.message : String(cause)
-						}`
-					),
+						}`,
+						cause,
+					}),
 			});
 
 		return {

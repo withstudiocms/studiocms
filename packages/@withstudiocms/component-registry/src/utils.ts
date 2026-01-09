@@ -1,6 +1,7 @@
 import { Effect } from '@withstudiocms/effect';
 import type { AstroIntegrationLogger } from 'astro';
 import { createResolver } from 'astro-integration-kit';
+import { ComponentRegistryError } from './errors.js';
 
 /**
  * Options for configuring the logger.
@@ -112,7 +113,7 @@ export const resolver = Effect.fn(function* (base: string) {
 			try: () => fn(_resolve),
 			catch: (error) => {
 				console.error('Error occurred while resolving component:', error);
-				return new Error('Failed to resolve component', { cause: error });
+				return new ComponentRegistryError({ message: 'Failed to resolve component', cause: error });
 			},
 		})
 	);

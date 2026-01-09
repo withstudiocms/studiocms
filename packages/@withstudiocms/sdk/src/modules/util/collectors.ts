@@ -341,11 +341,9 @@ export const SDKCollectors = Effect.gen(function* () {
 			).pipe(Effect.catchTag('UnknownException', (e) => new CollectorError({ cause: e })));
 
 			if (!returnData) {
-				return yield* Effect.fail(
-					new CollectorError({
-						cause: 'Unknown error occurred while resolving storage manager URL',
-					})
-				);
+				return yield* new CollectorError({
+					cause: 'Unknown error occurred while resolving storage manager URL',
+				});
 			}
 
 			if (metaOnly) {

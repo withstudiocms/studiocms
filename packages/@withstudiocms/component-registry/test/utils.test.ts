@@ -2,6 +2,7 @@ import { Effect } from '@withstudiocms/effect';
 import * as allure from 'allure-js-commons';
 import type { AstroIntegrationLogger } from 'astro';
 import { describe, expect, test, vi } from 'vitest';
+import type { ComponentRegistryError } from '../src/errors.js';
 import {
 	convertHyphensToUnderscores,
 	convertUnderscoresToHyphens,
@@ -355,14 +356,11 @@ describe(parentSuiteName, () => {
 
 			console.log(resultData);
 
-			expect(resultData.cause.failure).toBeInstanceOf(Error);
-
-			expect((resultData.cause.failure as unknown as Error).message).toBe(
+			expect((resultData.cause.failure as ComponentRegistryError).message).toBe(
 				'Failed to resolve component'
 			);
-			expect((resultData.cause.failure as unknown as Error).cause).toBeInstanceOf(Error);
 			// @ts-expect-error - this is a test
-			expect((resultData.cause.failure as unknown as Error).cause?.message).toBe(errorMsg);
+			expect((resultData.cause.failure as ComponentRegistryError).cause?.message).toBe(errorMsg);
 		});
 	});
 

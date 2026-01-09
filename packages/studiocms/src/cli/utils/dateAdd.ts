@@ -1,4 +1,5 @@
 import { Effect } from '../../effect.js';
+import { StudioCMSCliError } from './errors.js';
 
 export type Interval = 'year' | 'quarter' | 'month' | 'week' | 'day' | 'hour' | 'minute' | 'second';
 
@@ -56,8 +57,9 @@ export const dateAdd = (date: Date, interval: Interval, units: number) =>
 			return ret;
 		},
 		catch: () =>
-			new RangeError(
-				`dateAdd: unsupported interval "${interval}". ` +
-					`Expected one of ${['year', 'quarter', 'month', 'week', 'day', 'hour', 'minute', 'second'].join(', ')}.`
-			),
+			new StudioCMSCliError({
+				message:
+					`dateAdd: unsupported interval "${interval}". ` +
+					`Expected one of ${['year', 'quarter', 'month', 'week', 'day', 'hour', 'minute', 'second'].join(', ')}.`,
+			}),
 	});

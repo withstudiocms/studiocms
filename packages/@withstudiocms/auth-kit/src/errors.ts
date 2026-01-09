@@ -176,3 +176,8 @@ export const useUserErrorPromise = <A>(_try: () => Promise<A>): Effect.Effect<A,
 		try: _try,
 		catch: (cause) => new UserError({ cause }),
 	});
+
+export class AuthKitError extends Data.TaggedError('AuthKitError')<{
+	message: string;
+	cause?: unknown;
+}> {}

@@ -85,7 +85,7 @@ export const getDbDriver = Effect.fn(function* (dialect: DbDialect) {
 			return yield* driverModule.mysqlDriver;
 		}
 		default:
-			return yield* Effect.fail(new UnsupportedDialectError({ dialect }));
+			return yield* new UnsupportedDialectError({ dialect });
 	}
 });
 

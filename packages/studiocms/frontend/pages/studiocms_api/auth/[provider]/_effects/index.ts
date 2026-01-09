@@ -1,6 +1,7 @@
 import { type OAuthProviders, oAuthProviders } from 'studiocms:plugins/auth/providers';
 import { Effect, genLogger } from '@withstudiocms/effect';
 import type { APIContext, APIRoute } from 'astro';
+import { StudioCMSAPIError } from '#frontend/utils/errors.js';
 
 /**
  * Creates a standardized HTTP response for authentication provider errors.
@@ -39,7 +40,8 @@ async function promisifyFn(fn: APIRoute, context: APIContext): Promise<Response>
 const promisify = Effect.fn(function* (fn: APIRoute, context: APIContext) {
 	return yield* Effect.tryPromise({
 		try: () => promisifyFn(fn, context),
-		catch: (error) => new Error(`Failed to execute API route: ${error}`),
+		catch: (error) =>
+			new StudioCMSAPIError({ message: `Failed to execute API route: ${error}`, cause: error }),
 	});
 });
 

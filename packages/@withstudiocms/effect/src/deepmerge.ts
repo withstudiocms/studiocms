@@ -4,7 +4,12 @@ import {
 	type DeepMergeBuiltInMetaData,
 	type DeepMergeOptions,
 } from 'deepmerge-ts';
-import { Effect } from './effect.js';
+import { Data, Effect } from './effect.js';
+
+export class DeepmergeError extends Data.TaggedError('DeepmergeError')<{
+	message: string;
+	cause?: unknown;
+}> {}
 
 /**
  * Provides a custom deep merge utility within an Effect context.
@@ -22,9 +27,10 @@ export const deepmergeCustom = Effect.fn(<T>(fn: (deepmerge: typeof _deepmergeCu
 		try: () => fn(_deepmergeCustomSrc),
 		/* v8 ignore next 4 */
 		catch: (cause) =>
-			new Error(
-				`Failed to run deepmerge callback: ${cause instanceof Error ? cause.message : String(cause)}`
-			),
+			new DeepmergeError({
+				message: `Failed to run deepmerge callback: ${cause instanceof Error ? cause.message : String(cause)}`,
+				cause,
+			}),
 	})
 );
 
@@ -50,9 +56,10 @@ export const deepmerge = Effect.fn(function* <T>(
 	return yield* Effect.try({
 		try: () => fn(_deepmerge),
 		catch: (cause) =>
-			new Error(
-				`Failed to run deepmerge: ${cause instanceof Error ? cause.message : String(cause)}`
-			),
+			new DeepmergeError({
+				message: `Failed to run deepmerge: ${cause instanceof Error ? cause.message : String(cause)}`,
+				cause,
+			}),
 	});
 });
 

@@ -8,6 +8,7 @@ import {
 import type { APIContext, APIRoute } from 'astro';
 import { Effect, type ParseResult, Schema, type SchemaAST } from 'effect';
 import type { NonEmptyReadonlyArray } from 'effect/Array';
+import { StudioCMSAPIError } from './errors.js';
 import { extractParams } from './param-extractor.js';
 
 /**
@@ -231,7 +232,10 @@ const processHandler = (
 		const response = yield* Effect.tryPromise({
 			try: async () => await handler(ctx),
 			catch: (error) =>
-				new Error(`Error in handler for path ${path} [${method}]: ${String(error)}`),
+				new StudioCMSAPIError({
+					message: `Error in handler for path ${path} [${method}]: ${String(error)}`,
+					cause: error,
+				}),
 		}).pipe(
 			Effect.catchAll((error) =>
 				Effect.logError(`API Route Error: ${String(error)}`).pipe(

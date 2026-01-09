@@ -88,13 +88,12 @@ export class DiscordOAuthAPI extends Effect.Service<DiscordOAuthAPI>()('DiscordO
 					})
 					.pipe(
 						Effect.flatMap(Platform.HttpClientResponse.schemaBodyJson(DiscordUser)),
-						Effect.catchAll((error) =>
-							Effect.fail(
+						Effect.mapError(
+							(error) =>
 								new ValidateAuthCodeError({
 									provider: DiscordOAuthAPI.ProviderID,
 									message: `Failed to fetch user info: ${error.message}`,
 								})
-							)
 						)
 					);
 			});
