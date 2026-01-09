@@ -85,8 +85,9 @@ import { SDKGenerators } from '../util/generators.js';
  * - Most DB operations will propagate DB-level failures as Effect errors that the caller
  *   can handle or map. Certain "delete" operations intentionally catch DB error tags and
  *   convert them to structured success/error result objects for convenience.
- * - Insert/update operations use returningAll() and executeTakeFirstOrThrow(), so failed
- *   inserts/updates typically surface as runtime/DB errors within the Effect system.
+ * - Insert/update operations execute within transactions, performing the write followed by
+ *   a select of the affected row(s), ensuring atomicity and MySQL compatibility. Failed
+ *   operations surface as runtime/DB errors within the Effect system.
  *
  * Usage notes
  * - All exported operations are intended to be composed and executed inside the project's
