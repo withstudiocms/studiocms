@@ -547,7 +547,7 @@ export const SDKGetModule = Effect.gen(function* () {
 	 * @param includeDrafts - If `true`, includes draft pages; otherwise, excludes them.
 	 * @returns The filtered array of page data objects.
 	 */
-	const __filterPagesByDraftAndIndex = Effect.fn(
+	const __filterPagesByDraft = Effect.fn(
 		(pages: readonly tsPageDataSelect[], includeDrafts: boolean) =>
 			Effect.succeed(
 				pages.filter(({ draft }) => includeDrafts || draft === false || draft === null)
@@ -621,7 +621,7 @@ export const SDKGetModule = Effect.gen(function* () {
 		return __getPagesPossiblyPaginated(paginate).pipe(
 			Effect.flatMap((pagesRaw) =>
 				Effect.all({
-					pages: __filterPagesByDraftAndIndex(pagesRaw, includeDrafts),
+					pages: __filterPagesByDraft(pagesRaw, includeDrafts),
 					tree: GET.folderTree(),
 				})
 			),
@@ -767,7 +767,7 @@ export const SDKGetModule = Effect.gen(function* () {
 			Effect.flatMap(({ id: folderId }) =>
 				__getPagesPossiblyPaginated(paginate).pipe(
 					Effect.flatMap((pagesRaw) =>
-						__filterPagesByDraftAndIndex(
+						__filterPagesByDraft(
 							pagesRaw.filter((page) => page.parentFolder === folderId),
 							includeDrafts
 						)
