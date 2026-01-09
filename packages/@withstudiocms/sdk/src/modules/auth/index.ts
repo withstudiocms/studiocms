@@ -152,11 +152,18 @@ export const SDKAuthModule = Effect.gen(function* () {
 		decoder: StudioCMSEmailVerificationTokens.Select,
 		callbackFn: (db, data) =>
 			db((client) =>
-				client
-					.insertInto('StudioCMSEmailVerificationTokens')
-					.values(data)
-					.returningAll()
-					.executeTakeFirstOrThrow()
+				client.transaction().execute(async (trx) => {
+					await trx
+						.insertInto('StudioCMSEmailVerificationTokens')
+						.values(data)
+						.executeTakeFirstOrThrow();
+
+					return await trx
+						.selectFrom('StudioCMSEmailVerificationTokens')
+						.selectAll()
+						.where('id', '=', data.id)
+						.executeTakeFirstOrThrow();
+				})
 			),
 	});
 
@@ -168,11 +175,15 @@ export const SDKAuthModule = Effect.gen(function* () {
 		decoder: StudioCMSOAuthAccounts.Select,
 		callbackFn: (db, data) =>
 			db((client) =>
-				client
-					.insertInto('StudioCMSOAuthAccounts')
-					.values(data)
-					.returningAll()
-					.executeTakeFirstOrThrow()
+				client.transaction().execute(async (trx) => {
+					await trx.insertInto('StudioCMSOAuthAccounts').values(data).executeTakeFirstOrThrow();
+
+					return await trx
+						.selectFrom('StudioCMSOAuthAccounts')
+						.selectAll()
+						.where('userId', '=', data.userId)
+						.executeTakeFirstOrThrow();
+				})
 			),
 	});
 
@@ -257,11 +268,15 @@ export const SDKAuthModule = Effect.gen(function* () {
 		decoder: StudioCMSSessionTable.Select,
 		callbackFn: (db, data) =>
 			db((client) =>
-				client
-					.insertInto('StudioCMSSessionTable')
-					.values(data)
-					.returningAll()
-					.executeTakeFirstOrThrow()
+				client.transaction().execute(async (trx) => {
+					await trx.insertInto('StudioCMSSessionTable').values(data).executeTakeFirstOrThrow();
+
+					return await trx
+						.selectFrom('StudioCMSSessionTable')
+						.selectAll()
+						.where('id', '=', data.id)
+						.executeTakeFirstOrThrow();
+				})
 			),
 	});
 
@@ -315,12 +330,19 @@ export const SDKAuthModule = Effect.gen(function* () {
 		decoder: StudioCMSSessionTable.Select,
 		callbackFn: (db, { id, newDate }) =>
 			db((client) =>
-				client
-					.updateTable('StudioCMSSessionTable')
-					.set({ expiresAt: newDate })
-					.where('id', '=', id)
-					.returningAll()
-					.executeTakeFirstOrThrow()
+				client.transaction().execute(async (trx) => {
+					await trx
+						.updateTable('StudioCMSSessionTable')
+						.set({ expiresAt: newDate })
+						.where('id', '=', id)
+						.executeTakeFirstOrThrow();
+
+					return await trx
+						.selectFrom('StudioCMSSessionTable')
+						.selectAll()
+						.where('id', '=', id)
+						.executeTakeFirstOrThrow();
+				})
 			),
 	});
 
@@ -332,11 +354,15 @@ export const SDKAuthModule = Effect.gen(function* () {
 		decoder: StudioCMSUsersTable.Select,
 		callbackFn: (db, data) =>
 			db((client) =>
-				client
-					.insertInto('StudioCMSUsersTable')
-					.values(data)
-					.returningAll()
-					.executeTakeFirstOrThrow()
+				client.transaction().execute(async (trx) => {
+					await trx.insertInto('StudioCMSUsersTable').values(data).executeTakeFirstOrThrow();
+
+					return await trx
+						.selectFrom('StudioCMSUsersTable')
+						.selectAll()
+						.where('id', '=', data.id)
+						.executeTakeFirstOrThrow();
+				})
 			),
 	});
 
@@ -348,11 +374,15 @@ export const SDKAuthModule = Effect.gen(function* () {
 		decoder: StudioCMSPermissions.Select,
 		callbackFn: (db, data) =>
 			db((client) =>
-				client
-					.insertInto('StudioCMSPermissions')
-					.values(data)
-					.returningAll()
-					.executeTakeFirstOrThrow()
+				client.transaction().execute(async (trx) => {
+					await trx.insertInto('StudioCMSPermissions').values(data).executeTakeFirstOrThrow();
+
+					return await trx
+						.selectFrom('StudioCMSPermissions')
+						.selectAll()
+						.where('user', '=', data.user)
+						.executeTakeFirstOrThrow();
+				})
 			),
 	});
 
@@ -367,12 +397,19 @@ export const SDKAuthModule = Effect.gen(function* () {
 		decoder: StudioCMSUsersTable.Select,
 		callbackFn: (db, { userId, userData }) =>
 			db((client) =>
-				client
-					.updateTable('StudioCMSUsersTable')
-					.set(userData)
-					.where('id', '=', userId)
-					.returningAll()
-					.executeTakeFirstOrThrow()
+				client.transaction().execute(async (trx) => {
+					await trx
+						.updateTable('StudioCMSUsersTable')
+						.set(userData)
+						.where('id', '=', userId)
+						.executeTakeFirstOrThrow();
+
+					return await trx
+						.selectFrom('StudioCMSUsersTable')
+						.selectAll()
+						.where('id', '=', userId)
+						.executeTakeFirstOrThrow();
+				})
 			),
 	});
 

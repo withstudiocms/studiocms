@@ -178,11 +178,15 @@ export const SDKDiffTrackingModule = Effect.gen(function* () {
 		decoder: StudioCMSDiffTracking.Select,
 		callbackFn: (db, diff) =>
 			db((client) =>
-				client
-					.insertInto('StudioCMSDiffTracking')
-					.values(diff)
-					.returningAll()
-					.executeTakeFirstOrThrow()
+				client.transaction().execute(async (trx) => {
+					await trx.insertInto('StudioCMSDiffTracking').values(diff).executeTakeFirstOrThrow();
+
+					return await trx
+						.selectFrom('StudioCMSDiffTracking')
+						.selectAll()
+						.where('id', '=', diff.id)
+						.executeTakeFirstOrThrow();
+				})
 			),
 	});
 

@@ -92,12 +92,15 @@ export const SDKUpdateModule = Effect.gen(function* () {
 		decoder: StudioCMSPageContent.Select,
 		callbackFn: (db, data) =>
 			db((client) =>
-				client
-					.updateTable('StudioCMSPageContent')
-					.set(data)
-					.where('id', '=', data.id)
-					.returningAll()
-					.executeTakeFirstOrThrow()
+				client.transaction().execute(async (trx) => {
+					await trx.insertInto('StudioCMSPageContent').values(data).executeTakeFirstOrThrow();
+
+					return await trx
+						.selectFrom('StudioCMSPageContent')
+						.selectAll()
+						.where('id', '=', data.id)
+						.executeTakeFirstOrThrow();
+				})
 			),
 	});
 
@@ -109,12 +112,15 @@ export const SDKUpdateModule = Effect.gen(function* () {
 		decoder: StudioCMSPageDataTags.Select,
 		callbackFn: (db, data) =>
 			db((client) =>
-				client
-					.updateTable('StudioCMSPageDataTags')
-					.set(data)
-					.where('id', '=', data.id)
-					.returningAll()
-					.executeTakeFirstOrThrow()
+				client.transaction().execute(async (trx) => {
+					await trx.insertInto('StudioCMSPageDataTags').values(data).executeTakeFirstOrThrow();
+
+					return await trx
+						.selectFrom('StudioCMSPageDataTags')
+						.selectAll()
+						.where('id', '=', data.id)
+						.executeTakeFirstOrThrow();
+				})
 			),
 	});
 
@@ -126,12 +132,18 @@ export const SDKUpdateModule = Effect.gen(function* () {
 		decoder: StudioCMSPageDataCategories.Select,
 		callbackFn: (db, data) =>
 			db((client) =>
-				client
-					.updateTable('StudioCMSPageDataCategories')
-					.set(data)
-					.where('id', '=', data.id)
-					.returningAll()
-					.executeTakeFirstOrThrow()
+				client.transaction().execute(async (trx) => {
+					await trx
+						.insertInto('StudioCMSPageDataCategories')
+						.values(data)
+						.executeTakeFirstOrThrow();
+
+					return await trx
+						.selectFrom('StudioCMSPageDataCategories')
+						.selectAll()
+						.where('id', '=', data.id)
+						.executeTakeFirstOrThrow();
+				})
 			),
 	});
 
@@ -143,12 +155,15 @@ export const SDKUpdateModule = Effect.gen(function* () {
 		decoder: StudioCMSPermissions.Select,
 		callbackFn: (db, data) =>
 			db((client) =>
-				client
-					.updateTable('StudioCMSPermissions')
-					.set(data)
-					.where('user', '=', data.user)
-					.returningAll()
-					.executeTakeFirstOrThrow()
+				client.transaction().execute(async (trx) => {
+					await trx.insertInto('StudioCMSPermissions').values(data).executeTakeFirstOrThrow();
+
+					return await trx
+						.selectFrom('StudioCMSPermissions')
+						.selectAll()
+						.where('user', '=', data.user)
+						.executeTakeFirstOrThrow();
+				})
 			),
 	});
 
@@ -160,12 +175,18 @@ export const SDKUpdateModule = Effect.gen(function* () {
 		decoder: StudioCMSPageFolderStructure.Select,
 		callbackFn: (db, data) =>
 			db((client) =>
-				client
-					.updateTable('StudioCMSPageFolderStructure')
-					.set(data)
-					.where('id', '=', data.id)
-					.returningAll()
-					.executeTakeFirstOrThrow()
+				client.transaction().execute(async (trx) => {
+					await trx
+						.insertInto('StudioCMSPageFolderStructure')
+						.values(data)
+						.executeTakeFirstOrThrow();
+
+					return await trx
+						.selectFrom('StudioCMSPageFolderStructure')
+						.selectAll()
+						.where('id', '=', data.id)
+						.executeTakeFirstOrThrow();
+				})
 			),
 	});
 
@@ -177,12 +198,15 @@ export const SDKUpdateModule = Effect.gen(function* () {
 		decoder: StudioCMSPageData.Select,
 		callbackFn: (db, data) =>
 			db((client) =>
-				client
-					.updateTable('StudioCMSPageData')
-					.set(data)
-					.where('id', '=', data.id)
-					.returningAll()
-					.executeTakeFirstOrThrow()
+				client.transaction().execute(async (trx) => {
+					await trx.insertInto('StudioCMSPageData').values(data).executeTakeFirstOrThrow();
+
+					return await trx
+						.selectFrom('StudioCMSPageData')
+						.selectAll()
+						.where('id', '=', data.id)
+						.executeTakeFirstOrThrow();
+				})
 			),
 	});
 

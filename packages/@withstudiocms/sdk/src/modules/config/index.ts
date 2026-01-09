@@ -85,11 +85,18 @@ export const SDKConfigModule = Effect.gen(function* () {
 		encoder: StudioCMSDynamicConfigSettings.Insert,
 		callbackFn: (db, data) =>
 			db((client) =>
-				client
-					.insertInto('StudioCMSDynamicConfigSettings')
-					.values(data)
-					.returning(['id', 'data'])
-					.executeTakeFirstOrThrow()
+				client.transaction().execute(async (trx) => {
+					await trx
+						.insertInto('StudioCMSDynamicConfigSettings')
+						.values(data)
+						.executeTakeFirstOrThrow();
+
+					return await trx
+						.selectFrom('StudioCMSDynamicConfigSettings')
+						.selectAll()
+						.where('id', '=', data.id)
+						.executeTakeFirstOrThrow();
+				})
 			),
 	});
 
@@ -123,12 +130,19 @@ export const SDKConfigModule = Effect.gen(function* () {
 		encoder: StudioCMSDynamicConfigSettings.Update,
 		callbackFn: (db, { id, data }) =>
 			db((client) =>
-				client
-					.updateTable('StudioCMSDynamicConfigSettings')
-					.set({ data })
-					.where('id', '=', id)
-					.returning(['id', 'data'])
-					.executeTakeFirstOrThrow()
+				client.transaction().execute(async (trx) => {
+					await trx
+						.updateTable('StudioCMSDynamicConfigSettings')
+						.set({ data })
+						.where('id', '=', id)
+						.executeTakeFirstOrThrow();
+
+					return await trx
+						.selectFrom('StudioCMSDynamicConfigSettings')
+						.selectAll()
+						.where('id', '=', id)
+						.executeTakeFirstOrThrow();
+				})
 			),
 	});
 

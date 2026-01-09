@@ -87,11 +87,15 @@ export const SDKResetTokenBucketModule = Effect.gen(function* () {
 		decoder: StudioCMSUserResetTokens.Select,
 		callbackFn: (db, data) =>
 			db((client) =>
-				client
-					.insertInto('StudioCMSUserResetTokens')
-					.values(data)
-					.returningAll()
-					.executeTakeFirstOrThrow()
+				client.transaction().execute(async (trx) => {
+					await trx.insertInto('StudioCMSUserResetTokens').values(data).executeTakeFirstOrThrow();
+
+					return await trx
+						.selectFrom('StudioCMSUserResetTokens')
+						.selectAll()
+						.where('id', '=', data.id)
+						.executeTakeFirstOrThrow();
+				})
 			),
 	});
 

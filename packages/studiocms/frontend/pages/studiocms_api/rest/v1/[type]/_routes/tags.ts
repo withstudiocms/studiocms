@@ -126,14 +126,21 @@ export const tagsRouter: EndpointRoute = {
 						const updateTag = sdk.dbService.withCodec({
 							encoder: PartialTags,
 							decoder: StudioCMSPageDataTags.Select,
-							callbackFn: (client, data) =>
-								client((db) =>
-									db
-										.updateTable('StudioCMSPageDataTags')
-										.set(data)
-										.where('id', '=', id)
-										.returningAll()
-										.executeTakeFirstOrThrow()
+							callbackFn: (db, data) =>
+								db((client) =>
+									client.transaction().execute(async (trx) => {
+										await trx
+											.updateTable('StudioCMSPageDataTags')
+											.set(data)
+											.where('id', '=', id)
+											.executeTakeFirstOrThrow();
+
+										return await trx
+											.selectFrom('StudioCMSPageDataTags')
+											.selectAll()
+											.where('id', '=', id)
+											.executeTakeFirstOrThrow();
+									})
 								),
 						});
 
