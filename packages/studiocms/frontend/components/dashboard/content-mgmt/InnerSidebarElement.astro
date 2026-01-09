@@ -14,7 +14,7 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang, '@studiocms/dashboard:content-sidebar');
 
-const PageFolderTree = await runSDK(SDKCoreJs.GET.pageFolderTree(/* Deprecated feature */ false));
+const PageFolderTree = await runSDK(SDKCoreJs.GET.pageFolderTree());
 ---
 
 <div class="inner-sidebar-header">

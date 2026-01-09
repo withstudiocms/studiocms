@@ -47,7 +47,6 @@ export const MockAstroLocals = (): APIContext['locals'] => {
 					enableDiffs: false,
 					enableMailer: false,
 					gridItems: [],
-					hideDefaultIndex: false,
 					loginPageBackground: 'studiocms-curves',
 					loginPageCustomImage: null,
 					siteIcon: null,

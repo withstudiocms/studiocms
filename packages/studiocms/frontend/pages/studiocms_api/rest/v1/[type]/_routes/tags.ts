@@ -166,7 +166,7 @@ export const tagsRouter: EndpointRoute = {
 							Notifications,
 						]);
 
-						const getPageList = sdk.GET.pages(true, false, true);
+						const getPageList = sdk.GET.pages(true, true);
 
 						const flattenAndCount = <T extends { id: number }>(arrays: T[][]): boolean => {
 							return arrays.flat().filter((data) => data.id === id).length > 0;

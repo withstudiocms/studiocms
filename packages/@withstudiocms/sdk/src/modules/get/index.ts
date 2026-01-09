@@ -113,10 +113,9 @@ export class KillSwitch {
  * - GET.latestVersion()
  *   - Fetches the latest published version of StudioCMS from NPM.
  *
- * - GET.pages(includeDrafts?, hideDefaultIndex?, metaOnly?, paginate?)
+ * - GET.pages(includeDrafts?, metaOnly?, paginate?)
  *   - Returns all pages (optionally paginated) and supports:
  *     - includeDrafts: include drafts when true.
- *     - hideDefaultIndex: exclude pages with slug "index" when true.
  *     - metaOnly: when true returns meta-only representations (no defaultContent / multiLangContent).
  *   - Validates pagination inputs (non-negative; default limit fallback).
  *   - Uses memoized per-page collectors and returns either CombinedPageData[] or MetaOnlyPageData[].
@@ -134,13 +133,14 @@ export class KillSwitch {
  * - GET.packagePages(packageName, metaOnly?)
  *   - Returns pages associated with a package. If none found, returns an empty array.
  *
- * - GET.folderPages(idOrName, includeDrafts?, hideDefaultIndex?, metaOnly?, paginate?)
+ * - GET.folderPages(idOrName, includeDrafts?, metaOnly?, paginate?)
  *   - Returns pages that belong to the given folder (identified by id or name).
  *   - Supports same filtering, metaOnly and pagination semantics as GET.pages.
  *
- * - GET.pageFolderTree(hideDefaultIndex?)
+ * - GET.pageFolderTree(excludeDrafts?)
  *   - Returns a full folder tree structure enriched with pages placed into their folders.
  *   - Built by merging folder definitions and page data, memoized for efficiency.
+ *   - Supports excluding draft pages when `excludeDrafts` is true.
  *
  * Implementation notes
  * - Internal helpers:
@@ -160,7 +160,6 @@ export class KillSwitch {
  * Example usage (conceptual)
  * - GET.users.all()            -> Effect yielding collected user list
  * - GET.page.byId("abc")       -> Effect yielding CombinedPageData | undefined
- * - GET.pages(undefined, true) -> Effect yielding page list with default-index hidden
  *
  * Returns
  * - An object (`GET`) with the described grouped read-only operations; each operation is an Effect-producing function.
@@ -542,22 +541,15 @@ export const SDKGetModule = Effect.gen(function* () {
 	});
 
 	/**
-	 * Filters pages based on draft status and default index slug.
+	 * Filters pages based on draft status.
 	 *
 	 * @param pages - The array of page data objects to filter.
 	 * @param includeDrafts - If `true`, includes draft pages; otherwise, excludes them.
-	 * @param hideDefaultIndex - If `true`, excludes pages with the slug 'index'; otherwise, includes them.
 	 * @returns The filtered array of page data objects.
 	 */
-	const __filterPagesByDraftAndIndex = Effect.fn(
-		(pages: readonly tsPageDataSelect[], includeDrafts: boolean, hideDefaultIndex: boolean) =>
-			Effect.succeed(
-				pages.filter(
-					({ draft, slug }) =>
-						(includeDrafts || draft === false || draft === null) &&
-						(!hideDefaultIndex || slug !== 'index')
-				)
-			)
+	const __filterPagesByDraft = Effect.fn(
+		(pages: readonly tsPageDataSelect[], includeDrafts: boolean) =>
+			Effect.succeed(pages.filter(({ draft }) => includeDrafts || draft !== true))
 	);
 
 	/**
@@ -604,14 +596,12 @@ export const SDKGetModule = Effect.gen(function* () {
 
 	function _getAllPages(
 		includeDrafts?: boolean,
-		hideDefaultIndex?: boolean,
 		metaOnly?: false,
 		paginate?: PaginateInput
 	): Effect.Effect<CombinedPageData[], _PossiblePagesErrors, never>;
 
 	function _getAllPages(
 		includeDrafts?: boolean,
-		hideDefaultIndex?: boolean,
 		metaOnly?: true,
 		paginate?: PaginateInput
 	): Effect.Effect<MetaOnlyPageData[], _PossiblePagesErrors, never>;
@@ -620,22 +610,16 @@ export const SDKGetModule = Effect.gen(function* () {
 	 * Retrieves all pages with optional filtering and pagination.
 	 *
 	 * @param includeDrafts - If `true`, includes draft pages; otherwise, excludes them.
-	 * @param hideDefaultIndex - If `true`, excludes pages with the slug 'index'; otherwise, includes them.
 	 * @param metaOnly - If `true`, returns only meta information about the pages; otherwise, returns full page data.
 	 * @param paginate - Optional pagination parameters including `limit` and `offset`.
 	 * @returns An array of page data records, either full or meta-only based on the `metaOnly` parameter.
 	 */
-	function _getAllPages(
-		includeDrafts = false,
-		hideDefaultIndex = false,
-		metaOnly = false,
-		paginate?: PaginateInput
-	) {
+	function _getAllPages(includeDrafts = false, metaOnly = false, paginate?: PaginateInput) {
 		// Execute the page retrieval and processing
 		return __getPagesPossiblyPaginated(paginate).pipe(
 			Effect.flatMap((pagesRaw) =>
 				Effect.all({
-					pages: __filterPagesByDraftAndIndex(pagesRaw, includeDrafts, hideDefaultIndex),
+					pages: __filterPagesByDraft(pagesRaw, includeDrafts),
 					tree: GET.folderTree(),
 				})
 			),
@@ -755,14 +739,12 @@ export const SDKGetModule = Effect.gen(function* () {
 	function _folderPages(
 		idOrName: string,
 		includeDrafts?: boolean,
-		hideDefaultIndex?: boolean,
 		metaOnly?: false,
 		paginate?: PaginateInput
 	): Effect.Effect<CombinedPageData[], _PossiblePagesErrors, never>;
 	function _folderPages(
 		idOrName: string,
 		includeDrafts?: boolean,
-		hideDefaultIndex?: boolean,
 		metaOnly?: true,
 		paginate?: PaginateInput
 	): Effect.Effect<MetaOnlyPageData[], _PossiblePagesErrors, never>;
@@ -776,7 +758,6 @@ export const SDKGetModule = Effect.gen(function* () {
 	function _folderPages(
 		idOrName: string,
 		includeDrafts = false,
-		hideDefaultIndex = false,
 		metaOnly = false,
 		paginate?: PaginateInput
 	) {
@@ -784,10 +765,9 @@ export const SDKGetModule = Effect.gen(function* () {
 			Effect.flatMap(({ id: folderId }) =>
 				__getPagesPossiblyPaginated(paginate).pipe(
 					Effect.flatMap((pagesRaw) =>
-						__filterPagesByDraftAndIndex(
+						__filterPagesByDraft(
 							pagesRaw.filter((page) => page.parentFolder === folderId),
-							includeDrafts,
-							hideDefaultIndex
+							includeDrafts
 						)
 					),
 					Effect.flatMap((pages) =>
@@ -814,15 +794,13 @@ export const SDKGetModule = Effect.gen(function* () {
 	/**
 	 * Retrieves the page folder tree structure.
 	 *
-	 * @param hideDefaultIndex - If `true`, excludes pages with the slug 'index' from the tree; otherwise, includes them.
+	 * @param excludeDrafts - If `true`, excludes draft pages from the tree.
 	 * @returns The page folder tree structure.
 	 */
-	const _pageFolderTree = (hideDefaultIndex = false) =>
+	const _pageFolderTree = (excludeDrafts = false) =>
 		Effect.gen(function* () {
-			const [tree, pages] = yield* Effect.all([
-				GET.folderTree(),
-				_getAllPages(true, hideDefaultIndex),
-			]);
+			const includeDrafts = !excludeDrafts;
+			const [tree, pages] = yield* Effect.all([GET.folderTree(), _getAllPages(includeDrafts)]);
 
 			for (const page of pages) {
 				if (page.parentFolder) {

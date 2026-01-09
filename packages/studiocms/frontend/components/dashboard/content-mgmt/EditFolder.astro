@@ -1,16 +1,12 @@
 ---
 import { type UiLanguageKeys, useTranslations } from 'studiocms:i18n';
-import type { FolderListItem } from 'studiocms:sdk/types';
+import type { FolderListItem, tsPageFolderSelect } from 'studiocms:sdk/types';
 import { Input } from 'studiocms:ui/components/input';
 import { Select } from 'studiocms:ui/components/select';
 
 interface Props {
 	lang: UiLanguageKeys;
-	currentFolder: {
-		readonly name: string;
-		readonly id: string;
-		readonly parent: string | null | undefined;
-	};
+	currentFolder: tsPageFolderSelect;
 	folderList: FolderListItem[];
 }
 
