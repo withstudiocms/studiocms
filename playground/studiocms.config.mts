@@ -17,5 +17,6 @@ export default defineStudioCMSConfig({
 	},
 	componentRegistry: {
 		testcomp: './src/components/test-comp.astro',
+		'test-comp': './src/components/test-comp.astro',
 	},
 });

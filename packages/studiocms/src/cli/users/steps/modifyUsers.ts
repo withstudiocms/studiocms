@@ -57,14 +57,21 @@ export const modifyUsers: EffectStepFn = Effect.fn(function* (context, _debug, d
 			value: Schema.String,
 			id: Schema.String,
 		}),
-		callbackFn: (client, { key, value, id }) =>
-			client((db) =>
-				db
-					.updateTable('StudioCMSUsersTable')
-					.set({ [key]: value })
-					.where('id', '=', id)
-					.returningAll()
-					.executeTakeFirstOrThrow()
+		callbackFn: (db, { key, value, id }) =>
+			db((client) =>
+				client.transaction().execute(async (trx) => {
+					await trx
+						.updateTable('StudioCMSUsersTable')
+						.set({ [key]: value })
+						.where('id', '=', id)
+						.executeTakeFirstOrThrow();
+
+					return await trx
+						.selectFrom('StudioCMSUsersTable')
+						.selectAll()
+						.where('id', '=', id)
+						.executeTakeFirstOrThrow();
+				})
 			),
 	});
 

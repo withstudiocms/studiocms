@@ -47,15 +47,17 @@ export const createUsers: EffectStepFn = Effect.fn(function* (context, _debug, d
 	const _createUser = dbClient.withCodec({
 		encoder: StudioCMSUsersTable.Insert,
 		decoder: StudioCMSUsersTable.Select,
-		callbackFn: (client, user) =>
-			client(
-				(db) =>
-					db
-						.insertInto('StudioCMSUsersTable')
-						.values(user)
-						.returningAll()
-						// Added type assertion due to weirdness with generics return types
-						.executeTakeFirstOrThrow() as Promise<(typeof StudioCMSUsersTable.Select)['Encoded']>
+		callbackFn: (db, user) =>
+			db((client) =>
+				client.transaction().execute(async (trx) => {
+					await trx.insertInto('StudioCMSUsersTable').values(user).executeTakeFirstOrThrow();
+
+					return await trx
+						.selectFrom('StudioCMSUsersTable')
+						.selectAll()
+						.where('id', '=', user.id)
+						.executeTakeFirstOrThrow();
+				})
 			),
 	});
 
@@ -65,13 +67,17 @@ export const createUsers: EffectStepFn = Effect.fn(function* (context, _debug, d
 	const _createRank = dbClient.withCodec({
 		decoder: StudioCMSPermissions.Select,
 		encoder: StudioCMSPermissions.Insert,
-		callbackFn: (client, permission) =>
-			client((db) =>
-				db
-					.insertInto('StudioCMSPermissions')
-					.values(permission)
-					.returningAll()
-					.executeTakeFirstOrThrow()
+		callbackFn: (db, permission) =>
+			db((client) =>
+				client.transaction().execute(async (trx) => {
+					await trx.insertInto('StudioCMSPermissions').values(permission).executeTakeFirstOrThrow();
+
+					return await trx
+						.selectFrom('StudioCMSPermissions')
+						.selectAll()
+						.where('user', '=', permission.user)
+						.executeTakeFirstOrThrow();
+				})
 			),
 	});
 
