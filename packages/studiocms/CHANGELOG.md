@@ -4,4 +4,4 @@
 
 ### Patch Changes
 
-For previous version changelogs, see [CHANGELOG.beta.md](./CHANGELOG.beta.md)
+- For previous version changelogs, see [CHANGELOG.beta.md](./CHANGELOG.beta.md)
