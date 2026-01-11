@@ -1,6 +1,5 @@
 {
   "name": "@test-config-utils/integration-utils",
-  "version": "0.0.0",
   "private": true,
   "scripts": {
     "dev": "astro dev",
