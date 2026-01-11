@@ -3,7 +3,7 @@
 
 import { Effect } from 'effect';
 import type { Kysely } from 'kysely';
-import { type DialectDeterminationError, handleCause, SqlError } from './errors.js';
+import { handleCause, SqlError } from './errors.js';
 import { addMissingIndexes, dropRemovedIndexes, getTableIndexes } from './indexes.js';
 import { getTableColumns, getTableTriggers, tableExists } from './introspection.js';
 import { addMissingColumns, createTable, detectRemovedTables } from './tables.js';
@@ -12,61 +12,13 @@ import type { TableDefinition } from './types.js';
 
 export * from './types.js';
 
-/**
- * Manages schema definitions for database migrations in Kysely.
- *
- * This class handles storing and retrieving table schema definitions either from
- * a provided in-memory definition or from a dedicated schema tracking table in the database.
- * It uses Effect-ts for error handling and composable effects.
- *
- * @remarks
- * The manager maintains a `kysely_schema` table to persist schema definitions across migrations.
- * If no previous schema definition is provided during construction, it will attempt to load
- * the schema from the database instead.
- *
- * @example
- * ```typescript
- * const db = new Kysely<Database>({ dialect });
- * const previousSchema: TableDefinition[] = [...];
- * const manager = new MigrationSchemaManager(db, previousSchema);
- *
- * // Get the previous schema
- * const schema = await Effect.runPromise(manager.getPreviousSchema());
- *
- * // Save a new schema version
- * const result = await Effect.runPromise(manager.saveSchema(newSchema));
- * ```
- */
-class MigrationSchemaManager {
-	#db: Kysely<any>;
-	#previousSchemaDefinition: TableDefinition[];
-	#useDBSchema = false;
-	private readonly schemaTableName = 'kysely_schema';
+const schemaManager = (db: Kysely<any>, previousSchemaDefinition?: TableDefinition[]) =>
+	Effect.gen(function* () {
+		const tableName = 'kysely_schema';
+		let useDbSchema = false;
+		let previousSchemaDefinitionInternal: TableDefinition[] = [];
 
-	constructor(db: Kysely<any>, previousSchemaDefinition?: TableDefinition[]) {
-		this.#db = db;
-		this.#previousSchemaDefinition = previousSchemaDefinition ?? [];
-
-		if (previousSchemaDefinition === undefined) {
-			this.#useDBSchema = true;
-			this.#previousSchemaDefinition = [];
-		} else {
-			this.#previousSchemaDefinition = previousSchemaDefinition;
-		}
-	}
-
-	/**
-	 * Creates the schema tracking table in the database if it does not already exist.
-	 *
-	 * The `kysely_schema` table is used to store serialized schema definitions
-	 * for tracking changes across migrations.
-	 *
-	 * @returns An Effect that resolves when the table is created.
-	 */
-	private createSchemaTable(): Effect.Effect<void, SqlError, never> {
-		const db = this.#db;
-		const tableName = this.schemaTableName;
-		return Effect.tryPromise({
+		const createTable = Effect.tryPromise({
 			try: () =>
 				db.schema
 					.createTable(tableName)
@@ -75,31 +27,18 @@ class MigrationSchemaManager {
 					.execute(),
 			catch: (cause) => new SqlError({ cause }),
 		});
-	}
 
-	/**
-	 * Loads the previous schema definition from the database.
-	 *
-	 * This method checks for the existence of the `kysely_schema` table and retrieves
-	 * the latest schema definition stored within it. If the table does not exist,
-	 * it creates the table and returns an empty schema.
-	 *
-	 * @returns An Effect that resolves to the previous schema definition array.
-	 */
-	private loadPreviousSchemaFromDB(): Effect.Effect<
-		TableDefinition[],
-		SqlError | DialectDeterminationError,
-		never
-	> {
-		const db = this.#db;
-		const tableName = this.schemaTableName;
-		const createSchemaTable = this.createSchemaTable.bind(this);
+		if (previousSchemaDefinition === undefined) {
+			useDbSchema = true;
+		} else {
+			previousSchemaDefinitionInternal = previousSchemaDefinition;
+		}
 
-		return Effect.gen(function* () {
+		const loadPreviousSchemaFromDB = Effect.gen(function* () {
 			const exists = yield* tableExists(db, tableName);
 
 			if (!exists) {
-				yield* createSchemaTable();
+				yield* createTable;
 				return [];
 			}
 
@@ -117,54 +56,40 @@ class MigrationSchemaManager {
 				try: () => JSON.parse(latestDefinition) as TableDefinition[],
 				catch: (cause) => new SqlError({ cause }),
 			});
-		});
-	}
+		}).pipe(
+			Effect.catchAll((cause) =>
+				Effect.gen(function* () {
+					yield* Effect.logError(cause);
+					return [] as TableDefinition[];
+				})
+			)
+		);
 
-	/**
-	 * Retrieves the previous schema definition, either from the database or
-	 * from the provided in-memory definition.
-	 *
-	 * If the manager was constructed without a previous schema definition,
-	 * it will load the schema from the database. Otherwise, it returns
-	 * the in-memory definition.
-	 *
-	 * @returns An Effect that resolves to the previous schema definition array.
-	 */
-	getPreviousSchema(): Effect.Effect<
-		TableDefinition[],
-		SqlError | DialectDeterminationError,
-		never
-	> {
-		return this.#useDBSchema
-			? this.loadPreviousSchemaFromDB()
-			: Effect.succeed(this.#previousSchemaDefinition);
-	}
+		const getPreviousSchema = () =>
+			useDbSchema ? loadPreviousSchemaFromDB : Effect.succeed(previousSchemaDefinitionInternal);
 
-	/**
-	 * Saves the provided schema definition to the database.
-	 *
-	 * This method serializes the schema definition and inserts it into
-	 * the `kysely_schema` table for tracking.
-	 *
-	 * @param schemaDefinition - The schema definition array to save.
-	 * @returns An Effect that resolves when the schema is saved.
-	 */
-	saveSchema(schemaDefinition: TableDefinition[]): Effect.Effect<void, SqlError, never> {
-		const db = this.#db;
-		const tableName = this.schemaTableName;
+		const saveSchema = (schemaDefinition: TableDefinition[]) =>
+			Effect.gen(function* () {
+				const definition = JSON.stringify(schemaDefinition);
+				const exists = yield* tableExists(db, tableName);
 
-		return Effect.gen(function* () {
-			const definition = JSON.stringify(schemaDefinition);
+				if (!exists) {
+					yield* createTable;
+				}
 
-			yield* Effect.tryPromise({
-				try: () => db.insertInto(tableName).values({ definition }).executeTakeFirstOrThrow(),
-				catch: (cause) => new SqlError({ cause }),
-			});
+				yield* Effect.tryPromise({
+					try: () => db.insertInto(tableName).values({ definition }).executeTakeFirstOrThrow(),
+					catch: (cause) => new SqlError({ cause }),
+				});
 
-			return;
-		});
-	}
-}
+				return;
+			}).pipe(Effect.catchAll(Effect.logError));
+
+		return {
+			getPreviousSchema,
+			saveSchema,
+		};
+	});
 
 /**
  * Synchronize the live database schema with a provided schema definition.
@@ -215,7 +140,7 @@ export const syncDatabaseSchema = (
 		Effect.gen(function* () {
 			yield* Effect.logDebug('Starting database schema synchronization...');
 
-			const migrationManager = new MigrationSchemaManager(db, previousSchemaDefinition);
+			const migrationManager = yield* schemaManager(db, previousSchemaDefinition);
 
 			const previousSchema = yield* migrationManager.getPreviousSchema();
 
@@ -344,7 +269,7 @@ export const rollbackMigration = (
 		Effect.gen(function* () {
 			yield* Effect.logDebug('Starting database schema rollback...');
 
-			const migrationManager = new MigrationSchemaManager(db, previousSchemaDefinition);
+			const migrationManager = yield* schemaManager(db, previousSchemaDefinition);
 
 			const previousSchema = yield* migrationManager.getPreviousSchema();
 
