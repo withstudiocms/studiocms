@@ -14,11 +14,6 @@ StudioCMS is an SSR Headless CMS built for the Astro Ecosystem.
 
 To see how to get started with StudioCMS, check out the [StudioCMS Docs](https://docs.studiocms.dev).
 
-> [!IMPORTANT]
-> This project is still in early development and it is not yet ready for production use. If you encounter any issues or have ideas for new features, please let us know by [opening an issue](https://github.com/withstudiocms/studiocms/issues/new/choose) on our GitHub repository.
->
-> During our `0.1.0-beta.x` phase, breaking changes may ship in patch releases.
-
 ## Packages in this repository
 
 ### Astro Integrations

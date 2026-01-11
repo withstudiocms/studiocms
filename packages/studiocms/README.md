@@ -8,11 +8,6 @@
 
 StudioCMS is a dedicated [SSR (Server-side-rendered)](https://docs.astro.build/en/guides/on-demand-rendering/) Astro native CMS, build from the ground up for the Astro community and by Astro community members. StudioCMS is designed to be a flexible CMS that can be used headless using our RESTAPI or as a fully integrated CMS using plugins and a custom frontend.
 
-> [!IMPORTANT]
-> This project is still in early development and it is not yet ready for production use. If you encounter any issues or have ideas for new features, please let us know by [opening an issue](https://github.com/withstudiocms/studiocms/issues/new/choose) on our GitHub repository.
->
-> During our `0.1.0-beta.x` phase, breaking changes may ship in patch releases.
-
 ## Get Started
 
 Follow the documentation to [get started with StudioCMS](https://docs.studiocms.dev/start-here/getting-started).
