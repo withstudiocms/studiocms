@@ -1,5 +1,5 @@
 {
-  "name": "@test/integration-utils",
+  "name": "@test/integration-test",
   "private": true,
   "scripts": {
     "dev": "astro dev",
