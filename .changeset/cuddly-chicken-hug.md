@@ -1,5 +1,0 @@
----
-"studiocms": patch
----
-
-Update dependencies
