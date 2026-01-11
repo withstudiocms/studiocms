@@ -836,18 +836,6 @@ importers:
         specifier: 'catalog:'
         version: 22.19.3
 
-  packages/@withstudiocms/config-utils/test/fixtures/integration-utils:
-    dependencies:
-      '@withstudiocms/config-utils':
-        specifier: workspace:*
-        version: link:../../..
-      astro:
-        specifier: catalog:astrojs
-        version: 5.16.6(@types/node@22.19.3)(jiti@2.6.1)(rollup@4.53.5)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
-      astro-integration-kit:
-        specifier: 'catalog:'
-        version: 0.19.1(astro@5.16.6(@types/node@22.19.3)(jiti@2.6.1)(rollup@4.53.5)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
-
   packages/@withstudiocms/effect:
     dependencies:
       '@clack/prompts':
