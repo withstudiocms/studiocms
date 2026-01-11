@@ -26,7 +26,6 @@
     "@bundletests/studiocms-blog": "0.0.1",
     "@bundletests/studiocms-headless": "0.0.1",
     "@test/registry-test": "0.0.0",
-    "@test/integration-test": "0.0.0",
     "@withstudiocms/template-lang": "0.1.0-beta.0",
     "@studiocms/migrator": "0.1.0-beta.0",
     "@withstudiocms/kysely": "0.1.0-beta.0",
