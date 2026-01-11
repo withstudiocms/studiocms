@@ -7,8 +7,11 @@
   "access": "public",
   "baseBranch": "origin/main",
   "updateInternalDependencies": "patch",
-  "ignore": ["node-playground"],
-  "privatePackages": false,
+  "ignore": ["node-playground", "@test/*"],
+  "privatePackages": {
+    "version": false,
+    "tag": false
+  },
   "changedFilePatterns": [
     "**/src/**/**.*",
     "**/frontend/**/**.*",
