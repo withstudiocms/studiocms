@@ -1,5 +1,17 @@
 # @withstudiocms/effect
 
+## 0.1.0
+
+### Patch Changes
+
+- [#1115](https://github.com/withstudiocms/studiocms/pull/1115) [`87d36ba`](https://github.com/withstudiocms/studiocms/commit/87d36ba83d24d83c7b2b17daa47231a63c225fa2) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update dependency nodemailer to ^7.0.12
+
+- [#1157](https://github.com/withstudiocms/studiocms/pull/1157) [`f8a2d34`](https://github.com/withstudiocms/studiocms/commit/f8a2d342cc3c35bf4478bb523bf28d78dd2d0404) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Add effect-language-service diagnostics scripts to all workspace packages
+
+- [#1139](https://github.com/withstudiocms/studiocms/pull/1139) [`cb8ffda`](https://github.com/withstudiocms/studiocms/commit/cb8ffda2d6fb31e3a754996b3e938a5c1b643af1) Thanks [@renovate](https://github.com/apps/renovate)! - chore(deps): Updated Effect dependencies (PR: #1139)
+
+- [#1160](https://github.com/withstudiocms/studiocms/pull/1160) [`30de271`](https://github.com/withstudiocms/studiocms/commit/30de271f347a3a997669c8118006143148efb33a) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Refactors code to handle Effect LSP diagnostic warnings and errors
+
 ## 0.1.0-beta.8
 
 ### Patch Changes
