@@ -1,5 +1,11 @@
 # @withstudiocms/internal_helpers
 
+## 0.1.0-beta.5
+
+### Patch Changes
+
+- [#1082](https://github.com/withstudiocms/studiocms/pull/1082) [`dbb2cd3`](https://github.com/withstudiocms/studiocms/commit/dbb2cd394a164ee085deb5e94bb8151255caf0e9) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Refactors debug info provider sorting
+
 ## 0.1.0-beta.4
 
 ### Patch Changes

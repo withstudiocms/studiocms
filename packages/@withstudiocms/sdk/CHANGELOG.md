@@ -1,5 +1,41 @@
 # @withstudiocms/sdk
 
+## 0.1.0-beta.2
+
+### Patch Changes
+
+- [#1151](https://github.com/withstudiocms/studiocms/pull/1151) [`25e6fc0`](https://github.com/withstudiocms/studiocms/commit/25e6fc0cca879e77c49c35da5e9a28e582957988) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Migrates table schemas from `@withstudiocms/kysely` to `@withstudiocms/sdk` package
+
+- [#1117](https://github.com/withstudiocms/studiocms/pull/1117) [`87a5ed0`](https://github.com/withstudiocms/studiocms/commit/87a5ed0fdf3a23b0c743f38a42a814b7d68f496d) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Implement category and tag getters
+
+- [#1134](https://github.com/withstudiocms/studiocms/pull/1134) [`3a27939`](https://github.com/withstudiocms/studiocms/commit/3a279390d2688d464fc5476fac0faf2bada2c1fd) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Reworks table types to better align with actual table schema
+
+- [#1128](https://github.com/withstudiocms/studiocms/pull/1128) [`96c98c2`](https://github.com/withstudiocms/studiocms/commit/96c98c2e420bf8526611e674f1f58dd3fa2f33a3) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Tweak categories and tag ID generation to try to solve ID issue with database entry, and enable categories and tag entry on pageData
+
+- [#1140](https://github.com/withstudiocms/studiocms/pull/1140) [`fc33e3f`](https://github.com/withstudiocms/studiocms/commit/fc33e3fb2c3568331be89b43a3a892317834f43a) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update dependency diff2html to ^3.4.55
+
+- [#1157](https://github.com/withstudiocms/studiocms/pull/1157) [`f8a2d34`](https://github.com/withstudiocms/studiocms/commit/f8a2d342cc3c35bf4478bb523bf28d78dd2d0404) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Add effect-language-service diagnostics scripts to all workspace packages
+
+- [#1164](https://github.com/withstudiocms/studiocms/pull/1164) [`4ffae83`](https://github.com/withstudiocms/studiocms/commit/4ffae83377c75efe7c26c45d3cb360394fba5001) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Implements draft exclusion for GET.pageFolderTree(excludeDrafts?) in the SDK.
+
+- [#1132](https://github.com/withstudiocms/studiocms/pull/1132) [`e1c3052`](https://github.com/withstudiocms/studiocms/commit/e1c30524e7fd6ed8f7b85874f049d36ffb50afc8) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Ensures pageData does not surface any sensitive data
+
+- [#1160](https://github.com/withstudiocms/studiocms/pull/1160) [`30de271`](https://github.com/withstudiocms/studiocms/commit/30de271f347a3a997669c8118006143148efb33a) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Refactors code to handle Effect LSP diagnostic warnings and errors
+
+- [#1163](https://github.com/withstudiocms/studiocms/pull/1163) [`cd865cf`](https://github.com/withstudiocms/studiocms/commit/cd865cf995c3b926900b347ee0782d9ccecc1d4f) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Removes deprecated hideDefaultIndex site config variable from SDK and updates all instances of usage in StudioCMS
+
+  #### Breaking Change
+
+  Note for anyone previously relying on this feature, it has now been completely removed. Users will need to adjust any code relying on this functionality.
+
+- [#1099](https://github.com/withstudiocms/studiocms/pull/1099) [`359e655`](https://github.com/withstudiocms/studiocms/commit/359e65541206e5d10c3fef67666bc883f81e2f85) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Introduces StorageManager API to SDK and allow resolving image urls for site config and pagedata
+
+- [#1153](https://github.com/withstudiocms/studiocms/pull/1153) [`0435b82`](https://github.com/withstudiocms/studiocms/commit/0435b82fbc40af767f065a990639b44cfefecf4d) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Move custom StudioCMS migrations from `@withstudiocms/kysely` package to `@withstudiocms/sdk`
+
+- Updated dependencies [[`25e6fc0`](https://github.com/withstudiocms/studiocms/commit/25e6fc0cca879e77c49c35da5e9a28e582957988), [`8e50cd0`](https://github.com/withstudiocms/studiocms/commit/8e50cd0885fa1e4664d457ff3fe4fa77b344ecc4), [`3a27939`](https://github.com/withstudiocms/studiocms/commit/3a279390d2688d464fc5476fac0faf2bada2c1fd), [`87d36ba`](https://github.com/withstudiocms/studiocms/commit/87d36ba83d24d83c7b2b17daa47231a63c225fa2), [`f8a2d34`](https://github.com/withstudiocms/studiocms/commit/f8a2d342cc3c35bf4478bb523bf28d78dd2d0404), [`e359a69`](https://github.com/withstudiocms/studiocms/commit/e359a69d2cad6db0b665908bdee67f02d418877a), [`b4d7879`](https://github.com/withstudiocms/studiocms/commit/b4d7879ae9ea93f199bcf187c8cd940efb405ad9), [`07095e6`](https://github.com/withstudiocms/studiocms/commit/07095e6ca5056f42ca642c6356b5196e9ccb4818), [`d59c4b0`](https://github.com/withstudiocms/studiocms/commit/d59c4b00d44b65bae84315d34fa3b721f9621136), [`cb8ffda`](https://github.com/withstudiocms/studiocms/commit/cb8ffda2d6fb31e3a754996b3e938a5c1b643af1), [`30de271`](https://github.com/withstudiocms/studiocms/commit/30de271f347a3a997669c8118006143148efb33a), [`0435b82`](https://github.com/withstudiocms/studiocms/commit/0435b82fbc40af767f065a990639b44cfefecf4d)]:
+  - @withstudiocms/kysely@0.1.0-beta.2
+  - @withstudiocms/effect@0.1.0-beta.8
+
 ## 0.1.0-beta.1
 
 ### Patch Changes
