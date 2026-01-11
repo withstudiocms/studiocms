@@ -1,5 +1,5 @@
 {
-  "name": "@test-component-registry/registry-test",
+  "name": "@test/registry-test",
   "private": true,
   "scripts": {
     "dev": "astro dev",

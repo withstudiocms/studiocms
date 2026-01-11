@@ -7,7 +7,7 @@
   "access": "public",
   "baseBranch": "origin/main",
   "updateInternalDependencies": "patch",
-  "ignore": ["node-playground", "@test-**"],
+  "ignore": ["node-playground", "@test/*"],
   "privatePackages": {
     "version": false,
     "tag": false
