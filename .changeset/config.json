@@ -7,7 +7,7 @@
   "access": "public",
   "baseBranch": "origin/main",
   "updateInternalDependencies": "patch",
-  "ignore": ["node-playground", "@test-config-utils/integration-utils"],
+  "ignore": ["node-playground"],
   "privatePackages": false,
   "changedFilePatterns": [
     "**/src/**/**.*",
