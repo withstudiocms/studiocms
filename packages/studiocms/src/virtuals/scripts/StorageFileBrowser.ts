@@ -1602,7 +1602,7 @@ class StorageFileBrowser extends HTMLElement {
 				method: 'PUT',
 				headers: {
 					'Content-Type': 'text/plain',
-					'x-s3-key': folderKey,
+					'x-storage-key': folderKey,
 				},
 				body: '',
 			});
