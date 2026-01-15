@@ -1,6 +1,6 @@
 {
   "name": "@withstudiocms/sdk",
-  "version": "0.1.0-beta.2",
+  "version": "0.1.0",
   "description": "StudioCMS Database SDK",
   "author": {
     "name": "withstudiocms",

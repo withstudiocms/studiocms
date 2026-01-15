@@ -1,5 +1,20 @@
 # @withstudiocms/component-registry
 
+## 0.1.0
+
+### Patch Changes
+
+- [#1157](https://github.com/withstudiocms/studiocms/pull/1157) [`f8a2d34`](https://github.com/withstudiocms/studiocms/commit/f8a2d342cc3c35bf4478bb523bf28d78dd2d0404) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Add effect-language-service diagnostics scripts to all workspace packages
+
+- [#1165](https://github.com/withstudiocms/studiocms/pull/1165) [`9007ca5`](https://github.com/withstudiocms/studiocms/commit/9007ca5d8d6c471ee25f07bd2f0a101ba195440c) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Tweaks `transformHTML` sanitization so StudioCMS components and custom elements are always passed through (caller-provided `sanitizeOpts` cannot disable `allowComponents`/`allowCustomElements`).
+
+- [#1101](https://github.com/withstudiocms/studiocms/pull/1101) [`8f53993`](https://github.com/withstudiocms/studiocms/commit/8f539933716b9d3335a13c180e3c607e44a63f8a) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Introduces new transformer option in component registry and creates new StorageAPI transformer to allow Storage API automatic url swapping
+
+- [#1160](https://github.com/withstudiocms/studiocms/pull/1160) [`30de271`](https://github.com/withstudiocms/studiocms/commit/30de271f347a3a997669c8118006143148efb33a) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Refactors code to handle Effect LSP diagnostic warnings and errors
+
+- Updated dependencies [[`87d36ba`](https://github.com/withstudiocms/studiocms/commit/87d36ba83d24d83c7b2b17daa47231a63c225fa2), [`f8a2d34`](https://github.com/withstudiocms/studiocms/commit/f8a2d342cc3c35bf4478bb523bf28d78dd2d0404), [`cb8ffda`](https://github.com/withstudiocms/studiocms/commit/cb8ffda2d6fb31e3a754996b3e938a5c1b643af1), [`30de271`](https://github.com/withstudiocms/studiocms/commit/30de271f347a3a997669c8118006143148efb33a)]:
+  - @withstudiocms/effect@0.1.0
+
 ## 0.1.0-beta.8
 
 ### Patch Changes

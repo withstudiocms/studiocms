@@ -1,5 +1,0 @@
----
-"@studiocms/blog": patch
----
-
-lint
