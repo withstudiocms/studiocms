@@ -68,7 +68,7 @@
     "tsx": "^4.21.0"
   },
   "peerDependencies": {
-    "@withstudiocms/effect": "workspace:*",
-    "@withstudiocms/kysely": "workspace:*"
+    "@withstudiocms/effect": "workspace:^",
+    "@withstudiocms/kysely": "workspace:^"
   }
 }
