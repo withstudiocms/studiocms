@@ -1,6 +1,8 @@
 {
   "links": [
     "..",
+    "adam_workspace-packages",
+    "changeset-release_main",
     "main"
   ]
 }
