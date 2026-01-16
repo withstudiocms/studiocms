@@ -1,5 +1,14 @@
 # @studiocms/cloudinary-image-service
 
+## 0.1.1
+
+### Patch Changes
+
+- [#1186](https://github.com/withstudiocms/studiocms/pull/1186) [`415a512`](https://github.com/withstudiocms/studiocms/commit/415a51241ffddf5045ad8f8d695a5f40a86b5af7) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - fix workspace package dependency specifiers
+
+- Updated dependencies [[`a169a89`](https://github.com/withstudiocms/studiocms/commit/a169a893338947b425e87057cc77401f33abcbfd), [`415a512`](https://github.com/withstudiocms/studiocms/commit/415a51241ffddf5045ad8f8d695a5f40a86b5af7), [`1b2a0c5`](https://github.com/withstudiocms/studiocms/commit/1b2a0c57299544caeba18205ca85a8ca0381d7cb)]:
+  - studiocms@0.1.1
+
 ## 0.1.0
 
 ### Patch Changes
