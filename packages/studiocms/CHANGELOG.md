@@ -1,5 +1,20 @@
 # studiocms
 
+## 0.1.1
+
+### Patch Changes
+
+- [#1181](https://github.com/withstudiocms/studiocms/pull/1181) [`a169a89`](https://github.com/withstudiocms/studiocms/commit/a169a893338947b425e87057cc77401f33abcbfd) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update dependency @iconify-json/simple-icons to ^1.2.66
+
+- [#1186](https://github.com/withstudiocms/studiocms/pull/1186) [`415a512`](https://github.com/withstudiocms/studiocms/commit/415a51241ffddf5045ad8f8d695a5f40a86b5af7) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - fix workspace package dependency specifiers
+
+- [#1187](https://github.com/withstudiocms/studiocms/pull/1187) [`1b2a0c5`](https://github.com/withstudiocms/studiocms/commit/1b2a0c57299544caeba18205ca85a8ca0381d7cb) Thanks [@aliozinan](https://github.com/aliozinan)! - Fix create folder bug in s3-storage PUT request handler
+
+- Updated dependencies [[`415a512`](https://github.com/withstudiocms/studiocms/commit/415a51241ffddf5045ad8f8d695a5f40a86b5af7)]:
+  - @withstudiocms/component-registry@0.1.1
+  - @withstudiocms/auth-kit@0.1.1
+  - @withstudiocms/sdk@0.1.1
+
 ## 0.1.0
 
 ### Patch Changes

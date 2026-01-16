@@ -1,5 +1,11 @@
 # @withstudiocms/component-registry
 
+## 0.1.1
+
+### Patch Changes
+
+- [#1186](https://github.com/withstudiocms/studiocms/pull/1186) [`415a512`](https://github.com/withstudiocms/studiocms/commit/415a51241ffddf5045ad8f8d695a5f40a86b5af7) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - fix workspace package dependency specifiers
+
 ## 0.1.0
 
 ### Patch Changes

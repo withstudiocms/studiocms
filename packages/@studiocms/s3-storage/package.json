@@ -1,6 +1,6 @@
 {
   "name": "@studiocms/s3-storage",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Add S3 Storage Support into your StudioCMS project.",
   "author": {
     "name": "withstudiocms",
