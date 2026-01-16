@@ -77,10 +77,10 @@
     "@types/react-dom": "catalog:react"
   },
   "peerDependencies": {
-    "@studiocms/md": "workspace:*",
+    "@studiocms/md": "workspace:^",
     "astro": "catalog:min",
     "effect": "catalog:effect",
-    "studiocms": "workspace:*",
+    "studiocms": "workspace:^",
     "vite": "catalog:min"
   }
 }

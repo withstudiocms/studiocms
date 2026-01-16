@@ -67,9 +67,9 @@
     "typescript": "catalog:"
   },
   "peerDependencies": {
-    "@withstudiocms/kysely": "workspace:*",
-    "@withstudiocms/sdk": "workspace:*",
-    "studiocms": "workspace:*",
+    "@withstudiocms/kysely": "workspace:^",
+    "@withstudiocms/sdk": "workspace:^",
+    "studiocms": "workspace:^",
     "astro": "catalog:min",
     "effect": "catalog:effect",
     "vite": "catalog:min"

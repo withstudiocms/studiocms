@@ -47,16 +47,16 @@
     "@astrojs/node": "catalog:astrojs",
     "@libsql/client": "catalog:kysely",
     "@studiocms/ui": "catalog:studiocms",
-    "@withstudiocms/config-utils": "workspace:*",
-    "@withstudiocms/effect": "workspace:*",
-    "@withstudiocms/kysely": "workspace:*",
+    "@withstudiocms/config-utils": "workspace:^",
+    "@withstudiocms/effect": "workspace:^",
+    "@withstudiocms/kysely": "workspace:^",
     "astro": "catalog:astrojs",
     "dotenv": "catalog:",
     "drizzle-orm": "^0.42.0",
     "sharp": "catalog:"
   },
   "peerDependencies": {
-    "studiocms": "workspace:*",
-    "@withstudiocms/sdk": "workspace:*"
+    "studiocms": "workspace:^",
+    "@withstudiocms/sdk": "workspace:^"
   }
 }
