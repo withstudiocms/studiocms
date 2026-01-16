@@ -87,7 +87,7 @@ jobs:
         run: pnpm ci:test
 
       - name: Generate Allure Report and Deploy
-        if: always()
+        if: always() && (github.event.pull_request.head.repo.full_name == github.repository || github.ref == 'refs/heads/main')
         uses: ./.github/actions/allure-report
         with:
           gh_pages_branch: testing/allure
