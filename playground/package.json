@@ -20,6 +20,7 @@
   "dependencies": {
     "@astrojs/node": "catalog:astrojs",
     "@studiocms/blog": "workspace:^",
+    "@studiocms/html": "workspace:^",
     "@studiocms/md": "workspace:^",
     "@studiocms/wysiwyg": "workspace:^",
     "@studiocms/s3-storage": "workspace:^",
