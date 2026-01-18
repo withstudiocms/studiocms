@@ -19,14 +19,15 @@
   },
   "dependencies": {
     "@astrojs/node": "catalog:astrojs",
+    "@libsql/client": "catalog:kysely",
     "@studiocms/blog": "workspace:^",
     "@studiocms/md": "workspace:^",
     "@studiocms/wysiwyg": "workspace:^",
     "@studiocms/s3-storage": "workspace:^",
     "astro": "catalog:astrojs",
-    "studiocms": "workspace:^",
-    "sharp": "catalog:",
     "kysely-turso": "catalog:kysely",
-    "@libsql/client": "catalog:kysely"
+    "pg": "catalog:kysely",
+    "studiocms": "workspace:^",
+    "sharp": "catalog:"
   }
 }

@@ -277,11 +277,22 @@
 		"typescript": "catalog:"
 	},
 	"peerDependencies": {
+		"@libsql/client": "catalog:kysely",
 		"astro": "catalog:min",
 		"effect": "catalog:effect",
-		"vite": "catalog:min",
-		"@libsql/client": "catalog:kysely",
 		"pg": "catalog:kysely",
-		"mysql2": "catalog:kysely"
+		"mysql2": "catalog:kysely",
+		"vite": "catalog:min"
+	},
+	"peerDependenciesMeta": {
+		"@libsql/client": {
+			"optional": true
+		},
+		"pg": {
+			"optional": true
+		},
+		"mysql2": {
+			"optional": true
+		}
 	}
 }
