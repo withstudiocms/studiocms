@@ -274,14 +274,25 @@
 		"@types/semver": "^7.7.1",
 		"@types/three": "0.169.0",
 		"@types/pg": "catalog:kysely",
-		"typescript": "catalog:"
+		"typescript": "catalog:",
+		"vite": "catalog:min"
 	},
 	"peerDependencies": {
+		"@libsql/client": "catalog:kysely",
 		"astro": "catalog:min",
 		"effect": "catalog:effect",
-		"vite": "catalog:min",
-		"@libsql/client": "catalog:kysely",
 		"pg": "catalog:kysely",
 		"mysql2": "catalog:kysely"
+	},
+	"peerDependenciesMeta": {
+		"@libsql/client": {
+			"optional": true
+		},
+		"pg": {
+			"optional": true
+		},
+		"mysql2": {
+			"optional": true
+		}
 	}
 }

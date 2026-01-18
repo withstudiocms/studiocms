@@ -231,7 +231,7 @@ describe(parentSuiteName, () => {
 		{
 			name: 'AstroConfigViteSettings.build.chunkSizeWarningLimit',
 			actual: AstroConfigViteSettings!.build!.chunkSizeWarningLimit,
-			expected: 700,
+			expected: 1200,
 		},
 		{
 			name: 'STUDIOCMS_EDITOR_CSRF_COOKIE_NAME',

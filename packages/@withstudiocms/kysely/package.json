@@ -83,9 +83,24 @@
     "@types/pg": "catalog:kysely"
   },
   "peerDependencies": {
-    "effect": "catalog:effect",
     "@libsql/client": "catalog:kysely",
-    "pg": "catalog:kysely",
-    "mysql2": "catalog:kysely"
+    "effect": "catalog:effect",
+    "kysely-turso": "catalog:kysely",
+    "mysql2": "catalog:kysely",
+    "pg": "catalog:kysely"
+  },
+  "peerDependenciesMeta": {
+    "@libsql/client": {
+      "optional": true
+    },
+    "kysely-turso": {
+      "optional": true
+    },
+    "mysql2": {
+      "optional": true
+    },
+    "pg": {
+      "optional": true
+    }
   }
 }

@@ -75,12 +75,12 @@
   },
   "devDependencies": {
     "@types/codemirror": "5.60.16",
-    "@types/node": "catalog:"
-  },
-  "peerDependencies": {
+    "@types/node": "catalog:",
     "astro": "catalog:min",
-    "effect": "catalog:effect",
     "studiocms": "workspace:^",
     "vite": "catalog:min"
+  },
+  "peerDependencies": {
+    "effect": "catalog:effect"
   }
 }

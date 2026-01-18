@@ -69,15 +69,15 @@
     "react-dom": "catalog:react"
   },
   "devDependencies": {
+    "@studiocms/md": "workspace:^",
     "@types/node": "catalog:",
     "@types/react": "catalog:react",
-    "@types/react-dom": "catalog:react"
-  },
-  "peerDependencies": {
-    "@studiocms/md": "workspace:^",
+    "@types/react-dom": "catalog:react",
     "astro": "catalog:min",
-    "effect": "catalog:effect",
     "studiocms": "workspace:^",
     "vite": "catalog:min"
+  },
+  "peerDependencies": {
+    "effect": "catalog:effect"
   }
 }

@@ -269,7 +269,7 @@ export const AstroConfigImageSettings: Partial<AstroConfig['image']> = {
  */
 export const AstroConfigViteSettings: Partial<AstroConfig['vite']> = {
 	build: {
-		chunkSizeWarningLimit: 700,
+		chunkSizeWarningLimit: 1200, // Allow's increase to 1.2 kB for Plugins such as our WYSIWYG editor to not trigger warnings
 		rollupOptions: {
 			// Users will need to install these peer dependencies themselves
 			external: ['@libsql/client', 'kysely-turso', 'pg', 'mysql2'],
