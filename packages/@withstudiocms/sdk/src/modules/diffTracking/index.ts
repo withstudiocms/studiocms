@@ -111,7 +111,7 @@ export const SDKDiffTrackingModule = Effect.gen(function* () {
 					.selectFrom('StudioCMSDiffTracking')
 					.selectAll()
 					.where('pageId', '=', pageId)
-					.orderBy('timestamp', 'asc')
+					.orderBy('timestamp', 'desc')
 					.execute()
 			),
 	});
