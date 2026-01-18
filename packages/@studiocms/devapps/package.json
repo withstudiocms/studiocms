@@ -64,14 +64,14 @@
   "devDependencies": {
     "@types/turndown": "^5.0.6",
     "@types/sanitize-html": "^2.16.0",
-    "typescript": "catalog:"
-  },
-  "peerDependencies": {
     "@withstudiocms/kysely": "workspace:^",
     "@withstudiocms/sdk": "workspace:^",
-    "studiocms": "workspace:^",
     "astro": "catalog:min",
-    "effect": "catalog:effect",
+    "studiocms": "workspace:^",
+    "typescript": "catalog:",
     "vite": "catalog:min"
+  },
+  "peerDependencies": {
+    "effect": "catalog:effect"
   }
 }
