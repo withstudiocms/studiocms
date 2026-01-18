@@ -13,11 +13,7 @@
 		"directory": "packages/@withstudiocms/api-spec"
 	},
 	"keywords": [
-		"astro-studiocms",
-		"cms",
 		"studiocms",
-		"astro",
-		"withastro",
 		"effect",
 		"effect-ts",
 		"effect-ts-astro"
