@@ -292,90 +292,81 @@ importers:
       arctic:
         specifier: 'catalog:'
         version: 3.7.0
-      astro:
-        specifier: catalog:min
-        version: 5.16.9(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
       astro-integration-kit:
         specifier: 'catalog:'
         version: 0.19.1(astro@5.16.9(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
       effect:
         specifier: catalog:effect
         version: 3.19.14
+    devDependencies:
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.19.6
+      astro:
+        specifier: catalog:min
+        version: 5.16.9(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
       studiocms:
         specifier: workspace:^
         version: link:../../studiocms
       vite:
         specifier: catalog:min
         version: 6.4.1(@types/node@22.19.6)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.2)
-    devDependencies:
-      '@types/node':
-        specifier: 'catalog:'
-        version: 22.19.6
 
   packages/@studiocms/blog:
     dependencies:
       '@astrojs/rss':
         specifier: catalog:astrojs
         version: 4.0.14
-      '@studiocms/md':
-        specifier: workspace:^
-        version: link:../md
-      astro:
-        specifier: catalog:min
-        version: 5.16.9(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
       astro-integration-kit:
         specifier: 'catalog:'
         version: 0.19.1(astro@5.16.9(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
       effect:
         specifier: catalog:effect
         version: 3.19.14
+    devDependencies:
+      '@studiocms/md':
+        specifier: workspace:^
+        version: link:../md
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.19.6
+      astro:
+        specifier: catalog:min
+        version: 5.16.9(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
       studiocms:
         specifier: workspace:^
         version: link:../../studiocms
       vite:
         specifier: catalog:min
         version: 6.4.1(@types/node@22.19.6)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.2)
-    devDependencies:
-      '@types/node':
-        specifier: 'catalog:'
-        version: 22.19.6
 
   packages/@studiocms/cloudinary-image-service:
     dependencies:
       '@cloudinary/url-gen':
         specifier: ^1.22.0
         version: 1.22.0
-      astro:
-        specifier: catalog:min
-        version: 5.16.9(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
       astro-integration-kit:
         specifier: 'catalog:'
         version: 0.19.1(astro@5.16.9(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
       effect:
         specifier: catalog:effect
         version: 3.19.14
+    devDependencies:
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.19.6
+      astro:
+        specifier: catalog:min
+        version: 5.16.9(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
       studiocms:
         specifier: workspace:^
         version: link:../../studiocms
       vite:
         specifier: catalog:min
         version: 6.4.1(@types/node@22.19.6)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.2)
-    devDependencies:
-      '@types/node':
-        specifier: 'catalog:'
-        version: 22.19.6
 
   packages/@studiocms/devapps:
     dependencies:
-      '@withstudiocms/kysely':
-        specifier: workspace:^
-        version: link:../../@withstudiocms/kysely
-      '@withstudiocms/sdk':
-        specifier: workspace:^
-        version: link:../../@withstudiocms/sdk
-      astro:
-        specifier: catalog:min
-        version: 5.16.9(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
       astro-integration-kit:
         specifier: 'catalog:'
         version: 0.19.1(astro@5.16.9(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
@@ -388,15 +379,9 @@ importers:
       sanitize-html:
         specifier: ^2.17.0
         version: 2.17.0
-      studiocms:
-        specifier: workspace:^
-        version: link:../../studiocms
       turndown:
         specifier: ^7.2.2
         version: 7.2.2
-      vite:
-        specifier: catalog:min
-        version: 6.4.1(@types/node@22.19.6)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.2)
     devDependencies:
       '@types/sanitize-html':
         specifier: ^2.16.0
@@ -404,90 +389,102 @@ importers:
       '@types/turndown':
         specifier: ^5.0.6
         version: 5.0.6
+      '@withstudiocms/kysely':
+        specifier: workspace:^
+        version: link:../../@withstudiocms/kysely
+      '@withstudiocms/sdk':
+        specifier: workspace:^
+        version: link:../../@withstudiocms/sdk
+      astro:
+        specifier: catalog:min
+        version: 5.16.9(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
+      studiocms:
+        specifier: workspace:^
+        version: link:../../studiocms
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
+      vite:
+        specifier: catalog:min
+        version: 6.4.1(@types/node@22.19.6)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.2)
 
   packages/@studiocms/discord:
     dependencies:
       arctic:
         specifier: 'catalog:'
         version: 3.7.0
-      astro:
-        specifier: catalog:min
-        version: 5.16.9(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
       astro-integration-kit:
         specifier: 'catalog:'
         version: 0.19.1(astro@5.16.9(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
       effect:
         specifier: catalog:effect
         version: 3.19.14
+    devDependencies:
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.19.6
+      astro:
+        specifier: catalog:min
+        version: 5.16.9(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
       studiocms:
         specifier: workspace:^
         version: link:../../studiocms
       vite:
         specifier: catalog:min
         version: 6.4.1(@types/node@22.19.6)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.2)
-    devDependencies:
-      '@types/node':
-        specifier: 'catalog:'
-        version: 22.19.6
 
   packages/@studiocms/github:
     dependencies:
       arctic:
         specifier: 'catalog:'
         version: 3.7.0
-      astro:
-        specifier: catalog:min
-        version: 5.16.9(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
       astro-integration-kit:
         specifier: 'catalog:'
         version: 0.19.1(astro@5.16.9(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
       effect:
         specifier: catalog:effect
         version: 3.19.14
+    devDependencies:
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.19.6
+      astro:
+        specifier: catalog:min
+        version: 5.16.9(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
       studiocms:
         specifier: workspace:^
         version: link:../../studiocms
       vite:
         specifier: catalog:min
         version: 6.4.1(@types/node@22.19.6)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.2)
-    devDependencies:
-      '@types/node':
-        specifier: 'catalog:'
-        version: 22.19.6
 
   packages/@studiocms/google:
     dependencies:
       arctic:
         specifier: 'catalog:'
         version: 3.7.0
-      astro:
-        specifier: catalog:min
-        version: 5.16.9(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
       astro-integration-kit:
         specifier: 'catalog:'
         version: 0.19.1(astro@5.16.9(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
       effect:
         specifier: catalog:effect
         version: 3.19.14
+    devDependencies:
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.19.6
+      astro:
+        specifier: catalog:min
+        version: 5.16.9(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
       studiocms:
         specifier: workspace:^
         version: link:../../studiocms
       vite:
         specifier: catalog:min
         version: 6.4.1(@types/node@22.19.6)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.2)
-    devDependencies:
-      '@types/node':
-        specifier: 'catalog:'
-        version: 22.19.6
 
   packages/@studiocms/html:
     dependencies:
-      astro:
-        specifier: catalog:min
-        version: 5.16.9(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
       astro-integration-kit:
         specifier: 'catalog:'
         version: 0.19.1(astro@5.16.9(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
@@ -500,15 +497,9 @@ importers:
       katex:
         specifier: ^0.16.27
         version: 0.16.27
-      studiocms:
-        specifier: workspace:^
-        version: link:../../studiocms
       suneditor:
         specifier: ^2.47.8
         version: 2.47.8
-      vite:
-        specifier: catalog:min
-        version: 6.4.1(@types/node@22.19.6)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.2)
     devDependencies:
       '@types/codemirror':
         specifier: 5.60.16
@@ -516,18 +507,21 @@ importers:
       '@types/node':
         specifier: 'catalog:'
         version: 22.19.6
+      astro:
+        specifier: catalog:min
+        version: 5.16.9(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
+      studiocms:
+        specifier: workspace:^
+        version: link:../../studiocms
+      vite:
+        specifier: catalog:min
+        version: 6.4.1(@types/node@22.19.6)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.2)
 
   packages/@studiocms/markdoc:
     dependencies:
       '@markdoc/markdoc':
         specifier: ^0.5.4
         version: 0.5.4(@types/react@19.2.8)(react@19.2.3)
-      '@studiocms/md':
-        specifier: workspace:^
-        version: link:../md
-      astro:
-        specifier: catalog:min
-        version: 5.16.9(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
       astro-integration-kit:
         specifier: 'catalog:'
         version: 0.19.1(astro@5.16.9(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
@@ -540,13 +534,10 @@ importers:
       react-dom:
         specifier: catalog:react
         version: 19.2.3(react@19.2.3)
-      studiocms:
-        specifier: workspace:^
-        version: link:../../studiocms
-      vite:
-        specifier: catalog:min
-        version: 6.4.1(@types/node@22.19.6)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.2)
     devDependencies:
+      '@studiocms/md':
+        specifier: workspace:^
+        version: link:../md
       '@types/node':
         specifier: 'catalog:'
         version: 22.19.6
@@ -556,46 +547,49 @@ importers:
       '@types/react-dom':
         specifier: catalog:react
         version: 19.2.3(@types/react@19.2.8)
-
-  packages/@studiocms/md:
-    dependencies:
-      '@astrojs/markdown-remark':
-        specifier: catalog:min
-        version: 6.3.10
-      '@studiocms/markdown-remark-processor':
-        specifier: catalog:studiocms
-        version: 1.2.0
       astro:
         specifier: catalog:min
         version: 5.16.9(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
-      astro-integration-kit:
-        specifier: 'catalog:'
-        version: 0.19.1(astro@5.16.9(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
-      effect:
-        specifier: catalog:effect
-        version: 3.19.14
       studiocms:
         specifier: workspace:^
         version: link:../../studiocms
       vite:
         specifier: catalog:min
         version: 6.4.1(@types/node@22.19.6)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.2)
+
+  packages/@studiocms/md:
+    dependencies:
+      '@studiocms/markdown-remark-processor':
+        specifier: catalog:studiocms
+        version: 1.2.0
+      astro-integration-kit:
+        specifier: 'catalog:'
+        version: 0.19.1(astro@5.16.9(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
+      effect:
+        specifier: catalog:effect
+        version: 3.19.14
     devDependencies:
+      '@astrojs/markdown-remark':
+        specifier: catalog:min
+        version: 6.3.10
       '@types/node':
         specifier: 'catalog:'
         version: 22.19.6
+      astro:
+        specifier: catalog:min
+        version: 5.16.9(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
+      studiocms:
+        specifier: workspace:^
+        version: link:../../studiocms
+      vite:
+        specifier: catalog:min
+        version: 6.4.1(@types/node@22.19.6)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.2)
 
   packages/@studiocms/mdx:
     dependencies:
       '@mdx-js/mdx':
         specifier: ^3.1.1
         version: 3.1.1
-      '@studiocms/md':
-        specifier: workspace:^
-        version: link:../md
-      astro:
-        specifier: catalog:min
-        version: 5.16.9(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
       astro-integration-kit:
         specifier: 'catalog:'
         version: 0.19.1(astro@5.16.9(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
@@ -614,16 +608,13 @@ importers:
       remark-gfm:
         specifier: ^4.0.1
         version: 4.0.1
-      studiocms:
-        specifier: workspace:^
-        version: link:../../studiocms
       unified:
         specifier: ^11.0.5
         version: 11.0.5
-      vite:
-        specifier: catalog:min
-        version: 6.4.1(@types/node@22.19.6)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.2)
     devDependencies:
+      '@studiocms/md':
+        specifier: workspace:^
+        version: link:../md
       '@types/node':
         specifier: 'catalog:'
         version: 22.19.6
@@ -633,6 +624,15 @@ importers:
       '@types/react-dom':
         specifier: catalog:react
         version: 19.2.3(@types/react@19.2.8)
+      astro:
+        specifier: catalog:min
+        version: 5.16.9(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
+      studiocms:
+        specifier: workspace:^
+        version: link:../../studiocms
+      vite:
+        specifier: catalog:min
+        version: 6.4.1(@types/node@22.19.6)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.2)
 
   packages/@studiocms/migrator:
     dependencies:
@@ -688,37 +688,28 @@ importers:
       '@aws-sdk/s3-request-presigner':
         specifier: ^3.958.0
         version: 3.969.0
-      astro:
-        specifier: catalog:min
-        version: 5.16.9(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
       astro-integration-kit:
         specifier: 'catalog:'
         version: 0.19.1(astro@5.16.9(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
       effect:
         specifier: catalog:effect
         version: 3.19.14
+    devDependencies:
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.19.6
+      astro:
+        specifier: catalog:min
+        version: 5.16.9(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
       studiocms:
         specifier: workspace:^
         version: link:../../studiocms
       vite:
         specifier: catalog:min
         version: 6.4.1(@types/node@22.19.6)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.2)
-    devDependencies:
-      '@types/node':
-        specifier: 'catalog:'
-        version: 22.19.6
 
   packages/@studiocms/wysiwyg:
     dependencies:
-      '@studiocms/ui':
-        specifier: catalog:studiocms
-        version: 1.0.0(astro@5.16.9(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))(vite@6.4.1(@types/node@22.19.6)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.2))
-      '@withstudiocms/component-registry':
-        specifier: workspace:^
-        version: link:../../@withstudiocms/component-registry
-      astro:
-        specifier: catalog:min
-        version: 5.16.9(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
       astro-integration-kit:
         specifier: 'catalog:'
         version: 0.19.1(astro@5.16.9(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
@@ -728,19 +719,28 @@ importers:
       grapesjs:
         specifier: ^0.22.14
         version: 0.22.14
-      studiocms:
-        specifier: workspace:^
-        version: link:../../studiocms
       tui-image-editor:
         specifier: ^3.15.3
         version: 3.15.3
-      vite:
-        specifier: catalog:min
-        version: 6.4.1(@types/node@22.19.6)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.2)
     devDependencies:
+      '@studiocms/ui':
+        specifier: catalog:studiocms
+        version: 1.0.0(astro@5.16.9(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))(vite@6.4.1(@types/node@22.19.6)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.2))
       '@types/node':
         specifier: 'catalog:'
         version: 22.19.6
+      '@withstudiocms/component-registry':
+        specifier: workspace:^
+        version: link:../../@withstudiocms/component-registry
+      astro:
+        specifier: catalog:min
+        version: 5.16.9(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
+      studiocms:
+        specifier: workspace:^
+        version: link:../../studiocms
+      vite:
+        specifier: catalog:min
+        version: 6.4.1(@types/node@22.19.6)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.2)
 
   packages/@withstudiocms/auth-kit:
     dependencies:
@@ -940,12 +940,6 @@ importers:
 
   packages/@withstudiocms/sdk:
     dependencies:
-      '@withstudiocms/effect':
-        specifier: workspace:^
-        version: link:../effect
-      '@withstudiocms/kysely':
-        specifier: workspace:^
-        version: link:../kysely
       diff:
         specifier: 'catalog:'
         version: 8.0.3
@@ -959,6 +953,12 @@ importers:
       '@types/node':
         specifier: 'catalog:'
         version: 22.19.6
+      '@withstudiocms/effect':
+        specifier: workspace:^
+        version: link:../effect
+      '@withstudiocms/kysely':
+        specifier: workspace:^
+        version: link:../kysely
       tsx:
         specifier: ^4.21.0
         version: 4.21.0
@@ -1097,9 +1097,6 @@ importers:
       ultrahtml:
         specifier: ^1.6.0
         version: 1.6.0
-      vite:
-        specifier: catalog:min
-        version: 6.4.1(@types/node@22.19.6)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.2)
       web-vitals:
         specifier: ^5.1.0
         version: 5.1.0
@@ -1122,6 +1119,9 @@ importers:
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
+      vite:
+        specifier: catalog:min
+        version: 6.4.1(@types/node@22.19.6)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.2)
 
   playground:
     dependencies:
