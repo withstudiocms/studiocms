@@ -13,6 +13,7 @@ import {
 	FoldersIndexGet,
 	FoldersIndexOptions,
 } from './folders.js';
+import { PageByIdGet, PageByIdOptions, PageIndexGet, PageIndexOptions } from './pages.js';
 import { TagByIdGet, TagByIdOptions, TagIndexGet, TagIndexOptions } from './tags.js';
 
 /**
@@ -44,10 +45,10 @@ export class RestApiV1PublicSpec extends HttpApiGroup.make('RestApiV1PublicSpec'
 	.add(FolderByIdOptions)
 
 	// Pages Endpoints
-	// .add(PageIndexGet)
-	// .add(PageIndexOptions)
-	// .add(PageByIdGet)
-	// .add(PageByIdOptions)
+	.add(PageIndexGet)
+	.add(PageIndexOptions)
+	.add(PageByIdGet)
+	.add(PageByIdOptions)
 
 	// Tags Endpoints
 	.add(TagIndexGet)

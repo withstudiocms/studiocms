@@ -1,5 +1,11 @@
 import { HttpApiSchema } from '@effect/platform';
-import { StudioCMSPageDataCategories, StudioCMSPageDataTags } from '@withstudiocms/sdk/tables';
+import {
+	StudioCMSPageContent,
+	StudioCMSPageData,
+	StudioCMSPageDataCategories,
+	StudioCMSPageDataTags,
+	StudioCMSUsersTable,
+} from '@withstudiocms/sdk/tables';
 import { Schema } from 'effect';
 
 /**
@@ -61,4 +67,38 @@ export const PublicV1FolderIdParam = HttpApiSchema.param('id', Schema.String);
 export const PublicV1FolderGetSearchParams = Schema.Struct({
 	name: Schema.optional(Schema.String),
 	parent: Schema.optional(Schema.String),
+});
+
+const PageDataStrippedBase = StudioCMSPageData.Select.omit('categories', 'tags', 'contributorIds');
+const UsersTableBase = StudioCMSUsersTable.omit('email', 'password');
+
+/**
+ * Combined schema for page data with related information.
+ */
+export const PublicV1GetPagesSelect = Schema.Struct({
+	...PageDataStrippedBase.fields,
+	contributorIds: Schema.Array(Schema.String),
+	categories: Schema.Array(PublicV1CategorySelect),
+	tags: Schema.Array(PublicV1TagsSelect),
+	multiLangContent: Schema.Array(StudioCMSPageContent.Select),
+	defaultContent: Schema.UndefinedOr(StudioCMSPageContent.Select),
+	urlRoute: Schema.String,
+	authorData: Schema.UndefinedOr(UsersTableBase),
+	contributorsData: Schema.Array(UsersTableBase),
+});
+
+/**
+ * Path parameter for page ID.
+ */
+export const PublicV1GetPagesIdParam = HttpApiSchema.param('id', Schema.String);
+
+/**
+ * GET /pages
+ * Search parameters for filtering pages.
+ */
+export const PublicV1GetPagesSearchParams = Schema.Struct({
+	title: Schema.optional(Schema.String),
+	slug: Schema.optional(Schema.String),
+	author: Schema.optional(Schema.String),
+	parentFolder: Schema.optional(Schema.String),
 });
