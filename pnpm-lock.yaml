@@ -754,9 +754,6 @@ importers:
         specifier: catalog:effect
         version: 3.19.14
     devDependencies:
-      '@withstudiocms/effect':
-        specifier: workspace:^
-        version: link:../effect
       '@withstudiocms/sdk':
         specifier: workspace:^
         version: link:../sdk
