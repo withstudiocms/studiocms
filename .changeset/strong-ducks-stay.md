@@ -2,4 +2,4 @@
 "@withstudiocms/effect": minor
 ---
 
-Adds new makeAstroEndpoint to `/astro` and `/astro/http-app` exports for quickly converting Effect HttpApp instances to APIRoutes
+Adds new Effect API to Astro utilities to `/astro` and `/astro/http-app` exports for quickly converting Effect HttpApp instances to APIRoutes
