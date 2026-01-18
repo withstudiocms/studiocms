@@ -43,6 +43,26 @@ function buildEndpoint(
 	};
 }
 
+const sigtermDisposers: Array<() => Promise<void>> = [];
+let sigtermBound = false;
+
+/**
+ * Registers a disposer function to be called on SIGTERM.
+ *
+ * @param dispose - The disposer function to register.
+ */
+const registerSigterm = (dispose: () => Promise<void>) => {
+	sigtermDisposers.push(dispose);
+	if (sigtermBound || typeof process === 'undefined' || !process?.on) return;
+	sigtermBound = true;
+	process.on('SIGTERM', () => {
+		Promise.allSettled(sigtermDisposers.map((d) => d())).then((results) => {
+			const hasError = results.some((r) => r.status === 'rejected');
+			process.exit(hasError ? 1 : 0);
+		});
+	});
+};
+
 /**
  * Converts an Effect HttpApp into an Astro API route handler.
  *
@@ -84,19 +104,7 @@ export const HttpApiToAstroRoute = <LA, LE>(
 		Layer.merge(layer, HttpServer.layerContext),
 		options
 	);
-
-	// When the process is interrupted, we want to clean up resources
-	process.on('SIGTERM', () => {
-		dispose().then(
-			() => {
-				process.exit(0);
-			},
-			() => {
-				process.exit(1);
-			}
-		);
-	});
-
+	registerSigterm(dispose);
 	return buildEndpoint(handler);
 };
 
@@ -157,19 +165,7 @@ export const HttpLayerRouterToAstroRoute = <
 	}
 ): APIRoute => {
 	const { dispose, handler } = HttpLayerRouter.toWebHandler(appLayer, options);
-
-	// When the process is interrupted, we want to clean up resources
-	process.on('SIGTERM', () => {
-		dispose().then(
-			() => {
-				process.exit(0);
-			},
-			() => {
-				process.exit(1);
-			}
-		);
-	});
-
+	registerSigterm(dispose);
 	// biome-ignore lint/suspicious/noExplicitAny: needed to satisfy handler type
 	return buildEndpoint(handler as any);
 };
