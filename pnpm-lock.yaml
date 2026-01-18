@@ -389,9 +389,6 @@ importers:
       '@types/turndown':
         specifier: ^5.0.6
         version: 5.0.6
-      '@withstudiocms/kysely':
-        specifier: workspace:^
-        version: link:../../@withstudiocms/kysely
       '@withstudiocms/sdk':
         specifier: workspace:^
         version: link:../../@withstudiocms/sdk
