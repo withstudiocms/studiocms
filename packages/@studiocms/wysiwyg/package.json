@@ -71,10 +71,8 @@
     "tui-image-editor": "^3.15.3"
   },
   "devDependencies": {
-    "@types/node": "catalog:"
-  },
-  "peerDependencies": {
     "@studiocms/ui": "catalog:studiocms",
+    "@types/node": "catalog:",
     "@withstudiocms/component-registry": "workspace:^",
     "astro": "catalog:min",
     "studiocms": "workspace:^",

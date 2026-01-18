@@ -50,13 +50,11 @@
     "@withstudiocms/config-utils": "workspace:^",
     "@withstudiocms/effect": "workspace:^",
     "@withstudiocms/kysely": "workspace:^",
+    "@withstudiocms/sdk": "workspace:^",
     "astro": "catalog:astrojs",
     "dotenv": "catalog:",
     "drizzle-orm": "^0.42.0",
-    "sharp": "catalog:"
-  },
-  "peerDependencies": {
-    "studiocms": "workspace:^",
-    "@withstudiocms/sdk": "workspace:^"
+    "sharp": "catalog:",
+    "studiocms": "workspace:^"
   }
 }

@@ -59,12 +59,12 @@
     "astro-integration-kit": "catalog:"
   },
   "devDependencies": {
-    "@types/node": "catalog:"
-  },
-  "peerDependencies": {
+    "@types/node": "catalog:",
     "astro": "catalog:min",
-    "effect": "catalog:effect",
     "studiocms": "workspace:^",
     "vite": "catalog:min"
+  },
+  "peerDependencies": {
+    "effect": "catalog:effect"
   }
 }

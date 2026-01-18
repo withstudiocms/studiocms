@@ -65,10 +65,8 @@
   },
   "devDependencies": {
     "@types/node": "catalog:",
-    "tsx": "^4.21.0"
-  },
-  "peerDependencies": {
     "@withstudiocms/effect": "workspace:^",
-    "@withstudiocms/kysely": "workspace:^"
+    "@withstudiocms/kysely": "workspace:^",
+    "tsx": "^4.21.0"
   }
 }
