@@ -23,7 +23,6 @@
     "@studiocms/blog": "workspace:^",
     "@studiocms/md": "workspace:^",
     "@studiocms/wysiwyg": "workspace:^",
-    "@studiocms/s3-storage": "workspace:^",
     "astro": "catalog:astrojs",
     "kysely-turso": "catalog:kysely",
     "pg": "catalog:kysely",
