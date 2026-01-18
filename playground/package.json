@@ -22,6 +22,7 @@
     "@libsql/client": "catalog:kysely",
     "@studiocms/blog": "workspace:^",
     "@studiocms/md": "workspace:^",
+    "@studiocms/s3-storage": "workspace:^",
     "@studiocms/wysiwyg": "workspace:^",
     "astro": "catalog:astrojs",
     "kysely-turso": "catalog:kysely",

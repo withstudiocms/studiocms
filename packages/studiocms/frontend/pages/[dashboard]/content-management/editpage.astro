@@ -1,12 +1,28 @@
 ---
 import { getRegistryComponents } from 'studiocms:component-registry/runtime';
 import { useTranslations } from 'studiocms:i18n';
+import { renderAugments } from 'studiocms:plugins/augments';
 import { runSDK, SDKCoreJs } from 'studiocms:sdk';
+import { Button } from 'studiocms:ui/components/button';
+import { Icon } from 'studiocms:ui/components/icon';
+import { Input } from 'studiocms:ui/components/input';
+import { Select } from 'studiocms:ui/components/select';
+import { Toggle } from 'studiocms:ui/components/toggle';
+import { editorKeys } from 'virtual:studiocms/components/Editors';
 import { Effect } from 'effect';
+import {
+	convertToSafeString,
+	importEditorKeys,
+} from '#frontend/components/dashboard/content-mgmt/runtime.js';
+import {
+	createSelectOptions,
+	pageTypeOptions,
+} from '#frontend/components/dashboard/content-mgmt/shared.js';
 import ComponentRegistryUI from '#frontend/components/shared/ComponentRegistryUI.astro';
 import BrowserCopyOutput from '#frontend/components/shared/storage-manager/BrowserCopyOutput.astro';
 import BrowserInputArray from '#frontend/components/shared/storage-manager/BrowserInputArray.astro';
-import EditPage from '../../../components/dashboard/content-mgmt/EditPage.astro';
+import StorageCopyOutput from '#frontend/components/shared/storage-manager/StorageCopyOutput.astro';
+import StorageInput from '#frontend/components/shared/storage-manager/StorageInput.astro';
 import InnerSidebarElement from '../../../components/dashboard/content-mgmt/InnerSidebarElement.astro';
 import PageHeader from '../../../components/dashboard/content-mgmt/PageHeader.astro';
 import Layout from '../../../layouts/DashboardLayout.astro';
@@ -15,7 +31,8 @@ const { siteConfig: config, defaultLang: lang, security } = Astro.locals.StudioC
 
 const currentUser = security?.userSessionData ?? null;
 
-const t = useTranslations(lang, '@studiocms/dashboard:content-index');
+const tIndex = useTranslations(lang, '@studiocms/dashboard:content-index');
+const tPage = useTranslations(lang, '@studiocms/dashboard:content-page');
 
 const registryData = getRegistryComponents();
 
@@ -31,25 +48,43 @@ const [pageData, users, folderList, categories, tags] = await runSDK(
 		SDKCoreJs.GET.tags.getAll(),
 	])
 );
+
+const parentFolderOptions = [
+	{ value: 'null', label: 'None' },
+	...folderList.map(({ id: value, name: label }) => ({ value, label })),
+];
+
+function getParentFolderValue(value: string | null | undefined): string | undefined {
+	const options = parentFolderOptions;
+	if (value === null) return 'null';
+	if (!value) return undefined;
+	return options.find((option: { value: FormDataEntryValue }) => option.value === value)?.value;
+}
+
+const editors = await importEditorKeys(editorKeys);
+
+// biome-ignore lint/suspicious/noExplicitAny: This is a valid use case for explicit any.
+let editor: any = pageData && editors[convertToSafeString(pageData.package)];
+
+const CurrentEditorComponent = editor;
 ---
 
-<Layout 
-  title={t('title')}
-  description={t('description')}
-  requiredPermission='editor'
-  sidebar='double'
+<Layout
+  title={tIndex("title")}
+  description={tIndex("description")}
+  requiredPermission="editor"
+  sidebar="double"
   {lang}
   {config}
   {currentUser}
-  >
-
+>
   <div slot="external">
-    <BrowserInputArray triggerInputs={['page-hero-image']} />
-    <BrowserCopyOutput id='storage-file-copy-output' />
-    <ComponentRegistryUI 
-      registryData={registryData} 
-      triggerId='access-component-registry' 
-      />
+    <BrowserInputArray triggerInputs={["page-hero-image"]} />
+    <BrowserCopyOutput id="storage-file-copy-output" />
+    <ComponentRegistryUI
+      registryData={registryData}
+      triggerId="access-component-registry"
+    />
   </div>
 
   <div slot="double-sidebar" class="inner-sidebar-container">
@@ -62,36 +97,306 @@ const [pageData, users, folderList, categories, tags] = await runSDK(
     <PageHeader {lang} editPage />
   </div>
 
-  { pageData && <EditPage {lang} {config} {pageData} {users} {folderList} {categories} {tags} />}
+  <button
+    type="button"
+    class="sidepanel-open-btn"
+    aria-expanded="false"
+    aria-controls="edit-page-side-panel"
+  >
+    <Icon
+      id="closed-icon"
+      name="heroicons:chevron-double-left"
+      width={24}
+      height={24}
+    />
+  </button>
 
+  <!-- { pageData && <EditPage {lang} {config} {pageData} {users} {folderList} {categories} {tags} />} -->
+
+  <form id="edit-page-form">
+    <div id="edit-page-side-panel" class="sidepanel scrollbar">
+      <button
+        type="button"
+        class="sidepanel-close-btn"
+        aria-label="Close Side Panel"
+      >
+        <Icon name="heroicons:chevron-double-right" width={24} height={24} />
+      </button>
+
+      <div class="sidepanel-content">
+        <div class="sidepanel-section short">
+          <span>Draft</span>
+          <Toggle
+            label=""
+            color="primary"
+            name="draft"
+            defaultChecked={pageData?.draft}
+          />
+        </div>
+
+        <div class="sidepanel-section">
+          <Input
+            type="text"
+            name="title"
+            label="Title"
+            value={pageData?.title || ""}
+            isRequired
+            class="sidepanel-input"
+          />
+        </div>
+
+        <div class="sidepanel-section">
+          <Input
+            type="text"
+            name="slug"
+            label="Slug"
+            value={pageData?.slug || ""}
+            isRequired
+            class="sidepanel-input"
+          />
+        </div>
+
+        <div class="sidepanel-section">
+          <Input
+            name="description"
+            label="Description"
+            value={pageData?.description || ""}
+            isRequired
+            class="sidepanel-input"
+          />
+        </div>
+
+        <div class="sidepanel-section">
+          <StorageInput
+            label="Hero Image URL"
+            name="page-hero-image"
+            placeholder="https://..."
+            defaultValue={pageData?.heroImage ?? undefined}
+            class="sidepanel-input"
+          />
+        </div>
+
+        <div class="sidepanel-section">
+          <span>Show Author</span>
+          <Toggle
+            label=""
+            color="primary"
+            name="show-author"
+            defaultChecked={pageData?.showAuthor}
+          />
+        </div>
+
+        <div class="sidepanel-section">
+          <span>Show in Navigation</span>
+          <Toggle
+            label=""
+            color="primary"
+            name="show-in-nav"
+            defaultChecked={pageData?.showOnNav}
+          />
+        </div>
+
+        <div class="sidepanel-section">
+          <span>Show Contributors</span>
+          <Toggle
+            label=""
+            color="primary"
+            name="show-contributors"
+            defaultChecked={pageData?.showContributors}
+          />
+        </div>
+
+        <div class="sidepanel-section">
+          <Select
+            label="Page Type"
+            name="page-type"
+            isRequired
+            fullWidth
+            defaultValue={pageData?.package}
+            options={pageTypeOptions}
+          />
+        </div>
+
+        <div class="sidepanel-section">
+          <Select
+            label="Parent Folder"
+            name="parent-folder"
+            fullWidth
+            options={parentFolderOptions}
+            defaultValue={getParentFolderValue(pageData?.parentFolder)}
+          />
+        </div>
+
+        <div class="sidepanel-section">
+          <Select
+            label={"Page Augments"}
+            name="cms-plugin-augments"
+            multiple
+            fullWidth
+            disabled={renderAugments.length === 0}
+            defaultValue={(pageData?.augments as string[]).length > 0 &&
+            renderAugments.length > 0
+              ? (pageData?.augments as string[])
+              : ["no-augments"]}
+            options={renderAugments.length > 0
+              ? renderAugments.map(({ id }) => ({ label: id, value: id }))
+              : [
+                  {
+                    label: "No Augments",
+                    value: "no-augments",
+                    disabled: true,
+                  },
+                ]}
+          />
+        </div>
+
+        <div class="sidepanel-section">
+          <Select
+            label={"Categories"}
+            name="categories"
+            fullWidth
+            placeholder={categories.length === 0
+              ? "No categories available"
+              : "Select"}
+            options={createSelectOptions(
+              categories.map(({ id: value, name: label }) => ({
+                label,
+                value: String(value),
+              })),
+            )}
+            disabled={categories.length === 0}
+            multiple
+            defaultValue={(() => {
+              const categories = pageData?.categories.map(({ id }) =>
+                String(id),
+              );
+
+              if (categories && categories.length > 0) return categories;
+              return undefined;
+            })()}
+          />
+        </div>
+
+        <div class="sidepanel-section">
+          <Select
+            label={"Tags"}
+            name="tags"
+            fullWidth
+            placeholder={tags.length === 0 ? "No tags available" : "Select"}
+            options={createSelectOptions(
+              tags.map(({ id: value, name: label }) => ({
+                label,
+                value: String(value),
+              })),
+            )}
+            disabled={tags.length === 0}
+            multiple
+            defaultValue={(() => {
+              const tags = pageData?.tags.map(({ id }) => String(id));
+              if (tags && tags.length > 0) return tags;
+              return undefined;
+            })()}
+          />
+        </div>
+
+        {
+          config.data.enableDiffs && (
+            <Button
+              type="button"
+              variant="solid"
+              color="primary"
+              fullWidth
+              id="view-history"
+            >
+              View Edit History
+            </Button>
+          )
+        }
+      </div>
+    </div>
+
+    <div class="content-utils">
+      <StorageCopyOutput {lang} id="storage-file-copy-output" />
+      <div>
+        <Button
+          type="button"
+          id="access-component-registry"
+          variant="outlined"
+          color="info"
+          size="sm"
+        >
+          <Icon
+            slot="start-content"
+            name="simpleicons:astro"
+            width={18}
+            height={18}
+          />
+          <t-content-edit-page key="access-component-registry">
+            {tPage("access-component-registry")}
+          </t-content-edit-page>
+        </Button>
+      </div>
+    </div>
+
+    <div class="page-content-editor">
+      <CurrentEditorComponent
+        content={pageData?.defaultContent?.content}
+        id={pageData?.id}
+      />
+      <div id="page-content-editor-placeholder" style="display: none;"></div>
+    </div>
+  </form>
 </Layout>
 
 <script>
-    import { 
-        $i18n,
-        $localeSettings,
-        baseTranslation,
-        defaultLang,
-        documentUpdater,
-    } from 'studiocms:i18n/client';
-  
-    let lang = defaultLang;
+  const sidepanel = document.getElementById(
+    "edit-page-side-panel",
+  ) as HTMLElement;
+  const openBtn = document.querySelector(
+    ".sidepanel-open-btn",
+  ) as HTMLButtonElement;
+  const closeBtn = document.querySelector(
+    ".sidepanel-close-btn",
+  ) as HTMLButtonElement;
 
-    const currentPage = '@studiocms/dashboard:content-index';
+  openBtn.addEventListener("click", () => {
+    sidepanel.style.width = "350px";
+    sidepanel.setAttribute("aria-expanded", "true");
+    openBtn.setAttribute("aria-expanded", "true");
+  });
 
-    $localeSettings.subscribe((locale) => {
-      lang = locale || defaultLang;
-    });
+  closeBtn.addEventListener("click", () => {
+    sidepanel.style.width = "0";
+    sidepanel.setAttribute("aria-expanded", "false");
+    openBtn.setAttribute("aria-expanded", "false");
+  });
+</script>
 
-    const i18n = $i18n(currentPage, baseTranslation[currentPage]);
-      
-    i18n.subscribe(comp => {
-      documentUpdater(comp, lang)
-    });
+<script>
+  import {
+    $i18n,
+    $localeSettings,
+    baseTranslation,
+    defaultLang,
+    documentUpdater,
+  } from "studiocms:i18n/client";
+
+  let lang = defaultLang;
+
+  const currentPage = "@studiocms/dashboard:content-index";
+
+  $localeSettings.subscribe((locale) => {
+    lang = locale || defaultLang;
+  });
+
+  const i18n = $i18n(currentPage, baseTranslation[currentPage]);
+
+  i18n.subscribe((comp) => {
+    documentUpdater(comp, lang);
+  });
 </script>
 
 <style>
-
   .sidebar-links-container {
     display: flex;
     flex-direction: column;
@@ -109,5 +414,128 @@ const [pageData, users, folderList, categories, tags] = await runSDK(
     min-height: 100vh;
     max-height: 100%;
     padding: 1.5rem;
+  }
+
+  /* The sidepanel menu */
+  .sidepanel {
+    height: 90vh;
+    width: 0;
+    position: fixed;
+    z-index: 999;
+    top: 5vh;
+    right: 1rem;
+    background-color: var(--background-step-1);
+    overflow-x: hidden;
+    padding-top: 1rem;
+    transition: 0.5s;
+  }
+
+  .sidepanel[aria-expanded="false"] {
+    border: none;
+  }
+
+  .sidepanel[aria-expanded="true"] {
+    border: 1px solid color-mix(in srgb, var(--border) 80%, transparent 20%);
+    border-radius: var(--radius-sm);
+    padding: 1rem;
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1);
+  }
+
+  .sidepanel-open-btn {
+    position: fixed;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+    z-index: 800;
+    background-color: var(--background-step-1);
+    border: 1px solid var(--border);
+    padding: 0.5rem;
+    cursor: pointer;
+    border-radius: 8px 0 0 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .sidepanel-close-btn {
+    border-radius: var(--radius-md);
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background: var(--background-step-3);
+    border: 1px solid var(--border);
+    cursor: pointer;
+    padding: 0.25rem;
+    width: 34px;
+    height: 34px;
+  }
+
+  .sidepanel-close-btn:hover {
+    background-color: var(--background-step-1);
+  }
+  
+  .sidepanel-open-btn:hover {
+    background-color: var(--background-step-3);
+  }
+
+  .sidepanel-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .sidepanel-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .sidepanel-section.short {
+    width: 90%;
+  }
+
+  .page-content-editor {
+    margin-top: 1rem;
+    min-height: 60vh;
+
+    .editor-container {
+      height: 100%;
+      overflow: hidden;
+      margin-bottom: 1rem;
+    }
+
+    #page-content {
+      height: 100%;
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1rem;
+      font-size: 1rem;
+      overflow-y: auto;
+    }
+  }
+
+  #edit-page-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding-top: 0.5rem;
+    height: 100%;
+  }
+
+  .content-utils {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    & > span {
+      font-weight: 600;
+      font-size: 1rem;
+    }
+
+    & > div {
+      display: flex;
+      gap: 0.5rem;
+    }
   }
 </style>
