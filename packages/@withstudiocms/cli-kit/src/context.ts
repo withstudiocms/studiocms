@@ -1,4 +1,13 @@
 /**
+ * @module @withstudiocms/cli-kit/context
+ *
+ * This module provides functionality to create and manage the CLI context
+ * for StudioCMS applications. It includes utilities for detecting the package
+ * manager, gathering user information, and handling cancellation and exit
+ * procedures in a consistent manner.
+ */
+
+/**
  * Detects the package manager being used to run the current process.
  *
  * @remarks
