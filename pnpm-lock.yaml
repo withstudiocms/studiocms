@@ -118,8 +118,8 @@ catalogs:
       specifier: ^1.2.0
       version: 1.2.0
     '@studiocms/ui':
-      specifier: ^1.0.0
-      version: 1.0.0
+      specifier: ^1.0.1
+      version: 1.0.1
     '@withstudiocms/cli-kit':
       specifier: ^0.1.0
       version: 0.1.0
@@ -641,7 +641,7 @@ importers:
         version: 0.15.15
       '@studiocms/ui':
         specifier: catalog:studiocms
-        version: 1.0.0(astro@5.16.9(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))(vite@6.4.1(@types/node@22.19.6)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.2))
+        version: 1.0.1(astro@5.16.9(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))(vite@6.4.1(@types/node@22.19.6)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.2))
       '@withstudiocms/config-utils':
         specifier: workspace:^
         version: link:../../@withstudiocms/config-utils
@@ -722,7 +722,7 @@ importers:
     devDependencies:
       '@studiocms/ui':
         specifier: catalog:studiocms
-        version: 1.0.0(astro@5.16.9(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))(vite@6.4.1(@types/node@22.19.6)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.2))
+        version: 1.0.1(astro@5.16.9(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))(vite@6.4.1(@types/node@22.19.6)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.2))
       '@types/node':
         specifier: 'catalog:'
         version: 22.19.6
@@ -1013,7 +1013,7 @@ importers:
         version: 1.0.8
       '@studiocms/ui':
         specifier: catalog:studiocms
-        version: 1.0.0(astro@5.16.9(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))(vite@6.4.1(@types/node@22.19.6)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.2))
+        version: 1.0.1(astro@5.16.9(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))(vite@6.4.1(@types/node@22.19.6)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.2))
       '@withstudiocms/auth-kit':
         specifier: workspace:^
         version: link:../@withstudiocms/auth-kit
@@ -3164,8 +3164,8 @@ packages:
   '@studiocms/markdown-remark-processor@1.2.0':
     resolution: {integrity: sha512-3qOupRze2HKO2VdcrN0c5j9ZYoM8hlhFjrs4m5pg4w5Do5I1MTuDDTXmfRnZ+CwDrXyUaYr+DK1Csb7zMYjzyA==}
 
-  '@studiocms/ui@1.0.0':
-    resolution: {integrity: sha512-8/47zOP2i4gHukoeZKRvj5ogjF7A6pyPp3Q9uVzaNWnjp8/u8ob4GsFmuG7cBgogelWHUXJgm8ypBJPFw519Sw==}
+  '@studiocms/ui@1.0.1':
+    resolution: {integrity: sha512-21974Z+OmJ9yBYel7oszzclAmG96YGsskX2QvdWHrW+K5S4o9WEXo28QEFf0aPYk6F+A4Q7hLZIxca4lAUXkhw==}
     peerDependencies:
       astro: ^4.5 || ^5.0.0-beta.0
       vite: ^5.0.0 || ^6.0.0
@@ -5971,6 +5971,7 @@ packages:
   tar@6.2.1:
     resolution: {integrity: sha512-DZ4yORTwrbTj/7MZYq2w+/ZFdI6OZ/f9SFHR+71gIVUZhOQPHzVCLpvRnPgyaMpfWxxk/4ONva3GQSyNIKRv6A==}
     engines: {node: '>=10'}
+    deprecated: Old versions of tar are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exhorbitant rates) by contacting i@izs.me
 
   term-size@2.2.1:
     resolution: {integrity: sha512-wK0Ri4fOGjv/XPy8SBHZChl8CM7uMc5VML7SqiQ0zG7+J5Vr+RMQDoHa2CNT6KHUnTGIXH34UDMkPzAUyapBZg==}
@@ -8948,7 +8949,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@studiocms/ui@1.0.0(astro@5.16.9(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))(vite@6.4.1(@types/node@22.19.6)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.2))':
+  '@studiocms/ui@1.0.1(astro@5.16.9(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))(vite@6.4.1(@types/node@22.19.6)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.2))':
     dependencies:
       '@iconify-json/heroicons': 1.2.3
       '@iconify/types': 2.0.0
