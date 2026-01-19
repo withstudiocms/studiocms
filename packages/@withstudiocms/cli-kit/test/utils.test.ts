@@ -347,6 +347,13 @@ describe(parentSuiteName, () => {
 			expectedPathnameContains: '/C:/Users/file.txt',
 			expectedProtocol: 'file:',
 		},
+		{
+			name: 'pathToFileURL - should convert Windows path to file URL',
+			platformValue: 'win32',
+			input: 'C:/Users/file.txt',
+			expectedPathnameContains: '/C:/Users/file.txt',
+			expectedProtocol: 'file:',
+		},
 	].forEach(
 		({
 			name,

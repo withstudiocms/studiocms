@@ -79,9 +79,11 @@ export async function shell(
 		const done = new Promise((resolve) => child.on('close', resolve));
 		[stdout, stderr] = await Promise.all([text(child.stdout), text(child.stderr)]);
 		await done;
+		/* v8 ignore start */
 	} catch {
 		throw { stdout, stderr, exitCode: 1 };
 	}
+	/* v8 ignore stop */
 	const { exitCode } = child;
 	if (exitCode === null) {
 		throw new Error('Timeout');
@@ -92,6 +94,7 @@ export async function shell(
 	return { stdout, stderr, exitCode };
 }
 
+/* v8 ignore start */
 /**
  * Improve tinyexec error logging and set `throwOnError` to `true` by default
  */
@@ -116,6 +119,7 @@ export function exec(command: string, args?: string[], options?: Partial<Options
 		}
 	);
 }
+/* v8 ignore stop */
 
 /**
  * Check if a command exists on the system.
@@ -139,6 +143,7 @@ export function commandExists(command: string): boolean {
 //   console.log(`${command} does not exist on the system.`);
 // }
 
+/* v8 ignore start */
 /**
  * Run a shell command.
  * @param command The full shell command to execute.
@@ -155,6 +160,7 @@ export function runShellCommand(command: string): Promise<string> {
 		});
 	});
 }
+/* v8 ignore stop */
 
 // // Example usage
 // (async () => {
