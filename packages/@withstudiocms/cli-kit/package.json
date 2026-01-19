@@ -14,6 +14,19 @@
 	"publishConfig": {
 		"provenance": true
 	},
+	"keywords": [
+		"cli",
+		"command-line",
+		"cli-toolkit",
+		"cli-kit",
+		"cli-utilities",
+		"command-line-utilities",
+		"utilities",
+		"tools",
+		"toolkit",
+		"studiocms",
+		"withstudiocms"
+	],
 	"scripts": {
 		"build": "buildkit build 'src/**/*.ts'",
 		"dev": "buildkit dev 'src/**/*.ts'",
