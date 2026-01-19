@@ -12,6 +12,8 @@ interface MimeTypeMap {
 
 type StorageReturnType = 'url' | 'identifier' | 'key';
 
+const s3SafeNameRegex = /^[a-zA-Z0-9._~-]*$/g;
+
 /**
  * Translation strings for the StorageFileBrowser
  */
@@ -106,6 +108,13 @@ interface TranslationStrings {
 	size: string;
 	andAllItsContents: string;
 	filePreview: string;
+}
+
+class InvalidFileNameError extends Error {
+	constructor(files: string[]) {
+		super(`The following filenames are invalid: ${files.join(', ')}`);
+		this.name = 'InvalidFileNameError';
+	}
 }
 
 /**
@@ -1631,6 +1640,21 @@ class StorageFileBrowser extends HTMLElement {
 	private async uploadFilesWithCustomNames(customNames: { [key: number]: string }): Promise<void> {
 		if (this.isUploading) return;
 
+		// Ensure names do not contain illegal characters
+		const status = { valid: true, invalidFiles: [] as string[] };
+
+		this.pendingFiles.forEach((file, index) => {
+			const customName = customNames[index];
+			if (customName && !s3SafeNameRegex.test(customName)) {
+				status.valid = false;
+				status.invalidFiles.push(file.name);
+			}
+		});
+
+		if (!status.valid) {
+			throw new InvalidFileNameError(status.invalidFiles);
+		}
+
 		this.isUploading = true;
 		const content = this.$<HTMLDivElement>(`#${this.contentId}`);
 		if (!content) return;
@@ -1679,13 +1703,20 @@ class StorageFileBrowser extends HTMLElement {
 			await this.loadFiles();
 		} catch (error) {
 			console.error('Upload error:', error);
+
+			let errorMessage = this.t('failedToUploadFiles');
+
+			if (error instanceof Error) {
+				errorMessage = error.message;
+			}
+
 			content.innerHTML = `
                 <div class="storage-browser-error" role="alert" aria-live="assertive">
                     <svg width="48" height="48" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                     <p>${this.t('failedToUploadFiles')}</p>
-                    <p style="font-size: 0.875rem; opacity: 0.7;">${error instanceof Error ? error.message : this.t('unknownError')}</p>
+                    <p style="font-size: 0.875rem; opacity: 0.7;">${errorMessage}</p>
                 </div>
             `;
 		} finally {
@@ -1863,6 +1894,10 @@ class StorageFileBrowser extends HTMLElement {
             </div>
         `;
 		try {
+			if (!s3SafeNameRegex.test(newFileName)) {
+				throw new InvalidFileNameError([newFileName]);
+			}
+
 			// Build new key with timestamp prefix
 			const pathParts = this.fileToRename.key.split('/');
 			const _oldFileName = pathParts.pop() || '';
@@ -1896,13 +1931,20 @@ class StorageFileBrowser extends HTMLElement {
 			await this.loadFiles();
 		} catch (error) {
 			console.error('Rename error:', error);
+
+			let errorMessage = this.t('unknownError');
+
+			if (error instanceof Error) {
+				errorMessage = error.message;
+			}
+
 			content.innerHTML = `
                 <div class="storage-browser-error" role="alert">
                     <svg width="48" height="48" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                     <p>${this.t('failedToRenameFile')}</p>
-                    <p style="font-size: 0.875rem; opacity: 0.7;">${error instanceof Error ? error.message : this.t('unknownError')}</p>
+                    <p style="font-size: 0.875rem; opacity: 0.7;">${errorMessage}</p>
                 </div>
             `;
 			setTimeout(() => this.loadFiles(), 2000);

@@ -17,6 +17,8 @@ import type {
 	UrlMetadata,
 } from 'studiocms/storage-manager/definitions';
 
+const s3SafeNameRegex = /^[a-zA-Z0-9._~-]*$/g;
+
 /**
  * S3 Client Builder Effect
  *
@@ -222,6 +224,13 @@ export default class S3ApiService<C, R> implements StorageApiBuilderDefinition<C
 				}
 
 				case 'upload': {
+					if (!s3SafeNameRegex.test(jsonBody.key)) {
+						return {
+							data: { error: 'The provided key contains illegal characters.' },
+							status: 400,
+						};
+					}
+
 					// Generate presigned URL for upload
 					const command = new PutObjectCommand({
 						Bucket: BUCKET_NAME,
@@ -264,6 +273,12 @@ export default class S3ApiService<C, R> implements StorageApiBuilderDefinition<C
 				case 'rename': {
 					if (!jsonBody.newKey) {
 						return { data: { error: 'newKey is required for rename action' }, status: 400 };
+					}
+					if (!s3SafeNameRegex.test(jsonBody.newKey)) {
+						return {
+							data: { error: 'The provided key contains illegal characters.' },
+							status: 400,
+						};
 					}
 
 					// Copy the object to the new key
