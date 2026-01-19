@@ -57,6 +57,10 @@
 			"types": "./dist/astro/index.d.ts",
 			"default": "./dist/astro/index.js"
 		},
+		"./astro/*": {
+			"types": "./dist/astro/*.d.ts",
+			"default": "./dist/astro/*.js"
+		},
 		"./effect": {
 			"types": "./dist/effect.d.ts",
 			"default": "./dist/effect.js"
