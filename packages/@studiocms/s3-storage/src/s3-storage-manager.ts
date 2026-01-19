@@ -385,6 +385,15 @@ export default class S3ApiService<C, R> implements StorageApiBuilderDefinition<C
 					return { data: { error: 'Missing x-storage-key header' }, status: 400 };
 				}
 
+				if (!s3SafeNameRegex.test(key)) {
+					return {
+						data: {
+							error: 'Invalid key format. Only alphanumeric characters and . _ - / are allowed.',
+						},
+						status: 400,
+					};
+				}
+
 				const fileData = await getArrayBuffer();
 
 				// Upload to S3
