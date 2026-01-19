@@ -19,7 +19,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import type { Readable } from 'node:stream';
 import { text as textFromStream } from 'node:stream/consumers';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL as nodePathToFileURL } from 'node:url';
 import { NonZeroExitError, type Options, x } from 'tinyexec';
 
 interface ExecError extends Error {
@@ -86,7 +86,8 @@ export async function shell(
 	/* v8 ignore stop */
 	const { exitCode } = child;
 	if (exitCode === null) {
-		throw new Error('Timeout');
+		const reason = child.signalCode ? `Terminated by signal ${child.signalCode}` : 'Timeout';
+		throw new Error(reason);
 	}
 	if (exitCode !== 0) {
 		throw new Error(stderr);
@@ -258,62 +259,26 @@ export function exists(path: URL | string | undefined) {
 	}
 }
 
+/**
+ * Indicates whether the current platform is Windows.
+ */
 const isWindows = process?.platform === 'win32';
 
-/* v8 ignore start */
 /**
- * Converts backslashes in a file path to forward slashes.
- *
- * This function is particularly useful for normalizing Windows file paths
- * to use forward slashes, which are commonly used in URLs and Unix-based systems.
- * It preserves extended-length paths that start with `\\?\`.
- *
- * @param path - The file system path to convert
- * @returns The converted path with forward slashes
- */
-function slash(path: string) {
-	const isExtendedLengthPath = path.startsWith('\\\\?\\');
-
-	if (isExtendedLengthPath) {
-		return path;
-	}
-
-	return path.replace(/\\/g, '/');
-}
-/* v8 ignore stop */
-
-/**
- * Converts a file system path to a file URL.
- *
- * This function handles platform-specific path formatting, ensuring proper
- * file URL creation for both Windows and Unix-based systems.
+ * Converts a file path to a file URL.
  *
  * @param path - The file system path to convert to a URL
- * @returns A URL object representing the file path with the `file://` protocol
+ * @param options - Configuration options for URL conversion
+ * @param options.windows - Whether to use Windows-style path handling. Defaults to the current platform's `isWindows` value
+ * @returns A URL object representing the file path
  *
  * @example
  * ```typescript
- * // On Windows
- * pathToFileURL('C:\\Users\\file.txt')
- * // Returns: URL { href: 'file:///C:/Users/file.txt' }
- *
- * // On Unix
- * pathToFileURL('/home/user/file.txt')
- * // Returns: URL { href: 'file:///home/user/file.txt' }
+ * const url = pathToFileURL('/home/user/file.txt');
+ * console.log(url.href); // 'file:///home/user/file.txt'
  * ```
  */
-export function pathToFileURL(path: string): URL {
-	/* v8 ignore start */
-	if (isWindows) {
-		let slashed = slash(path);
-		// Windows like C:/foo/bar
-		if (!slashed.startsWith('/')) {
-			slashed = `/${slashed}`;
-		}
-		return new URL(`file://${slashed}`);
-	}
-	/* v8 ignore stop */
-
-	// Unix is easy
-	return new URL(`file://${path}`);
-}
+export const pathToFileURL = (
+	path: string,
+	options: { windows?: boolean } = { windows: isWindows }
+): URL => nodePathToFileURL(path, options);

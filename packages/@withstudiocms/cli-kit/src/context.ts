@@ -23,9 +23,12 @@
  * console.log(pm); // Output: 'npm', 'yarn', 'pnpm', etc.
  * ```
  */
-export function detectPackageManager() {
-	if (!process.env.npm_config_user_agent) return;
-	const specifier = process.env.npm_config_user_agent.split(' ')[0];
-	const name = specifier.substring(0, specifier.lastIndexOf('/'));
+export function detectPackageManager(): string | undefined {
+	const userAgent = process.env.npm_config_user_agent;
+	if (!userAgent) return;
+	const specifier = userAgent.split(' ')[0];
+	const slashIndex = specifier.lastIndexOf('/');
+	if (slashIndex <= 0) return;
+	const name = specifier.substring(0, slashIndex);
 	return name === 'npminstall' ? 'cnpm' : name;
 }

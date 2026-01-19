@@ -249,6 +249,15 @@ export function setStdout(writable: typeof process.stdout) {
 	stdout = writable;
 }
 
+interface BoxenBody {
+	ln0?: string;
+	ln1?: string;
+	ln2?: string;
+	ln3?: string;
+	ln4?: string;
+	ln5?: string;
+}
+
 /**
  * Creates a formatted box with a logo, header, body content, and optional footer.
  *
@@ -267,7 +276,7 @@ export function setStdout(writable: typeof process.stdout) {
  */
 export function boxen(
 	header?: string,
-	body?: { ln0?: string; ln1?: string; ln2?: string; ln3?: string; ln4?: string; ln5?: string },
+	body?: BoxenBody,
 	footer?: string,
 	boxenOptions: BoxenOptions = { padding: 0, borderStyle: 'none' }
 ) {

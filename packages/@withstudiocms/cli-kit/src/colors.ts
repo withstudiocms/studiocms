@@ -13,6 +13,10 @@
  * const blueBgText = styleTextBgHex('#0000FF')('This text has a blue background');
  */
 
+interface StyleTextCustomHexOptions {
+	background?: boolean;
+}
+
 /**
  * Styles text with a custom hexadecimal color using ANSI escape codes.
  *
@@ -34,7 +38,7 @@
 function styleTextCustomHex(
 	hexColor: `#${string}`,
 	text: string,
-	options?: { background?: boolean }
+	options?: StyleTextCustomHexOptions
 ): string {
 	// Helper to convert hex to RGB
 	const hexToRgb = (hex: `#${string}`) => {

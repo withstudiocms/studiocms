@@ -29,6 +29,7 @@ describe(parentSuiteName, () => {
 	afterEach(() => {
 		Object.defineProperty(process, 'platform', {
 			value: originalPlatform,
+			configurable: true,
 		});
 		vi.spyOn(process, 'cwd').mockReturnValue(originalCwd);
 	});
@@ -100,6 +101,7 @@ describe(parentSuiteName, () => {
 		await allure.step('Running shell command that errors', async (ctx) => {
 			try {
 				await shell('invalid', ['command']);
+				throw new Error('Expected shell to throw');
 			} catch (error) {
 				await ctx.parameter('Error Message', (error as Error).message);
 				expect((error as Error).message).toContain('error message');
@@ -138,7 +140,10 @@ describe(parentSuiteName, () => {
 		await allure.step('Running shell command that times out', async (ctx) => {
 			try {
 				await shell('timeout', ['command'], { timeout: 100 });
+				throw new Error('Expected shell to throw');
 			} catch (error) {
+				console.log(error);
+
 				await ctx.parameter('Error Message', (error as Error).message);
 				expect((error as Error).message).toBe('Timeout');
 			}
@@ -369,10 +374,13 @@ describe(parentSuiteName, () => {
 				await allure.subSuite('pathToFileURL Tests');
 				await allure.tags(...sharedTags);
 
-				Object.defineProperty(process, 'platform', { value: platformValue });
+				Object.defineProperty(process, 'platform', {
+					value: platformValue,
+					configurable: true,
+				});
 
 				await allure.step(`Converting path "${input}" to file URL`, async (ctx) => {
-					const result = pathToFileURL(input);
+					const result = pathToFileURL(input, { windows: platformValue === 'win32' });
 					await ctx.parameter('Input Path', input);
 					await ctx.parameter('Result URL', result.href);
 
