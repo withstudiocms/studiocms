@@ -1,0 +1,68 @@
+{
+	"name": "@withstudiocms/api-spec",
+	"version": "0.0.0",
+	"description": "API Specification for StudioCMS",
+	"license": "MIT",
+	"author": {
+		"name": "withstudiocms",
+		"url": "https://studiocms.dev"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/withstudiocms/studiocms.git",
+		"directory": "packages/@withstudiocms/api-spec"
+	},
+	"keywords": [
+		"studiocms",
+		"effect",
+		"effect-ts",
+		"effect-ts-astro"
+	],
+	"homepage": "https://studiocms.dev",
+	"contributors": [
+		"Adammatthiesen",
+		"jdtjenkins",
+		"dreyfus92",
+		"code.spirit"
+	],
+	"publishConfig": {
+		"access": "public",
+		"provenance": true
+	},
+	"sideEffects": false,
+	"files": [
+		"dist",
+		"LICENSE",
+		"CHANGELOG.md",
+		"README.md"
+	],
+	"scripts": {
+		"build": "buildkit build 'src/**/*.ts'",
+		"dev": "buildkit dev 'src/**/*.ts'",
+		"effect-check": "pnpm effect-language-service diagnostics --project tsconfig.tspc.json",
+		"ci:effect-check": "pnpm effect-check --format github-actions",
+		"typecheck": "tspc -p tsconfig.tspc.json"
+	},
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"default": "./dist/index.js"
+		},
+		"./rest-api": {
+			"types": "./dist/rest-api/index.d.ts",
+			"default": "./dist/rest-api/index.js"
+		}
+	},
+	"type": "module",
+	"dependencies": {
+	},
+	"devDependencies": {
+		"@withstudiocms/sdk": "workspace:^"
+	},
+	"peerDependencies": {
+		"@effect/cli": "catalog:effect",
+		"@effect/platform": "catalog:effect",
+		"@effect/platform-node": "catalog:effect",
+		"effect": "catalog:effect"
+	}
+}
