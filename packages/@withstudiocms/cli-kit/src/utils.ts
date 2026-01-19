@@ -260,6 +260,17 @@ export function exists(path: URL | string | undefined) {
 
 const isWindows = process?.platform === 'win32';
 
+/* v8 ignore start */
+/**
+ * Converts backslashes in a file path to forward slashes.
+ *
+ * This function is particularly useful for normalizing Windows file paths
+ * to use forward slashes, which are commonly used in URLs and Unix-based systems.
+ * It preserves extended-length paths that start with `\\?\`.
+ *
+ * @param path - The file system path to convert
+ * @returns The converted path with forward slashes
+ */
 function slash(path: string) {
 	const isExtendedLengthPath = path.startsWith('\\\\?\\');
 
@@ -269,6 +280,7 @@ function slash(path: string) {
 
 	return path.replace(/\\/g, '/');
 }
+/* v8 ignore stop */
 
 /**
  * Converts a file system path to a file URL.
@@ -291,6 +303,7 @@ function slash(path: string) {
  * ```
  */
 export function pathToFileURL(path: string): URL {
+	/* v8 ignore start */
 	if (isWindows) {
 		let slashed = slash(path);
 		// Windows like C:/foo/bar
@@ -299,6 +312,7 @@ export function pathToFileURL(path: string): URL {
 		}
 		return new URL(`file://${slashed}`);
 	}
+	/* v8 ignore stop */
 
 	// Unix is easy
 	return new URL(`file://${path}`);
