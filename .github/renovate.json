@@ -47,6 +47,7 @@
     }
   ],
   "ignoreDeps": [
+    "@libsql/client",
     "@types/node",
     "drizzle-orm",
     "sharp",
