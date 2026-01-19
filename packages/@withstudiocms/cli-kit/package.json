@@ -15,7 +15,7 @@
 		"provenance": true
 	},
 	"scripts": {
-		"build": "buildkit build \"src/**/*.ts\"",
+		"build": "buildkit build 'src/**/*.ts'",
 		"dev": "buildkit dev 'src/**/*.ts'",
 		"test": "vitest",
 		"typecheck": "tspc -p tsconfig.tspc.json"
