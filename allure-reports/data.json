@@ -1,9 +1,10 @@
 {
   "links": [
     "..",
-    "adam_http-app",
+    "adam_spec-docs",
     "adam_updated-content-editing",
     "changeset-release_main",
-    "main"
+    "main",
+    "renovate_effect-@withstudiocms-dependencies"
   ]
 }
