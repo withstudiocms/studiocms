@@ -18,15 +18,15 @@ catalog:
   sharp: ^0.34.3
   tinyglobby: ^0.2.15
   typescript: ^5.9.3
-  diff: ^8.0.2
+  diff: ^8.0.3
   dotenv: ^17.2.3
 
 catalogs:
   astrojs:
     "@astrojs/check": ^0.9.6
-    "@astrojs/node": ^9.5.1
-    "@astrojs/rss": ^4.0.14
-    astro: ^5.16.6
+    "@astrojs/node": ^9.5.2
+    "@astrojs/rss": ^4.0.15
+    astro: ^5.16.10
     vite: ^6.3.4
   effect:
     "@effect/cli": ^0.73.0
@@ -38,7 +38,7 @@ catalogs:
     "@types/pg": ^8.16.0
     kysely: ^0.28.9
     kysely-turso: ^0.1.1
-    pg: ^8.16.3
+    pg: ^8.17.1
     mysql2: ^3.16.0
   min:
     "@astrojs/markdown-remark": ^6.3.3
@@ -48,7 +48,7 @@ catalogs:
     vite: ^6.3.4
   react:
     "@astrojs/react": ^4.4.2
-    "@types/react": ^19.2.7
+    "@types/react": ^19.2.8
     "@types/react-dom": ^19.2.3
     react: ^19.2.3
     react-dom: ^19.2.3
