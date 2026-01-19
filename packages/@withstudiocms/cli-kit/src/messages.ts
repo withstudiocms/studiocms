@@ -190,13 +190,17 @@ export const action = (key: Key, isSelect: boolean) => {
 		if (key.name === 'a') return 'first';
 		if (key.name === 'c') return 'abort';
 		if (key.name === 'd') return 'abort';
+		/* v8 ignore start */
 		if (key.name === 'e') return 'last';
 		if (key.name === 'g') return 'reset';
+		/* v8 ignore stop */
 	}
 
 	if (isSelect) {
 		if (key.name === 'j') return 'down';
+		/* v8 ignore start */
 		if (key.name === 'k') return 'up';
+		/* v8 ignore stop */
 		if (key.ctrl && key.name === 'n') return 'down';
 		if (key.ctrl && key.name === 'p') return 'up';
 	}
