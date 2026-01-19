@@ -238,6 +238,24 @@ describe(parentSuiteName, () => {
 			expected: undefined,
 			name: 'action - should return undefined for meta keys (except escape)',
 		},
+		{
+			actionOpts: { name: 'e', ctrl: true, meta: true } as any,
+			actionSelectMode: false,
+			expected: undefined,
+			name: 'action - should return undefined for meta control keys',
+		},
+		{
+			actionOpts: { name: 'g', ctrl: true, meta: true } as any,
+			actionSelectMode: false,
+			expected: undefined,
+			name: 'action - should return undefined for meta control keys (ctrl + meta)',
+		},
+		{
+			actionOpts: { name: 'k', meta: true } as any,
+			actionSelectMode: true,
+			expected: undefined,
+			name: 'action - should return undefined for meta keys in select mode',
+		},
 	].forEach(({ name, actionOpts, actionSelectMode, expected }) => {
 		test(name, async () => {
 			await allure.parentSuite(parentSuiteName);

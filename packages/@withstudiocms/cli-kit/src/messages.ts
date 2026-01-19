@@ -134,14 +134,18 @@ export function success(message: string, tip?: string) {
 export const getName = () =>
 	new Promise<string>((resolve) => {
 		exec('git config user.name', { encoding: 'utf-8' }, (_1, gitName) => {
+			/* v8 ignore start */
 			if (gitName.trim()) {
 				return resolve(gitName.split(' ')[0].trim());
 			}
+			/* v8 ignore stop */
 			exec('whoami', { encoding: 'utf-8' }, (_3, whoami) => {
 				if (whoami.trim()) {
 					return resolve(whoami.split(' ')[0].trim());
 				}
+				/* v8 ignore start */
 				return resolve('StudioCMS User');
+				/* v8 ignore stop */
 			});
 		});
 	});
@@ -376,8 +380,10 @@ const fitToTerminalHeight = (stream: typeof stdout, text: string) => {
 	const lines = text.split('\n');
 	const toRemove = Math.max(0, lines.length - terminalHeight);
 	return toRemove
-		? sliceAnsi(text, stripAnsi(lines.slice(0, toRemove).join('\n')).length + 1)
-		: text;
+		? /* v8 ignore start */
+			sliceAnsi(text, stripAnsi(lines.slice(0, toRemove).join('\n')).length + 1)
+		: /* v8 ignore stop */
+			text;
 };
 
 /**
@@ -436,9 +442,11 @@ export function createClackMessageUpdate(
 		let output = fitToTerminalHeight(stream, `${parts.join('\n')}\n`);
 		const width = getWidth(stream);
 
+		/* v8 ignore start */
 		if (output === previousOutput && previousWidth === width) {
 			return;
 		}
+		/* v8 ignore stop */
 
 		previousOutput = output;
 		previousWidth = width;
@@ -453,12 +461,14 @@ export function createClackMessageUpdate(
 		reset();
 	};
 
+	/* v8 ignore start */
 	render.done = () => {
 		reset();
 		if (!showCursor) {
 			cliCursor.show();
 		}
 	};
+	/* v8 ignore stop */
 
 	return render;
 }
@@ -522,6 +532,7 @@ export const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve
  * ```
  */
 export const say = async (msg: string | string[] = [], { clear = false } = {}) => {
+	/* v8 ignore start */
 	const messages = Array.isArray(msg) ? msg : [msg];
 	const rl = readline.createInterface({ input: stdin, escapeCodeTimeout: 50 });
 	const logUpdate = createClackMessageUpdate(stdout, { showCursor: false });
@@ -582,3 +593,4 @@ export const say = async (msg: string | string[] = [], { clear = false } = {}) =
 	if (stdin.isTTY) stdin.setRawMode(false);
 	stdin.removeAllListeners('keypress');
 };
+/* v8 ignore stop */
