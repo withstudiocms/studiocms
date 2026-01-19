@@ -42,8 +42,5 @@
 		"is-unicode-supported": "^2.1.0",
 		"slice-ansi": "^7.1.2",
 		"tinyexec": "^1.0.2"
-	},
-	"devDependencies": {
-		"@types/figlet": "^1.7.0"
 	}
 }
