@@ -12,7 +12,7 @@ import {
  * GET /pages
  * Retrieves a list of pages.
  */
-export const PageIndexGet = HttpApiEndpoint.get('pages', '/pages')
+export const PageIndexGet = HttpApiEndpoint.get('PageIndexGet', '/pages')
 	.annotate(Title, 'Get Pages')
 	.annotate(
 		Description,
@@ -27,7 +27,7 @@ export const PageIndexGet = HttpApiEndpoint.get('pages', '/pages')
  * OPTIONS /pages
  * Provides information about the /pages endpoint.
  */
-export const PageIndexOptions = HttpApiEndpoint.options('pages', '/pages')
+export const PageIndexOptions = HttpApiEndpoint.options('PageIndexOptions', '/pages')
 	.annotate(Title, 'Options for Pages')
 	.annotate(
 		Description,
@@ -40,7 +40,7 @@ export const PageIndexOptions = HttpApiEndpoint.options('pages', '/pages')
  * GET /pages/{id}
  * Retrieves a page by its ID.
  */
-export const PageByIdGet = HttpApiEndpoint.get('pagesById', `/pages/${PublicV1GetPagesIdParam}`)
+export const PageByIdGet = HttpApiEndpoint.get('PageByIdGet', `/pages/${PublicV1GetPagesIdParam}`)
 	.annotate(Title, 'Get Page by ID')
 	.annotate(Description, 'Retrieves a page by its ID.')
 	.addSuccess(PublicV1GetPagesSelect)
@@ -53,7 +53,7 @@ export const PageByIdGet = HttpApiEndpoint.get('pagesById', `/pages/${PublicV1Ge
  * Provides information about the /pages/{id} endpoint.
  */
 export const PageByIdOptions = HttpApiEndpoint.options(
-	'pagesById',
+	'PageByIdOptions',
 	`/pages/${PublicV1GetPagesIdParam}`
 )
 	.annotate(Title, 'Options for Page by ID')

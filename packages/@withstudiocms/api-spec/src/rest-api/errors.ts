@@ -8,6 +8,6 @@ import { Schema } from 'effect';
  * It includes a single property:
  * - `error`: A string message describing the error.
  */
-export const RestAPIError = Schema.Struct({
+export class RestAPIError extends Schema.TaggedError<RestAPIError>()('RestAPIError', {
 	error: Schema.String,
-});
+}) {}

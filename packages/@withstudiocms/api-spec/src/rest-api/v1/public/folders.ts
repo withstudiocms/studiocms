@@ -12,7 +12,7 @@ import {
  * GET /folders
  * Search parameters for filtering folders.
  */
-export const FoldersIndexGet = HttpApiEndpoint.get('folders', '/folders')
+export const FoldersIndexGet = HttpApiEndpoint.get('FoldersIndexGet', '/folders')
 	.annotate(Title, 'Get Folders')
 	.annotate(
 		Description,
@@ -27,7 +27,7 @@ export const FoldersIndexGet = HttpApiEndpoint.get('folders', '/folders')
  * OPTIONS /folders
  * Provides information about the /folders endpoint.
  */
-export const FoldersIndexOptions = HttpApiEndpoint.options('folders', '/folders')
+export const FoldersIndexOptions = HttpApiEndpoint.options('FoldersIndexOptions', '/folders')
 	.annotate(Title, 'Options for Folders')
 	.annotate(
 		Description,
@@ -40,7 +40,10 @@ export const FoldersIndexOptions = HttpApiEndpoint.options('folders', '/folders'
  * GET /folders/{id}
  * Retrieves a folder by its ID.
  */
-export const FolderByIdGet = HttpApiEndpoint.get('foldersById', `/folders/${PublicV1FolderIdParam}`)
+export const FolderByIdGet = HttpApiEndpoint.get(
+	'FolderByIdGet',
+	`/folders/${PublicV1FolderIdParam}`
+)
 	.annotate(Title, 'Get Folder by ID')
 	.annotate(Description, 'Retrieves a folder by its ID.')
 	.addSuccess(PublicV1FolderSelect)
@@ -52,7 +55,7 @@ export const FolderByIdGet = HttpApiEndpoint.get('foldersById', `/folders/${Publ
  * Provides information about the /folders/{id} endpoint.
  */
 export const FolderByIdOptions = HttpApiEndpoint.options(
-	'foldersById',
+	'FolderByIdOptions',
 	`/folders/${PublicV1FolderIdParam}`
 )
 	.annotate(Title, 'Options for Folder by ID')

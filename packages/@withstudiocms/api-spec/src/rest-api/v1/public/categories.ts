@@ -12,7 +12,7 @@ import {
  * GET /categories
  * Retrieves a list of categories.
  */
-export const CategoryIndexGet = HttpApiEndpoint.get('categories', '/categories')
+export const CategoryIndexGet = HttpApiEndpoint.get('CategoryIndexGet', '/categories')
 	.annotate(Title, 'Get Categories')
 	.annotate(
 		Description,
@@ -27,7 +27,7 @@ export const CategoryIndexGet = HttpApiEndpoint.get('categories', '/categories')
  * OPTIONS /categories
  * Provides information about the /categories endpoint.
  */
-export const CategoryIndexOptions = HttpApiEndpoint.options('categories', '/categories')
+export const CategoryIndexOptions = HttpApiEndpoint.options('CategoryIndexOptions', '/categories')
 	.annotate(Title, 'Options for Categories')
 	.annotate(
 		Description,
@@ -41,7 +41,7 @@ export const CategoryIndexOptions = HttpApiEndpoint.options('categories', '/cate
  * Retrieves a category by its ID.
  */
 export const CategoryByIdGet = HttpApiEndpoint.get(
-	'categoriesById',
+	'CategoryByIdGet',
 	`/categories/${PublicV1CategoryIdParam}`
 )
 	.annotate(Title, 'Get Category by ID')
@@ -55,7 +55,7 @@ export const CategoryByIdGet = HttpApiEndpoint.get(
  * Provides information about the /categories/{id} endpoint.
  */
 export const CategoryByIdOptions = HttpApiEndpoint.options(
-	'categoriesById',
+	'CategoryByIdOptions',
 	`/categories/${PublicV1CategoryIdParam}`
 )
 	.annotate(Title, 'Options for Category by ID')

@@ -12,7 +12,7 @@ import {
  * GET /tags
  * Retrieves a list of tags.
  */
-export const TagIndexGet = HttpApiEndpoint.get('tags', '/tags')
+export const TagIndexGet = HttpApiEndpoint.get('TagIndexGet', '/tags')
 	.annotate(Title, 'Get Tags')
 	.annotate(Description, 'Retrieves a list of tags, with optional filtering by name and parent ID.')
 	.setUrlParams(PublicV1TagsGetSearchParams)
@@ -24,7 +24,7 @@ export const TagIndexGet = HttpApiEndpoint.get('tags', '/tags')
  * OPTIONS /tags
  * Provides information about the /tags endpoint.
  */
-export const TagIndexOptions = HttpApiEndpoint.options('tags', '/tags')
+export const TagIndexOptions = HttpApiEndpoint.options('TagIndexOptions', '/tags')
 	.annotate(Title, 'Options for Tags')
 	.annotate(
 		Description,
@@ -37,7 +37,7 @@ export const TagIndexOptions = HttpApiEndpoint.options('tags', '/tags')
  * GET /tags/{id}
  * Retrieves a tag by its ID.
  */
-export const TagByIdGet = HttpApiEndpoint.get('tagsById', `/tags/${PublicV1TagsIdParam}`)
+export const TagByIdGet = HttpApiEndpoint.get('TagByIdGet', `/tags/${PublicV1TagsIdParam}`)
 	.annotate(Title, 'Get Tag by ID')
 	.annotate(Description, 'Retrieves a tag by its ID.')
 	.addSuccess(PublicV1TagsSelect)
@@ -48,7 +48,10 @@ export const TagByIdGet = HttpApiEndpoint.get('tagsById', `/tags/${PublicV1TagsI
  * OPTIONS /tags/{id}
  * Provides information about the /tags/{id} endpoint.
  */
-export const TagByIdOptions = HttpApiEndpoint.options('tagsById', `/tags/${PublicV1TagsIdParam}`)
+export const TagByIdOptions = HttpApiEndpoint.options(
+	'TagByIdOptions',
+	`/tags/${PublicV1TagsIdParam}`
+)
 	.annotate(Title, 'Options for Tag by ID')
 	.annotate(Description, 'Provides information about the /tags/{id} endpoint.')
 	.addSuccess(Schema.Void)
