@@ -33,6 +33,7 @@ const projectsWithTests: { scope?: string; names: string[] }[] = [
 		names: [
 			'auth-kit',
 			'buildkit',
+			'cli-kit',
 			'component-registry',
 			'config-utils',
 			'effect',
