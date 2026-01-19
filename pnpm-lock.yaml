@@ -798,9 +798,6 @@ importers:
 
   packages/@withstudiocms/cli-kit:
     dependencies:
-      '@clack/prompts':
-        specifier: ^0.11.0
-        version: 0.11.0
       ansi-escapes:
         specifier: ^7.2.0
         version: 7.2.0
@@ -810,9 +807,6 @@ importers:
       cli-cursor:
         specifier: ^5.0.0
         version: 5.0.0
-      figlet:
-        specifier: ^1.9.4
-        version: 1.9.4
       is-unicode-supported:
         specifier: ^2.1.0
         version: 2.1.0

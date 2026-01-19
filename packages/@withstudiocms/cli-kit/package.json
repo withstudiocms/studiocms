@@ -18,8 +18,6 @@
 		"build": "buildkit build \"src/**/*.ts\"",
 		"dev": "buildkit dev 'src/**/*.ts'",
 		"test": "vitest",
-		"effect-check": "pnpm effect-language-service diagnostics --project tsconfig.tspc.json",
-		"ci:effect-check": "pnpm effect-check --format github-actions",
 		"typecheck": "tspc -p tsconfig.tspc.json"
 	},
 	"files": [
@@ -32,8 +30,6 @@
         }
 	},
 	"dependencies": {
-		"@clack/prompts": "^0.11.0",
-		"figlet": "^1.9.4",
 		"strip-ansi": "^7.1.2",
 		"wrap-ansi": "^9.0.2",
 		"boxen": "^8.0.1",
