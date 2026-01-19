@@ -12,7 +12,7 @@ interface MimeTypeMap {
 
 type StorageReturnType = 'url' | 'identifier' | 'key';
 
-const s3SafeNameRegex = /^[a-zA-Z0-9._-]+$/;
+const s3SafeNameRegex = /^[a-zA-Z0-9._-]+(?:\/[a-zA-Z0-9._-]+)*$/;
 
 /**
  * Translation strings for the StorageFileBrowser
@@ -115,7 +115,7 @@ class InvalidFileNameError extends Error {
 
 	constructor(files: string[]) {
 		super(
-			'The following filenames are invalid: (Only alphanumeric characters and . _ - are allowed.)'
+			'The following filenames are invalid: (Only alphanumeric characters and . _ - / are allowed.)'
 		);
 		this.#files = files;
 		this.name = 'InvalidFileNameError';
@@ -1646,23 +1646,30 @@ class StorageFileBrowser extends HTMLElement {
 		}
 	}
 
+	private escapeHtml(value: string): string {
+		return value.replace(/[&<>"']/g, (char) => {
+			switch (char) {
+				case '&':
+					return '&amp;';
+				case '<':
+					return '&lt;';
+				case '>':
+					return '&gt;';
+				case '"':
+					return '&quot;';
+				case "'":
+					return '&#39;';
+				default:
+					return char;
+			}
+		});
+	}
+
 	private async uploadFilesWithCustomNames(customNames: { [key: number]: string }): Promise<void> {
 		if (this.isUploading) return;
 
 		// Ensure names do not contain illegal characters
 		const status = { valid: true, invalidFiles: [] as string[] };
-
-		this.pendingFiles.forEach((file, index) => {
-			const customName = customNames[index];
-			if (customName && !s3SafeNameRegex.test(customName)) {
-				status.valid = false;
-				status.invalidFiles.push(file.name);
-			}
-		});
-
-		if (!status.valid) {
-			throw new InvalidFileNameError(status.invalidFiles);
-		}
 
 		this.isUploading = true;
 		const content = this.$<HTMLDivElement>(`#${this.contentId}`);
@@ -1690,6 +1697,16 @@ class StorageFileBrowser extends HTMLElement {
 		);
 
 		try {
+			this.pendingFiles.forEach((file, index) => {
+				const customName = customNames[index];
+				if (customName && !s3SafeNameRegex.test(customName)) {
+					status.valid = false;
+					status.invalidFiles.push(file.name);
+				}
+			});
+			if (!status.valid) {
+				throw new InvalidFileNameError(status.invalidFiles);
+			}
 			for (let i = 0; i < this.pendingFiles.length; i++) {
 				const file = this.pendingFiles[i];
 				const customName = customNames[i] || `${Date.now()}-${file.name}`;
@@ -1720,7 +1737,7 @@ class StorageFileBrowser extends HTMLElement {
 				errorMessage = error.message;
 
 				if (error instanceof InvalidFileNameError) {
-					extraInfo = error.files.join(', ');
+					extraInfo = this.escapeHtml(error.files.join(', '));
 				}
 			}
 
@@ -1954,7 +1971,7 @@ class StorageFileBrowser extends HTMLElement {
 				errorMessage = error.message;
 
 				if (error instanceof InvalidFileNameError) {
-					extraInfo = error.files.join(', ');
+					extraInfo = this.escapeHtml(error.files.join(', '));
 				}
 			}
 
