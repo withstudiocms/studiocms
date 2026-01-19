@@ -1,10 +1,10 @@
 {
   "links": [
     "..",
-    "adam_spec-docs",
     "adam_updated-content-editing",
     "changeset-release_main",
     "main",
-    "renovate_effect-@withstudiocms-dependencies"
+    "renovate_effect-@withstudiocms-dependencies",
+    "renovate_s3-storage-aws-s3-dependencies"
   ]
 }
