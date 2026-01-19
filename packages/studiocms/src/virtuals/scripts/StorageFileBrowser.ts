@@ -12,7 +12,7 @@ interface MimeTypeMap {
 
 type StorageReturnType = 'url' | 'identifier' | 'key';
 
-const s3SafeNameRegex = /^[a-zA-Z0-9._~-]*$/g;
+const s3SafeNameRegex = /^[a-zA-Z0-9._-]+$/;
 
 /**
  * Translation strings for the StorageFileBrowser
@@ -111,9 +111,18 @@ interface TranslationStrings {
 }
 
 class InvalidFileNameError extends Error {
+	#files: string[];
+
 	constructor(files: string[]) {
-		super(`The following filenames are invalid: ${files.join(', ')}`);
+		super(
+			'The following filenames are invalid: (Only alphanumeric characters and . _ - are allowed.)'
+		);
+		this.#files = files;
 		this.name = 'InvalidFileNameError';
+	}
+
+	get files(): string[] {
+		return this.#files;
 	}
 }
 
@@ -1705,9 +1714,14 @@ class StorageFileBrowser extends HTMLElement {
 			console.error('Upload error:', error);
 
 			let errorMessage = this.t('failedToUploadFiles');
+			let extraInfo: string | undefined;
 
 			if (error instanceof Error) {
 				errorMessage = error.message;
+
+				if (error instanceof InvalidFileNameError) {
+					extraInfo = error.files.join(', ');
+				}
 			}
 
 			content.innerHTML = `
@@ -1717,6 +1731,7 @@ class StorageFileBrowser extends HTMLElement {
                     </svg>
                     <p>${this.t('failedToUploadFiles')}</p>
                     <p style="font-size: 0.875rem; opacity: 0.7;">${errorMessage}</p>
+                    ${extraInfo ? `<p style="font-size: 0.75rem; opacity: 0.5;">${extraInfo}</p>` : ''}
                 </div>
             `;
 		} finally {
@@ -1933,9 +1948,14 @@ class StorageFileBrowser extends HTMLElement {
 			console.error('Rename error:', error);
 
 			let errorMessage = this.t('unknownError');
+			let extraInfo: string | undefined;
 
 			if (error instanceof Error) {
 				errorMessage = error.message;
+
+				if (error instanceof InvalidFileNameError) {
+					extraInfo = error.files.join(', ');
+				}
 			}
 
 			content.innerHTML = `
@@ -1945,6 +1965,7 @@ class StorageFileBrowser extends HTMLElement {
                     </svg>
                     <p>${this.t('failedToRenameFile')}</p>
                     <p style="font-size: 0.875rem; opacity: 0.7;">${errorMessage}</p>
+					${extraInfo ? `<p style="font-size: 0.75rem; opacity: 0.5;">${extraInfo}</p>` : ''}
                 </div>
             `;
 			setTimeout(() => this.loadFiles(), 2000);

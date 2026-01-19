@@ -17,7 +17,7 @@ import type {
 	UrlMetadata,
 } from 'studiocms/storage-manager/definitions';
 
-const s3SafeNameRegex = /^[a-zA-Z0-9._~-]*$/g;
+const s3SafeNameRegex = /^[a-zA-Z0-9._-]+$/;
 
 /**
  * S3 Client Builder Effect
@@ -226,7 +226,9 @@ export default class S3ApiService<C, R> implements StorageApiBuilderDefinition<C
 				case 'upload': {
 					if (!s3SafeNameRegex.test(jsonBody.key)) {
 						return {
-							data: { error: 'The provided key contains illegal characters.' },
+							data: {
+								error: 'Invalid key format. Only alphanumeric characters and . _ - are allowed.',
+							},
 							status: 400,
 						};
 					}
@@ -276,7 +278,9 @@ export default class S3ApiService<C, R> implements StorageApiBuilderDefinition<C
 					}
 					if (!s3SafeNameRegex.test(jsonBody.newKey)) {
 						return {
-							data: { error: 'The provided key contains illegal characters.' },
+							data: {
+								error: 'Invalid key format. Only alphanumeric characters and . _ - are allowed.',
+							},
 							status: 400,
 						};
 					}
