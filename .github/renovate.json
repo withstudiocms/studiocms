@@ -47,7 +47,9 @@
     }
   ],
   "ignoreDeps": [
+    "@libsql/client",
     "@types/node",
+    "@vitest/coverage-v8",
     "drizzle-orm",
     "sharp",
     "node",
@@ -55,6 +57,8 @@
     "pnpm",
     "esbuild",
     "codemirror",
-    "vite"
+    "vite",
+    "vitest",
+    "zod"
   ]
 }
