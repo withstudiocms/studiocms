@@ -48,7 +48,7 @@ flags:
       - packages/@studiocms/devapps/**
   plugins:
     carryforward: false
-    # These have to be listed individually due to 
+    # These have to be listed individually due to
     # the integrations flag containing a scoped package. (@studiocms/devapps)
     paths:
       - packages/@studiocms/auth0/**
@@ -162,3 +162,7 @@ component_management:
       name: "@withstudiocms/sdk"
       paths:
         - packages/@withstudiocms/sdk/**
+    - component_id: withstudiocms_cli_kit
+      name: "@withstudiocms/cli-kit"
+      paths:
+        - packages/@withstudiocms/cli-kit/**

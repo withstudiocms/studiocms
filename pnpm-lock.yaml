@@ -796,6 +796,33 @@ importers:
         specifier: ^7.1.2
         version: 7.1.2
 
+  packages/@withstudiocms/cli-kit:
+    dependencies:
+      ansi-escapes:
+        specifier: ^7.2.0
+        version: 7.2.0
+      boxen:
+        specifier: ^8.0.1
+        version: 8.0.1
+      cli-cursor:
+        specifier: ^5.0.0
+        version: 5.0.0
+      is-unicode-supported:
+        specifier: ^2.1.0
+        version: 2.1.0
+      slice-ansi:
+        specifier: ^7.1.2
+        version: 7.1.2
+      strip-ansi:
+        specifier: ^7.1.2
+        version: 7.1.2
+      tinyexec:
+        specifier: ^1.0.2
+        version: 1.0.2
+      wrap-ansi:
+        specifier: ^9.0.2
+        version: 9.0.2
+
   packages/@withstudiocms/component-registry:
     dependencies:
       '@withstudiocms/effect':
