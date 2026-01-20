@@ -17,6 +17,8 @@ import type {
 	UrlMetadata,
 } from 'studiocms/storage-manager/definitions';
 
+const s3SafeNameRegex = /^[a-zA-Z0-9._-]+(?:\/[a-zA-Z0-9._-]+)*$/;
+
 /**
  * S3 Client Builder Effect
  *
@@ -222,6 +224,15 @@ export default class S3ApiService<C, R> implements StorageApiBuilderDefinition<C
 				}
 
 				case 'upload': {
+					if (!s3SafeNameRegex.test(jsonBody.key)) {
+						return {
+							data: {
+								error: 'Invalid key format. Only alphanumeric characters and . _ - / are allowed.',
+							},
+							status: 400,
+						};
+					}
+
 					// Generate presigned URL for upload
 					const command = new PutObjectCommand({
 						Bucket: BUCKET_NAME,
@@ -264,6 +275,14 @@ export default class S3ApiService<C, R> implements StorageApiBuilderDefinition<C
 				case 'rename': {
 					if (!jsonBody.newKey) {
 						return { data: { error: 'newKey is required for rename action' }, status: 400 };
+					}
+					if (!s3SafeNameRegex.test(jsonBody.newKey)) {
+						return {
+							data: {
+								error: 'Invalid key format. Only alphanumeric characters and . _ - / are allowed.',
+							},
+							status: 400,
+						};
 					}
 
 					// Copy the object to the new key
@@ -364,6 +383,15 @@ export default class S3ApiService<C, R> implements StorageApiBuilderDefinition<C
 
 				if (!key) {
 					return { data: { error: 'Missing x-storage-key header' }, status: 400 };
+				}
+
+				if (!s3SafeNameRegex.test(key)) {
+					return {
+						data: {
+							error: 'Invalid key format. Only alphanumeric characters and . _ - / are allowed.',
+						},
+						status: 400,
+					};
 				}
 
 				const fileData = await getArrayBuffer();

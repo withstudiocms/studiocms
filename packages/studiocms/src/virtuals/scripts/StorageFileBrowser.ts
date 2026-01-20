@@ -12,6 +12,8 @@ interface MimeTypeMap {
 
 type StorageReturnType = 'url' | 'identifier' | 'key';
 
+const s3SafeNameRegex = /^[a-zA-Z0-9._-]+(?:\/[a-zA-Z0-9._-]+)*$/;
+
 /**
  * Translation strings for the StorageFileBrowser
  */
@@ -106,6 +108,22 @@ interface TranslationStrings {
 	size: string;
 	andAllItsContents: string;
 	filePreview: string;
+}
+
+class InvalidFileNameError extends Error {
+	#files: string[];
+
+	constructor(files: string[]) {
+		super(
+			'The following filenames are invalid: (Only alphanumeric characters and . _ - / are allowed.)'
+		);
+		this.#files = files;
+		this.name = 'InvalidFileNameError';
+	}
+
+	get files(): string[] {
+		return this.#files;
+	}
 }
 
 /**
@@ -1628,8 +1646,30 @@ class StorageFileBrowser extends HTMLElement {
 		}
 	}
 
+	private escapeHtml(value: string): string {
+		return value.replace(/[&<>"']/g, (char) => {
+			switch (char) {
+				case '&':
+					return '&amp;';
+				case '<':
+					return '&lt;';
+				case '>':
+					return '&gt;';
+				case '"':
+					return '&quot;';
+				case "'":
+					return '&#39;';
+				default:
+					return char;
+			}
+		});
+	}
+
 	private async uploadFilesWithCustomNames(customNames: { [key: number]: string }): Promise<void> {
 		if (this.isUploading) return;
+
+		// Ensure names do not contain illegal characters
+		const status = { valid: true, invalidFiles: [] as string[] };
 
 		this.isUploading = true;
 		const content = this.$<HTMLDivElement>(`#${this.contentId}`);
@@ -1657,6 +1697,16 @@ class StorageFileBrowser extends HTMLElement {
 		);
 
 		try {
+			this.pendingFiles.forEach((file, index) => {
+				const customName = customNames[index];
+				if (customName && !s3SafeNameRegex.test(customName)) {
+					status.valid = false;
+					status.invalidFiles.push(file.name);
+				}
+			});
+			if (!status.valid) {
+				throw new InvalidFileNameError(status.invalidFiles);
+			}
 			for (let i = 0; i < this.pendingFiles.length; i++) {
 				const file = this.pendingFiles[i];
 				const customName = customNames[i] || `${Date.now()}-${file.name}`;
@@ -1679,13 +1729,26 @@ class StorageFileBrowser extends HTMLElement {
 			await this.loadFiles();
 		} catch (error) {
 			console.error('Upload error:', error);
+
+			let errorMessage = this.t('failedToUploadFiles');
+			let extraInfo: string | undefined;
+
+			if (error instanceof Error) {
+				errorMessage = error.message;
+
+				if (error instanceof InvalidFileNameError) {
+					extraInfo = this.escapeHtml(error.files.join(', '));
+				}
+			}
+
 			content.innerHTML = `
                 <div class="storage-browser-error" role="alert" aria-live="assertive">
                     <svg width="48" height="48" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                     <p>${this.t('failedToUploadFiles')}</p>
-                    <p style="font-size: 0.875rem; opacity: 0.7;">${error instanceof Error ? error.message : this.t('unknownError')}</p>
+                    <p style="font-size: 0.875rem; opacity: 0.7;">${errorMessage}</p>
+                    ${extraInfo ? `<p style="font-size: 0.75rem; opacity: 0.5;">${extraInfo}</p>` : ''}
                 </div>
             `;
 		} finally {
@@ -1863,6 +1926,10 @@ class StorageFileBrowser extends HTMLElement {
             </div>
         `;
 		try {
+			if (!s3SafeNameRegex.test(newFileName)) {
+				throw new InvalidFileNameError([newFileName]);
+			}
+
 			// Build new key with timestamp prefix
 			const pathParts = this.fileToRename.key.split('/');
 			const _oldFileName = pathParts.pop() || '';
@@ -1896,13 +1963,26 @@ class StorageFileBrowser extends HTMLElement {
 			await this.loadFiles();
 		} catch (error) {
 			console.error('Rename error:', error);
+
+			let errorMessage = this.t('unknownError');
+			let extraInfo: string | undefined;
+
+			if (error instanceof Error) {
+				errorMessage = error.message;
+
+				if (error instanceof InvalidFileNameError) {
+					extraInfo = this.escapeHtml(error.files.join(', '));
+				}
+			}
+
 			content.innerHTML = `
                 <div class="storage-browser-error" role="alert">
                     <svg width="48" height="48" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                     <p>${this.t('failedToRenameFile')}</p>
-                    <p style="font-size: 0.875rem; opacity: 0.7;">${error instanceof Error ? error.message : this.t('unknownError')}</p>
+                    <p style="font-size: 0.875rem; opacity: 0.7;">${errorMessage}</p>
+					${extraInfo ? `<p style="font-size: 0.75rem; opacity: 0.5;">${extraInfo}</p>` : ''}
                 </div>
             `;
 			setTimeout(() => this.loadFiles(), 2000);
