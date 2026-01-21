@@ -64,9 +64,14 @@ const schemaManager = Effect.fn('schemaManager')(function* (
 		if (!v1TableExists) {
 			yield* createTable;
 		}
+		const v1HasRows = v1TableExists
+			? (yield* Effect.tryPromise({
+					try: () => db.selectFrom(v1TableName).select('id').limit(1).execute(),
+					catch: (cause) => new SqlError({ cause }),
+				})).length > 0
+			: false;
 
-		// Migrate the latest schema definition to the new table
-		if (previousSchemaDefinitionInternal.length > 0) {
+		if (!v1HasRows && previousSchemaDefinitionInternal.length > 0) {
 			const definition = JSON.stringify(previousSchemaDefinitionInternal);
 			yield* Effect.tryPromise({
 				try: () =>
