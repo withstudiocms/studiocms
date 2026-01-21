@@ -12,84 +12,147 @@ import type { TableDefinition } from './types.js';
 
 export * from './types.js';
 
-const schemaManager = (db: Kysely<any>, previousSchemaDefinition?: TableDefinition[]) =>
-	Effect.gen(function* () {
-		const tableName = 'kysely_schema';
-		let useDbSchema = false;
-		let previousSchemaDefinitionInternal: TableDefinition[] = [];
+const legacyTableName = 'kysely_schema';
+const v1TableName = '_kysely_schema_v1';
 
-		const createTable = Effect.tryPromise({
+function now() {
+	const now = new Date();
+	const base = Date.UTC(2025, 0, 1);
+	const diff = now.getTime() - base;
+	return Math.floor(diff / 1000);
+}
+
+const schemaManager = Effect.fn('schemaManager')(function* (
+	db: Kysely<any>,
+	previousSchemaDefinition?: TableDefinition[]
+) {
+	let useDbSchema = false;
+	let previousSchemaDefinitionInternal: TableDefinition[] = [];
+
+	const createTable = Effect.tryPromise({
+		try: () =>
+			db.schema
+				.createTable(v1TableName)
+				.addColumn('id', 'integer', (col) => col.primaryKey())
+				.addColumn('definition', 'text', (col) => col.notNull())
+				.execute(),
+		catch: (cause) => new SqlError({ cause }),
+	});
+
+	const legacyTableExists = yield* tableExists(db, legacyTableName);
+	if (legacyTableExists) {
+		yield* Effect.logWarning(
+			`⚠️  Legacy schema table "${legacyTableName}" detected. Migrating to new schema table "${v1TableName}"...`
+		);
+
+		const rows = yield* Effect.tryPromise({
 			try: () =>
-				db.schema
-					.createTable(tableName)
-					.addColumn('id', 'integer', (col) => col.primaryKey().autoIncrement())
-					.addColumn('definition', 'text', (col) => col.notNull())
-					.execute(),
+				db.selectFrom(legacyTableName).selectAll().orderBy('id', 'desc').limit(1).execute(),
 			catch: (cause) => new SqlError({ cause }),
 		});
 
-		if (previousSchemaDefinition === undefined) {
-			useDbSchema = true;
-		} else {
-			previousSchemaDefinitionInternal = previousSchemaDefinition;
-		}
-
-		const loadPreviousSchemaFromDB = Effect.gen(function* () {
-			const exists = yield* tableExists(db, tableName);
-
-			if (!exists) {
-				yield* createTable;
-				return [];
-			}
-
-			const rows = yield* Effect.tryPromise({
-				try: () => db.selectFrom(tableName).selectAll().orderBy('id', 'desc').limit(1).execute(),
-				catch: (cause) => new SqlError({ cause }),
-			});
-
-			if (rows.length === 0) {
-				return [];
-			}
-
+		if (rows.length > 0) {
 			const latestDefinition = rows[0].definition;
-			return yield* Effect.try({
+			previousSchemaDefinitionInternal = yield* Effect.try({
 				try: () => JSON.parse(latestDefinition) as TableDefinition[],
 				catch: (cause) => new SqlError({ cause }),
 			});
-		}).pipe(
-			Effect.catchAll((cause) =>
-				Effect.gen(function* () {
-					yield* Effect.logError(cause);
-					return [] as TableDefinition[];
-				})
-			)
-		);
+		}
 
-		const getPreviousSchema = () =>
-			useDbSchema ? loadPreviousSchemaFromDB : Effect.succeed(previousSchemaDefinitionInternal);
-
-		const saveSchema = (schemaDefinition: TableDefinition[]) =>
-			Effect.gen(function* () {
-				const definition = JSON.stringify(schemaDefinition);
-				const exists = yield* tableExists(db, tableName);
-
-				if (!exists) {
-					yield* createTable;
-				}
-
-				yield* Effect.tryPromise({
-					try: () => db.insertInto(tableName).values({ definition }).executeTakeFirstOrThrow(),
+		// Create the new schema table if it doesn't exist
+		const v1TableExists = yield* tableExists(db, v1TableName);
+		if (!v1TableExists) {
+			yield* createTable;
+		}
+		const v1HasRows = v1TableExists
+			? (yield* Effect.tryPromise({
+					try: () => db.selectFrom(v1TableName).select('id').limit(1).execute(),
 					catch: (cause) => new SqlError({ cause }),
-				});
+				})).length > 0
+			: false;
 
-				return;
-			}).pipe(Effect.catchAll(Effect.logError));
+		if (!v1HasRows && previousSchemaDefinitionInternal.length > 0) {
+			const definition = JSON.stringify(previousSchemaDefinitionInternal);
+			yield* Effect.tryPromise({
+				try: () =>
+					db.insertInto(v1TableName).values({ definition, id: now() }).executeTakeFirstOrThrow(),
+				catch: (cause) => new SqlError({ cause }),
+			});
+		}
 
-		return {
-			getPreviousSchema,
-			saveSchema,
-		};
-	});
+		// Drop the legacy table after migration
+		yield* Effect.tryPromise({
+			try: () => db.schema.dropTable(legacyTableName).execute(),
+			catch: (cause) => new SqlError({ cause }),
+		});
+
+		yield* Effect.logWarning(
+			`✅ Legacy schema table "${legacyTableName}" migrated and dropped. Continuing with "${v1TableName}".`
+		);
+	}
+
+	if (previousSchemaDefinition === undefined) {
+		useDbSchema = true;
+	} else {
+		previousSchemaDefinitionInternal = previousSchemaDefinition;
+	}
+
+	const loadPreviousSchemaFromDB = Effect.gen(function* () {
+		const exists = yield* tableExists(db, v1TableName);
+
+		if (!exists) {
+			yield* createTable;
+			return [];
+		}
+
+		const rows = yield* Effect.tryPromise({
+			try: () => db.selectFrom(v1TableName).selectAll().orderBy('id', 'desc').limit(1).execute(),
+			catch: (cause) => new SqlError({ cause }),
+		});
+
+		if (rows.length === 0) {
+			return [];
+		}
+
+		const latestDefinition = rows[0].definition;
+		return yield* Effect.try({
+			try: () => JSON.parse(latestDefinition) as TableDefinition[],
+			catch: (cause) => new SqlError({ cause }),
+		});
+	}).pipe(
+		Effect.catchAll(
+			Effect.fn(function* (cause) {
+				yield* Effect.logError(cause);
+				return [] as TableDefinition[];
+			})
+		)
+	);
+
+	const getPreviousSchema = () =>
+		useDbSchema ? loadPreviousSchemaFromDB : Effect.succeed(previousSchemaDefinitionInternal);
+
+	const saveSchema = Effect.fn('saveSchema')(function* (schemaDefinition: TableDefinition[]) {
+		const definition = JSON.stringify(schemaDefinition);
+		const exists = yield* tableExists(db, v1TableName);
+
+		if (!exists) {
+			yield* createTable;
+		}
+
+		yield* Effect.tryPromise({
+			try: () =>
+				db.insertInto(v1TableName).values({ definition, id: now() }).executeTakeFirstOrThrow(),
+			catch: (cause) => new SqlError({ cause }),
+		});
+
+		return;
+	}, Effect.catchAll(Effect.logError));
+
+	return {
+		getPreviousSchema,
+		saveSchema,
+	};
+});
 
 /**
  * Synchronize the live database schema with a provided schema definition.

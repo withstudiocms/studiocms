@@ -4,6 +4,7 @@ import { Effect } from 'effect';
 import { type Kysely, sql } from 'kysely';
 import { SqlError } from './errors.js';
 import { createIndexes } from './indexes.js';
+import { getDialectRaw } from './introspection.js';
 import type { ColumnDefinition, ColumnType, TableDefinition } from './types.js';
 
 /* v8 ignore start */
@@ -52,9 +53,17 @@ import type { ColumnDefinition, ColumnType, TableDefinition } from './types.js';
  *                       Defaults to false.
  * @returns The same `col` builder instance with chained constraint methods applied.
  */
-export function applyColumnConstraints(col: any, def: ColumnDefinition, isAlterTable = false) {
+export function applyColumnConstraints(
+	col: any,
+	def: ColumnDefinition,
+	db: Kysely<any>,
+	isAlterTable = false
+) {
+	const dialect = getDialectRaw(db);
+
 	if (def.primaryKey) col = col.primaryKey();
-	if (def.autoIncrement) col = col.autoIncrement(); // Kysely handles DB-specific syntax
+	if (def.autoIncrement)
+		col = def.type === 'integer' && dialect !== 'postgres' ? col.autoIncrement() : col;
 
 	if (def.notNull) {
 		if (isAlterTable && def.default === undefined && !def.defaultSQL) {
@@ -116,7 +125,7 @@ export const createTable = Effect.fn(function* (db: Kysely<any>, tableDef: Table
 		tableDef.columns,
 		Effect.fn(function* (colDef) {
 			tableBuilder = tableBuilder.addColumn(colDef.name, colDef.type, (col) =>
-				applyColumnConstraints(col, colDef)
+				applyColumnConstraints(col, colDef, db)
 			);
 		})
 	);
@@ -183,7 +192,9 @@ export const addMissingColumns = Effect.fn(function* (
 				try: () =>
 					db.schema
 						.alterTable(tableDef.name)
-						.addColumn(colDef.name, colDef.type, (col) => applyColumnConstraints(col, colDef, true))
+						.addColumn(colDef.name, colDef.type, (col) =>
+							applyColumnConstraints(col, colDef, db, true)
+						)
 						.execute(),
 				catch: (cause) => new SqlError({ cause }),
 			});
