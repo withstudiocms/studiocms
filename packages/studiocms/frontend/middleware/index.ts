@@ -155,6 +155,11 @@ export const onRequest = defineMiddlewareRouter([
 			const userPermissionLevel =
 				context.locals.StudioCMS.security?.userSessionData.permissionLevel;
 
+			if (!userPermissionLevel) {
+				// How did the user get here? Log them out to reset session
+				return context.redirect(`/${dashboardRoute}/logout`);
+			}
+
 			// Using micromatch to handle wildcard route matching
 			const matchChance1 = authenticatedRoutes.find((route) =>
 				micromatch.isMatch(currentPath, route.pathname)
@@ -178,7 +183,7 @@ export const onRequest = defineMiddlewareRouter([
 				const matchingRoute = matchChance1 || matchChance2!;
 				const requiredLevel = matchingRoute.requiredPermissionLevel;
 				const levels = ['visitor', 'editor', 'admin', 'owner'];
-				const userLevelIndex = levels.indexOf(userPermissionLevel || 'unknown');
+				const userLevelIndex = levels.indexOf(userPermissionLevel);
 				const requiredLevelIndex = levels.indexOf(requiredLevel);
 
 				if (userLevelIndex < requiredLevelIndex) {
