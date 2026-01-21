@@ -174,6 +174,7 @@ export class KyselyTableManager {
 	 */
 	async createTable(): Promise<void> {
 		const { tableDefinition } = this.options;
+		const dialect = this.getDialect();
 
 		let builder = this.db.schema.createTable(tableDefinition.name);
 
@@ -184,7 +185,7 @@ export class KyselyTableManager {
 					col = col.primaryKey();
 				}
 				if (column.autoIncrement) {
-					col = col.autoIncrement();
+					col = column.type === 'integer' && dialect !== 'postgres' ? col.autoIncrement() : col;
 				}
 				if (column.notNull) {
 					col = col.notNull();

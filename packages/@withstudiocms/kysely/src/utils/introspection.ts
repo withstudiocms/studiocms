@@ -6,30 +6,8 @@ import { DialectDeterminationError } from './errors.js';
 import { makeSql } from './sql.js';
 import type { DatabaseDialect } from './types.js';
 
-/**
- * Determine the SQL dialect for the provided Kysely instance by inspecting the
- * executor's adapter capabilities.
- *
- * The detection uses the adapter's support for RETURNING and transactional DDL
- * to distinguish between known dialects:
- *  - "mysql":     !supportsReturning && !supportsTransactionalDdl
- *  - "sqlite":    supportsReturning && !supportsTransactionalDdl
- *  - "postgres":  supportsReturning && supportsTransactionalDdl
- *
- * This function is provided as an Effect and will either succeed with one of
- * the DatabaseDialect literals ("mysql" | "sqlite" | "postgres") or fail with
- * a DialectDeterminationError.
- *
- * @param db - A Kysely instance parameterized by the application's database schema.
- * @returns An Effect that resolves to the detected DatabaseDialect.
- * @throws DialectDeterminationError if obtaining the executor fails or if the
- *         adapter capabilities do not match any known dialect pattern.
- */
-export const getDialect = Effect.fn(function* (db: Kysely<any>) {
-	const { adapter } = yield* Effect.try({
-		try: () => db.getExecutor(),
-		catch: (cause) => new DialectDeterminationError({ cause }),
-	});
+export function getDialectRaw(db: Kysely<any>): DatabaseDialect {
+	const { adapter } = db.getExecutor();
 
 	const cases = [
 		{
@@ -54,9 +32,34 @@ export const getDialect = Effect.fn(function* (db: Kysely<any>) {
 		}
 	}
 
-	/* v8 ignore start */
-	return yield* new DialectDeterminationError({ cause: 'Unable to determine database dialect.' });
-});
+	throw new DialectDeterminationError({ cause: 'Unable to determine database dialect.' });
+}
+
+/**
+ * Determine the SQL dialect for the provided Kysely instance by inspecting the
+ * executor's adapter capabilities.
+ *
+ * The detection uses the adapter's support for RETURNING and transactional DDL
+ * to distinguish between known dialects:
+ *  - "mysql":     !supportsReturning && !supportsTransactionalDdl
+ *  - "sqlite":    supportsReturning && !supportsTransactionalDdl
+ *  - "postgres":  supportsReturning && supportsTransactionalDdl
+ *
+ * This function is provided as an Effect and will either succeed with one of
+ * the DatabaseDialect literals ("mysql" | "sqlite" | "postgres") or fail with
+ * a DialectDeterminationError.
+ *
+ * @param db - A Kysely instance parameterized by the application's database schema.
+ * @returns An Effect that resolves to the detected DatabaseDialect.
+ * @throws DialectDeterminationError if obtaining the executor fails or if the
+ *         adapter capabilities do not match any known dialect pattern.
+ */
+export const getDialect = Effect.fn((db: Kysely<any>) =>
+	Effect.try({
+		try: () => getDialectRaw(db),
+		catch: (cause) => new DialectDeterminationError({ cause }),
+	})
+);
 /* v8 ignore stop */
 
 /* v8 ignore start */
