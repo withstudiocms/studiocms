@@ -16,10 +16,9 @@ const legacyTableName = 'kysely_schema';
 const v1TableName = '_kysely_schema_v1';
 
 function now() {
-	const baseYear = 2025;
 	const now = new Date();
-	const base = new Date(baseYear, 0, 1);
-	const diff = now.getTime() - base.getTime();
+	const base = Date.UTC(2025, 0, 1);
+	const diff = now.getTime() - base;
 	return Math.floor(diff / 1000);
 }
 
