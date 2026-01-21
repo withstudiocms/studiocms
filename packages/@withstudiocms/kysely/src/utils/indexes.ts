@@ -66,6 +66,7 @@ export const getTableIndexes = Effect.fn(function* (db: Kysely<any>, tableName: 
                 SELECT DISTINCT indexname 
                 FROM pg_indexes 
                 WHERE schemaname = 'public' 
+				AND indexname NOT LIKE '%_pkey'
                 AND tablename = ${tableName}
             `.execute(db)
 			);
