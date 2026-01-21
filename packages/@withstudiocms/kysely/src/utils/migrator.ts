@@ -15,19 +15,12 @@ export * from './types.js';
 const legacyTableName = 'kysely_schema';
 const v1TableName = '_kysely_schema_v1';
 
-/**
- * Get the current timestamp in the following simplified format:
- *
- * - YYMMDDMM
- */
 function now() {
+	const baseYear = 2025;
 	const now = new Date();
-	const year = now.getFullYear().toString().slice(-2);
-	const month = String(now.getMonth() + 1).padStart(2, '0');
-	const day = String(now.getDate()).padStart(2, '0');
-	const hours = String(now.getHours()).padStart(2, '0');
-	const minutes = String(now.getMinutes()).padStart(2, '0');
-	return Number(`${year}${month}${day}${hours}${minutes}`);
+	const base = new Date(baseYear, 0, 1);
+	const diff = now.getTime() - base.getTime();
+	return Math.floor(diff / 1000);
 }
 
 const schemaManager = Effect.fn('schemaManager')(function* (
