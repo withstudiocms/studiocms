@@ -48,16 +48,11 @@ export const defineDataMiddleware = <A, I>(
 	 *
 	 * @param context - The API context object containing request and environment information.
 	 * @param data - The validated header data conforming to the provided schema.
-	 * @param next - The next middleware function in the chain.
 	 * @returns An Effect that resolves to either a Response or a Promise of Response.
 	 *
 	 * Note: Function should return an 200 Response on success or throw MiddlewareError on failure.
 	 */
-	fn: (
-		context: APIContext,
-		data: A,
-		next: MiddlewareNext
-	) => Effect.Effect<Response, MiddlewareError, never>
+	fn: (context: APIContext, data: A) => Effect.Effect<Response, MiddlewareError, never>
 ): EffectMiddlewareHandler =>
 	/**
 	 * The middleware function that processes the response headers and invokes the handler.
@@ -81,7 +76,7 @@ export const defineDataMiddleware = <A, I>(
 			response.headers.entries(),
 			Object.fromEntries,
 			Schema.decodeUnknown(schema),
-			Effect.flatMap((data) => fn(context, data, next)),
+			Effect.flatMap((data) => fn(context, data)),
 			Effect.map((res) => (res.status === 200 ? response : res)),
 			Effect.mapError(
 				(errors) =>
