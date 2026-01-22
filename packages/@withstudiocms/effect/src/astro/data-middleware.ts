@@ -26,19 +26,19 @@ export const setDataContext = (
 };
 
 /**
- * Defines a data middleware that validates and parses request headers using the provided schema.
+ * Defines a data middleware that validates and parses response headers from a page using the provided schema.
  *
- * The middleware extracts headers from the incoming request, decodes them according to the
+ * The middleware extracts headers from the incoming response, decodes them according to the
  * specified schema, and passes the validated data to the provided handler function.
  * If validation fails, a `MiddlewareError` is thrown.
  *
- * @param schema - The schema used to validate and parse the request headers (headers are converted to an object).
+ * @param schema - The schema used to validate and parse the response headers (headers are converted to an object).
  * @param fn - The middleware handler function that receives the validated data.
- * @returns A middleware function that processes the request headers and invokes the handler.
+ * @returns A middleware function that processes the response headers and invokes the handler.
  */
 export const defineDataMiddleware = <A, I>(
 	/**
-	 * The schema used to validate and parse the request headers.
+	 * The schema used to validate and parse the response headers.
 	 * Headers are converted to an object before validation.
 	 */
 	schema: Schema.Schema<A, I, never>,
@@ -60,7 +60,7 @@ export const defineDataMiddleware = <A, I>(
 	) => Effect.Effect<Response, MiddlewareError, never>
 ): EffectMiddlewareHandler =>
 	/**
-	 * The middleware function that processes the request headers and invokes the handler.
+	 * The middleware function that processes the response headers and invokes the handler.
 	 *
 	 * @param context - The API context object containing request and environment information.
 	 * @param next - The next middleware function in the chain.
