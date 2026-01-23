@@ -19,7 +19,9 @@ import { SDKCore } from 'studiocms:sdk';
 import SCMSUiVersion from 'studiocms:ui/version';
 import SCMSVersion from 'studiocms:version';
 import { defineMiddlewareRouter, Effect } from '@withstudiocms/effect';
+import micromatch from 'micromatch';
 import { STUDIOCMS_EDITOR_CSRF_COOKIE_NAME } from '#consts';
+import { authenticatedRoutes } from './_authmap.js';
 import { getUserPermissions, makeFallbackSiteConfig, SetLocal, setLocals } from './utils.js';
 
 // Import the dashboard route override from the configuration
@@ -144,6 +146,50 @@ export const onRequest = defineMiddlewareRouter([
 
 			// Check if the user is logged in and redirect to the login page if not
 			if (!userSessionData.isLoggedIn) return context.redirect(StudioCMSRoutes.authLinks.loginURL);
+
+			// Get the current path
+			const currentPath = context.url.pathname;
+
+			// Check if the user has permission to access the current route
+			// If not, redirect to the dashboard home page
+			const userPermissionLevel =
+				context.locals.StudioCMS.security?.userSessionData.permissionLevel;
+
+			if (!userPermissionLevel) {
+				// How did the user get here? Log them out to reset session
+				return context.redirect(`/${dashboardRoute}/logout`);
+			}
+
+			// Using micromatch to handle wildcard route matching
+			const matchChance1 = authenticatedRoutes.find((route) =>
+				micromatch.isMatch(currentPath, route.pathname)
+			);
+
+			// if trailing `/` exists, try matching without it
+			const matchChance2 =
+				matchChance1 ||
+				(() => {
+					if (currentPath.endsWith('/')) {
+						const trimmedPath = currentPath.slice(0, -1);
+						return authenticatedRoutes.find((route) =>
+							micromatch.isMatch(trimmedPath, route.pathname)
+						);
+					}
+					return null;
+				})();
+
+			if (matchChance1 || matchChance2) {
+				// biome-ignore lint/style/noNonNullAssertion: only used after checking for existence
+				const matchingRoute = matchChance1 || matchChance2!;
+				const requiredLevel = matchingRoute.requiredPermissionLevel;
+				const levels = ['visitor', 'editor', 'admin', 'owner'];
+				const userLevelIndex = levels.indexOf(userPermissionLevel);
+				const requiredLevelIndex = levels.indexOf(requiredLevel);
+
+				if (userLevelIndex < requiredLevelIndex) {
+					return context.redirect(`/${dashboardRoute}`);
+				}
+			}
 
 			// Else, Continue to the next middleware
 			return next();
