@@ -127,6 +127,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
                 />
 
                 <input type="hidden" name="page-id" value={pageData.id} />
+                <input type="hidden" name="page-published-at" value={pageData.publishedAt instanceof Date ? pageData.publishedAt.toISOString() : pageData.publishedAt} />
               </div>
 
               <div class="form-row">
@@ -559,6 +560,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
     "page-content-id",
     "page-content",
     "page-id",
+    "page-published-at",
   ] as const;
 
   type KnownFormDataKeys = (typeof knownFormDataKeys)[number];
@@ -579,6 +581,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
     "contentId",
     "content",
     "id",
+    "publishedAt",
   ] as const;
 
   type KnownDataKeys = (typeof knownDataKeys)[number];
@@ -602,6 +605,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
     "page-content-id": "contentId",
     "page-content": "content",
     "page-id": "id",
+    "page-published-at": "publishedAt",
   };
 
   const { contentManagementUrl } = createContainer.dataset;
