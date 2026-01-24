@@ -225,7 +225,10 @@ export const { POST, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 					authorId: AuthorId,
 					contributorIds: JSON.stringify(ContributorIds),
 					updatedAt: new Date().toISOString(),
-					publishedAt: data.publishedAt?.toISOString() || new Date().toISOString(),
+					publishedAt:
+						currentPageData.draft && data.draft === false
+							? new Date().toISOString()
+							: currentPageData.publishedAt?.toISOString() || new Date().toISOString(),
 					categories: JSON.stringify(data.categories || []),
 					tags: JSON.stringify(data.tags || []),
 					augments: JSON.stringify(data.augments || []),
