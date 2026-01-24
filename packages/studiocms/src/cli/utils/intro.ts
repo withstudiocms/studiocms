@@ -16,7 +16,7 @@ export const random = (...arr: any[]) => {
 
 export const intro = (debug: boolean) =>
 	genLogger('studiocms/cli/utils/intro')(function* () {
-		const { chalk, username } = yield* CliContext;
+		const { username } = yield* CliContext;
 
 		const { messages } = getSeasonalMessages();
 
@@ -30,7 +30,7 @@ export const intro = (debug: boolean) =>
 					[
 						'Welcome',
 						'to',
-						label('StudioCMS', StudioCMSColorwayBg, chalk.black),
+						label('StudioCMS', StudioCMSColorwayBg, 'black'),
 						StudioCMSColorway(`v${pkgJson.version}`),
 						username,
 					],

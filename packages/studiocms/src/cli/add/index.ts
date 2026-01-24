@@ -171,113 +171,112 @@ export const addPlugin = Cli.Command.make(
 	{
 		plugin,
 	},
-	({ plugin }) =>
-		Effect.gen(function* () {
-			const [validator, installer, updater, context] = yield* Effect.all([
-				ValidatePlugins,
-				TryToInstallPlugins,
-				UpdateStudioCMSConfig,
-				genContext,
-			]);
+	Effect.fn(function* ({ plugin }) {
+		const [validator, installer, updater, context] = yield* Effect.all([
+			ValidatePlugins,
+			TryToInstallPlugins,
+			UpdateStudioCMSConfig,
+			genContext,
+		]);
 
-			const { cwd, chalk } = context;
+		const { cwd, chalk } = context;
 
-			yield* intro('StudioCMS CLI Utilities (add)');
+		yield* intro('StudioCMS CLI Utilities (add)');
 
-			const pluginNames = plugin.map((name) => {
-				const aliasName = ALIASES.get(name);
-				if (!aliasName) return name;
-				return aliasName;
-			});
+		const pluginNames = plugin.map((name) => {
+			const aliasName = ALIASES.get(name);
+			if (!aliasName) return name;
+			return aliasName;
+		});
 
-			const validatedPlugins = yield* validator
-				.run(pluginNames)
-				.pipe(CliContext.makeProvide(context));
+		const validatedPlugins = yield* validator
+			.run(pluginNames)
+			.pipe(CliContext.makeProvide(context));
 
-			const installResult: UpdateResult = yield* installer
-				.run(validatedPlugins)
-				.pipe(CliContext.makeProvide(context));
+		const installResult: UpdateResult = yield* installer
+			.run(validatedPlugins)
+			.pipe(CliContext.makeProvide(context));
 
-			const rootPath = resolveRoot(cwd);
-			const root = pathToFileURL(rootPath);
-			// Append forward slash to compute relative paths
-			root.href = appendForwardSlash(root.href);
+		const rootPath = resolveRoot(cwd);
+		const root = pathToFileURL(rootPath);
+		// Append forward slash to compute relative paths
+		root.href = appendForwardSlash(root.href);
 
-			switch (installResult) {
-				case UpdateResult.updated: {
-					break;
-				}
-				case UpdateResult.cancelled: {
-					yield* note(
-						cancelled(
-							`Dependencies ${chalk.bold('NOT')} installed.`,
-							'Be sure to install them manually before continuing!'
-						)
-					);
-					break;
-				}
-				case UpdateResult.failure: {
-					throw createPrettyError(new Error('Unable to install dependencies'));
-				}
-				case UpdateResult.none:
-					break;
+		switch (installResult) {
+			case UpdateResult.updated: {
+				break;
 			}
+			case UpdateResult.cancelled: {
+				yield* note(
+					cancelled(
+						`Dependencies ${chalk.bold('NOT')} installed.`,
+						'Be sure to install them manually before continuing!'
+					)
+				);
+				break;
+			}
+			case UpdateResult.failure: {
+				throw createPrettyError(new Error('Unable to install dependencies'));
+			}
+			case UpdateResult.none:
+				break;
+		}
 
-			const configURL = yield* resolveOrCreateConfig(root);
+		const configURL = yield* resolveOrCreateConfig(root);
 
-			yield* Console.debug(`found config at ${configURL}`);
+		yield* Console.debug(`found config at ${configURL}`);
 
-			const mod = yield* loadConfigModule(configURL, validatedPlugins);
+		const mod = yield* loadConfigModule(configURL, validatedPlugins);
 
-			let configResult: UpdateResult | undefined;
+		let configResult: UpdateResult | undefined;
 
-			if (mod) {
-				configResult = yield* updater.run(configURL, mod).pipe(
-					CliContext.makeProvide(context),
-					Effect.catchAll((err) => {
-						logger.debug(`Error updating studiocms config ${err}`);
-						return new StudioCMSCliError(createPrettyError(err as Error));
-					})
+		if (mod) {
+			configResult = yield* updater.run(configURL, mod).pipe(
+				CliContext.makeProvide(context),
+				Effect.catchAll((err) => {
+					logger.debug(`Error updating studiocms config ${err}`);
+					return new StudioCMSCliError(createPrettyError(err as Error));
+				})
+			);
+		}
+
+		switch (configResult) {
+			case UpdateResult.cancelled: {
+				yield* outro(cancelled(`Your configuration has ${chalk.bold('NOT')} been updated.`));
+				break;
+			}
+			case UpdateResult.none: {
+				const pkgURL = new URL('./package.json', configURL);
+				if (existsSync(fileURLToPath(pkgURL))) {
+					const { dependencies = {}, devDependencies = {} } = yield* Effect.tryPromise(() =>
+						fs.readFile(fileURLToPath(pkgURL)).then((res) => JSON.parse(res.toString()))
+					);
+					const deps = Object.keys(Object.assign(dependencies, devDependencies));
+					const missingDeps = validatedPlugins.filter(
+						(plugin) => !deps.includes(plugin.packageName)
+					);
+					if (missingDeps.length === 0) {
+						yield* outro('Configuration up-to-date.');
+						break;
+					}
+				}
+
+				yield* outro('Configuration up-to-date.');
+				break;
+			}
+			// NOTE: failure shouldn't happen in practice because `updateAstroConfig` doesn't return that.
+			// Pipe this to the same handling as `UpdateResult.updated` for now.
+			case UpdateResult.failure:
+			case UpdateResult.updated:
+			case undefined: {
+				const list = validatedPlugins.map((plugin) => `  - ${plugin.pluginName}`).join('\n');
+
+				yield* outro(
+					success(
+						`Added the following plugin${validatedPlugins.length === 1 ? '' : 's'} to your project:\n ${list}`
+					)
 				);
 			}
-
-			switch (configResult) {
-				case UpdateResult.cancelled: {
-					yield* outro(cancelled(`Your configuration has ${chalk.bold('NOT')} been updated.`));
-					break;
-				}
-				case UpdateResult.none: {
-					const pkgURL = new URL('./package.json', configURL);
-					if (existsSync(fileURLToPath(pkgURL))) {
-						const { dependencies = {}, devDependencies = {} } = yield* Effect.tryPromise(() =>
-							fs.readFile(fileURLToPath(pkgURL)).then((res) => JSON.parse(res.toString()))
-						);
-						const deps = Object.keys(Object.assign(dependencies, devDependencies));
-						const missingDeps = validatedPlugins.filter(
-							(plugin) => !deps.includes(plugin.packageName)
-						);
-						if (missingDeps.length === 0) {
-							yield* outro('Configuration up-to-date.');
-							break;
-						}
-					}
-
-					yield* outro('Configuration up-to-date.');
-					break;
-				}
-				// NOTE: failure shouldn't happen in practice because `updateAstroConfig` doesn't return that.
-				// Pipe this to the same handling as `UpdateResult.updated` for now.
-				case UpdateResult.failure:
-				case UpdateResult.updated:
-				case undefined: {
-					const list = validatedPlugins.map((plugin) => `  - ${plugin.pluginName}`).join('\n');
-
-					yield* outro(
-						success(
-							`Added the following plugin${validatedPlugins.length === 1 ? '' : 's'} to your project:\n ${list}`
-						)
-					);
-				}
-			}
-		}).pipe(Effect.provide(addPluginDeps))
+		}
+	}, Effect.provide(addPluginDeps))
 ).pipe(Cli.Command.withDescription('Add StudioCMS plugin(s) to your project'));

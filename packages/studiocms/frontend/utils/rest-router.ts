@@ -218,34 +218,33 @@ export function idOrPathRouter(
  * const responseEffect = processHandler(myHandler, apiContext, '/my-path', 'GET');
  * ```
  */
-const processHandler = (
+const processHandler = Effect.fn('processHandler')(function* (
 	handler: APIRoute | undefined,
 	ctx: APIContext,
 	path: string,
 	method: string
-): Effect.Effect<Response, never, never> =>
-	Effect.gen(function* () {
-		if (!handler) {
-			return AllResponse();
-		}
+): Effect.fn.Return<Response, never, never> {
+	if (!handler) {
+		return AllResponse();
+	}
 
-		const response = yield* Effect.tryPromise({
-			try: async () => await handler(ctx),
-			catch: (error) =>
-				new StudioCMSAPIError({
-					message: `Error in handler for path ${path} [${method}]: ${String(error)}`,
-					cause: error,
-				}),
-		}).pipe(
-			Effect.catchAll((error) =>
-				Effect.logError(`API Route Error: ${String(error)}`).pipe(
-					Effect.as(createJsonResponse({ error: 'Internal Server Error' }, { status: 500 }))
-				)
+	const response = yield* Effect.tryPromise({
+		try: async () => await handler(ctx),
+		catch: (error) =>
+			new StudioCMSAPIError({
+				message: `Error in handler for path ${path} [${method}]: ${String(error)}`,
+				cause: error,
+			}),
+	}).pipe(
+		Effect.catchAll((error) =>
+			Effect.logError(`API Route Error: ${String(error)}`).pipe(
+				Effect.as(createJsonResponse({ error: 'Internal Server Error' }, { status: 500 }))
 			)
-		);
+		)
+	);
 
-		return response;
-	});
+	return response;
+});
 
 /**
  * Creates a REST router that handles HTTP requests based on route type and optional ID parameters.

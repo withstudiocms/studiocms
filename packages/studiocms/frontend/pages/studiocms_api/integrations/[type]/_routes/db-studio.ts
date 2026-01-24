@@ -23,24 +23,23 @@ const useDriverErrorPromise = <T>(_try: () => Promise<T>) =>
 			new DriverError({ message: error instanceof Error ? error.message : String(error) }),
 	});
 
-const getDriverInstance = () =>
-	Effect.gen(function* () {
-		// Return existing driver if already initialized
-		if (driver) return driver;
+const getDriverInstance = Effect.fn('getDriverInstance')(function* () {
+	// Return existing driver if already initialized
+	if (driver) return driver;
 
-		// Attempt to get and initialize the driver
-		driver = yield* useDriverErrorPromise(() => getDriver()).pipe(
-			Effect.tap((drv) => useDriverErrorPromise(() => drv.init()))
-		);
+	// Attempt to get and initialize the driver
+	driver = yield* useDriverErrorPromise(() => getDriver()).pipe(
+		Effect.tap((drv) => useDriverErrorPromise(() => drv.init()))
+	);
 
-		// If driver is still undefined, return an error
-		if (!driver) {
-			return yield* new DriverError({ message: 'Failed to get database driver' });
-		}
+	// If driver is still undefined, return an error
+	if (!driver) {
+		return yield* new DriverError({ message: 'Failed to get database driver' });
+	}
 
-		// Return the initialized driver
-		return driver;
-	});
+	// Return the initialized driver
+	return driver;
+});
 
 const parseLogLevel = (
 	level: 'All' | 'Fatal' | 'Error' | 'Warning' | 'Info' | 'Debug' | 'Trace' | 'None'

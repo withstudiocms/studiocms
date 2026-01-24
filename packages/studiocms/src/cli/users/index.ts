@@ -67,7 +67,7 @@ export const usersCMD = Cli.Command.make(
 			yield* Effect.all([
 				debugLogger(`Context: ${JSON.stringify(context, null, 2)}`),
 				intro(
-					`${label('StudioCMS', StudioCMSColorwayBg, context.chalk.black)} Interactive CLI - initializing...`
+					`${label('StudioCMS', StudioCMSColorwayBg, 'black')} Interactive CLI - initializing...`
 				),
 				checkRequiredEnvVarsEffect(['CMS_ENCRYPTION_KEY']),
 			]);

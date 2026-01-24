@@ -1,6 +1,7 @@
 import crypto from 'node:crypto';
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import { styleText } from 'node:util';
 import {
 	StudioCMSColorwayError,
 	StudioCMSColorwayInfo,
@@ -54,7 +55,7 @@ export const env: EffectStepFn = Effect.fn(function* (context, debug, dryRun) {
 
 	if (envExists) {
 		yield* log.warn(
-			`${label('Warning', StudioCMSColorwayWarnBg, chalk.black)} An environment file already exists. Would you like to overwrite it?`
+			`${label('Warning', StudioCMSColorwayWarnBg, 'black')} An environment file already exists. Would you like to overwrite it?`
 		);
 
 		const confirm = yield* askToContinue();
@@ -522,7 +523,7 @@ export const env: EffectStepFn = Effect.fn(function* (context, debug, dryRun) {
 
 	if (dryRun) {
 		context.tasks.push({
-			title: `${StudioCMSColorwayInfo.bold('--dry-run')} ${chalk.dim('Skipping environment file creation')}`,
+			title: `${StudioCMSColorwayInfo(styleText('bold', '--dry-run'))} ${styleText('dim', 'Skipping environment file creation')}`,
 			task: async (message) => {
 				message('Creating environment file... (skipped)');
 			},

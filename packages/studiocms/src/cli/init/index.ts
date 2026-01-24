@@ -48,7 +48,7 @@ export const initCMD = Cli.Command.make(
 				debugLogger(`Options: ${JSON.stringify({ debug, dry }, null, 2)}`),
 				debugLogger(`Context: ${JSON.stringify(context, null, 2)}`),
 				intro(
-					`${label('StudioCMS', StudioCMSColorwayBg, context.chalk.black)} Interactive CLI - initializing...`
+					`${label('StudioCMS', StudioCMSColorwayBg, 'black')} Interactive CLI - initializing...`
 				),
 			]);
 
