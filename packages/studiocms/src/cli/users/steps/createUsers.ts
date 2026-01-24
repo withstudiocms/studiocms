@@ -1,3 +1,4 @@
+import { styleText } from 'node:util';
 import { getAvatarUrl } from '@withstudiocms/auth-kit/utils/libravatar';
 import { StudioCMSColorwayInfo } from '@withstudiocms/cli-kit/colors';
 import { group, log, password, select, text } from '@withstudiocms/effect/clack';
@@ -229,7 +230,7 @@ export const createUsers: EffectStepFn = Effect.fn(function* (context, _debug, d
 	if (dryRun) {
 		// Dry run: skip user creation
 		context.tasks.push({
-			title: `${StudioCMSColorwayInfo.bold('--dry-run')} ${context.chalk.dim('Skipping user creation')}`,
+			title: `${StudioCMSColorwayInfo(styleText('bold', '--dry-run'))} ${styleText('dim', 'Skipping user creation')}`,
 			task: async (message) => {
 				message('Creating user... (skipped)');
 			},
@@ -237,7 +238,7 @@ export const createUsers: EffectStepFn = Effect.fn(function* (context, _debug, d
 	} else {
 		// Create user in database
 		context.tasks.push({
-			title: context.chalk.dim('Creating user...'),
+			title: styleText('dim', 'Creating user...'),
 			task: async (message) => {
 				try {
 					const [insertedUser, insertedRank] = await runEffect(todo);

@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import { styleText } from 'node:util';
 import {
 	StudioCMSColorway,
 	StudioCMSColorwayBg,
@@ -86,7 +87,7 @@ export const genJWT = Cli.Command.make(
 
 			if (debug) logger.debug('Init complete, starting...');
 
-			yield* intro(label('StudioCMS Crypto: Generate JWT', StudioCMSColorwayBg, chalk.bold));
+			yield* intro(label('StudioCMS Crypto: Generate JWT', StudioCMSColorwayBg, 'bold'));
 
 			const spin = yield* spinner();
 
@@ -134,7 +135,7 @@ export const genJWT = Cli.Command.make(
 				yield* spin.stop('Token Generated.');
 
 				yield* log.success(
-					boxen(chalk.bold(`${label('Token Generated!', StudioCMSColorwayInfoBg, chalk.bold)}`), {
+					boxen(chalk.bold(`${label('Token Generated!', StudioCMSColorwayInfoBg, 'bold')}`), {
 						ln1: 'Your new Token has been generated successfully:',
 						ln3: `Token: ${chalk.magenta(jwt)}`,
 						ln5: `Base64Url Token: ${chalk.blue(base64UrlJwt)}`,
@@ -142,7 +143,7 @@ export const genJWT = Cli.Command.make(
 				);
 
 				yield* outro(
-					`${label('You can now use this token where needed.', StudioCMSColorwayBg, chalk.bold)} Stuck? Join us on Discord at ${StudioCMSColorway.bold.underline('https://chat.studiocms.dev')}`
+					`${label('You can now use this token where needed.', StudioCMSColorwayBg, 'bold')} Stuck? Join us on Discord at ${StudioCMSColorway(styleText(['bold', 'underline'], 'https://chat.studiocms.dev'))}`
 				);
 			} catch (err) {
 				if (err instanceof Error) {

@@ -26,31 +26,30 @@ import chalk from 'chalk';
  * });
  * ```
  */
-export const validateInputOrRePrompt = (opts: {
+export const validateInputOrRePrompt = Effect.fn('validateInputOrRePrompt')(function* (opts: {
 	prompt: Effect.Effect<string | symbol, ClackError, never>;
 	checkEffect: (input: string) => Effect.Effect<string | boolean, never, never>;
-}): Effect.Effect<string | symbol, ClackError, never> =>
-	Effect.gen(function* () {
-		const { prompt, checkEffect } = opts;
+}): Effect.fn.Return<string | symbol, ClackError, never> {
+	const { prompt, checkEffect } = opts;
 
-		while (true) {
-			// Run prompt to get user input
-			const input = yield* prompt;
+	while (true) {
+		// Run prompt to get user input
+		const input = yield* prompt;
 
-			// If input is a symbol (e.g., cancel), return it
-			if (typeof input === 'symbol') {
-				return input;
-			}
-
-			// Validate the input using the provided check effect
-			const checkResult = yield* checkEffect(input);
-
-			// If validation passes, return the valid input
-			if (checkResult === true) {
-				return input;
-			}
-
-			// If validation fails, log the error and re-prompt
-			yield* log.error(chalk.red(`Invalid input: ${checkResult}`));
+		// If input is a symbol (e.g., cancel), return it
+		if (typeof input === 'symbol') {
+			return input;
 		}
-	});
+
+		// Validate the input using the provided check effect
+		const checkResult = yield* checkEffect(input);
+
+		// If validation passes, return the valid input
+		if (checkResult === true) {
+			return input;
+		}
+
+		// If validation fails, log the error and re-prompt
+		yield* log.error(chalk.red(`Invalid input: ${checkResult}`));
+	}
+});

@@ -1,3 +1,4 @@
+import { styleText } from 'node:util';
 import { StudioCMSColorwayError, StudioCMSColorwayInfo } from '@withstudiocms/cli-kit/colors';
 import { runEffect } from '@withstudiocms/effect';
 import { log, note, password, select, text } from '@withstudiocms/effect/clack';
@@ -166,14 +167,14 @@ export const modifyUsers: EffectStepFn = Effect.fn(function* (context, _debug, d
 
 			if (dryRun) {
 				context.tasks.push({
-					title: `${StudioCMSColorwayInfo.bold('--dry-run')} ${context.chalk.dim('Skipping user modification')}`,
+					title: `${StudioCMSColorwayInfo(styleText('bold', '--dry-run'))} ${styleText('dim', 'Skipping user modification')}`,
 					task: async (message) => {
 						message('Modifying user... (skipped)');
 					},
 				});
 			} else {
 				context.tasks.push({
-					title: context.chalk.dim('Modifying user...'),
+					title: styleText('dim', 'Modifying user...'),
 					task: async (message) => {
 						try {
 							await runEffect(
@@ -210,14 +211,14 @@ export const modifyUsers: EffectStepFn = Effect.fn(function* (context, _debug, d
 
 			if (dryRun) {
 				context.tasks.push({
-					title: `${StudioCMSColorwayInfo.bold('--dry-run')} ${context.chalk.dim('Skipping user modification')}`,
+					title: `${StudioCMSColorwayInfo(styleText('bold', '--dry-run'))} ${styleText('dim', 'Skipping user modification')}`,
 					task: async (message) => {
 						message('Modifying user... (skipped)');
 					},
 				});
 			} else {
 				context.tasks.push({
-					title: context.chalk.dim('Modifying user...'),
+					title: styleText('dim', 'Modifying user...'),
 					task: async (message) => {
 						try {
 							await runEffect(
@@ -254,14 +255,14 @@ export const modifyUsers: EffectStepFn = Effect.fn(function* (context, _debug, d
 
 			if (dryRun) {
 				context.tasks.push({
-					title: `${StudioCMSColorwayInfo.bold('--dry-run')} ${context.chalk.dim('Skipping user modification')}`,
+					title: `${StudioCMSColorwayInfo(styleText('bold', '--dry-run'))} ${styleText('dim', 'Skipping user modification')}`,
 					task: async (message) => {
 						message('Modifying user... (skipped)');
 					},
 				});
 			} else {
 				context.tasks.push({
-					title: context.chalk.dim('Modifying user...'),
+					title: styleText('dim', 'Modifying user...'),
 					task: async (message) => {
 						try {
 							// Environment variables are already checked by checkRequiredEnvVars

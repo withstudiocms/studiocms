@@ -1,3 +1,4 @@
+import { styleText } from 'node:util';
 import {
 	StudioCMSColorway,
 	StudioCMSColorwayBg,
@@ -40,7 +41,7 @@ export const next = (debug: boolean) =>
 			log.success(
 				boxen(
 					chalk.bold(
-						`${label('Init Complete!', StudioCMSColorwayInfoBg, chalk.bold)} Get started with StudioCMS:`
+						`${label('Init Complete!', StudioCMSColorwayInfoBg, 'bold')} Get started with StudioCMS:`
 					),
 					{
 						ln1: `Ensure your ${chalk.cyanBright('.env')} file is configured correctly.`,
@@ -53,7 +54,7 @@ export const next = (debug: boolean) =>
 
 		yield* Effect.all([
 			outro(
-				`${label('Enjoy your new CMS!', StudioCMSColorwayBg, chalk.bold)} Stuck? Join us on Discord at ${StudioCMSColorway.bold.underline('https://chat.studiocms.dev')}`
+				`${label('Enjoy your new CMS!', StudioCMSColorwayBg, 'bold')} Stuck? Join us on Discord at ${StudioCMSColorway(styleText(['bold', 'underline'], 'https://chat.studiocms.dev'))}`
 			),
 			debugLogger('Next steps complete'),
 		]);

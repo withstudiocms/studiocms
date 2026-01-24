@@ -76,8 +76,8 @@ export const categoriesRouter: EndpointRoute = {
 						ctx,
 						StudioCMSPageDataCategories.Insert.omit('id')
 					).pipe(
-						Effect.flatMap((data) =>
-							Effect.gen(function* () {
+						Effect.flatMap(
+							Effect.fn(function* (data) {
 								const id = yield* sdk.UTIL.Generators.generateRandomIDNumber(9);
 								return { id, ...data };
 							})

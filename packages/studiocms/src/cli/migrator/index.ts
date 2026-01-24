@@ -1,4 +1,5 @@
 import { pathToFileURL } from 'node:url';
+import { styleText } from 'node:util';
 import { StudioCMSColorwayBg, StudioCMSColorwayInfoBg } from '@withstudiocms/cli-kit/colors';
 import { label } from '@withstudiocms/cli-kit/messages';
 import { Cli, Effect, runEffect } from '@withstudiocms/effect';
@@ -154,9 +155,7 @@ export const migratorCMD = Cli.Command.make(
 				debugLogger('Starting interactive CLI...'),
 				debugLogger(`Options: ${JSON.stringify({ debug, rollback }, null, 2)}`),
 				debugLogger(`Context: ${JSON.stringify(context, null, 2)}`),
-				intro(
-					`${label('StudioCMS Migrator', StudioCMSColorwayBg, context.chalk.black)} - initializing...`
-				),
+				intro(`${label('StudioCMS Migrator', StudioCMSColorwayBg, 'black')} - initializing...`),
 			]);
 
 			const isRollback = rollback && !latest && !status;
@@ -226,11 +225,11 @@ export const migratorCMD = Cli.Command.make(
 										: context.chalk.red;
 
 							const labelParts = [
-								label('Migration Status', StudioCMSColorwayInfoBg, context.chalk.black),
+								label('Migration Status', StudioCMSColorwayInfoBg, 'black'),
 								label(
 									`(${context.chalk.green(appliedMigrations.toString())}/${migrationTotalColor(migrationTotal.toString())}) Applied`,
-									context.chalk.bold,
-									context.chalk.black
+									(text: string) => styleText('bold', text),
+									'black'
 								),
 							];
 

@@ -4,6 +4,8 @@ import { type ClackError, cancel, isCancel, type Task } from '@withstudiocms/eff
 import chalk from 'chalk';
 import { Context, Effect, genLogger, Layer, Option } from '../../effect.js';
 
+// TODO: Replace 'chalk' usage with node:util 'styleText' where applicable
+
 export interface BaseContext {
 	chalk: typeof chalk;
 	cwd: string;

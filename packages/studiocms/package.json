@@ -239,7 +239,7 @@
 		"@studiocms/ui": "catalog:studiocms",
 		"@withstudiocms/internal_helpers": "workspace:^",
 		"@withstudiocms/auth-kit": "workspace:^",
-		"@withstudiocms/cli-kit": "catalog:studiocms",
+		"@withstudiocms/cli-kit": "workspace:^",
 		"@withstudiocms/component-registry": "workspace:^",
 		"@withstudiocms/config-utils": "workspace:^",
 		"@withstudiocms/effect": "workspace:^",

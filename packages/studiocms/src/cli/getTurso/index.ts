@@ -9,8 +9,10 @@ const shell = Cli.Args.text({ name: 'shell' }).pipe(
 	)
 );
 
-export const getTurso = Cli.Command.make('get-turso', { shell }, ({ shell: rawShell }) =>
-	Effect.gen(function* () {
+export const getTurso = Cli.Command.make(
+	'get-turso',
+	{ shell },
+	Effect.fn(function* ({ shell: rawShell }) {
 		let shell: string | undefined;
 
 		if (typeof rawShell !== 'string' && rawShell !== undefined) {

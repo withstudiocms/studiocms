@@ -6,7 +6,6 @@ import { Cli, Effect } from '@withstudiocms/effect';
 import { intro, log, outro } from '@withstudiocms/effect/clack';
 import { DebugInfoProvider } from '@withstudiocms/internal_helpers/debug-info-provider';
 import type { AstroUserConfig } from 'astro';
-import chalk from 'chalk';
 import type { StudioCMSOptions } from '#schemas';
 import { debug } from '../utils/debugOpt.js';
 import { StudioCMSCliError } from '../utils/errors.js';
@@ -54,8 +53,10 @@ const loadConfig = <K extends 'astro' | 'studiocms'>(
 		},
 	});
 
-export const debugCMD = Cli.Command.make('debug', { debug }, ({ debug: _debug }) =>
-	Effect.gen(function* () {
+export const debugCMD = Cli.Command.make(
+	'debug',
+	{ debug },
+	Effect.fn(function* ({ debug: _debug }) {
 		let debug: boolean;
 
 		if (typeof _debug !== 'boolean') {
@@ -115,7 +116,7 @@ export const debugCMD = Cli.Command.make('debug', { debug }, ({ debug: _debug })
 
 		console.log(''); // Add a blank line before debug info output
 
-		yield* intro(`${label('StudioCMS Debug Information', StudioCMSColorwayBg, chalk.black)}`);
+		yield* intro(`${label('StudioCMS Debug Information', StudioCMSColorwayBg, 'black')}`);
 		yield* log.info(debugInfo);
 		yield* outro();
 
