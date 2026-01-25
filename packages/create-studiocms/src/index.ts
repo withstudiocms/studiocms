@@ -5,6 +5,8 @@ import { Cli, Effect, Layer, PlatformNode } from '@withstudiocms/effect/effect';
 import { readJson } from '@withstudiocms/internal_helpers/utils';
 import { CommandConfig } from './args.ts';
 import { type EffectStepFn, getContext } from './context.ts';
+import { dependencies } from './steps/dependencies.ts';
+import { git } from './steps/git.ts';
 import { intro as introStep } from './steps/intro.ts';
 import { next } from './steps/next.ts';
 import { projectName } from './steps/projectName.ts';
@@ -41,9 +43,9 @@ const command = Cli.Command.make(
 			introStep,
 			projectName,
 			template,
-			// dependencies,
+			dependencies,
 			// --- Steps which write files should go above this line ---
-			// git,
+			git,
 		];
 
 		// Execute each step in sequence
