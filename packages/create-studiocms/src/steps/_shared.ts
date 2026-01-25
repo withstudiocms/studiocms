@@ -27,6 +27,11 @@ const VALID_PROJECT_DIRECTORY_SAFE_LIST = [
 	/^yarn-error\.log/,
 ];
 
+/**
+ * Check if a directory is empty, ignoring certain safe files and directories.
+ * @param dirPath The path to the directory to check.
+ * @returns True if the directory is empty or does not exist, false otherwise.
+ */
 export function isEmpty(dirPath: string) {
 	if (!fs.existsSync(dirPath)) {
 		return true;
@@ -41,10 +46,20 @@ export function isEmpty(dirPath: string) {
 	return conflicts.length === 0;
 }
 
+/**
+ * Check if a project name is valid according to npm package naming conventions.
+ * @param projectName The project name to validate.
+ * @returns True if the project name is valid, false otherwise.
+ */
 export function isValidName(projectName: string) {
 	return /^(?:@[a-z\d\-*~][a-z\d\-*._~]*\/)?[a-z\d\-~][a-z\d\-._~]*$/.test(projectName);
 }
 
+/**
+ * Convert a project name to a valid npm package name.
+ * @param projectName The project name to convert.
+ * @returns A valid npm package name.
+ */
 export function toValidName(projectName: string) {
 	if (isValidName(projectName)) return projectName;
 
