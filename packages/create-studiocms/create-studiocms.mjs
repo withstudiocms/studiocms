@@ -13,7 +13,7 @@ if (requiredMajorVersion < minimumMajorVersion) {
 import('./dist/index.js')
 	.then(({ main }) => main())
 	.catch((error) => {
-		console.error('Failed to start `@studiocms/upgrade` CLI.');
+		console.error('Failed to start `create-studiocms` CLI.');
 		console.error(error);
 		process.exitCode = 1;
 	});

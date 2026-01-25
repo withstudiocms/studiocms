@@ -3,7 +3,7 @@
 [![NPM Version](https://img.shields.io/npm/v/create-studiocms?style=for-the-badge&logo=npm)](https://npm.im/create-studiocms)
 [![Formatted with Biome](https://img.shields.io/badge/Formatted_with-Biome-60a5fa?style=for-the-badge&logo=biome)](https://biomejs.dev/)
 
-CLI Utility Toolkit used for setting up a new project using a StudioCMS Ecosystem packages, as well as other utilities.
+CLI Utility Toolkit used for setting up a new project using StudioCMS Ecosystem packages, as well as other utilities.
 
 ## Quickstart
 

@@ -25,7 +25,10 @@ export const verify: EffectStepFn = Effect.fn('verify')(
 		if (ctx.template) {
 			if (ctx.debug) yield* Effect.log('Verifying template...');
 			const target = getTemplateTarget(ctx.template, ctx.templateRegistry, ctx.templateRef);
-			const ok = yield* Effect.promise(() => verifyTemplate(target));
+			const ok = yield* Effect.tryPromise({
+				try: () => verifyTemplate(target),
+				catch: (cause) => new CLIError({ cause }),
+			});
 			if (!ok) {
 				yield* log.error(
 					StudioCMSColorwayError(

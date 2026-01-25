@@ -38,9 +38,6 @@ export function getTemplateTarget(
 
 	// Handle StudioCMS templates
 	if (ref === 'main') {
-		// `latest` ref is specially handled to route to a branch specifically
-		// to allow faster downloads. Otherwise giget has to download the entire
-		// repo and only copy a sub directory
 		return `${templateRegistry.gigetRepoUrl}/${_template}`;
 	}
 	return `${templateRegistry.gigetRepoUrl}/${_template}#${ref}`;

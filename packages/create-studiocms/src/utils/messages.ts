@@ -96,7 +96,7 @@ type Season = 'spooky' | 'holiday' | 'new-year';
 function getSeason(): Season | undefined {
 	const date = new Date();
 	const month = date.getMonth() + 1;
-	const day = date.getDate() + 1;
+	const day = date.getDate();
 
 	if (month === 1 && day <= 7) {
 		return 'new-year';

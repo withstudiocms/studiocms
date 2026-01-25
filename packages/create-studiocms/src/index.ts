@@ -19,7 +19,7 @@ import { verify } from './steps/verify.ts';
 const pkgJson = readJson<{ version: string }>(new URL('../package.json', import.meta.url));
 
 /**
- * Define the CLI command for the upgrade utility
+ * Define the CLI command for the create-studiocms application
  */
 const command = Cli.Command.make(
 	'create-studiocms',

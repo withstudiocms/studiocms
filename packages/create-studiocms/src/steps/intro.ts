@@ -8,7 +8,7 @@ import type { Context, EffectStepFn } from '../context.ts';
  */
 export const intro: EffectStepFn = Effect.fn('intro')(function* (ctx: Context) {
 	if (!ctx.skipBanners) {
-		if (ctx.debug) Effect.logDebug('Printing welcome message...');
+		if (ctx.debug) yield* Effect.logDebug('Printing welcome message...');
 		yield* Effect.promise(() =>
 			say(
 				[
@@ -24,6 +24,6 @@ export const intro: EffectStepFn = Effect.fn('intro')(function* (ctx: Context) {
 				{ clear: true }
 			)
 		);
-		if (ctx.debug) Effect.logDebug('Welcome message printed');
+		if (ctx.debug) yield* Effect.logDebug('Welcome message printed');
 	}
 });

@@ -54,7 +54,7 @@ export const dependencies: EffectStepFn = Effect.fn('dependencies')(
 									);
 									yield* log.error(
 										StudioCMSColorwayError(
-											`Error: Dependencies failed to install, please run ${styleText('bold', `${ctx.packageManager} install`)} to install them manually after setup.}`
+											`Error: Dependencies failed to install, please run ${styleText('bold', `${ctx.packageManager} install`)} to install them manually after setup.`
 										)
 									);
 									process.exit(1);
@@ -99,7 +99,8 @@ const install = Effect.fn('install')(function* ({
 const ensureYarnLock = Effect.fn('ensureYarnLock')(function* ({ cwd }: { cwd: string }) {
 	const yarnLock = path.join(cwd, 'yarn.lock');
 	if (fs.existsSync(yarnLock)) return;
-	return yield* Effect.promise(async () =>
-		fs.promises.writeFile(yarnLock, '', { encoding: 'utf-8' })
-	);
+	return yield* Effect.tryPromise({
+		try: () => fs.promises.writeFile(yarnLock, '', { encoding: 'utf-8' }),
+		catch: (cause) => new CLIError({ cause }),
+	});
 });
