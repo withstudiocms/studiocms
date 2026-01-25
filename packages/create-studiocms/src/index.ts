@@ -8,6 +8,7 @@ import { type EffectStepFn, getContext } from './context.ts';
 import { intro as introStep } from './steps/intro.ts';
 import { next } from './steps/next.ts';
 import { projectName } from './steps/projectName.ts';
+import { template } from './steps/template.ts';
 import { verify } from './steps/verify.ts';
 
 /**
@@ -39,7 +40,7 @@ const command = Cli.Command.make(
 			verify,
 			introStep,
 			projectName,
-			// template,
+			template,
 			// dependencies,
 			// --- Steps which write files should go above this line ---
 			// git,

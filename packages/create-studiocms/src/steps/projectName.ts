@@ -3,14 +3,14 @@ import { styleText } from 'node:util';
 import { StudioCMSColorwayInfo, StudioCMSColorwayWarn } from '@withstudiocms/cli-kit/colors';
 import { log, text } from '@withstudiocms/effect/clack';
 import { Effect } from 'effect';
-import { CLIError, type Context } from '../context.ts';
+import { CLIError, type Context, type EffectStepFn } from '../context.ts';
 import { generateProjectName } from '../utils/project-name.ts';
 import { isEmpty, toValidName } from './_shared.ts';
 
 /**
  * Prompt for project name and set cwd accordingly
  */
-export const projectName = Effect.fn('projectName')(
+export const projectName: EffectStepFn = Effect.fn('projectName')(
 	function* (ctx: Context) {
 		if (ctx.debug) yield* Effect.logDebug('Running projectName...');
 
