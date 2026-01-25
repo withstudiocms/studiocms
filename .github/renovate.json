@@ -44,6 +44,11 @@
       "groupName": "AWS S3 Dependencies",
       "matchManagers": ["npm"],
       "matchPackageNames": ["@aws-sdk/client-s3", "@aws-sdk/s3-request-presigner"]
+    },
+    {
+      "groupName": "StudioCMS CLI Dependencies",
+      "matchManagers": ["npm"],
+      "matchFileNames": ["packages/@studiocms/upgrade/**", "packages/create-studiocms/**"]
     }
   ],
   "ignoreDeps": [

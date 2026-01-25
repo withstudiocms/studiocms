@@ -502,6 +502,12 @@ export function createClackMessageUpdate(
 export const randomBetween = (min: number, max: number) =>
 	Math.floor(Math.random() * (max - min + 1) + min);
 
+// biome-ignore lint/suspicious/noExplicitAny: this is a valid use case for explicit any
+export const random = (...arr: any[]) => {
+	const flattenedArray = arr.flat(1);
+	return flattenedArray[Math.floor(flattenedArray.length * Math.random())];
+};
+
 /**
  * Creates a promise that resolves after a specified delay.
  *
