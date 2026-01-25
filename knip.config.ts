@@ -69,6 +69,7 @@ const atStudioCMSPackages = [
 	'wysiwyg',
 	'migrator',
 	's3-storage',
+	'upgrade',
 ] as const;
 
 /**
