@@ -41,7 +41,8 @@ const command = Cli.Command.make(
 			projectName,
 			// template,
 			// dependencies,
-			// git, // Steps which write files should go above this line
+			// --- Steps which write files should go above this line ---
+			// git,
 		];
 
 		// Execute each step in sequence
