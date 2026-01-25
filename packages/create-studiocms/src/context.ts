@@ -4,9 +4,9 @@ import { getName, random } from '@withstudiocms/cli-kit/messages';
 import type { Task } from '@withstudiocms/effect/clack';
 import { Data, Effect } from '@withstudiocms/effect/effect';
 import packageJson from 'package-json';
-import getSeasonalMessages from './messages.ts';
 import { templateRegistry } from './templates.config.ts';
 import type { TemplateRegistry } from './types.ts';
+import getSeasonalMessages from './utils/messages.ts';
 
 /**
  * Interactive Options Interface

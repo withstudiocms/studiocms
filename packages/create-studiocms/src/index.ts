@@ -5,7 +5,10 @@ import { Cli, Effect, Layer, PlatformNode } from '@withstudiocms/effect/effect';
 import { readJson } from '@withstudiocms/internal_helpers/utils';
 import { CommandConfig } from './args.ts';
 import { type EffectStepFn, getContext } from './context.ts';
-import { next } from './next.ts';
+import { intro as introStep } from './steps/intro.ts';
+import { next } from './steps/next.ts';
+import { projectName } from './steps/projectName.ts';
+import { verify } from './steps/verify.ts';
 
 /**
  * Get the package.json data for this package
@@ -33,9 +36,9 @@ const command = Cli.Command.make(
 
 		// Define the steps to execute
 		const steps: EffectStepFn[] = [
-			// verify,
-			// intro,
-			// projectName,
+			verify,
+			introStep,
+			projectName,
 			// template,
 			// dependencies,
 			// git, // Steps which write files should go above this line

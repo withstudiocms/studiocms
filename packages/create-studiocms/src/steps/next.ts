@@ -9,7 +9,7 @@ import {
 import { boxen, label } from '@withstudiocms/cli-kit/messages';
 import { log, outro } from '@withstudiocms/effect/clack';
 import { Effect } from '@withstudiocms/effect/effect';
-import type { Context } from './context.ts';
+import type { Context } from '../context.ts';
 
 /**
  * Display next steps to the user after project setup
