@@ -22,7 +22,7 @@ export const celebrations = [
 	'Lovely!',
 	"Lookin' good.",
 	'Awesome.',
-];
+] as const;
 
 /**
  * Array of success messages displayed when all integrations are up-to-date.
@@ -48,7 +48,7 @@ export const done = [
 	'Integrations are all up to date.',
 	'Everything is on the latest and greatest.',
 	'Integrations are up to date.',
-];
+] as const;
 
 /**
  * Array of farewell messages displayed to users after completing StudioCMS operations.
@@ -67,4 +67,4 @@ export const bye = [
 	"Can't wait to see what you build.",
 	'Good luck out there.',
 	'See you around!',
-];
+] as const;

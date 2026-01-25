@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { styleText } from 'node:util';
-import { label, random, sleep } from '@withstudiocms/cli-kit/messages';
+import { label, random, randomBetween, sleep } from '@withstudiocms/cli-kit/messages';
 import { shell } from '@withstudiocms/cli-kit/utils';
 import { confirm, isCancel, log, note } from '@withstudiocms/effect/clack';
 import { Effect } from 'effect';
@@ -39,7 +39,7 @@ export const install: EffectStepFn = Effect.fn('install')(
 				: packageInfo.targetVersion.slice(1);
 			yield* log.info(`${packageInfo.name} is up to date on v${tag}`);
 			yield* Effect.tryPromise({
-				try: () => sleep(random(50, 150)),
+				try: () => sleep(randomBetween(50, 150)),
 				catch: () =>
 					new CLIError({ cause: `Failed during install logging for ${packageInfo.name}` }),
 			}).pipe(Effect.catchAll((error) => Effect.logError(String(error))));
@@ -147,9 +147,12 @@ export const install: EffectStepFn = Effect.fn('install')(
 						].join(' ');
 						// @effect-diagnostics-next-line runEffectInsideEffect:off
 						await Effect.runPromise(
-							log.error(
-								`Dependencies failed to install, please run the following command manually:\n${styleText('bold', manualInstallCommand)}`
-							)
+							Effect.all([
+								Effect.logError('Installation error:', _e),
+								log.error(
+									`Dependencies failed to install, please run the following command manually:\n${styleText('bold', manualInstallCommand)}`
+								),
+							])
 						);
 						return context.exit(1);
 					}
@@ -158,7 +161,7 @@ export const install: EffectStepFn = Effect.fn('install')(
 		}
 	},
 	Effect.catchTag('ClackError', (error) =>
-		Effect.fail(new CLIError({ cause: `Verification failed: ${String(error.cause)}` }))
+		Effect.fail(new CLIError({ cause: `Installation failed: ${String(error.cause)}` }))
 	)
 );
 

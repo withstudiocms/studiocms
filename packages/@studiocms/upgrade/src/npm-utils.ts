@@ -1,7 +1,7 @@
 import { exec } from '@withstudiocms/cli-kit/utils';
 import { Effect } from '@withstudiocms/effect/effect';
 import { detect as _detect, type DetectResult } from 'package-manager-detector';
-import { CLIError } from './context';
+import { CLIError } from './context.ts';
 
 /**
  * Effect to detect the package manager being used in the current project.

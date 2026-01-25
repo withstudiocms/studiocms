@@ -2,6 +2,7 @@ import dns from 'node:dns/promises';
 import { existsSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import { styleText } from 'node:util';
+import type { IPackageJson } from '@withstudiocms/cli-kit/package-json';
 import { log, note } from '@withstudiocms/effect/clack';
 import { Effect } from 'effect';
 import semverCoerce from 'semver/functions/coerce.js';
@@ -83,11 +84,11 @@ const isOnline = Effect.fn('isOnline')(function* (registry: string) {
  * @param value - The JSON string to parse.
  * @returns The parsed object or an empty object if parsing fails.
  */
-function safeJSONParse(value: string) {
+function safeJSONParse<R>(value: string): R {
 	try {
-		return JSON.parse(value);
+		return JSON.parse(value) as R;
 	} catch {}
-	return {};
+	return {} as R;
 }
 
 /**
@@ -98,7 +99,7 @@ function safeJSONParse(value: string) {
  *
  * @returns `true` if the package is a StudioCMS package, `false` otherwise.
  */
-function isStudioCMSPackage(name: string, _version: string) {
+function isStudioCMSorAstroPackage(name: string, _version: string) {
 	return (
 		name === 'studiocms' ||
 		name.startsWith('@studiocms/') ||
@@ -140,7 +141,7 @@ function isValidVersion(_name: string, version: string) {
  * @returns `true` if the package is supported for upgrade, `false` otherwise.
  */
 function isSupportedPackage(name: string, version: string): boolean {
-	for (const validator of [isStudioCMSPackage, isAllowedPackage, isValidVersion]) {
+	for (const validator of [isStudioCMSorAstroPackage, isAllowedPackage, isValidVersion]) {
 		if (!validator(name, version)) return false;
 	}
 	return true;
@@ -196,11 +197,15 @@ const verifyStudioCMSProject = Effect.fn('verifyStudioCMSProject')(function* (co
 		try: () => readFile(packageJson, { encoding: 'utf-8' }),
 		catch: (error) => new CLIError({ cause: `Failed to read package.json: ${String(error)}` }),
 	}).pipe(
-		Effect.catchTag('CLIError', Effect.logError),
-		Effect.map((data) => data || '')
+		Effect.catchTag('CLIError', (err) =>
+			Effect.andThen(
+				Effect.logError(err),
+				Effect.fail(new CLIError({ cause: 'Cannot proceed without reading package.json' }))
+			)
+		)
 	);
 
-	const { dependencies = {}, devDependencies = {} } = safeJSONParse(contents);
+	const { dependencies = {}, devDependencies = {} } = safeJSONParse<IPackageJson>(contents);
 
 	if (!contents.includes('studiocms')) {
 		return false;
@@ -271,7 +276,7 @@ const resolveTargetVersion = Effect.fn('resolveTargetVersion')(function* (
 
 	// Check for HTTP errors
 	if (packageMetadata.status >= 400) {
-		throw new Error(`Unable to resolve "${packageInfo.name}"`);
+		return yield* new CLIError({ cause: `Unable to resolve "${packageInfo.name}"` });
 	}
 
 	// Parse the JSON response
@@ -333,7 +338,7 @@ const resolveTargetVersion = Effect.fn('resolveTargetVersion')(function* (
 			catch: (cause) => new CLIError({ cause }),
 		});
 		if (latestMetadata.status >= 400) {
-			throw new Error(`Unable to resolve "${packageInfo.name}"`);
+			return yield* new CLIError({ cause: `Unable to resolve "${packageInfo.name}"` });
 		}
 		const { repository } = yield* Effect.tryPromise({
 			try: () => latestMetadata.json(),
@@ -359,9 +364,15 @@ const resolveTargetVersion = Effect.fn('resolveTargetVersion')(function* (
  * @returns The constructed changelog URL.
  */
 function extractChangelogURLFromRepository(
-	repository: Record<string, string>,
+	repository: Record<string, string> | undefined,
 	version: string,
 	branch = 'main'
 ) {
-	return `${repository.url.replace('git+', '').replace('.git', '')}/blob/${branch}/${repository.directory}/CHANGELOG.md#${version.replace(/\./g, '')}`;
+	if (!repository?.url) {
+		return undefined;
+	}
+	const directory = repository.directory || '';
+	const baseUrl = repository.url.replace('git+', '').replace('.git', '');
+	const dirPath = directory ? `${directory}/` : '';
+	return `${baseUrl}/blob/${branch}/${dirPath}CHANGELOG.md#${version.replace(/\./g, '')}`;
 }

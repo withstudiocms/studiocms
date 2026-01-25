@@ -96,6 +96,18 @@ export interface Context {
 export type EffectStepFn = (context: Context) => Effect.Effect<void, CLIError, never>;
 
 /**
+ * A function type that creates and returns a CLI context object.
+ *
+ * @param version - Optional version string to set in the context
+ * @param dryRun - Optional boolean flag to indicate dry-run mode
+ * @returns An Effect that produces a Context object with no requirements (never)
+ */
+export type GetContext = (
+	version?: string,
+	dryRun?: boolean
+) => Effect.Effect<Context, never, never>;
+
+/**
  * Creates and returns a CLI context object with configuration for package management and execution.
  *
  * This generator function detects the package manager being used in the current project,
@@ -122,7 +134,7 @@ export type EffectStepFn = (context: Context) => Effect.Effect<void, CLIError, n
  * console.log(context.packageManager.name); // 'npm' or detected manager
  * ```
  */
-export const getContext = Effect.fn(function* (version = 'latest', dryRun = false) {
+export const getContext: GetContext = Effect.fn(function* (version = 'latest', dryRun = false) {
 	let packageManager: DetectResult | null = null;
 
 	yield* Effect.tryPromise({
@@ -148,5 +160,5 @@ export const getContext = Effect.fn(function* (version = 'latest', dryRun = fals
 			process.exit(code);
 		},
 		tasks: [],
-	} as Context;
+	} satisfies Context;
 });

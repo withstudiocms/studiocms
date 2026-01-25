@@ -2,7 +2,7 @@
 
 A command-line tool for upgrading your StudioCMS installation and dependencies.
 
-You can run this command in your terminal to upgrade your official Astro Project, integrations at the same time as you upgrade StudiOCMS.
+You can run this command in your terminal to upgrade your official Astro Project, integrations at the same time as you upgrade StudioCMS.
 
 ## Usage
 

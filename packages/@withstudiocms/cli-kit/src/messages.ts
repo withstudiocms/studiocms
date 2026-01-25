@@ -502,10 +502,17 @@ export function createClackMessageUpdate(
 export const randomBetween = (min: number, max: number) =>
 	Math.floor(Math.random() * (max - min + 1) + min);
 
-// biome-ignore lint/suspicious/noExplicitAny: this is a valid use case for explicit any
-export const random = (...arr: any[]) => {
-	const flattenedArray = arr.flat(1);
-	return flattenedArray[Math.floor(flattenedArray.length * Math.random())];
+type NonEmptyArray<T> = [T, ...T[]];
+
+/**
+ * Selects a random element from the provided array(s).
+ *
+ * @param arr - One or more arrays containing elements of type T
+ * @returns A random element of type T from the combined arrays, or undefined if no elements are provided
+ */
+export const random = <T>(...arr: NonEmptyArray<T | ReadonlyArray<T>>): T => {
+	const flattenedArray = arr.flat(1) as T[];
+	return flattenedArray[Math.floor(Math.random() * flattenedArray.length)];
 };
 
 /**
