@@ -1,5 +1,11 @@
 # @studiocms/md
 
+## 0.2.0
+
+### Minor Changes
+
+- [#1197](https://github.com/withstudiocms/studiocms/pull/1197) [`4b542ec`](https://github.com/withstudiocms/studiocms/commit/4b542eca8934996f7ed9eaf1c9f040305ea5e471) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Tweaks dependencies to prevent weird dep issues
+
 ## 0.1.1
 
 ### Patch Changes

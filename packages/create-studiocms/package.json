@@ -1,7 +1,7 @@
 {
 	"name": "create-studiocms",
-	"version": "0.3.0",
-    "description": "StudioCMS Project Creation CLI",
+	"version": "0.4.0",
+	"description": "StudioCMS Project Creation CLI",
 	"type": "module",
 	"author": "withstudiocms",
 	"license": "MIT",
@@ -17,7 +17,7 @@
 	},
 	"scripts": {
 		"build": "tsdown",
-        "cli:test": "pnpm build && node ./create-studiocms.mjs",
+		"cli:test": "pnpm build && node ./create-studiocms.mjs",
 		"effect-check": "pnpm effect-language-service diagnostics --project tsconfig.tspc.json",
 		"ci:effect-check": "pnpm effect-check --format github-actions",
 		"typecheck": "tspc -p tsconfig.tspc.json"
@@ -26,15 +26,15 @@
 		"create-studiocms.mjs",
 		"dist"
 	],
-    "devDependencies": {
+	"devDependencies": {
 		"@bluwy/giget-core": "^0.1.6",
 		"@withstudiocms/cli-kit": "workspace:^",
 		"@withstudiocms/effect": "workspace:^",
 		"@withstudiocms/internal_helpers": "workspace:^",
 		"effect": "catalog:effect",
 		"package-json": "^10.0.1",
-        "tsdown": "catalog:"
-    },
+		"tsdown": "catalog:"
+	},
 	"engines": {
 		"node": "^20.3.0 || >=22.0.0"
 	},

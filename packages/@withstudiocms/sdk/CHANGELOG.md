@@ -1,5 +1,15 @@
 # @withstudiocms/sdk
 
+## 0.2.0
+
+### Minor Changes
+
+- [#1197](https://github.com/withstudiocms/studiocms/pull/1197) [`4b542ec`](https://github.com/withstudiocms/studiocms/commit/4b542eca8934996f7ed9eaf1c9f040305ea5e471) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Tweaks dependencies to prevent weird dep issues
+
+### Patch Changes
+
+- [#1199](https://github.com/withstudiocms/studiocms/pull/1199) [`8a0ea71`](https://github.com/withstudiocms/studiocms/commit/8a0ea7176350b9526203d5722e1ff45d7fe6dfeb) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Reverse diff history order for page edit history getter
+
 ## 0.1.1
 
 ### Patch Changes
