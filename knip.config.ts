@@ -198,6 +198,9 @@ const config: KnipConfig = {
 			...baseAstroWorkspaceConfig,
 			ignoreDependencies: ['studiocms-dashboard', '@it-astro', /studiocms:.*/, /astro:.*/],
 		},
+		'packages/create-studiocms': {
+			...baseWithStudioCMSConfig,
+		},
 		...atStudioCMSPackages.reduce(
 			(acc, pkg) => {
 				acc[`packages/@studiocms/${pkg}`] = {
