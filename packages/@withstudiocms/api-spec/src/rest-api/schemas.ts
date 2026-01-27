@@ -104,13 +104,59 @@ export const PublicV1GetPagesSearchParams = Schema.Struct({
 	parentFolder: Schema.optional(Schema.String),
 });
 
+/**
+ * Partial schema for category data.
+ */
 export const PartialCategories = buildPartialSchema(StudioCMSPageDataCategories.Select);
 
+/**
+ * Partial schema for tags data.
+ */
+export const PartialTags = buildPartialSchema(StudioCMSPageDataTags.Select);
+
+/**
+ * Deletion success response schema.
+ */
 export const DeletionSuccess = Schema.Struct({
 	success: Schema.Boolean,
 });
 
+/**
+ * Success response schema.
+ */
+export const SuccessResponse = Schema.Struct({
+	message: Schema.String,
+});
+
+/**
+ * Base schema for folder data.
+ */
 export class FolderBase extends Schema.Class<FolderBase>('FolderBase')({
 	folderName: Schema.String,
 	parentFolder: Schema.Union(Schema.String, Schema.Null),
 }) {}
+
+/**
+ * Schema for dynamic site configuration data.
+ */
+export const StudioCMSDynamicSiteConfigData = Schema.Struct({
+	_config_version: Schema.String,
+	title: Schema.String,
+	description: Schema.String,
+	defaultOgImage: Schema.optional(Schema.NullishOr(Schema.String)),
+	siteIcon: Schema.optional(Schema.NullishOr(Schema.String)),
+	loginPageBackground: Schema.optional(Schema.UndefinedOr(Schema.String)),
+	loginPageCustomImage: Schema.optional(Schema.NullishOr(Schema.String)),
+	enableDiffs: Schema.optional(Schema.UndefinedOr(Schema.Boolean)),
+	diffPerPage: Schema.optional(Schema.UndefinedOr(Schema.Number)),
+	gridItems: Schema.optional(Schema.Array(Schema.String)),
+	enableMailer: Schema.optional(Schema.UndefinedOr(Schema.Boolean)),
+});
+
+/**
+ * Schema for dynamic site configuration.
+ */
+export const StudioCMSDynamicSiteConfigComplete = Schema.Struct({
+	id: Schema.String,
+	data: StudioCMSDynamicSiteConfigData,
+});

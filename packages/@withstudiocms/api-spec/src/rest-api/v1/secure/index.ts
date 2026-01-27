@@ -20,6 +20,16 @@ import {
 	FolderIndexOptions,
 	FolderIndexPost,
 } from './folders.js';
+import { SettingsIndexGet, SettingsIndexOptions, SettingsIndexPatch } from './settings.js';
+import {
+	TagsByIdDelete,
+	TagsByIdGet,
+	TagsByIdOptions,
+	TagsByIdPatch,
+	TagsIndexGet,
+	TagsIndexOptions,
+	TagsIndexPost,
+} from './tags.js';
 
 /**
  * REST API v1 Secure Specification for StudioCMS
@@ -60,13 +70,23 @@ export class RestApiV1SecureSpec extends HttpApiGroup.make('RestApiV1SecureSpec'
 	.add(FolderIndexOptions)
 	.add(FolderIndexPost)
 
-	// Pages Endpoints
+	// TODO Pages Endpoints
 
 	// Settings Endpoints
+	.add(SettingsIndexGet)
+	.add(SettingsIndexOptions)
+	.add(SettingsIndexPatch)
 
 	// Tags Endpoints
+	.add(TagsByIdDelete)
+	.add(TagsByIdGet)
+	.add(TagsByIdOptions)
+	.add(TagsByIdPatch)
+	.add(TagsIndexGet)
+	.add(TagsIndexOptions)
+	.add(TagsIndexPost)
 
-	// Users Endpoints
+	// TODO Users Endpoints
 
 	.middleware(RestAPIAuthorization)
 	.addError(RestAPIError, { status: 404 })
