@@ -5,6 +5,8 @@ import * as NodeRuntime from '@effect/platform-node/NodeRuntime';
 import { Layer } from 'effect';
 import { StudioCMSAPISpec } from '../src/index.js';
 
+// TODO: Create a custom scalar layer to allow multiple API specs and better configuration options with full typing
+
 // Create a route for the API documentation
 const DocsRoute = HttpApiScalar.layerHttpLayerRouter({
 	api: StudioCMSAPISpec,
