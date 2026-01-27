@@ -1,9 +1,11 @@
 import { HttpApiSchema } from '@effect/platform';
 import {
+	StudioCMSOAuthAccounts,
 	StudioCMSPageContent,
 	StudioCMSPageData,
 	StudioCMSPageDataCategories,
 	StudioCMSPageDataTags,
+	StudioCMSPermissions,
 	StudioCMSUsersTable,
 } from '@withstudiocms/sdk/tables';
 import { Schema } from 'effect';
@@ -26,6 +28,12 @@ export const PublicV1CategoryIdParam = HttpApiSchema.param('id', Schema.NumberFr
 export const PublicV1CategoryGetSearchParams = Schema.Struct({
 	name: Schema.optional(Schema.String),
 	parent: Schema.optional(Schema.NumberFromString),
+});
+
+export const UsersV1GetSearchParams = Schema.Struct({
+	username: Schema.optional(Schema.String),
+	name: Schema.optional(Schema.String),
+	rank: Schema.optional(Schema.String),
 });
 
 /**
@@ -159,4 +167,47 @@ export const StudioCMSDynamicSiteConfigData = Schema.Struct({
 export const StudioCMSDynamicSiteConfigComplete = Schema.Struct({
 	id: Schema.String,
 	data: StudioCMSDynamicSiteConfigData,
+});
+
+/**
+ * Base Permission ranks for users.
+ */
+const UsersPermissionRanksBase = Schema.Literal('owner', 'admin', 'editor', 'visitor');
+
+/**
+ * Schema for user data in index.
+ */
+export class RestUsersIndexJSONData extends Schema.Class<RestUsersIndexJSONData>(
+	'RestUsersIndexJSONData'
+)({
+	username: Schema.Union(Schema.String, Schema.Undefined),
+	password: Schema.Union(Schema.String, Schema.Undefined),
+	email: Schema.Union(Schema.String, Schema.Undefined),
+	displayname: Schema.Union(Schema.String, Schema.Undefined),
+	rank: Schema.Union(UsersPermissionRanksBase, Schema.Undefined),
+}) {}
+
+/**
+ * Schema for user data by ID.
+ */
+export class RestUsersIdJSONData extends Schema.Class<RestUsersIdJSONData>('RestUsersIdJSONData')({
+	rank: Schema.Union(UsersPermissionRanksBase, Schema.Literal('unknown')),
+}) {}
+
+/**
+ * API-safe user fields, omitting sensitive information.
+ */
+export const APISafeUserFields = StudioCMSUsersTable.Select.omit(
+	'password',
+	'emailVerified',
+	'notifications'
+);
+
+/**
+ * Combined schema for user data with OAuth and permissions information.
+ */
+export const CombinedUserDataSchema = Schema.Struct({
+	...APISafeUserFields.fields,
+	oAuthData: Schema.UndefinedOr(Schema.Array(StudioCMSOAuthAccounts.Select)),
+	permissionsData: Schema.UndefinedOr(StudioCMSPermissions.Select),
 });

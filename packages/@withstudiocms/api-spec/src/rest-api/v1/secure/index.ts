@@ -30,6 +30,15 @@ import {
 	TagsIndexOptions,
 	TagsIndexPost,
 } from './tags.js';
+import {
+	UsersByIdDelete,
+	UsersByIdGet,
+	UsersByIdOptions,
+	UsersByIdPatch,
+	UsersIndexGet,
+	UsersIndexOptions,
+	UsersIndexPost,
+} from './users.js';
 
 /**
  * REST API v1 Secure Specification for StudioCMS
@@ -86,7 +95,14 @@ export class RestApiV1SecureSpec extends HttpApiGroup.make('RestApiV1SecureSpec'
 	.add(TagsIndexOptions)
 	.add(TagsIndexPost)
 
-	// TODO Users Endpoints
+	// Users Endpoints
+	.add(UsersByIdDelete)
+	.add(UsersByIdGet)
+	.add(UsersByIdOptions)
+	.add(UsersByIdPatch)
+	.add(UsersIndexGet)
+	.add(UsersIndexOptions)
+	.add(UsersIndexPost)
 
 	.middleware(RestAPIAuthorization)
 	.addError(RestAPIError, { status: 404 })
