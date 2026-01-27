@@ -115,6 +115,16 @@ export const PublicV1GetPagesSearchParams = Schema.Struct({
 });
 
 /**
+ * Secure GET /pages
+ * Search parameters for filtering pages with additional secure options.
+ */
+export const SecureV1GetPagesSearchParams = Schema.Struct({
+	...PublicV1GetPagesSearchParams.fields,
+	draft: Schema.optional(Schema.BooleanFromString),
+	published: Schema.optional(Schema.BooleanFromString),
+});
+
+/**
  * Partial schema for category data.
  */
 export const PartialCategories = buildPartialSchema(StudioCMSPageDataCategories.Select);
@@ -213,3 +223,31 @@ export const CombinedUserDataSchema = Schema.Struct({
 	oAuthData: Schema.UndefinedOr(Schema.Array(StudioCMSOAuthAccounts.Select)),
 	permissionsData: Schema.UndefinedOr(StudioCMSPermissions.Select),
 });
+
+export const RestPageDataPartial = buildPartialSchema(StudioCMSPageData.Select);
+export const RestPageContentPartial = buildPartialSchema(StudioCMSPageContent.Select);
+
+export const RestPageJsonData = Schema.Struct({
+	data: Schema.optional(RestPageDataPartial),
+	content: Schema.optional(RestPageContentPartial),
+});
+
+export const DiffTrackingBase = Schema.Struct({
+	id: Schema.String,
+	userId: Schema.String,
+	pageId: Schema.String,
+	timestamp: Schema.NullOr(Schema.Date),
+	pageContentStart: Schema.String,
+	diff: Schema.NullOr(Schema.String),
+	pageMetaData: Schema.Unknown,
+});
+
+export const DiffTrackingReturn = Schema.Struct({
+	...DiffTrackingBase.omit('pageMetaData').fields,
+	pageMetaData: Schema.Struct({
+		start: StudioCMSPageData.Select,
+		end: StudioCMSPageData.Select,
+	}),
+});
+
+export const DiffIdParam = HttpApiSchema.param('diffId', Schema.String);

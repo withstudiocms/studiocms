@@ -20,6 +20,19 @@ import {
 	FolderIndexOptions,
 	FolderIndexPost,
 } from './folders.js';
+import {
+	PagesByIdDelete,
+	PagesByIdGet,
+	PagesByIdHistoryByDiffIdGet,
+	PagesByIdHistoryByDiffIdOptions,
+	PagesByIdHistoryGet,
+	PagesByIdHistoryOptions,
+	PagesByIdOptions,
+	PagesByIdPatch,
+	PagesIndexGet,
+	PagesIndexOptions,
+	PagesIndexPost,
+} from './pages.js';
 import { SettingsIndexGet, SettingsIndexOptions, SettingsIndexPatch } from './settings.js';
 import {
 	TagsByIdDelete,
@@ -79,7 +92,18 @@ export class RestApiV1SecureSpec extends HttpApiGroup.make('RestApiV1SecureSpec'
 	.add(FolderIndexOptions)
 	.add(FolderIndexPost)
 
-	// TODO Pages Endpoints
+	// Pages Endpoints
+	.add(PagesByIdDelete)
+	.add(PagesByIdGet)
+	.add(PagesByIdHistoryByDiffIdGet)
+	.add(PagesByIdHistoryByDiffIdOptions)
+	.add(PagesByIdHistoryGet)
+	.add(PagesByIdHistoryOptions)
+	.add(PagesByIdOptions)
+	.add(PagesByIdPatch)
+	.add(PagesIndexGet)
+	.add(PagesIndexOptions)
+	.add(PagesIndexPost)
 
 	// Settings Endpoints
 	.add(SettingsIndexGet)
