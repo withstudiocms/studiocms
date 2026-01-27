@@ -1,5 +1,17 @@
 # @withstudiocms/effect
 
+## 0.2.0
+
+### Minor Changes
+
+- [#1200](https://github.com/withstudiocms/studiocms/pull/1200) [`59e5517`](https://github.com/withstudiocms/studiocms/commit/59e5517963cfd5f62fd3631b5ee69ae1e423ef50) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Adds new Effect API to Astro utilities to `/astro` and `/astro/http-app` exports for quickly converting Effect HttpApp instances to APIRoutes
+
+- [#1215](https://github.com/withstudiocms/studiocms/pull/1215) [`c68668b`](https://github.com/withstudiocms/studiocms/commit/c68668b0a83341dd6cbdc378e1673017afef1d73) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Introduces new dataMiddleware for passing headerData from pages as parameters in the response object
+
+### Patch Changes
+
+- [#1204](https://github.com/withstudiocms/studiocms/pull/1204) [`93e62f6`](https://github.com/withstudiocms/studiocms/commit/93e62f65f779192403361826bc2a7fb997762521) Thanks [@renovate](https://github.com/apps/renovate)! - chore(deps): update dependency @types/nodemailer to ^7.0.5
+
 ## 0.1.0
 
 ### Patch Changes

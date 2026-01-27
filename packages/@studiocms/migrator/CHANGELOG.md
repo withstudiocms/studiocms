@@ -1,5 +1,19 @@
 # @studiocms/migrator
 
+## 0.2.0
+
+### Minor Changes
+
+- [#1197](https://github.com/withstudiocms/studiocms/pull/1197) [`4b542ec`](https://github.com/withstudiocms/studiocms/commit/4b542eca8934996f7ed9eaf1c9f040305ea5e471) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Tweaks dependencies to prevent weird dep issues
+
+### Patch Changes
+
+- Updated dependencies [[`0f6b4c7`](https://github.com/withstudiocms/studiocms/commit/0f6b4c74886f09ebf35ee73d5d8579d26f8e534a), [`b269e44`](https://github.com/withstudiocms/studiocms/commit/b269e44d68c8fd0da8eb3147c75b7d1cc899580d), [`4b542ec`](https://github.com/withstudiocms/studiocms/commit/4b542eca8934996f7ed9eaf1c9f040305ea5e471), [`3324f2b`](https://github.com/withstudiocms/studiocms/commit/3324f2be74a6c7d21005d1cc0b4a8695f376c53b), [`93e62f6`](https://github.com/withstudiocms/studiocms/commit/93e62f65f779192403361826bc2a7fb997762521), [`9122ddd`](https://github.com/withstudiocms/studiocms/commit/9122ddd16f9c7ab61c5df227ae7a81edd8620bb0), [`efc10be`](https://github.com/withstudiocms/studiocms/commit/efc10bee20db090fdd75463622c30dda390c50ad), [`4b542ec`](https://github.com/withstudiocms/studiocms/commit/4b542eca8934996f7ed9eaf1c9f040305ea5e471), [`4b542ec`](https://github.com/withstudiocms/studiocms/commit/4b542eca8934996f7ed9eaf1c9f040305ea5e471), [`e628b43`](https://github.com/withstudiocms/studiocms/commit/e628b431f3128da1ad378138bdda2ca14794e76e), [`8a0ea71`](https://github.com/withstudiocms/studiocms/commit/8a0ea7176350b9526203d5722e1ff45d7fe6dfeb), [`59e5517`](https://github.com/withstudiocms/studiocms/commit/59e5517963cfd5f62fd3631b5ee69ae1e423ef50), [`c68668b`](https://github.com/withstudiocms/studiocms/commit/c68668b0a83341dd6cbdc378e1673017afef1d73)]:
+  - studiocms@0.2.0
+  - @withstudiocms/effect@0.2.0
+  - @withstudiocms/kysely@0.2.0
+  - @withstudiocms/sdk@0.2.0
+
 ## 0.1.1
 
 ### Patch Changes

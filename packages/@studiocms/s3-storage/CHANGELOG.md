@@ -1,5 +1,17 @@
 # @studiocms/s3-storage
 
+## 0.2.0
+
+### Minor Changes
+
+- [#1197](https://github.com/withstudiocms/studiocms/pull/1197) [`4b542ec`](https://github.com/withstudiocms/studiocms/commit/4b542eca8934996f7ed9eaf1c9f040305ea5e471) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Tweaks dependencies to prevent weird dep issues
+
+### Patch Changes
+
+- [#1211](https://github.com/withstudiocms/studiocms/pull/1211) [`b269e44`](https://github.com/withstudiocms/studiocms/commit/b269e44d68c8fd0da8eb3147c75b7d1cc899580d) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Adds regex and proper error handling to prevent illegal characters (non-url-safe) from being used for S3 objects.
+
+- [#1208](https://github.com/withstudiocms/studiocms/pull/1208) [`0f7b810`](https://github.com/withstudiocms/studiocms/commit/0f7b81012e96ea5d4c6e4fb382411071c83e8011) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update aws s3 dependencies to ^3.970.0
+
 ## 0.1.1
 
 ### Patch Changes

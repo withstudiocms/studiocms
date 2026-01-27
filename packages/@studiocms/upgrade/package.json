@@ -1,6 +1,6 @@
 {
 	"name": "@studiocms/upgrade",
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"description": "StudioCMS CLI Package Upgrade Utility",
 	"type": "module",
 	"author": "withstudiocms",
@@ -14,7 +14,7 @@
 	"homepage": "https://studiocms.dev",
 	"scripts": {
 		"build": "tsdown",
-        "cli:test": "pnpm build && node ./upgrade.mjs",
+		"cli:test": "pnpm build && node ./upgrade.mjs",
 		"effect-check": "pnpm effect-language-service diagnostics --project tsconfig.tspc.json",
 		"ci:effect-check": "pnpm effect-check --format github-actions",
 		"typecheck": "tspc -p tsconfig.tspc.json"
@@ -24,7 +24,7 @@
 		"studiocms-upgrade": "./upgrade.mjs"
 	},
 	"files": [
-        "upgrade.mjs",
+		"upgrade.mjs",
 		"dist"
 	],
 	"devDependencies": {
@@ -37,7 +37,7 @@
 		"package-manager-detector": "catalog:",
 		"semver": "catalog:",
 		"terminal-link": "^4.0.0",
-        "tsdown": "catalog:"
+		"tsdown": "catalog:"
 	},
 	"engines": {
 		"node": "^20.3.0 || >=22.0.0"
