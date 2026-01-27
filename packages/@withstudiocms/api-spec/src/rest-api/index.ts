@@ -4,6 +4,7 @@ import { RestAPIError } from './errors.js';
 import { RestApiV1PublicSpec, RestApiV1SecureSpec } from './v1/index.js';
 
 export * from './errors.js';
+export * from './middleware.js';
 export * from './schemas.js';
 
 /**

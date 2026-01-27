@@ -7,6 +7,7 @@ import {
 	StudioCMSUsersTable,
 } from '@withstudiocms/sdk/tables';
 import { Schema } from 'effect';
+import { buildPartialSchema } from '../util/build-partial-schema.js';
 
 /**
  * Select schema for category data.
@@ -102,3 +103,14 @@ export const PublicV1GetPagesSearchParams = Schema.Struct({
 	author: Schema.optional(Schema.String),
 	parentFolder: Schema.optional(Schema.String),
 });
+
+export const PartialCategories = buildPartialSchema(StudioCMSPageDataCategories.Select);
+
+export const DeletionSuccess = Schema.Struct({
+	success: Schema.Boolean,
+});
+
+export class FolderBase extends Schema.Class<FolderBase>('FolderBase')({
+	folderName: Schema.String,
+	parentFolder: Schema.Union(Schema.String, Schema.Null),
+}) {}
