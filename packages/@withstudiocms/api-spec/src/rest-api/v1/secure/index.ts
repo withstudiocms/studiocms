@@ -59,7 +59,7 @@ import {
 export class RestApiV1SecureCategoriesSpec extends HttpApiGroup.make(
 	'RestApiV1SecureCategoriesSpec'
 )
-	.annotate(Title, 'StudioCMS REST API v1 Secure Categories Specification')
+	.annotate(Title, 'REST API v1 Secure Categories')
 	.annotate(Description, 'Secure Categories endpoints for StudioCMS REST API version 1')
 	.annotate(Version, '1.0.0')
 	.add(CategoryByIdDelete)
@@ -78,7 +78,7 @@ export class RestApiV1SecureCategoriesSpec extends HttpApiGroup.make(
  * StudioCMS REST API v1 Secure Folders Specification
  */
 export class RestApiV1SecureFoldersSpec extends HttpApiGroup.make('RestApiV1SecureFoldersSpec')
-	.annotate(Title, 'StudioCMS REST API v1 Secure Folders Specification')
+	.annotate(Title, 'REST API v1 Secure Folders')
 	.annotate(Description, 'Secure Folders endpoints for StudioCMS REST API version 1')
 	.annotate(Version, '1.0.0')
 	.add(FolderByIdDelete)
@@ -97,7 +97,7 @@ export class RestApiV1SecureFoldersSpec extends HttpApiGroup.make('RestApiV1Secu
  * StudioCMS REST API v1 Secure Pages Specification
  */
 export class RestApiV1SecurePagesSpec extends HttpApiGroup.make('RestApiV1SecurePagesSpec')
-	.annotate(Title, 'StudioCMS REST API v1 Secure Pages Specification')
+	.annotate(Title, 'REST API v1 Secure Pages')
 	.annotate(Description, 'Secure Pages endpoints for StudioCMS REST API version 1')
 	.annotate(Version, '1.0.0')
 	.add(PagesByIdDelete)
@@ -120,7 +120,7 @@ export class RestApiV1SecurePagesSpec extends HttpApiGroup.make('RestApiV1Secure
  * StudioCMS REST API v1 Secure Tags Specification
  */
 export class RestApiV1SecureTagsSpec extends HttpApiGroup.make('RestApiV1SecureTagsSpec')
-	.annotate(Title, 'StudioCMS REST API v1 Secure Tags Specification')
+	.annotate(Title, 'REST API v1 Secure Tags')
 	.annotate(Description, 'Secure Tags endpoints for StudioCMS REST API version 1')
 	.annotate(Version, '1.0.0')
 	.add(TagsByIdDelete)
@@ -139,7 +139,7 @@ export class RestApiV1SecureTagsSpec extends HttpApiGroup.make('RestApiV1SecureT
  * StudioCMS REST API v1 Secure Users Specification
  */
 export class RestApiV1SecureUsersSpec extends HttpApiGroup.make('RestApiV1SecureUsersSpec')
-	.annotate(Title, 'StudioCMS REST API v1 Secure Users Specification')
+	.annotate(Title, 'REST API v1 Secure Users')
 	.annotate(Description, 'Secure Users endpoints for StudioCMS REST API version 1')
 	.annotate(Version, '1.0.0')
 	.add(UsersByIdDelete)
@@ -158,7 +158,7 @@ export class RestApiV1SecureUsersSpec extends HttpApiGroup.make('RestApiV1Secure
  * StudioCMS REST API v1 Secure Settings Specification
  */
 export class RestApiV1SecureSettingsSpec extends HttpApiGroup.make('RestApiV1SecureSettingsSpec')
-	.annotate(Title, 'StudioCMS REST API v1 Secure Settings Specification')
+	.annotate(Title, 'REST API v1 Secure Settings')
 	.annotate(Description, 'Secure Settings endpoints for StudioCMS REST API version 1')
 	.annotate(Version, '1.0.0')
 	.add(SettingsIndexGet)

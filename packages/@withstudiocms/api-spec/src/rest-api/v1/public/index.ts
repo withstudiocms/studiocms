@@ -22,7 +22,7 @@ import { TagByIdGet, TagByIdOptions, TagIndexGet, TagIndexOptions } from './tags
 export class RestApiV1PublicCategoriesSpec extends HttpApiGroup.make(
 	'RestApiV1PublicCategoriesSpec'
 )
-	.annotate(Title, 'StudioCMS REST API v1 Public Categories Specification')
+	.annotate(Title, 'REST API v1 Public Categories')
 	.annotate(Description, 'Public Categories endpoints for StudioCMS REST API version 1')
 	.annotate(Version, '1.0.0')
 	.add(CategoryIndexGet)
@@ -37,7 +37,7 @@ export class RestApiV1PublicCategoriesSpec extends HttpApiGroup.make(
  * StudioCMS REST API v1 Public Folders Specification
  */
 export class RestApiV1PublicFoldersSpec extends HttpApiGroup.make('RestApiV1PublicFoldersSpec')
-	.annotate(Title, 'StudioCMS REST API v1 Public Folders Specification')
+	.annotate(Title, 'REST API v1 Public Folders')
 	.annotate(Description, 'Public Folders endpoints for StudioCMS REST API version 1')
 	.annotate(Version, '1.0.0')
 	.add(FoldersIndexGet)
@@ -52,7 +52,7 @@ export class RestApiV1PublicFoldersSpec extends HttpApiGroup.make('RestApiV1Publ
  * StudioCMS REST API v1 Public Pages Specification
  */
 export class RestApiV1PublicPagesSpec extends HttpApiGroup.make('RestApiV1PublicPagesSpec')
-	.annotate(Title, 'StudioCMS REST API v1 Public Pages Specification')
+	.annotate(Title, 'REST API v1 Public Pages')
 	.annotate(Description, 'Public Pages endpoints for StudioCMS REST API version 1')
 	.annotate(Version, '1.0.0')
 	.add(PageIndexGet)
@@ -67,7 +67,7 @@ export class RestApiV1PublicPagesSpec extends HttpApiGroup.make('RestApiV1Public
  * StudioCMS REST API v1 Public Tags Specification
  */
 export class RestApiV1PublicTagsSpec extends HttpApiGroup.make('RestApiV1PublicTagsSpec')
-	.annotate(Title, 'StudioCMS REST API v1 Public Tags Specification')
+	.annotate(Title, 'REST API v1 Public Tags')
 	.annotate(Description, 'Public Tags endpoints for StudioCMS REST API version 1')
 	.annotate(Version, '1.0.0')
 	.add(TagIndexGet)
