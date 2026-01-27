@@ -17,7 +17,7 @@ export const SettingsIndexGet = HttpApiEndpoint.get('SettingsIndexGet', '/settin
 	.annotate(Title, 'Get Settings')
 	.annotate(Description, 'Retrieves the current settings.')
 	.middleware(RestAPIAuthorization)
-	.addSuccess(Schema.UndefinedOr(StudioCMSDynamicSiteConfigComplete))
+	.addSuccess(StudioCMSDynamicSiteConfigComplete)
 	.addError(RestAPIError, { status: 500 });
 
 /**

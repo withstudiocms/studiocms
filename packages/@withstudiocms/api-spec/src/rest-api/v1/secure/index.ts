@@ -54,27 +54,14 @@ import {
 } from './users.js';
 
 /**
- * REST API v1 Secure Specification for StudioCMS
- *
- * @remarks
- * This class defines the secure API specification for StudioCMS REST API version 1.
- * It extends the HttpApiGroup and provides a secure endpoint group with versioned routing.
- *
- * The specification includes:
- * - Title: "StudioCMS REST API v1 Secure Specification"
- * - Description: "Secure API specification for StudioCMS REST API version 1"
- * - Version: "1.0.0"
- * - URL Prefix: "/v1"
- *
- * @public
+ * StudioCMS REST API v1 Secure Categories Specification
  */
-export class RestApiV1SecureSpec extends HttpApiGroup.make('RestApiV1SecureSpec')
-	.annotate(Title, 'StudioCMS REST API v1 Secure Specification')
-	.annotate(Description, 'Secure API specification for StudioCMS REST API version 1')
+export class RestApiV1SecureCategoriesSpec extends HttpApiGroup.make(
+	'RestApiV1SecureCategoriesSpec'
+)
+	.annotate(Title, 'StudioCMS REST API v1 Secure Categories Specification')
+	.annotate(Description, 'Secure Categories endpoints for StudioCMS REST API version 1')
 	.annotate(Version, '1.0.0')
-	.prefix('/v1')
-
-	// Categories Endpoints
 	.add(CategoryByIdDelete)
 	.add(CategoryByIdGet)
 	.add(CategoryByIdOptions)
@@ -82,8 +69,18 @@ export class RestApiV1SecureSpec extends HttpApiGroup.make('RestApiV1SecureSpec'
 	.add(CategoryIndexGet)
 	.add(CategoryIndexOptions)
 	.add(CategoryIndexPost)
+	.middleware(RestAPIAuthorization)
+	.addError(RestAPIError, { status: 404 })
+	.addError(RestAPIError, { status: 500 })
+	.prefix('/rest/v1') {}
 
-	// Folders Endpoints
+/**
+ * StudioCMS REST API v1 Secure Folders Specification
+ */
+export class RestApiV1SecureFoldersSpec extends HttpApiGroup.make('RestApiV1SecureFoldersSpec')
+	.annotate(Title, 'StudioCMS REST API v1 Secure Folders Specification')
+	.annotate(Description, 'Secure Folders endpoints for StudioCMS REST API version 1')
+	.annotate(Version, '1.0.0')
 	.add(FolderByIdDelete)
 	.add(FolderByIdGet)
 	.add(FolderByIdOptions)
@@ -91,8 +88,18 @@ export class RestApiV1SecureSpec extends HttpApiGroup.make('RestApiV1SecureSpec'
 	.add(FolderIndexGet)
 	.add(FolderIndexOptions)
 	.add(FolderIndexPost)
+	.middleware(RestAPIAuthorization)
+	.addError(RestAPIError, { status: 404 })
+	.addError(RestAPIError, { status: 500 })
+	.prefix('/rest/v1') {}
 
-	// Pages Endpoints
+/**
+ * StudioCMS REST API v1 Secure Pages Specification
+ */
+export class RestApiV1SecurePagesSpec extends HttpApiGroup.make('RestApiV1SecurePagesSpec')
+	.annotate(Title, 'StudioCMS REST API v1 Secure Pages Specification')
+	.annotate(Description, 'Secure Pages endpoints for StudioCMS REST API version 1')
+	.annotate(Version, '1.0.0')
 	.add(PagesByIdDelete)
 	.add(PagesByIdGet)
 	.add(PagesByIdHistoryByDiffIdGet)
@@ -104,13 +111,18 @@ export class RestApiV1SecureSpec extends HttpApiGroup.make('RestApiV1SecureSpec'
 	.add(PagesIndexGet)
 	.add(PagesIndexOptions)
 	.add(PagesIndexPost)
+	.middleware(RestAPIAuthorization)
+	.addError(RestAPIError, { status: 404 })
+	.addError(RestAPIError, { status: 500 })
+	.prefix('/rest/v1') {}
 
-	// Settings Endpoints
-	.add(SettingsIndexGet)
-	.add(SettingsIndexOptions)
-	.add(SettingsIndexPatch)
-
-	// Tags Endpoints
+/**
+ * StudioCMS REST API v1 Secure Tags Specification
+ */
+export class RestApiV1SecureTagsSpec extends HttpApiGroup.make('RestApiV1SecureTagsSpec')
+	.annotate(Title, 'StudioCMS REST API v1 Secure Tags Specification')
+	.annotate(Description, 'Secure Tags endpoints for StudioCMS REST API version 1')
+	.annotate(Version, '1.0.0')
 	.add(TagsByIdDelete)
 	.add(TagsByIdGet)
 	.add(TagsByIdOptions)
@@ -118,8 +130,18 @@ export class RestApiV1SecureSpec extends HttpApiGroup.make('RestApiV1SecureSpec'
 	.add(TagsIndexGet)
 	.add(TagsIndexOptions)
 	.add(TagsIndexPost)
+	.middleware(RestAPIAuthorization)
+	.addError(RestAPIError, { status: 404 })
+	.addError(RestAPIError, { status: 500 })
+	.prefix('/rest/v1') {}
 
-	// Users Endpoints
+/**
+ * StudioCMS REST API v1 Secure Users Specification
+ */
+export class RestApiV1SecureUsersSpec extends HttpApiGroup.make('RestApiV1SecureUsersSpec')
+	.annotate(Title, 'StudioCMS REST API v1 Secure Users Specification')
+	.annotate(Description, 'Secure Users endpoints for StudioCMS REST API version 1')
+	.annotate(Version, '1.0.0')
 	.add(UsersByIdDelete)
 	.add(UsersByIdGet)
 	.add(UsersByIdOptions)
@@ -127,7 +149,22 @@ export class RestApiV1SecureSpec extends HttpApiGroup.make('RestApiV1SecureSpec'
 	.add(UsersIndexGet)
 	.add(UsersIndexOptions)
 	.add(UsersIndexPost)
-
 	.middleware(RestAPIAuthorization)
 	.addError(RestAPIError, { status: 404 })
-	.addError(RestAPIError, { status: 500 }) {}
+	.addError(RestAPIError, { status: 500 })
+	.prefix('/rest/v1') {}
+
+/**
+ * StudioCMS REST API v1 Secure Settings Specification
+ */
+export class RestApiV1SecureSettingsSpec extends HttpApiGroup.make('RestApiV1SecureSettingsSpec')
+	.annotate(Title, 'StudioCMS REST API v1 Secure Settings Specification')
+	.annotate(Description, 'Secure Settings endpoints for StudioCMS REST API version 1')
+	.annotate(Version, '1.0.0')
+	.add(SettingsIndexGet)
+	.add(SettingsIndexOptions)
+	.add(SettingsIndexPatch)
+	.middleware(RestAPIAuthorization)
+	.addError(RestAPIError, { status: 400 })
+	.addError(RestAPIError, { status: 500 })
+	.prefix('/rest/v1') {}

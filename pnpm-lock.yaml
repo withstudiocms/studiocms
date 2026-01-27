@@ -792,13 +792,16 @@ importers:
       '@effect/platform-node':
         specifier: catalog:effect
         version: 0.104.0(@effect/cluster@0.56.1(@effect/platform@0.94.1(effect@3.19.14))(@effect/rpc@0.73.0(@effect/platform@0.94.1(effect@3.19.14))(effect@3.19.14))(@effect/sql@0.49.0(@effect/experimental@0.58.0(@effect/platform@0.94.1(effect@3.19.14))(effect@3.19.14))(@effect/platform@0.94.1(effect@3.19.14))(effect@3.19.14))(@effect/workflow@0.16.0(@effect/experimental@0.58.0(@effect/platform@0.94.1(effect@3.19.14))(effect@3.19.14))(@effect/platform@0.94.1(effect@3.19.14))(@effect/rpc@0.73.0(@effect/platform@0.94.1(effect@3.19.14))(effect@3.19.14))(effect@3.19.14))(effect@3.19.14))(@effect/platform@0.94.1(effect@3.19.14))(@effect/rpc@0.73.0(@effect/platform@0.94.1(effect@3.19.14))(effect@3.19.14))(@effect/sql@0.49.0(@effect/experimental@0.58.0(@effect/platform@0.94.1(effect@3.19.14))(effect@3.19.14))(@effect/platform@0.94.1(effect@3.19.14))(effect@3.19.14))(effect@3.19.14)
+      '@withstudiocms/sdk':
+        specifier: workspace:^
+        version: link:../sdk
       effect:
         specifier: catalog:effect
         version: 3.19.14
     devDependencies:
-      '@withstudiocms/sdk':
-        specifier: workspace:^
-        version: link:../sdk
+      tsdown:
+        specifier: 'catalog:'
+        version: 0.15.12(oxc-resolver@11.16.3)(typescript@5.9.3)
 
   packages/@withstudiocms/auth-kit:
     dependencies:

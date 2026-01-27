@@ -25,6 +25,7 @@
 		"dreyfus92",
 		"code.spirit"
 	],
+	"type": "module",
 	"publishConfig": {
 		"access": "public",
 		"provenance": true
@@ -37,8 +38,9 @@
 		"README.md"
 	],
 	"scripts": {
-		"build": "buildkit build 'src/**/*.ts'",
-		"dev": "buildkit dev 'src/**/*.ts'",
+		"build": "tsdown",
+		"dev": "tsdown --watch",
+		"docs": "tsx ./srv/index.ts",
 		"effect-check": "pnpm effect-language-service diagnostics --project tsconfig.tspc.json",
 		"ci:effect-check": "pnpm effect-check --format github-actions",
 		"typecheck": "tspc -p tsconfig.tspc.json"
@@ -53,16 +55,14 @@
 			"default": "./dist/rest-api/index.js"
 		}
 	},
-	"type": "module",
-	"dependencies": {
-	},
 	"devDependencies": {
-		"@withstudiocms/sdk": "workspace:^"
+        "tsdown": "catalog:"
 	},
 	"peerDependencies": {
 		"@effect/cli": "catalog:effect",
 		"@effect/platform": "catalog:effect",
 		"@effect/platform-node": "catalog:effect",
+		"@withstudiocms/sdk": "workspace:^",
 		"effect": "catalog:effect"
 	}
 }
