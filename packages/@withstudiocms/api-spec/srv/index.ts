@@ -5,7 +5,7 @@ import * as NodeRuntime from '@effect/platform-node/NodeRuntime';
 import { Layer } from 'effect';
 import { StudioCMSAPISpec } from '../src/index.js';
 
-// Create a /docs route for the API documentation
+// Create a route for the API documentation
 const DocsRoute = HttpApiScalar.layerHttpLayerRouter({
 	api: StudioCMSAPISpec,
 	path: '/',
@@ -17,6 +17,7 @@ const DocsRoute = HttpApiScalar.layerHttpLayerRouter({
 	},
 });
 
+// Serve the API documentation using NodeHttpServer on port 3000
 HttpLayerRouter.serve(DocsRoute).pipe(
 	Layer.provide(NodeHttpServer.layer(createServer, { port: 3000 })),
 	Layer.launch,
