@@ -1,6 +1,6 @@
 {
   "name": "@studiocms/discord",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Add Discord OAuth Support to your StudioCMS project.",
   "author": {
     "name": "withstudiocms",

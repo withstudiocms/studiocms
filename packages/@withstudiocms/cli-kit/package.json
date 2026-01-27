@@ -1,6 +1,6 @@
 {
 	"name": "@withstudiocms/cli-kit",
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"type": "module",
 	"author": "withstudiocms",
 	"license": "MIT",
@@ -38,9 +38,9 @@
 	],
 	"exports": {
 		"./*": {
-            "types": "./dist/*.d.ts",
-            "default": "./dist/*.js"
-        }
+			"types": "./dist/*.d.ts",
+			"default": "./dist/*.js"
+		}
 	},
 	"dependencies": {
 		"strip-ansi": "^7.1.2",

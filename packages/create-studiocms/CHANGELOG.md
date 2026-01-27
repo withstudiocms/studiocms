@@ -1,5 +1,11 @@
 # create-studiocms
 
+## 0.4.0
+
+### Minor Changes
+
+- [#1224](https://github.com/withstudiocms/studiocms/pull/1224) [`b97d378`](https://github.com/withstudiocms/studiocms/commit/b97d378b019c9ab4773916d8990f4b9efd5d64f1) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Migrate to main repo and rewrite to Effect
+
 ## 0.3.0
 
 ### Minor Changes

@@ -1,5 +1,15 @@
 # @withstudiocms/kysely
 
+## 0.2.0
+
+### Minor Changes
+
+- [#1197](https://github.com/withstudiocms/studiocms/pull/1197) [`4b542ec`](https://github.com/withstudiocms/studiocms/commit/4b542eca8934996f7ed9eaf1c9f040305ea5e471) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Fixes peer dependency optionals
+
+### Patch Changes
+
+- [#1213](https://github.com/withstudiocms/studiocms/pull/1213) [`e628b43`](https://github.com/withstudiocms/studiocms/commit/e628b431f3128da1ad378138bdda2ca14794e76e) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Fix schema management utilities to allow postgres usage
+
 ## 0.1.0
 
 ### Patch Changes
