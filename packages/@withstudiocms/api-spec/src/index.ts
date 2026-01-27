@@ -1,5 +1,5 @@
 import { HttpApi } from '@effect/platform';
-import { Description, ExternalDocs, Title, Version } from '@effect/platform/OpenApi';
+import { Description, Title, Version } from '@effect/platform/OpenApi';
 import pkg from '../package.json';
 import {
 	RestApiV1PublicCategoriesSpec,
@@ -18,11 +18,10 @@ export * from './rest-api/index.js';
 
 export class StudioCMSAPISpec extends HttpApi.make('StudioCMSAPISpec')
 	.annotate(Title, 'StudioCMS API Specifications')
-	.annotate(Description, 'API specifications for StudioCMS')
-	.annotate(ExternalDocs, {
-		url: 'https://docs.studiocms.dev',
-		description: 'StudioCMS Documentation',
-	})
+	.annotate(
+		Description,
+		'The complete API specification for the StudioCMS API running within StudioCMS projects.'
+	)
 	.annotate(Version, pkg.version)
 
 	// Rest API v1
