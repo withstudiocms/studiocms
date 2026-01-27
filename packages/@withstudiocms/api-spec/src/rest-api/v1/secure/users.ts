@@ -1,4 +1,4 @@
-import { HttpApiEndpoint, HttpApiSchema } from '@effect/platform';
+import { HttpApiEndpoint } from '@effect/platform';
 import { Description, Title } from '@effect/platform/OpenApi';
 import { Schema } from 'effect';
 import { RestAPIError } from '../../errors';
@@ -8,6 +8,7 @@ import {
 	CombinedUserDataSchema,
 	RestUsersIdJSONData,
 	RestUsersIndexJSONData,
+	StringIdParam,
 	SuccessResponse,
 	UsersV1GetSearchParams,
 } from '../../schemas.js';
@@ -60,10 +61,7 @@ export const UsersIndexOptions = HttpApiEndpoint.options('UsersIndexOptions', '/
  * GET /users/{id}
  * Retrieves a user by their ID.
  */
-export const UsersByIdGet = HttpApiEndpoint.get(
-	'UsersByIdGet',
-	`/users/${HttpApiSchema.param('id', Schema.String)}`
-)
+export const UsersByIdGet = HttpApiEndpoint.get('UsersByIdGet', `/users/${StringIdParam}`)
 	.annotate(Title, 'Get User by ID')
 	.annotate(Description, 'Retrieves a user by their ID.')
 	.middleware(RestAPIAuthorization)
@@ -77,10 +75,7 @@ export const UsersByIdGet = HttpApiEndpoint.get(
  * PATCH /users/{id}
  * Updates a user by their ID.
  */
-export const UsersByIdPatch = HttpApiEndpoint.patch(
-	'UsersByIdPatch',
-	`/users/${HttpApiSchema.param('id', Schema.String)}`
-)
+export const UsersByIdPatch = HttpApiEndpoint.patch('UsersByIdPatch', `/users/${StringIdParam}`)
 	.annotate(Title, 'Update User by ID')
 	.annotate(Description, 'Updates a user by their ID.')
 	.setPayload(RestUsersIdJSONData)
@@ -96,10 +91,7 @@ export const UsersByIdPatch = HttpApiEndpoint.patch(
  * DELETE /users/{id}
  * Deletes a user by their ID.
  */
-export const UsersByIdDelete = HttpApiEndpoint.del(
-	'UsersByIdDelete',
-	`/users/${HttpApiSchema.param('id', Schema.String)}`
-)
+export const UsersByIdDelete = HttpApiEndpoint.del('UsersByIdDelete', `/users/${StringIdParam}`)
 	.annotate(Title, 'Delete User by ID')
 	.annotate(Description, 'Deletes a user by their ID.')
 	.middleware(RestAPIAuthorization)
@@ -116,7 +108,7 @@ export const UsersByIdDelete = HttpApiEndpoint.del(
  */
 export const UsersByIdOptions = HttpApiEndpoint.options(
 	'UsersByIdOptions',
-	`/users/${HttpApiSchema.param('id', Schema.String)}`
+	`/users/${StringIdParam}`
 )
 	.annotate(Title, 'Options for User by ID')
 	.annotate(

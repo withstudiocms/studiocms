@@ -101,6 +101,8 @@ export const PublicV1GetPagesSelect = Schema.Struct({
  */
 export const PublicV1GetPagesIdParam = HttpApiSchema.param('id', Schema.String);
 
+export const StringIdParam = HttpApiSchema.param('id', Schema.String);
+
 /**
  * GET /pages
  * Search parameters for filtering pages.
