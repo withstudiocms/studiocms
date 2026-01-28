@@ -11,7 +11,10 @@ export * from './secure/index.js';
  */
 export class StudioCMSRestApiV1Spec extends HttpApi.make('StudioCMSRestApiV1Spec')
 	.annotate(Title, 'StudioCMS REST API v1 Specification')
-	.annotate(Description, 'API specification for StudioCMS REST API version 1')
+	.annotate(
+		Description,
+		'Rest API v1 endpoints for StudioCMS.\n\n## Other Resources\n- [StudioCMS Rest API Documentation](https://docs.studiocms.dev/en/how-it-works/restapi/)'
+	)
 	.annotate(License, {
 		name: 'MIT',
 		url: 'https://github.com/withstudiocms/studiocms/blob/main/packages/%40withstudiocms/api-spec/LICENSE',
