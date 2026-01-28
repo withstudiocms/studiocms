@@ -17,7 +17,30 @@ import { PageByIdGet, PageByIdOptions, PageIndexGet, PageIndexOptions } from './
 import { TagByIdGet, TagByIdOptions, TagIndexGet, TagIndexOptions } from './tags.js';
 
 /**
- * REST API v1 - Public Specification
+ * REST API v1 Public Specification
+ *
+ * Defines the public REST API v1 endpoints for StudioCMS that do not require authentication.
+ * This API group provides access to categories, folders, pages, and tags through standard
+ * HTTP methods (GET, OPTIONS).
+ *
+ * @remarks
+ * All endpoints are prefixed with `/rest/v1/public` and follow RESTful conventions.
+ * The API includes both index endpoints (listing resources) and individual resource
+ * endpoints (accessed by ID).
+ *
+ * Available endpoints:
+ * - Categories: GET/OPTIONS for index and by ID
+ * - Folders: GET/OPTIONS for index and by ID
+ * - Pages: GET/OPTIONS for index and by ID
+ * - Tags: GET/OPTIONS for index and by ID
+ *
+ * @see {@link https://docs.studiocms.dev/en/how-it-works/restapi/ | StudioCMS REST API Documentation}
+ *
+ * @version 1.0.0
+ * @license MIT
+ *
+ * @throws {RestAPIError} 404 - Resource not found
+ * @throws {RestAPIError} 500 - Internal server error
  */
 export class RestApiV1PublicSpec extends HttpApiGroup.make('RestApiV1PublicSpec')
 	.annotate(Title, 'REST API v1 - Public')

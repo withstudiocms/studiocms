@@ -101,6 +101,9 @@ export const PublicV1GetPagesSelect = Schema.Struct({
  */
 export const PublicV1GetPagesIdParam = HttpApiSchema.param('id', Schema.String);
 
+/**
+ * Path parameter for string ID.
+ */
 export const StringIdParam = HttpApiSchema.param('id', Schema.String);
 
 /**
@@ -224,14 +227,27 @@ export const CombinedUserDataSchema = Schema.Struct({
 	permissionsData: Schema.UndefinedOr(StudioCMSPermissions.Select),
 });
 
+/**
+ * Partial schema for page data.
+ */
 export const RestPageDataPartial = buildPartialSchema(StudioCMSPageData.Select);
+
+/**
+ * Partial schema for page content.
+ */
 export const RestPageContentPartial = buildPartialSchema(StudioCMSPageContent.Select);
 
+/**
+ * Combined schema for page JSON data including data and content.
+ */
 export const RestPageJsonData = Schema.Struct({
 	data: Schema.optional(RestPageDataPartial),
 	content: Schema.optional(RestPageContentPartial),
 });
 
+/**
+ * Base schema for diff tracking data.
+ */
 export const DiffTrackingBase = Schema.Struct({
 	id: Schema.String,
 	userId: Schema.String,
@@ -242,6 +258,9 @@ export const DiffTrackingBase = Schema.Struct({
 	pageMetaData: Schema.Unknown,
 });
 
+/**
+ * Schema for diff tracking return data with selected page metadata.
+ */
 export const DiffTrackingReturn = Schema.Struct({
 	...DiffTrackingBase.omit('pageMetaData').fields,
 	pageMetaData: Schema.Struct({
@@ -250,4 +269,7 @@ export const DiffTrackingReturn = Schema.Struct({
 	}),
 });
 
+/**
+ * Path parameter for diff ID.
+ */
 export const DiffIdParam = HttpApiSchema.param('diffId', Schema.String);

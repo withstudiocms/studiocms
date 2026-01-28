@@ -53,6 +53,30 @@ import {
 	UsersIndexPost,
 } from './users.js';
 
+/**
+ * Secure REST API v1 specification for StudioCMS.
+ *
+ * This class defines a group of secure REST API endpoints that require Bearer Token Authentication.
+ * It provides comprehensive CRUD operations for various StudioCMS resources including:
+ * - Categories: Manage content categories
+ * - Folders: Organize content in folders
+ * - Pages: Create, read, update, and delete pages with history tracking
+ * - Tags: Manage content tags
+ * - Users: User management operations
+ * - Settings: System settings configuration
+ *
+ * All endpoints in this group are prefixed with `/rest/v1` and require proper authentication
+ * via the `RestAPIAuthorization` middleware.
+ *
+ * @see {@link https://docs.studiocms.dev/en/how-it-works/restapi/ | StudioCMS REST API Documentation}
+ *
+ * @version 1.0.0
+ * @license MIT
+ *
+ * @remarks
+ * This API group includes error handling for 404 (Not Found) and 500 (Internal Server Error) responses.
+ * Each resource supports standard HTTP methods (GET, POST, PATCH, DELETE, OPTIONS) where applicable.
+ */
 export class RestApiV1SecureSpec extends HttpApiGroup.make('RestApiV1SecureSpec')
 	.annotate(Title, 'REST API v1 - Secure')
 	.annotate(

@@ -12,6 +12,34 @@ import { RestApiV1PublicSpec, RestApiV1SecureSpec } from './rest-api/v1/index.js
 
 export * from './rest-api/index.js';
 
+/**
+ * StudioCMS API Specification
+ *
+ * Main API specification class that defines the complete StudioCMS API structure.
+ * This class extends HttpApi and provides comprehensive API documentation including
+ * metadata, versioning, and endpoint definitions.
+ *
+ * @remarks
+ * The API specification includes:
+ * - OpenAPI metadata (title, description, license, version)
+ * - External documentation links
+ * - Contact information for the StudioCMS team
+ * - All endpoints are prefixed with `/studiocms_api`
+ *
+ * @example
+ * ```typescript
+ * // The API spec is automatically generated and can be used for:
+ * // - OpenAPI/Swagger documentation generation
+ * // - API client generation
+ * // - Type-safe API endpoint definitions
+ * ```
+ *
+ * @see {@link https://studiocms.dev | StudioCMS Website}
+ * @see {@link https://docs.studiocms.dev/en/ | StudioCMS Documentation}
+ * @see {@link https://github.com/withstudiocms/studiocms | GitHub Repository}
+ *
+ * @public
+ */
 export class StudioCMSAPISpec extends HttpApi.make('StudioCMSAPISpec')
 	.annotate(Title, 'StudioCMS API Specifications')
 	.annotate(
