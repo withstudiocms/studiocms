@@ -43,7 +43,8 @@
 		"docs": "tsx ./srv/index.ts",
 		"effect-check": "pnpm effect-language-service diagnostics --project tsconfig.tspc.json",
 		"ci:effect-check": "pnpm effect-check --format github-actions",
-		"typecheck": "tspc -p tsconfig.tspc.json"
+		"typecheck": "tspc -p tsconfig.tspc.json",
+		"update-scalar": "tsx ./scripts/build-scalar.ts"
 	},
 	"exports": {
 		".": {
@@ -53,6 +54,10 @@
 		"./rest-api": {
 			"types": "./dist/rest-api/index.d.ts",
 			"default": "./dist/rest-api/index.js"
+		},
+		"./HttpApiScalar": {
+			"types": "./dist/scalar.d.ts",
+			"default": "./dist/scalar.js"
 		}
 	},
 	"dependencies": {},
