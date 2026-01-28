@@ -27,7 +27,7 @@ const makePageTitle = (
 };
 
 interface Props extends ComponentProps<typeof BaseLayout> {
-	config: DynamicConfigEntry<StudioCMSSiteConfig>;
+	config: DynamicConfigEntry<Pick<StudioCMSSiteConfig, 'title' | 'description'>>;
 	sidebar?: false | 'single' | 'double';
 	requiredPermission?: AvailablePermissionRanks | 'none';
 	currentUser: UserSessionData | null;
