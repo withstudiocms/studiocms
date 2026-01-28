@@ -1,15 +1,12 @@
 ---
+import { config } from 'studiocms:config';
 import '../styles/404.css';
 import { useTranslations } from 'studiocms:i18n';
 import { Button } from 'studiocms:ui/components/button';
 import Layout from '../layouts/DashboardLayout.astro';
 
-const lang = Astro.locals.StudioCMS.defaultLang;
+const lang = config.locale.i18n.defaultLocale;
 const t = useTranslations(lang, '@studiocms/dashboard:404');
-
-const { siteConfig: config, security } = Astro.locals.StudioCMS;
-
-const currentUser = security?.userSessionData ?? null;
 ---
 
 <Layout 
@@ -17,9 +14,9 @@ const currentUser = security?.userSessionData ?? null;
   description={t('description')}
   sidebar={false} 
   requiredPermission="none"
-  {lang}
-  {config}
-  {currentUser}>
+  config={{ data: { title: t('title'), description: t('description') }, id: ''  }}
+  currentUser={null}
+  {lang}>
   <div class="notfound-container">
     <div class="notfound">
       <svg viewBox="0 0 755 792" fill="none" xmlns="http://www.w3.org/2000/svg">
