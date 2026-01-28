@@ -156,6 +156,7 @@ const extras = (pkg: string) => {
 			entry?: string[] | undefined;
 			ignoreUnresolved?: (string | RegExp)[] | undefined;
 			ignore?: string[] | undefined;
+			ignoreBinaries?: (string | RegExp)[] | undefined;
 		}
 	> = {
 		markdoc: {
@@ -171,6 +172,9 @@ const extras = (pkg: string) => {
 		},
 		migrator: {
 			ignoreDependencies: ['sharp'],
+		},
+		'api-spec': {
+			ignoreBinaries: ['tsx'],
 		},
 		...ignoredVirtuals,
 	};

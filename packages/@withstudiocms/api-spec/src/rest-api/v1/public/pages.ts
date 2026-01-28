@@ -1,5 +1,5 @@
 import { HttpApiEndpoint } from '@effect/platform';
-import { Description, Title } from '@effect/platform/OpenApi';
+import { Description, Summary, Title } from '@effect/platform/OpenApi';
 import { Schema } from 'effect';
 import { RestAPIError } from '../../errors.js';
 import {
@@ -14,6 +14,7 @@ import {
  */
 export const PageIndexGet = HttpApiEndpoint.get('PageIndexGet', '/pages')
 	.annotate(Title, 'Get Pages')
+	.annotate(Summary, 'Retrieve Pages')
 	.annotate(
 		Description,
 		'Retrieves a list of pages, with optional filtering by title, slug, author, and parent folder.'
@@ -29,6 +30,7 @@ export const PageIndexGet = HttpApiEndpoint.get('PageIndexGet', '/pages')
  */
 export const PageIndexOptions = HttpApiEndpoint.options('PageIndexOptions', '/pages')
 	.annotate(Title, 'Options for Pages')
+	.annotate(Summary, 'Options for Pages')
 	.annotate(
 		Description,
 		'Provides information about the /pages endpoint, including allowed methods.'
@@ -42,6 +44,7 @@ export const PageIndexOptions = HttpApiEndpoint.options('PageIndexOptions', '/pa
  */
 export const PageByIdGet = HttpApiEndpoint.get('PageByIdGet', `/pages/${PublicV1GetPagesIdParam}`)
 	.annotate(Title, 'Get Page by ID')
+	.annotate(Summary, 'Retrieve Page by ID')
 	.annotate(Description, 'Retrieves a page by its ID.')
 	.addSuccess(PublicV1GetPagesSelect)
 	.addError(RestAPIError, { status: 400 })
@@ -57,6 +60,7 @@ export const PageByIdOptions = HttpApiEndpoint.options(
 	`/pages/${PublicV1GetPagesIdParam}`
 )
 	.annotate(Title, 'Options for Page by ID')
+	.annotate(Summary, 'Retrieve Page by ID')
 	.annotate(Description, 'Provides information about the /pages/{id} endpoint.')
 	.addSuccess(Schema.Void)
 	.addError(RestAPIError, { status: 500 });

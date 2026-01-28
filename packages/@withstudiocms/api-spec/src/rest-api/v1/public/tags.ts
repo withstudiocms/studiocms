@@ -1,5 +1,5 @@
 import { HttpApiEndpoint } from '@effect/platform';
-import { Description, Title } from '@effect/platform/OpenApi';
+import { Description, Summary, Title } from '@effect/platform/OpenApi';
 import { Schema } from 'effect';
 import { RestAPIError } from '../../errors.js';
 import {
@@ -14,6 +14,7 @@ import {
  */
 export const TagIndexGet = HttpApiEndpoint.get('TagIndexGet', '/tags')
 	.annotate(Title, 'Get Tags')
+	.annotate(Summary, 'Retrieve Tags')
 	.annotate(Description, 'Retrieves a list of tags, with optional filtering by name and parent ID.')
 	.setUrlParams(PublicV1TagsGetSearchParams)
 	.addSuccess(Schema.Array(PublicV1TagsSelect))
@@ -26,6 +27,7 @@ export const TagIndexGet = HttpApiEndpoint.get('TagIndexGet', '/tags')
  */
 export const TagIndexOptions = HttpApiEndpoint.options('TagIndexOptions', '/tags')
 	.annotate(Title, 'Options for Tags')
+	.annotate(Summary, 'Options for Tags')
 	.annotate(
 		Description,
 		'Provides information about the /tags endpoint, including allowed methods.'
@@ -39,6 +41,7 @@ export const TagIndexOptions = HttpApiEndpoint.options('TagIndexOptions', '/tags
  */
 export const TagByIdGet = HttpApiEndpoint.get('TagByIdGet', `/tags/${PublicV1TagsIdParam}`)
 	.annotate(Title, 'Get Tag by ID')
+	.annotate(Summary, 'Retrieve Tag by ID')
 	.annotate(Description, 'Retrieves a tag by its ID.')
 	.addSuccess(PublicV1TagsSelect)
 	.addError(RestAPIError, { status: 404 })
@@ -53,6 +56,7 @@ export const TagByIdOptions = HttpApiEndpoint.options(
 	`/tags/${PublicV1TagsIdParam}`
 )
 	.annotate(Title, 'Options for Tag by ID')
+	.annotate(Summary, 'Retrieve Tag by ID')
 	.annotate(Description, 'Provides information about the /tags/{id} endpoint.')
 	.addSuccess(Schema.Void)
 	.addError(RestAPIError, { status: 500 });

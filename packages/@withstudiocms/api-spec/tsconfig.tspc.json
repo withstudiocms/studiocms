@@ -3,9 +3,8 @@
   "include": ["src"],
   "exclude": ["dist"],
   "compilerOptions": {
+    "allowImportingTsExtensions": true,
     "outDir": "./dist",
-    "resolveJsonModule": true,
-    "rootDir": "./src",
-    "removeComments": false
+    "rootDir": "./src"
   }
 }
