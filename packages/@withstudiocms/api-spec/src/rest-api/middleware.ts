@@ -94,7 +94,7 @@ export class RestAPIAuthorization extends HttpApiMiddleware.Tag<RestAPIAuthoriza
 		failure: Unauthorized,
 		provides: CurrentRestAPIUser,
 		security: {
-			token: HttpApiSecurity.bearer.pipe(
+			restApiToken: HttpApiSecurity.bearer.pipe(
 				HttpApiSecurity.annotate(OpenApi.Description, 'REST API Bearer Token Authentication')
 			),
 		},

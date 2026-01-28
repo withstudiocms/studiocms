@@ -1,5 +1,5 @@
 import { HttpApiEndpoint } from '@effect/platform';
-import { Description, Title } from '@effect/platform/OpenApi';
+import { Description, Summary, Title } from '@effect/platform/OpenApi';
 import { Schema } from 'effect';
 import { RestAPIError } from '../../errors.js';
 import {
@@ -14,6 +14,7 @@ import {
  */
 export const CategoryIndexGet = HttpApiEndpoint.get('CategoryIndexGet', '/categories')
 	.annotate(Title, 'Get Categories')
+	.annotate(Summary, 'Retrieve Categories')
 	.annotate(
 		Description,
 		'Retrieves a list of categories, with optional filtering by name and parent ID.'
@@ -29,6 +30,7 @@ export const CategoryIndexGet = HttpApiEndpoint.get('CategoryIndexGet', '/catego
  */
 export const CategoryIndexOptions = HttpApiEndpoint.options('CategoryIndexOptions', '/categories')
 	.annotate(Title, 'Options for Categories')
+	.annotate(Summary, 'Retrieve Categories')
 	.annotate(
 		Description,
 		'Provides information about the /categories endpoint, including allowed methods.'
@@ -45,6 +47,7 @@ export const CategoryByIdGet = HttpApiEndpoint.get(
 	`/categories/${PublicV1CategoryIdParam}`
 )
 	.annotate(Title, 'Get Category by ID')
+	.annotate(Summary, 'Retrieve Category by ID')
 	.annotate(Description, 'Retrieves a category by its ID.')
 	.addSuccess(PublicV1CategorySelect)
 	.addError(RestAPIError, { status: 404 })
@@ -59,6 +62,7 @@ export const CategoryByIdOptions = HttpApiEndpoint.options(
 	`/categories/${PublicV1CategoryIdParam}`
 )
 	.annotate(Title, 'Options for Category by ID')
+	.annotate(Summary, 'Retrieve Category by ID')
 	.annotate(Description, 'Provides information about the /categories/{id} endpoint.')
 	.addSuccess(Schema.Void)
 	.addError(RestAPIError, { status: 500 });

@@ -1,5 +1,5 @@
 import { HttpApiEndpoint } from '@effect/platform';
-import { Description, Title } from '@effect/platform/OpenApi';
+import { Description, Summary, Title } from '@effect/platform/OpenApi';
 import { StudioCMSPageDataTags } from '@withstudiocms/sdk/tables';
 import { Schema } from 'effect';
 import { RestAPIError } from '../../errors.js';
@@ -18,6 +18,7 @@ import {
  */
 export const TagsIndexGet = HttpApiEndpoint.get('TagsIndexGet', '/tags')
 	.annotate(Title, 'Get Tags')
+	.annotate(Summary, 'Retrieve Tags')
 	.annotate(Description, 'Retrieves a list of tags, with optional filtering by name and parent ID.')
 	.setUrlParams(PublicV1TagsGetSearchParams)
 	.middleware(RestAPIAuthorization)
@@ -31,6 +32,7 @@ export const TagsIndexGet = HttpApiEndpoint.get('TagsIndexGet', '/tags')
  */
 export const TagsIndexPost = HttpApiEndpoint.post('TagsIndexPost', '/tags')
 	.annotate(Title, 'Create Tag')
+	.annotate(Summary, 'Create Tag')
 	.annotate(Description, 'Creates a new tag.')
 	.setPayload(StudioCMSPageDataTags.Insert.omit('id'))
 	.middleware(RestAPIAuthorization)
@@ -44,6 +46,7 @@ export const TagsIndexPost = HttpApiEndpoint.post('TagsIndexPost', '/tags')
  */
 export const TagsIndexOptions = HttpApiEndpoint.options('TagsIndexOptions', '/tags')
 	.annotate(Title, 'Options for Tags')
+	.annotate(Summary, 'Retrieve Tags')
 	.annotate(
 		Description,
 		'Provides information about the /tags endpoint, including allowed methods.'
@@ -58,6 +61,7 @@ export const TagsIndexOptions = HttpApiEndpoint.options('TagsIndexOptions', '/ta
  */
 export const TagsByIdGet = HttpApiEndpoint.get('TagsByIdGet', `/tags/${PublicV1TagsIdParam}`)
 	.annotate(Title, 'Get Tag by ID')
+	.annotate(Summary, 'Retrieve Tag by ID')
 	.annotate(Description, 'Retrieves a tag by its ID.')
 	.middleware(RestAPIAuthorization)
 	.addSuccess(PublicV1TagsSelect)
@@ -70,6 +74,7 @@ export const TagsByIdGet = HttpApiEndpoint.get('TagsByIdGet', `/tags/${PublicV1T
  */
 export const TagsByIdPatch = HttpApiEndpoint.patch('TagsByIdPatch', `/tags/${PublicV1TagsIdParam}`)
 	.annotate(Title, 'Update Tag by ID')
+	.annotate(Summary, 'Update Tag by ID')
 	.annotate(Description, 'Updates a tag by its ID.')
 	.setPayload(PartialTags)
 	.middleware(RestAPIAuthorization)
@@ -84,6 +89,7 @@ export const TagsByIdPatch = HttpApiEndpoint.patch('TagsByIdPatch', `/tags/${Pub
  */
 export const TagsByIdDelete = HttpApiEndpoint.del('TagsByIdDelete', `/tags/${PublicV1TagsIdParam}`)
 	.annotate(Title, 'Delete Tag by ID')
+	.annotate(Summary, 'Delete Tag by ID')
 	.annotate(Description, 'Deletes a tag by its ID.')
 	.middleware(RestAPIAuthorization)
 	.addSuccess(DeletionSuccess)
@@ -99,6 +105,7 @@ export const TagsByIdOptions = HttpApiEndpoint.options(
 	`/tags/${PublicV1TagsIdParam}`
 )
 	.annotate(Title, 'Options for Tag by ID')
+	.annotate(Summary, 'Retrieve Tag by ID')
 	.annotate(Description, 'Provides information about the /tags/{id} endpoint.')
 	.middleware(RestAPIAuthorization)
 	.addSuccess(Schema.Void)

@@ -5,17 +5,60 @@ import * as NodeRuntime from '@effect/platform-node/NodeRuntime';
 import { Layer } from 'effect';
 import { StudioCMSAPISpec } from '../src/index.js';
 
-// TODO: Create a custom scalar layer to allow multiple API specs and better configuration options with full typing
-
 // Create a route for the API documentation
 const DocsRoute = HttpApiScalar.layerHttpLayerRouter({
 	api: StudioCMSAPISpec,
 	path: '/',
 	scalar: {
 		hideTestRequestButton: true,
-		// TODO: Remove the ts-expect-error when @effect/platform is updated
-		// @ts-expect-error - Need to wait for an update to @effect/platform to fix this type
-		hideDownloadButton: true,
+		favicon: 'https://cdn.studiocms.dev/favicon.svg',
+		// @ts-expect-error - For some reason they removed this property from the types but it's still supported
+		hideClientButton: true,
+		showToolbar: 'never',
+		hiddenClients: {
+			// C
+			c: ['libcurl'],
+			// Clojure
+			clojure: ['clj_http'],
+			// C#
+			csharp: ['httpclient', 'restsharp'],
+			// Dart
+			dart: ['http'],
+			// F#
+			fsharp: ['httpclient'],
+			// Go
+			go: ['native'],
+			// HTTP
+			http: ['http1.1'],
+			// Java
+			java: ['asynchttp', 'nethttp', 'okhttp', 'unirest'],
+			// JavaScript
+			js: ['axios', 'jquery', 'ofetch', 'xhr'],
+			// Kotlin
+			kotlin: ['okhttp'],
+			// Node.js
+			node: ['axios', 'ofetch', 'undici'],
+			// Objective-C
+			objc: ['nsurlsession'],
+			// OCaml
+			ocaml: ['cohttp'],
+			// PHP
+			php: ['curl', 'guzzle'],
+			// PowerShell
+			powershell: ['restmethod', 'webrequest'],
+			// Python
+			python: ['httpx_async', 'httpx_sync', 'python3', 'requests'],
+			// R
+			r: ['httr'],
+			// Ruby
+			ruby: ['native'],
+			// Rust
+			rust: ['reqwest'],
+			// Shell
+			shell: ['httpie', 'wget'],
+			// Swift
+			swift: ['nsurlsession'],
+		},
 	},
 });
 

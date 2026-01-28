@@ -1,5 +1,5 @@
 import { HttpApiEndpoint } from '@effect/platform';
-import { Description, Title } from '@effect/platform/OpenApi';
+import { Description, Summary, Title } from '@effect/platform/OpenApi';
 import { Schema } from 'effect';
 import { RestAPIError } from '../../errors.js';
 import { RestAPIAuthorization } from '../../middleware.js';
@@ -15,6 +15,7 @@ import {
  */
 export const SettingsIndexGet = HttpApiEndpoint.get('SettingsIndexGet', '/settings')
 	.annotate(Title, 'Get Settings')
+	.annotate(Summary, 'Retrieve Settings')
 	.annotate(Description, 'Retrieves the current settings.')
 	.middleware(RestAPIAuthorization)
 	.addSuccess(StudioCMSDynamicSiteConfigComplete)
@@ -26,6 +27,7 @@ export const SettingsIndexGet = HttpApiEndpoint.get('SettingsIndexGet', '/settin
  */
 export const SettingsIndexPatch = HttpApiEndpoint.patch('SettingsIndexPatch', '/settings')
 	.annotate(Title, 'Update Settings')
+	.annotate(Summary, 'Update Settings')
 	.annotate(Description, 'Updates the current settings.')
 	.setPayload(StudioCMSDynamicSiteConfigData)
 	.middleware(RestAPIAuthorization)
@@ -39,6 +41,7 @@ export const SettingsIndexPatch = HttpApiEndpoint.patch('SettingsIndexPatch', '/
  */
 export const SettingsIndexOptions = HttpApiEndpoint.options('SettingsIndexOptions', '/settings')
 	.annotate(Title, 'Options for Settings')
+	.annotate(Summary, 'Retrieve Settings')
 	.annotate(
 		Description,
 		'Provides information about the /settings endpoint, including allowed methods.'

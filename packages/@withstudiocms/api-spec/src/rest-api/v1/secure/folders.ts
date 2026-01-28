@@ -1,5 +1,5 @@
 import { HttpApiEndpoint } from '@effect/platform';
-import { Description, Title } from '@effect/platform/OpenApi';
+import { Description, Summary, Title } from '@effect/platform/OpenApi';
 import { StudioCMSPageFolderStructure } from '@withstudiocms/sdk/tables';
 import { Schema } from 'effect';
 import { RestAPIError } from '../../errors.js';
@@ -18,6 +18,7 @@ import {
  */
 export const FolderIndexGet = HttpApiEndpoint.get('FolderIndexGet', '/folders')
 	.annotate(Title, 'Get Folders')
+	.annotate(Summary, 'Retrieve Folders')
 	.annotate(
 		Description,
 		'Retrieves a list of folders, with optional filtering by name and parent ID.'
@@ -34,6 +35,7 @@ export const FolderIndexGet = HttpApiEndpoint.get('FolderIndexGet', '/folders')
  */
 export const FolderIndexPost = HttpApiEndpoint.post('FolderIndexPost', '/folders')
 	.annotate(Title, 'Create Folder')
+	.annotate(Summary, 'Create Folder')
 	.annotate(Description, 'Creates a new folder.')
 	.setPayload(StudioCMSPageFolderStructure.Insert.omit('id'))
 	.middleware(RestAPIAuthorization)
@@ -47,6 +49,7 @@ export const FolderIndexPost = HttpApiEndpoint.post('FolderIndexPost', '/folders
  */
 export const FolderIndexOptions = HttpApiEndpoint.options('FolderIndexOptions', '/folders')
 	.annotate(Title, 'Options for Folders')
+	.annotate(Summary, 'Retrieve Folders')
 	.annotate(
 		Description,
 		'Provides information about the /folders endpoint, including allowed methods.'
@@ -64,6 +67,7 @@ export const FolderByIdGet = HttpApiEndpoint.get(
 	`/folders/${PublicV1FolderIdParam}`
 )
 	.annotate(Title, 'Get Folder by ID')
+	.annotate(Summary, 'Retrieve Folder by ID')
 	.annotate(Description, 'Retrieves a folder by its ID.')
 	.middleware(RestAPIAuthorization)
 	.addSuccess(PublicV1FolderSelect)
@@ -79,6 +83,7 @@ export const FolderByIdPatch = HttpApiEndpoint.patch(
 	`/folders/${PublicV1FolderIdParam}`
 )
 	.annotate(Title, 'Update Folder by ID')
+	.annotate(Summary, 'Update Folder by ID')
 	.annotate(Description, 'Updates a folder by its ID.')
 	.setPayload(FolderBase)
 	.middleware(RestAPIAuthorization)
@@ -96,6 +101,7 @@ export const FolderByIdDelete = HttpApiEndpoint.del(
 	`/folders/${PublicV1FolderIdParam}`
 )
 	.annotate(Title, 'Delete Folder by ID')
+	.annotate(Summary, 'Delete Folder by ID')
 	.annotate(Description, 'Deletes a folder by its ID.')
 	.middleware(RestAPIAuthorization)
 	.addSuccess(DeletionSuccess)
@@ -111,6 +117,7 @@ export const FolderByIdOptions = HttpApiEndpoint.options(
 	`/folders/${PublicV1FolderIdParam}`
 )
 	.annotate(Title, 'Options for Folder by ID')
+	.annotate(Summary, 'Retrieve Folder by ID')
 	.annotate(Description, 'Provides information about the /folders/{id} endpoint.')
 	.middleware(RestAPIAuthorization)
 	.addSuccess(Schema.Void)

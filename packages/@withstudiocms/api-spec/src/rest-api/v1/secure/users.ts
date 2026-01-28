@@ -1,5 +1,5 @@
 import { HttpApiEndpoint } from '@effect/platform';
-import { Description, Title } from '@effect/platform/OpenApi';
+import { Description, Summary, Title } from '@effect/platform/OpenApi';
 import { Schema } from 'effect';
 import { RestAPIError } from '../../errors';
 import { RestAPIAuthorization } from '../../middleware.js';
@@ -19,6 +19,7 @@ import {
  */
 export const UsersIndexGet = HttpApiEndpoint.get('UsersIndexGet', '/users')
 	.annotate(Title, 'Get Users')
+	.annotate(Summary, 'Retrieve Users')
 	.annotate(
 		Description,
 		'Retrieves a list of users, with optional filtering by username, name, and rank.'
@@ -35,6 +36,7 @@ export const UsersIndexGet = HttpApiEndpoint.get('UsersIndexGet', '/users')
  */
 export const UsersIndexPost = HttpApiEndpoint.post('UsersIndexPost', '/users')
 	.annotate(Title, 'Create User')
+	.annotate(Summary, 'Create User')
 	.annotate(Description, 'Creates a new user.')
 	.setPayload(RestUsersIndexJSONData)
 	.middleware(RestAPIAuthorization)
@@ -49,6 +51,7 @@ export const UsersIndexPost = HttpApiEndpoint.post('UsersIndexPost', '/users')
  */
 export const UsersIndexOptions = HttpApiEndpoint.options('UsersIndexOptions', '/users')
 	.annotate(Title, 'Options for Users')
+	.annotate(Summary, 'Retrieve Users')
 	.annotate(
 		Description,
 		'Provides information about the /users endpoint, including allowed methods.'
@@ -63,6 +66,7 @@ export const UsersIndexOptions = HttpApiEndpoint.options('UsersIndexOptions', '/
  */
 export const UsersByIdGet = HttpApiEndpoint.get('UsersByIdGet', `/users/${StringIdParam}`)
 	.annotate(Title, 'Get User by ID')
+	.annotate(Summary, 'Retrieve User by ID')
 	.annotate(Description, 'Retrieves a user by their ID.')
 	.middleware(RestAPIAuthorization)
 	.addSuccess(APISafeUserFields)
@@ -77,6 +81,7 @@ export const UsersByIdGet = HttpApiEndpoint.get('UsersByIdGet', `/users/${String
  */
 export const UsersByIdPatch = HttpApiEndpoint.patch('UsersByIdPatch', `/users/${StringIdParam}`)
 	.annotate(Title, 'Update User by ID')
+	.annotate(Summary, 'Update User by ID')
 	.annotate(Description, 'Updates a user by their ID.')
 	.setPayload(RestUsersIdJSONData)
 	.middleware(RestAPIAuthorization)
@@ -93,6 +98,7 @@ export const UsersByIdPatch = HttpApiEndpoint.patch('UsersByIdPatch', `/users/${
  */
 export const UsersByIdDelete = HttpApiEndpoint.del('UsersByIdDelete', `/users/${StringIdParam}`)
 	.annotate(Title, 'Delete User by ID')
+	.annotate(Summary, 'Delete User by ID')
 	.annotate(Description, 'Deletes a user by their ID.')
 	.middleware(RestAPIAuthorization)
 	.addSuccess(SuccessResponse)
@@ -111,6 +117,7 @@ export const UsersByIdOptions = HttpApiEndpoint.options(
 	`/users/${StringIdParam}`
 )
 	.annotate(Title, 'Options for User by ID')
+	.annotate(Summary, 'Retrieve User by ID')
 	.annotate(
 		Description,
 		'Provides information about the /users/{id} endpoint, including allowed methods.'

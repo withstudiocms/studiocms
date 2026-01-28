@@ -1,5 +1,5 @@
 import { HttpApiEndpoint } from '@effect/platform';
-import { Description, Title } from '@effect/platform/OpenApi';
+import { Description, Summary, Title } from '@effect/platform/OpenApi';
 import { Schema } from 'effect';
 import { RestAPIError } from '../../errors';
 import { RestAPIAuthorization } from '../../middleware.js';
@@ -19,6 +19,7 @@ import {
  */
 export const PagesIndexGet = HttpApiEndpoint.get('PagesIndexGet', '/pages')
 	.annotate(Title, 'Get Pages')
+	.annotate(Summary, 'Retrieve Pages')
 	.annotate(
 		Description,
 		'Retrieves a list of pages, with optional filtering by title, slug, category ID, folder ID, draft status, and published status.'
@@ -35,6 +36,7 @@ export const PagesIndexGet = HttpApiEndpoint.get('PagesIndexGet', '/pages')
  */
 export const PagesIndexPost = HttpApiEndpoint.post('PagesIndexPost', '/pages')
 	.annotate(Title, 'Create Page')
+	.annotate(Summary, 'Create Page')
 	.annotate(Description, 'Creates a new page.')
 	.setPayload(RestPageJsonData)
 	.middleware(RestAPIAuthorization)
@@ -48,6 +50,7 @@ export const PagesIndexPost = HttpApiEndpoint.post('PagesIndexPost', '/pages')
  */
 export const PagesIndexOptions = HttpApiEndpoint.options('PagesIndexOptions', '/pages')
 	.annotate(Title, 'Options for Pages')
+	.annotate(Summary, 'Retrieve Pages')
 	.annotate(
 		Description,
 		'Provides information about the /pages endpoint, including allowed methods.'
@@ -62,6 +65,7 @@ export const PagesIndexOptions = HttpApiEndpoint.options('PagesIndexOptions', '/
  */
 export const PagesByIdGet = HttpApiEndpoint.get('PagesByIdGet', `/pages/${StringIdParam}`)
 	.annotate(Title, 'Get Page by ID')
+	.annotate(Summary, 'Retrieve Page by ID')
 	.annotate(Description, 'Retrieves a page by its ID.')
 	.middleware(RestAPIAuthorization)
 	.addSuccess(PublicV1GetPagesSelect)
@@ -74,6 +78,7 @@ export const PagesByIdGet = HttpApiEndpoint.get('PagesByIdGet', `/pages/${String
  */
 export const PagesByIdPatch = HttpApiEndpoint.patch('PagesByIdPatch', `/pages/${StringIdParam}`)
 	.annotate(Title, 'Update Page by ID')
+	.annotate(Summary, 'Update Page by ID')
 	.annotate(Description, 'Updates a page by its ID.')
 	.setPayload(RestPageJsonData)
 	.middleware(RestAPIAuthorization)
@@ -88,6 +93,7 @@ export const PagesByIdPatch = HttpApiEndpoint.patch('PagesByIdPatch', `/pages/${
  */
 export const PagesByIdDelete = HttpApiEndpoint.del('PagesByIdDelete', `/pages/${StringIdParam}`)
 	.annotate(Title, 'Delete Page by ID')
+	.annotate(Summary, 'Delete Page by ID')
 	.annotate(Description, 'Deletes a page by its ID.')
 	.middleware(RestAPIAuthorization)
 	.addSuccess(SuccessResponse)
@@ -103,6 +109,7 @@ export const PagesByIdOptions = HttpApiEndpoint.options(
 	`/pages/${StringIdParam}`
 )
 	.annotate(Title, 'Options for Page by ID')
+	.annotate(Summary, 'Retrieve Page by ID')
 	.annotate(Description, 'Provides information about the /pages/{id} endpoint.')
 	.middleware(RestAPIAuthorization)
 	.addSuccess(Schema.Void)
@@ -117,6 +124,7 @@ export const PagesByIdHistoryGet = HttpApiEndpoint.get(
 	`/pages/${StringIdParam}/history`
 )
 	.annotate(Title, 'Get Page History by ID')
+	.annotate(Summary, 'Retrieve Page History by ID')
 	.annotate(Description, 'Retrieves the history of a page by its ID.')
 	.setUrlParams(
 		Schema.Struct({
@@ -137,6 +145,7 @@ export const PagesByIdHistoryOptions = HttpApiEndpoint.options(
 	`/pages/${StringIdParam}/history`
 )
 	.annotate(Title, 'Options for Page History by ID')
+	.annotate(Summary, 'Retrieve Page History by ID')
 	.annotate(Description, 'Provides information about the /pages/{id}/history endpoint.')
 	.middleware(RestAPIAuthorization)
 	.addSuccess(Schema.Void)
@@ -151,6 +160,7 @@ export const PagesByIdHistoryByDiffIdGet = HttpApiEndpoint.get(
 	`/pages/${StringIdParam}/history/${DiffIdParam}`
 )
 	.annotate(Title, 'Get Page History Entry by Diff ID')
+	.annotate(Summary, 'Retrieve Page History Entry by Diff ID')
 	.annotate(Description, 'Retrieves a specific history entry of a page by its Diff ID.')
 	.middleware(RestAPIAuthorization)
 	.addSuccess(DiffTrackingReturn)
@@ -166,6 +176,7 @@ export const PagesByIdHistoryByDiffIdOptions = HttpApiEndpoint.options(
 	`/pages/${StringIdParam}/history/${DiffIdParam}`
 )
 	.annotate(Title, 'Options for Page History Entry by Diff ID')
+	.annotate(Summary, 'Retrieve Page History Entry by Diff ID')
 	.annotate(Description, 'Provides information about the /pages/{id}/history/{diffId} endpoint.')
 	.middleware(RestAPIAuthorization)
 	.addSuccess(Schema.Void)
