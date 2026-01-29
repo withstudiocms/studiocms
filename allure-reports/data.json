@@ -3,6 +3,10 @@
     "..",
     "adam_updated-content-editing",
     "changeset-release_main",
-    "main"
+    "main",
+    "renovate_devapps-@studiocms-integration-dependencies",
+    "renovate_html-@studiocms-plugin-dependencies",
+    "renovate_internal_helpers-@withstudiocms-dependencies",
+    "renovate_upgrade-major-studiocms-cli-dependencies"
   ]
 }
