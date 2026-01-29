@@ -55,6 +55,10 @@
 			"types": "./dist/rest-api/index.d.ts",
 			"default": "./dist/rest-api/index.js"
 		},
+		"./sdk": {
+			"types": "./dist/sdk/index.d.ts",
+			"default": "./dist/sdk/index.js"
+		},
 		"./HttpApiScalar": {
 			"types": "./dist/scalar.d.ts",
 			"default": "./dist/scalar.js"
