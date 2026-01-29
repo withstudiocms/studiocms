@@ -318,9 +318,10 @@ const resolveTargetVersion = Effect.fn('resolveTargetVersion')(function* (
 	if ((bump === 'major' && toVersion.prerelease.length === 0) || bump === 'premajor') {
 		packageInfo.isMajor = true;
 		if (packageInfo.name === 'studiocms') {
-			// TODO: Setup proper upgrade guide URLs per major version
-			// const upgradeGuide = `https://docs.studiocms.dev/en/guides/upgrade-to/v${toVersion.major}/`;
-			const upgradeGuide = 'https://docs.studiocms.dev';
+			// Replace dots with dashes for URL fragment
+			const versionSafe = toVersion.version.replace(/\./g, '-');
+			// URL for the StudioCMS upgrade guide
+			const upgradeGuide = `https://docs.studiocms.dev/en/guides/upgrade/version-guides/${versionSafe}/`;
 			const docsRes = yield* Effect.tryPromise({
 				try: () => fetch(upgradeGuide),
 				catch: (cause) => new CLIError({ cause }),
