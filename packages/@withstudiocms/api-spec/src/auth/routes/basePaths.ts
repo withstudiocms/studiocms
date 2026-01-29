@@ -2,7 +2,12 @@ import { HttpApiEndpoint, HttpApiSchema } from '@effect/platform';
 import { Description, Summary, Title } from '@effect/platform/OpenApi';
 import { Schema } from 'effect';
 import { AuthAPIError } from '../errors.js';
-import { AuthAPISuccess } from '../schemas.js';
+import {
+	AuthAPISuccess,
+	JsonEmailPayload,
+	JsonRegisterPayload,
+	JsonUserPasswordPayload,
+} from '../schemas.js';
 
 /**
  * Endpoint for initiating forgot password process.
@@ -19,11 +24,7 @@ export const forgotPasswordPost = HttpApiEndpoint.post('forgotPasswordPost', '/f
 	.annotate(Title, 'Forgot Password')
 	.annotate(Summary, 'Initiate password reset process')
 	.annotate(Description, 'Sends a password reset email to the user if the email is registered.')
-	.setPayload(
-		Schema.Struct({
-			email: Schema.String,
-		})
-	)
+	.setPayload(JsonEmailPayload)
 	.addSuccess(AuthAPISuccess)
 	.addError(AuthAPIError, { status: 400 })
 	.addError(AuthAPIError, { status: 403 })
@@ -69,14 +70,7 @@ export const loginPost = HttpApiEndpoint.post('loginPost', '/login')
 	.annotate(Title, 'Login')
 	.annotate(Summary, 'Authenticate user and create a session')
 	.annotate(Description, 'Authenticates the user with provided credentials and creates a session.')
-	.setPayload(
-		HttpApiSchema.Multipart(
-			Schema.Struct({
-				username: Schema.String,
-				password: Schema.String,
-			})
-		)
-	)
+	.setPayload(HttpApiSchema.Multipart(JsonUserPasswordPayload))
 	.addSuccess(HttpApiSchema.NoContent)
 	.addError(AuthAPIError, { status: 400 })
 	.addError(AuthAPIError, { status: 403 })
@@ -151,16 +145,7 @@ export const registerPost = HttpApiEndpoint.post('registerPost', '/register')
 	.annotate(Title, 'Register')
 	.annotate(Summary, 'Create a new user account')
 	.annotate(Description, 'Registers a new user account with the provided details.')
-	.setPayload(
-		HttpApiSchema.Multipart(
-			Schema.Struct({
-				username: Schema.String,
-				password: Schema.String,
-				email: Schema.String,
-				displayname: Schema.String,
-			})
-		)
-	)
+	.setPayload(HttpApiSchema.Multipart(JsonRegisterPayload))
 	.addSuccess(HttpApiSchema.NoContent)
 	.addError(AuthAPIError, { status: 400 })
 	.addError(AuthAPIError, { status: 500 });

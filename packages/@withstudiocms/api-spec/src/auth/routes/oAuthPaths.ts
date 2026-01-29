@@ -2,6 +2,7 @@ import { HttpApiEndpoint } from '@effect/platform';
 import { Description, Summary, Title } from '@effect/platform/OpenApi';
 import { Schema } from 'effect';
 import { AuthAPIError } from '../errors.js';
+import { OAuthProviderParam } from '../schemas.js';
 
 /**
  * HTTP API endpoint for initiating OAuth flow for a specified provider.
@@ -19,12 +20,7 @@ import { AuthAPIError } from '../errors.js';
  * @throws {AuthAPIError} Returns a 500 status code on server error
  */
 export const oAuthIndexGet = HttpApiEndpoint.get('oAuthIndexGet', '/:provider')
-	.setPath(
-		Schema.Struct({
-			// Define a schema for the "id" path parameter
-			provider: Schema.String,
-		})
-	)
+	.setPath(OAuthProviderParam)
 	.annotate(Title, 'OAuth Index')
 	.annotate(Summary, 'Initiate OAuth flow for the specified provider')
 	.annotate(Description, 'Initiates the OAuth authentication flow for the specified provider.')
@@ -47,12 +43,7 @@ export const oAuthIndexGet = HttpApiEndpoint.get('oAuthIndexGet', '/:provider')
  * @throws {AuthAPIError} When a server error occurs (HTTP 500)
  */
 export const oAuthIndexOptions = HttpApiEndpoint.options('oAuthIndexOptions', '/:provider')
-	.setPath(
-		Schema.Struct({
-			// Define a schema for the "id" path parameter
-			provider: Schema.String,
-		})
-	)
+	.setPath(OAuthProviderParam)
 	.annotate(Title, 'Options for OAuth Index')
 	.annotate(Summary, 'Retrieve OAuth Index Options')
 	.annotate(Description, 'Provides options for the OAuth index endpoint.')
@@ -75,12 +66,7 @@ export const oAuthIndexOptions = HttpApiEndpoint.options('oAuthIndexOptions', '/
  * @throws {AuthAPIError} Returns a 500 status code on server error
  */
 export const oAuthCallbackGet = HttpApiEndpoint.get('oAuthCallbackGet', '/:provider/callback')
-	.setPath(
-		Schema.Struct({
-			// Define a schema for the "id" path parameter
-			provider: Schema.String,
-		})
-	)
+	.setPath(OAuthProviderParam)
 	.annotate(Title, 'OAuth Callback')
 	.annotate(Summary, 'Handle OAuth callback for the specified provider')
 	.annotate(
@@ -109,12 +95,7 @@ export const oAuthCallbackOptions = HttpApiEndpoint.options(
 	'oAuthCallbackOptions',
 	'/:provider/callback'
 )
-	.setPath(
-		Schema.Struct({
-			// Define a schema for the "id" path parameter
-			provider: Schema.String,
-		})
-	)
+	.setPath(OAuthProviderParam)
 	.annotate(Title, 'Options for OAuth Callback')
 	.annotate(Summary, 'Retrieve OAuth Callback Options')
 	.annotate(Description, 'Provides options for the OAuth callback endpoint.')
