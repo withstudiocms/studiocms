@@ -24,7 +24,12 @@ export const oAuthIndexGet = HttpApiEndpoint.get('oAuthIndexGet', '/:provider')
 	.annotate(Title, 'OAuth Index')
 	.annotate(Summary, 'Initiate OAuth flow for the specified provider')
 	.annotate(Description, 'Initiates the OAuth authentication flow for the specified provider.')
-	.addSuccess(Schema.String, { status: 303 })
+	.addSuccess(
+		Schema.String.annotations({
+			description: "Redirect URL to the provider's OAuth authorization page",
+		}),
+		{ status: 303 }
+	)
 	.addError(AuthAPIError, { status: 400 })
 	.addError(AuthAPIError, { status: 403 })
 	.addError(AuthAPIError, { status: 500 });
@@ -73,7 +78,12 @@ export const oAuthCallbackGet = HttpApiEndpoint.get('oAuthCallbackGet', '/:provi
 		Description,
 		'Handles the OAuth callback after authentication with the specified provider. Each provider may have different requirements for handling the callback.'
 	)
-	.addSuccess(Schema.String, { status: 303 })
+	.addSuccess(
+		Schema.String.annotations({
+			description: 'Redirect URL after successful authentication',
+		}),
+		{ status: 303 }
+	)
 	.addError(AuthAPIError, { status: 400 })
 	.addError(AuthAPIError, { status: 403 })
 	.addError(AuthAPIError, { status: 500 });

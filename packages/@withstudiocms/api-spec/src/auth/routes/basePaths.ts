@@ -71,7 +71,12 @@ export const loginPost = HttpApiEndpoint.post('loginPost', '/login')
 	.annotate(Summary, 'Authenticate user and create a session')
 	.annotate(Description, 'Authenticates the user with provided credentials and creates a session.')
 	.setPayload(HttpApiSchema.Multipart(JsonUserPasswordPayload))
-	.addSuccess(HttpApiSchema.NoContent)
+	.addSuccess(
+		HttpApiSchema.NoContent.annotations({
+			description: 'Returns an empty response on successful login for frontend to handle.',
+		}),
+		{ status: 200 }
+	)
 	.addError(AuthAPIError, { status: 400 })
 	.addError(AuthAPIError, { status: 403 })
 	.addError(AuthAPIError, { status: 500 });
@@ -106,7 +111,12 @@ export const logoutPost = HttpApiEndpoint.post('logoutPost', '/logout')
 	.annotate(Title, 'Logout')
 	.annotate(Summary, 'Terminate user session')
 	.annotate(Description, 'Logs out the user by terminating the current session.')
-	.addSuccess(Schema.String, { status: 303 })
+	.addSuccess(
+		Schema.String.annotations({
+			description: 'Redirect URL after successful logout',
+		}),
+		{ status: 303 }
+	)
 	.addError(AuthAPIError, { status: 500 });
 
 /**
@@ -146,7 +156,12 @@ export const registerPost = HttpApiEndpoint.post('registerPost', '/register')
 	.annotate(Summary, 'Create a new user account')
 	.annotate(Description, 'Registers a new user account with the provided details.')
 	.setPayload(HttpApiSchema.Multipart(JsonRegisterPayload))
-	.addSuccess(HttpApiSchema.NoContent)
+	.addSuccess(
+		HttpApiSchema.NoContent.annotations({
+			description: 'Returns an empty response on successful registration for frontend to handle.',
+		}),
+		{ status: 200 }
+	)
 	.addError(AuthAPIError, { status: 400 })
 	.addError(AuthAPIError, { status: 500 });
 
