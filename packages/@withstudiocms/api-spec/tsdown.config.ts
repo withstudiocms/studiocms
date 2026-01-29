@@ -5,4 +5,7 @@ export default defineConfig({
 	clean: true,
 	treeshake: true,
 	unbundle: true,
+	checks: {
+		pluginTimings: false,
+	},
 });
