@@ -11,6 +11,8 @@ import {
 	updateLatestVersionCacheOptions,
 } from './routes.js';
 
+export * from './errors.js';
+
 /**
  * SDK API specification group for StudioCMS.
  *
