@@ -36,7 +36,7 @@
 		"effect": "catalog:effect",
 		"package-manager-detector": "catalog:",
 		"semver": "catalog:",
-		"terminal-link": "^4.0.0",
+		"terminal-link": "^5.0.0",
 		"tsdown": "catalog:"
 	},
 	"engines": {
