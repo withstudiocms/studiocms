@@ -3,7 +3,6 @@
     "..",
     "adam_updated-content-editing",
     "changeset-release_main",
-    "main",
-    "renovate_upgrade-major-studiocms-cli-dependencies"
+    "main"
   ]
 }
