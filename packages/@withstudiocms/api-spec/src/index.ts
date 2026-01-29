@@ -9,6 +9,7 @@ import {
 } from '@effect/platform/OpenApi';
 import pkg from '../package.json';
 import { RestApiV1PublicSpec, RestApiV1SecureSpec } from './rest-api/v1/index.js';
+import { SDKApi } from './sdk/index.js';
 
 export * from './rest-api/index.js';
 
@@ -74,6 +75,9 @@ export class StudioCMSAPISpec extends HttpApi.make('StudioCMSAPISpec')
 	// Rest API v1
 	.add(RestApiV1PublicSpec)
 	.add(RestApiV1SecureSpec)
+
+	// SDK API
+	.add(SDKApi)
 
 	// Prefix all paths with /studiocms_api
 	.prefix('/studiocms_api') {}
