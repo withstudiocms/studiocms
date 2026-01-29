@@ -1,5 +1,17 @@
 # studiocms
 
+## 0.2.1
+
+### Patch Changes
+
+- [#1237](https://github.com/withstudiocms/studiocms/pull/1237) [`fb6c96a`](https://github.com/withstudiocms/studiocms/commit/fb6c96ac6ae25887a0f673618770a67b2deffae6) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update studiocms dependencies
+
+- [#1231](https://github.com/withstudiocms/studiocms/pull/1231) [`e7b39ef`](https://github.com/withstudiocms/studiocms/commit/e7b39ef6c3e1e2a54201e200b32fb1c02cd5fc3e) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Fixes default 404 route rendering
+
+- Updated dependencies [[`6b826b8`](https://github.com/withstudiocms/studiocms/commit/6b826b80104fe23e35763edf275f1800e5629c32), [`f129eec`](https://github.com/withstudiocms/studiocms/commit/f129eec8d0a6f18c446c319dec9925cc31a890b4)]:
+  - @withstudiocms/internal_helpers@0.1.1
+  - @withstudiocms/effect@0.2.1
+
 ## 0.2.0
 
 ### Minor Changes

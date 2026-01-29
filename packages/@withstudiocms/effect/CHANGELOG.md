@@ -1,5 +1,11 @@
 # @withstudiocms/effect
 
+## 0.2.1
+
+### Patch Changes
+
+- [#1228](https://github.com/withstudiocms/studiocms/pull/1228) [`f129eec`](https://github.com/withstudiocms/studiocms/commit/f129eec8d0a6f18c446c319dec9925cc31a890b4) Thanks [@renovate](https://github.com/apps/renovate)! - chore(deps): Updated Effect dependencies (PR: #1228)
+
 ## 0.2.0
 
 ### Minor Changes
