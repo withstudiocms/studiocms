@@ -1090,11 +1090,11 @@ importers:
         specifier: ^1.2.3
         version: 1.2.3
       '@iconify-json/simple-icons':
-        specifier: ^1.2.66
-        version: 1.2.66
+        specifier: ^1.2.67
+        version: 1.2.67
       '@inox-tools/runtime-logger':
-        specifier: ^0.7.0
-        version: 0.7.0(astro@5.16.10(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
+        specifier: ^0.7.1
+        version: 0.7.1(astro@5.16.10(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
       '@libsql/client':
         specifier: catalog:kysely
         version: 0.15.15
@@ -1138,8 +1138,8 @@ importers:
         specifier: workspace:^
         version: link:../@withstudiocms/template-lang
       ace-builds:
-        specifier: ^1.43.5
-        version: 1.43.5
+        specifier: ^1.43.6
+        version: 1.43.6
       astro:
         specifier: catalog:min
         version: 5.16.10(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
@@ -2278,8 +2278,8 @@ packages:
   '@iconify-json/heroicons@1.2.3':
     resolution: {integrity: sha512-n+vmCEgTesRsOpp5AB5ILB6srsgsYK+bieoQBNlafvoEhjVXLq8nIGN4B0v/s4DUfa0dOrjwE/cKJgIKdJXOEg==}
 
-  '@iconify-json/simple-icons@1.2.66':
-    resolution: {integrity: sha512-D1OnnXwiQXFkVMw5M+Bt8mPsXeMkQyGmMdrmN7lsQlKMUkfLOp6JWhnUJ92po51WXT046aF/zzqSmkKqg08p4Q==}
+  '@iconify-json/simple-icons@1.2.67':
+    resolution: {integrity: sha512-RGJRwlxyup54L1UDAjCshy3ckX5zcvYIU74YLSnUgHGvqh6B4mvksbGNHAIEp7dZQ6cM13RZVT5KC07CmnFNew==}
 
   '@iconify/types@2.0.0':
     resolution: {integrity: sha512-+wluvCrRhXrhyOmRDJ3q8mux9JkKy5SJ/v8ol2tu4FVjyYvtEzkc/3pK15ET6RKg4b4w4BmTk1+gsCUhf21Ykg==}
@@ -2442,18 +2442,15 @@ packages:
     peerDependencies:
       astro: ^5.13.3
 
-  '@inox-tools/modular-station@0.7.0':
-    resolution: {integrity: sha512-XumkSTPonuAQHk4gWwXxDOoKIYig5gskmk9QJJ8+ow7uZMeW/brcX+Mx2RtStI8BkdPGlasYANx0zaSNOa4z8A==}
+  '@inox-tools/modular-station@0.7.1':
+    resolution: {integrity: sha512-EcOhQu5jPM/K9+EpNzSEnvVejbPHT68xVG1lJ9AnpM+BLjVEpMvSaeiQ/FaJaD03BvWzbCWcUPyJI4Ds3qSonA==}
     peerDependencies:
       astro: ^5
 
-  '@inox-tools/runtime-logger@0.7.0':
-    resolution: {integrity: sha512-ENKnuY5jmykcXYkRPUxKu6uw3/Vue3pa461g3vAC7l+XJXj5vZ4hGisIJruOIhM1ceA7WLXIhGu/PKoQ2fb9Dg==}
+  '@inox-tools/runtime-logger@0.7.1':
+    resolution: {integrity: sha512-VK2FWbXyslfC1BYjt7Me9um36m+q6Hbpq66+glrmsM6+QaEnCkRAiPmXJ4WdfykTEUptDZdg5ulPYtPuPxQ+Bw==}
     peerDependencies:
       astro: ^5
-
-  '@inox-tools/utils@0.7.0':
-    resolution: {integrity: sha512-mwvDYG21P7uy8JmFTXV5xGocFi2hOx41uai49Sf83HX0bXCYknOyEoouSYRzvoiKP21csRtIFywGwxEjG+TMQg==}
 
   '@inox-tools/utils@0.8.1':
     resolution: {integrity: sha512-SGjdzPcxJn6UOpSuxdg8Vm5s22EWhd4HSNWLymiN35+KbnoX3sgwoQMW4a6Zcv/HWdyZezl4Q7WUtZnt+UCuHw==}
@@ -3629,8 +3626,8 @@ packages:
   abbrev@1.1.1:
     resolution: {integrity: sha512-nne9/IiQ/hzIhY6pdDnbBtz7DjPTKrY00P/zvPSm5pOFkl6xuGrGnXn/VtTNNfNtAfZ9/1RtehkszU9qcTii0Q==}
 
-  ace-builds@1.43.5:
-    resolution: {integrity: sha512-iH5FLBKdB7SVn9GR37UgA/tpQS8OTWIxWAuq3Ofaw+Qbc69FfPXsXd9jeW7KRG2xKpKMqBDnu0tHBrCWY5QI7A==}
+  ace-builds@1.43.6:
+    resolution: {integrity: sha512-L1ddibQ7F3vyXR2k2fg+I8TQTPWVA6CKeDQr/h2+8CeyTp3W6EQL8xNFZRTztuP8xNOAqL3IYPqdzs31GCjDvg==}
 
   acorn-globals@4.3.4:
     resolution: {integrity: sha512-clfQEh21R+D0leSbUdWf3OcfqyaCSAQ8Ryq00bofSekfr9W8u1jyYZo6ir0xu9Gtcf7BjcHJpnbZH7JOCpP60A==}
@@ -8543,7 +8540,7 @@ snapshots:
     dependencies:
       '@iconify/types': 2.0.0
 
-  '@iconify-json/simple-icons@1.2.66':
+  '@iconify-json/simple-icons@1.2.67':
     dependencies:
       '@iconify/types': 2.0.0
 
@@ -8660,25 +8657,23 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@inox-tools/modular-station@0.7.0(astro@5.16.10(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))':
+  '@inox-tools/modular-station@0.7.1(astro@5.16.10(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))':
     dependencies:
-      '@inox-tools/utils': 0.7.0
+      '@inox-tools/utils': 0.8.1
       astro: 5.16.10(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
       astro-integration-kit: 0.19.1(astro@5.16.10(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
       debug: 4.4.3
     transitivePeerDependencies:
       - supports-color
 
-  '@inox-tools/runtime-logger@0.7.0(astro@5.16.10(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))':
+  '@inox-tools/runtime-logger@0.7.1(astro@5.16.10(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))':
     dependencies:
-      '@inox-tools/modular-station': 0.7.0(astro@5.16.10(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
-      '@inox-tools/utils': 0.7.0
+      '@inox-tools/modular-station': 0.7.1(astro@5.16.10(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
+      '@inox-tools/utils': 0.8.1
       astro: 5.16.10(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
       astro-integration-kit: 0.19.1(astro@5.16.10(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
     transitivePeerDependencies:
       - supports-color
-
-  '@inox-tools/utils@0.7.0': {}
 
   '@inox-tools/utils@0.8.1': {}
 
@@ -9920,7 +9915,7 @@ snapshots:
 
   abbrev@1.1.1: {}
 
-  ace-builds@1.43.5: {}
+  ace-builds@1.43.6: {}
 
   acorn-globals@4.3.4:
     dependencies:
