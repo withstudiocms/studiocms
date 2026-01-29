@@ -88,10 +88,10 @@ export class StudioCMSSDKApiSpec extends HttpApi.make('StudioCMSSDKApiSpec')
 				url: 'https://chat.studiocms.dev',
 				email: 'support@studiocms.dev',
 			},
-			externalDocs: {
-				url: 'https://docs.studiocms.dev/en/',
-				description: 'StudioCMS Documentation',
-			},
+		},
+		externalDocs: {
+			url: 'https://docs.studiocms.dev/en/',
+			description: 'StudioCMS Documentation',
 		},
 	}))
 	.add(SDKApi)

@@ -14,9 +14,9 @@ import { SDKAPIError } from './errors.js';
  *
  * @remarks
  * This endpoint provides access to the complete changelog for the StudioCMS SDK in JSON format.
- * It is a GET endpoint that returns the changelog data along with a success status indicator.
+ * It is a POST endpoint that returns the changelog data along with a success status indicator.
  *
- * @endpoint GET /full-changelog
+ * @endpoint POST /full-changelog.json
  * @title Get Full Changelog
  * @summary Retrieve the full changelog in JSON format.
  *
