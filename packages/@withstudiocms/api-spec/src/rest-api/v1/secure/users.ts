@@ -6,9 +6,9 @@ import { RestAPIAuthorization } from '../../middleware.js';
 import {
 	APISafeUserFields,
 	CombinedUserDataSchema,
+	IdParamString,
 	RestUsersIdJSONData,
 	RestUsersIndexJSONData,
-	StringIdParam,
 	SuccessResponse,
 	UsersV1GetSearchParams,
 } from '../../schemas.js';
@@ -64,7 +64,8 @@ export const UsersIndexOptions = HttpApiEndpoint.options('UsersIndexOptions', '/
  * GET /users/{id}
  * Retrieves a user by their ID.
  */
-export const UsersByIdGet = HttpApiEndpoint.get('UsersByIdGet', `/users/${StringIdParam}`)
+export const UsersByIdGet = HttpApiEndpoint.get('UsersByIdGet', '/users/:id')
+	.setPath(IdParamString)
 	.annotate(Title, 'Get User by ID')
 	.annotate(Summary, 'Retrieve User by ID')
 	.annotate(Description, 'Retrieves a user by their ID.')
@@ -79,7 +80,8 @@ export const UsersByIdGet = HttpApiEndpoint.get('UsersByIdGet', `/users/${String
  * PATCH /users/{id}
  * Updates a user by their ID.
  */
-export const UsersByIdPatch = HttpApiEndpoint.patch('UsersByIdPatch', `/users/${StringIdParam}`)
+export const UsersByIdPatch = HttpApiEndpoint.patch('UsersByIdPatch', '/users/:id')
+	.setPath(IdParamString)
 	.annotate(Title, 'Update User by ID')
 	.annotate(Summary, 'Update User by ID')
 	.annotate(Description, 'Updates a user by their ID.')
@@ -96,7 +98,8 @@ export const UsersByIdPatch = HttpApiEndpoint.patch('UsersByIdPatch', `/users/${
  * DELETE /users/{id}
  * Deletes a user by their ID.
  */
-export const UsersByIdDelete = HttpApiEndpoint.del('UsersByIdDelete', `/users/${StringIdParam}`)
+export const UsersByIdDelete = HttpApiEndpoint.del('UsersByIdDelete', '/users/:id')
+	.setPath(IdParamString)
 	.annotate(Title, 'Delete User by ID')
 	.annotate(Summary, 'Delete User by ID')
 	.annotate(Description, 'Deletes a user by their ID.')
@@ -112,10 +115,8 @@ export const UsersByIdDelete = HttpApiEndpoint.del('UsersByIdDelete', `/users/${
  * OPTIONS /users/{id}
  * Provides information about the /users/{id} endpoint.
  */
-export const UsersByIdOptions = HttpApiEndpoint.options(
-	'UsersByIdOptions',
-	`/users/${StringIdParam}`
-)
+export const UsersByIdOptions = HttpApiEndpoint.options('UsersByIdOptions', '/users/:id')
+	.setPath(IdParamString)
 	.annotate(Title, 'Options for User by ID')
 	.annotate(Summary, 'Retrieve User by ID')
 	.annotate(

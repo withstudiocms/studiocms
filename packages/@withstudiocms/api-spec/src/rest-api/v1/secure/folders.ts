@@ -7,8 +7,8 @@ import { RestAPIAuthorization } from '../../middleware.js';
 import {
 	DeletionSuccess,
 	FolderBase,
+	IdParamString,
 	PublicV1FolderGetSearchParams,
-	PublicV1FolderIdParam,
 	PublicV1FolderSelect,
 } from '../../schemas.js';
 
@@ -62,10 +62,8 @@ export const FolderIndexOptions = HttpApiEndpoint.options('FolderIndexOptions', 
  * GET /folders/{id}
  * Retrieves a folder by its ID.
  */
-export const FolderByIdGet = HttpApiEndpoint.get(
-	'FolderByIdGet',
-	`/folders/${PublicV1FolderIdParam}`
-)
+export const FolderByIdGet = HttpApiEndpoint.get('FolderByIdGet', '/folders/:id')
+	.setPath(IdParamString)
 	.annotate(Title, 'Get Folder by ID')
 	.annotate(Summary, 'Retrieve Folder by ID')
 	.annotate(Description, 'Retrieves a folder by its ID.')
@@ -78,10 +76,8 @@ export const FolderByIdGet = HttpApiEndpoint.get(
  * PATCH /folders/{id}
  * Updates a folder by its ID.
  */
-export const FolderByIdPatch = HttpApiEndpoint.patch(
-	'FolderByIdPatch',
-	`/folders/${PublicV1FolderIdParam}`
-)
+export const FolderByIdPatch = HttpApiEndpoint.patch('FolderByIdPatch', '/folders/:id')
+	.setPath(IdParamString)
 	.annotate(Title, 'Update Folder by ID')
 	.annotate(Summary, 'Update Folder by ID')
 	.annotate(Description, 'Updates a folder by its ID.')
@@ -96,10 +92,8 @@ export const FolderByIdPatch = HttpApiEndpoint.patch(
  * DELETE /folders/{id}
  * Deletes a folder by its ID.
  */
-export const FolderByIdDelete = HttpApiEndpoint.del(
-	'FolderByIdDelete',
-	`/folders/${PublicV1FolderIdParam}`
-)
+export const FolderByIdDelete = HttpApiEndpoint.del('FolderByIdDelete', '/folders/:id')
+	.setPath(IdParamString)
 	.annotate(Title, 'Delete Folder by ID')
 	.annotate(Summary, 'Delete Folder by ID')
 	.annotate(Description, 'Deletes a folder by its ID.')
@@ -112,10 +106,8 @@ export const FolderByIdDelete = HttpApiEndpoint.del(
  * OPTIONS /folders/{id}
  * Provides information about the /folders/{id} endpoint.
  */
-export const FolderByIdOptions = HttpApiEndpoint.options(
-	'FolderByIdOptions',
-	`/folders/${PublicV1FolderIdParam}`
-)
+export const FolderByIdOptions = HttpApiEndpoint.options('FolderByIdOptions', '/folders/:id')
+	.setPath(IdParamString)
 	.annotate(Title, 'Options for Folder by ID')
 	.annotate(Summary, 'Retrieve Folder by ID')
 	.annotate(Description, 'Provides information about the /folders/{id} endpoint.')

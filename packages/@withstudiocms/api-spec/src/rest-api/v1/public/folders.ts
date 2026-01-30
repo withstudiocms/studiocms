@@ -3,8 +3,8 @@ import { Description, Summary, Title } from '@effect/platform/OpenApi';
 import { Schema } from 'effect';
 import { RestAPIError } from '../../errors.js';
 import {
+	IdParamString,
 	PublicV1FolderGetSearchParams,
-	PublicV1FolderIdParam,
 	PublicV1FolderSelect,
 } from '../../schemas.js';
 
@@ -42,10 +42,8 @@ export const FoldersIndexOptions = HttpApiEndpoint.options('FoldersIndexOptions'
  * GET /folders/{id}
  * Retrieves a folder by its ID.
  */
-export const FolderByIdGet = HttpApiEndpoint.get(
-	'FolderByIdGet',
-	`/folders/${PublicV1FolderIdParam}`
-)
+export const FolderByIdGet = HttpApiEndpoint.get('FolderByIdGet', '/folders/:id')
+	.setPath(IdParamString)
 	.annotate(Title, 'Get Folder by ID')
 	.annotate(Summary, 'Retrieve Folder by ID')
 	.annotate(Description, 'Retrieves a folder by its ID.')
@@ -57,10 +55,8 @@ export const FolderByIdGet = HttpApiEndpoint.get(
  * OPTIONS /folders/{id}
  * Provides information about the /folders/{id} endpoint.
  */
-export const FolderByIdOptions = HttpApiEndpoint.options(
-	'FolderByIdOptions',
-	`/folders/${PublicV1FolderIdParam}`
-)
+export const FolderByIdOptions = HttpApiEndpoint.options('FolderByIdOptions', '/folders/:id')
+	.setPath(IdParamString)
 	.annotate(Title, 'Options for Folder by ID')
 	.annotate(Summary, 'Retrieve Folder by ID')
 	.annotate(

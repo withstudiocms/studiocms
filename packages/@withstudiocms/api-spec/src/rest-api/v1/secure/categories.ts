@@ -6,9 +6,9 @@ import { RestAPIError } from '../../errors.js';
 import { RestAPIAuthorization } from '../../middleware.js';
 import {
 	DeletionSuccess,
+	IdParamNumber,
 	PartialCategories,
 	PublicV1CategoryGetSearchParams,
-	PublicV1CategoryIdParam,
 	PublicV1CategorySelect,
 } from '../../schemas.js';
 
@@ -62,10 +62,8 @@ export const CategoryIndexOptions = HttpApiEndpoint.options('CategoryIndexOption
  * GET /categories/{id}
  * Retrieves a category by its ID.
  */
-export const CategoryByIdGet = HttpApiEndpoint.get(
-	'CategoryByIdGet',
-	`/categories/${PublicV1CategoryIdParam}`
-)
+export const CategoryByIdGet = HttpApiEndpoint.get('CategoryByIdGet', '/categories/:id')
+	.setPath(IdParamNumber)
 	.annotate(Title, 'Get Category by ID')
 	.annotate(Summary, 'Retrieve Category by ID')
 	.annotate(Description, 'Retrieves a category by its ID.')
@@ -78,10 +76,8 @@ export const CategoryByIdGet = HttpApiEndpoint.get(
  * PATCH /categories/{id}
  * Updates a category by its ID.
  */
-export const CategoryByIdPatch = HttpApiEndpoint.patch(
-	'CategoryByIdPatch',
-	`/categories/${PublicV1CategoryIdParam}`
-)
+export const CategoryByIdPatch = HttpApiEndpoint.patch('CategoryByIdPatch', '/categories/:id')
+	.setPath(IdParamNumber)
 	.annotate(Title, 'Update Category by ID')
 	.annotate(Summary, 'Update Category by ID')
 	.annotate(Description, 'Updates a category by its ID.')
@@ -96,10 +92,8 @@ export const CategoryByIdPatch = HttpApiEndpoint.patch(
  * DELETE /categories/{id}
  * Deletes a category by its ID.
  */
-export const CategoryByIdDelete = HttpApiEndpoint.del(
-	'CategoryByIdDelete',
-	`/categories/${PublicV1CategoryIdParam}`
-)
+export const CategoryByIdDelete = HttpApiEndpoint.del('CategoryByIdDelete', '/categories/:id')
+	.setPath(IdParamNumber)
 	.annotate(Title, 'Delete Category by ID')
 	.annotate(Summary, 'Delete Category by ID')
 	.annotate(Description, 'Deletes a category by its ID.')
@@ -112,10 +106,8 @@ export const CategoryByIdDelete = HttpApiEndpoint.del(
  * OPTIONS /categories/{id}
  * Provides information about the /categories/{id} endpoint.
  */
-export const CategoryByIdOptions = HttpApiEndpoint.options(
-	'CategoryByIdOptions',
-	`/categories/${PublicV1CategoryIdParam}`
-)
+export const CategoryByIdOptions = HttpApiEndpoint.options('CategoryByIdOptions', '/categories/:id')
+	.setPath(IdParamNumber)
 	.annotate(Title, 'Options for Category by ID')
 	.annotate(Summary, 'Retrieve Category by ID')
 	.annotate(Description, 'Provides information about the /categories/{id} endpoint.')

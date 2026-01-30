@@ -3,7 +3,7 @@ import { Description, Summary, Title } from '@effect/platform/OpenApi';
 import { Schema } from 'effect';
 import { RestAPIError } from '../../errors.js';
 import {
-	PublicV1GetPagesIdParam,
+	IdParamString,
 	PublicV1GetPagesSearchParams,
 	PublicV1GetPagesSelect,
 } from '../../schemas.js';
@@ -42,7 +42,8 @@ export const PageIndexOptions = HttpApiEndpoint.options('PageIndexOptions', '/pa
  * GET /pages/{id}
  * Retrieves a page by its ID.
  */
-export const PageByIdGet = HttpApiEndpoint.get('PageByIdGet', `/pages/${PublicV1GetPagesIdParam}`)
+export const PageByIdGet = HttpApiEndpoint.get('PageByIdGet', '/pages/:id')
+	.setPath(IdParamString)
 	.annotate(Title, 'Get Page by ID')
 	.annotate(Summary, 'Retrieve Page by ID')
 	.annotate(Description, 'Retrieves a page by its ID.')
@@ -55,10 +56,8 @@ export const PageByIdGet = HttpApiEndpoint.get('PageByIdGet', `/pages/${PublicV1
  * OPTIONS /pages/{id}
  * Provides information about the /pages/{id} endpoint.
  */
-export const PageByIdOptions = HttpApiEndpoint.options(
-	'PageByIdOptions',
-	`/pages/${PublicV1GetPagesIdParam}`
-)
+export const PageByIdOptions = HttpApiEndpoint.options('PageByIdOptions', '/pages/:id')
+	.setPath(IdParamString)
 	.annotate(Title, 'Options for Page by ID')
 	.annotate(Summary, 'Retrieve Page by ID')
 	.annotate(Description, 'Provides information about the /pages/{id} endpoint.')
