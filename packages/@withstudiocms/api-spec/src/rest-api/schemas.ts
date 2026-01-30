@@ -8,7 +8,7 @@ import {
 	StudioCMSUsersTable,
 } from '@withstudiocms/sdk/tables';
 import { Schema } from 'effect';
-import { buildPartialSchema } from '../_utils/build-partial-schema.js';
+import { buildPartialSchema } from '../_internal/build-partial-schema.js';
 
 /**
  * Select schema for category data.
