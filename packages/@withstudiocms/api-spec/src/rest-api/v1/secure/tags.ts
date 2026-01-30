@@ -6,9 +6,9 @@ import { RestAPIError } from '../../errors.js';
 import { RestAPIAuthorization } from '../../middleware.js';
 import {
 	DeletionSuccess,
+	IdParamNumber,
 	PartialTags,
 	PublicV1TagsGetSearchParams,
-	PublicV1TagsIdParam,
 	PublicV1TagsSelect,
 } from '../../schemas.js';
 
@@ -59,7 +59,8 @@ export const TagsIndexOptions = HttpApiEndpoint.options('TagsIndexOptions', '/ta
  * GET /tags/{id}
  * Retrieves a tag by its ID.
  */
-export const TagsByIdGet = HttpApiEndpoint.get('TagsByIdGet', `/tags/${PublicV1TagsIdParam}`)
+export const TagsByIdGet = HttpApiEndpoint.get('TagsByIdGet', '/tags/:id')
+	.setPath(IdParamNumber)
 	.annotate(Title, 'Get Tag by ID')
 	.annotate(Summary, 'Retrieve Tag by ID')
 	.annotate(Description, 'Retrieves a tag by its ID.')
@@ -72,7 +73,8 @@ export const TagsByIdGet = HttpApiEndpoint.get('TagsByIdGet', `/tags/${PublicV1T
  * PATCH /tags/{id}
  * Updates a tag by its ID.
  */
-export const TagsByIdPatch = HttpApiEndpoint.patch('TagsByIdPatch', `/tags/${PublicV1TagsIdParam}`)
+export const TagsByIdPatch = HttpApiEndpoint.patch('TagsByIdPatch', '/tags/:id')
+	.setPath(IdParamNumber)
 	.annotate(Title, 'Update Tag by ID')
 	.annotate(Summary, 'Update Tag by ID')
 	.annotate(Description, 'Updates a tag by its ID.')
@@ -87,7 +89,8 @@ export const TagsByIdPatch = HttpApiEndpoint.patch('TagsByIdPatch', `/tags/${Pub
  * DELETE /tags/{id}
  * Deletes a tag by its ID.
  */
-export const TagsByIdDelete = HttpApiEndpoint.del('TagsByIdDelete', `/tags/${PublicV1TagsIdParam}`)
+export const TagsByIdDelete = HttpApiEndpoint.del('TagsByIdDelete', '/tags/:id')
+	.setPath(IdParamNumber)
 	.annotate(Title, 'Delete Tag by ID')
 	.annotate(Summary, 'Delete Tag by ID')
 	.annotate(Description, 'Deletes a tag by its ID.')
@@ -100,10 +103,8 @@ export const TagsByIdDelete = HttpApiEndpoint.del('TagsByIdDelete', `/tags/${Pub
  * OPTIONS /tags/{id}
  * Provides information about the /tags/{id} endpoint.
  */
-export const TagsByIdOptions = HttpApiEndpoint.options(
-	'TagsByIdOptions',
-	`/tags/${PublicV1TagsIdParam}`
-)
+export const TagsByIdOptions = HttpApiEndpoint.options('TagsByIdOptions', '/tags/:id')
+	.setPath(IdParamNumber)
 	.annotate(Title, 'Options for Tag by ID')
 	.annotate(Summary, 'Retrieve Tag by ID')
 	.annotate(Description, 'Provides information about the /tags/{id} endpoint.')

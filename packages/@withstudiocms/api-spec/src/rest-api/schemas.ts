@@ -1,4 +1,3 @@
-import { HttpApiSchema } from '@effect/platform';
 import {
 	StudioCMSOAuthAccounts,
 	StudioCMSPageContent,
@@ -17,9 +16,26 @@ import { buildPartialSchema } from '../_utils/build-partial-schema.js';
 export const PublicV1CategorySelect = StudioCMSPageDataCategories.Select;
 
 /**
- * Path parameter for category ID.
+ * Path parameter for ID as number.
  */
-export const PublicV1CategoryIdParam = HttpApiSchema.param('id', Schema.NumberFromString);
+export const IdParamNumber = Schema.Struct({
+	id: Schema.NumberFromString,
+});
+
+/**
+ * Path parameter for ID as string.
+ */
+export const IdParamString = Schema.Struct({
+	id: Schema.String,
+});
+
+/**
+ * Path parameter for diff ID.
+ */
+export const IdAndDiffIdParam = Schema.Struct({
+	...IdParamString.fields,
+	diffId: Schema.String,
+});
 
 /**
  * GET /categories
@@ -42,11 +58,6 @@ export const UsersV1GetSearchParams = Schema.Struct({
 export const PublicV1TagsSelect = StudioCMSPageDataTags.Select;
 
 /**
- * Path parameter for tags ID.
- */
-export const PublicV1TagsIdParam = HttpApiSchema.param('id', Schema.NumberFromString);
-
-/**
  * GET /tags
  * Search parameters for filtering tags.
  */
@@ -63,11 +74,6 @@ export const PublicV1FolderSelect = Schema.Struct({
 	name: Schema.String,
 	parent: Schema.optional(Schema.NullOr(Schema.String)),
 });
-
-/**
- * Path parameter for folder ID.
- */
-export const PublicV1FolderIdParam = HttpApiSchema.param('id', Schema.String);
 
 /**
  * GET /folders
@@ -95,16 +101,6 @@ export const PublicV1GetPagesSelect = Schema.Struct({
 	authorData: Schema.UndefinedOr(UsersTableBase),
 	contributorsData: Schema.Array(UsersTableBase),
 });
-
-/**
- * Path parameter for page ID.
- */
-export const PublicV1GetPagesIdParam = HttpApiSchema.param('id', Schema.String);
-
-/**
- * Path parameter for string ID.
- */
-export const StringIdParam = HttpApiSchema.param('id', Schema.String);
 
 /**
  * GET /pages
@@ -268,8 +264,3 @@ export const DiffTrackingReturn = Schema.Struct({
 		end: StudioCMSPageData.Select,
 	}),
 });
-
-/**
- * Path parameter for diff ID.
- */
-export const DiffIdParam = HttpApiSchema.param('diffId', Schema.String);
