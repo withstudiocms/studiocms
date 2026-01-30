@@ -17,7 +17,7 @@ import {
  * GET /pages
  * Retrieves a list of pages.
  */
-export const PagesIndexGet = HttpApiEndpoint.get('PagesIndexGet', '/pages')
+export const PagesIndexGet = HttpApiEndpoint.get('get-pages', '/pages')
 	.annotate(Title, 'Get Pages')
 	.annotate(Summary, 'Retrieve Pages')
 	.annotate(
@@ -34,7 +34,7 @@ export const PagesIndexGet = HttpApiEndpoint.get('PagesIndexGet', '/pages')
  * POST /pages
  * Creates a new page.
  */
-export const PagesIndexPost = HttpApiEndpoint.post('PagesIndexPost', '/pages')
+export const PagesIndexPost = HttpApiEndpoint.post('create-page', '/pages')
 	.annotate(Title, 'Create Page')
 	.annotate(Summary, 'Create Page')
 	.annotate(Description, 'Creates a new page.')
@@ -45,25 +45,10 @@ export const PagesIndexPost = HttpApiEndpoint.post('PagesIndexPost', '/pages')
 	.addError(RestAPIError, { status: 500 });
 
 /**
- * OPTIONS /pages
- * Provides information about the /pages endpoint.
- */
-export const PagesIndexOptions = HttpApiEndpoint.options('PagesIndexOptions', '/pages')
-	.annotate(Title, 'Options for Pages')
-	.annotate(Summary, 'Retrieve Pages')
-	.annotate(
-		Description,
-		'Provides information about the /pages endpoint, including allowed methods.'
-	)
-	.middleware(RestAPIAuthorization)
-	.addSuccess(Schema.Void)
-	.addError(RestAPIError, { status: 500 });
-
-/**
  * GET /pages/{id}
  * Retrieves a page by its ID.
  */
-export const PagesByIdGet = HttpApiEndpoint.get('PagesByIdGet', '/pages/:id')
+export const PagesByIdGet = HttpApiEndpoint.get('get-page', '/pages/:id')
 	.setPath(IdParamString)
 	.annotate(Title, 'Get Page by ID')
 	.annotate(Summary, 'Retrieve Page by ID')
@@ -77,7 +62,7 @@ export const PagesByIdGet = HttpApiEndpoint.get('PagesByIdGet', '/pages/:id')
  * PATCH /pages/{id}
  * Updates a page by its ID.
  */
-export const PagesByIdPatch = HttpApiEndpoint.patch('PagesByIdPatch', '/pages/:id')
+export const PagesByIdPatch = HttpApiEndpoint.patch('update-page', '/pages/:id')
 	.setPath(IdParamString)
 	.annotate(Title, 'Update Page by ID')
 	.annotate(Summary, 'Update Page by ID')
@@ -93,7 +78,7 @@ export const PagesByIdPatch = HttpApiEndpoint.patch('PagesByIdPatch', '/pages/:i
  * DELETE /pages/{id}
  * Deletes a page by its ID.
  */
-export const PagesByIdDelete = HttpApiEndpoint.del('PagesByIdDelete', '/pages/:id')
+export const PagesByIdDelete = HttpApiEndpoint.del('delete-page', '/pages/:id')
 	.setPath(IdParamString)
 	.annotate(Title, 'Delete Page by ID')
 	.annotate(Summary, 'Delete Page by ID')
@@ -104,23 +89,10 @@ export const PagesByIdDelete = HttpApiEndpoint.del('PagesByIdDelete', '/pages/:i
 	.addError(RestAPIError, { status: 500 });
 
 /**
- * OPTIONS /pages/{id}
- * Provides information about the /pages/{id} endpoint.
- */
-export const PagesByIdOptions = HttpApiEndpoint.options('PagesByIdOptions', '/pages/:id')
-	.setPath(IdParamString)
-	.annotate(Title, 'Options for Page by ID')
-	.annotate(Summary, 'Retrieve Page by ID')
-	.annotate(Description, 'Provides information about the /pages/{id} endpoint.')
-	.middleware(RestAPIAuthorization)
-	.addSuccess(Schema.Void)
-	.addError(RestAPIError, { status: 500 });
-
-/**
  * GET /pages/{id}/history
  * Retrieves the history of a page by its ID.
  */
-export const PagesByIdHistoryGet = HttpApiEndpoint.get('PagesByIdHistoryGet', '/pages/:id/history')
+export const PagesByIdHistoryGet = HttpApiEndpoint.get('get-page-history', '/pages/:id/history')
 	.setPath(IdParamString)
 	.annotate(Title, 'Get Page History by ID')
 	.annotate(Summary, 'Retrieve Page History by ID')
@@ -136,27 +108,11 @@ export const PagesByIdHistoryGet = HttpApiEndpoint.get('PagesByIdHistoryGet', '/
 	.addError(RestAPIError, { status: 500 });
 
 /**
- * OPTIONS /pages/{id}/history
- * Provides information about the /pages/{id}/history endpoint.
- */
-export const PagesByIdHistoryOptions = HttpApiEndpoint.options(
-	'PagesByIdHistoryOptions',
-	'/pages/:id/history'
-)
-	.setPath(IdParamString)
-	.annotate(Title, 'Options for Page History by ID')
-	.annotate(Summary, 'Retrieve Page History by ID')
-	.annotate(Description, 'Provides information about the /pages/{id}/history endpoint.')
-	.middleware(RestAPIAuthorization)
-	.addSuccess(Schema.Void)
-	.addError(RestAPIError, { status: 500 });
-
-/**
  * GET /pages/{id}/history/{diffId}
  * Retrieves a specific history entry of a page by its Diff ID.
  */
 export const PagesByIdHistoryByDiffIdGet = HttpApiEndpoint.get(
-	'PagesByIdHistoryByDiffIdGet',
+	'get-page-history-entry',
 	'/pages/:id/history/:diffId'
 )
 	.setPath(IdAndDiffIdParam)
@@ -166,20 +122,4 @@ export const PagesByIdHistoryByDiffIdGet = HttpApiEndpoint.get(
 	.middleware(RestAPIAuthorization)
 	.addSuccess(DiffTrackingReturn)
 	.addError(RestAPIError, { status: 404 })
-	.addError(RestAPIError, { status: 500 });
-
-/**
- * OPTIONS /pages/{id}/history/{diffId}
- * Provides information about the /pages/{id}/history/{diffId} endpoint.
- */
-export const PagesByIdHistoryByDiffIdOptions = HttpApiEndpoint.options(
-	'PagesByIdHistoryByDiffIdOptions',
-	'/pages/:id/history/:diffId'
-)
-	.setPath(IdAndDiffIdParam)
-	.annotate(Title, 'Options for Page History Entry by Diff ID')
-	.annotate(Summary, 'Retrieve Page History Entry by Diff ID')
-	.annotate(Description, 'Provides information about the /pages/{id}/history/{diffId} endpoint.')
-	.middleware(RestAPIAuthorization)
-	.addSuccess(Schema.Void)
 	.addError(RestAPIError, { status: 500 });

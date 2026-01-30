@@ -16,7 +16,7 @@ import {
  * GET /folders
  * Retrieves a list of folders.
  */
-export const FolderIndexGet = HttpApiEndpoint.get('FolderIndexGet', '/folders')
+export const FolderIndexGet = HttpApiEndpoint.get('get-folders', '/folders')
 	.annotate(Title, 'Get Folders')
 	.annotate(Summary, 'Retrieve Folders')
 	.annotate(
@@ -33,7 +33,7 @@ export const FolderIndexGet = HttpApiEndpoint.get('FolderIndexGet', '/folders')
  * POST /folders
  * Creates a new folder.
  */
-export const FolderIndexPost = HttpApiEndpoint.post('FolderIndexPost', '/folders')
+export const FolderIndexPost = HttpApiEndpoint.post('create-folder', '/folders')
 	.annotate(Title, 'Create Folder')
 	.annotate(Summary, 'Create Folder')
 	.annotate(Description, 'Creates a new folder.')
@@ -44,25 +44,10 @@ export const FolderIndexPost = HttpApiEndpoint.post('FolderIndexPost', '/folders
 	.addError(RestAPIError, { status: 500 });
 
 /**
- * OPTIONS /folders
- * Provides information about the /folders endpoint.
- */
-export const FolderIndexOptions = HttpApiEndpoint.options('FolderIndexOptions', '/folders')
-	.annotate(Title, 'Options for Folders')
-	.annotate(Summary, 'Retrieve Folders')
-	.annotate(
-		Description,
-		'Provides information about the /folders endpoint, including allowed methods.'
-	)
-	.middleware(RestAPIAuthorization)
-	.addSuccess(Schema.Void)
-	.addError(RestAPIError, { status: 500 });
-
-/**
  * GET /folders/{id}
  * Retrieves a folder by its ID.
  */
-export const FolderByIdGet = HttpApiEndpoint.get('FolderByIdGet', '/folders/:id')
+export const FolderByIdGet = HttpApiEndpoint.get('get-folder', '/folders/:id')
 	.setPath(IdParamString)
 	.annotate(Title, 'Get Folder by ID')
 	.annotate(Summary, 'Retrieve Folder by ID')
@@ -76,7 +61,7 @@ export const FolderByIdGet = HttpApiEndpoint.get('FolderByIdGet', '/folders/:id'
  * PATCH /folders/{id}
  * Updates a folder by its ID.
  */
-export const FolderByIdPatch = HttpApiEndpoint.patch('FolderByIdPatch', '/folders/:id')
+export const FolderByIdPatch = HttpApiEndpoint.patch('update-folder', '/folders/:id')
 	.setPath(IdParamString)
 	.annotate(Title, 'Update Folder by ID')
 	.annotate(Summary, 'Update Folder by ID')
@@ -92,7 +77,7 @@ export const FolderByIdPatch = HttpApiEndpoint.patch('FolderByIdPatch', '/folder
  * DELETE /folders/{id}
  * Deletes a folder by its ID.
  */
-export const FolderByIdDelete = HttpApiEndpoint.del('FolderByIdDelete', '/folders/:id')
+export const FolderByIdDelete = HttpApiEndpoint.del('delete-folder', '/folders/:id')
 	.setPath(IdParamString)
 	.annotate(Title, 'Delete Folder by ID')
 	.annotate(Summary, 'Delete Folder by ID')
@@ -100,17 +85,4 @@ export const FolderByIdDelete = HttpApiEndpoint.del('FolderByIdDelete', '/folder
 	.middleware(RestAPIAuthorization)
 	.addSuccess(DeletionSuccess)
 	.addError(RestAPIError, { status: 404 })
-	.addError(RestAPIError, { status: 500 });
-
-/**
- * OPTIONS /folders/{id}
- * Provides information about the /folders/{id} endpoint.
- */
-export const FolderByIdOptions = HttpApiEndpoint.options('FolderByIdOptions', '/folders/:id')
-	.setPath(IdParamString)
-	.annotate(Title, 'Options for Folder by ID')
-	.annotate(Summary, 'Retrieve Folder by ID')
-	.annotate(Description, 'Provides information about the /folders/{id} endpoint.')
-	.middleware(RestAPIAuthorization)
-	.addSuccess(Schema.Void)
 	.addError(RestAPIError, { status: 500 });

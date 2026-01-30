@@ -12,10 +12,6 @@ import { AuthApi } from './auth/index.js';
 import { RestApiV1PublicSpec, RestApiV1SecureSpec } from './rest-api/v1/index.js';
 import { SDKApi } from './sdk/index.js';
 
-export * from './auth/index.js';
-export * from './rest-api/index.js';
-export * from './sdk/index.js';
-
 /**
  * StudioCMS API Specification
  *

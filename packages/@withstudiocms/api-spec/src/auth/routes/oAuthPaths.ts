@@ -19,7 +19,7 @@ import { OAuthProviderParam } from '../schemas.js';
  * @throws {AuthAPIError} Returns a 403 status code for forbidden access
  * @throws {AuthAPIError} Returns a 500 status code on server error
  */
-export const oAuthIndexGet = HttpApiEndpoint.get('oAuthIndexGet', '/:provider')
+export const oAuthIndexGet = HttpApiEndpoint.get('oAuthInit', '/:provider')
 	.setPath(OAuthProviderParam)
 	.annotate(Title, 'OAuth Index')
 	.annotate(Summary, 'Initiate OAuth flow for the specified provider')
@@ -32,27 +32,6 @@ export const oAuthIndexGet = HttpApiEndpoint.get('oAuthIndexGet', '/:provider')
 	)
 	.addError(AuthAPIError, { status: 400 })
 	.addError(AuthAPIError, { status: 403 })
-	.addError(AuthAPIError, { status: 500 });
-
-/**
- * HTTP API endpoint options for OAuth index.
- *
- * Defines the OPTIONS endpoint at `/{provider}` that provides metadata about
- * the OAuth index endpoint, including allowed HTTP methods and capabilities.
- *
- * @remarks
- * This endpoint follows the HTTP OPTIONS pattern to expose endpoint capabilities
- * without performing any data operations.
- *
- * @returns A void response on success
- * @throws {AuthAPIError} When a server error occurs (HTTP 500)
- */
-export const oAuthIndexOptions = HttpApiEndpoint.options('oAuthIndexOptions', '/:provider')
-	.setPath(OAuthProviderParam)
-	.annotate(Title, 'Options for OAuth Index')
-	.annotate(Summary, 'Retrieve OAuth Index Options')
-	.annotate(Description, 'Provides options for the OAuth index endpoint.')
-	.addSuccess(Schema.Void)
 	.addError(AuthAPIError, { status: 500 });
 
 /**
@@ -70,7 +49,7 @@ export const oAuthIndexOptions = HttpApiEndpoint.options('oAuthIndexOptions', '/
  * @throws {AuthAPIError} Returns a 403 status code for forbidden access
  * @throws {AuthAPIError} Returns a 500 status code on server error
  */
-export const oAuthCallbackGet = HttpApiEndpoint.get('oAuthCallbackGet', '/:provider/callback')
+export const oAuthCallbackGet = HttpApiEndpoint.get('oAuthCallback', '/:provider/callback')
 	.setPath(OAuthProviderParam)
 	.annotate(Title, 'OAuth Callback')
 	.annotate(Summary, 'Handle OAuth callback for the specified provider')
@@ -86,28 +65,4 @@ export const oAuthCallbackGet = HttpApiEndpoint.get('oAuthCallbackGet', '/:provi
 	)
 	.addError(AuthAPIError, { status: 400 })
 	.addError(AuthAPIError, { status: 403 })
-	.addError(AuthAPIError, { status: 500 });
-
-/**
- * HTTP API endpoint options for OAuth callback.
- *
- * Defines the OPTIONS endpoint at `/{provider}/callback` that provides metadata about
- * the OAuth callback endpoint, including allowed HTTP methods and capabilities.
- *
- * @remarks
- * This endpoint follows the HTTP OPTIONS pattern to expose endpoint capabilities
- * without performing any data operations.
- *
- * @returns A void response on success
- * @throws {AuthAPIError} When a server error occurs (HTTP 500)
- */
-export const oAuthCallbackOptions = HttpApiEndpoint.options(
-	'oAuthCallbackOptions',
-	'/:provider/callback'
-)
-	.setPath(OAuthProviderParam)
-	.annotate(Title, 'Options for OAuth Callback')
-	.annotate(Summary, 'Retrieve OAuth Callback Options')
-	.annotate(Description, 'Provides options for the OAuth callback endpoint.')
-	.addSuccess(Schema.Void)
 	.addError(AuthAPIError, { status: 500 });

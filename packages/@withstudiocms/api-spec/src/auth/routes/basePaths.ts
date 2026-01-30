@@ -20,7 +20,7 @@ import {
  * @throws {AuthAPIError} Returns a 403 status code for forbidden access
  * @throws {AuthAPIError} Returns a 500 status code on server error
  */
-export const forgotPasswordPost = HttpApiEndpoint.post('forgotPasswordPost', '/forgot-password')
+export const forgotPasswordPost = HttpApiEndpoint.post('forgot-password', '/forgot-password')
 	.annotate(Title, 'Forgot Password')
 	.annotate(Summary, 'Initiate password reset process')
 	.annotate(Description, 'Sends a password reset email to the user if the email is registered.')
@@ -28,26 +28,6 @@ export const forgotPasswordPost = HttpApiEndpoint.post('forgotPasswordPost', '/f
 	.addSuccess(AuthAPISuccess)
 	.addError(AuthAPIError, { status: 400 })
 	.addError(AuthAPIError, { status: 403 })
-	.addError(AuthAPIError, { status: 500 });
-
-/**
- * Options endpoint for forgot password.
- *
- * @remarks
- * This endpoint provides metadata about the forgot password endpoint,
- * including allowed HTTP methods and capabilities.
- *
- * @returns A void response on success
- * @throws {AuthAPIError} When a server error occurs (HTTP 500)
- */
-export const forgotPasswordOptions = HttpApiEndpoint.options(
-	'forgotPasswordOptions',
-	'/forgot-password'
-)
-	.annotate(Title, 'Options for Forgot Password')
-	.annotate(Summary, 'Retrieve Forgot Password Options')
-	.annotate(Description, 'Provides options for the forgot password endpoint.')
-	.addSuccess(Schema.Void)
 	.addError(AuthAPIError, { status: 500 });
 
 // TODO: Convert login to use JSON payload instead of multipart/form-data
@@ -66,7 +46,7 @@ export const forgotPasswordOptions = HttpApiEndpoint.options(
  * @throws {AuthAPIError} Returns a 403 status code for forbidden access
  * @throws {AuthAPIError} Returns a 500 status code on server error
  */
-export const loginPost = HttpApiEndpoint.post('loginPost', '/login')
+export const loginPost = HttpApiEndpoint.post('login', '/login')
 	.annotate(Title, 'Login')
 	.annotate(Summary, 'Authenticate user and create a session')
 	.annotate(Description, 'Authenticates the user with provided credentials and creates a session.')
@@ -82,23 +62,6 @@ export const loginPost = HttpApiEndpoint.post('loginPost', '/login')
 	.addError(AuthAPIError, { status: 500 });
 
 /**
- * Options endpoint for user login.
- *
- * @remarks
- * This endpoint provides metadata about the login endpoint,
- * including allowed HTTP methods and capabilities.
- *
- * @returns A void response on success
- * @throws {AuthAPIError} When a server error occurs (HTTP 500)
- */
-export const loginOptions = HttpApiEndpoint.options('loginOptions', '/login')
-	.annotate(Title, 'Options for Login')
-	.annotate(Summary, 'Retrieve Login Options')
-	.annotate(Description, 'Provides options for the login endpoint.')
-	.addSuccess(Schema.Void)
-	.addError(AuthAPIError, { status: 500 });
-
-/**
  * Endpoint for user logout.
  *
  * @remarks
@@ -107,7 +70,7 @@ export const loginOptions = HttpApiEndpoint.options('loginOptions', '/login')
  * @returns A redirect response on successful logout
  * @throws {AuthAPIError} Returns a 500 status code on server error
  */
-export const logoutPost = HttpApiEndpoint.post('logoutPost', '/logout')
+export const logoutPost = HttpApiEndpoint.post('logout', '/logout')
 	.annotate(Title, 'Logout')
 	.annotate(Summary, 'Terminate user session')
 	.annotate(Description, 'Logs out the user by terminating the current session.')
@@ -117,23 +80,6 @@ export const logoutPost = HttpApiEndpoint.post('logoutPost', '/logout')
 		}),
 		{ status: 303 }
 	)
-	.addError(AuthAPIError, { status: 500 });
-
-/**
- * Options endpoint for user logout.
- *
- * @remarks
- * This endpoint provides metadata about the logout endpoint,
- * including allowed HTTP methods and capabilities.
- *
- * @returns A void response on success
- * @throws {AuthAPIError} When a server error occurs (HTTP 500)
- */
-export const logoutOptions = HttpApiEndpoint.options('logoutOptions', '/logout')
-	.annotate(Title, 'Options for Logout')
-	.annotate(Summary, 'Retrieve Logout Options')
-	.annotate(Description, 'Provides options for the logout endpoint.')
-	.addSuccess(Schema.Void)
 	.addError(AuthAPIError, { status: 500 });
 
 // TODO: Convert register to use JSON payload instead of multipart/form-data
@@ -151,7 +97,7 @@ export const logoutOptions = HttpApiEndpoint.options('logoutOptions', '/logout')
  * @throws {AuthAPIError} Returns a 400 status code for bad requests
  * @throws {AuthAPIError} Returns a 500 status code on server error
  */
-export const registerPost = HttpApiEndpoint.post('registerPost', '/register')
+export const registerPost = HttpApiEndpoint.post('register', '/register')
 	.annotate(Title, 'Register')
 	.annotate(Summary, 'Create a new user account')
 	.annotate(Description, 'Registers a new user account with the provided details.')
@@ -163,21 +109,4 @@ export const registerPost = HttpApiEndpoint.post('registerPost', '/register')
 		{ status: 200 }
 	)
 	.addError(AuthAPIError, { status: 400 })
-	.addError(AuthAPIError, { status: 500 });
-
-/**
- * Options endpoint for user registration.
- *
- * @remarks
- * This endpoint provides metadata about the registration endpoint,
- * including allowed HTTP methods and capabilities.
- *
- * @returns A void response on success
- * @throws {AuthAPIError} When a server error occurs (HTTP 500)
- */
-export const registerOptions = HttpApiEndpoint.options('registerOptions', '/register')
-	.annotate(Title, 'Options for Register')
-	.annotate(Summary, 'Retrieve Register Options')
-	.annotate(Description, 'Provides options for the register endpoint.')
-	.addSuccess(Schema.Void)
 	.addError(AuthAPIError, { status: 500 });

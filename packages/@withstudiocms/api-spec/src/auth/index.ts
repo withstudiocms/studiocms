@@ -2,22 +2,8 @@ import { HttpApi, HttpApiGroup } from '@effect/platform';
 import { Description, License, Title, Transform, Version } from '@effect/platform/OpenApi';
 import pkg from '../../package.json';
 import { AuthAPIError } from './errors.js';
-import {
-	forgotPasswordOptions,
-	forgotPasswordPost,
-	loginOptions,
-	loginPost,
-	logoutOptions,
-	logoutPost,
-	registerOptions,
-	registerPost,
-} from './routes/basePaths.js';
-import {
-	oAuthCallbackGet,
-	oAuthCallbackOptions,
-	oAuthIndexGet,
-	oAuthIndexOptions,
-} from './routes/oAuthPaths.js';
+import { forgotPasswordPost, loginPost, logoutPost, registerPost } from './routes/basePaths.js';
+import { oAuthCallbackGet, oAuthIndexGet } from './routes/oAuthPaths.js';
 
 export * from './errors.js';
 export * from './schemas.js';
@@ -36,7 +22,7 @@ export * from './schemas.js';
  *
  * @public
  */
-export class AuthApi extends HttpApiGroup.make('AuthApi')
+export class AuthApi extends HttpApiGroup.make('auth')
 	.annotate(Title, 'Authentication API')
 	.annotate(
 		Description,
@@ -48,17 +34,11 @@ export class AuthApi extends HttpApiGroup.make('AuthApi')
 		url: 'https://github.com/withstudiocms/studiocms/blob/main/packages/%40withstudiocms/api-spec/LICENSE',
 	})
 	.add(forgotPasswordPost)
-	.add(forgotPasswordOptions)
 	.add(loginPost)
-	.add(loginOptions)
 	.add(logoutPost)
-	.add(logoutOptions)
 	.add(registerPost)
-	.add(registerOptions)
 	.add(oAuthIndexGet)
-	.add(oAuthIndexOptions)
 	.add(oAuthCallbackGet)
-	.add(oAuthCallbackOptions)
 	.addError(AuthAPIError, { status: 500 })
 	.prefix('/auth') {}
 
