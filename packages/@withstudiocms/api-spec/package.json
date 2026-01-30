@@ -48,24 +48,24 @@
 	},
 	"exports": {
 		".": {
-			"types": "./dist/index.d.ts",
-			"default": "./dist/index.js"
+			"types": "./dist/index.d.mts",
+			"default": "./dist/index.mjs"
 		},
 		"./auth": {
-			"types": "./dist/auth/index.d.ts",
-			"default": "./dist/auth/index.js"
+			"types": "./dist/auth/index.d.mts",
+			"default": "./dist/auth/index.mjs"
 		},
 		"./rest-api": {
-			"types": "./dist/rest-api/index.d.ts",
-			"default": "./dist/rest-api/index.js"
+			"types": "./dist/rest-api/index.d.mts",
+			"default": "./dist/rest-api/index.mjs"
 		},
 		"./sdk": {
-			"types": "./dist/sdk/index.d.ts",
-			"default": "./dist/sdk/index.js"
+			"types": "./dist/sdk/index.d.mts",
+			"default": "./dist/sdk/index.mjs"
 		},
 		"./HttpApiScalar": {
-			"types": "./dist/scalar.d.ts",
-			"default": "./dist/scalar.js"
+			"types": "./dist/scalar.d.mts",
+			"default": "./dist/scalar.mjs"
 		}
 	},
 	"dependencies": {},
