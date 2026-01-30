@@ -10,7 +10,7 @@ if (requiredMajorVersion < minimumMajorVersion) {
 	process.exit(1);
 }
 
-import('./dist/index.js')
+import('./dist/index.mjs')
 	.then(({ main }) => main())
 	.catch((error) => {
 		console.error('Failed to start `create-studiocms` CLI.');
