@@ -16,7 +16,7 @@ import {
  * GET /tags
  * Retrieves a list of tags.
  */
-export const TagsIndexGet = HttpApiEndpoint.get('TagsIndexGet', '/tags')
+export const TagsIndexGet = HttpApiEndpoint.get('get-tags', '/tags')
 	.annotate(Title, 'Get Tags')
 	.annotate(Summary, 'Retrieve Tags')
 	.annotate(Description, 'Retrieves a list of tags, with optional filtering by name and parent ID.')
@@ -30,7 +30,7 @@ export const TagsIndexGet = HttpApiEndpoint.get('TagsIndexGet', '/tags')
  * POST /tags
  * Creates a new tag.
  */
-export const TagsIndexPost = HttpApiEndpoint.post('TagsIndexPost', '/tags')
+export const TagsIndexPost = HttpApiEndpoint.post('create-tag', '/tags')
 	.annotate(Title, 'Create Tag')
 	.annotate(Summary, 'Create Tag')
 	.annotate(Description, 'Creates a new tag.')
@@ -41,25 +41,10 @@ export const TagsIndexPost = HttpApiEndpoint.post('TagsIndexPost', '/tags')
 	.addError(RestAPIError, { status: 500 });
 
 /**
- * OPTIONS /tags
- * Provides information about the /tags endpoint.
- */
-export const TagsIndexOptions = HttpApiEndpoint.options('TagsIndexOptions', '/tags')
-	.annotate(Title, 'Options for Tags')
-	.annotate(Summary, 'Retrieve Tags')
-	.annotate(
-		Description,
-		'Provides information about the /tags endpoint, including allowed methods.'
-	)
-	.middleware(RestAPIAuthorization)
-	.addSuccess(Schema.Void)
-	.addError(RestAPIError, { status: 500 });
-
-/**
  * GET /tags/{id}
  * Retrieves a tag by its ID.
  */
-export const TagsByIdGet = HttpApiEndpoint.get('TagsByIdGet', '/tags/:id')
+export const TagsByIdGet = HttpApiEndpoint.get('get-tag', '/tags/:id')
 	.setPath(IdParamNumber)
 	.annotate(Title, 'Get Tag by ID')
 	.annotate(Summary, 'Retrieve Tag by ID')
@@ -73,7 +58,7 @@ export const TagsByIdGet = HttpApiEndpoint.get('TagsByIdGet', '/tags/:id')
  * PATCH /tags/{id}
  * Updates a tag by its ID.
  */
-export const TagsByIdPatch = HttpApiEndpoint.patch('TagsByIdPatch', '/tags/:id')
+export const TagsByIdPatch = HttpApiEndpoint.patch('update-tag', '/tags/:id')
 	.setPath(IdParamNumber)
 	.annotate(Title, 'Update Tag by ID')
 	.annotate(Summary, 'Update Tag by ID')
@@ -89,7 +74,7 @@ export const TagsByIdPatch = HttpApiEndpoint.patch('TagsByIdPatch', '/tags/:id')
  * DELETE /tags/{id}
  * Deletes a tag by its ID.
  */
-export const TagsByIdDelete = HttpApiEndpoint.del('TagsByIdDelete', '/tags/:id')
+export const TagsByIdDelete = HttpApiEndpoint.del('delete-tag', '/tags/:id')
 	.setPath(IdParamNumber)
 	.annotate(Title, 'Delete Tag by ID')
 	.annotate(Summary, 'Delete Tag by ID')
@@ -97,17 +82,4 @@ export const TagsByIdDelete = HttpApiEndpoint.del('TagsByIdDelete', '/tags/:id')
 	.middleware(RestAPIAuthorization)
 	.addSuccess(DeletionSuccess)
 	.addError(RestAPIError, { status: 404 })
-	.addError(RestAPIError, { status: 500 });
-
-/**
- * OPTIONS /tags/{id}
- * Provides information about the /tags/{id} endpoint.
- */
-export const TagsByIdOptions = HttpApiEndpoint.options('TagsByIdOptions', '/tags/:id')
-	.setPath(IdParamNumber)
-	.annotate(Title, 'Options for Tag by ID')
-	.annotate(Summary, 'Retrieve Tag by ID')
-	.annotate(Description, 'Provides information about the /tags/{id} endpoint.')
-	.middleware(RestAPIAuthorization)
-	.addSuccess(Schema.Void)
 	.addError(RestAPIError, { status: 500 });

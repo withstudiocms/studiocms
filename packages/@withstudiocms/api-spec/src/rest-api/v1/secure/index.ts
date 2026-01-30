@@ -5,51 +5,33 @@ import { RestAPIAuthorization } from '../../middleware.js';
 import {
 	CategoryByIdDelete,
 	CategoryByIdGet,
-	CategoryByIdOptions,
 	CategoryByIdPatch,
 	CategoryIndexGet,
-	CategoryIndexOptions,
 	CategoryIndexPost,
 } from './categories.js';
 import {
 	FolderByIdDelete,
 	FolderByIdGet,
-	FolderByIdOptions,
 	FolderByIdPatch,
 	FolderIndexGet,
-	FolderIndexOptions,
 	FolderIndexPost,
 } from './folders.js';
 import {
 	PagesByIdDelete,
 	PagesByIdGet,
 	PagesByIdHistoryByDiffIdGet,
-	PagesByIdHistoryByDiffIdOptions,
 	PagesByIdHistoryGet,
-	PagesByIdHistoryOptions,
-	PagesByIdOptions,
 	PagesByIdPatch,
 	PagesIndexGet,
-	PagesIndexOptions,
 	PagesIndexPost,
 } from './pages.js';
-import { SettingsIndexGet, SettingsIndexOptions, SettingsIndexPatch } from './settings.js';
-import {
-	TagsByIdDelete,
-	TagsByIdGet,
-	TagsByIdOptions,
-	TagsByIdPatch,
-	TagsIndexGet,
-	TagsIndexOptions,
-	TagsIndexPost,
-} from './tags.js';
+import { SettingsIndexGet, SettingsIndexPatch } from './settings.js';
+import { TagsByIdDelete, TagsByIdGet, TagsByIdPatch, TagsIndexGet, TagsIndexPost } from './tags.js';
 import {
 	UsersByIdDelete,
 	UsersByIdGet,
-	UsersByIdOptions,
 	UsersByIdPatch,
 	UsersIndexGet,
-	UsersIndexOptions,
 	UsersIndexPost,
 } from './users.js';
 
@@ -77,7 +59,7 @@ import {
  * This API group includes error handling for 404 (Not Found) and 500 (Internal Server Error) responses.
  * Each resource supports standard HTTP methods (GET, POST, PATCH, DELETE, OPTIONS) where applicable.
  */
-export class RestApiV1SecureSpec extends HttpApiGroup.make('RestApiV1SecureSpec')
+export class RestApiV1SecureSpec extends HttpApiGroup.make('rest-v1')
 	.annotate(Title, 'REST API v1 - Secure')
 	.annotate(
 		Description,
@@ -94,45 +76,32 @@ export class RestApiV1SecureSpec extends HttpApiGroup.make('RestApiV1SecureSpec'
 	})
 	.add(CategoryByIdDelete)
 	.add(CategoryByIdGet)
-	.add(CategoryByIdOptions)
 	.add(CategoryByIdPatch)
 	.add(CategoryIndexGet)
-	.add(CategoryIndexOptions)
 	.add(CategoryIndexPost)
 	.add(FolderByIdDelete)
 	.add(FolderByIdGet)
-	.add(FolderByIdOptions)
 	.add(FolderByIdPatch)
 	.add(FolderIndexGet)
-	.add(FolderIndexOptions)
 	.add(FolderIndexPost)
 	.add(PagesByIdDelete)
 	.add(PagesByIdGet)
 	.add(PagesByIdHistoryByDiffIdGet)
-	.add(PagesByIdHistoryByDiffIdOptions)
 	.add(PagesByIdHistoryGet)
-	.add(PagesByIdHistoryOptions)
-	.add(PagesByIdOptions)
 	.add(PagesByIdPatch)
 	.add(PagesIndexGet)
-	.add(PagesIndexOptions)
 	.add(PagesIndexPost)
 	.add(TagsByIdDelete)
 	.add(TagsByIdGet)
-	.add(TagsByIdOptions)
 	.add(TagsByIdPatch)
 	.add(TagsIndexGet)
-	.add(TagsIndexOptions)
 	.add(TagsIndexPost)
 	.add(UsersByIdDelete)
 	.add(UsersByIdGet)
-	.add(UsersByIdOptions)
 	.add(UsersByIdPatch)
 	.add(UsersIndexGet)
-	.add(UsersIndexOptions)
 	.add(UsersIndexPost)
 	.add(SettingsIndexGet)
-	.add(SettingsIndexOptions)
 	.add(SettingsIndexPatch)
 	.middleware(RestAPIAuthorization)
 	.addError(RestAPIError, { status: 404 })

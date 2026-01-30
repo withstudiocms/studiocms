@@ -26,7 +26,7 @@ import { SDKAPIError } from './errors.js';
  *
  * @throws {SDKAPIError} Returns a 500 status code on server error
  */
-export const fullChangelogPost = HttpApiEndpoint.post('FullChangelogPost', '/full-changelog.json')
+export const fullChangelogPost = HttpApiEndpoint.post('full-changelog', '/full-changelog.json')
 	.annotate(Title, 'Get Full Changelog')
 	.annotate(Summary, 'Retrieve the full changelog in JSON format.')
 	.annotate(Description, 'Retrieves the complete changelog for the StudioCMS SDK in JSON format.')
@@ -36,32 +36,6 @@ export const fullChangelogPost = HttpApiEndpoint.post('FullChangelogPost', '/ful
 			changelog: Schema.String,
 		})
 	)
-	.addError(SDKAPIError, { status: 500 });
-
-/**
- * HTTP API endpoint options for the full changelog.
- *
- * Defines the OPTIONS endpoint at `/full-changelog` that provides metadata about
- * the full changelog endpoint, including allowed HTTP methods and capabilities.
- *
- * @remarks
- * This endpoint follows the HTTP OPTIONS pattern to expose endpoint capabilities
- * without performing any data operations.
- *
- * @returns A void response on success
- * @throws {SDKAPIError} When a server error occurs (HTTP 500)
- */
-export const fullChangelogOptions = HttpApiEndpoint.options(
-	'FullChangelogOptions',
-	'/full-changelog.json'
-)
-	.annotate(Title, 'Options for Full Changelog')
-	.annotate(Summary, 'Retrieve Full Changelog Options')
-	.annotate(
-		Description,
-		'Provides information about the /full-changelog endpoint, including allowed methods.'
-	)
-	.addSuccess(Schema.Void)
 	.addError(SDKAPIError, { status: 500 });
 
 /**
@@ -81,7 +55,7 @@ export const fullChangelogOptions = HttpApiEndpoint.options(
  *
  * @throws {SDKAPIError} Returns a 500 status code on server error
  */
-export const listPagesGet = HttpApiEndpoint.get('ListPagesGet', '/list-pages')
+export const listPagesGet = HttpApiEndpoint.get('list-pages', '/list-pages')
 	.annotate(Title, 'List Pages')
 	.annotate(Summary, 'Retrieve a list of pages.')
 	.annotate(
@@ -94,29 +68,6 @@ export const listPagesGet = HttpApiEndpoint.get('ListPagesGet', '/list-pages')
 			pages: Schema.Array(PublicV1GetPagesSelect),
 		})
 	)
-	.addError(SDKAPIError, { status: 500 });
-
-/**
- * HTTP API endpoint options for listing pages.
- *
- * Defines the OPTIONS endpoint at `/list-pages` that provides metadata about
- * the list pages endpoint, including allowed HTTP methods and capabilities.
- *
- * @remarks
- * This endpoint follows the HTTP OPTIONS pattern to expose endpoint capabilities
- * without performing any data operations.
- *
- * @returns A void response on success
- * @throws {SDKAPIError} When a server error occurs (HTTP 500)
- */
-export const listPagesOptions = HttpApiEndpoint.options('ListPagesOptions', '/list-pages')
-	.annotate(Title, 'Options for List Pages')
-	.annotate(Summary, 'Retrieve List Pages Options')
-	.annotate(
-		Description,
-		'Provides information about the /list-pages endpoint, including allowed methods.'
-	)
-	.addSuccess(Schema.Void)
 	.addError(SDKAPIError, { status: 500 });
 
 /**
@@ -137,7 +88,7 @@ export const listPagesOptions = HttpApiEndpoint.options('ListPagesOptions', '/li
  * @throws {SDKAPIError} Returns a 500 status code on server error
  */
 export const updateLatestVersionCacheGet = HttpApiEndpoint.get(
-	'UpdateLatestVersionCacheGet',
+	'update-latest-version-cache',
 	'/update-latest-version-cache'
 )
 	.annotate(Title, 'Update Latest Version Cache')
@@ -152,30 +103,4 @@ export const updateLatestVersionCacheGet = HttpApiEndpoint.get(
 			}),
 		})
 	)
-	.addError(SDKAPIError, { status: 500 });
-
-/**
- * HTTP API endpoint options for updating the latest version cache.
- *
- * Defines the OPTIONS endpoint at `/update-latest-version-cache` that provides metadata about
- * the update latest version cache endpoint, including allowed HTTP methods and capabilities.
- *
- * @remarks
- * This endpoint follows the HTTP OPTIONS pattern to expose endpoint capabilities
- * without performing any data operations.
- *
- * @returns A void response on success
- * @throws {SDKAPIError} When a server error occurs (HTTP 500)
- */
-export const updateLatestVersionCacheOptions = HttpApiEndpoint.options(
-	'UpdateLatestVersionCacheOptions',
-	'/update-latest-version-cache'
-)
-	.annotate(Title, 'Options for Update Latest Version Cache')
-	.annotate(Summary, 'Retrieve Update Latest Version Cache Options')
-	.annotate(
-		Description,
-		'Provides information about the /update-latest-version-cache endpoint, including allowed methods.'
-	)
-	.addSuccess(Schema.Void)
 	.addError(SDKAPIError, { status: 500 });

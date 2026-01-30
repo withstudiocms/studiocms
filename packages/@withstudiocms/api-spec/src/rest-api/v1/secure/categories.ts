@@ -16,7 +16,7 @@ import {
  * GET /categories
  * Retrieves a list of categories.
  */
-export const CategoryIndexGet = HttpApiEndpoint.get('CategoryIndexGet', '/categories')
+export const CategoryIndexGet = HttpApiEndpoint.get('get-categories', '/categories')
 	.annotate(Title, 'Get Categories')
 	.annotate(Summary, 'Retrieve Categories')
 	.annotate(
@@ -33,7 +33,7 @@ export const CategoryIndexGet = HttpApiEndpoint.get('CategoryIndexGet', '/catego
  * POST /categories
  * Creates a new category.
  */
-export const CategoryIndexPost = HttpApiEndpoint.post('CategoryIndexPost', '/categories')
+export const CategoryIndexPost = HttpApiEndpoint.post('create-category', '/categories')
 	.annotate(Title, 'Create Category')
 	.annotate(Summary, 'Create Category')
 	.annotate(Description, 'Creates a new category.')
@@ -44,25 +44,10 @@ export const CategoryIndexPost = HttpApiEndpoint.post('CategoryIndexPost', '/cat
 	.addError(RestAPIError, { status: 500 });
 
 /**
- * OPTIONS /categories
- * Provides information about the /categories endpoint.
- */
-export const CategoryIndexOptions = HttpApiEndpoint.options('CategoryIndexOptions', '/categories')
-	.annotate(Title, 'Options for Categories')
-	.annotate(Summary, 'Retrieve Categories')
-	.annotate(
-		Description,
-		'Provides information about the /categories endpoint, including allowed methods.'
-	)
-	.middleware(RestAPIAuthorization)
-	.addSuccess(Schema.Void)
-	.addError(RestAPIError, { status: 500 });
-
-/**
  * GET /categories/{id}
  * Retrieves a category by its ID.
  */
-export const CategoryByIdGet = HttpApiEndpoint.get('CategoryByIdGet', '/categories/:id')
+export const CategoryByIdGet = HttpApiEndpoint.get('get-category', '/categories/:id')
 	.setPath(IdParamNumber)
 	.annotate(Title, 'Get Category by ID')
 	.annotate(Summary, 'Retrieve Category by ID')
@@ -76,7 +61,7 @@ export const CategoryByIdGet = HttpApiEndpoint.get('CategoryByIdGet', '/categori
  * PATCH /categories/{id}
  * Updates a category by its ID.
  */
-export const CategoryByIdPatch = HttpApiEndpoint.patch('CategoryByIdPatch', '/categories/:id')
+export const CategoryByIdPatch = HttpApiEndpoint.patch('update-category', '/categories/:id')
 	.setPath(IdParamNumber)
 	.annotate(Title, 'Update Category by ID')
 	.annotate(Summary, 'Update Category by ID')
@@ -92,7 +77,7 @@ export const CategoryByIdPatch = HttpApiEndpoint.patch('CategoryByIdPatch', '/ca
  * DELETE /categories/{id}
  * Deletes a category by its ID.
  */
-export const CategoryByIdDelete = HttpApiEndpoint.del('CategoryByIdDelete', '/categories/:id')
+export const CategoryByIdDelete = HttpApiEndpoint.del('delete-category', '/categories/:id')
 	.setPath(IdParamNumber)
 	.annotate(Title, 'Delete Category by ID')
 	.annotate(Summary, 'Delete Category by ID')
@@ -100,17 +85,4 @@ export const CategoryByIdDelete = HttpApiEndpoint.del('CategoryByIdDelete', '/ca
 	.middleware(RestAPIAuthorization)
 	.addSuccess(DeletionSuccess)
 	.addError(RestAPIError, { status: 404 })
-	.addError(RestAPIError, { status: 500 });
-
-/**
- * OPTIONS /categories/{id}
- * Provides information about the /categories/{id} endpoint.
- */
-export const CategoryByIdOptions = HttpApiEndpoint.options('CategoryByIdOptions', '/categories/:id')
-	.setPath(IdParamNumber)
-	.annotate(Title, 'Options for Category by ID')
-	.annotate(Summary, 'Retrieve Category by ID')
-	.annotate(Description, 'Provides information about the /categories/{id} endpoint.')
-	.middleware(RestAPIAuthorization)
-	.addSuccess(Schema.Void)
 	.addError(RestAPIError, { status: 500 });

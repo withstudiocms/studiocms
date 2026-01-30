@@ -2,14 +2,7 @@ import { HttpApi, HttpApiGroup } from '@effect/platform';
 import { Description, License, Title, Transform, Version } from '@effect/platform/OpenApi';
 import pkg from '../../package.json';
 import { SDKAPIError } from './errors.js';
-import {
-	fullChangelogOptions,
-	fullChangelogPost,
-	listPagesGet,
-	listPagesOptions,
-	updateLatestVersionCacheGet,
-	updateLatestVersionCacheOptions,
-} from './routes.js';
+import { fullChangelogPost, listPagesGet, updateLatestVersionCacheGet } from './routes.js';
 
 export * from './errors.js';
 
@@ -27,7 +20,7 @@ export * from './errors.js';
  *
  * @public
  */
-export class SDKApi extends HttpApiGroup.make('SDKApi')
+export class SDKApi extends HttpApiGroup.make('sdk')
 	.annotate(Title, 'SDK API')
 	.annotate(
 		Description,
@@ -39,11 +32,8 @@ export class SDKApi extends HttpApiGroup.make('SDKApi')
 		url: 'https://github.com/withstudiocms/studiocms/blob/main/packages/%40withstudiocms/api-spec/LICENSE',
 	})
 	.add(fullChangelogPost)
-	.add(fullChangelogOptions)
 	.add(listPagesGet)
-	.add(listPagesOptions)
 	.add(updateLatestVersionCacheGet)
-	.add(updateLatestVersionCacheOptions)
 	.addError(SDKAPIError, { status: 500 })
 	.prefix('/sdk') {}
 

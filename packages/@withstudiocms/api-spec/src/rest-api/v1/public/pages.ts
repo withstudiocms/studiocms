@@ -12,7 +12,7 @@ import {
  * GET /pages
  * Retrieves a list of pages.
  */
-export const PageIndexGet = HttpApiEndpoint.get('PageIndexGet', '/pages')
+export const PageIndexGet = HttpApiEndpoint.get('get-pages', '/pages')
 	.annotate(Title, 'Get Pages')
 	.annotate(Summary, 'Retrieve Pages')
 	.annotate(
@@ -25,24 +25,10 @@ export const PageIndexGet = HttpApiEndpoint.get('PageIndexGet', '/pages')
 	.addError(RestAPIError, { status: 500 });
 
 /**
- * OPTIONS /pages
- * Provides information about the /pages endpoint.
- */
-export const PageIndexOptions = HttpApiEndpoint.options('PageIndexOptions', '/pages')
-	.annotate(Title, 'Options for Pages')
-	.annotate(Summary, 'Options for Pages')
-	.annotate(
-		Description,
-		'Provides information about the /pages endpoint, including allowed methods.'
-	)
-	.addSuccess(Schema.Void)
-	.addError(RestAPIError, { status: 500 });
-
-/**
  * GET /pages/{id}
  * Retrieves a page by its ID.
  */
-export const PageByIdGet = HttpApiEndpoint.get('PageByIdGet', '/pages/:id')
+export const PageByIdGet = HttpApiEndpoint.get('get-page', '/pages/:id')
 	.setPath(IdParamString)
 	.annotate(Title, 'Get Page by ID')
 	.annotate(Summary, 'Retrieve Page by ID')
@@ -50,16 +36,4 @@ export const PageByIdGet = HttpApiEndpoint.get('PageByIdGet', '/pages/:id')
 	.addSuccess(PublicV1GetPagesSelect)
 	.addError(RestAPIError, { status: 400 })
 	.addError(RestAPIError, { status: 404 })
-	.addError(RestAPIError, { status: 500 });
-
-/**
- * OPTIONS /pages/{id}
- * Provides information about the /pages/{id} endpoint.
- */
-export const PageByIdOptions = HttpApiEndpoint.options('PageByIdOptions', '/pages/:id')
-	.setPath(IdParamString)
-	.annotate(Title, 'Options for Page by ID')
-	.annotate(Summary, 'Retrieve Page by ID')
-	.annotate(Description, 'Provides information about the /pages/{id} endpoint.')
-	.addSuccess(Schema.Void)
 	.addError(RestAPIError, { status: 500 });

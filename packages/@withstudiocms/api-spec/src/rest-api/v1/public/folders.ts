@@ -12,7 +12,7 @@ import {
  * GET /folders
  * Search parameters for filtering folders.
  */
-export const FoldersIndexGet = HttpApiEndpoint.get('FoldersIndexGet', '/folders')
+export const FoldersIndexGet = HttpApiEndpoint.get('get-folders', '/folders')
 	.annotate(Title, 'Get Folders')
 	.annotate(Summary, 'Retrieve Folders')
 	.annotate(
@@ -25,43 +25,14 @@ export const FoldersIndexGet = HttpApiEndpoint.get('FoldersIndexGet', '/folders'
 	.addError(RestAPIError, { status: 500 });
 
 /**
- * OPTIONS /folders
- * Provides information about the /folders endpoint.
- */
-export const FoldersIndexOptions = HttpApiEndpoint.options('FoldersIndexOptions', '/folders')
-	.annotate(Title, 'Options for Folders')
-	.annotate(Summary, 'Retrieve Folders')
-	.annotate(
-		Description,
-		'Provides information about the /folders endpoint, including allowed methods.'
-	)
-	.addSuccess(Schema.Void)
-	.addError(RestAPIError, { status: 500 });
-
-/**
  * GET /folders/{id}
  * Retrieves a folder by its ID.
  */
-export const FolderByIdGet = HttpApiEndpoint.get('FolderByIdGet', '/folders/:id')
+export const FolderByIdGet = HttpApiEndpoint.get('get-folder', '/folders/:id')
 	.setPath(IdParamString)
 	.annotate(Title, 'Get Folder by ID')
 	.annotate(Summary, 'Retrieve Folder by ID')
 	.annotate(Description, 'Retrieves a folder by its ID.')
 	.addSuccess(PublicV1FolderSelect)
 	.addError(RestAPIError, { status: 404 })
-	.addError(RestAPIError, { status: 500 });
-
-/**
- * OPTIONS /folders/{id}
- * Provides information about the /folders/{id} endpoint.
- */
-export const FolderByIdOptions = HttpApiEndpoint.options('FolderByIdOptions', '/folders/:id')
-	.setPath(IdParamString)
-	.annotate(Title, 'Options for Folder by ID')
-	.annotate(Summary, 'Retrieve Folder by ID')
-	.annotate(
-		Description,
-		'Provides information about the /folders/{id} endpoint, including allowed methods.'
-	)
-	.addSuccess(Schema.Void)
 	.addError(RestAPIError, { status: 500 });

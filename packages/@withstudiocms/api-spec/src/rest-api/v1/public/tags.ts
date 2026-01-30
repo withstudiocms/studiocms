@@ -8,7 +8,7 @@ import { IdParamNumber, PublicV1TagsGetSearchParams, PublicV1TagsSelect } from '
  * GET /tags
  * Retrieves a list of tags.
  */
-export const TagIndexGet = HttpApiEndpoint.get('TagIndexGet', '/tags')
+export const TagIndexGet = HttpApiEndpoint.get('get-tags', '/tags')
 	.annotate(Title, 'Get Tags')
 	.annotate(Summary, 'Retrieve Tags')
 	.annotate(Description, 'Retrieves a list of tags, with optional filtering by name and parent ID.')
@@ -18,40 +18,14 @@ export const TagIndexGet = HttpApiEndpoint.get('TagIndexGet', '/tags')
 	.addError(RestAPIError, { status: 500 });
 
 /**
- * OPTIONS /tags
- * Provides information about the /tags endpoint.
- */
-export const TagIndexOptions = HttpApiEndpoint.options('TagIndexOptions', '/tags')
-	.annotate(Title, 'Options for Tags')
-	.annotate(Summary, 'Options for Tags')
-	.annotate(
-		Description,
-		'Provides information about the /tags endpoint, including allowed methods.'
-	)
-	.addSuccess(Schema.Void)
-	.addError(RestAPIError, { status: 500 });
-
-/**
  * GET /tags/{id}
  * Retrieves a tag by its ID.
  */
-export const TagByIdGet = HttpApiEndpoint.get('TagByIdGet', '/tags/:id')
+export const TagByIdGet = HttpApiEndpoint.get('get-tag', '/tags/:id')
 	.setPath(IdParamNumber)
 	.annotate(Title, 'Get Tag by ID')
 	.annotate(Summary, 'Retrieve Tag by ID')
 	.annotate(Description, 'Retrieves a tag by its ID.')
 	.addSuccess(PublicV1TagsSelect)
 	.addError(RestAPIError, { status: 404 })
-	.addError(RestAPIError, { status: 500 });
-
-/**
- * OPTIONS /tags/{id}
- * Provides information about the /tags/{id} endpoint.
- */
-export const TagByIdOptions = HttpApiEndpoint.options('TagByIdOptions', '/tags/:id')
-	.setPath(IdParamNumber)
-	.annotate(Title, 'Options for Tag by ID')
-	.annotate(Summary, 'Retrieve Tag by ID')
-	.annotate(Description, 'Provides information about the /tags/{id} endpoint.')
-	.addSuccess(Schema.Void)
 	.addError(RestAPIError, { status: 500 });
