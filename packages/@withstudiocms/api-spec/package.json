@@ -55,6 +55,10 @@
 			"types": "./dist/auth/index.d.mts",
 			"default": "./dist/auth/index.mjs"
 		},
+		"./integrations": {
+			"types": "./dist/integrations/index.d.mts",
+			"default": "./dist/integrations/index.mjs"
+		},
 		"./rest-api": {
 			"types": "./dist/rest-api/index.d.mts",
 			"default": "./dist/rest-api/index.mjs"
@@ -77,6 +81,7 @@
 		"@effect/platform": "catalog:effect",
 		"@effect/platform-node": "catalog:effect",
 		"@withstudiocms/sdk": "workspace:^",
+		"astro": "catalog:min",
 		"effect": "catalog:effect"
 	}
 }
