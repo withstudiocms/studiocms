@@ -51,9 +51,17 @@
 			"types": "./dist/index.d.mts",
 			"default": "./dist/index.mjs"
 		},
+		"./astro-context": {
+			"types": "./dist/astro-context.d.mts",
+			"default": "./dist/astro-context.mjs"
+		},
 		"./auth": {
 			"types": "./dist/auth/index.d.mts",
 			"default": "./dist/auth/index.mjs"
+		},
+		"./integrations": {
+			"types": "./dist/integrations/index.d.mts",
+			"default": "./dist/integrations/index.mjs"
 		},
 		"./rest-api": {
 			"types": "./dist/rest-api/index.d.mts",
@@ -77,6 +85,7 @@
 		"@effect/platform": "catalog:effect",
 		"@effect/platform-node": "catalog:effect",
 		"@withstudiocms/sdk": "workspace:^",
+		"astro": "catalog:min",
 		"effect": "catalog:effect"
 	}
 }
