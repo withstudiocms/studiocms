@@ -18,7 +18,10 @@ export * from './schemas.js';
  */
 export class IntegrationsApi extends HttpApiGroup.make('integrations')
 	.annotate(Title, 'Integrations API')
-	.annotate(Description, 'API endpoints and utilities for interacting with StudioCMS integrations.')
+	.annotate(
+		Description,
+		"API endpoints and utilities for interacting with StudioCMS's internal integrations."
+	)
 	.annotate(Version, pkg.version)
 	.annotate(License, {
 		name: 'MIT',
