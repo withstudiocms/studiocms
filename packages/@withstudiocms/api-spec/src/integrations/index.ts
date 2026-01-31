@@ -1,6 +1,7 @@
 import { HttpApi, HttpApiGroup } from '@effect/platform';
 import { Description, License, Title, Transform, Version } from '@effect/platform/OpenApi';
 import pkg from '../../package.json';
+import { DbStudioQueryPost } from './db-studio/index.js';
 import { IntegrationsAPIError } from './errors.js';
 import { storageManagerPost, storageManagerPut } from './storage/index.js';
 
@@ -23,6 +24,7 @@ export class IntegrationsApi extends HttpApiGroup.make('integrations')
 		name: 'MIT',
 		url: 'https://github.com/withstudiocms/studiocms/blob/main/packages/%40withstudiocms/api-spec/LICENSE',
 	})
+	.add(DbStudioQueryPost)
 	.add(storageManagerPost)
 	.add(storageManagerPut)
 	.addError(IntegrationsAPIError, { status: 500 })

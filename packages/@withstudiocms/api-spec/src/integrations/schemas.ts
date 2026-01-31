@@ -244,3 +244,132 @@ export const StorageManagerPostResponses = Schema.Union(
 		description: 'Response schema for the test action.',
 	})
 );
+
+/**
+ * Request schema for a DbStudio query.
+ *
+ * @remarks
+ * This schema defines the structure of a database query request sent to the DbStudio integration.
+ * It includes properties such as the type of request, a unique identifier, and the SQL statement to be executed.
+ */
+export const DbStudioQueryRequest = Schema.Struct({
+	type: Schema.Literal('query'),
+	id: Schema.Number,
+	statement: Schema.String,
+});
+
+/**
+ * Request schema for a DbStudio transaction.
+ *
+ * @remarks
+ * This schema defines the structure of a database transaction request sent to the DbStudio integration.
+ * It includes properties such as the type of request, a unique identifier, and an array of SQL statements to be executed in the transaction.
+ */
+export const DbStudioTransactionRequest = Schema.Struct({
+	type: Schema.Literal('transaction'),
+	id: Schema.Number,
+	statements: Schema.Array(Schema.String),
+});
+
+/**
+ * Payload schema for DbStudio query and transaction requests.
+ *
+ * @remarks
+ * This schema is a union of the DbStudio query and transaction request schemas,
+ * allowing for either type of request to be sent as the payload.
+ */
+export const DbStudioQueryRequestPayload = Schema.Union(
+	DbStudioQueryRequest.annotations({
+		title: 'DbStudioQueryRequest',
+		description: 'Schema for a database query request.',
+	}),
+	DbStudioTransactionRequest.annotations({
+		title: 'DbStudioTransactionRequest',
+		description: 'Schema for a database transaction request.',
+	})
+);
+
+/**
+ * Enum representing the possible column types in a database result set.
+ */
+export enum ColumnType {
+	TEXT = 1,
+	INTEGER = 2,
+	REAL = 3,
+	BLOB = 4,
+}
+
+/**
+ * Schema for a single header in a DbStudio SQL result set.
+ *
+ * @remarks
+ * This schema defines the structure of a header in the result set returned by a database query.
+ * It includes properties such as the column name, display name, original type, and inferred type.
+ */
+const DbStudioSQLResultHeader = Schema.Struct({
+	name: Schema.String,
+	displayName: Schema.String,
+	originalType: Schema.NullOr(Schema.String),
+	type: Schema.optional(Schema.Enums(ColumnType)),
+});
+
+/**
+ * Schema for the result of a DbStudio SQL query.
+ *
+ * @remarks
+ * This schema defines the structure of the result returned by a database query executed via the DbStudio integration.
+ * It includes properties such as the rows of data, headers, statistics about the query execution, and an optional last insert row ID.
+ */
+export const DbStudioSQLResult = Schema.Struct({
+	rows: Schema.Array(Schema.Record({ key: Schema.String, value: Schema.Unknown })),
+	headers: Schema.Array(DbStudioSQLResultHeader),
+	stat: Schema.Struct({
+		rowsAffected: Schema.Number,
+		rowsRead: Schema.NullOr(Schema.Number),
+		rowsWritten: Schema.NullOr(Schema.Number),
+		queryDurationMs: Schema.NullOr(Schema.Number),
+	}),
+	lastInsertRowid: Schema.optional(Schema.Number),
+});
+
+/**
+ * Response schema for DbStudio query and transaction requests.
+ *
+ * @remarks
+ * This schema is a union of the DbStudio query and transaction response schemas,
+ * allowing for either type of response to be returned based on the request type.
+ */
+export const DbStudioQueryResponsePayload = Schema.Union(
+	Schema.Struct({
+		type: Schema.Literal('query'),
+		id: Schema.Number,
+		data: DbStudioSQLResult,
+	}).annotations({
+		title: 'DbStudioQueryResponse',
+		description: 'Schema for a database query response.',
+	}),
+	Schema.Struct({
+		type: Schema.Literal('transaction'),
+		id: Schema.Number,
+		data: Schema.Array(DbStudioSQLResult),
+	}).annotations({
+		title: 'DbStudioTransactionResponse',
+		description: 'Schema for a database transaction response.',
+	})
+);
+
+/**
+ * Error response schema for DbStudio query and transaction requests.
+ *
+ * @remarks
+ * This schema defines the structure of error responses returned for DbStudio query and transaction requests.
+ * It includes properties such as the request type, unique identifier, and an error message.
+ */
+export const DbStudioQueryError = Schema.Struct({
+	type: Schema.Literal('query', 'transaction'),
+	id: Schema.Number,
+	error: Schema.String,
+}).annotations({
+	title: 'DbStudioQueryError',
+	description: 'Schema for a database query or transaction error response.',
+});
