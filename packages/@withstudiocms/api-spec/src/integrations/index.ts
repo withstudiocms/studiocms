@@ -24,9 +24,14 @@ export class IntegrationsApi extends HttpApiGroup.make('integrations')
 		name: 'MIT',
 		url: 'https://github.com/withstudiocms/studiocms/blob/main/packages/%40withstudiocms/api-spec/LICENSE',
 	})
+
+	// Db Studio Endpoints
 	.add(DbStudioQueryPost)
+
+	// Storage Manager Endpoints
 	.add(storageManagerPost)
 	.add(storageManagerPut)
+
 	.addError(IntegrationsAPIError, { status: 500 })
 	.prefix('/integrations') {}
 
