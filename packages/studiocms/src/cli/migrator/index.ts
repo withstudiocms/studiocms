@@ -102,7 +102,7 @@ const handleResults = async (results: MigrationResult[] | undefined, success: bo
 const handleError = async (
 	error: unknown,
 	success: boolean,
-	exitFn: Effect.Effect<undefined, never, never>
+	exitFn: Effect.Effect<void, never, never>
 ) => {
 	if (error) {
 		const message = success
@@ -219,15 +219,15 @@ export const migratorCMD = Cli.Command.make(
 							// If migrations are 100% applied, color green, if over 50% yellow, else red
 							const migrationTotalColor =
 								migrationPercent === 100
-									? context.chalk.green
+									? (text: string) => styleText('green', text)
 									: migrationPercent > 50
-										? context.chalk.yellow
-										: context.chalk.red;
+										? (text: string) => styleText('yellow', text)
+										: (text: string) => styleText('red', text);
 
 							const labelParts = [
 								label('Migration Status', StudioCMSColorwayInfoBg, 'black'),
 								label(
-									`(${context.chalk.green(appliedMigrations.toString())}/${migrationTotalColor(migrationTotal.toString())}) Applied`,
+									`(${styleText('green', appliedMigrations.toString())}/${migrationTotalColor(migrationTotal.toString())}) Applied`,
 									(text: string) => styleText('bold', text),
 									'black'
 								),

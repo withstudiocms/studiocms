@@ -1,6 +1,6 @@
 import { execFileSync } from 'node:child_process';
 import fs from 'node:fs/promises';
-import chalk from 'chalk';
+import { styleText } from 'node:util';
 import esbuild from 'esbuild';
 import { glob } from 'tinyglobby';
 
@@ -92,7 +92,7 @@ const dtsGen = (buildTsConfig, outdir) => ({
 		build.onEnd((result) => {
 			if (result.errors.length > 0) return;
 			const date = dt.format(new Date());
-			console.log(`${chalk.dim(`[${date}]`)} Generating TypeScript declarations...`);
+			console.log(`${styleText('dim', `[${date}]`)} Generating TypeScript declarations...`);
 			try {
 				const res = execFileSync(
 					'tsc',
@@ -100,7 +100,9 @@ const dtsGen = (buildTsConfig, outdir) => ({
 					{ encoding: 'utf8', shell: true }
 				);
 				if (res) console.log(res);
-				console.log(chalk.dim(`[${date}] `) + chalk.green('√ Generated TypeScript declarations'));
+				console.log(
+					styleText('dim', `[${date}] `) + styleText('green', '√ Generated TypeScript declarations')
+				);
 				/* v8 ignore start */
 			} catch (error) {
 				const msg =
@@ -109,7 +111,7 @@ const dtsGen = (buildTsConfig, outdir) => ({
 					// stdout/stderr may be Buffer or string depending on exec options
 					(typeof error?.stdout === 'string' ? error.stdout : (error?.stdout?.toString?.() ?? '')) +
 					(typeof error?.stderr === 'string' ? error.stderr : (error?.stderr?.toString?.() ?? ''));
-				console.error(chalk.dim(`[${date}] `) + chalk.red(msg));
+				console.error(styleText('dim', `[${date}] `) + styleText('red', msg));
 			}
 			/* v8 ignore stop */
 		});
@@ -124,7 +126,10 @@ const dtsGen = (buildTsConfig, outdir) => ({
  */
 async function clean(outdir, date, skip = []) {
 	const files = await glob([`${outdir}/**`, ...skip], { filesOnly: true });
-	console.log(chalk.dim(`[${date}] `) + chalk.dim(`Cleaning ${files.length} files from ${outdir}`));
+	console.log(
+		styleText('dim', `[${date}] `) +
+			styleText('dim', `Cleaning ${files.length} files from ${outdir}`)
+	);
 	await Promise.all(files.map((file) => fs.rm(file, { force: true })));
 }
 
@@ -191,7 +196,7 @@ export default async function builder(cmd, args) {
 		case 'dev': {
 			if (!noClean) {
 				console.log(
-					`${chalk.dim(`[${date}]`)} Cleaning ${outdir} directory... ${chalk.dim(`(${entryPoints.length} files found)`)}`
+					`${styleText('dim', `[${date}]`)} Cleaning ${outdir} directory... ${styleText('dim', `(${entryPoints.length} files found)`)}`
 				);
 				await clean(outdir, date, [`!${outdir}/**/*.d.ts`]);
 			}
@@ -213,7 +218,9 @@ export default async function builder(cmd, args) {
 								kind: 'error',
 								color: true,
 							});
-							console.error(chalk.dim(`[${date}] `) + chalk.red(formatted.join('\n')));
+							console.error(
+								styleText('dim', `[${date}] `) + styleText('red', formatted.join('\n'))
+							);
 							return;
 						}
 						if (result.warnings.length) {
@@ -222,12 +229,12 @@ export default async function builder(cmd, args) {
 								color: true,
 							});
 							console.info(
-								chalk.dim(`[${date}] `) +
-									chalk.yellow(`! updated with warnings:\n${formattedWarns.join('\n')}`)
+								styleText('dim', `[${date}] `) +
+									styleText('yellow', `! updated with warnings:\n${formattedWarns.join('\n')}`)
 							);
 						}
 						/* v8 ignore stop */
-						console.info(chalk.dim(`[${date}] `) + chalk.green('√ updated'));
+						console.info(styleText('dim', `[${date}] `) + styleText('green', '√ updated'));
 					});
 				},
 			};
@@ -242,7 +249,7 @@ export default async function builder(cmd, args) {
 			});
 
 			console.log(
-				`${chalk.dim(`[${date}] `) + chalk.gray('Watching for changes...')} ${chalk.dim(`(${entryPoints.length} files found)`)}`
+				`${styleText('dim', `[${date}] `) + styleText('gray', 'Watching for changes...')} ${styleText('dim', `(${entryPoints.length} files found)`)}`
 			);
 			await builder.watch();
 
@@ -256,12 +263,12 @@ export default async function builder(cmd, args) {
 		case 'build': {
 			if (!noClean) {
 				console.log(
-					`${chalk.dim(`[${date}]`)} Cleaning ${outdir} directory... ${chalk.dim(`(${entryPoints.length} files found)`)}`
+					`${styleText('dim', `[${date}]`)} Cleaning ${outdir} directory... ${styleText('dim', `(${entryPoints.length} files found)`)}`
 				);
 				await clean(outdir, date, [`!${outdir}/**/*.d.ts`]);
 			}
 			console.log(
-				`${chalk.dim(`[${date}]`)} Building...${bundle ? '(Bundling)' : ''} ${chalk.dim(`(${entryPoints.length} files found)`)}`
+				`${styleText('dim', `[${date}]`)} Building...${bundle ? '(Bundling)' : ''} ${styleText('dim', `(${entryPoints.length} files found)`)}`
 			);
 			await esbuild.build({
 				...config,
@@ -282,10 +289,10 @@ export default async function builder(cmd, args) {
 					`\nExternal: ${externals ? JSON.stringify(externals) : 'n/a'}` +
 					`\nFormat: ${format}` +
 					`\nOutExtension: ${JSON.stringify(outExt)}\n\n`;
-				console.log(chalk.dim(`[${date}] `) + chalk.gray(message));
+				console.log(styleText('dim', `[${date}] `) + styleText('gray', message));
 			}
 
-			console.log(chalk.dim(`[${date}] `) + chalk.green('√ Build Complete'));
+			console.log(styleText('dim', `[${date}] `) + styleText('green', '√ Build Complete'));
 			break;
 		}
 	}

@@ -1,20 +1,16 @@
 import { detectPackageManager } from '@withstudiocms/cli-kit/context';
 import { cancelMessage, getName } from '@withstudiocms/cli-kit/messages';
 import { type ClackError, cancel, isCancel, type Task } from '@withstudiocms/effect/clack';
-import chalk from 'chalk';
 import { Context, Effect, genLogger, Layer, Option } from '../../effect.js';
 
-// TODO: Replace 'chalk' usage with node:util 'styleText' where applicable
-
 export interface BaseContext {
-	chalk: typeof chalk;
 	cwd: string;
 	packageManager: string;
 	username: string;
 	tasks: Task[];
 	pCancel(val: symbol): Effect.Effect<void, ClackError, never>;
 	pOnCancel(): Effect.Effect<void, ClackError, never>;
-	exit(code: number): Effect.Effect<undefined, never, never>;
+	exit(code: number): Effect.Effect<void, never, never>;
 }
 
 export class CliContext extends Context.Tag('CliContext')<CliContext, BaseContext>() {
@@ -37,10 +33,9 @@ export const genContext = genLogger('studiocms/cli/utils/context.genContext')(fu
 	const username = yield* Effect.tryPromise(() => getName());
 
 	const exit = (code: number) =>
-		Effect.try(() => process.exit(code)).pipe(Effect.catchAll(() => Effect.succeed(void 0)));
+		Effect.try(() => process.exit(code)).pipe(Effect.catchAll(() => Effect.void));
 
 	const context: BaseContext = {
-		chalk,
 		cwd,
 		packageManager,
 		username,

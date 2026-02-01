@@ -40,7 +40,7 @@ function NumberStringToUndefined(value: string): number | undefined {
 }
 
 export const env: EffectStepFn = Effect.fn(function* (context, debug, dryRun) {
-	const { chalk, cwd, pCancel, pOnCancel } = context;
+	const { cwd, pCancel, pOnCancel } = context;
 
 	const debugLogger = yield* buildDebugLogger(debug);
 
@@ -530,7 +530,7 @@ export const env: EffectStepFn = Effect.fn(function* (context, debug, dryRun) {
 		});
 	} else if (_env) {
 		context.tasks.push({
-			title: chalk.dim('Creating environment file...'),
+			title: styleText('dim', 'Creating environment file...'),
 			task: async (message) => {
 				try {
 					await fs.writeFile(path.join(cwd, '.env'), envFileContent, {
