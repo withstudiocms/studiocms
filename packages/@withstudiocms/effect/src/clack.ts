@@ -1,3 +1,4 @@
+import type { Writable } from 'node:stream';
 import type {
 	AutocompleteMultiSelectOptions,
 	AutocompleteOptions,
@@ -8,6 +9,7 @@ import type {
 	GroupMultiSelectOptions,
 	LogMessageOptions,
 	MultiSelectOptions,
+	NoteOptions,
 	PasswordOptions,
 	PathOptions,
 	ProgressOptions,
@@ -35,12 +37,11 @@ export type {
 	GroupMultiSelectOptions,
 	LogMessageOptions,
 	MultiSelectOptions,
-	Option,
+	NoteOptions,
 	PasswordOptions,
 	PathOptions,
 	ProgressOptions,
 	PromptGroup,
-	PromptGroupAwaitedReturn,
 	PromptGroupOptions,
 	SelectOptions,
 	SpinnerOptions,
@@ -198,6 +199,30 @@ export const isCancel = Effect.fn((value: unknown) =>
 );
 
 /**
+ * Checks if the current environment is a Continuous Integration (CI) environment.
+ *
+ * This function wraps the `clackIsCI` utility with error handling using `useClackError`.
+ * It is useful for determining if the code is running in a CI environment, which may affect
+ * how prompts and interactions are handled.
+ *
+ * @returns `true` if running in a CI environment, otherwise `false`.
+ */
+export const isCI = Effect.fn(() => useClackError(ClackPrompts.isCI));
+
+/**
+ * Checks if the provided output stream is a TTY (teletypewriter) terminal.
+ *
+ * This function wraps the `clackIsTTY` utility with error handling using `useClackError`.
+ * It is useful for determining if the output stream supports interactive features.
+ *
+ * @param output - The output stream to check.
+ * @returns `true` if the output stream is a TTY, otherwise `false`.
+ */
+export const isTTY = Effect.fn((output: Writable) =>
+	useClackError(() => ClackPrompts.isTTY(output))
+);
+
+/**
  * Presents a multi-select prompt to the user with error handling.
  *
  * @typeParam T - The type of the selectable options.
@@ -214,7 +239,7 @@ export const multiselect = <T>(options: MultiSelectOptions<T>) =>
  * @param title - Optional title for the note.
  * @returns An Effect that triggers the note display, handling any Clack errors.
  */
-export const note = Effect.fn((message?: string, title?: string, opts?: ClackPrompts.NoteOptions) =>
+export const note = Effect.fn((message?: string, title?: string, opts?: NoteOptions) =>
 	useClackError(() => ClackPrompts.note(message, title, opts))
 );
 
