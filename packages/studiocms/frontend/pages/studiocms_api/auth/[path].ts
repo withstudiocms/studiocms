@@ -356,12 +356,6 @@ const router = {
 					if (!checkEmail.success)
 						return yield* badFormDataEntry('Invalid email', checkEmail.error.message);
 
-					const invalidEmailDomains: string[] = ['example.com', 'test.com', 'testing.com'];
-
-					if (invalidEmailDomains.includes(checkEmail.data.split('@')[1])) {
-						return yield* badFormDataEntry('Invalid Email', 'Must be from a valid domain');
-					}
-
 					const { usernameSearch, emailSearch } =
 						yield* sdk.AUTH.user.searchUsersForUsernameOrEmail(username, checkEmail.data);
 
