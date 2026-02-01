@@ -1,3 +1,4 @@
+import { styleText } from 'node:util';
 import { exec } from '@withstudiocms/cli-kit/utils';
 import { askToContinue, note, spinner } from '@withstudiocms/effect/clack';
 import { detect, resolveCommand } from 'package-manager-detector';
@@ -14,7 +15,7 @@ export class TryToInstallPlugins extends Effect.Service<TryToInstallPlugins>()(
 		effect: genLogger('studiocms/cli/add/validatePlugins/TryToInstallPlugins.effect')(function* () {
 			const run = (plugins: PluginInfo[]) =>
 				genLogger('studiocms/cli/add/validatePlugins/TryToInstallPlugins.effect.run')(function* () {
-					const { chalk, cwd } = yield* CliContext;
+					const { cwd } = yield* CliContext;
 
 					const packageManager = yield* Effect.tryPromise(() =>
 						detect({
@@ -48,7 +49,7 @@ export class TryToInstallPlugins extends Effect.Service<TryToInstallPlugins>()(
 								: specifier
 					);
 
-					const coloredOutput = `${chalk.bold(installCommand.command)} ${installCommand.args.join(' ')} ${chalk.magenta(installSpecifiers.join(' '))}`;
+					const coloredOutput = `${styleText('bold', installCommand.command)} ${installCommand.args.join(' ')} ${styleText('magenta', installSpecifiers.join(' '))}`;
 
 					const boxenMessage = yield* effectBoxen((boxen) =>
 						boxen(coloredOutput, {
@@ -61,7 +62,7 @@ export class TryToInstallPlugins extends Effect.Service<TryToInstallPlugins>()(
 					const message = `\n${boxenMessage}\n`;
 
 					yield* note(
-						`${chalk.magenta('StudioCMS will run the following command:')}\n ${chalk.dim('If you skip this step, you can always run it yourself later')}\n${message}`
+						`${styleText('magenta', 'StudioCMS will run the following command:')}\n ${styleText('dim', 'If you skip this step, you can always run it yourself later')}\n${message}`
 					);
 
 					if (yield* askToContinue()) {
@@ -100,7 +101,7 @@ export class TryToInstallPlugins extends Effect.Service<TryToInstallPlugins>()(
 							// @ts-expect-error
 							yield* Console.error(`\n${response.stdout || response.message}\n`);
 							yield* Console.error(
-								`\n${chalk.yellow('You may want to try:')}\n- Checking your network connection\n- Running the package manager command manually\n- Ensuring you have permissions to install packages\n`
+								`\n${styleText('yellow', 'You may want to try:')}\n- Checking your network connection\n- Running the package manager command manually\n- Ensuring you have permissions to install packages\n`
 							);
 							return UpdateResult.failure;
 						}

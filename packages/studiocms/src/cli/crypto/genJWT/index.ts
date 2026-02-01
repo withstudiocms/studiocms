@@ -10,7 +10,6 @@ import { intro, log, outro, spinner } from '@withstudiocms/effect/clack';
 import { SignJWT } from 'jose';
 import { importPKCS8 } from 'jose/key/import';
 import { Cli, Effect, genLogger } from '../../../effect.js';
-import { genContext } from '../../utils/context.js';
 import { dateAdd } from '../../utils/dateAdd.js';
 import { debug } from '../../utils/debugOpt.js';
 import { StudioCMSCliError } from '../../utils/errors.js';
@@ -79,12 +78,6 @@ export const genJWT = Cli.Command.make(
 				logger.debug(`Expiration: ${exp}`);
 			}
 
-			if (debug) logger.debug('Getting context');
-
-			const context = yield* genContext;
-
-			const { chalk } = context;
-
 			if (debug) logger.debug('Init complete, starting...');
 
 			yield* intro(label('StudioCMS Crypto: Generate JWT', StudioCMSColorwayBg, 'bold'));
@@ -135,11 +128,14 @@ export const genJWT = Cli.Command.make(
 				yield* spin.stop('Token Generated.');
 
 				yield* log.success(
-					boxen(chalk.bold(`${label('Token Generated!', StudioCMSColorwayInfoBg, 'bold')}`), {
-						ln1: 'Your new Token has been generated successfully:',
-						ln3: `Token: ${chalk.magenta(jwt)}`,
-						ln5: `Base64Url Token: ${chalk.blue(base64UrlJwt)}`,
-					})
+					boxen(
+						styleText('bold', `${label('Token Generated!', StudioCMSColorwayInfoBg, 'bold')}`),
+						{
+							ln1: 'Your new Token has been generated successfully:',
+							ln3: `Token: ${styleText('magenta', jwt)}`,
+							ln5: `Base64Url Token: ${styleText('blue', base64UrlJwt)}`,
+						}
+					)
 				);
 
 				yield* outro(

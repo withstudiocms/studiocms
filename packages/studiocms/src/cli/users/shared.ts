@@ -1,6 +1,6 @@
+import { styleText } from 'node:util';
 import { Effect } from '@withstudiocms/effect';
 import { type ClackError, log } from '@withstudiocms/effect/clack';
-import chalk from 'chalk';
 
 /**
  * Validates user input and re-prompts if validation fails.
@@ -50,6 +50,6 @@ export const validateInputOrRePrompt = Effect.fn('validateInputOrRePrompt')(func
 		}
 
 		// If validation fails, log the error and re-prompt
-		yield* log.error(chalk.red(`Invalid input: ${checkResult}`));
+		yield* log.error(styleText('red', `Invalid input: ${checkResult}`));
 	}
 });

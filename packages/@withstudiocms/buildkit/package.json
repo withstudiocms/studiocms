@@ -32,8 +32,7 @@
   },
   "dependencies": {
     "esbuild": "catalog:",
-    "tinyglobby": "catalog:",
-    "chalk": "catalog:"
+    "tinyglobby": "catalog:"
   },
   "devDependencies": {
     "strip-ansi": "^7.1.2"

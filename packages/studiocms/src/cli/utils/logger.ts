@@ -1,6 +1,6 @@
+import { styleText } from 'node:util';
 import { supportsColor } from '@withstudiocms/cli-kit/colors';
 import { date } from '@withstudiocms/cli-kit/messages';
-import chalk from 'chalk';
 import { Effect } from 'effect';
 
 let stdout = process.stdout;
@@ -18,7 +18,7 @@ export const logger = {
 			send(`DEBUG [${date}]: ${message}`);
 			return;
 		}
-		send(`${chalk.blue.bold(`DEBUG [${date}]:`)} ${message}`);
+		send(`${styleText(['blue', 'bold'], `DEBUG [${date}]:`)} ${message}`);
 	},
 };
 
@@ -37,7 +37,7 @@ export const buildDebugLogger = Effect.fn(function* (debug: boolean) {
 				send(`DEBUG [${date}]: ${message}`);
 				return;
 			}
-			send(`${chalk.blue.bold(`DEBUG [${date}]:`)} ${message}`);
+			send(`${styleText(['blue', 'bold'], `DEBUG [${date}]:`)} ${message}`);
 		})
 	);
 });

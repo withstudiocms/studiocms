@@ -4,7 +4,6 @@ import * as fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import * as allure from 'allure-js-commons';
-import chalk from 'chalk';
 import * as esbuild from 'esbuild';
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, test, vi } from 'vitest';
 import builder from '../lib/cmds/builder.js';
@@ -13,15 +12,11 @@ import { parentSuiteName, sharedTags } from './test-utils.js';
 vi.mock('esbuild');
 vi.mock('node:child_process');
 vi.mock('node:fs/promises');
-vi.mock('chalk', async (importOriginal) => {
+vi.mock('node:util', async (importOriginal) => {
 	const actual = await importOriginal();
 	return {
 		...actual,
-		dim: (str) => str,
-		green: (str) => str,
-		red: (str) => str,
-		yellow: (str) => str,
-		gray: (str) => str,
+		styleText: (_style, str) => str,
 	};
 });
 vi.mock('tinyglobby', () => ({

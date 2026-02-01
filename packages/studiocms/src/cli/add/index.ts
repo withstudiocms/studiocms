@@ -1,5 +1,6 @@
 import { existsSync, promises as fs } from 'node:fs';
 import { fileURLToPath } from 'node:url';
+import { styleText } from 'node:util';
 import { cancelled, success } from '@withstudiocms/cli-kit/messages';
 import { exists, pathToFileURL, resolveRoot } from '@withstudiocms/cli-kit/utils';
 import { intro, note, outro } from '@withstudiocms/effect/clack';
@@ -179,7 +180,7 @@ export const addPlugin = Cli.Command.make(
 			genContext,
 		]);
 
-		const { cwd, chalk } = context;
+		const { cwd } = context;
 
 		yield* intro('StudioCMS CLI Utilities (add)');
 
@@ -209,7 +210,7 @@ export const addPlugin = Cli.Command.make(
 			case UpdateResult.cancelled: {
 				yield* note(
 					cancelled(
-						`Dependencies ${chalk.bold('NOT')} installed.`,
+						`Dependencies ${styleText('bold', 'NOT')} installed.`,
 						'Be sure to install them manually before continuing!'
 					)
 				);
@@ -242,7 +243,7 @@ export const addPlugin = Cli.Command.make(
 
 		switch (configResult) {
 			case UpdateResult.cancelled: {
-				yield* outro(cancelled(`Your configuration has ${chalk.bold('NOT')} been updated.`));
+				yield* outro(cancelled(`Your configuration has ${styleText('bold', 'NOT')} been updated.`));
 				break;
 			}
 			case UpdateResult.none: {

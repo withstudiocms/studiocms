@@ -249,7 +249,6 @@
 		"ace-builds": "^1.43.6",
 		"astro-integration-kit": "catalog:",
 		"boxen": "^8.0.1",
-		"chalk": "catalog:",
 		"diff": "catalog:",
 		"dompurify": "^3.3.1",
 		"dotenv": "catalog:",
