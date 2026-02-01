@@ -1,15 +1,26 @@
+import type { Writable } from 'node:stream';
 import type {
+	AutocompleteMultiSelectOptions,
+	AutocompleteOptions,
+	BoxOptions,
 	ClackSettings,
+	CommonOptions,
 	ConfirmOptions,
 	GroupMultiSelectOptions,
 	LogMessageOptions,
 	MultiSelectOptions,
+	NoteOptions,
 	PasswordOptions,
+	PathOptions,
+	ProgressOptions,
 	PromptGroup,
 	PromptGroupOptions,
 	SelectOptions,
 	SpinnerOptions,
 	Task,
+	TaskLogCompletionOptions,
+	TaskLogMessageOptions,
+	TaskLogOptions,
 	TextOptions,
 } from '@clack/prompts';
 import * as ClackPrompts from '@clack/prompts';
@@ -17,19 +28,27 @@ import { deepmerge } from './deepmerge.js';
 import { Data, Effect } from './effect.js';
 
 export type {
+	AutocompleteMultiSelectOptions,
+	AutocompleteOptions,
+	BoxOptions,
 	ClackSettings,
+	CommonOptions,
 	ConfirmOptions,
 	GroupMultiSelectOptions,
 	LogMessageOptions,
 	MultiSelectOptions,
-	Option,
+	NoteOptions,
 	PasswordOptions,
+	PathOptions,
+	ProgressOptions,
 	PromptGroup,
-	PromptGroupAwaitedReturn,
 	PromptGroupOptions,
 	SelectOptions,
 	SpinnerOptions,
 	Task,
+	TaskLogCompletionOptions,
+	TaskLogMessageOptions,
+	TaskLogOptions,
 	TextOptions,
 } from '@clack/prompts';
 
@@ -76,6 +95,43 @@ export const useClackErrorPromise = <A>(_try: () => Promise<A>): Effect.Effect<A
 // Current version of @clack/prompts has some issues with testing
 
 /**
+ * Presents an autocomplete prompt to the user using Clack,
+ * handling errors with `useClackError`.
+ *
+ * @typeParam T - The type of the selectable options.
+ * @param opts - The configuration options for the autocomplete prompt.
+ * @returns The result of the autocomplete prompt, wrapped with error handling.
+ */
+export const autocomplete = Effect.fn(<T>(opts: AutocompleteOptions<T>) =>
+	useClackErrorPromise(() => ClackPrompts.autocomplete(opts))
+);
+
+/**
+ * Presents a multi-select autocomplete prompt to the user using Clack,
+ * handling errors with `useClackError`.
+ *
+ * @typeParam T - The type of the selectable options.
+ * @param opts - The configuration options for the multi-select autocomplete prompt.
+ * @returns The result of the multi-select autocomplete prompt, wrapped with error handling.
+ */
+export const autocompleteMultiSelect = Effect.fn(<T>(opts: AutocompleteMultiSelectOptions<T>) =>
+	useClackErrorPromise(() => ClackPrompts.autocompleteMultiselect(opts))
+);
+
+/**
+ * Displays a box message using the Clack library within an Effect context.
+ *
+ * @param message - Optional message to display in the box.
+ * @param title - Optional title for the box.
+ * @param opts - Optional configuration options for the box.
+ * @returns An Effect that, when executed, shows the box message and handles any Clack-related errors.
+ */
+export const box = Effect.fn(
+	(message?: string | undefined, title?: string | undefined, opts?: BoxOptions | undefined) =>
+		useClackError(() => ClackPrompts.box(message, title, opts))
+);
+
+/**
  * Cancels the current Clack operation and optionally displays an error message.
  *
  * This function wraps the `clackCancel` operation with error handling using `useClackError`.
@@ -83,8 +139,8 @@ export const useClackErrorPromise = <A>(_try: () => Promise<A>): Effect.Effect<A
  * @param message - Optional error message to display when cancelling the operation.
  * @returns An Effect representing the cancellation operation.
  */
-export const cancel = Effect.fn((message?: string) =>
-	useClackError(() => ClackPrompts.cancel(message))
+export const cancel = Effect.fn((message?: string, opts?: CommonOptions | undefined) =>
+	useClackError(() => ClackPrompts.cancel(message, opts))
 );
 
 /**
@@ -125,8 +181,8 @@ export const groupMultiselect = <T>(options: GroupMultiSelectOptions<T>) =>
  * @param message - The message to display as an introduction.
  * @returns An Effect that, when executed, shows the intro message and handles any Clack-related errors.
  */
-export const intro = Effect.fn((message: string) =>
-	useClackError(() => ClackPrompts.intro(message))
+export const intro = Effect.fn((message: string, opts?: CommonOptions | undefined) =>
+	useClackError(() => ClackPrompts.intro(message, opts))
 );
 
 /**
@@ -140,6 +196,30 @@ export const intro = Effect.fn((message: string) =>
  */
 export const isCancel = Effect.fn((value: unknown) =>
 	useClackError(() => ClackPrompts.isCancel(value))
+);
+
+/**
+ * Checks if the current environment is a Continuous Integration (CI) environment.
+ *
+ * This function wraps the `clackIsCI` utility with error handling using `useClackError`.
+ * It is useful for determining if the code is running in a CI environment, which may affect
+ * how prompts and interactions are handled.
+ *
+ * @returns `true` if running in a CI environment, otherwise `false`.
+ */
+export const isCI = Effect.fn(() => useClackError(ClackPrompts.isCI));
+
+/**
+ * Checks if the provided output stream is a TTY (teletypewriter) terminal.
+ *
+ * This function wraps the `clackIsTTY` utility with error handling using `useClackError`.
+ * It is useful for determining if the output stream supports interactive features.
+ *
+ * @param output - The output stream to check.
+ * @returns `true` if the output stream is a TTY, otherwise `false`.
+ */
+export const isTTY = Effect.fn((output: Writable) =>
+	useClackError(() => ClackPrompts.isTTY(output))
 );
 
 /**
@@ -159,8 +239,8 @@ export const multiselect = <T>(options: MultiSelectOptions<T>) =>
  * @param title - Optional title for the note.
  * @returns An Effect that triggers the note display, handling any Clack errors.
  */
-export const note = Effect.fn((message?: string, title?: string) =>
-	useClackError(() => ClackPrompts.note(message, title))
+export const note = Effect.fn((message?: string, title?: string, opts?: NoteOptions) =>
+	useClackError(() => ClackPrompts.note(message, title, opts))
 );
 
 /**
@@ -169,8 +249,8 @@ export const note = Effect.fn((message?: string, title?: string) =>
  * @param message - Optional message to display as the outro.
  * @returns An Effect that executes the outro logic with error handling.
  */
-export const outro = Effect.fn((message?: string) =>
-	useClackError(() => ClackPrompts.outro(message))
+export const outro = Effect.fn((message?: string, opts?: CommonOptions | undefined) =>
+	useClackError(() => ClackPrompts.outro(message, opts))
 );
 
 /**
@@ -184,6 +264,16 @@ export const outro = Effect.fn((message?: string) =>
  */
 export const password = (options: PasswordOptions) =>
 	useClackErrorPromise(() => ClackPrompts.password(options));
+
+/**
+ * Prompts the user to input a file or directory path using Clack, with error handling.
+ *
+ * @param opts - The configuration options for the path prompt.
+ * @returns The result of the path prompt, wrapped with error handling.
+ */
+export const path = Effect.fn((opts: PathOptions) =>
+	useClackErrorPromise(() => ClackPrompts.path(opts))
+);
 
 /**
  * Presents a selection prompt to the user using Clack, handling errors gracefully.
@@ -211,7 +301,34 @@ export const selectKey = <T extends string>(options: SelectOptions<T>) =>
  * @param tasks - An array of `Task` objects to be executed.
  * @returns The result of the `clackTasks` execution, potentially wrapped or modified by `useClackError`.
  */
-export const tasks = (tasks: Task[]) => useClackErrorPromise(() => ClackPrompts.tasks(tasks));
+export const tasks = (tasks: Task[], opts?: CommonOptions) =>
+	useClackErrorPromise(() => ClackPrompts.tasks(tasks, opts));
+
+/**
+ * Displays a task log using Clack, handling any errors that may occur.
+ *
+ * @param opts - The options to configure the task log.
+ * @returns The result of the task log, or an error if one occurs.
+ */
+export const taskLog = Effect.fn((opts: TaskLogOptions) =>
+	useClackError(() => {
+		const tl = ClackPrompts.taskLog(opts);
+		return {
+			message: (msg: string, mopts?: TaskLogMessageOptions) =>
+				useClackError(() => tl.message(msg, mopts)),
+			group: (name: string) => ({
+				message: (msg: string, mopts?: TaskLogMessageOptions) =>
+					useClackError(() => tl.group(name).message(msg, mopts)),
+				error: (message: string) => useClackError(() => tl.group(name).error(message)),
+				success: (message: string) => useClackError(() => tl.group(name).success(message)),
+			}),
+			error: (message: string, opts?: TaskLogCompletionOptions) =>
+				useClackError(() => tl.error(message, opts)),
+			success: (message: string, opts?: TaskLogCompletionOptions) =>
+				useClackError(() => tl.success(message, opts)),
+		};
+	})
+);
 
 /**
  * Displays a text prompt using Clack, handling any errors that may occur.
@@ -244,8 +361,32 @@ export const spinner = Effect.fn((options: SpinnerOptions = {}) =>
 		const s = ClackPrompts.spinner(options);
 		return {
 			start: (msg?: string) => useClackError(() => s.start(msg)),
-			stop: (msg?: string, code?: number) => useClackError(() => s.stop(msg, code)),
+			stop: (msg?: string) => useClackError(() => s.stop(msg)),
 			message: (msg?: string) => useClackError(() => s.message(msg)),
+		};
+	})
+);
+
+/**
+ * Creates a progress bar utility with customizable options.
+ *
+ * @param {ProgressOptions} [opts] - Options for the progress bar.
+ *
+ * All methods are wrapped with `useClackError` for error handling.
+ */
+export const progress = Effect.fn((opts?: ProgressOptions | undefined) =>
+	useClackError(() => {
+		const p = ClackPrompts.progress(opts);
+		return {
+			advance: (step?: number | undefined, msg?: string | undefined) =>
+				useClackError(() => p.advance(step, msg)),
+			cancel: (msg?: string | undefined) => useClackError(() => p.cancel(msg)),
+			clear: () => useClackError(() => p.clear()),
+			error: (msg?: string) => useClackError(() => p.error(msg)),
+			isCancelled: () => useClackError(() => p.isCancelled),
+			message: (msg: string) => useClackError(() => p.message(msg)),
+			start: (msg?: string | undefined) => useClackError(() => p.start(msg)),
+			stop: (msg?: string) => useClackError(() => p.stop(msg)),
 		};
 	})
 );

@@ -35,6 +35,9 @@ export const projectName: EffectStepFn = Effect.fn('projectName')(
 				message: 'Where should we create your new project?',
 				initialValue: `./${generateProjectName()}`,
 				validate(value) {
+					if (!value || value.trim().length === 0) {
+						return 'Project directory cannot be empty!';
+					}
 					if (!isEmpty(value)) {
 						return 'Directory is not empty!';
 					}
