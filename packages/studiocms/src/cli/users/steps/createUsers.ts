@@ -186,7 +186,7 @@ export const createUsers: EffectStepFn = Effect.fn(function* (context, _debug, d
 
 	// Check password confirmation
 	if (newPassword !== confirmPassword) {
-		yield* log.error(context.chalk.red('Passwords do not match, exiting...'));
+		yield* log.error(styleText('red', 'Passwords do not match, exiting...'));
 		return yield* context.exit(1);
 	}
 
@@ -248,7 +248,7 @@ export const createUsers: EffectStepFn = Effect.fn(function* (context, _debug, d
 						return await runEffect(context.exit(1));
 					}
 
-					message(context.chalk.green('User created successfully!'));
+					message(styleText('green', 'User created successfully!'));
 				} catch (error) {
 					await runEffect(log.error(`Failed to create user: ${(error as Error).message}`));
 					return await runEffect(context.exit(1));

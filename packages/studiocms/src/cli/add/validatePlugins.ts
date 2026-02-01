@@ -1,6 +1,6 @@
+import { styleText } from 'node:util';
 import { askToContinue, spinner } from '@withstudiocms/effect/clack';
 import { Effect, genLogger } from '../../effect.js';
-import { CliContext } from '../utils/context.js';
 import { type PluginInfo, StudioCMSScopes } from './index.js';
 import { fetchPackageJson, parsePluginName } from './npm-utils.js';
 
@@ -8,7 +8,6 @@ export class ValidatePlugins extends Effect.Service<ValidatePlugins>()('Validate
 	effect: genLogger('studiocms/cli/add/validatePlugins/ValidatePlugins.effect')(function* () {
 		const run = (names: string[]) =>
 			genLogger('studiocms/cli/add/validatePlugins/ValidatePlugins.effect.run')(function* () {
-				const { chalk } = yield* CliContext;
 				const spin = yield* spinner();
 
 				yield* spin.start('Resolving packages...');
@@ -19,7 +18,9 @@ export class ValidatePlugins extends Effect.Service<ValidatePlugins>()('Validate
 					const parsed = yield* parsePluginName(plugin);
 
 					if (!parsed)
-						throw new Error(`${chalk.bold(plugin)} does not appear to be a valid package name!`);
+						throw new Error(
+							`${styleText('bold', plugin)} does not appear to be a valid package name!`
+						);
 
 					const { scope, name, tag } = parsed;
 
@@ -33,14 +34,17 @@ export class ValidatePlugins extends Effect.Service<ValidatePlugins>()('Validate
 						const firstPartyPkgCheck = yield* fetchPackageJson(scope, name, tag);
 						if (firstPartyPkgCheck instanceof Error) {
 							if (firstPartyPkgCheck.message) {
-								yield* spin.message(chalk.yellow(firstPartyPkgCheck.message));
+								yield* spin.message(styleText('yellow', firstPartyPkgCheck.message));
 							}
 							yield* spin.message(
-								chalk.yellow(`${chalk.bold(plugin)} is not an official StudioCMS package.`)
+								styleText(
+									'yellow',
+									`${styleText('bold', plugin)} is not an official StudioCMS package.`
+								)
 							);
 							if (!(yield* askToContinue())) {
 								throw new Error(
-									`No problem! Find our official plugins at ${chalk.magenta('https://docs.studiocms.dev')}`
+									`No problem! Find our official plugins at ${styleText('magenta', 'https://docs.studiocms.dev')}`
 								);
 							}
 							yield* spin.start('Resolving with third party packages...');
@@ -56,9 +60,11 @@ export class ValidatePlugins extends Effect.Service<ValidatePlugins>()('Validate
 						const thirdPartyPkgCheck = yield* fetchPackageJson(scope, name, tag);
 						if (thirdPartyPkgCheck instanceof Error) {
 							if (thirdPartyPkgCheck.message) {
-								yield* spin.message(chalk.yellow(thirdPartyPkgCheck.message));
+								yield* spin.message(styleText('yellow', thirdPartyPkgCheck.message));
 							}
-							throw new Error(`Unable to fetch ${chalk.bold(plugin)}. Does the package exist?`);
+							throw new Error(
+								`Unable to fetch ${styleText('bold', plugin)}. Does the package exist?`
+							);
 						}
 						// biome-ignore lint/suspicious/noExplicitAny: this is a valid use case for explicit any
 						pkgJson = thirdPartyPkgCheck as any;
@@ -83,7 +89,7 @@ export class ValidatePlugins extends Effect.Service<ValidatePlugins>()('Validate
 					const keywords = Array.isArray(pkgJson.keywords) ? pkgJson.keywords : [];
 					if (!keywords.includes('studiocms-plugin')) {
 						throw new Error(
-							`${chalk.bold(plugin)} doesn't appear to be an StudioCMS Plugin. Find our official plugins at ${chalk.magenta('https://docs.studiocms.dev')}`
+							`${styleText('bold', plugin)} doesn't appear to be an StudioCMS Plugin. Find our official plugins at ${styleText('magenta', 'https://docs.studiocms.dev')}`
 						);
 					}
 

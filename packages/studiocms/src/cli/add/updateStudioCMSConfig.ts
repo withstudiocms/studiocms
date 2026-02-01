@@ -1,5 +1,6 @@
 import { promises as fs } from 'node:fs';
 import { fileURLToPath } from 'node:url';
+import { styleText } from 'node:util';
 import { askToContinue, note } from '@withstudiocms/effect/clack';
 import { diffWords } from 'diff';
 import { generateCode, type ProxifiedModule } from 'magicast';
@@ -18,7 +19,6 @@ export class UpdateStudioCMSConfig extends Effect.Service<UpdateStudioCMSConfig>
 					genLogger('studiocms/cli/add/updateStudioCMSConfig/UpdateStudioCMSConfig.effect.run')(
 						function* () {
 							const context = yield* CliContext;
-							const { chalk } = context;
 
 							const input = yield* Effect.tryPromise(() =>
 								fs.readFile(fileURLToPath(configURL), { encoding: 'utf-8' })
@@ -54,7 +54,7 @@ export class UpdateStudioCMSConfig extends Effect.Service<UpdateStudioCMSConfig>
 							const message = `\n${boxenMessage}\n`;
 
 							yield* note(
-								`\n ${chalk.magenta('StudioCMS will make the following changes to your config file:')}\n${message}`
+								`\n ${styleText('magenta', 'StudioCMS will make the following changes to your config file:')}\n${message}`
 							);
 
 							if (yield* askToContinue()) {
@@ -76,7 +76,6 @@ export class UpdateStudioCMSConfig extends Effect.Service<UpdateStudioCMSConfig>
 
 const getDiffContent = (input: string, output: string) =>
 	genLogger('studiocms/cli/add/updateStudioCMSConfig.getDiffContentNew')(function* () {
-		const { chalk } = yield* CliContext;
 		const changes = [];
 		for (const change of diffWords(input, output)) {
 			const lines = change.value.trim().split('\n').slice(0, change.count);
@@ -94,7 +93,7 @@ const getDiffContent = (input: string, output: string) =>
 		for (const newContent of changes) {
 			const coloredOutput = newContent
 				.split('\n')
-				.map((ln) => (ln ? chalk.green(ln) : ''))
+				.map((ln) => (ln ? styleText('green', ln) : ''))
 				.join('\n');
 			diffed = diffed.replace(newContent, coloredOutput);
 		}

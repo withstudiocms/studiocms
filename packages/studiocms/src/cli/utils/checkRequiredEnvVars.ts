@@ -1,5 +1,5 @@
+import { styleText } from 'node:util';
 import { log } from '@withstudiocms/effect/clack';
-import chalk from 'chalk';
 import { Effect } from '../../effect.js';
 
 /**
@@ -25,8 +25,8 @@ export const checkRequiredEnvVarsEffect = Effect.fn(function* (envVars: string[]
 
 	if (missingVars.length > 0) {
 		yield* log.error(
-			`${chalk.red.bold('Missing environment variables:')} ${missingVars
-				.map((v) => chalk.red(v))
+			`${styleText(['red', 'bold'], 'Missing environment variables:')} ${missingVars
+				.map((v) => styleText('red', v))
 				.join(', ')}`
 		);
 		return yield* Effect.try(() => process.exit(1));

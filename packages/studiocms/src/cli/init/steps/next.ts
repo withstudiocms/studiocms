@@ -26,7 +26,7 @@ const runCmdMap: { [key: string]: string } = {
 
 export const next = (debug: boolean) =>
 	genLogger('studiocms/cli/init/steps/next')(function* () {
-		const [{ chalk, packageManager }, debugLogger] = yield* Effect.all([
+		const [{ packageManager }, debugLogger] = yield* Effect.all([
 			CliContext,
 			buildDebugLogger(debug),
 		]);
@@ -40,13 +40,14 @@ export const next = (debug: boolean) =>
 			debugLogger('Running next steps fn...'),
 			log.success(
 				boxen(
-					chalk.bold(
+					styleText(
+						'bold',
 						`${label('Init Complete!', StudioCMSColorwayInfoBg, 'bold')} Get started with StudioCMS:`
 					),
 					{
-						ln1: `Ensure your ${chalk.cyanBright('.env')} file is configured correctly.`,
-						ln3: `Run ${chalk.cyan(`${runCmd} studiocms migrate`)} to sync your database schema.`,
-						ln4: `Run ${chalk.cyan(devCmd)} to start the dev server. ${chalk.cyanBright('CTRL+C')} to stop.`,
+						ln1: `Ensure your ${styleText('cyanBright', '.env')} file is configured correctly.`,
+						ln3: `Run ${styleText('cyan', `${runCmd} studiocms migrate`)} to sync your database schema.`,
+						ln4: `Run ${styleText('cyan', devCmd)} to start the dev server. ${styleText('cyanBright', 'CTRL+C')} to stop.`,
 					}
 				)
 			),
