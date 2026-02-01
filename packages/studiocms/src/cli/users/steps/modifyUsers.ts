@@ -112,7 +112,7 @@ export const modifyUsers: EffectStepFn = Effect.fn(function* (context, _debug, d
 			message: 'Enter the new username',
 			placeholder: 'johndoe',
 			validate: (user) => {
-				const u = user.trim();
+				const u = user?.trim();
 				const isUser = currentUsers.find(({ username }) => username === u);
 				if (isUser) return 'Username is already in use, please try another one';
 				return undefined;
@@ -158,7 +158,7 @@ export const modifyUsers: EffectStepFn = Effect.fn(function* (context, _debug, d
 			const newDisplayName = yield* text({
 				message: 'Enter new display name',
 				placeholder: currentUsers.find((u) => u.id === userSelection)?.name || 'John Doe',
-				validate: (v) => (v.trim().length === 0 ? 'Display name cannot be empty' : undefined),
+				validate: (v) => (v?.trim().length === 0 ? 'Display name cannot be empty' : undefined),
 			});
 
 			if (typeof newDisplayName === 'symbol') {

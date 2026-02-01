@@ -102,7 +102,7 @@ export const createUsers: EffectStepFn = Effect.fn(function* (context, _debug, d
 			message: 'Username',
 			placeholder: 'johndoe',
 			validate: (user) => {
-				const u = user.trim();
+				const u = user?.trim();
 				const isUser = currentUsers.find(({ username }) => username === u);
 				if (isUser) return 'Username is already in use, please try another one';
 				return undefined;
@@ -150,7 +150,7 @@ export const createUsers: EffectStepFn = Effect.fn(function* (context, _debug, d
 						message: 'E-Mail Address',
 						placeholder: 'john@doe.tld',
 						validate: (email) => {
-							const e = email.trim().toLowerCase();
+							const e = email?.trim().toLowerCase();
 							const emailSchema = z.string().email({ message: 'Email address is invalid' });
 							const response = emailSchema.safeParse(e);
 							if (!response.success) return response.error.message;
