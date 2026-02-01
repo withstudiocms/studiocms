@@ -83,13 +83,13 @@
 		"@clack/prompts": "^1.0.0",
 		"deepmerge-ts": "catalog:",
 		"micromatch": "^4.0.8",
-		"nodemailer": "^7.0.12",
+		"nodemailer": "^7.0.13",
 		"socks": "^2.8.7"
 	},
 	"devDependencies": {
 		"@types/micromatch": "^4.0.10",
 		"@types/node": "catalog:",
-		"@types/nodemailer": "^7.0.5",
+		"@types/nodemailer": "^7.0.9",
 		"typescript": "catalog:"
 	},
 	"peerDependencies": {
