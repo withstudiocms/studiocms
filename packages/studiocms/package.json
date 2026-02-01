@@ -230,11 +230,11 @@
 	"type": "module",
 	"dependencies": {
 		"@iconify-json/flat-color-icons": "^1.2.3",
-		"@iconify-json/simple-icons": "^1.2.67",
+		"@iconify-json/simple-icons": "^1.2.68",
 		"@iconify-json/circle-flags": "^1.2.10",
 		"@inox-tools/runtime-logger": "^0.7.1",
 		"@nanostores/i18n": "^1.2.2",
-		"@nanostores/persistent": "^1.2.0",
+		"@nanostores/persistent": "^1.2.1",
 		"@outerbase/sdk-transform": "^1.0.8",
 		"@studiocms/ui": "catalog:studiocms",
 		"@withstudiocms/internal_helpers": "workspace:^",

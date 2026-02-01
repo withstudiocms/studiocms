@@ -1087,8 +1087,8 @@ importers:
         specifier: ^1.2.3
         version: 1.2.3
       '@iconify-json/simple-icons':
-        specifier: ^1.2.67
-        version: 1.2.67
+        specifier: ^1.2.68
+        version: 1.2.68
       '@inox-tools/runtime-logger':
         specifier: ^0.7.1
         version: 0.7.1(astro@5.16.15(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
@@ -1099,8 +1099,8 @@ importers:
         specifier: ^1.2.2
         version: 1.2.2(nanostores@1.1.0)
       '@nanostores/persistent':
-        specifier: ^1.2.0
-        version: 1.2.0(nanostores@1.1.0)
+        specifier: ^1.2.1
+        version: 1.2.1(nanostores@1.1.0)
       '@outerbase/sdk-transform':
         specifier: ^1.0.8
         version: 1.0.8
@@ -2340,8 +2340,8 @@ packages:
   '@iconify-json/heroicons@1.2.3':
     resolution: {integrity: sha512-n+vmCEgTesRsOpp5AB5ILB6srsgsYK+bieoQBNlafvoEhjVXLq8nIGN4B0v/s4DUfa0dOrjwE/cKJgIKdJXOEg==}
 
-  '@iconify-json/simple-icons@1.2.67':
-    resolution: {integrity: sha512-RGJRwlxyup54L1UDAjCshy3ckX5zcvYIU74YLSnUgHGvqh6B4mvksbGNHAIEp7dZQ6cM13RZVT5KC07CmnFNew==}
+  '@iconify-json/simple-icons@1.2.68':
+    resolution: {integrity: sha512-bQPl1zuZlX6AnofreA1v7J+hoPncrFMppqGboe/SH54jZO37meiBUGBqNOxEpc0HKfZGxJaVVJwZd4gdMYu3hw==}
 
   '@iconify/types@2.0.0':
     resolution: {integrity: sha512-+wluvCrRhXrhyOmRDJ3q8mux9JkKy5SJ/v8ol2tu4FVjyYvtEzkc/3pK15ET6RKg4b4w4BmTk1+gsCUhf21Ykg==}
@@ -2684,8 +2684,8 @@ packages:
     peerDependencies:
       nanostores: ^0.9.0 || ^0.10.0 || ^0.11.0 || ^1.0.0
 
-  '@nanostores/persistent@1.2.0':
-    resolution: {integrity: sha512-kf5WOLpVI9Pk+AwXHIax4in3pesNe8299BEGQ2H8kgI05SZw7KKWCDv7bt2FOlND8E5y7rO5PRW34q0UCAl/DA==}
+  '@nanostores/persistent@1.2.1':
+    resolution: {integrity: sha512-TNrWoljS23MDnkt6zTsvsSCER0iBPNIm8rD+iFooO0jfZfk1728sv11jq2o+klmBNRxnSjWXlDEmjPkzeUwZIQ==}
     engines: {node: ^20.0.0 || >=22.0.0}
     peerDependencies:
       nanostores: ^0.9.0 || ^0.10.0 || ^0.11.0 || ^1.0.0
@@ -8735,7 +8735,7 @@ snapshots:
     dependencies:
       '@iconify/types': 2.0.0
 
-  '@iconify-json/simple-icons@1.2.67':
+  '@iconify-json/simple-icons@1.2.68':
     dependencies:
       '@iconify/types': 2.0.0
 
@@ -9072,7 +9072,7 @@ snapshots:
     dependencies:
       nanostores: 1.1.0
 
-  '@nanostores/persistent@1.2.0(nanostores@1.1.0)':
+  '@nanostores/persistent@1.2.1(nanostores@1.1.0)':
     dependencies:
       nanostores: 1.1.0
 
