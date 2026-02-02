@@ -75,7 +75,7 @@
 			"types": "./dist/sdk/index.d.mts",
 			"default": "./dist/sdk/index.mjs"
 		},
-		"./HttpApiScalar": {
+		"./scalar": {
 			"types": "./dist/scalar.d.mts",
 			"default": "./dist/scalar.mjs"
 		}
