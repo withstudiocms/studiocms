@@ -1099,8 +1099,8 @@ importers:
         specifier: ^1.2.2
         version: 1.2.2(nanostores@1.1.0)
       '@nanostores/persistent':
-        specifier: ^1.2.1
-        version: 1.2.1(nanostores@1.1.0)
+        specifier: ^1.3.0
+        version: 1.3.0(nanostores@1.1.0)
       '@outerbase/sdk-transform':
         specifier: ^1.0.8
         version: 1.0.8
@@ -2576,8 +2576,8 @@ packages:
     peerDependencies:
       nanostores: ^0.9.0 || ^0.10.0 || ^0.11.0 || ^1.0.0
 
-  '@nanostores/persistent@1.2.1':
-    resolution: {integrity: sha512-TNrWoljS23MDnkt6zTsvsSCER0iBPNIm8rD+iFooO0jfZfk1728sv11jq2o+klmBNRxnSjWXlDEmjPkzeUwZIQ==}
+  '@nanostores/persistent@1.3.0':
+    resolution: {integrity: sha512-EdCp6oze+JWVdBrEi/Z9sz8Dh2Vqe0B38MOjq0HRER/aKfiYT0kVUO+5LdhysFtdMoqHiwGajma3NXgzb4xhWw==}
     engines: {node: ^20.0.0 || >=22.0.0}
     peerDependencies:
       nanostores: ^0.9.0 || ^0.10.0 || ^0.11.0 || ^1.0.0
@@ -8598,7 +8598,7 @@ snapshots:
     dependencies:
       nanostores: 1.1.0
 
-  '@nanostores/persistent@1.2.1(nanostores@1.1.0)':
+  '@nanostores/persistent@1.3.0(nanostores@1.1.0)':
     dependencies:
       nanostores: 1.1.0
 
