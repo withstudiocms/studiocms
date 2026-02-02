@@ -29,7 +29,7 @@ catalogs:
     "@astrojs/check": ^0.9.6
     "@astrojs/node": ^9.5.2
     "@astrojs/rss": ^4.0.15
-    astro: ^5.16.16
+    astro: ^5.17.1
     vite: ^6.3.4
   effect:
     "@effect/cli": ^0.73.1
