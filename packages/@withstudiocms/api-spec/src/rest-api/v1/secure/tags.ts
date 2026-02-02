@@ -16,7 +16,7 @@ import {
  * GET /tags
  * Retrieves a list of tags.
  */
-export const TagsIndexGet = HttpApiEndpoint.get('get-tags', '/tags')
+export const TagsIndexGet = HttpApiEndpoint.get('getTags', '/tags')
 	.annotate(Title, 'Get Tags')
 	.annotate(Summary, 'Retrieve Tags')
 	.annotate(Description, 'Retrieves a list of tags, with optional filtering by name and parent ID.')
@@ -30,7 +30,7 @@ export const TagsIndexGet = HttpApiEndpoint.get('get-tags', '/tags')
  * POST /tags
  * Creates a new tag.
  */
-export const TagsIndexPost = HttpApiEndpoint.post('create-tag', '/tags')
+export const TagsIndexPost = HttpApiEndpoint.post('createTag', '/tags')
 	.annotate(Title, 'Create Tag')
 	.annotate(Summary, 'Create Tag')
 	.annotate(Description, 'Creates a new tag.')
@@ -44,7 +44,7 @@ export const TagsIndexPost = HttpApiEndpoint.post('create-tag', '/tags')
  * GET /tags/{id}
  * Retrieves a tag by its ID.
  */
-export const TagsByIdGet = HttpApiEndpoint.get('get-tag', '/tags/:id')
+export const TagsByIdGet = HttpApiEndpoint.get('getTag', '/tags/:id')
 	.setPath(IdParamNumber)
 	.annotate(Title, 'Get Tag by ID')
 	.annotate(Summary, 'Retrieve Tag by ID')
@@ -58,7 +58,7 @@ export const TagsByIdGet = HttpApiEndpoint.get('get-tag', '/tags/:id')
  * PATCH /tags/{id}
  * Updates a tag by its ID.
  */
-export const TagsByIdPatch = HttpApiEndpoint.patch('update-tag', '/tags/:id')
+export const TagsByIdPatch = HttpApiEndpoint.patch('updateTag', '/tags/:id')
 	.setPath(IdParamNumber)
 	.annotate(Title, 'Update Tag by ID')
 	.annotate(Summary, 'Update Tag by ID')
@@ -74,7 +74,7 @@ export const TagsByIdPatch = HttpApiEndpoint.patch('update-tag', '/tags/:id')
  * DELETE /tags/{id}
  * Deletes a tag by its ID.
  */
-export const TagsByIdDelete = HttpApiEndpoint.del('delete-tag', '/tags/:id')
+export const TagsByIdDelete = HttpApiEndpoint.del('deleteTag', '/tags/:id')
 	.setPath(IdParamNumber)
 	.annotate(Title, 'Delete Tag by ID')
 	.annotate(Summary, 'Delete Tag by ID')

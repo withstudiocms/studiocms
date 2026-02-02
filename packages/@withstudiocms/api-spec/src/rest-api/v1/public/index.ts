@@ -32,7 +32,7 @@ import { TagByIdGet, TagIndexGet } from './tags.js';
  * @throws {RestAPIError} 404 - Resource not found
  * @throws {RestAPIError} 500 - Internal server error
  */
-export class RestApiV1PublicSpec extends HttpApiGroup.make('rest-v1-public')
+export class RestApiV1PublicSpec extends HttpApiGroup.make('restV1Public')
 	.annotate(Title, 'REST API v1 - Public')
 	.annotate(
 		Description,

@@ -20,7 +20,7 @@ import {
  * @throws {AuthAPIError} Returns a 403 status code for forbidden access
  * @throws {AuthAPIError} Returns a 500 status code on server error
  */
-export const forgotPasswordPost = HttpApiEndpoint.post('forgot-password', '/forgot-password')
+export const forgotPasswordPost = HttpApiEndpoint.post('forgotPassword', '/forgot-password')
 	.annotate(Title, 'Forgot Password')
 	.annotate(Summary, 'Initiate password reset process')
 	.annotate(Description, 'Sends a password reset email to the user if the email is registered.')

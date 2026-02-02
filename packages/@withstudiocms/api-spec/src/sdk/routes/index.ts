@@ -29,7 +29,7 @@ import {
  *
  * @throws {SDKAPIError} Returns a 500 status code on server error
  */
-export const fullChangelogPost = HttpApiEndpoint.post('full-changelog', '/full-changelog.json')
+export const fullChangelogPost = HttpApiEndpoint.post('fullChangelog', '/full-changelog.json')
 	.annotate(Title, 'Get Full Changelog')
 	.annotate(Summary, 'Retrieve the full changelog in JSON format.')
 	.annotate(Description, 'Retrieves the complete changelog for the StudioCMS SDK in JSON format.')
@@ -53,7 +53,7 @@ export const fullChangelogPost = HttpApiEndpoint.post('full-changelog', '/full-c
  *
  * @throws {SDKAPIError} Returns a 500 status code on server error
  */
-export const listPagesGet = HttpApiEndpoint.get('list-pages', '/list-pages')
+export const listPagesGet = HttpApiEndpoint.get('listPages', '/list-pages')
 	.annotate(Title, 'List Pages')
 	.annotate(Summary, 'Retrieve a list of pages.')
 	.annotate(
@@ -81,7 +81,7 @@ export const listPagesGet = HttpApiEndpoint.get('list-pages', '/list-pages')
  * @throws {SDKAPIError} Returns a 500 status code on server error
  */
 export const updateLatestVersionCacheGet = HttpApiEndpoint.get(
-	'update-latest-version-cache',
+	'updateLatestVersionCache',
 	'/update-latest-version-cache'
 )
 	.annotate(Title, 'Update Latest Version Cache')

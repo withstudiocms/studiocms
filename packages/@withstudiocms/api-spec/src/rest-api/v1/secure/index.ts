@@ -59,7 +59,7 @@ import {
  * This API group includes error handling for 404 (Not Found) and 500 (Internal Server Error) responses.
  * Each resource supports standard HTTP methods (GET, POST, PATCH, DELETE, OPTIONS) where applicable.
  */
-export class RestApiV1SecureSpec extends HttpApiGroup.make('rest-v1')
+export class RestApiV1SecureSpec extends HttpApiGroup.make('restV1')
 	.annotate(Title, 'REST API v1 - Secure')
 	.annotate(
 		Description,
