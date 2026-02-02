@@ -1,5 +1,6 @@
 import { HttpApiEndpoint } from '@effect/platform';
 import { Description, Summary, Title } from '@effect/platform/OpenApi';
+import { Schema } from 'effect';
 import { AstroLocalsMiddleware } from '../../astro-context.js';
 import { DashboardAPIError } from '../errors.js';
 import { ResendVerifyEmailPayload, successResponseSchema, verifyEmailParams } from '../schemas.js';
@@ -49,7 +50,12 @@ export const verifyEmailGet = HttpApiEndpoint.get('verifyEmail', '/verify-email'
 	)
 	.middleware(AstroLocalsMiddleware)
 	.setUrlParams(verifyEmailParams)
-	.addSuccess(successResponseSchema, { status: 303 })
+	.addSuccess(
+		Schema.Null.annotations({
+			Description: 'Redirect... (Location header set to URL)',
+		}),
+		{ status: 303 }
+	)
 	.addError(DashboardAPIError, { status: 400 })
 	.addError(DashboardAPIError, { status: 401 })
 	.addError(DashboardAPIError, { status: 403 })

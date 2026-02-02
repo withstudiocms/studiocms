@@ -75,8 +75,8 @@ export const logoutPost = HttpApiEndpoint.post('logout', '/logout')
 	.annotate(Summary, 'Terminate user session')
 	.annotate(Description, 'Logs out the user by terminating the current session.')
 	.addSuccess(
-		Schema.String.annotations({
-			description: 'Redirect URL after successful logout',
+		Schema.Null.annotations({
+			Description: 'Redirect... (Location header set to URL)',
 		}),
 		{ status: 303 }
 	)
