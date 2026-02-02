@@ -1,5 +1,6 @@
 import { HttpApiMiddleware, HttpApiSchema, HttpApiSecurity, OpenApi } from '@effect/platform';
-import { Context, Schema } from 'effect';
+import * as Context from 'effect/Context';
+import * as Schema from 'effect/Schema';
 
 /**
  * Represents an HTTP 401 Unauthorized error.

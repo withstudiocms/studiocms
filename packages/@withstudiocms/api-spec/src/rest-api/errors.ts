@@ -1,4 +1,5 @@
-import { Schema } from 'effect';
+import * as Schema from 'effect/Schema';
+import { errorResponseSchema } from './schemas.js';
 
 /**
  * Standard error response schema for the StudioCMS REST API.
@@ -8,6 +9,7 @@ import { Schema } from 'effect';
  * It includes a single property:
  * - `error`: A string message describing the error.
  */
-export class RestAPIError extends Schema.TaggedError<RestAPIError>()('RestAPIError', {
-	error: Schema.String,
-}) {}
+export class RestAPIError extends Schema.TaggedError<RestAPIError>()(
+	'RestAPIError',
+	errorResponseSchema
+) {}

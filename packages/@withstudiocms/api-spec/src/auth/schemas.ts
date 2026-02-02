@@ -1,4 +1,4 @@
-import { Schema } from 'effect';
+import * as Schema from 'effect/Schema';
 
 /**
  * Standard success response schema for the StudioCMS Auth API.

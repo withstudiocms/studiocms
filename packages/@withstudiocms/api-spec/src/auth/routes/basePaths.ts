@@ -1,6 +1,6 @@
 import { HttpApiEndpoint, HttpApiSchema } from '@effect/platform';
 import { Description, Summary, Title } from '@effect/platform/OpenApi';
-import { Schema } from 'effect';
+import * as Schema from 'effect/Schema';
 import { AuthAPIError } from '../errors.js';
 import {
 	AuthAPISuccess,

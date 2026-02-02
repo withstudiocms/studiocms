@@ -1,8 +1,11 @@
 import { HttpApiEndpoint } from '@effect/platform';
 import { Description, Summary, Title } from '@effect/platform/OpenApi';
-import { Schema } from 'effect';
-import { PublicV1GetPagesSelect } from '../rest-api/schemas.js';
-import { SDKAPIError } from './errors.js';
+import { SDKAPIError } from '../errors.js';
+import {
+	FullChangelogResponseSchema,
+	ListPagesResponseSchema,
+	UpdateLatestVersionCacheResponseSchema,
+} from '../schemas.js';
 
 // TODO: Full changelog endpoint should ideally not use .json in the path
 // This is kept in the current spec as this is how it's currently implemented
@@ -30,12 +33,7 @@ export const fullChangelogPost = HttpApiEndpoint.post('full-changelog', '/full-c
 	.annotate(Title, 'Get Full Changelog')
 	.annotate(Summary, 'Retrieve the full changelog in JSON format.')
 	.annotate(Description, 'Retrieves the complete changelog for the StudioCMS SDK in JSON format.')
-	.addSuccess(
-		Schema.Struct({
-			success: Schema.Boolean,
-			changelog: Schema.String,
-		})
-	)
+	.addSuccess(FullChangelogResponseSchema)
 	.addError(SDKAPIError, { status: 500 });
 
 /**
@@ -62,12 +60,7 @@ export const listPagesGet = HttpApiEndpoint.get('list-pages', '/list-pages')
 		Description,
 		'Retrieves a list of pages available in the StudioCMS SDK. (Does not show draft pages)'
 	)
-	.addSuccess(
-		Schema.Struct({
-			lastUpdated: Schema.String,
-			pages: Schema.Array(PublicV1GetPagesSelect),
-		})
-	)
+	.addSuccess(ListPagesResponseSchema)
 	.addError(SDKAPIError, { status: 500 });
 
 /**
@@ -94,13 +87,5 @@ export const updateLatestVersionCacheGet = HttpApiEndpoint.get(
 	.annotate(Title, 'Update Latest Version Cache')
 	.annotate(Summary, 'Update the latest version cache.')
 	.annotate(Description, 'Triggers an update of the latest version cache for the StudioCMS SDK.')
-	.addSuccess(
-		Schema.Struct({
-			success: Schema.Boolean,
-			latestVersion: Schema.Struct({
-				version: Schema.String,
-				lastCacheUpdate: Schema.Date,
-			}),
-		})
-	)
+	.addSuccess(UpdateLatestVersionCacheResponseSchema)
 	.addError(SDKAPIError, { status: 500 });

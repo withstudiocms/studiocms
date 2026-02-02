@@ -1,7 +1,7 @@
 import { HttpApiEndpoint } from '@effect/platform';
 import { Description, Summary, Title } from '@effect/platform/OpenApi';
-import { Schema } from 'effect';
-import { RestAPIError } from '../../errors';
+import * as Schema from 'effect/Schema';
+import { RestAPIError } from '../../errors.js';
 import { RestAPIAuthorization } from '../../middleware.js';
 import {
 	APISafeUserFields,

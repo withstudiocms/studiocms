@@ -4,8 +4,8 @@ import {
 	StudioCMSPageDataTags,
 	StudioCMSUsersTable,
 } from '@withstudiocms/sdk/tables';
-import { Schema } from 'effect';
-import { StudioCMSDynamicSiteConfigData } from '../rest-api';
+import * as Schema from 'effect/Schema';
+import { StudioCMSDynamicSiteConfigData } from '../rest-api/schemas.js';
 
 /**
  * Standard error response schema for the StudioCMS Dashboard API.

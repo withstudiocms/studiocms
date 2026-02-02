@@ -1,4 +1,4 @@
-import { HttpApi } from '@effect/platform';
+import * as HttpApi from '@effect/platform/HttpApi';
 import {
 	Description,
 	ExternalDocs,

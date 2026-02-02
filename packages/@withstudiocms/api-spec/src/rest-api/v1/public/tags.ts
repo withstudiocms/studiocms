@@ -1,6 +1,6 @@
 import { HttpApiEndpoint } from '@effect/platform';
 import { Description, Summary, Title } from '@effect/platform/OpenApi';
-import { Schema } from 'effect';
+import * as Schema from 'effect/Schema';
 import { RestAPIError } from '../../errors.js';
 import { IdParamNumber, PublicV1TagsGetSearchParams, PublicV1TagsSelect } from '../../schemas.js';
 
