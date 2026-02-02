@@ -85,7 +85,6 @@
         "tsdown": "catalog:"
 	},
 	"peerDependencies": {
-		"@effect/cli": "catalog:effect",
 		"@effect/platform": "catalog:effect",
 		"@effect/platform-node": "catalog:effect",
 		"@withstudiocms/sdk": "workspace:^",
