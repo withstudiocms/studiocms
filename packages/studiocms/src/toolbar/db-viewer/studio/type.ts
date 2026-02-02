@@ -1,5 +1,3 @@
-import type { ClientConfig } from 'pg';
-
 export interface TursoConfig {
 	driver: 'turso';
 	connection: {
@@ -30,6 +28,7 @@ interface SqliteConfig {
 
 export interface PostgresConfig {
 	driver: 'postgres';
-	connection: ClientConfig;
+	connection: import('pg').ClientConfig;
 }
+
 export type JsonConnectionConfig = TursoConfig | SqliteConfig | MySqlConfig | PostgresConfig;

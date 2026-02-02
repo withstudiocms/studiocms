@@ -647,6 +647,18 @@ declare module 'studiocms:plugins/auth/providers' {
 	export const oAuthProviders: OAuthProviders;
 }
 
+declare module 'virtual:studiocms/db-studio/connection' {
+	/**
+	 * Creates a database connection from the provided configuration.
+	 *
+	 * @param configFile - The path to the database configuration file.
+	 * @param config - The database configuration object.
+	 *
+	 * @returns The desired database connection for the configured dialect
+	 */
+	export const createConnectionFromConfig: typeof import('./toolbar/db-viewer/studio/connection').createConnectionFromConfig;
+}
+
 interface StudioCMSSecurityLocals {
 	userSessionData: import('./virtuals/auth/types').UserSessionData;
 	emailVerificationEnabled: boolean;
