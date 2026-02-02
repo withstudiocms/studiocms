@@ -100,10 +100,13 @@ export type ScalarConfig = {
  * Generate the HTML component for Scalar API documentation.
  *
  * @param options - Configuration options for generating the HTML component.
+ * @param options.api - The API specification to document.
  * @param options.spec - The OpenAPI specification to document.
  * @param options.scalar - Configuration options for Scalar.
  * @param options.starlight - Whether to wrap the component for Starlight compatibility.
  * @returns The HTML string for the Scalar API documentation component.
+ *
+ * @throws Will throw an error if neither `spec` nor `api` is provided.
  */
 export const makeHtmlComponent = (options: {
 	readonly api?: HttpApi.HttpApi.Any;
