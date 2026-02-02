@@ -28,7 +28,7 @@ export const oAuthIndexGet = HttpApiEndpoint.get('oAuthInit', '/:provider')
 		Schema.Null.annotations({
 			Description: 'Redirect... (Location header set to URL)',
 		}),
-		{ status: 303 }
+		{ status: 302 } // Astro Redirects default to 302
 	)
 	.addError(AuthAPIError, { status: 400 })
 	.addError(AuthAPIError, { status: 403 })
@@ -61,7 +61,7 @@ export const oAuthCallbackGet = HttpApiEndpoint.get('oAuthCallback', '/:provider
 		Schema.Null.annotations({
 			Description: 'Redirect... (Location header set to URL)',
 		}),
-		{ status: 303 }
+		{ status: 302 } // Astro Redirects default to 302
 	)
 	.addError(AuthAPIError, { status: 400 })
 	.addError(AuthAPIError, { status: 403 })

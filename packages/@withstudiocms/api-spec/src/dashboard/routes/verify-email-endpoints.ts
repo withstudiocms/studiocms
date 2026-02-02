@@ -54,7 +54,7 @@ export const verifyEmailGet = HttpApiEndpoint.get('verifyEmail', '/verify-email'
 		Schema.Null.annotations({
 			Description: 'Redirect... (Location header set to URL)',
 		}),
-		{ status: 303 }
+		{ status: 302 } // Astro Redirects default to 302
 	)
 	.addError(DashboardAPIError, { status: 400 })
 	.addError(DashboardAPIError, { status: 401 })

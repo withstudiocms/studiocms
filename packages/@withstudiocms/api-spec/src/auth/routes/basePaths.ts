@@ -78,7 +78,7 @@ export const logoutPost = HttpApiEndpoint.post('logout', '/logout')
 		Schema.Null.annotations({
 			Description: 'Redirect... (Location header set to URL)',
 		}),
-		{ status: 303 }
+		{ status: 302 } // Astro Redirects default to 302
 	)
 	.addError(AuthAPIError, { status: 500 });
 
