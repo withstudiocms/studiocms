@@ -148,6 +148,7 @@
     "relnamespace",
     "Renderable",
     "reqwest",
+    "Resends",
     "RESTAPI",
     "restmethod",
     "restsharp",

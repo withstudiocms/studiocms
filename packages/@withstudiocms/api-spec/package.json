@@ -59,6 +59,10 @@
 			"types": "./dist/auth/index.d.mts",
 			"default": "./dist/auth/index.mjs"
 		},
+		"./dashboard": {
+			"types": "./dist/dashboard/index.d.mts",
+			"default": "./dist/dashboard/index.mjs"
+		},
 		"./integrations": {
 			"types": "./dist/integrations/index.d.mts",
 			"default": "./dist/integrations/index.mjs"

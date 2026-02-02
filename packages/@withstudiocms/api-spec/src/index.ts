@@ -9,6 +9,7 @@ import {
 } from '@effect/platform/OpenApi';
 import pkg from '../package.json';
 import { AuthApi } from './auth/index.js';
+import { DashboardApi } from './dashboard/index.js';
 import { IntegrationsApi } from './integrations/index.js';
 import { RestApiV1PublicSpec, RestApiV1SecureSpec } from './rest-api/v1/index.js';
 import { SDKApi } from './sdk/index.js';
@@ -74,6 +75,9 @@ export class StudioCMSAPISpec extends HttpApi.make('StudioCMSAPISpec')
 
 	// Auth API
 	.add(AuthApi)
+
+	// Dashboard API
+	.add(DashboardApi)
 
 	// Integrations API
 	.add(IntegrationsApi)
