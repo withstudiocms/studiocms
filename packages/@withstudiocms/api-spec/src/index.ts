@@ -46,7 +46,7 @@ export class StudioCMSAPISpec extends HttpApi.make('StudioCMSAPISpec')
 	.annotate(Title, 'StudioCMS API Specifications')
 	.annotate(
 		Description,
-		'This documentation covers the full StudioCMS API available from any StudioCMS installation.\n\n## External Resources\n\n- [Main Website](https://studiocms.dev)\n- [StudioCMS GitHub Repository](https://github.com/withstudiocms/studiocms)\n- [Discord Community](https://chat.studiocms.dev)\n- [API Source definitions](https://github.com/withstudiocms/studiocms/blob/main/packages/%40withstudiocms/api-spec/)\n\n> [!warning]\n> **This document is not yet complete, additional endpoints and details will be added over time.**\n\n---\n\n_This API specification is automatically generated and maintained by the StudioCMS team._'
+		'This documentation covers the full StudioCMS API available from any StudioCMS installation.\n\n## External Resources\n\n- [Main Website](https://studiocms.dev)\n- [StudioCMS GitHub Repository](https://github.com/withstudiocms/studiocms)\n- [Discord Community](https://chat.studiocms.dev)\n- [API Source definitions](https://github.com/withstudiocms/studiocms/blob/main/packages/%40withstudiocms/api-spec/)\n\n> [!warning]\n> **This API is not yet complete, additional endpoints will be added over time, and endpoint responses and payloads are subject to change.**\n\n---\n\n_This API specification is automatically generated and maintained by the StudioCMS team._'
 	)
 	.annotate(License, {
 		name: 'MIT',
