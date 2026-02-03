@@ -12,7 +12,7 @@ import {
  * GET /settings
  * Retrieves the current settings.
  */
-export const SettingsIndexGet = HttpApiEndpoint.get('get-settings', '/settings')
+export const SettingsIndexGet = HttpApiEndpoint.get('getSettings', '/settings')
 	.annotate(Title, 'Get Settings')
 	.annotate(Summary, 'Retrieve Settings')
 	.annotate(Description, 'Retrieves the current settings.')
@@ -24,7 +24,7 @@ export const SettingsIndexGet = HttpApiEndpoint.get('get-settings', '/settings')
  * PATCH /settings
  * Updates the current settings.
  */
-export const SettingsIndexPatch = HttpApiEndpoint.patch('update-settings', '/settings')
+export const SettingsIndexPatch = HttpApiEndpoint.patch('updateSettings', '/settings')
 	.annotate(Title, 'Update Settings')
 	.annotate(Summary, 'Update Settings')
 	.annotate(Description, 'Updates the current settings.')

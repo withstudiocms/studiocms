@@ -11,7 +11,7 @@ import {
 /**
  * Endpoint to handle database queries for DB Studio integration.
  */
-export const DbStudioQueryPost = HttpApiEndpoint.post('db-studio-query', '/db-studio/query')
+export const DbStudioQueryPost = HttpApiEndpoint.post('dbStudioQuery', '/db-studio/query')
 	.annotate(Title, 'DB Studio Query Endpoint')
 	.annotate(Summary, 'DB Studio Query Endpoint')
 	.annotate(

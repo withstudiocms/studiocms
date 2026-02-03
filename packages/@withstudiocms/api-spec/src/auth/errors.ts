@@ -1,5 +1,5 @@
-import { Schema } from 'effect';
-import { AuthAPIErrorSchema } from './schemas';
+import * as Schema from 'effect/Schema';
+import { AuthAPIErrorSchema } from './schemas.js';
 
 /**
  * Standard error response schema for the StudioCMS Auth API.

@@ -24,7 +24,7 @@ import {
  *
  * @throws {IntegrationsAPIError} Returns a 500 status code on server error
  */
-export const storageManagerPost = HttpApiEndpoint.post('storage-manager', '/storage/manager')
+export const storageManagerPost = HttpApiEndpoint.post('storageManager', '/storage/manager')
 	.annotate(Title, 'Storage Manager POST Endpoint')
 	.annotate(Summary, 'Storage Manager POST Endpoint')
 	.annotate(
@@ -50,7 +50,7 @@ export const storageManagerPost = HttpApiEndpoint.post('storage-manager', '/stor
  *
  * @throws {IntegrationsAPIError} Returns a 500 status code on server error
  */
-export const storageManagerPut = HttpApiEndpoint.put('storage-manager-upload', '/storage/manager')
+export const storageManagerPut = HttpApiEndpoint.put('storageManagerUpload', '/storage/manager')
 	.annotate(Title, 'Storage Manager PUT Endpoint')
 	.annotate(Summary, 'Storage Manager PUT Endpoint')
 	.annotate(

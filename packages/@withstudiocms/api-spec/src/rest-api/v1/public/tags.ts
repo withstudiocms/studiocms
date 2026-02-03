@@ -1,6 +1,6 @@
 import { HttpApiEndpoint } from '@effect/platform';
 import { Description, Summary, Title } from '@effect/platform/OpenApi';
-import { Schema } from 'effect';
+import * as Schema from 'effect/Schema';
 import { RestAPIError } from '../../errors.js';
 import { IdParamNumber, PublicV1TagsGetSearchParams, PublicV1TagsSelect } from '../../schemas.js';
 
@@ -8,7 +8,7 @@ import { IdParamNumber, PublicV1TagsGetSearchParams, PublicV1TagsSelect } from '
  * GET /tags
  * Retrieves a list of tags.
  */
-export const TagIndexGet = HttpApiEndpoint.get('get-tags', '/tags')
+export const TagIndexGet = HttpApiEndpoint.get('getTags', '/tags')
 	.annotate(Title, 'Get Tags')
 	.annotate(Summary, 'Retrieve Tags')
 	.annotate(Description, 'Retrieves a list of tags, with optional filtering by name and parent ID.')
@@ -21,7 +21,7 @@ export const TagIndexGet = HttpApiEndpoint.get('get-tags', '/tags')
  * GET /tags/{id}
  * Retrieves a tag by its ID.
  */
-export const TagByIdGet = HttpApiEndpoint.get('get-tag', '/tags/:id')
+export const TagByIdGet = HttpApiEndpoint.get('getTag', '/tags/:id')
 	.setPath(IdParamNumber)
 	.annotate(Title, 'Get Tag by ID')
 	.annotate(Summary, 'Retrieve Tag by ID')

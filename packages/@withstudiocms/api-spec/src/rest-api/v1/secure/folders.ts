@@ -1,7 +1,7 @@
 import { HttpApiEndpoint } from '@effect/platform';
 import { Description, Summary, Title } from '@effect/platform/OpenApi';
 import { StudioCMSPageFolderStructure } from '@withstudiocms/sdk/tables';
-import { Schema } from 'effect';
+import * as Schema from 'effect/Schema';
 import { RestAPIError } from '../../errors.js';
 import { RestAPIAuthorization } from '../../middleware.js';
 import {
@@ -16,7 +16,7 @@ import {
  * GET /folders
  * Retrieves a list of folders.
  */
-export const FolderIndexGet = HttpApiEndpoint.get('get-folders', '/folders')
+export const FolderIndexGet = HttpApiEndpoint.get('getFolders', '/folders')
 	.annotate(Title, 'Get Folders')
 	.annotate(Summary, 'Retrieve Folders')
 	.annotate(
@@ -33,7 +33,7 @@ export const FolderIndexGet = HttpApiEndpoint.get('get-folders', '/folders')
  * POST /folders
  * Creates a new folder.
  */
-export const FolderIndexPost = HttpApiEndpoint.post('create-folder', '/folders')
+export const FolderIndexPost = HttpApiEndpoint.post('createFolder', '/folders')
 	.annotate(Title, 'Create Folder')
 	.annotate(Summary, 'Create Folder')
 	.annotate(Description, 'Creates a new folder.')
@@ -47,7 +47,7 @@ export const FolderIndexPost = HttpApiEndpoint.post('create-folder', '/folders')
  * GET /folders/{id}
  * Retrieves a folder by its ID.
  */
-export const FolderByIdGet = HttpApiEndpoint.get('get-folder', '/folders/:id')
+export const FolderByIdGet = HttpApiEndpoint.get('getFolder', '/folders/:id')
 	.setPath(IdParamString)
 	.annotate(Title, 'Get Folder by ID')
 	.annotate(Summary, 'Retrieve Folder by ID')
@@ -61,7 +61,7 @@ export const FolderByIdGet = HttpApiEndpoint.get('get-folder', '/folders/:id')
  * PATCH /folders/{id}
  * Updates a folder by its ID.
  */
-export const FolderByIdPatch = HttpApiEndpoint.patch('update-folder', '/folders/:id')
+export const FolderByIdPatch = HttpApiEndpoint.patch('updateFolder', '/folders/:id')
 	.setPath(IdParamString)
 	.annotate(Title, 'Update Folder by ID')
 	.annotate(Summary, 'Update Folder by ID')
@@ -77,7 +77,7 @@ export const FolderByIdPatch = HttpApiEndpoint.patch('update-folder', '/folders/
  * DELETE /folders/{id}
  * Deletes a folder by its ID.
  */
-export const FolderByIdDelete = HttpApiEndpoint.del('delete-folder', '/folders/:id')
+export const FolderByIdDelete = HttpApiEndpoint.del('deleteFolder', '/folders/:id')
 	.setPath(IdParamString)
 	.annotate(Title, 'Delete Folder by ID')
 	.annotate(Summary, 'Delete Folder by ID')

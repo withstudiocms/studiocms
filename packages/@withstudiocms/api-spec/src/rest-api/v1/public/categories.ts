@@ -1,6 +1,6 @@
 import { HttpApiEndpoint } from '@effect/platform';
 import { Description, Summary, Title } from '@effect/platform/OpenApi';
-import { Schema } from 'effect';
+import * as Schema from 'effect/Schema';
 import { RestAPIError } from '../../errors.js';
 import {
 	IdParamNumber,
@@ -12,7 +12,7 @@ import {
  * GET /categories
  * Retrieves a list of categories.
  */
-export const CategoryIndexGet = HttpApiEndpoint.get('get-categories', '/categories')
+export const CategoryIndexGet = HttpApiEndpoint.get('getCategories', '/categories')
 	.annotate(Title, 'Get Categories')
 	.annotate(Summary, 'Retrieve Categories')
 	.annotate(
@@ -28,7 +28,7 @@ export const CategoryIndexGet = HttpApiEndpoint.get('get-categories', '/categori
  * GET /categories/{id}
  * Retrieves a category by its ID.
  */
-export const CategoryByIdGet = HttpApiEndpoint.get('get-category', '/categories/:id')
+export const CategoryByIdGet = HttpApiEndpoint.get('getCategory', '/categories/:id')
 	.setPath(IdParamNumber)
 	.annotate(Title, 'Get Category by ID')
 	.annotate(Summary, 'Retrieve Category by ID')

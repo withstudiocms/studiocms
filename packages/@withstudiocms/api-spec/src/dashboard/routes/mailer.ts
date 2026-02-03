@@ -17,7 +17,7 @@ import {
  * - This endpoint requires user authentication via Astro Locals Context.
  * - Users must be logged into the current StudioCMS instance with appropriate permissions to use this endpoint.
  */
-export const mailerCheckEmailPost = HttpApiEndpoint.post('test-email-service', '/mailer/test-email')
+export const mailerCheckEmailPost = HttpApiEndpoint.post('testEmailService', '/mailer/test-email')
 	.annotate(Title, 'Test Email Service')
 	.annotate(Summary, 'Send a test email to verify the mailer service is functioning correctly')
 	.annotate(

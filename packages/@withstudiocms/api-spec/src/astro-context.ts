@@ -1,7 +1,8 @@
 import { HttpApiMiddleware, HttpApiSchema } from '@effect/platform';
 import { StudioCMSUsersTable } from '@withstudiocms/sdk/tables';
 import type { APIContext } from 'astro';
-import { Context, Schema } from 'effect';
+import * as Context from 'effect/Context';
+import * as Schema from 'effect/Schema';
 
 /**
  * A Context Reference for Astro API route locals.

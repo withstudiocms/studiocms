@@ -7,7 +7,19 @@ import {
 	StudioCMSPermissions,
 	StudioCMSUsersTable,
 } from '@withstudiocms/sdk/tables';
-import { Schema } from 'effect';
+import * as Schema from 'effect/Schema';
+
+/**
+ * Standard error response schema for the StudioCMS APIs.
+ *
+ * @remarks
+ * This schema defines the structure of error responses returned by the API.
+ * It includes a single property:
+ * - `error`: A string message describing the error.
+ */
+export const errorResponseSchema = Schema.Struct({
+	error: Schema.String,
+});
 
 /**
  * Select schema for category data.

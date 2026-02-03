@@ -1,6 +1,6 @@
 import { HttpApiEndpoint } from '@effect/platform';
 import { Description, Summary, Title } from '@effect/platform/OpenApi';
-import { Schema } from 'effect';
+import * as Schema from 'effect/Schema';
 import { AstroLocalsMiddleware } from '../../astro-context.js';
 import { DashboardAPIError } from '../errors.js';
 import { successResponseSchema } from '../schemas.js';

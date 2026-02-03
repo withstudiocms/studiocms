@@ -1,6 +1,6 @@
 import { HttpApiEndpoint } from '@effect/platform';
 import { Description, Summary, Title } from '@effect/platform/OpenApi';
-import { Schema } from 'effect';
+import * as Schema from 'effect/Schema';
 import { RestAPIError } from '../../errors.js';
 import {
 	IdParamString,
@@ -12,7 +12,7 @@ import {
  * GET /pages
  * Retrieves a list of pages.
  */
-export const PageIndexGet = HttpApiEndpoint.get('get-pages', '/pages')
+export const PageIndexGet = HttpApiEndpoint.get('getPages', '/pages')
 	.annotate(Title, 'Get Pages')
 	.annotate(Summary, 'Retrieve Pages')
 	.annotate(
@@ -28,7 +28,7 @@ export const PageIndexGet = HttpApiEndpoint.get('get-pages', '/pages')
  * GET /pages/{id}
  * Retrieves a page by its ID.
  */
-export const PageByIdGet = HttpApiEndpoint.get('get-page', '/pages/:id')
+export const PageByIdGet = HttpApiEndpoint.get('getPage', '/pages/:id')
 	.setPath(IdParamString)
 	.annotate(Title, 'Get Page by ID')
 	.annotate(Summary, 'Retrieve Page by ID')
