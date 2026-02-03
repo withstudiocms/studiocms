@@ -45,9 +45,9 @@ function ensureStringArray(val: string | string[] | undefined): string[] {
  */
 export const studioCMSCreatePageDataSchema = z.object({
 	title: z.string().min(1, { message: 'Title is required' }),
-	slug: z.string().refine((val) => /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(val), {
+	slug: z.string().refine((val) => /^[a-z0-9]+(?:[-/][a-z0-9]+)*$/.test(val), {
 		message:
-			'Slug must be lowercase and can only contain letters, numbers, and hyphens (no leading/trailing hyphens)',
+			'Slug must be lowercase and can only contain letters, numbers, hyphens, and slashes (no leading/trailing hyphens or slashes)',
 	}),
 	description: z.string().optional(),
 	package: z.string(),
