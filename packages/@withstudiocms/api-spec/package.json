@@ -40,7 +40,7 @@
 	"scripts": {
 		"build": "tsdown",
 		"dev": "tsdown --watch",
-		"docs": "tsx ./srv/index.ts",
+		"docs": "tsx ./scripts/test-srv.ts",
 		"effect-check": "pnpm effect-language-service diagnostics --project tsconfig.tspc.json",
 		"ci:effect-check": "pnpm effect-check --format github-actions",
 		"typecheck": "tspc -p tsconfig.tspc.json",
@@ -59,6 +59,10 @@
 			"types": "./dist/auth/index.d.mts",
 			"default": "./dist/auth/index.mjs"
 		},
+		"./dashboard": {
+			"types": "./dist/dashboard/index.d.mts",
+			"default": "./dist/dashboard/index.mjs"
+		},
 		"./integrations": {
 			"types": "./dist/integrations/index.d.mts",
 			"default": "./dist/integrations/index.mjs"
@@ -71,7 +75,7 @@
 			"types": "./dist/sdk/index.d.mts",
 			"default": "./dist/sdk/index.mjs"
 		},
-		"./HttpApiScalar": {
+		"./scalar": {
 			"types": "./dist/scalar.d.mts",
 			"default": "./dist/scalar.mjs"
 		}
