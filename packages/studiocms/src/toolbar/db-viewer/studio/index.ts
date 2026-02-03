@@ -1,10 +1,13 @@
 import { root } from 'astro:config/server';
 import { db } from 'studiocms:config';
+import { createConnectionFromConfig } from 'virtual:studiocms/db-studio/connection';
 import { runEffect } from '@withstudiocms/effect';
-import { Config, Effect, Redacted } from 'effect';
-import { createConnectionFromConfig } from './connection.js';
+import type { ConfigError, Effect } from 'effect';
 import type BaseDriver from './drivers/base.js';
-import type { JsonConnectionConfig, MySqlConfig, PostgresConfig, TursoConfig } from './type.js';
+import tursoConfig from './env/libsql.js';
+import mysqlConfig from './env/mysql.js';
+import postgresConfig from './env/postgres.js';
+import type { JsonConnectionConfig } from './type.js';
 
 export * from '../db-shared-types.js';
 export { default as BaseDriver } from './drivers/base.js';
@@ -16,73 +19,31 @@ export * from './type.js';
  * @returns {Promise<JsonConnectionConfig>} The database dialect configuration.
  */
 async function getDialectConfig(): Promise<JsonConnectionConfig> {
+	let configEffect: Effect.Effect<JsonConnectionConfig, ConfigError.ConfigError, never>;
+
 	switch (db.dialect) {
 		case 'libsql': {
-			return await runEffect(
-				Effect.gen(function* () {
-					const url = yield* Config.redacted('CMS_LIBSQL_URL');
-					const authToken = yield* Config.redacted('CMS_LIBSQL_AUTH_TOKEN');
-
-					const config: TursoConfig = {
-						driver: 'turso',
-						connection: {
-							url: Redacted.value(url),
-							token: Redacted.value(authToken),
-						},
-					};
-
-					return config;
-				})
-			);
+			configEffect = tursoConfig;
+			break;
 		}
 		case 'mysql': {
-			return runEffect(
-				Effect.gen(function* () {
-					const database = yield* Config.string('CMS_MYSQL_DATABASE');
-					const host = yield* Config.string('CMS_MYSQL_HOST');
-					const port = yield* Config.number('CMS_MYSQL_PORT');
-					const user = yield* Config.redacted('CMS_MYSQL_USER');
-					const password = yield* Config.redacted('CMS_MYSQL_PASSWORD');
-
-					const config: MySqlConfig = {
-						driver: 'mysql',
-						connection: {
-							database,
-							host,
-							port,
-							user: Redacted.value(user),
-							password: Redacted.value(password),
-						},
-					};
-
-					return config;
-				})
-			);
+			configEffect = mysqlConfig;
+			break;
 		}
 		case 'postgres': {
-			return runEffect(
-				Effect.gen(function* () {
-					const database = yield* Config.string('CMS_PG_DATABASE');
-					const host = yield* Config.string('CMS_PG_HOST');
-					const port = yield* Config.number('CMS_PG_PORT');
-					const user = yield* Config.redacted('CMS_PG_USER');
-					const password = yield* Config.redacted('CMS_PG_PASSWORD');
-
-					const config: PostgresConfig = {
-						driver: 'postgres',
-						connection: {
-							database,
-							host,
-							port,
-							user: Redacted.value(user),
-							password: Redacted.value(password),
-						},
-					};
-
-					return config;
-				})
-			);
+			configEffect = postgresConfig;
+			break;
 		}
+		default: {
+			throw new Error(`Unsupported database dialect: ${db.dialect}`);
+		}
+	}
+
+	try {
+		const config = await runEffect(configEffect);
+		return config;
+	} catch (error) {
+		throw new Error(`Failed to retrieve database configuration: ${(error as Error).message}`);
 	}
 }
 

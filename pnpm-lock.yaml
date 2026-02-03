@@ -1255,9 +1255,6 @@ importers:
       kysely-turso:
         specifier: catalog:kysely
         version: 0.1.1(@libsql/client@0.15.15)(kysely@0.28.10)
-      pg:
-        specifier: catalog:kysely
-        version: 8.17.2
       sharp:
         specifier: 'catalog:'
         version: 0.34.5
