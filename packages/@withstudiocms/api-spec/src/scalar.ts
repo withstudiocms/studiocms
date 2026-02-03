@@ -96,12 +96,34 @@ export type ScalarConfig = {
 	defaultOpenAllTags?: boolean;
 };
 
-const makeHandler = (options: {
-	readonly api: HttpApi.HttpApi.Any;
+/**
+ * Generate the HTML component for Scalar API documentation.
+ *
+ * @param options - Configuration options for generating the HTML component.
+ * @param options.api - The API specification to document.
+ * @param options.spec - The OpenAPI specification to document.
+ * @param options.scalar - Configuration options for Scalar.
+ * @param options.starlight - Whether to wrap the component for Starlight compatibility.
+ * @returns The HTML string for the Scalar API documentation component.
+ *
+ * @throws Will throw an error if neither `spec` nor `api` is provided.
+ */
+export const makeHtmlComponent = (options: {
+	readonly api?: HttpApi.HttpApi.Any;
+	readonly spec?: OpenApi.OpenAPISpec;
 	readonly scalar?: ScalarConfig;
+	readonly starlight?: boolean;
 }) => {
-	// biome-ignore lint/suspicious/noExplicitAny: It's fine
-	const spec = OpenApi.fromApi(options.api as any);
+	const { api, starlight = false } = options;
+	let spec: OpenApi.OpenAPISpec;
+	if (options.spec) {
+		spec = options.spec;
+	} else if (api) {
+		// biome-ignore lint/suspicious/noExplicitAny: It's fine
+		spec = OpenApi.fromApi(api as any);
+	} else {
+		throw new Error('Either spec or api must be provided to makeHtmlComponent');
+	}
 
 	const scalarConfig = {
 		_integration: 'html',
@@ -154,6 +176,29 @@ const makeHandler = (options: {
 		},
 		...options?.scalar,
 	};
+
+	const baseHtml = `<script id="api-reference" type="application/json">
+      ${Html.escapeJson(spec)}
+    </script>
+    <script>
+      document.getElementById('api-reference').dataset.configuration = JSON.stringify(${Html.escapeJson(scalarConfig)})
+    </script>
+    <script>${internal.javascript}</script>`;
+
+	if (starlight) {
+		return `<div class="not-content">${baseHtml}</div>`;
+	}
+
+	return baseHtml;
+};
+
+const makeHandler = (options: {
+	readonly api: HttpApi.HttpApi.Any;
+	readonly scalar?: ScalarConfig;
+}) => {
+	const { api, scalar } = options;
+	// biome-ignore lint/suspicious/noExplicitAny: It's fine
+	const spec = OpenApi.fromApi(api as any);
 
 	const response = HttpServerResponse.html(`<!doctype html>
 <html>
@@ -208,13 +253,7 @@ const makeHandler = (options: {
         <a href="https://chat.studiocms.dev" target="_blank" rel="noopener noreferrer">Discord</a>
       </nav>
     </header>
-    <script id="api-reference" type="application/json">
-      ${Html.escapeJson(spec)}
-    </script>
-    <script>
-      document.getElementById('api-reference').dataset.configuration = JSON.stringify(${Html.escapeJson(scalarConfig)})
-    </script>
-    <script>${internal.javascript}</script>
+    ${makeHtmlComponent({ spec, scalar })}
   </body>
 </html>`);
 

@@ -1,6 +1,6 @@
 import { HttpApiEndpoint } from '@effect/platform';
 import { Description, Summary, Title } from '@effect/platform/OpenApi';
-import { Schema } from 'effect';
+import * as Schema from 'effect/Schema';
 import { RestAPIError } from '../../errors.js';
 import {
 	IdParamString,
@@ -12,7 +12,7 @@ import {
  * GET /folders
  * Search parameters for filtering folders.
  */
-export const FoldersIndexGet = HttpApiEndpoint.get('get-folders', '/folders')
+export const FoldersIndexGet = HttpApiEndpoint.get('getFolders', '/folders')
 	.annotate(Title, 'Get Folders')
 	.annotate(Summary, 'Retrieve Folders')
 	.annotate(
@@ -28,7 +28,7 @@ export const FoldersIndexGet = HttpApiEndpoint.get('get-folders', '/folders')
  * GET /folders/{id}
  * Retrieves a folder by its ID.
  */
-export const FolderByIdGet = HttpApiEndpoint.get('get-folder', '/folders/:id')
+export const FolderByIdGet = HttpApiEndpoint.get('getFolder', '/folders/:id')
 	.setPath(IdParamString)
 	.annotate(Title, 'Get Folder by ID')
 	.annotate(Summary, 'Retrieve Folder by ID')

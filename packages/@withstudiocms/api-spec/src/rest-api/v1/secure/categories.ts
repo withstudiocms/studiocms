@@ -1,7 +1,7 @@
 import { HttpApiEndpoint } from '@effect/platform';
 import { Description, Summary, Title } from '@effect/platform/OpenApi';
 import { StudioCMSPageDataCategories } from '@withstudiocms/sdk/tables';
-import { Schema } from 'effect';
+import * as Schema from 'effect/Schema';
 import { RestAPIError } from '../../errors.js';
 import { RestAPIAuthorization } from '../../middleware.js';
 import {
@@ -16,7 +16,7 @@ import {
  * GET /categories
  * Retrieves a list of categories.
  */
-export const CategoryIndexGet = HttpApiEndpoint.get('get-categories', '/categories')
+export const CategoryIndexGet = HttpApiEndpoint.get('getCategories', '/categories')
 	.annotate(Title, 'Get Categories')
 	.annotate(Summary, 'Retrieve Categories')
 	.annotate(
@@ -33,7 +33,7 @@ export const CategoryIndexGet = HttpApiEndpoint.get('get-categories', '/categori
  * POST /categories
  * Creates a new category.
  */
-export const CategoryIndexPost = HttpApiEndpoint.post('create-category', '/categories')
+export const CategoryIndexPost = HttpApiEndpoint.post('createCategory', '/categories')
 	.annotate(Title, 'Create Category')
 	.annotate(Summary, 'Create Category')
 	.annotate(Description, 'Creates a new category.')
@@ -47,7 +47,7 @@ export const CategoryIndexPost = HttpApiEndpoint.post('create-category', '/categ
  * GET /categories/{id}
  * Retrieves a category by its ID.
  */
-export const CategoryByIdGet = HttpApiEndpoint.get('get-category', '/categories/:id')
+export const CategoryByIdGet = HttpApiEndpoint.get('getCategory', '/categories/:id')
 	.setPath(IdParamNumber)
 	.annotate(Title, 'Get Category by ID')
 	.annotate(Summary, 'Retrieve Category by ID')
@@ -61,7 +61,7 @@ export const CategoryByIdGet = HttpApiEndpoint.get('get-category', '/categories/
  * PATCH /categories/{id}
  * Updates a category by its ID.
  */
-export const CategoryByIdPatch = HttpApiEndpoint.patch('update-category', '/categories/:id')
+export const CategoryByIdPatch = HttpApiEndpoint.patch('updateCategory', '/categories/:id')
 	.setPath(IdParamNumber)
 	.annotate(Title, 'Update Category by ID')
 	.annotate(Summary, 'Update Category by ID')
@@ -77,7 +77,7 @@ export const CategoryByIdPatch = HttpApiEndpoint.patch('update-category', '/cate
  * DELETE /categories/{id}
  * Deletes a category by its ID.
  */
-export const CategoryByIdDelete = HttpApiEndpoint.del('delete-category', '/categories/:id')
+export const CategoryByIdDelete = HttpApiEndpoint.del('deleteCategory', '/categories/:id')
 	.setPath(IdParamNumber)
 	.annotate(Title, 'Delete Category by ID')
 	.annotate(Summary, 'Delete Category by ID')

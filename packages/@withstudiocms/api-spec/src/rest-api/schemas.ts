@@ -7,8 +7,19 @@ import {
 	StudioCMSPermissions,
 	StudioCMSUsersTable,
 } from '@withstudiocms/sdk/tables';
-import { Schema } from 'effect';
-import { buildPartialSchema } from '../_internal/build-partial-schema.js';
+import * as Schema from 'effect/Schema';
+
+/**
+ * Standard error response schema for the StudioCMS APIs.
+ *
+ * @remarks
+ * This schema defines the structure of error responses returned by the API.
+ * It includes a single property:
+ * - `error`: A string message describing the error.
+ */
+export const errorResponseSchema = Schema.Struct({
+	error: Schema.String,
+});
 
 /**
  * Select schema for category data.
@@ -126,12 +137,12 @@ export const SecureV1GetPagesSearchParams = Schema.Struct({
 /**
  * Partial schema for category data.
  */
-export const PartialCategories = buildPartialSchema(StudioCMSPageDataCategories.Select);
+export const PartialCategories = Schema.partial(StudioCMSPageDataCategories.Select);
 
 /**
  * Partial schema for tags data.
  */
-export const PartialTags = buildPartialSchema(StudioCMSPageDataTags.Select);
+export const PartialTags = Schema.partial(StudioCMSPageDataTags.Select);
 
 /**
  * Deletion success response schema.
@@ -226,12 +237,12 @@ export const CombinedUserDataSchema = Schema.Struct({
 /**
  * Partial schema for page data.
  */
-export const RestPageDataPartial = buildPartialSchema(StudioCMSPageData.Select);
+export const RestPageDataPartial = Schema.partial(StudioCMSPageData.Select);
 
 /**
  * Partial schema for page content.
  */
-export const RestPageContentPartial = buildPartialSchema(StudioCMSPageContent.Select);
+export const RestPageContentPartial = Schema.partial(StudioCMSPageContent.Select);
 
 /**
  * Combined schema for page JSON data including data and content.

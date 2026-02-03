@@ -1,6 +1,6 @@
 import { HttpApiEndpoint } from '@effect/platform';
 import { Description, Summary, Title } from '@effect/platform/OpenApi';
-import { Schema } from 'effect';
+import * as Schema from 'effect/Schema';
 import { RestAPIError } from '../../errors';
 import { RestAPIAuthorization } from '../../middleware.js';
 import {
@@ -17,7 +17,7 @@ import {
  * GET /pages
  * Retrieves a list of pages.
  */
-export const PagesIndexGet = HttpApiEndpoint.get('get-pages', '/pages')
+export const PagesIndexGet = HttpApiEndpoint.get('getPages', '/pages')
 	.annotate(Title, 'Get Pages')
 	.annotate(Summary, 'Retrieve Pages')
 	.annotate(
@@ -34,7 +34,7 @@ export const PagesIndexGet = HttpApiEndpoint.get('get-pages', '/pages')
  * POST /pages
  * Creates a new page.
  */
-export const PagesIndexPost = HttpApiEndpoint.post('create-page', '/pages')
+export const PagesIndexPost = HttpApiEndpoint.post('createPage', '/pages')
 	.annotate(Title, 'Create Page')
 	.annotate(Summary, 'Create Page')
 	.annotate(Description, 'Creates a new page.')
@@ -48,7 +48,7 @@ export const PagesIndexPost = HttpApiEndpoint.post('create-page', '/pages')
  * GET /pages/{id}
  * Retrieves a page by its ID.
  */
-export const PagesByIdGet = HttpApiEndpoint.get('get-page', '/pages/:id')
+export const PagesByIdGet = HttpApiEndpoint.get('getPage', '/pages/:id')
 	.setPath(IdParamString)
 	.annotate(Title, 'Get Page by ID')
 	.annotate(Summary, 'Retrieve Page by ID')
@@ -62,7 +62,7 @@ export const PagesByIdGet = HttpApiEndpoint.get('get-page', '/pages/:id')
  * PATCH /pages/{id}
  * Updates a page by its ID.
  */
-export const PagesByIdPatch = HttpApiEndpoint.patch('update-page', '/pages/:id')
+export const PagesByIdPatch = HttpApiEndpoint.patch('updatePage', '/pages/:id')
 	.setPath(IdParamString)
 	.annotate(Title, 'Update Page by ID')
 	.annotate(Summary, 'Update Page by ID')
@@ -78,7 +78,7 @@ export const PagesByIdPatch = HttpApiEndpoint.patch('update-page', '/pages/:id')
  * DELETE /pages/{id}
  * Deletes a page by its ID.
  */
-export const PagesByIdDelete = HttpApiEndpoint.del('delete-page', '/pages/:id')
+export const PagesByIdDelete = HttpApiEndpoint.del('deletePage', '/pages/:id')
 	.setPath(IdParamString)
 	.annotate(Title, 'Delete Page by ID')
 	.annotate(Summary, 'Delete Page by ID')
@@ -92,7 +92,7 @@ export const PagesByIdDelete = HttpApiEndpoint.del('delete-page', '/pages/:id')
  * GET /pages/{id}/history
  * Retrieves the history of a page by its ID.
  */
-export const PagesByIdHistoryGet = HttpApiEndpoint.get('get-page-history', '/pages/:id/history')
+export const PagesByIdHistoryGet = HttpApiEndpoint.get('getPageHistory', '/pages/:id/history')
 	.setPath(IdParamString)
 	.annotate(Title, 'Get Page History by ID')
 	.annotate(Summary, 'Retrieve Page History by ID')
@@ -112,7 +112,7 @@ export const PagesByIdHistoryGet = HttpApiEndpoint.get('get-page-history', '/pag
  * Retrieves a specific history entry of a page by its Diff ID.
  */
 export const PagesByIdHistoryByDiffIdGet = HttpApiEndpoint.get(
-	'get-page-history-entry',
+	'getPageHistoryEntry',
 	'/pages/:id/history/:diffId'
 )
 	.setPath(IdAndDiffIdParam)

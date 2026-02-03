@@ -1,6 +1,6 @@
 import { HttpApiEndpoint } from '@effect/platform';
 import { Description, Summary, Title } from '@effect/platform/OpenApi';
-import { Schema } from 'effect';
+import * as Schema from 'effect/Schema';
 import { AuthAPIError } from '../errors.js';
 import { OAuthProviderParam } from '../schemas.js';
 
@@ -25,10 +25,10 @@ export const oAuthIndexGet = HttpApiEndpoint.get('oAuthInit', '/:provider')
 	.annotate(Summary, 'Initiate OAuth flow for the specified provider')
 	.annotate(Description, 'Initiates the OAuth authentication flow for the specified provider.')
 	.addSuccess(
-		Schema.String.annotations({
-			description: "Redirect URL to the provider's OAuth authorization page",
+		Schema.Null.annotations({
+			Description: 'Redirect... (Location header set to URL)',
 		}),
-		{ status: 303 }
+		{ status: 302 } // Astro Redirects default to 302
 	)
 	.addError(AuthAPIError, { status: 400 })
 	.addError(AuthAPIError, { status: 403 })
@@ -58,10 +58,10 @@ export const oAuthCallbackGet = HttpApiEndpoint.get('oAuthCallback', '/:provider
 		'Handles the OAuth callback after authentication with the specified provider. Each provider may have different requirements for handling the callback.'
 	)
 	.addSuccess(
-		Schema.String.annotations({
-			description: 'Redirect URL after successful authentication',
+		Schema.Null.annotations({
+			Description: 'Redirect... (Location header set to URL)',
 		}),
-		{ status: 303 }
+		{ status: 302 } // Astro Redirects default to 302
 	)
 	.addError(AuthAPIError, { status: 400 })
 	.addError(AuthAPIError, { status: 403 })

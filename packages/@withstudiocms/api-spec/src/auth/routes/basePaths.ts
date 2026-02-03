@@ -1,6 +1,6 @@
 import { HttpApiEndpoint, HttpApiSchema } from '@effect/platform';
 import { Description, Summary, Title } from '@effect/platform/OpenApi';
-import { Schema } from 'effect';
+import * as Schema from 'effect/Schema';
 import { AuthAPIError } from '../errors.js';
 import {
 	AuthAPISuccess,
@@ -20,7 +20,7 @@ import {
  * @throws {AuthAPIError} Returns a 403 status code for forbidden access
  * @throws {AuthAPIError} Returns a 500 status code on server error
  */
-export const forgotPasswordPost = HttpApiEndpoint.post('forgot-password', '/forgot-password')
+export const forgotPasswordPost = HttpApiEndpoint.post('forgotPassword', '/forgot-password')
 	.annotate(Title, 'Forgot Password')
 	.annotate(Summary, 'Initiate password reset process')
 	.annotate(Description, 'Sends a password reset email to the user if the email is registered.')
@@ -75,10 +75,10 @@ export const logoutPost = HttpApiEndpoint.post('logout', '/logout')
 	.annotate(Summary, 'Terminate user session')
 	.annotate(Description, 'Logs out the user by terminating the current session.')
 	.addSuccess(
-		Schema.String.annotations({
-			description: 'Redirect URL after successful logout',
+		Schema.Null.annotations({
+			Description: 'Redirect... (Location header set to URL)',
 		}),
-		{ status: 303 }
+		{ status: 302 } // Astro Redirects default to 302
 	)
 	.addError(AuthAPIError, { status: 500 });
 

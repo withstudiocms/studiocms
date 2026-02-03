@@ -1,9 +1,9 @@
 import { HttpApi, HttpApiGroup } from '@effect/platform';
 import { Description, License, Title, Transform, Version } from '@effect/platform/OpenApi';
 import pkg from '../../package.json';
-import { DbStudioQueryPost } from './db-studio/index.js';
 import { IntegrationsAPIError } from './errors.js';
-import { storageManagerPost, storageManagerPut } from './storage/index.js';
+import { DbStudioQueryPost } from './routes/db-studio.js';
+import { storageManagerPost, storageManagerPut } from './routes/storage.js';
 
 export * from './errors.js';
 export * from './schemas.js';

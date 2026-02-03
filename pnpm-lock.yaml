@@ -780,9 +780,6 @@ importers:
 
   packages/@withstudiocms/api-spec:
     dependencies:
-      '@effect/cli':
-        specifier: catalog:effect
-        version: 0.73.1(@effect/platform@0.94.2(effect@3.19.15))(@effect/printer-ansi@0.47.0(@effect/typeclass@0.38.0(effect@3.19.15))(effect@3.19.15))(@effect/printer@0.47.0(@effect/typeclass@0.38.0(effect@3.19.15))(effect@3.19.15))(effect@3.19.15)
       '@effect/platform':
         specifier: catalog:effect
         version: 0.94.2(effect@3.19.15)
@@ -1258,9 +1255,6 @@ importers:
       kysely-turso:
         specifier: catalog:kysely
         version: 0.1.1(@libsql/client@0.15.15)(kysely@0.28.10)
-      pg:
-        specifier: catalog:kysely
-        version: 8.17.2
       sharp:
         specifier: 'catalog:'
         version: 0.34.5

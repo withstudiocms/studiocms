@@ -348,7 +348,7 @@ export const studiocms = (): AstroIntegration => {
 					},
 				});
 
-				await setupDbStudio(params);
+				await setupDbStudio(params, options.db);
 
 				// Update the Astro Config
 				integrationLogger(

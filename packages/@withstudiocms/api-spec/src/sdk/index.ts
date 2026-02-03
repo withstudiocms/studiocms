@@ -2,9 +2,10 @@ import { HttpApi, HttpApiGroup } from '@effect/platform';
 import { Description, License, Title, Transform, Version } from '@effect/platform/OpenApi';
 import pkg from '../../package.json';
 import { SDKAPIError } from './errors.js';
-import { fullChangelogPost, listPagesGet, updateLatestVersionCacheGet } from './routes.js';
+import { fullChangelogPost, listPagesGet, updateLatestVersionCacheGet } from './routes/index.js';
 
 export * from './errors.js';
+export * from './schemas.js';
 
 /**
  * SDK API specification group for StudioCMS.

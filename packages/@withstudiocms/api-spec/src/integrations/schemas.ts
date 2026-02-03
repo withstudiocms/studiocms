@@ -1,5 +1,5 @@
 import { HttpApiSchema } from '@effect/platform';
-import { Schema } from 'effect';
+import * as Schema from 'effect/Schema';
 
 /**
  * Standard error response schema for the StudioCMS Integrations API.
