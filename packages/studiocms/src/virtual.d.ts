@@ -30,10 +30,6 @@ declare module 'studiocms:debug-info' {
 	export default debugInfo;
 }
 
-declare module 'studiocms:astro-config/adapter' {
-	export const adapter: string;
-}
-
 declare module 'studiocms:dashboard/augments/components' {
 	export const componentKeys: string[];
 }
@@ -303,17 +299,6 @@ declare module 'studiocms:component-registry/runtime' {
 		import('@withstudiocms/component-registry/runtime').ComponentRegistryEntry;
 
 	/**
-	 * Imports components by their keys from the 'studiocms:markdown-remark/user-components' module.
-	 *
-	 * @param keys - An array of strings representing the keys of the components to import.
-	 * @returns A promise that resolves to an object containing the imported components.
-	 * @throws {MarkdownRemarkError} If any component fails to import, an error is thrown with a prefixed message.
-	 * @deprecated This function is deprecated and will be removed in future versions.
-	 * Use `getRendererComponents` instead for importing components from the component registry.
-	 */
-	export const importComponentsKeys: typeof import('@withstudiocms/component-registry/runtime').importComponentsKeys;
-
-	/**
 	 * @returns A promise that resolves to an object containing the imported components.
 	 */
 	export const getRendererComponents: typeof import('@withstudiocms/component-registry/runtime').getRendererComponents;
@@ -491,13 +476,6 @@ declare module 'studiocms:auth/utils/validImages' {
 	export const validImages: typeof import('./virtuals/auth/validImages/index.js').validImages;
 }
 
-declare module 'studiocms:auth/utils/getLabelForPermissionLevel' {
-	/**
-	 * @deprecated Use Translation system under the `@studiocms/dashboard:user-component` entry
-	 */
-	export const getLabelForPermissionLevel: typeof import('./virtuals/auth/getLabelForPermissionLevel.js').getLabelForPermissionLevel;
-}
-
 declare module 'studiocms:auth/scripts/three' {
 	/**
 	 * This module should be imported within a script tag.
@@ -586,12 +564,6 @@ declare module 'studiocms:template-editor/script' {}
 
 declare module 'studiocms:renderer' {
 	export const StudioCMSRenderer: typeof import('./virtuals/components/Renderer.astro').default;
-}
-
-declare module 'virtual:studiocms/sdk/env' {
-	export const dbUrl: string;
-	export const dbSecret: string;
-	export const cmsEncryptionKey: string;
 }
 
 declare module 'virtual:studiocms/sitemaps' {

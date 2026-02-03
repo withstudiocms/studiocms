@@ -31,7 +31,6 @@ import { envField } from 'astro/config';
 import { addVirtualImports } from 'astro-integration-kit';
 import dotenv from 'dotenv';
 import { compare as semCompare } from 'semver';
-import { loadEnv } from 'vite';
 import {
 	AstroConfigImageSettings,
 	AstroConfigViteSettings,
@@ -65,9 +64,6 @@ const { name: pkgName, version: pkgVersion } = readJson<{ name: string; version:
 );
 
 dotenv.config({ quiet: true });
-
-// Load Environment Variables
-const env = loadEnv('', process.cwd(), '');
 
 const StudioCMSRendererComponentPath = './virtuals/components/Renderer.astro';
 const CustomImageComponentPath = './virtuals/components/CustomImage.astro';
@@ -266,7 +262,6 @@ export const studiocms = (): AstroIntegration => {
 					dynamicWithAstroVirtual,
 					buildDefaultOnlyVirtual,
 					buildLoggerVirtual,
-					buildNamedMultiExportVirtual,
 					buildVirtualConfig,
 				} = VirtualModuleBuilder(resolve);
 
@@ -287,11 +282,6 @@ export const studiocms = (): AstroIntegration => {
 						'studiocms:plugins': buildDefaultOnlyVirtual(safePluginList),
 						'studiocms:version': buildDefaultOnlyVirtual(pkgVersion),
 						'studiocms:logger': buildLoggerVirtual(verbose),
-						'virtual:studiocms/sdk/env': buildNamedMultiExportVirtual({
-							dbUrl: env.ASTRO_DB_REMOTE_URL,
-							dbSecret: env.ASTRO_DB_APP_TOKEN,
-							cmsEncryptionKey: env.CMS_ENCRYPTION_KEY,
-						}),
 						'studiocms:lib': dynamicVirtual([
 							'./virtuals/lib/head.js',
 							'./virtuals/lib/headDefaults.js',
@@ -326,9 +316,6 @@ export const studiocms = (): AstroIntegration => {
 						'studiocms:auth/utils/validImages': dynamicVirtual([
 							'./virtuals/auth/validImages/index.js',
 						]),
-						'studiocms:auth/utils/getLabelForPermissionLevel': dynamicVirtual([
-							'./virtuals/auth/getLabelForPermissionLevel.js',
-						]),
 						'studiocms:auth/scripts/three': ambientScripts(['./virtuals/auth/scripts/three.js']),
 						'studiocms:i18n/config': `export default ${JSON.stringify({ ...options.locale.i18n })}`,
 						'studiocms:i18n/virtual': `
@@ -354,9 +341,6 @@ export const studiocms = (): AstroIntegration => {
 						'studiocms:i18n/plugins': dynamicVirtual(['./virtuals/i18n/plugin.js']),
 						'studiocms:sdk': dynamicVirtual(['./virtuals/sdk/index.js']),
 						'studiocms:sdk/types': dynamicVirtual(['./virtuals/sdk/types.js']),
-						'studiocms:astro-config/adapter': `export const adapter = ${JSON.stringify(
-							config.adapter?.name || 'unknown'
-						)}`,
 						'studiocms:debug-info': `export const debugInfo = ${JSON.stringify(debugOutput)};export default debugInfo;`,
 						'studiocms:client-scripts/StorageFileBrowser': ambientScripts([
 							'./virtuals/scripts/StorageFileBrowser.js',
