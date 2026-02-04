@@ -29,7 +29,7 @@ function ensureStringArray(val: string | string[] | undefined): string[] {
  *
  * Fields:
  * - `title`: Required string. The title of the page. Must not be empty.
- * - `slug`: Required string. Must be lowercase, only contain letters, numbers, and hyphens (no leading/trailing hyphens).
+ * - `slug`: Required string. Must be lowercase, only contain letters, numbers, hyphens, and slashes (no leading/trailing hyphens or slashes).
  * - `description`: Optional string. A description of the page.
  * - `package`: Required string. The package associated with the page.
  * - `showOnNav`: Optional boolean (default: false). Whether to show the page in navigation.
@@ -45,9 +45,9 @@ function ensureStringArray(val: string | string[] | undefined): string[] {
  */
 export const studioCMSCreatePageDataSchema = z.object({
 	title: z.string().min(1, { message: 'Title is required' }),
-	slug: z.string().refine((val) => /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(val), {
+	slug: z.string().refine((val) => /^[a-z0-9]+(?:[-/][a-z0-9]+)*$/.test(val), {
 		message:
-			'Slug must be lowercase and can only contain letters, numbers, and hyphens (no leading/trailing hyphens)',
+			'Slug must be lowercase and can only contain letters, numbers, hyphens, and slashes (no leading/trailing hyphens or slashes)',
 	}),
 	description: z.string().optional(),
 	package: z.string(),
