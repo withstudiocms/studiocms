@@ -26,7 +26,7 @@ jobs:
       issues: write
       pull-requests: write
     secrets: inherit
-    uses: withstudiocms/automations/.github/workflows/format.yml@fe2d43b13c8a63e34ba8b0b9e16008149d8af55f # main
+    uses: withstudiocms/automations/.github/workflows/format.yml@7caa6bf5171347ed3b56a7f65ef030f0fbc15774 # main
 
   todo:
     name: TODOs
@@ -34,7 +34,7 @@ jobs:
       contents: write
       issues: write
     secrets: inherit
-    uses: withstudiocms/automations/.github/workflows/todo.yml@fe2d43b13c8a63e34ba8b0b9e16008149d8af55f # main
+    uses: withstudiocms/automations/.github/workflows/todo.yml@7caa6bf5171347ed3b56a7f65ef030f0fbc15774 # main
 
   release:
     name: Release
@@ -43,7 +43,7 @@ jobs:
       pull-requests: write
       id-token: write
     secrets: inherit
-    uses: withstudiocms/automations/.github/workflows/release.yml@fe2d43b13c8a63e34ba8b0b9e16008149d8af55f # main
+    uses: withstudiocms/automations/.github/workflows/release.yml@7caa6bf5171347ed3b56a7f65ef030f0fbc15774 # main
     with:
       build-cmd: "pnpm ci:build"
       RoleMentionId: '1309310416362537020'
@@ -51,7 +51,7 @@ jobs:
   mergebot:
     name: CI - Merge Bot
     if: github.repository_owner == 'withstudiocms' && github.event.head_commit.message != '[ci] lint'
-    uses: withstudiocms/automations/.github/workflows/mergebot.yml@fe2d43b13c8a63e34ba8b0b9e16008149d8af55f # main
+    uses: withstudiocms/automations/.github/workflows/mergebot.yml@7caa6bf5171347ed3b56a7f65ef030f0fbc15774 # main
     secrets:
       DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_MERGEBOT }}
 
@@ -63,6 +63,6 @@ jobs:
       issues: write
       pull-requests: write
     secrets: inherit
-    uses: withstudiocms/automations/.github/workflows/preview.yml@fe2d43b13c8a63e34ba8b0b9e16008149d8af55f # main
+    uses: withstudiocms/automations/.github/workflows/preview.yml@7caa6bf5171347ed3b56a7f65ef030f0fbc15774 # main
     with:
       build-cmd: "pnpm ci:build"
