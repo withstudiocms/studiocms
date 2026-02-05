@@ -4,7 +4,7 @@ import studioCMS from 'studiocms';
 
 // https://astro.build/config
 export default defineConfig({
-	site: 'https://change.me',
+	site: process.env.NODE_ENV === 'production' ? 'https://change.me' : 'http://localhost:4321',
 	output: 'server',
 	adapter: node({ mode: 'standalone' }),
 	security: {
