@@ -22,7 +22,7 @@ export function getTemplateTarget(
 	if (ref === 'latest') {
 		return `${templateRegistry.gigetRepoUrl}#templates/${_template}`;
 	}
-	return `${templateRegistry.gigetRepoUrl}/${_template}#${ref}`;
+	return `${templateRegistry.gigetRepoUrl}/templates/${_template}#${ref}`;
 }
 
 /**
