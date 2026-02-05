@@ -196,7 +196,13 @@ const config: KnipConfig = {
 			ignoreBinaries: [/ci:.*$/, /bundle-test:.*$/],
 			entry: ['.github/workflows/*.yml', '.github/scripts/**/*.mjs', 'scripts/**/*.mjs'],
 			project: ['.github/scripts/**/*.mjs', 'scripts/**/*.mjs'],
-			ignore: ['**/node_modules/**', '**/dist/**', '**/scratchpad/**', '**/archive/**', '**/templates/**'],
+			ignore: [
+				'**/node_modules/**',
+				'**/dist/**',
+				'**/scratchpad/**',
+				'**/archive/**',
+				'**/templates/**',
+			],
 		},
 		'packages/studiocms': {
 			...baseAstroWorkspaceConfig,

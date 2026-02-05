@@ -17,10 +17,10 @@ export interface FilterRules {
 }
 
 export type TemplateOption = {
-    value: string;
-    label?: string | undefined;
-    hint?: string | undefined;
-    disabled?: boolean | undefined;
+	value: string;
+	label?: string | undefined;
+	hint?: string | undefined;
+	disabled?: boolean | undefined;
 };
 
 export type TemplateOptions = TemplateOption[];

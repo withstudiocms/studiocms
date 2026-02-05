@@ -16,7 +16,8 @@
       "!**/dashboard-code.css",
       "!**/i18n/translations/**/*.json",
       "!**/handlers/plugin-i18n/*.ts",
-      "!**/plugins/**/i18n/*.ts"
+      "!**/plugins/**/i18n/*.ts",
+      "!**/_internal/httpApiScalar.ts"
     ]
   },
   "formatter": {

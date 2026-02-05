@@ -39,20 +39,20 @@ export const template: EffectStepFn = Effect.fn('template')(
 			);
 			ctx.isStudioCMSProject = true;
 		} else {
-				const _template = yield* select({
-					message: `How would you like to start your new StudioCMS project?`,
-					options: ctx.templateRegistry.currentTemplates,
-				});
+			const _template = yield* select({
+				message: 'How would you like to start your new StudioCMS project?',
+				options: ctx.templateRegistry.currentTemplates,
+			});
 
-				if (typeof _template === 'symbol') {
-					yield* log.error('Input cancelled by user.');
-					ctx.exit(1);
-				} else {
-					if (ctx.debug) yield* Effect.logDebug(`Template selected: ${_template}`);
+			if (typeof _template === 'symbol') {
+				yield* log.error('Input cancelled by user.');
+				ctx.exit(1);
+			} else {
+				if (ctx.debug) yield* Effect.logDebug(`Template selected: ${_template}`);
 
-					ctx.template = _template;
-					ctx.isStudioCMSProject = true;
-				}
+				ctx.template = _template;
+				ctx.isStudioCMSProject = true;
+			}
 		}
 
 		if (ctx.dryRun) {

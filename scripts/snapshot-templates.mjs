@@ -27,24 +27,24 @@ for (const templateDir of templateDirs) {
 	const packageJson = await readAndParsePackageJson(packageJsonPath);
 	if (!packageJson) continue;
 
-    // Update the template snapshot
-    if (packageJson.studiocms_template) {
-        templateSnapshots.push({
-            value: packageJson.studiocms_template.value,
-            label: packageJson.studiocms_template.label,
-            hint: packageJson.studiocms_template.hint,
-        });
-    }
+	// Update the template snapshot
+	if (packageJson.studiocms_template) {
+		templateSnapshots.push({
+			value: packageJson.studiocms_template.value,
+			label: packageJson.studiocms_template.label,
+			hint: packageJson.studiocms_template.hint,
+		});
+	}
 }
 
 // Update the templates.json file in create-studiocms
 const createStudiocmsTemplatesJsonPath = new URL(
 	'../packages/create-studiocms/src/templates.json',
-	import.meta.url,
+	import.meta.url
 );
 await fs.writeFile(
 	createStudiocmsTemplatesJsonPath,
-	`${JSON.stringify(templateSnapshots, null, 2)}\n`,
+	`${JSON.stringify(templateSnapshots, null, 2)}\n`
 );
 
 /**

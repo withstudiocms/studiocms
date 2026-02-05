@@ -1,9 +1,9 @@
 ---
-import Layout from '../layouts/Layout.astro';
 import { Debug } from 'astro:components';
-import { SDKCoreJs, runSDK } from 'studiocms:sdk';
+import { runSDK, SDKCoreJs } from 'studiocms:sdk';
+import Layout from '../layouts/Layout.astro';
 
-const pages = await runSDK(SDKCoreJs.GET.pages())
+const pages = await runSDK(SDKCoreJs.GET.pages());
 ---
 
 <Layout>

@@ -1,10 +1,10 @@
+import templates from './templates.json';
 import type {
 	CurrentRepository,
 	GigetRepoUrl,
 	TemplateOptions,
 	TemplateRegistry,
 } from './types.ts';
-import templates from './templates.json';
 
 /**
  * The current repository platform for StudioCMS templates
@@ -46,7 +46,7 @@ const defaultTemplate: string = 'blog-libsql';
  */
 const loadTemplatesSnapshot = (): TemplateOptions => {
 	return templates;
-}
+};
 
 /**
  * This object is used to generate the template registry for StudioCMS templates
