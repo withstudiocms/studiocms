@@ -1,10 +1,5 @@
-import templates from './templates.json';
-import type {
-	CurrentRepository,
-	GigetRepoUrl,
-	TemplateOptions,
-	TemplateRegistry,
-} from './types.ts';
+import currentTemplates from './templates.json';
+import type { CurrentRepository, GigetRepoUrl, TemplateRegistry } from './types.ts';
 
 /**
  * The current repository platform for StudioCMS templates
@@ -42,13 +37,6 @@ const currentRepositoryUrl: string = `https://github.com/${currentRepository}`;
 const defaultTemplate: string = 'blog-libsql';
 
 /**
- * Load the templates snapshot from the templates.json file
- */
-const loadTemplatesSnapshot = (): TemplateOptions => {
-	return templates;
-};
-
-/**
  * This object is used to generate the template registry for StudioCMS templates
  * from the current template repository based on the currentTemplateRegistry object above
  *
@@ -58,5 +46,5 @@ export const templateRegistry: TemplateRegistry = {
 	defaultTemplate,
 	gigetRepoUrl,
 	currentRepositoryUrl,
-	currentTemplates: loadTemplatesSnapshot(),
+	currentTemplates,
 };
