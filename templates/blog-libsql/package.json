@@ -1,4 +1,5 @@
 {
+	"$schema": "../../packages/create-studiocms/templates-pkg.schema.json",
 	"name": "studiocms-blog-template-libsql",
 	"type": "module",
 	"version": "0.0.1",

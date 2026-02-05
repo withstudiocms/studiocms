@@ -111,6 +111,7 @@ const FILES_TO_UPDATE = {
 							// Remove template specific fields
 							private: undefined,
 							studiocms_template: undefined,
+							$schema: undefined,
 						})
 					),
 					null,
