@@ -1,0 +1,26 @@
+---
+import { Generator } from "studiocms:components";
+---
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		{/* Generator Provides Generator meta tags for Astro, StudioCMS, and @studiocms/ui */}
+		<Generator />
+		<title>StudioCMS Headless</title>
+	</head>
+	<body>
+		<slot />
+	</body>
+</html>
+
+<style>
+	html,
+	body {
+		margin: 0;
+		width: 100%;
+		height: 100%;
+	}
+</style>

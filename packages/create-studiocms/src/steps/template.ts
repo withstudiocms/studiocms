@@ -8,37 +8,19 @@ import { Effect } from 'effect';
 import { CLIError, type Context, type EffectStepFn } from '../context.ts';
 
 /**
- * Determine if the template is a StudioCMS template or third-party
- */
-export function templateTargetFilter(
-	template: string,
-	templateRegistry: Context['templateRegistry'],
-	explicitStudioCMS = false
-) {
-	if (explicitStudioCMS) {
-		return template.startsWith(templateRegistry.filterRules.isStudioCMSProject);
-	}
-
-	return templateRegistry.filterRules.isWithStudioCMSRepo.some((rule) => template.startsWith(rule));
-}
-
-/**
  * Get the full template target URL for giget
  */
 export function getTemplateTarget(
 	_template: string,
 	templateRegistry: Context['templateRegistry'],
-	ref = 'main'
+	ref = 'latest'
 ) {
-	if (!templateTargetFilter(_template, templateRegistry)) {
-		// Handle third-party templates
-		const isThirdParty = _template.includes('/');
-		if (isThirdParty) return _template;
-	}
+	const isThirdParty = _template.includes('/');
+	if (isThirdParty) return _template;
 
 	// Handle StudioCMS templates
-	if (ref === 'main') {
-		return `${templateRegistry.gigetRepoUrl}/${_template}`;
+	if (ref === 'latest') {
+		return `${templateRegistry.gigetRepoUrl}#templates/${_template}`;
 	}
 	return `${templateRegistry.gigetRepoUrl}/${_template}#${ref}`;
 }
@@ -55,24 +37,11 @@ export const template: EffectStepFn = Effect.fn('template')(
 			yield* log.info(
 				`Using ${styleText('reset', ctx.template)}${styleText('dim', ' as project template')}`
 			);
-			ctx.isStudioCMSProject = templateTargetFilter(ctx.template, ctx.templateRegistry, true);
+			ctx.isStudioCMSProject = true;
 		} else {
-			// These options correspond to the `withstudiocms/templates` repo on GitHub
-			// the value is the directory in the root of the repo
-			const projectType = yield* select({
-				message: 'What StudioCMS package would you like to use?',
-				options: ctx.templateRegistry.currentProjects,
-			});
-
-			if (typeof projectType === 'symbol') {
-				yield* log.error('Input cancelled by user.');
-				ctx.exit(1);
-			} else {
-				if (ctx.debug) yield* Effect.logDebug(`Project type selected: ${projectType}`);
-
 				const _template = yield* select({
-					message: `How would you like to start your new ${ctx.templateRegistry.currentProjects.find((p) => p.value === projectType)?.label} project?`,
-					options: ctx.templateRegistry.currentTemplates[projectType],
+					message: `How would you like to start your new StudioCMS project?`,
+					options: ctx.templateRegistry.currentTemplates,
 				});
 
 				if (typeof _template === 'symbol') {
@@ -82,9 +51,8 @@ export const template: EffectStepFn = Effect.fn('template')(
 					if (ctx.debug) yield* Effect.logDebug(`Template selected: ${_template}`);
 
 					ctx.template = _template;
-					ctx.isStudioCMSProject = projectType === 'studiocms';
+					ctx.isStudioCMSProject = true;
 				}
-			}
 		}
 
 		if (ctx.dryRun) {

@@ -11,6 +11,7 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "verbatimModuleSyntax": true,
+    "resolveJsonModule": true,
     "stripInternal": true,
     "pretty": true,
     "noErrorTruncation": true,

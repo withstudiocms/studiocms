@@ -1,10 +1,19 @@
 {
   "name": "root",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/withstudiocms/studiocms.git"
+  },
   "packageManager": "pnpm@10.17.0",
   "engines": {
-    "node": "22.20.0"
+    "node": ">=22.20.0"
   },
+  "workspaces": [
+    "packages/@studiocms/*",
+    "packages/@withstudiocms/*",
+    "packages/*"
+  ],
   "scripts": {
     "effect-language-service": "effect-language-service",
     "start": "node ./playground/dist/server/entry.mjs",
@@ -30,7 +39,7 @@
 
     "build": "pnpm build:packages",
     "build:studiocms": "pnpm build:packages",
-    "build:packages": "pnpm --filter studiocms --filter create-studiocms --filter @studiocms/* --filter @withstudiocms/* build",
+    "build:packages": "pnpm ci:snapshot-templates && pnpm --filter studiocms --filter create-studiocms --filter @studiocms/* --filter @withstudiocms/* build",
 
     "create-migration": "pnpm --filter @withstudiocms/sdk create-migration",
 
@@ -43,9 +52,12 @@
     "dev": "pnpm --stream --filter studiocms --filter @studiocms/* --filter=!@studiocms/migrator --filter @withstudiocms/* --filter node-playground -r --parallel dev",
     "dev:migrator": "pnpm build:packages && pnpm exec studiocms-migrator",
 
+    "ci:snapshot-templates": "node ./scripts/snapshot-templates.mjs",
+    "ci:update-templates": "node ./scripts/update-templates.mjs",
+
     "ci:lint": "biome ci --reporter=github",
     "ci:install": "pnpm install --frozen-lockfile",
-    "ci:version": "pnpm changeset version",
+    "ci:version": "pnpm changeset version && pnpm ci:update-templates && pnpm install --no-frozen-lockfile && pnpm run lint:fix",
     "ci:publish": "pnpm changeset publish",
     "ci:snapshot": "pnpx pkg-pr-new publish --pnpm './packages/*'",
     "ci:test": "vitest run --coverage",
@@ -89,6 +101,7 @@
     "knip": "^5.82.1",
     "pkg-pr-new": "^0.0.62",
     "studiocms": "workspace:^",
+    "tinyglobby": "catalog:",
     "typescript": "catalog:",
     "ts-patch": "^3.3.0",
     "vite": "catalog:astrojs",

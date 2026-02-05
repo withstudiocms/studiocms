@@ -1,0 +1,33 @@
+{
+	"name": "studiocms-headless-template-mysql",
+	"type": "module",
+	"version": "0.0.1",
+	"private": true,
+	"studiocms_template": {
+		"value": "headless-mysql",
+		"label": "StudioCMS Headless (MySQL)",
+		"hint": "Bring your own frontend"
+	},
+	"scripts": {
+		"astro": "astro",
+		"studiocms": "studiocms",
+		"migrate": "studiocms migrate",
+		"dev": "astro dev",
+		"build": "astro build",
+		"preview": "astro preview"
+	},
+	"devDependencies": {
+		"@types/node": "^22.13.5",
+		"typescript": "^5.9.2"
+	},
+	"dependencies": {
+		"@astrojs/node": "^9.5.1",
+		"@studiocms/github": "^0.2.0",
+		"@studiocms/md": "^0.2.0",
+		"@studiocms/html": "^0.2.0",
+		"astro": "^5.16.5",
+		"mysql2": "^3.15.3",
+		"sharp": "^0.34.3",
+		"studiocms": "^0.2.0"
+	}
+}
