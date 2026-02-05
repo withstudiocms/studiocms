@@ -87,6 +87,8 @@ jobs:
       - name: Run Tests & Code Coverage
         run: pnpm ci:test
 
+      # Allure Reports Require to be ran from within our repository only
+      # So we check if the PR is from a fork or from the same repository
       - name: Generate Allure Report and Deploy
         if: always() && (github.event.pull_request.head.repo.full_name == github.repository || github.ref == 'refs/heads/main')
         uses: ./.github/actions/allure-report
@@ -116,9 +118,6 @@ jobs:
           flags: integrations,plugins,tools-utils
           report_type: "test_results"
 
-  # Bundle Analysis can only run on PRs from the same repository or on main branch pushes
-  # This is because it needs to be able to access secret values for environment variables
-  # to build the test projects
   bundle-analysis:
     name: Bundle Analysis
     runs-on: ubuntu-latest
@@ -128,7 +127,7 @@ jobs:
         cmd: ["blog", "headless"]
     permissions:
       contents: read
-      id-token: write # For OIDC to access secrets
+      id-token: write #  For Codecov Bundle Analysis upload
     env:
       NODE_OPTIONS: "--max_old_space_size=4096"
       CMS_LIBSQL_URL: "file:./studiocms-bundle-tests.db"
