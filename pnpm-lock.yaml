@@ -1249,6 +1249,9 @@ importers:
       '@studiocms/md':
         specifier: workspace:^
         version: link:../packages/@studiocms/md
+      '@studiocms/s3-storage':
+        specifier: workspace:^
+        version: link:../packages/@studiocms/s3-storage
       '@studiocms/wysiwyg':
         specifier: workspace:^
         version: link:../packages/@studiocms/wysiwyg

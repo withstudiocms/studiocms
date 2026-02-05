@@ -4,9 +4,10 @@ import { defineConfig } from 'astro/config';
 import { hmrIntegration } from 'astro-integration-kit/dev';
 import studioCMS from 'studiocms';
 
-const site = process.env.DOKPLOY_DEPLOY_URL
-	? `https://${process.env.DOKPLOY_DEPLOY_URL}`
-	: 'https://playground.studiocms.dev';
+const site =
+	process.env.NODE_ENV === 'production'
+		? 'https://playground.studiocms.dev'
+		: 'http://localhost:4321';
 
 // console.log('Site URL:', site);
 
