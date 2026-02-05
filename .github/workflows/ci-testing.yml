@@ -69,6 +69,7 @@ jobs:
     permissions:
       contents: write # For Allure GitHub Pages deployment
       pull-requests: write # For Allure PR comments
+      id-token: write # For Codecov upload
     env:
       NODE_OPTIONS: "--max_old_space_size=4096"
     steps:
@@ -99,19 +100,21 @@ jobs:
       - name: Upload coverage report to Codecov
         uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de # v5.5.2
         with:
+          use_oidc: true
           slug: withstudiocms/studiocms
           directory: "./coverage/"
           files: "./coverage-final.json"
           flags: integrations,plugins,tools-utils
-          report_type: coverage
+          report_type: "coverage"
 
       - name: Upload test results to Codecov
         uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de # v5.5.2
         with:
+          use_oidc: true
           slug: withstudiocms/studiocms
           files: "./junit-report.xml"
           flags: integrations,plugins,tools-utils
-          report_type: test_results
+          report_type: "test_results"
 
   # Bundle Analysis can only run on PRs from the same repository or on main branch pushes
   # This is because it needs to be able to access secret values for environment variables
