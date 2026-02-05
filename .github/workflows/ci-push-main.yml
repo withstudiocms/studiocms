@@ -46,6 +46,7 @@ jobs:
     uses: withstudiocms/automations/.github/workflows/release.yml@7caa6bf5171347ed3b56a7f65ef030f0fbc15774 # main
     with:
       build-cmd: "pnpm ci:build"
+      changeset-version: 'pnpm ci:version'
       RoleMentionId: '1309310416362537020'
 
   mergebot:
