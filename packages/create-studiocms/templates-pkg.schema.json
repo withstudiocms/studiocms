@@ -5,6 +5,7 @@
   "properties": {
     "studiocms_template": {
       "type": "object",
+      "description": "Custom object to define details for create-studiocms CLI templates",
       "properties": {
         "value": {
           "type": "string",
