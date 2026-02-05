@@ -18,15 +18,15 @@
 	},
 	"devDependencies": {
 		"@types/node": "^22.13.5",
-		"typescript": "^5.9.2"
+		"typescript": "^5.9.3"
 	},
 	"dependencies": {
-		"@astrojs/node": "^9.5.1",
+		"@astrojs/node": "^9.5.2",
 		"@libsql/client": "^0.15.15",
 		"@studiocms/github": "^0.2.0",
 		"@studiocms/md": "^0.2.0",
 		"@studiocms/html": "^0.2.0",
-		"astro": "^5.16.5",
+		"astro": "^5.17.1",
 		"kysely-turso": "^0.1.1",
 		"sharp": "^0.34.3",
 		"studiocms": "^0.2.0"

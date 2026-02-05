@@ -1278,7 +1278,7 @@ importers:
   templates/blog-libsql:
     dependencies:
       '@astrojs/node':
-        specifier: ^9.5.1
+        specifier: ^9.5.2
         version: 9.5.2(astro@5.17.1(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
       '@libsql/client':
         specifier: ^0.15.15
@@ -1290,7 +1290,7 @@ importers:
         specifier: ^0.2.0
         version: link:../../packages/@studiocms/md
       astro:
-        specifier: ^5.16.5
+        specifier: ^5.17.1
         version: 5.17.1(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
       kysely-turso:
         specifier: ^0.1.1
@@ -1306,13 +1306,13 @@ importers:
         specifier: ^22.13.5
         version: 22.19.6
       typescript:
-        specifier: ^5.9.2
+        specifier: ^5.9.3
         version: 5.9.3
 
   templates/blog-mysql:
     dependencies:
       '@astrojs/node':
-        specifier: ^9.5.1
+        specifier: ^9.5.2
         version: 9.5.2(astro@5.17.1(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
       '@studiocms/blog':
         specifier: ^0.2.0
@@ -1321,10 +1321,10 @@ importers:
         specifier: ^0.2.0
         version: link:../../packages/@studiocms/md
       astro:
-        specifier: ^5.16.5
+        specifier: ^5.17.1
         version: 5.17.1(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
       mysql2:
-        specifier: ^3.15.3
+        specifier: ^3.16.2
         version: 3.16.2
       sharp:
         specifier: ^0.34.3
@@ -1337,13 +1337,13 @@ importers:
         specifier: ^22.13.5
         version: 22.19.6
       typescript:
-        specifier: ^5.9.2
+        specifier: ^5.9.3
         version: 5.9.3
 
   templates/blog-postgres:
     dependencies:
       '@astrojs/node':
-        specifier: ^9.5.1
+        specifier: ^9.5.2
         version: 9.5.2(astro@5.17.1(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
       '@studiocms/blog':
         specifier: ^0.2.0
@@ -1352,10 +1352,10 @@ importers:
         specifier: ^0.2.0
         version: link:../../packages/@studiocms/md
       astro:
-        specifier: ^5.16.5
+        specifier: ^5.17.1
         version: 5.17.1(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
       pg:
-        specifier: ^8.16.3
+        specifier: ^8.17.2
         version: 8.17.2
       sharp:
         specifier: ^0.34.3
@@ -1368,13 +1368,13 @@ importers:
         specifier: ^22.13.5
         version: 22.19.6
       typescript:
-        specifier: ^5.9.2
+        specifier: ^5.9.3
         version: 5.9.3
 
   templates/headless-libsql:
     dependencies:
       '@astrojs/node':
-        specifier: ^9.5.1
+        specifier: ^9.5.2
         version: 9.5.2(astro@5.17.1(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
       '@libsql/client':
         specifier: ^0.15.15
@@ -1389,7 +1389,7 @@ importers:
         specifier: ^0.2.0
         version: link:../../packages/@studiocms/md
       astro:
-        specifier: ^5.16.5
+        specifier: ^5.17.1
         version: 5.17.1(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
       kysely-turso:
         specifier: ^0.1.1
@@ -1405,13 +1405,13 @@ importers:
         specifier: ^22.13.5
         version: 22.19.6
       typescript:
-        specifier: ^5.9.2
+        specifier: ^5.9.3
         version: 5.9.3
 
   templates/headless-mysql:
     dependencies:
       '@astrojs/node':
-        specifier: ^9.5.1
+        specifier: ^9.5.2
         version: 9.5.2(astro@5.17.1(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
       '@studiocms/github':
         specifier: ^0.2.0
@@ -1423,10 +1423,10 @@ importers:
         specifier: ^0.2.0
         version: link:../../packages/@studiocms/md
       astro:
-        specifier: ^5.16.5
+        specifier: ^5.17.1
         version: 5.17.1(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
       mysql2:
-        specifier: ^3.15.3
+        specifier: ^3.16.2
         version: 3.16.2
       sharp:
         specifier: ^0.34.3
@@ -1439,13 +1439,13 @@ importers:
         specifier: ^22.13.5
         version: 22.19.6
       typescript:
-        specifier: ^5.9.2
+        specifier: ^5.9.3
         version: 5.9.3
 
   templates/headless-postgres:
     dependencies:
       '@astrojs/node':
-        specifier: ^9.5.1
+        specifier: ^9.5.2
         version: 9.5.2(astro@5.17.1(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
       '@studiocms/github':
         specifier: ^0.2.0
@@ -1457,10 +1457,10 @@ importers:
         specifier: ^0.2.0
         version: link:../../packages/@studiocms/md
       astro:
-        specifier: ^5.16.5
+        specifier: ^5.17.1
         version: 5.17.1(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
       pg:
-        specifier: ^8.16.3
+        specifier: ^8.17.2
         version: 8.17.2
       sharp:
         specifier: ^0.34.3
@@ -1473,7 +1473,7 @@ importers:
         specifier: ^22.13.5
         version: 22.19.6
       typescript:
-        specifier: ^5.9.2
+        specifier: ^5.9.3
         version: 5.9.3
 
 packages:

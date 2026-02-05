@@ -46,38 +46,26 @@ const templateDirs = await glob('templates/*', {
 	cwd: fileURLToPath(rootUrl),
 });
 
-const formattedTemplates = templateDirs
-    // Map directory names to template names by removing the "templates/" prefix
-    .map(dir => dir.replace("templates/", ""))
-    // Remove any trailing slash if present
-    .map(name => name.replace(/\/$/, ""))
-    // Sort the template names alphabetically
-    .sort()
-    // Join the sorted names back into a single string with each name on a new line, prefixed by "- "
-    .join('\n- ');
-
-console.log(`Templates to update: \n- ${formattedTemplates}`);
-
 for (const templateDir of templateDirs) {
 	const packageJsonPath = path.join(templateDir, './package.json');
 	const packageJson = await readAndParsePackageJson(packageJsonPath);
 	if (!packageJson) continue;
 
 	// Update dependencies
-	// for (const depName of Object.keys(packageJson.dependencies ?? [])) {
-	// 	if (packageToVersions.has(depName)) {
-	// 		packageJson.dependencies[depName] = `^${packageToVersions.get(depName)}`;
-	// 	}
-	// }
+	for (const depName of Object.keys(packageJson.dependencies ?? [])) {
+		if (packageToVersions.has(depName)) {
+			packageJson.dependencies[depName] = `^${packageToVersions.get(depName)}`;
+		}
+	}
 
-	// // Update devDependencies
-	// for (const depName of Object.keys(packageJson.devDependencies ?? [])) {
-	// 	if (packageToVersions.has(depName)) {
-	// 		packageJson.devDependencies[depName] = `^${packageToVersions.get(depName)}`;
-	// 	}
-	// }
+	// Update devDependencies
+	for (const depName of Object.keys(packageJson.devDependencies ?? [])) {
+		if (packageToVersions.has(depName)) {
+			packageJson.devDependencies[depName] = `^${packageToVersions.get(depName)}`;
+		}
+	}
 
-	// await fs.writeFile(packageJsonPath, `${JSON.stringify(packageJson, null, 2)}\n`);
+	await fs.writeFile(packageJsonPath, `${JSON.stringify(packageJson, null, 2)}\n`);
 }
 
 /**
