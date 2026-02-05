@@ -51,7 +51,7 @@ jobs:
       # We only do sync if there are no changesets, so we don't accidentally allow users
       # to clone examples that may rely on unreleased code
 
-      - name: Sync stable to latest and examples/* branches
+      - name: Sync stable to latest and templates/* branches
         if: steps.detect.outputs.has-changesets == 'false' && github.ref == 'refs/heads/main' && steps.pre.outputs.value == ''
         uses: bluwy/auto-branch-sync-action@a72b09dc60911f56a1e7093a069f24480ca3d2ab # v1.0.1
         with:
