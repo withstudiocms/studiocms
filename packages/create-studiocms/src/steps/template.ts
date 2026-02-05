@@ -105,7 +105,14 @@ const FILES_TO_UPDATE = {
 			return fs.promises.writeFile(
 				file,
 				JSON.stringify(
-					Object.assign(JSON.parse(value), Object.assign(overrides, { private: undefined })),
+					Object.assign(
+						JSON.parse(value),
+						Object.assign(overrides, {
+							// Remove template specific fields
+							private: undefined,
+							studiocms_template: undefined,
+						})
+					),
 					null,
 					indent
 				),
