@@ -5,3 +5,6 @@ rules:
       - ci-pull-request.yml
       - ci-push-main.yml
       - ci-bot-changesets.yml
+  artipacked:
+    ignore:
+      - ci-template-sync.yml

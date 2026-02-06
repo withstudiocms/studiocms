@@ -5,7 +5,35 @@ packages:
   - packages/*
   - bundle-tests/*
   - playground
+  - templates/*
 
+# When resolving dependencies, prefer workspace packages over external ones
+preferWorkspacePackages: true
+
+# When installing dependencies, create symlinks for workspace packages
+linkWorkspacePackages: true
+
+# When using `pnpm publish`, do not use `workspace:` protocol in dependencies
+saveWorkspaceProtocol: false
+
+# Make sure packages are only downloaded after they have been available for a certain time
+minimumReleaseAge: 4320 # 3 days
+
+# Exclude certain packages from the minimum release age restriction
+minimumReleaseAgeExclude:
+  - studiocms
+  - "@studiocms/*"
+  - "@withstudiocms/*"
+
+# When running `pnpm install`, only build the following dependencies from source
+onlyBuiltDependencies:
+  - "@parcel/watcher"
+  - canvas
+  - esbuild
+  - msgpackr-extract
+  - sharp
+
+# General dependency catalog for monorepo packages
 catalog:
   "@codecov/astro-plugin": ^1.9.1
   "@types/mdast": ^4.0.4
@@ -24,6 +52,7 @@ catalog:
   tsdown: ^0.20.1
   package-manager-detector: ^1.6.0
 
+# Specific dependency catalogs for certain groups of packages
 catalogs:
   astrojs:
     "@astrojs/check": ^0.9.6
@@ -59,17 +88,3 @@ catalogs:
     "@studiocms/markdown-remark-processor": ^1.2.0
     "@studiocms/ui": ^1.1.1
     "@studiocms/web-vitals": ^4.5.3
-
-minimumReleaseAge: 4320
-
-minimumReleaseAgeExclude:
-  - studiocms
-  - "@studiocms/*"
-  - "@withstudiocms/*"
-
-onlyBuiltDependencies:
-  - "@parcel/watcher"
-  - canvas
-  - esbuild
-  - msgpackr-extract
-  - sharp

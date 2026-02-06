@@ -49,6 +49,11 @@
       "groupName": "StudioCMS CLI Dependencies",
       "matchManagers": ["npm"],
       "matchFileNames": ["packages/@studiocms/upgrade/**", "packages/create-studiocms/**"]
+    },
+    {
+      "groupName": "Template Dependencies",
+      "matchManagers": ["npm"],
+      "matchFileNames": ["templates/**"]
     }
   ],
   "ignoreDeps": [

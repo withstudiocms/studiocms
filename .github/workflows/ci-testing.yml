@@ -69,6 +69,7 @@ jobs:
     permissions:
       contents: write # For Allure GitHub Pages deployment
       pull-requests: write # For Allure PR comments
+      id-token: write # For Codecov upload
     env:
       NODE_OPTIONS: "--max_old_space_size=4096"
     steps:
@@ -86,6 +87,8 @@ jobs:
       - name: Run Tests & Code Coverage
         run: pnpm ci:test
 
+      # Allure Reports Require to be ran from within our repository only
+      # So we check if the PR is from a fork or from the same repository
       - name: Generate Allure Report and Deploy
         if: always() && (github.event.pull_request.head.repo.full_name == github.repository || github.ref == 'refs/heads/main')
         uses: ./.github/actions/allure-report
@@ -96,31 +99,41 @@ jobs:
           allure_report_dir: allure-results
           cname: tests.studiocms.dev
 
-      - name: Generate Code Coverage Report and Upload
-        if: always() && (github.event.pull_request.head.repo.full_name == github.repository || github.ref == 'refs/heads/main')
-        uses: ./.github/actions/coverage-report
+      - name: Upload coverage report to Codecov
+        uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de # v5.5.2
         with:
+          use_oidc: true
           slug: withstudiocms/studiocms
-          coverage_flags: integrations,plugins,tools-utils
-          codecov_token: ${{ secrets.CODECOV_TOKEN }}
+          directory: "./coverage/"
+          files: "./coverage-final.json"
+          flags: integrations,plugins,tools-utils
+          report_type: "coverage"
 
-  # Bundle Analysis can only run on PRs from the same repository or on main branch pushes
-  # This is because it needs to be able to access secret values for environment variables
-  # to build the test projects
+      - name: Upload test results to Codecov
+        uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de # v5.5.2
+        with:
+          use_oidc: true
+          slug: withstudiocms/studiocms
+          files: "./junit-report.xml"
+          flags: integrations,plugins,tools-utils
+          report_type: "test_results"
+
   bundle-analysis:
     name: Bundle Analysis
     runs-on: ubuntu-latest
-    if: (github.event.pull_request.head.repo.full_name == github.repository) || (github.ref == 'refs/heads/main' && github.repository == 'withstudiocms/studiocms')
     strategy:
       fail-fast: false
       matrix:
         cmd: ["blog", "headless"]
+    permissions:
+      contents: read
+      id-token: write #  For Codecov Bundle Analysis upload
     env:
       NODE_OPTIONS: "--max_old_space_size=4096"
-      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-      CMS_LIBSQL_URL: ${{ secrets.CMS_LIBSQL_URL }}
-      CMS_LIBSQL_AUTH_TOKEN: ${{ secrets.CMS_LIBSQL_AUTH_TOKEN }}
-      CMS_ENCRYPTION_KEY: ${{ secrets.CMS_ENCRYPTION_KEY }}
+      CMS_LIBSQL_URL: "file:./studiocms-bundle-tests.db"
+      # This key is only for bundle test analysis and has no access to any other resources
+      # Please do not reuse it for other purposes
+      CMS_ENCRYPTION_KEY: IQVGyaV8HH5pXwUvWHY4OQ==
     steps:
       - name: Check out code using Git
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2

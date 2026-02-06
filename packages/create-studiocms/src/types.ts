@@ -1,14 +1,4 @@
 /**
- * Current Template Registry Interface
- */
-export interface CurrentTemplateRegistry {
-	[key: string]: {
-		label: string;
-		templates: Record<string, { label: string; hint?: string }>;
-	};
-}
-
-/**
  * Current Repository Type
  */
 export type CurrentRepository = `${string}/${string}`;
@@ -26,6 +16,15 @@ export interface FilterRules {
 	isWithStudioCMSRepo: string[];
 }
 
+export type TemplateOption = {
+	value: string;
+	label?: string | undefined;
+	hint?: string | undefined;
+	disabled?: boolean | undefined;
+};
+
+export type TemplateOptions = TemplateOption[];
+
 /**
  * Template Registry Interface
  */
@@ -33,9 +32,5 @@ export interface TemplateRegistry {
 	defaultTemplate: string;
 	gigetRepoUrl: GigetRepoUrl;
 	currentRepositoryUrl: string;
-	filterRules: FilterRules;
-	currentProjects: Array<{ value: string; label: string; hint?: string }>;
-	currentTemplates: {
-		[key: string]: Array<{ value: string; label: string; hint?: string }>;
-	};
+	currentTemplates: TemplateOptions;
 }

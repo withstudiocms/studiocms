@@ -16,8 +16,10 @@ export default defineConfig({
 		codecovAstroPlugin({
 			enableBundleAnalysis: true,
 			bundleName: 'studiocms-headless-astro-bundle',
-			uploadToken: process.env.CODECOV_TOKEN,
 			telemetry: false,
+			oidc: {
+				useGitHubOIDC: true,
+			},
 		}),
 	],
 });
