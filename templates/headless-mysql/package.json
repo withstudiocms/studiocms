@@ -1,34 +1,34 @@
 {
-	"$schema": "../../packages/create-studiocms/templates-pkg.schema.json",
-	"name": "studiocms-headless-template-mysql",
-	"type": "module",
-	"version": "0.0.1",
-	"private": true,
-	"studiocms_template": {
-		"value": "headless-mysql",
-		"label": "StudioCMS Headless (MySQL)",
-		"hint": "Bring your own frontend"
-	},
-	"scripts": {
-		"astro": "astro",
-		"studiocms": "studiocms",
-		"migrate": "studiocms migrate",
-		"dev": "astro dev",
-		"build": "astro build",
-		"preview": "astro preview"
-	},
-	"devDependencies": {
-		"@types/node": "^22.13.5",
-		"typescript": "^5.9.3"
-	},
-	"dependencies": {
-		"@astrojs/node": "^9.5.2",
-		"@studiocms/github": "^0.2.0",
-		"@studiocms/md": "^0.2.0",
-		"@studiocms/html": "^0.2.0",
-		"astro": "^5.17.1",
-		"mysql2": "^3.16.2",
-		"sharp": "^0.34.3",
-		"studiocms": "^0.2.0"
-	}
+  "$schema": "../../packages/create-studiocms/templates-pkg.schema.json",
+  "name": "studiocms-headless-template-mysql",
+  "type": "module",
+  "version": "0.0.1",
+  "private": true,
+  "studiocms_template": {
+    "value": "headless-mysql",
+    "label": "StudioCMS Headless (MySQL)",
+    "hint": "Bring your own frontend"
+  },
+  "scripts": {
+    "astro": "astro",
+    "studiocms": "studiocms",
+    "migrate": "studiocms migrate",
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.5",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "@astrojs/node": "^9.5.2",
+    "@studiocms/github": "^0.2.0",
+    "@studiocms/md": "^0.2.0",
+    "@studiocms/html": "^0.2.1",
+    "astro": "^5.17.1",
+    "mysql2": "^3.16.2",
+    "sharp": "^0.34.3",
+    "studiocms": "^0.3.0"
+  }
 }

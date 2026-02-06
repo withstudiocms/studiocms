@@ -1302,7 +1302,7 @@ importers:
         specifier: ^0.34.3
         version: 0.34.5
       studiocms:
-        specifier: ^0.2.0
+        specifier: ^0.3.0
         version: link:../../packages/studiocms
     devDependencies:
       '@types/node':
@@ -1333,7 +1333,7 @@ importers:
         specifier: ^0.34.3
         version: 0.34.5
       studiocms:
-        specifier: ^0.2.0
+        specifier: ^0.3.0
         version: link:../../packages/studiocms
     devDependencies:
       '@types/node':
@@ -1364,7 +1364,7 @@ importers:
         specifier: ^0.34.3
         version: 0.34.5
       studiocms:
-        specifier: ^0.2.0
+        specifier: ^0.3.0
         version: link:../../packages/studiocms
     devDependencies:
       '@types/node':
@@ -1386,7 +1386,7 @@ importers:
         specifier: ^0.2.0
         version: link:../../packages/@studiocms/github
       '@studiocms/html':
-        specifier: ^0.2.0
+        specifier: ^0.2.1
         version: link:../../packages/@studiocms/html
       '@studiocms/md':
         specifier: ^0.2.0
@@ -1401,7 +1401,7 @@ importers:
         specifier: ^0.34.3
         version: 0.34.5
       studiocms:
-        specifier: ^0.2.0
+        specifier: ^0.3.0
         version: link:../../packages/studiocms
     devDependencies:
       '@types/node':
@@ -1420,7 +1420,7 @@ importers:
         specifier: ^0.2.0
         version: link:../../packages/@studiocms/github
       '@studiocms/html':
-        specifier: ^0.2.0
+        specifier: ^0.2.1
         version: link:../../packages/@studiocms/html
       '@studiocms/md':
         specifier: ^0.2.0
@@ -1435,7 +1435,7 @@ importers:
         specifier: ^0.34.3
         version: 0.34.5
       studiocms:
-        specifier: ^0.2.0
+        specifier: ^0.3.0
         version: link:../../packages/studiocms
     devDependencies:
       '@types/node':
@@ -1454,7 +1454,7 @@ importers:
         specifier: ^0.2.0
         version: link:../../packages/@studiocms/github
       '@studiocms/html':
-        specifier: ^0.2.0
+        specifier: ^0.2.1
         version: link:../../packages/@studiocms/html
       '@studiocms/md':
         specifier: ^0.2.0
@@ -1469,7 +1469,7 @@ importers:
         specifier: ^0.34.3
         version: 0.34.5
       studiocms:
-        specifier: ^0.2.0
+        specifier: ^0.3.0
         version: link:../../packages/studiocms
     devDependencies:
       '@types/node':

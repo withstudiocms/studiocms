@@ -1,5 +1,11 @@
 # @studiocms/devapps
 
+## 0.2.1
+
+### Patch Changes
+
+- [#1241](https://github.com/withstudiocms/studiocms/pull/1241) [`76be900`](https://github.com/withstudiocms/studiocms/commit/76be90034917f1ebd47f5c0481ad142c00e1a06e) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update dependency cheerio to ^1.2.0
+
 ## 0.2.0
 
 ### Minor Changes

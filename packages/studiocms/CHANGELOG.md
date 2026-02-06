@@ -1,5 +1,44 @@
 # studiocms
 
+## 0.3.0
+
+### Minor Changes
+
+- [#1254](https://github.com/withstudiocms/studiocms/pull/1254) [`180b959`](https://github.com/withstudiocms/studiocms/commit/180b95972f9d51731eb570685e251532cbae2f62) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Replaces chalk with node:util's styleText
+
+- [#1271](https://github.com/withstudiocms/studiocms/pull/1271) [`9a450cb`](https://github.com/withstudiocms/studiocms/commit/9a450cb9167e2f2ea4c197bc812131d2fdeda6c9) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Removes deprecated and unused virtual modules.
+
+  The following modules have been removed.
+
+  - `studiocms:astro-config/adapter`
+  - `studiocms:auth/utils/getLabelForPermissionLevel`
+  - `virtual:studiocms/sdk/env`
+
+### Patch Changes
+
+- [#1237](https://github.com/withstudiocms/studiocms/pull/1237) [`fb6c96a`](https://github.com/withstudiocms/studiocms/commit/fb6c96ac6ae25887a0f673618770a67b2deffae6) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update studiocms dependencies
+
+- [#1259](https://github.com/withstudiocms/studiocms/pull/1259) [`0525390`](https://github.com/withstudiocms/studiocms/commit/05253906d33a9b7bd12a27cdf2b8c9e9f693177f) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update studiocms dependencies
+
+- [#1267](https://github.com/withstudiocms/studiocms/pull/1267) [`d56b066`](https://github.com/withstudiocms/studiocms/commit/d56b066554848d819cc3dd59cfacfbda51565ad5) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update dependency @nanostores/persistent to ^1.3.0
+
+- [#1255](https://github.com/withstudiocms/studiocms/pull/1255) [`e12e074`](https://github.com/withstudiocms/studiocms/commit/e12e074e6432398181be1f58f5c89df96a516cbb) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Fix new type issues due to updated clack version
+
+- [#1270](https://github.com/withstudiocms/studiocms/pull/1270) [`c9727f7`](https://github.com/withstudiocms/studiocms/commit/c9727f7a218113d68254de825b84ddb926721b56) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Fixes issue with pg and mysql2 being required to be installed when they should be optional
+
+- [#1272](https://github.com/withstudiocms/studiocms/pull/1272) [`38e74bb`](https://github.com/withstudiocms/studiocms/commit/38e74bbeec97e054e8545d6665452c5246a1fdd3) Thanks [@RATIU5](https://github.com/RATIU5)! - Fix client regex in frontend to allow for slashes within a slug, but not on the outside. This unblocks creating pages under sub-paths just using the slug (e.g., `docs/getting-started`) and only affects client-side validation.
+
+- [#1265](https://github.com/withstudiocms/studiocms/pull/1265) [`6d9b601`](https://github.com/withstudiocms/studiocms/commit/6d9b601b0a29ca2221d47efa65bc1356870e0339) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Removes legacy email domain verification code
+
+- [#1231](https://github.com/withstudiocms/studiocms/pull/1231) [`e7b39ef`](https://github.com/withstudiocms/studiocms/commit/e7b39ef6c3e1e2a54201e200b32fb1c02cd5fc3e) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Fixes default 404 route rendering
+
+- Updated dependencies [[`6b826b8`](https://github.com/withstudiocms/studiocms/commit/6b826b80104fe23e35763edf275f1800e5629c32), [`8b46bf5`](https://github.com/withstudiocms/studiocms/commit/8b46bf5861f3ab884bb8cbac1b73a1e97fcabe96), [`f129eec`](https://github.com/withstudiocms/studiocms/commit/f129eec8d0a6f18c446c319dec9925cc31a890b4), [`e12e074`](https://github.com/withstudiocms/studiocms/commit/e12e074e6432398181be1f58f5c89df96a516cbb)]:
+  - @withstudiocms/internal_helpers@0.1.1
+  - @withstudiocms/effect@0.3.0
+  - @withstudiocms/auth-kit@0.1.3
+  - @withstudiocms/component-registry@0.1.3
+  - @withstudiocms/sdk@0.2.0
+
 ## 0.2.0
 
 ### Minor Changes

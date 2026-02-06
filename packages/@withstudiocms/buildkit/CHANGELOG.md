@@ -1,5 +1,11 @@
 # @withstudiocms/buildkit
 
+## 0.2.0
+
+### Minor Changes
+
+- [#1254](https://github.com/withstudiocms/studiocms/pull/1254) [`180b959`](https://github.com/withstudiocms/studiocms/commit/180b95972f9d51731eb570685e251532cbae2f62) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Replaces chalk with node:util's styleText
+
 ## 0.1.0
 
 ## 0.1.0-beta.6

@@ -1,5 +1,17 @@
 # create-studiocms
 
+## 0.5.0
+
+### Minor Changes
+
+- [#1278](https://github.com/withstudiocms/studiocms/pull/1278) [`54fef34`](https://github.com/withstudiocms/studiocms/commit/54fef348b11d25adb8601010438a83185af7ed4d) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Simplified template loading and selection process
+
+### Patch Changes
+
+- [#1252](https://github.com/withstudiocms/studiocms/pull/1252) [`fc2dbad`](https://github.com/withstudiocms/studiocms/commit/fc2dbad9e8efa9a946e291ebae73620578e151ed) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - fix import statements to use .mjs instead of .js since new tsdown version outputs .mjs by default
+
+- [#1255](https://github.com/withstudiocms/studiocms/pull/1255) [`e12e074`](https://github.com/withstudiocms/studiocms/commit/e12e074e6432398181be1f58f5c89df96a516cbb) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Fix new type issues due to updated clack version
+
 ## 0.4.0
 
 ### Minor Changes

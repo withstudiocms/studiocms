@@ -1,5 +1,17 @@
 # @withstudiocms/effect
 
+## 0.3.0
+
+### Minor Changes
+
+- [#1255](https://github.com/withstudiocms/studiocms/pull/1255) [`e12e074`](https://github.com/withstudiocms/studiocms/commit/e12e074e6432398181be1f58f5c89df96a516cbb) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Updates to @clack/prompts v1
+
+### Patch Changes
+
+- [#1258](https://github.com/withstudiocms/studiocms/pull/1258) [`8b46bf5`](https://github.com/withstudiocms/studiocms/commit/8b46bf5861f3ab884bb8cbac1b73a1e97fcabe96) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update @withstudiocms dependencies
+
+- [#1228](https://github.com/withstudiocms/studiocms/pull/1228) [`f129eec`](https://github.com/withstudiocms/studiocms/commit/f129eec8d0a6f18c446c319dec9925cc31a890b4) Thanks [@renovate](https://github.com/apps/renovate)! - chore(deps): Updated Effect dependencies (PR: #1228)
+
 ## 0.2.0
 
 ### Minor Changes

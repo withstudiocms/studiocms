@@ -1,5 +1,14 @@
 # @studiocms/migrator
 
+## 0.2.1
+
+### Patch Changes
+
+- Updated dependencies [[`fb6c96a`](https://github.com/withstudiocms/studiocms/commit/fb6c96ac6ae25887a0f673618770a67b2deffae6), [`8b46bf5`](https://github.com/withstudiocms/studiocms/commit/8b46bf5861f3ab884bb8cbac1b73a1e97fcabe96), [`0525390`](https://github.com/withstudiocms/studiocms/commit/05253906d33a9b7bd12a27cdf2b8c9e9f693177f), [`d56b066`](https://github.com/withstudiocms/studiocms/commit/d56b066554848d819cc3dd59cfacfbda51565ad5), [`e12e074`](https://github.com/withstudiocms/studiocms/commit/e12e074e6432398181be1f58f5c89df96a516cbb), [`c9727f7`](https://github.com/withstudiocms/studiocms/commit/c9727f7a218113d68254de825b84ddb926721b56), [`38e74bb`](https://github.com/withstudiocms/studiocms/commit/38e74bbeec97e054e8545d6665452c5246a1fdd3), [`f129eec`](https://github.com/withstudiocms/studiocms/commit/f129eec8d0a6f18c446c319dec9925cc31a890b4), [`6d9b601`](https://github.com/withstudiocms/studiocms/commit/6d9b601b0a29ca2221d47efa65bc1356870e0339), [`e12e074`](https://github.com/withstudiocms/studiocms/commit/e12e074e6432398181be1f58f5c89df96a516cbb), [`e7b39ef`](https://github.com/withstudiocms/studiocms/commit/e7b39ef6c3e1e2a54201e200b32fb1c02cd5fc3e), [`180b959`](https://github.com/withstudiocms/studiocms/commit/180b95972f9d51731eb570685e251532cbae2f62), [`9a450cb`](https://github.com/withstudiocms/studiocms/commit/9a450cb9167e2f2ea4c197bc812131d2fdeda6c9)]:
+  - studiocms@0.3.0
+  - @withstudiocms/effect@0.3.0
+  - @withstudiocms/sdk@0.2.0
+
 ## 0.2.0
 
 ### Minor Changes
