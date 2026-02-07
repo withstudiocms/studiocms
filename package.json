@@ -1,0 +1,35 @@
+{
+  "$schema": "../../packages/create-studiocms/templates-pkg.schema.json",
+  "name": "studiocms-headless-template-libsql",
+  "type": "module",
+  "version": "0.0.1",
+  "private": true,
+  "studiocms_template": {
+    "value": "headless-libsql",
+    "label": "StudioCMS Headless (LibSQL)",
+    "hint": "Bring your own frontend"
+  },
+  "scripts": {
+    "astro": "astro",
+    "studiocms": "studiocms",
+    "migrate": "studiocms migrate",
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.5",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "@astrojs/node": "^9.5.2",
+    "@libsql/client": "^0.15.15",
+    "@studiocms/github": "^0.2.0",
+    "@studiocms/md": "^0.2.0",
+    "@studiocms/html": "^0.2.1",
+    "astro": "^5.17.1",
+    "kysely-turso": "^0.1.1",
+    "sharp": "^0.34.3",
+    "studiocms": "^0.3.0"
+  }
+}
