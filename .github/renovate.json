@@ -52,7 +52,8 @@
     },
     {
       "groupName": "Template Dependencies",
-      "matchFileNames": ["templates/**/**"]
+      "matchManagers": ["npm"],
+      "matchFileNames": ["templates/blog*/*", "templates/headless*/*"]
     }
   ],
   "ignoreDeps": [
