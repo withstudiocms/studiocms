@@ -1,0 +1,494 @@
+---
+import { type UiLanguageKeys, useTranslations } from 'studiocms:i18n';
+import { runSDK, SDKCoreJs } from 'studiocms:sdk';
+import { Button } from 'studiocms:ui/components/button';
+import { Center } from 'studiocms:ui/components/center';
+import { Group } from 'studiocms:ui/components/group';
+import { Icon } from 'studiocms:ui/components/icon';
+import { Input } from 'studiocms:ui/components/input';
+import { Modal } from 'studiocms:ui/components/modal';
+
+interface Props {
+	lang: UiLanguageKeys;
+	editPage?: boolean;
+	createPage?: boolean;
+	editFolder?: boolean;
+	createFolder?: boolean;
+}
+
+const { editPage, createPage, createFolder, editFolder, lang } = Astro.props;
+
+const t = useTranslations(lang, '@studiocms/dashboard:content-header');
+
+const title = t('title');
+
+let pageTitle = title;
+let pageSlug: string | undefined;
+let currentId = '';
+let folderName = '';
+let exists = false;
+let searched = false;
+
+const urlParams = Astro.url.searchParams;
+
+async function getParams() {
+	const editId = urlParams.get('edit');
+	const folderId = urlParams.get('folder');
+
+	if (folderId) {
+		searched = true;
+		const res = await runSDK(SDKCoreJs.GET.folderList());
+
+		const folder = res.find((folder) => folder.id === folderId);
+
+		if (editFolder && folder) {
+			exists = true;
+			pageTitle = `${folder.name}`;
+			currentId = folder.id;
+			folderName = folder.name;
+		}
+
+		return;
+	}
+
+	if (editId) {
+		searched = true;
+		exists = false;
+		const res = await runSDK(SDKCoreJs.GET.page.byId(editId));
+
+		if (!res) {
+			return;
+		}
+
+		if (editPage && res) {
+			pageTitle = `${res.title}`;
+			pageSlug = res.slug;
+			currentId = res.id;
+			exists = true;
+		}
+	}
+
+	return;
+}
+
+await getParams();
+
+function getCurrentMode() {
+	const hasSearched = searched;
+	const itemExists = exists;
+
+	if (hasSearched && !itemExists) return 'not-found';
+	if (editFolder && editPage) return 'edit-folder';
+	if (editFolder) return 'edit-folder';
+	if (editPage) return 'edit-page';
+	if (createFolder) return 'create-folder';
+	if (createPage) return 'create-page';
+	return 'none';
+}
+
+const currentMode = getCurrentMode();
+---
+<header class="page-header">
+  <div class="page-title-container">
+    <Button color='primary' id='nav-open' class='mobile-btn'>
+      <Icon name="heroicons:bars-3" height={24} width={24} slot="start-content" />
+    </Button>
+    <h1 class="page-title" data-link={Astro.locals.StudioCMS.routeMap.sdk.pages}>
+      {currentMode === 'none' ? (
+        <t-content-header key="title">
+          {pageTitle}
+        </t-content-header>
+      ) : currentMode === 'edit-folder' ? (
+        <><t-content-header key="edit-folder-title">{t('edit-folder-title')}</t-content-header>: {folderName}</>
+      ) : currentMode === 'edit-page' ? (
+        <><t-content-header key="edit-page-title">{t('edit-page-title')}</t-content-header>: {pageTitle}</>
+      ) : currentMode === 'create-folder' ? (
+        <t-content-header key="create-folder-title">
+          {t('create-folder-title')}
+        </t-content-header>
+      ) : currentMode === 'not-found' ? (
+        <t-content-header key="title">
+          {pageTitle}
+        </t-content-header>
+      ) : (
+        <t-content-header key="create-page-title">
+          {t('create-page-title')}
+        </t-content-header>
+      )}
+    </h1>
+  </div>
+  <div id="page-actions-container" class="page-actions-container">
+
+    { editPage && ( 
+      <Group>
+        <Button id="delete-page-modal-trigger" color="danger" type="submit" size="sm">
+            <Icon name="heroicons:trash-20-solid" width={20} height={20} />
+            <t-content-header key="delete-button">
+              {t('delete-button')}
+            </t-content-header>
+        </Button>
+        <Button id="edit-button" variant="solid" size="sm"  color="primary" type="submit" form="edit-page-form">
+          <Icon slot="start-content" name="heroicons:check-20-solid" width={20} height={20} />
+          <t-content-header key="save-button">
+            {t('save-button')}
+          </t-content-header>
+        </Button>
+      </Group>
+      <Modal 
+        id='delete-page-modal'
+        isForm
+        cancelButton={{ label: 'Cancel', color: 'default' }}
+        actionButton={{ label: 'Confirm', color: 'danger' }}
+        >
+        <h2 slot='header'>
+          <t-content-header key="delete-modal-header">
+            {t('delete-modal-header')}
+          </t-content-header>
+        </h2>
+        <Center>
+          <div class="modal-body">
+            <input type="hidden" name="page-id" value={currentId} />
+            <input type="hidden" name="page-slug" value={pageSlug} />
+            <input type="hidden" name="action-route" value={Astro.locals.StudioCMS.routeMap.endpointLinks.content.page} />
+                    
+            <span><t-content-header key="delete-modal-desc-1">
+            {t('delete-modal-desc-1')}
+          </t-content-header> <code>{pageSlug}</code> <t-content-header key="delete-modal-desc-2">
+            {t('delete-modal-desc-2')}
+          </t-content-header></span>
+           
+            <Input name="slug-confirm" placeholder={`${pageSlug?.slice(0, pageSlug.length-2)}...`} isRequired />
+            
+            <span style="color: var(--danger-base)"><t-content-header key="delete-modal-warning">
+            {t('delete-modal-warning')}
+          </t-content-header></span>
+          </div>
+        </Center>
+      </Modal>
+    )}
+
+    { editFolder && ( 
+      <Group>
+        <Button id="delete-folder-modal-trigger" color="danger" type="submit" size="sm">
+          <Icon name="heroicons:trash-20-solid" width={20} height={20} />
+          <t-content-header key="delete-button">
+            {t('delete-button')}
+          </t-content-header>
+        </Button>
+        <Button id="edit-button" variant="solid" size="sm"  color="primary" type="submit" form="edit-folder-form">
+          <Icon slot="start-content" name="heroicons:check-20-solid" width={20} height={20} />
+          <t-content-header key="save-button">
+            {t('save-button')}
+          </t-content-header>
+        </Button>
+      </Group>
+      <Modal
+        id="delete-folder-modal"
+        isForm
+        cancelButton={{ label: 'Cancel', color: 'default' }}
+        actionButton={{ label: 'Delete', color: 'danger' }}
+        >
+        <h2 slot="header">
+          <t-content-header key="delete-modal-header">
+            {t('delete-modal-header')}
+          </t-content-header>
+        </h2>
+        <Center>
+          <div class="modal-body">
+            <input type="hidden" name="folder-id" value={currentId} />
+            <input type="hidden" name="folder-name" value={folderName} />
+            <input type="hidden" name="action-route" value={Astro.locals.StudioCMS.routeMap.endpointLinks.content.folder} />
+
+            <span><t-content-header key="delete-folder-modal-desc-1">
+            {t('delete-folder-modal-desc-1')}
+          </t-content-header> <code>{folderName}</code> <t-content-header key="delete-folder-modal-desc-2">
+            {t('delete-folder-modal-desc-2')}
+          </t-content-header></span>
+
+            <Input name="confirm-folder-name" placeholder={`${folderName.slice(0, folderName.length-2)}...`} isRequired />
+          
+            <span style="color: var(--danger-base)"><t-content-header key="delete-modal-warning">
+            {t('delete-modal-warning')}
+          </t-content-header></span>
+          </div>
+        </Center>
+      </Modal>
+    )}
+
+    { createFolder && ( 
+      <Button id="edit-button" variant="solid" size="sm"  color="primary" type="submit" form="create-folder-form">
+        <Icon slot="start-content" name="heroicons:check-20-solid" width={20} height={20} />
+          <t-content-header key="create-button">
+            {t('create-button')}
+          </t-content-header>
+      </Button>
+    )}
+
+    {createPage && ( 
+      <Group>
+      <Button id="draft-button" variant="outlined" size="sm" color="primary" type="submit" form="page-create-form">
+        <Icon slot="start-content" name="heroicons:document-text-20-solid" width={20} height={20} />
+          <t-content-header key="draft-button">
+            {t('draft-button')}
+          </t-content-header>
+      </Button>
+      <Button id="publish-button" variant="solid" size="sm"  color="primary" type="submit" form="page-create-form">
+        <Icon slot="start-content" name="heroicons:check-20-solid" width={20} height={20} />
+          <t-content-header key="publish-button">
+            {t('publish-button')}
+          </t-content-header>
+      </Button>
+      </Group>
+    )}
+  </div>
+</header>
+
+<div
+  id="current-mode-selector"
+  style="display: none;"
+  data-mode={currentMode}
+></div>
+
+<script>
+    import { 
+        $i18n,
+        baseTranslation,
+        makeTranslation,
+    } from 'studiocms:i18n/client';
+
+    const currentPage = '@studiocms/dashboard:content-header';
+
+    const i18n = $i18n(currentPage, baseTranslation[currentPage]);
+    
+    if (!customElements.get('t-content-header')) {
+        customElements.define('t-content-header', makeTranslation(currentPage, i18n));
+    }
+</script>
+
+<script>
+    import { ModalHelper } from 'studiocms:ui/components/modal/client';
+    import { toast } from "studiocms:ui/components/toaster/client";
+
+    const mode = (document.getElementById('current-mode-selector') as HTMLDivElement).dataset.mode;
+
+    switch (mode) {
+      case "edit-page": {
+        const deletePageModal = new ModalHelper('delete-page-modal', 'delete-page-modal-trigger');
+
+        deletePageModal.registerConfirmCallback(async (formData) => {
+            if (!formData) {
+              toast({
+                  title: 'Error',
+                  description: 'Something went wrong',
+                  type: 'danger'
+              })
+              return;
+            }
+
+            const slugConfirm = formData?.get('slug-confirm')?.toString();
+            const action = formData.get('action-route') as string;
+
+            const data = {
+              id: formData?.get('page-id')?.toString(),
+              slug: formData?.get('page-slug')?.toString(),
+            }
+
+            if (!slugConfirm) {
+              toast({
+                  title: 'Error',
+                  description: 'Something went wrong',
+                  type: 'danger'
+              })
+              return;
+            }
+
+            if (!data.id || !data.slug) {
+              toast({
+                  title: 'Error',
+                  description: 'Something went wrong',
+                  type: 'danger'
+              })
+              return;
+            }
+
+            if (slugConfirm !== data.slug) {
+              toast({
+                  title: 'Error',
+                  description: 'Slug does not match',
+                  type: 'danger'
+              })
+              return;
+            }
+
+            const response = await fetch(action, {
+              method: 'DELETE',
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(data),
+            });
+
+            const res = await response.json();
+
+            if (response.status !== 200) {
+              toast({
+                  title: 'Error',
+                  description: res.error,
+                  type: 'danger'
+              })
+              return;
+            }
+
+            if (response.status === 200) {
+              toast({
+                  title: 'Success',
+                  description: res.message,
+                  type: 'success'
+              })
+              return;
+            }
+        })
+        break;
+      }
+      case "edit-folder": {
+        const deleteFolderModal = new ModalHelper('delete-folder-modal', 'delete-folder-modal-trigger');
+
+        deleteFolderModal.registerConfirmCallback(async (formData) => {
+            if (!formData) {
+              toast({
+                  title: 'Error',
+                  description: 'Something went wrong',
+                  type: 'danger'
+              })
+              return;
+            }
+
+            type JsonData = {
+              id: string;
+              folderName: string;
+              parentFolder: string | null;
+            };
+
+            const folderName = formData.get('folder-name') as string;
+            const id = formData.get('folder-id') as string;
+            const confirmFolderName = formData?.get('confirm-folder-name');
+            const action = formData.get('action-route') as string;
+
+            if (!folderName || !confirmFolderName) {
+              toast({
+                  title: 'Error',
+                  description: 'Something went wrong',
+                  type: 'danger'
+              })
+              return;
+            }
+
+            if (folderName !== confirmFolderName) {
+              toast({
+                  title: 'Error',
+                  description: 'Folder name does not match',
+                  type: 'danger'
+              })
+              return;
+            }
+
+            const data: JsonData = {
+              id,
+              folderName: folderName,
+              parentFolder: null,
+            };
+
+            const response = await fetch(action, {
+              method: 'DELETE',
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(data),
+            });
+
+            const res = await response.json();
+
+            if (response.status !== 200) {
+              toast({
+                  title: 'Error',
+                  description: res.error,
+                  type: 'danger'
+              })
+              return;
+            }
+
+            if (response.status === 200) {
+              toast({
+                  title: 'Success',
+                  description: res.message,
+                  type: 'success'
+              })
+              return;
+            }
+        })
+        break;
+      }
+      case "create-folder":
+        break;
+      case "create-page":
+        break;
+      case "not-found":
+        toast({
+          title: 'Error',
+          description: 'The requested item could not be found.',
+          type: 'danger',
+          persistent: true,
+        })
+        break;
+      default:
+        break;
+    }
+</script>
+
+<style>
+.page-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.page-title-container {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  width: fit-content;
+}
+
+.page-title {
+  display: block;
+  width: fit-content;
+  margin: 0;
+}
+
+.page-actions-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1rem;
+}
+
+.modal-body {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    span {
+        font-size: .875rem;
+    }
+
+    code {
+        background-color: var(--background-step-3);
+        padding: .25rem;
+        border-radius: 4px;
+    }
+}
+</style>

@@ -1,0 +1,107 @@
+---
+import { useTranslations } from 'studiocms:i18n';
+import InnerSidebarElement from '../../../components/dashboard/content-mgmt/InnerSidebarElement.astro';
+import PageHeader from '../../../components/dashboard/content-mgmt/PageHeader.astro';
+import Layout from '../../../layouts/DashboardLayout.astro';
+
+const { siteConfig: config, defaultLang: lang, security } = Astro.locals.StudioCMS;
+
+const currentUser = security?.userSessionData ?? null;
+
+const t = useTranslations(lang, '@studiocms/dashboard:content-index');
+---
+
+<Layout 
+  title={t('title')}
+  description={t('description')}
+  requiredPermission='editor'
+  sidebar='double'
+  {lang}
+  {config}
+  {currentUser}
+  >
+
+  <div slot="double-sidebar" class="inner-sidebar-container">
+    <div class="sidebar-links-container">
+      <InnerSidebarElement {lang} />
+    </div>
+  </div>
+
+  <div slot="header">
+    <PageHeader {lang} />
+  </div>
+
+  <div id="placeholder-info" class="placeholder-info">
+    <p>
+      <t-content-index key="placeholder">{t('placeholder')}</t-content-index>
+    </p>
+  </div>
+
+</Layout>
+
+<script>
+    import { 
+        $i18n,
+        $localeSettings,
+        baseTranslation,
+        defaultLang,
+        documentUpdater,
+        makeTranslation,
+    } from 'studiocms:i18n/client';
+  
+    let lang = defaultLang;
+
+    const currentPage = '@studiocms/dashboard:content-index';
+
+    $localeSettings.subscribe((locale) => {
+      lang = locale || defaultLang;
+    });
+
+    const i18n = $i18n(currentPage, baseTranslation[currentPage]);
+      
+      i18n.subscribe(comp => {
+        documentUpdater(comp, lang)
+      });
+    
+    if (!customElements.get('t-content-index')) {
+        customElements.define('t-content-index', makeTranslation(currentPage, i18n));
+    }
+</script>
+
+<style>
+
+  .sidebar-links-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    min-height: 99vh;
+    height: 100%;
+    gap: 0.5rem;
+  }
+
+  .inner-sidebar-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 100vh;
+    max-height: 100%;
+    padding: 1.5rem;
+  }
+
+  .placeholder-info {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 40vh;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 30vh;
+    z-index: -1;
+
+    p {
+      font-size: 1.25rem;
+      color: var(--text-muted);
+    }
+  }
+</style>

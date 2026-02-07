@@ -1,0 +1,284 @@
+---
+import { useTranslations } from 'studiocms:i18n';
+import { runSDK, SDKCoreJs } from 'studiocms:sdk';
+import { Input } from 'studiocms:ui/components/input';
+import { Select } from 'studiocms:ui/components/select';
+import MetaContainer from '#frontend/components/dashboard/taxonomy/MetaContainer.astro';
+import TaxonomyLayout from '#frontend/layouts/TaxonomyLayout.astro';
+
+const { defaultLang: lang } = Astro.locals.StudioCMS;
+
+const t = useTranslations(lang, '@studiocms/dashboard:taxonomy-index');
+
+const categories = await runSDK(SDKCoreJs.GET.categories.getAll());
+
+const currentPath = Astro.url.pathname;
+
+console.log('Current Path:', currentPath);
+
+const pathParts = currentPath.split('/');
+const type = pathParts.includes('categories') ? 'categories' : null;
+
+const searchParams = Astro.url.searchParams;
+const editId = searchParams.get('edit') ?? undefined;
+
+const filterCurrent = (categoryId: number | undefined) => {
+	if (!type || !editId) {
+		return true;
+	}
+	return editId ? Number.parseInt(editId, 10) !== categoryId : true;
+};
+---
+
+<TaxonomyLayout type="categories">
+    <form 
+        id="category-form" 
+        action={Astro.locals.StudioCMS.routeMap.endpointLinks.taxonomy} 
+        method="post"
+    >
+        <input type="hidden" name="mode" value="create" />
+        <input type="hidden" name="id" value="" />
+
+        <div class="form-row">
+            <Input id="name" name="name" label={t('label-name')} isRequired />
+            <Input id="slug" name="slug" label={t('label-slug')} isRequired />
+        </div>
+
+        <div class="form-row">
+            <Select
+                name="parent"
+                label={t('label-parent-category')}
+                fullWidth
+                defaultValue="null"
+                options={[
+                    { label: "None", value: "null" },
+                    ...categories.filter((cat) => filterCurrent(cat.id)).map((cat) => ({
+                        label: cat.name,
+                        value: String(cat.id),
+                    })),
+                ]}
+            />
+            <Input id="description" name="description" label={t('label-description')} />
+        </div>
+
+        <MetaContainer name="meta">
+            <Fragment slot="title">
+                <t-taxonomy key="label-meta">
+                    {t('label-meta')}
+                </t-taxonomy>
+            </Fragment>
+            <Fragment slot="key-label">
+                <t-taxonomy key="label-meta-key">
+                    {t('label-meta-key')}
+                </t-taxonomy>
+            </Fragment>
+            <Fragment slot="value-label">
+                <t-taxonomy key="label-meta-value">
+                    {t('label-meta-value')}
+                </t-taxonomy>
+            </Fragment>
+            <Fragment slot="alert-message-keys-empty">
+                <t-taxonomy key="meta-alert-message-keys-empty">
+                    {t('meta-alert-message-keys-empty')}
+                </t-taxonomy>
+            </Fragment>
+            <Fragment slot="alert-message-duplicate-keys">
+                <t-taxonomy key="meta-alert-message-duplicate-keys">
+                    {t('meta-alert-message-duplicate-keys')}
+                </t-taxonomy>
+            </Fragment>
+        </MetaContainer>
+    </form>
+</TaxonomyLayout>
+
+<script>
+    import {
+        $i18n,
+        baseTranslation,
+        updateElmLabel,
+        updateSelectElmLabel,
+    } from "studiocms:i18n/client";
+
+    const currentPage = "@studiocms/dashboard:taxonomy-index";
+
+    const i18n = $i18n(currentPage, baseTranslation[currentPage]);
+
+    i18n.subscribe((comp) => {
+        updateElmLabel('name', comp['label-name']);
+        updateElmLabel('slug', comp['label-slug']);
+        updateElmLabel('description', comp['label-description']);
+        updateSelectElmLabel('parent', comp['label-parent-category']);
+    });
+</script>
+
+<script>
+    import {
+        getCurrentEntryData,
+        parseFormDataToJson,
+    } from "./shared-client.js";
+    import { toast } from "studiocms:ui/components/toaster/client";
+
+    const $ = <E extends HTMLElement>(
+        selector: string,
+        context: Document | Element = document,
+    ) => context.querySelector(selector) as E;
+    const $$ = <E extends HTMLElement>(
+        selector: string,
+        context: Document | Element = document,
+    ) => context.querySelectorAll(selector) as NodeListOf<E>;
+
+    const form = $("#category-form") as HTMLFormElement;
+
+    const dataEl = $("#current-taxonomy-entry-data");
+    const modeInput = $<HTMLInputElement>('input[name="mode"]', form);
+    const idInput = $<HTMLInputElement>('input[name="id"]', form);
+    const titleInput = $<HTMLInputElement>('input[name="name"]', form);
+    const slugInput = $<HTMLInputElement>('input[name="slug"]', form);
+    const descriptionInput = $<HTMLInputElement>('input[name="description"]', form);
+    const parentSelect = $<HTMLSelectElement>('select[name="parent"]', form);
+    const metaContainer = $<HTMLElement>(`dynamic-key-value-pair[name="meta"]`, form);
+
+    const parentSelectOptions = $$<HTMLOptionElement>("option", parentSelect);
+    const parentSelectDropdown = $<HTMLUListElement>(`#parent-dropdown`);
+    const parentValueDisplay = $<HTMLSpanElement>(`#parent-value-span`);
+
+    const currentData = getCurrentEntryData<"categories">(dataEl);
+
+    function updateSelectDisplay(value: string) {
+        for (const option of parentSelectOptions) {
+            if (option.value === value) {
+                option.setAttribute("selected", "");
+            } else {
+                option.removeAttribute("selected");
+            }
+        }
+
+        for (const li of parentSelectDropdown.children) {
+            const liElement = li as HTMLElement;
+            const liValue = liElement.getAttribute("value");
+
+            if (liValue === value) {
+                liElement.id = "parent-selected";
+                liElement.classList.add("selected");
+                parentValueDisplay.textContent = liElement.textContent;
+            } else {
+                liElement.id = "";
+                liElement.classList.remove("selected");
+            }
+        }
+    }
+
+    function populate() {
+        modeInput.value = dataEl.dataset.mode || "create";
+
+        if (dataEl.dataset.mode === "create") {
+            if (currentData.parent) {
+                updateSelectDisplay(String(currentData.parent));
+            }
+        }
+
+        if (dataEl.dataset.mode === "edit") {
+            idInput.value = String(currentData.currentEntry.id || "");
+            titleInput.value = currentData.currentEntry.name || "";
+            slugInput.value = currentData.currentEntry.slug || "";
+            descriptionInput.value = currentData.currentEntry.description || "";
+            metaContainer.setAttribute(
+                "entries",
+                JSON.stringify(currentData.currentEntry.meta || {}),
+            );
+
+            const parentId = currentData.currentEntry.parent;
+
+            updateSelectDisplay(parentId ? String(parentId) : "null");
+        }
+    }
+
+    function loadForm() {
+        const redirectUrl = dataEl.dataset.redirect;
+
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const formData = new FormData(form);
+            const jsonData = parseFormDataToJson(formData, 'categories');
+
+            let response: Response;
+
+            try {
+                response = await fetch(form.action, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(jsonData),
+                });
+            } catch (error) {
+                toast({
+                    title: "Error",
+                    description:
+                        "An error occurred while saving the category",
+                    type: "danger",
+                });
+                return;
+            }
+
+            if (response.ok) {
+                const result: { message: string } =
+                    await response.json();
+                if (response.status === 200) {
+                    toast({
+                        title: "Success",
+                        description:
+                            result.message || "Category saved successfully",
+                        type: "success",
+                    });
+
+                    if (redirectUrl) {
+                        window.location.href = redirectUrl;
+                    }
+                } else {
+                    toast({
+                        title: "Error",
+                        description:
+                            result.message ||
+                            "An error occurred while saving the category",
+                        type: "danger",
+                    });
+                }
+            } else {
+                toast({
+                    title: "Error",
+                    description:
+                        "An error occurred while saving the category",
+                    type: "danger",
+                });
+            }
+        });
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        populate();
+        loadForm();
+    });
+</script>
+
+<style>
+    #category-form {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+    }
+
+    @media (max-width: 600px) {
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>

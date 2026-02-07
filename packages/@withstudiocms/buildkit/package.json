@@ -1,0 +1,40 @@
+{
+  "name": "@withstudiocms/buildkit",
+  "version": "0.2.0",
+  "description": "Build kit based on esbuild for the withstudiocms github org",
+  "author": {
+    "name": "withstudiocms",
+    "url": "https://studiocms.dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/withstudiocms/studiocms.git",
+    "directory": "packages/@withstudiocms/buildkit"
+  },
+  "license": "MIT",
+  "files": [
+    "lib",
+    "CHANGELOG.md",
+    "README.md",
+    "LICENSE"
+  ],
+  "type": "module",
+  "main": "./lib/index.js",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "bin": {
+    "buildkit": "./lib/index.js"
+  },
+  "scripts": {
+    "test": "vitest"
+  },
+  "dependencies": {
+    "esbuild": "catalog:",
+    "tinyglobby": "catalog:"
+  },
+  "devDependencies": {
+    "strip-ansi": "^7.1.2"
+  }
+}

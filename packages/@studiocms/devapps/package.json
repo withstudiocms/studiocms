@@ -1,0 +1,76 @@
+{
+  "name": "@studiocms/devapps",
+  "version": "0.2.1",
+  "description": "Devapps for StudioCMS Astro projects, including a WordPress importer.",
+  "author": {
+    "name": "withstudiocms",
+    "url": "https://studiocms.dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/withstudiocms/studiocms.git",
+    "directory": "packages/@studiocms/devapps"
+  },
+  "contributors": [
+    "Adammatthiesen",
+    "jdtjenkins",
+    "dreyfus92",
+    "code.spirit"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "astro",
+    "astro-integration",
+    "studiocms",
+    "withastro",
+    "wordpress",
+    "wordpress-import",
+    "wordpress-importer",
+    "devapp",
+    "astro-devapp",
+    "astro-devtoolbarapp"
+  ],
+  "homepage": "https://studiocms.dev",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "sideEffects": false,
+  "files": [
+    "dist",
+    "assets"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "buildkit build 'src/**/*.{ts,astro,css,json,png,d.ts}'",
+    "dev": "buildkit dev 'src/**/*.{ts,astro,css,json,png,d.ts}'",
+    "typecheck": "tspc -p tsconfig.tspc.json",
+    "effect-check": "pnpm effect-language-service diagnostics --project tsconfig.tspc.json",
+    "ci:effect-check": "pnpm effect-check --format github-actions",
+    "test": "vitest"
+  },
+  "type": "module",
+  "dependencies": {
+    "astro-integration-kit": "catalog:",
+    "cheerio": "^1.2.0",
+    "turndown": "^7.2.2",
+    "sanitize-html": "^2.17.0"
+  },
+  "devDependencies": {
+    "@types/turndown": "^5.0.6",
+    "@types/sanitize-html": "^2.16.0",
+    "@withstudiocms/sdk": "workspace:^",
+    "astro": "catalog:min",
+    "studiocms": "workspace:^",
+    "typescript": "catalog:",
+    "vite": "catalog:min"
+  },
+  "peerDependencies": {
+    "effect": "catalog:effect"
+  }
+}

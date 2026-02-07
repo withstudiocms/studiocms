@@ -1,0 +1,109 @@
+---
+import { useTranslations } from 'studiocms:i18n';
+import pluginList from 'studiocms:plugins';
+import { Button } from 'studiocms:ui/components/button';
+import { Icon } from 'studiocms:ui/components/icon';
+import PageHeader from '../../../components/dashboard/PageHeader.astro';
+import SettingsRenderer from '../../../components/dashboard/plugins/SettingsRenderer.astro';
+import Layout from '../../../layouts/DashboardLayout.astro';
+
+const { siteConfig: config, defaultLang: lang, security } = Astro.locals.StudioCMS;
+
+const currentUser = security?.userSessionData ?? null;
+
+const t = useTranslations(lang, '@studiocms/dashboard:plugin-settings');
+
+const filteredPluginList = pluginList.filter((plugin) => !!plugin.settingsPage);
+
+const { plugin } = Astro.params;
+
+if (!plugin) {
+	return new Response(null, { status: 404 });
+}
+
+const pluginData = filteredPluginList.find((p) => p.identifier === plugin);
+
+if (!pluginData) {
+	return new Response(null, { status: 404 });
+}
+---
+
+<Layout 
+  title={t('title')}
+  description={t('description')}
+  requiredPermission='editor'
+  {lang}
+  {config}
+  {currentUser}
+  >
+
+  <div slot="header">
+    <PageHeader title={`${t('header')}: ${pluginData.name}`}>
+      <Button variant="solid" color="primary" size="sm" type="submit" form="plugin-settings-form">
+        <Icon slot="start-content" name="heroicons:check-20-solid" width={20} height={20} />
+        <t-plugins key="save-button">{t('save-button')}</t-plugins>
+      </Button>
+    </PageHeader>
+  </div>
+
+  <form id="plugin-settings-form" action={Astro.locals.StudioCMS.routeMap.endpointLinks.plugins + pluginData.identifier} method="POST"> 
+    <div class="form-settings">
+      
+    {
+      pluginData.settingsPage && (
+        <SettingsRenderer fields={pluginData.settingsPage.fields} />
+      )
+    }
+    
+    </div>    
+  </form>
+
+  <div style="display: none;" id="plugin-name" data-value={pluginData.name}></div>
+
+  <script>
+      import { 
+          $i18n,
+          $localeSettings,
+          baseTranslation,
+          defaultLang,
+          documentUpdater,
+          makeTranslation,
+          pageHeaderUpdater,
+      } from 'studiocms:i18n/client';
+  
+      const currentPage = '@studiocms/dashboard:plugin-settings';
+  
+      let lang = defaultLang;
+
+      const pluginName = (document.getElementById('plugin-name') as HTMLDivElement).getAttribute('data-value');
+  
+      const i18n = $i18n(currentPage, baseTranslation[currentPage]);
+  
+      $localeSettings.subscribe((locale) => {
+          lang = locale || defaultLang;
+      });
+      
+      i18n.subscribe(comp => {
+
+        const pluginComp = {
+          ...comp,
+          header: `${comp.header}: ${pluginName}`
+        }
+
+        documentUpdater(pluginComp, lang)
+        pageHeaderUpdater(pluginComp.header)
+      });
+      
+      if (!customElements.get('t-plugins')) {
+          customElements.define('t-plugins', makeTranslation(currentPage, i18n));
+      }
+  </script>
+
+  <style>
+    .form-settings {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+  </style>
+</Layout>

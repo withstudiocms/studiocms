@@ -1,0 +1,274 @@
+---
+import { validImages } from 'studiocms:auth/utils/validImages';
+import dashboardGridItems from 'studiocms:components/dashboard-grid-items';
+import { useTranslations } from 'studiocms:i18n';
+import type { DynamicConfigEntry, StudioCMSSiteConfig } from 'studiocms:sdk/types';
+import { Card } from 'studiocms:ui/components/card';
+import { Divider } from 'studiocms:ui/components/divider';
+import { Input } from 'studiocms:ui/components/input';
+import { Select } from 'studiocms:ui/components/select';
+import { Toggle } from 'studiocms:ui/components/toggle';
+import StorageInput from '#frontend/components/shared/storage-manager/StorageInput.astro';
+import LoginPreview from './LoginPreview.astro';
+
+interface Props {
+	config: DynamicConfigEntry<StudioCMSSiteConfig>;
+}
+
+const { config } = Astro.props as Props;
+
+const { data } = config;
+
+const ogSelectOptions = validImages.map(({ label, name: value }) => ({ label, value }));
+
+const currentLoginPageBg = validImages.find(
+	({ name }) => name === data.loginPageBackground && name !== 'custom'
+);
+
+const currentlyEnabledGridItems: string[] = (data.gridItems as string[]) ?? [];
+
+interface PreGridItem {
+	name: string;
+	label: string;
+}
+
+interface AllGridItems extends PreGridItem {
+	enabled: boolean;
+}
+
+const allGridItems: PreGridItem[] = dashboardGridItems.map((item) => ({
+	name: item.name,
+	label: item.header?.title ?? item.name,
+}));
+
+const gridItemOptions: AllGridItems[] = allGridItems.map(({ name, label }) => {
+	if (currentlyEnabledGridItems.length === 0) {
+		return {
+			enabled: true,
+			name,
+			label,
+		};
+	}
+
+	return {
+		enabled: currentlyEnabledGridItems.includes(name),
+		name,
+		label,
+	};
+});
+
+const lang = Astro.locals.StudioCMS.defaultLang;
+const t = useTranslations(lang, '@studiocms/dashboard:configuration');
+---
+
+<form id="site-config-form" action={Astro.locals.StudioCMS.routeMap.endpointLinks.config}>
+    <div class="form-content">
+
+        <div class="form-row">
+            <Input label={t('input-site-title')} name='site-title' placeholder='My Awesome Website' value={data.title} isRequired />
+            <Input label={t('input-site-description')} name='site-description' placeholder='Built with StudioCMS!' value={data.description} isRequired />
+        </div>
+
+        <div class="form-row">
+            <StorageInput label={t('input-og-image')} name="default-og-image" placeholder="'https://...' for local, or '/...' for public/ folder" value={data.defaultOgImage} />
+            <StorageInput label="Site Icon (Public facing Favicon)" name="site-icon" placeholder="'https://...' for local, or '/...' for public/ folder" value={data.siteIcon} />
+        </div>
+
+        <div class="form-row">
+            <Select label={t('select-page-diff-tracking')} name="diff-enabled" defaultValue={`${data.enableDiffs}`} options={[{ label: 'True', value: 'true' }, { label: 'False', value: 'false' }]} fullWidth />
+            <Input label={t('input-diff-tracking-limit')} name="diff-per-page" placeholder="10" value={data.diffPerPage} />
+        </div>
+
+        <div class="form-row">
+            <Select label={t('select-smtp-mailer')} name="enable-mailer" defaultValue={`${data.enableMailer}`} options={[{ label: 'True', value: 'true' }, { label: 'False', value: 'false' }]} fullWidth />
+        </div>
+
+        <Divider />
+
+        <span>
+            <t-config-form key="dashboard-grid-label">{t('dashboard-grid-label')}</t-config-form>
+        </span>
+
+        <div class="grid-items-container">
+            {
+                gridItemOptions.map(({ enabled, label, name }) => (
+                    <Card style="background-color: var(--background-step-2);">
+                        <Toggle {label} {name} color='primary' defaultChecked={enabled} />
+                    </Card>
+                ))
+            }
+        </div>
+
+        <Divider />
+
+        <div class="form-row">
+            <Select label={t('select-login-page-bg')} name='login-page-background' defaultValue={data.loginPageBackground} options={ogSelectOptions} fullWidth />
+            <StorageInput label={t('input-custom-login-page')} name="login-page-background-custom" placeholder="'https://...' for local, or '/...' for public/ folder" value={data.loginPageCustomImage} disabled={data.loginPageBackground !== 'custom'} />
+        </div>
+
+        <LoginPreview light={currentLoginPageBg?.light} dark={currentLoginPageBg?.dark} />
+
+    </div>
+</form>
+
+<div id="grid-items-data-list" data-items={JSON.stringify(gridItemOptions.map(({ name }) => name))} style="display: none;"></div>
+
+<script>
+    import {
+        $i18n,
+        $localeSettings,
+        baseTranslation,
+        defaultLang,
+        makeTranslation,
+        updateElmLabel,
+        updateSelectElmLabel,
+updateTrueFalseSelectOptions,
+    } from 'studiocms:i18n/client';
+    import { $pluginI18n } from 'studiocms:i18n/plugins';
+
+    const gridItemsDataElm = document.getElementById('grid-items-data-list') as HTMLDivElement;
+    const gridItemsData = gridItemsDataElm.dataset.items as string;
+
+    const gridItems: `${string}/${string}`[] = JSON.parse(gridItemsData);
+
+    const gridItemsList = gridItems.map((item) => {
+      const [id, component] = item.split('/');
+      return {
+        id,
+        // component name should replace underscores with hyphens
+        component: component.replace(/_/g, '-'),
+        selector: `label-${item}`
+      };
+    });
+
+    const currentPage = '@studiocms/dashboard:configuration';
+
+    let lang = defaultLang;
+
+    const i18n = $i18n(currentPage, baseTranslation[currentPage]);
+
+    const pluginI18n = (pluginId: string, component: string) => $pluginI18n(pluginId, component);
+
+    function registerGridItemSubscriptions(subscriptions: { id: string, component: string, selector: string }[]) {
+      for (const subscription of subscriptions) {
+        const sub = pluginI18n(subscription.id, subscription.component);
+
+        sub.subscribe(comp => {
+          const elm = document.getElementById(subscription.selector);
+          if (elm) {
+            elm.textContent = comp['title'];
+          }
+        })
+      }
+    }
+
+    registerGridItemSubscriptions(gridItemsList);
+
+    $localeSettings.subscribe((locale) => {
+        lang = locale || defaultLang;
+    });
+
+    i18n.subscribe(comp => {
+        updateElmLabel('site-title', comp['input-site-title']);
+        updateElmLabel('site-description', comp['input-site-description']);
+        updateElmLabel('default-og-image', comp['input-og-image']);
+        updateElmLabel('site-icon', comp['input-site-icon']);
+        updateElmLabel('diff-per-page', comp['input-diff-tracking-limit']);
+        updateElmLabel('login-page-background-custom', comp['input-custom-login-page']);
+        updateSelectElmLabel('login-page-background', comp['select-login-page-bg']);
+        updateSelectElmLabel('diff-enabled', comp['select-page-diff-tracking']);
+        updateSelectElmLabel('enable-mailer', comp['select-smtp-mailer']);
+
+        const trueFalseOptions = { true: comp['true-label'], false: comp['false-label'] };
+
+        updateTrueFalseSelectOptions('diff-enabled', trueFalseOptions);
+        updateTrueFalseSelectOptions('enable-mailer', trueFalseOptions);
+    });
+
+    if (!customElements.get('t-config-form')) {
+        customElements.define('t-config-form', makeTranslation(currentPage, i18n));
+    }
+</script>
+
+<script>
+    import { toast } from "studiocms:ui/components/toaster/client";
+        const configForm = document.querySelector('#site-config-form') as HTMLFormElement;
+
+        configForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            try {
+                const formData = new FormData(configForm);
+                // Scope to grid container to avoid unrelated checkboxes
+                const gridItems = Array.from(document.querySelectorAll('.grid-items-container input[type="checkbox"]') as NodeListOf<HTMLInputElement>).map((input) => ({
+                    name: input.name,
+                    enabled: input.checked,
+                }));
+                const enabledGridItems = gridItems.filter((item) => item.enabled).map((item) => item.name);
+                const diffPerPageRaw = formData.get('diff-per-page') as string;
+                const diffPerPageParsed = Number.parseInt(diffPerPageRaw, 10);
+                const data = {
+                    title: formData.get('site-title') as string,
+                    description: formData.get('site-description') as string,
+                    defaultOgImage: formData.get('default-og-image') ?? null,
+                    siteIcon: formData.get('site-icon') ?? null,
+                    loginPageBackground: formData.get('login-page-background') as string,
+                    loginPageCustomImage: formData.get('login-page-background-custom') ?? null,
+                    enableDiffs: formData.get('diff-enabled') === 'true',
+                    diffPerPage: Number.isNaN(diffPerPageParsed) ? 10 : diffPerPageParsed,
+                    gridItems: enabledGridItems,
+                    enableMailer: formData.get('enable-mailer') === 'true',
+                };
+                const response = await fetch(configForm.action, {
+                    method: 'POST',
+                    body: JSON.stringify(data),
+                    headers: { 'Content-Type': 'application/json' },
+                });
+                const res: any = await response.json().catch(() => ({}));
+                if (!response.ok) {
+                    toast({
+                        title: 'Error',
+                        description: res?.error || res?.message || 'Request failed',
+                        type: 'danger'
+                    });
+                    return;
+                }
+                toast({
+                    title: 'Success',
+                    description: res?.message || 'Configuration saved',
+                    type: 'success'
+                });
+            } catch (err) {
+                toast({
+                    title: 'Network error',
+                    description: (err as Error)?.message ?? 'Unexpected error',
+                    type: 'danger'
+                });
+            }
+        });
+</script>
+
+<style>
+    .form-content {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+
+    @media screen and (max-width: 768px) {
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .grid-items-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+</style>

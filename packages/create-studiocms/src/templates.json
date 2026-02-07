@@ -1,0 +1,29 @@
+[
+  {
+    "value": "blog-libsql",
+    "label": "StudioCMS w/ blog frontend (LibSQL)"
+  },
+  {
+    "value": "blog-mysql",
+    "label": "StudioCMS w/ blog frontend (MySQL)"
+  },
+  {
+    "value": "blog-postgres",
+    "label": "StudioCMS w/ blog frontend (PostgreSQL)"
+  },
+  {
+    "value": "headless-libsql",
+    "label": "StudioCMS Headless (LibSQL)",
+    "hint": "Bring your own frontend"
+  },
+  {
+    "value": "headless-mysql",
+    "label": "StudioCMS Headless (MySQL)",
+    "hint": "Bring your own frontend"
+  },
+  {
+    "value": "headless-postgres",
+    "label": "StudioCMS Headless (PostgreSQL)",
+    "hint": "Bring your own frontend"
+  }
+]

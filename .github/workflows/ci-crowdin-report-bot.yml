@@ -1,0 +1,45 @@
+name: CI - Crowdin Report Bot
+
+on:
+  schedule:
+    - cron: '0 10 * * TUE'
+  workflow_dispatch:
+
+permissions: {}
+
+env:
+  FORCE_COLOR: true
+  # 7 GiB by default on GitHub, setting to 6 GiB
+  # https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners#supported-runners-and-hardware-resources
+  NODE_OPTIONS: --max-old-space-size=6144
+
+jobs:
+  translation-report:
+    name: Translation Report
+    if: ${{ github.repository_owner == 'withstudiocms' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
+      - name: Install Tools & Dependencies
+        uses: withstudiocms/automations/.github/actions/install@7caa6bf5171347ed3b56a7f65ef030f0fbc15774 # main
+
+      - id: message
+        name: Format Discord message
+        run: node .github/scripts/crowdin-report-bot.mjs
+        env:
+          CROWDIN_PROJECT_ID: ${{ secrets.CROWDIN_PROJECT_ID }}
+          CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
+
+      - name: Send a Discord notification
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_I18N_REPORT }}
+        uses: Ilshidur/action-discord@d2594079a10f1d6739ee50a2471f0ca57418b554 # 0.4.0
+        with:
+          args: "${{ steps.message.outputs.DISCORD_MESSAGE }}"

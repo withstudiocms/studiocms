@@ -1,0 +1,62 @@
+name: CI - Pull Request
+
+on:
+  pull_request:
+    paths-ignore: 
+      - '.github/**/**'
+      - 'README.md'
+      - 'LICENSE'
+      - '**/**.md'
+
+concurrency:
+  group: >-
+    ${{ github.workflow }}-
+    ${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.number) || github.sha }}
+  cancel-in-progress: true
+
+permissions: {}
+
+env:
+  FORCE_COLOR: true
+  # 7 GiB by default on GitHub, setting to 6 GiB
+  # https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners#supported-runners-and-hardware-resources
+  NODE_OPTIONS: --max-old-space-size=6144
+
+jobs:
+  lint-biome-pr:
+    name: Run Biome Linter and Report
+    if: github.event_name == 'pull_request'
+    permissions:
+      contents: read
+      pull-requests: write
+    uses: withstudiocms/automations/.github/workflows/run-pnpm.yml@7caa6bf5171347ed3b56a7f65ef030f0fbc15774 # main
+    secrets: inherit
+    with:
+      commands: > 
+        ["ci:lint"]
+        
+  preview-changeset-release:
+    name: Pre-Release Snapshot
+    if: github.event_name == 'pull_request' && (github.event.pull_request.user.login == 'studiocms-no-reply' || github.event.pull_request.user.login == 'apollo-git-bot[bot]')
+    permissions:
+      contents: read
+      id-token: write
+      issues: write
+      pull-requests: write
+    secrets: inherit
+    uses: withstudiocms/automations/.github/workflows/preview.yml@7caa6bf5171347ed3b56a7f65ef030f0fbc15774 # main
+    with:
+      build-cmd: "pnpm ci:build"
+
+  preview-pr:
+    name: PR Snapshot Preview
+    if: github.event_name == 'pull_request' && (github.event.pull_request.user.login != 'studiocms-no-reply' && github.event.pull_request.user.login != 'apollo-git-bot[bot]') && github.event.pull_request.head.repo.full_name == github.repository
+    permissions:
+      contents: read
+      id-token: write
+      issues: write
+      pull-requests: write
+    secrets: inherit
+    uses: withstudiocms/automations/.github/workflows/preview-pr.yml@7caa6bf5171347ed3b56a7f65ef030f0fbc15774 # main
+    with:
+      build-cmd: "pnpm ci:build"

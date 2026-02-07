@@ -1,0 +1,72 @@
+---
+import { useTranslations } from 'studiocms:i18n';
+import { Button } from 'studiocms:ui/components/button';
+import { Icon } from 'studiocms:ui/components/icon';
+import BrowserInputArray from '#frontend/components/shared/storage-manager/BrowserInputArray.astro';
+import ConfigForm from '../../components/dashboard/configuration/ConfigForm.astro';
+import PageHeader from '../../components/dashboard/PageHeader.astro';
+import Layout from '../../layouts/DashboardLayout.astro';
+
+const { siteConfig: config, defaultLang: lang, security } = Astro.locals.StudioCMS;
+
+const currentUser = security?.userSessionData ?? null;
+
+const t = useTranslations(lang, '@studiocms/dashboard:configuration');
+---
+
+<Layout 
+  title={t('title')}
+  description={t('description')}
+  requiredPermission='owner'
+  {lang}
+  {config}
+  {currentUser}
+  >
+
+  <div slot="external">
+    <BrowserInputArray triggerInputs={['default-og-image', 'site-icon', 'login-page-background-custom']} />
+  </div>
+
+  <div slot="header">
+    <PageHeader title={t('header')}>
+      <Button variant="solid" color="primary" size="sm" type="submit" form="site-config-form">
+        <Icon slot="start-content" name="heroicons:check-20-solid" width={20} height={20} />
+        <t-config key="save-button">{t('save-button')}</t-config>
+      </Button>
+    </PageHeader>
+  </div>
+  
+  <ConfigForm {config} />
+
+</Layout>
+
+<script>
+    import { 
+        $i18n,
+        $localeSettings,
+        baseTranslation,
+        defaultLang,
+        documentUpdater,
+        makeTranslation,
+        pageHeaderUpdater,
+    } from 'studiocms:i18n/client';
+
+    const currentPage = '@studiocms/dashboard:configuration';
+
+    let lang = defaultLang;
+
+    const i18n = $i18n(currentPage, baseTranslation[currentPage]);
+
+    $localeSettings.subscribe((locale) => {
+        lang = locale || defaultLang;
+    });
+    
+    i18n.subscribe(comp => {
+      documentUpdater(comp, lang)
+      pageHeaderUpdater(comp.header)
+    });
+    
+    if (!customElements.get('t-config')) {
+        customElements.define('t-config', makeTranslation(currentPage, i18n));
+    }
+</script>

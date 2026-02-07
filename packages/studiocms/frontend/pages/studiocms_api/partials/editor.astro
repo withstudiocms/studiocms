@@ -1,0 +1,74 @@
+---
+export const partial = true;
+
+import pluginsList from 'studiocms:plugins';
+import { AstroError } from 'astro/errors';
+
+type RawJsonData = {
+	content: string | undefined;
+	editor: string;
+};
+
+type EditorComponent = (_props?: {
+	content?: string | null | undefined;
+	// biome-ignore lint/suspicious/noExplicitAny: This is a valid use case for explicit any.
+}) => any;
+
+type EditorComponentItem = {
+	identifier: string;
+	Component: EditorComponent;
+};
+
+async function load() {
+	const jsonData: RawJsonData | undefined = await Astro.request.json();
+
+	const pageTypeComponents: EditorComponentItem[] = [];
+
+	for (const { pageTypes } of pluginsList) {
+		if (!pageTypes) continue;
+
+		for (const { identifier, pageContentComponent } of pageTypes) {
+			if (!pageContentComponent) continue;
+
+			pageTypeComponents.push({
+				identifier,
+				Component: (await import(/* @vite-ignore */ pageContentComponent)).default,
+			});
+		}
+	}
+
+	let Editor: EditorComponentItem | undefined;
+
+	Editor = pageTypeComponents.find((ed) => ed.identifier === jsonData?.editor);
+
+	if (!Editor) {
+		const MarkdownEditor = pageTypeComponents.find(
+			(editor) => editor.identifier === 'studiocms/markdown'
+		);
+		if (MarkdownEditor) {
+			Editor = MarkdownEditor;
+		} else {
+			throw new AstroError(
+				`No editor found for identifier: ${jsonData?.editor}`,
+				'StudioCMSDashboardPartialEditorError - No editor found'
+			);
+		}
+	}
+
+	if (jsonData?.content) {
+		return {
+			content: jsonData.content,
+			ActiveEditor: Editor.Component,
+		};
+	}
+
+	return {
+		content: 'No content to display',
+		ActiveEditor: Editor.Component,
+	};
+}
+
+const { content, ActiveEditor } = await load();
+---
+
+<ActiveEditor content={content} />

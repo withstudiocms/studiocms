@@ -1,0 +1,24 @@
+node_modules
+# moon
+.moon/cache
+.moon/docker
+.npmrc
+
+.pnpm-store
+
+# typedoc
+www/docs/src/content/docs/typedoc/*
+
+#coverage
+
+coverage/*
+coverage
+junit-report.xml
+
+dist
+
+# allure results
+allure-results/*
+allure-results
+
+.env

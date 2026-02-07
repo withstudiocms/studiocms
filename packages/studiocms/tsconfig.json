@@ -1,0 +1,13 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "include": ["src", "frontend"],
+  "exclude": ["dist"],
+  "compilerOptions": {
+    "outDir": "./dist",
+    "baseUrl": ".",
+    "emitDeclarationOnly": true,
+    "resolveJsonModule": true,
+    "rootDir": ".",
+    "removeComments": false
+  }
+}

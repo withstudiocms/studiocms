@@ -1,0 +1,61 @@
+---
+import { useTranslations } from 'studiocms:i18n';
+import DashboardGrid from '../../components/dashboard/DashboardGrid.astro';
+import DashboardPageHeader from '../../components/dashboard/DashboardPageHeader.astro';
+import Layout from '../../layouts/DashboardLayout.astro';
+
+const { siteConfig: config, defaultLang: lang, security } = Astro.locals.StudioCMS;
+
+const currentUser = security?.userSessionData ?? null;
+
+const t = useTranslations(lang, '@studiocms/dashboard:index');
+---
+
+<Layout 
+  title={t('title')}
+  description={t('description')}
+  requiredPermission='editor'
+  {lang}
+  {config}
+  {currentUser}
+  >
+
+  <div slot="header">
+    <DashboardPageHeader {lang} {currentUser} />
+    <span class="index-sub-header">
+      <t-dashboard key="sub-header">{t('sub-header')}</t-dashboard>
+    </span>
+  </div>
+
+  <DashboardGrid {lang} {config} {currentUser} />
+
+</Layout>
+
+<script>
+    import { 
+        $i18n,
+        $localeSettings,
+        baseTranslation,
+        defaultLang,
+        documentUpdater,
+        makeTranslation,
+    } from 'studiocms:i18n/client';
+
+    const currentPage = '@studiocms/dashboard:index';
+
+    let lang = defaultLang;
+
+    const i18n = $i18n(currentPage, baseTranslation[currentPage]);
+
+    $localeSettings.subscribe((locale) => {
+        lang = locale || defaultLang;
+    });
+    
+    i18n.subscribe(comp => {
+        documentUpdater(comp, lang);
+    });
+
+    if (!customElements.get('t-dashboard')) {
+        customElements.define('t-dashboard', makeTranslation(currentPage, i18n));
+    }
+</script>

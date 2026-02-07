@@ -1,0 +1,183 @@
+---
+import { type UiLanguageKeys, useTranslations } from 'studiocms:i18n';
+import { runSDK, SDKCoreJs } from 'studiocms:sdk';
+import { Button } from 'studiocms:ui/components/button';
+import { Dropdown } from 'studiocms:ui/components/dropdown';
+import { Icon } from 'studiocms:ui/components/icon';
+import FolderTreeRenderer from '#frontend/components/shared/foldertree/FolderTreeRenderer.astro';
+import ContentSearch from './ContentSearch.astro';
+
+interface Props {
+	lang: UiLanguageKeys;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang, '@studiocms/dashboard:content-sidebar');
+
+const PageFolderTree = await runSDK(SDKCoreJs.GET.pageFolderTree());
+---
+
+<div class="inner-sidebar-header">
+  <Button
+    variant="solid"
+    color="primary"
+    size="md"
+    id="back-to-outer"
+    class="mobile-btn mid-size-btn"
+  >
+    <Icon
+      name="heroicons:arrow-left"
+      width={24}
+      height={24}
+      slot="start-content"
+    />
+  </Button>
+  <ContentSearch
+    lang={lang}
+    treeRenderElId="inner-sidebar-items"
+    searchOutputElId="inner-sidebar-items-search"
+  />
+  <Dropdown
+    id="create-new-dropdown"
+    options={[
+      {
+        label: t("dropdown-create-page"),
+        icon: "heroicons:document",
+        value:
+          Astro.locals.StudioCMS.routeMap.mainLinks.contentManagementCreate,
+      },
+      {
+        label: t("dropdown-create-folder"),
+        icon: "heroicons:folder",
+        value:
+          Astro.locals.StudioCMS.routeMap.mainLinks
+            .contentManagementFolderCreate,
+      },
+    ]}
+    align={"end"}
+    offset={8}
+  >
+    <Button variant="solid" color="primary" size="md" class="add-button">
+      <Icon name="heroicons:plus" width={24} height={24} slot="start-content" />
+    </Button>
+  </Dropdown>
+  <Button
+    variant="solid"
+    color="primary"
+    size="md"
+    class="mobile-btn"
+    id="show-page"
+  >
+    <Icon name="heroicons:x-mark" width={24} height={24} slot="start-content" />
+  </Button>
+</div>
+
+<FolderTreeRenderer
+  class="scrollbar"
+  id="inner-sidebar-items"
+  lang={lang}
+  data={PageFolderTree}
+  createFolderLink={Astro.locals.StudioCMS.routeMap.mainLinks
+    .contentManagementFolderCreate}
+  createPageLink={Astro.locals.StudioCMS.routeMap.mainLinks
+    .contentManagementCreate}
+  editFolderLink={Astro.locals.StudioCMS.routeMap.mainLinks
+    .contentManagementFolderEdit}
+  editPageLink={Astro.locals.StudioCMS.routeMap.mainLinks.contentManagementEdit}
+/>
+
+<div
+  class="folder-tree-search-container scrollbar"
+  id="inner-sidebar-items-search"
+  style="display: none;"
+  data-searchlist={Astro.locals.StudioCMS.routeMap.endpointLinks.searchList}
+  data-editpage={Astro.locals.StudioCMS.routeMap.mainLinks
+    .contentManagementEdit}
+  data-editfolder={Astro.locals.StudioCMS.routeMap.mainLinks
+    .contentManagementFolderEdit}
+>
+</div>
+
+<div
+  id="i-dropdown-options"
+  data-createpage={Astro.locals.StudioCMS.routeMap.mainLinks
+    .contentManagementCreate}
+  data-createfolder={Astro.locals.StudioCMS.routeMap.mainLinks
+    .contentManagementFolderCreate}
+>
+</div>
+
+<script>
+  import {
+    $i18n,
+    baseTranslation,
+    makeTranslation,
+  } from "studiocms:i18n/client";
+  import { DropdownHelper } from "studiocms:ui/components/dropdown/client";
+
+  const createNewDropdown = new DropdownHelper("create-new-dropdown");
+
+  createNewDropdown.registerClickCallback((value) => {
+    window.location.assign(value);
+  });
+
+  const i18nOptions = document.getElementById(
+    "i-dropdown-options",
+  ) as HTMLDivElement;
+
+  const createPage = i18nOptions.getAttribute("data-createpage") as string;
+  const createFolder = i18nOptions.getAttribute("data-createfolder") as string;
+
+  const dropdownKeys: Record<string, string> = {
+    [createPage]: "dropdown-create-page",
+    [createFolder]: "dropdown-create-folder",
+  };
+
+  const getDropdownOptions = () => {
+    const dropdownElm = document.getElementById(
+      "create-new-dropdown-dropdown",
+    ) as HTMLUListElement;
+    const options = dropdownElm?.querySelectorAll(
+      ".sui-dropdown-option",
+    ) as NodeListOf<HTMLLIElement>;
+
+    const returnData: Record<string, HTMLSpanElement> = {};
+
+    for (const option of options) {
+      const value = option.dataset.value as string;
+      const key = dropdownKeys[value];
+
+      if (!key) continue;
+
+      const SelectedElm = (
+        option.querySelector(".sui-dropdown-line-container") as HTMLDivElement
+      ).querySelector("span");
+
+      if (!SelectedElm) continue;
+
+      returnData[key] = SelectedElm;
+    }
+
+    return returnData;
+  };
+
+  const currentPage = "@studiocms/dashboard:content-sidebar";
+
+  const i18n = $i18n(currentPage, baseTranslation[currentPage]);
+
+  i18n.subscribe((comp) => {
+    const dropdownOptions = getDropdownOptions();
+
+    for (const [key, elm] of Object.entries(dropdownOptions)) {
+      // @ts-ignore
+      elm.textContent = comp[key];
+    }
+  });
+
+  if (!customElements.get("t-content-sidebar")) {
+    customElements.define(
+      "t-content-sidebar",
+      makeTranslation(currentPage, i18n),
+    );
+  }
+</script>

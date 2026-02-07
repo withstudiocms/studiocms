@@ -1,0 +1,107 @@
+---
+interface Props {
+	editorKeys: string[];
+}
+
+const { editorKeys } = Astro.props;
+---
+
+<page-editor-swapper data-editor-keys={JSON.stringify(editorKeys)}>
+	<slot />
+</page-editor-swapper>
+
+<script>
+	class PageEditorSwapper extends HTMLElement {
+		private editorKeys: string[] = [];
+
+		constructor() {
+			super();
+			this.attachShadow({ mode: "open" });
+			this.loadEditorKeys();
+		}
+
+		connectedCallback() {
+			this.setupEventListeners();
+			this.render();
+		}
+
+		private loadEditorKeys() {
+			const dataEditorKeys = this.getAttribute("data-editor-keys");
+			try {
+				this.editorKeys = JSON.parse(dataEditorKeys || "[]");
+			} catch {
+				this.editorKeys = [];
+			}
+		}
+
+		private render() {
+			if (!this.shadowRoot) return;
+			if (this.shadowRoot.childNodes.length === 0) {
+				const slot = document.createElement("slot");
+				this.shadowRoot.appendChild(slot);
+			}
+		}
+
+		private setupEventListeners() {
+			// Wait for DOM to be ready
+			setTimeout(() => {
+				this.setupPageEditorSwapper();
+			}, 0);
+		}
+
+		private setupPageEditorSwapper() {
+			const pageTypeDropdown = document.querySelector("#page-type-dropdown");
+			if (!pageTypeDropdown) return;
+
+			const pageTypeOptions = pageTypeDropdown.querySelectorAll(".sui-select-option");
+
+			pageTypeOptions.forEach((option) => {
+				option.addEventListener("click", () => {
+					this.handlePageTypeChange(option);
+				});
+			});
+		}
+
+		private handlePageTypeChange(option: Element) {
+			const selectedValue = option.getAttribute("value");
+			if (!selectedValue) return;
+
+			// Check if the selected editor is available
+			const isEditorAvailable = this.editorKeys.includes(selectedValue);
+
+			if (selectedValue !== "studiocms/markdown") {
+				this.handleNonMarkdownEditor(isEditorAvailable);
+			} else {
+				this.handleMarkdownEditor();
+			}
+		}
+
+		private handleNonMarkdownEditor(isEditorAvailable: boolean) {
+			const editorContainer = document.querySelector(".page-content-editor") as HTMLElement;
+			const editorPlaceholder = document.getElementById("page-content-editor-placeholder") as HTMLElement;
+
+			if (!editorContainer || !editorPlaceholder) return;
+
+			if (!isEditorAvailable) {
+				editorContainer.style.display = "none";
+				editorPlaceholder.style.display = "block";
+				editorPlaceholder.innerText =
+					"You have changed your pageType. Please save your changes and refresh the page to see the new editor.";
+			}
+		}
+
+		private handleMarkdownEditor() {
+			const editorContainer = document.querySelector(".page-content-editor") as HTMLElement;
+			const editorPlaceholder = document.getElementById("page-content-editor-placeholder") as HTMLElement;
+
+			if (!editorContainer || !editorPlaceholder) return;
+
+			editorContainer.style.display = "block";
+			editorPlaceholder.style.display = "none";
+		}
+	}
+
+	if (!customElements.get("page-editor-swapper")) {
+		customElements.define("page-editor-swapper", PageEditorSwapper);
+	}
+</script>

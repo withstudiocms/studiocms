@@ -1,0 +1,65 @@
+---
+import { Button } from 'studiocms:ui/components/button';
+import { Dropdown } from 'studiocms:ui/components/dropdown';
+import { Icon } from 'studiocms:ui/components/icon';
+import type { AvailableIcons } from 'studiocms:ui/icons';
+import { languageSelectorOptions } from './config.js';
+
+/**
+ * This Astro component handles the language selection functionality for the StudioCMS application on the client side.
+ *
+ * It provides a dropdown menu for selecting the preferred language, and updates the application's language settings accordingly.
+ *
+ * If you are interested in contributing to the translation effort, please visit our Crowdin project:
+ * https://crowdin.com/project/studiocms or submit a pull request to the `translations` folder:
+ * `packages/studiocms/src/virtuals/i18n/translations/` on https://github.com/withstudiocms/studiocms
+ */
+---
+<Dropdown
+  id='language-selector'
+  options={languageSelectorOptions.map(({ flag, key, displayName }) => ({
+  	label: displayName,
+  	value: key,
+  	icon: `lang-flags:${flag}` as AvailableIcons,
+  }))}
+  align='start'
+>
+  <Button variant='outlined' size='sm'>
+    <Icon name='heroicons:language' width={16} height={16} />
+  </Button>
+</Dropdown>
+
+<script>
+  import { DropdownHelper } from 'studiocms:ui/components/dropdown/client';
+  import { $localeSettings, defaultLang } from "studiocms:i18n/client";
+
+  const languageSelector = new DropdownHelper('language-selector');
+
+  languageSelector.registerClickCallback((value) => {
+    $localeSettings.set(value);
+  });
+
+  $localeSettings.subscribe(((lang) => {
+    const currentLang = lang || defaultLang;
+    const dropdown = document.getElementById('language-selector-dropdown') as HTMLUListElement | null;
+    if (!dropdown) return;
+    dropdown.querySelectorAll('li').forEach((option) => {
+      option.classList.remove('active-language-selector-option');
+    });
+    const activeOption = dropdown.querySelector(`[data-value="${currentLang}"]`);
+    if (activeOption) {
+      activeOption.classList.add('active-language-selector-option');
+    }
+  }));
+</script>
+
+<style is:global>
+  .active-language-selector-option {
+      background-color: var(--primary-base);
+      color: var(--text-inverted);
+
+      &:hover {
+        background-color: var(--primary-hover);
+      }
+  }
+</style>

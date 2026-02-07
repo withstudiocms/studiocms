@@ -1,0 +1,90 @@
+packages:
+  - packages/@studiocms/*
+  - packages/@withstudiocms/*
+  - packages/@withstudiocms/*/test/fixtures/*
+  - packages/*
+  - bundle-tests/*
+  - playground
+  - templates/*
+
+# When resolving dependencies, prefer workspace packages over external ones
+preferWorkspacePackages: true
+
+# When installing dependencies, create symlinks for workspace packages
+linkWorkspacePackages: true
+
+# When using `pnpm publish`, do not use `workspace:` protocol in dependencies
+saveWorkspaceProtocol: false
+
+# Make sure packages are only downloaded after they have been available for a certain time
+minimumReleaseAge: 4320 # 3 days
+
+# Exclude certain packages from the minimum release age restriction
+minimumReleaseAgeExclude:
+  - studiocms
+  - "@studiocms/*"
+  - "@withstudiocms/*"
+
+# When running `pnpm install`, only build the following dependencies from source
+onlyBuiltDependencies:
+  - "@parcel/watcher"
+  - canvas
+  - esbuild
+  - msgpackr-extract
+  - sharp
+
+# General dependency catalog for monorepo packages
+catalog:
+  "@codecov/astro-plugin": ^1.9.1
+  "@types/mdast": ^4.0.4
+  "@types/node": ^22.0.0
+  "@types/semver": ^7.7.1
+  arctic: ^3.7.0
+  astro-integration-kit: ^0.19.1
+  deepmerge-ts: ^7.1.5
+  esbuild: ^0.25.8
+  sharp: ^0.34.3
+  tinyglobby: ^0.2.15
+  typescript: ^5.9.3
+  diff: ^8.0.3
+  dotenv: ^17.2.3
+  semver: ^7.7.3
+  tsdown: ^0.20.1
+  package-manager-detector: ^1.6.0
+
+# Specific dependency catalogs for certain groups of packages
+catalogs:
+  astrojs:
+    "@astrojs/check": ^0.9.6
+    "@astrojs/node": ^9.5.2
+    "@astrojs/rss": ^4.0.15
+    astro: ^5.17.1
+    vite: ^6.3.4
+  effect:
+    "@effect/cli": ^0.73.1
+    "@effect/platform": ^0.94.2
+    "@effect/platform-node": ^0.104.1
+    effect: ^3.19.15
+  kysely:
+    "@libsql/client": ^0.15.15
+    "@types/pg": ^8.16.0
+    kysely: ^0.28.10
+    kysely-turso: ^0.1.1
+    pg: ^8.17.2
+    mysql2: ^3.16.2
+  min:
+    "@astrojs/markdown-remark": ^6.3.3
+    "@libsql/client": ^0.15.15
+    "@studiocms/web-vitals": ^4.5.3
+    astro: ^5.12.9
+    vite: ^6.3.4
+  react:
+    "@astrojs/react": ^4.4.2
+    "@types/react": ^19.2.10
+    "@types/react-dom": ^19.2.3
+    react: ^19.2.4
+    react-dom: ^19.2.4
+  studiocms:
+    "@studiocms/markdown-remark-processor": ^1.2.0
+    "@studiocms/ui": ^1.1.1
+    "@studiocms/web-vitals": ^4.5.3

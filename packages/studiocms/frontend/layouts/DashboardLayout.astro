@@ -1,0 +1,115 @@
+---
+import '../styles/folder-tree.css';
+import '../styles/dashboard-base.css';
+import '../styles/dashboard-diff.css';
+import type { UserSessionData } from 'studiocms:auth/lib/types';
+import { defaultLang } from 'studiocms:i18n';
+import type { AvailablePermissionRanks } from '@withstudiocms/auth-kit/types';
+import type { DynamicConfigEntry, StudioCMSSiteConfig } from '@withstudiocms/sdk/types';
+import type { ComponentProps } from 'astro/types';
+import Ambients from '../components/Ambients.astro';
+import DoubleSidebar from '../components/dashboard/DoubleSidebar.astro';
+import LoginChecker from '../components/dashboard/LoginChecker.astro';
+import SidebarModals from '../components/dashboard/SidebarModals.astro';
+import SingleSidebar from '../components/dashboard/SingleSidebar.astro';
+import BaseLayout from './BaseLayout.astro';
+
+const makePageTitle = (
+	pageName: string,
+	config: {
+		title: string;
+	},
+	separator?: string
+) => {
+	const separatorString = separator ? `${separator}` : '|';
+
+	return `${pageName} ${separatorString} ${config.title}`;
+};
+
+interface Props extends ComponentProps<typeof BaseLayout> {
+	config: DynamicConfigEntry<Pick<StudioCMSSiteConfig, 'title' | 'description'>>;
+	sidebar?: false | 'single' | 'double';
+	requiredPermission?: AvailablePermissionRanks | 'none';
+	currentUser: UserSessionData | null;
+}
+
+const {
+	config,
+	title: propTitle,
+	description: propDescription,
+	lang = defaultLang,
+	requiredPermission = 'unknown',
+	sidebar = 'single',
+	currentUser,
+} = Astro.props;
+
+const title = makePageTitle(propTitle, config.data);
+const description = propDescription ?? config.data.description;
+---
+
+<BaseLayout {lang} {title} {description}>
+  <Ambients />
+  <SidebarModals {lang} />
+  {
+    requiredPermission !== 'none' && (
+      <LoginChecker {requiredPermission} {currentUser} />
+    )
+  }
+  {
+    sidebar === 'single' && (
+      <SingleSidebar {currentUser} />
+    )
+  }
+  {
+    sidebar === 'double' && (
+      <DoubleSidebar {currentUser} >
+        <slot name="double-sidebar" />
+      </DoubleSidebar>
+    )
+  }
+
+  <slot name="external" />
+
+  <main>
+    <div class="container">
+      <div class="page-header">
+        <slot name="header" />
+      </div>
+      <div class="container-content">
+        <slot />
+      </div>
+    </div>
+  </main>
+
+  <style>
+    .page-header {
+      margin-bottom: 1.5rem;
+    }
+  </style>
+
+  <script>
+    import { PluginTranslations } from 'studiocms:i18n/plugins';
+
+    if (!customElements.get('p-translations')) {
+      customElements.define('p-translations', PluginTranslations);
+    }
+
+    // Whenever the element with id "sui-sidebars" changes width, set the main content width accordingly
+    const doubleSidebar = document.getElementById("sui-sidebars") as HTMLDivElement | null;
+    const main = document.querySelector("main");
+    const body = document.querySelector("body");
+
+    if (doubleSidebar && body && main) {
+    	const resizeObserver = new ResizeObserver(() => {
+     		const newWidth = doubleSidebar.clientWidth;
+				const windowWidth = window.innerWidth;
+				const computedWidth = windowWidth - newWidth;
+
+				main.style.maxWidth = computedWidth > 840 ? `${computedWidth}px` : `100%`;
+     	});
+
+    	resizeObserver.observe(doubleSidebar);
+    	resizeObserver.observe(body);
+    }
+  </script>
+</BaseLayout>

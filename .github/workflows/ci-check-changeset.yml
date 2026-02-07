@@ -1,0 +1,38 @@
+name: CI - Pull Request Check Changeset
+
+on:
+  pull_request:
+
+concurrency:
+  group: >-
+    ${{ github.workflow }}-
+    ${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.number) || github.sha }}
+  cancel-in-progress: true
+
+permissions: {}
+
+env:
+  FORCE_COLOR: true
+  # 7 GiB by default on GitHub, setting to 6 GiB
+  # https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners#supported-runners-and-hardware-resources
+  NODE_OPTIONS: --max-old-space-size=6144
+
+jobs:
+  check-changeset:
+    name: Check Changesets Status
+    if: github.event_name == 'pull_request' && github.event.pull_request.user.login != 'apollo-git-bot[bot]'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Check out code using Git
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Install Tools & Dependencies
+        uses: withstudiocms/automations/.github/actions/install@7caa6bf5171347ed3b56a7f65ef030f0fbc15774 # main
+
+      - name: Check Changeset Status
+        run: pnpm changeset:status

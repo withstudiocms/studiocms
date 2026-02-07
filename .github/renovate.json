@@ -1,0 +1,74 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["github>withstudiocms/renovate-config"],
+  "packageRules": [
+    {
+      "groupName": "Effect Dependencies",
+      "matchManagers": ["npm"],
+      "matchPackageNames": ["effect", "@effect/**", "!@effect/language-service", "!@effect/vitest"],
+      "labels": ["effect-deps"]
+    },
+    {
+      "groupName": "studiocms Dependencies",
+      "matchManagers": ["npm"],
+      "matchFileNames": ["packages/studiocms/**"]
+    },
+    {
+      "groupName": "@studiocms Plugin Dependencies",
+      "matchManagers": ["npm"],
+      "matchFileNames": [
+        "packages/@studiocms/auth0/**",
+        "packages/@studiocms/blog/**",
+        "packages/@studiocms/cloudinary-image-service/**",
+        "packages/@studiocms/discord/**",
+        "packages/@studiocms/github/**",
+        "packages/@studiocms/google/**",
+        "packages/@studiocms/html/**",
+        "packages/@studiocms/markdoc/**",
+        "packages/@studiocms/md/**",
+        "packages/@studiocms/mdx/**",
+        "packages/@studiocms/wysiwyg/**"
+      ]
+    },
+    {
+      "groupName": "@studiocms Integration Dependencies",
+      "matchManagers": ["npm"],
+      "matchFileNames": ["packages/@studiocms/devapps/**"]
+    },
+    {
+      "groupName": "@withstudiocms Dependencies",
+      "matchManagers": ["npm"],
+      "matchFileNames": ["packages/@withstudiocms/**"]
+    },
+    {
+      "groupName": "AWS S3 Dependencies",
+      "matchManagers": ["npm"],
+      "matchPackageNames": ["@aws-sdk/client-s3", "@aws-sdk/s3-request-presigner"]
+    },
+    {
+      "groupName": "StudioCMS CLI Dependencies",
+      "matchManagers": ["npm"],
+      "matchFileNames": ["packages/@studiocms/upgrade/**", "packages/create-studiocms/**"]
+    },
+    {
+      "groupName": "Template Dependencies",
+      "matchManagers": ["npm"],
+      "matchFileNames": ["templates/*/package.json"]
+    }
+  ],
+  "ignoreDeps": [
+    "@libsql/client",
+    "@types/node",
+    "@vitest/coverage-v8",
+    "drizzle-orm",
+    "sharp",
+    "node",
+    "npm",
+    "pnpm",
+    "esbuild",
+    "codemirror",
+    "vite",
+    "vitest",
+    "zod"
+  ]
+}

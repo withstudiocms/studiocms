@@ -1,0 +1,29 @@
+{
+	"name": "@bundletests/studiocms-blog",
+	"type": "module",
+	"private": true,
+	"version": "0.0.1",
+	"scripts": {
+		"astro": "astro",
+		"studiocms": "studiocms",
+		"dev": "astro dev",
+		"build": "astro build",
+		"preview": "astro preview"
+	},
+	"devDependencies": {
+		"@types/node": "catalog:",
+		"typescript": "catalog:"
+	},
+	"dependencies": {
+		"@astrojs/node": "catalog:astrojs",
+		"@codecov/astro-plugin": "catalog:",
+		"@studiocms/blog": "workspace:^",
+		"@studiocms/md": "workspace:^",
+		"astro": "catalog:astrojs",
+		"sharp": "catalog:",
+		"studiocms": "workspace:^",
+		"vite": "catalog:astrojs",
+		"kysely-turso": "catalog:kysely",
+		"@libsql/client": "catalog:kysely"
+	}
+}

@@ -1,0 +1,82 @@
+---
+import './navigation.css';
+import { frontendNavigation } from 'studiocms:plugin-helpers';
+
+type Props = {
+	topLevelLinkCount?: number;
+};
+
+const { topLevelLinkCount = 3 } = Astro.props;
+
+const config = Astro.locals.StudioCMS.siteConfig.data;
+
+const { title } = config || { title: 'StudioCMS' };
+const {
+	mainLinks: { baseSiteURL },
+	authLinks: { loginURL },
+} = Astro.locals.StudioCMS.routeMap;
+
+type LinkProps = {
+	text: string;
+	href: string;
+};
+
+const links: LinkProps[] = await frontendNavigation();
+---
+
+<!-- If no dropdown items -->
+{ ( links.length < topLevelLinkCount || links.length === topLevelLinkCount ) && (
+    <div class="navigation">
+        <div class="title"><a href={baseSiteURL}>{title}</a></div>
+        <div class="mini-nav">
+            <button>Menu</button>
+            <div class="mini-nav-content">
+            { 
+                links.map(({ text, href }) => (
+                    <a {href}>{text}</a>
+                )) 
+            }
+            </div>
+        </div>
+        { 
+            links.map(({ text, href }) => (
+                <a class="links" {href}>{text}</a>
+            )) 
+        }
+
+<a class="avatar" href={loginURL}>Dashboard</a>
+    </div> 
+) }
+
+<!-- If dropdown items -->
+{ links.length > topLevelLinkCount && (
+    <div class="navigation">
+        <div class="title"><a href={baseSiteURL}>{title}</a></div>
+
+        <div class="mini-nav">
+            <button>Menu</button>
+            <div class="mini-nav-content">
+            { 
+                links.map(({ text, href }) => (
+                    <a {href}>{text}</a>
+                )) 
+            }
+            </div>
+        </div>
+        { 
+            links.slice(0, topLevelLinkCount).map(({ text, href }) => (
+                    <a class="links" {href}>{text}</a>
+            ))
+        }
+            <div class="dropdown">
+                <button>More ▼</button>
+                <div class="dropdown-content">
+                    { links.slice(topLevelLinkCount).map(({ text, href }) => (
+                        <a {href}>{text}</a>
+                    )) }
+                </div>
+            </div>
+
+<a class="avatar" href={loginURL}>Dashboard</a>
+    </div>
+) }

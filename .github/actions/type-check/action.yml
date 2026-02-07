@@ -1,0 +1,22 @@
+name: Run Type Check
+description: This action runs TypeScript type checks for specified commands.
+
+inputs:
+  cmd:
+    description: "The command to run type checks for."
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Install Tools & Dependencies
+      uses: withstudiocms/automations/.github/actions/install@7caa6bf5171347ed3b56a7f65ef030f0fbc15774 # main
+
+    - name: run Build for TypeChecks
+      shell: bash
+      run: pnpm ci:build
+
+    - name: Run ${{ inputs.cmd }} TypeCheck
+      shell: bash
+      run: | # zizmor: ignore[template-injection]
+        pnpm ci:typecheck:${{ inputs.cmd }}

@@ -1,0 +1,271 @@
+---
+import type { UiLanguageKeys } from 'studiocms:i18n';
+import { useTranslations } from 'studiocms:i18n';
+import type { tsPageDataCategoriesSelect, tsPageDataTagsSelect } from 'studiocms:sdk/types';
+import { Button } from 'studiocms:ui/components/button';
+import { Dropdown } from 'studiocms:ui/components/dropdown';
+import { Icon } from 'studiocms:ui/components/icon';
+import { TabItem, Tabs } from 'studiocms:ui/components/tabs';
+import {
+	categoriesToTaxonomyNodes,
+	tagsToTaxonomyNodes,
+} from '#frontend/components/shared/taxonomy/shared.js';
+import TaxonomyTreeRenderer from '#frontend/components/shared/taxonomy/TaxonomyTreeRenderer.astro';
+import TaxonomySearch from './TaxonomySearch.astro';
+import { appendQueryParamsToPath } from './utils.js';
+
+interface Props {
+	lang: UiLanguageKeys;
+	categories: readonly tsPageDataCategoriesSelect[];
+	tags: readonly tsPageDataTagsSelect[];
+}
+
+const { lang, categories, tags } = Astro.props;
+
+const t = useTranslations(lang, '@studiocms/dashboard:taxonomy-sidebar');
+
+const categoryData = categoriesToTaxonomyNodes(categories);
+const tagData = tagsToTaxonomyNodes(tags);
+---
+<div class="inner-sidebar-header">
+    <Button
+        variant="solid"
+        color="primary"
+        size="md"
+        id="back-to-outer"
+        class="mobile-btn mid-size-btn"
+    >
+        <Icon
+            name="heroicons:arrow-left"
+            width={24}
+            height={24}
+            slot="start-content"
+        />
+    </Button>
+    <TaxonomySearch {lang} treeRenderElId='inner-sidebar-items' searchOutputElId='inner-sidebar-items-search' />
+    <Dropdown
+        id="taxonomy-create-new"
+        options={[
+            {
+                label: t("dropdown-create-category"),
+                icon: "heroicons:folder",
+                value:
+                    appendQueryParamsToPath(Astro.locals.StudioCMS.routeMap.mainLinks.taxonomyCategories, { mode: 'create' }),
+            },
+            {
+                label: t("dropdown-create-tag"),
+                icon: "heroicons:tag",
+                value:
+                    appendQueryParamsToPath(Astro.locals.StudioCMS.routeMap.mainLinks.taxonomyTags, { mode: 'create' }),
+            },
+        ]}
+        align='end'
+        offset={8}
+    >
+        <Button variant="solid" color="primary" size="md" class="add-button">
+            <Icon name="heroicons:plus" width={24} height={24} slot="start-content" />
+        </Button>
+    </Dropdown>
+    <Button
+        variant="solid"
+        color="primary"
+        size="md"
+        class="mobile-btn"
+        id="show-page"
+    >
+        <Icon name="heroicons:x-mark" width={24} height={24} slot="start-content" />
+    </Button>
+</div>
+
+<div id="inner-sidebar-items">
+    <Tabs storage='persistent' syncKey='taxonomy-selection' variant='starlight'>
+        <TabItem id='categories-tab' label={t('tab-label-categories')} icon='heroicons:folder'>
+            <TaxonomyTreeRenderer
+                type='category'
+                class="scrollbar"
+                id="categories-tree-renderer"
+                baseCategoryLink={Astro.locals.StudioCMS.routeMap.mainLinks.taxonomyCategories}
+                baseTagLink={Astro.locals.StudioCMS.routeMap.mainLinks.taxonomyTags}
+                data={categoryData}
+                lang={lang}
+            />
+        </TabItem>
+        <TabItem id='tags-tab' label={t('tab-label-tags')} icon='heroicons:tag'>
+            <TaxonomyTreeRenderer
+                type='tag'
+                class="scrollbar"
+                id="tags-tree-renderer"
+                baseCategoryLink={Astro.locals.StudioCMS.routeMap.mainLinks.taxonomyCategories}
+                baseTagLink={Astro.locals.StudioCMS.routeMap.mainLinks.taxonomyTags}
+                data={tagData}
+                lang={lang}
+            />
+        </TabItem>
+    </Tabs>
+</div>
+
+<div
+    id="inner-sidebar-items-search"
+    class="folder-tree-search-container scrollbar"
+    style="display: none;"
+    data-searchlist={Astro.locals.StudioCMS.routeMap.endpointLinks.taxonomySearch}
+    data-base-category-link={Astro.locals.StudioCMS.routeMap.mainLinks.taxonomyCategories}
+    data-base-tag-link={Astro.locals.StudioCMS.routeMap.mainLinks.taxonomyTags}
+>
+    {/* Placeholder for search results */}
+</div>
+
+<div
+    id="i-dropdown-options"
+    style="display: none;"
+    data-create-category={appendQueryParamsToPath(Astro.locals.StudioCMS.routeMap.mainLinks.taxonomyCategories, { mode: 'create' })}
+    data-create-tag={appendQueryParamsToPath(Astro.locals.StudioCMS.routeMap.mainLinks.taxonomyTags, { mode: 'create' })}
+></div>
+
+<style>
+    #inner-sidebar-items {
+        flex-grow: 1;
+        width: 100%;
+    }
+</style>
+
+<style is:global>
+    /*
+        Overrides for Tabs inside InnerSidebarElement
+    */
+
+    .sui-tabs-list {
+        justify-content: space-evenly;
+        overflow: hidden;
+
+        > button {
+		        width: 100%;
+		        justify-content: center;
+        }
+    }
+
+    .sui-tabs-container {
+        height: 100%;
+    }
+
+    .sui-tabs-content {
+        height: calc(95vh - 3.5rem);
+    }
+
+    sui-tab-item {
+        height: 100% !important;
+    }
+
+    sui-tab-item.active {
+        display: flex !important;
+    }
+
+    .sui-tabs-container.starlight .sui-tab-header {
+        padding: 0.25rem 0.25rem;
+        font-size: small;
+
+        &:hover {
+            & svg {
+                color: var(--text-normal);
+                transform: scale(1.1) rotate(-5deg);
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            &:hover {
+                transform: none;
+
+                & svg {
+                    transform: none;
+                }
+            }
+        }
+
+        & svg {
+            min-width: 20px !important;
+            width: 20px;
+            height: 20px;
+            color: var(--text-muted);
+            transition: all .15s ease;
+        }
+    }
+
+    .sui-tabs-container.starlight .sui-tabs-list {
+        margin-bottom: 0.5rem;
+    }
+</style>
+
+<script>
+    import {
+        $i18n,
+        baseTranslation,
+        updateTabLabel
+    } from "studiocms:i18n/client";
+
+    const currentPage = "@studiocms/dashboard:taxonomy-sidebar";
+
+    const i18n = $i18n(currentPage, baseTranslation[currentPage]);
+
+    const i18nOptions = document.getElementById(
+        "i-dropdown-options",
+    ) as HTMLDivElement;
+
+    const createCategory = i18nOptions.getAttribute("data-create-category") as string;
+    const createTag = i18nOptions.getAttribute("data-create-tag") as string;
+
+    const dropdownKeys: Record<string, string> = {
+        [createCategory]: "dropdown-create-category",
+        [createTag]: "dropdown-create-tag",
+    };
+
+    const getDropdownOptions = () => {
+        const dropdownElm = document.getElementById(
+        "taxonomy-create-new-dropdown",
+        ) as HTMLUListElement;
+        const options = dropdownElm?.querySelectorAll(
+        ".sui-dropdown-option",
+        ) as NodeListOf<HTMLLIElement>;
+
+        const returnData: Record<string, HTMLSpanElement> = {};
+
+        for (const option of options) {
+        const value = option.dataset.value as string;
+        const key = dropdownKeys[value];
+
+        if (!key) continue;
+
+        const SelectedElm = (
+            option.querySelector(".sui-dropdown-line-container") as HTMLDivElement
+        ).querySelector("span");
+
+        if (!SelectedElm) continue;
+
+        returnData[key] = SelectedElm;
+        }
+
+        return returnData;
+    };
+
+    i18n.subscribe((comp) => {
+        updateTabLabel('categories-tab', comp['tab-label-categories']);
+        updateTabLabel('tags-tab', comp['tab-label-tags']);
+        const dropdownOptions = getDropdownOptions();
+
+        for (const [key, elm] of Object.entries(dropdownOptions)) {
+            // @ts-ignore
+            elm.textContent = comp[key];
+        }
+    });
+</script>
+
+<script>
+    import { DropdownHelper } from "studiocms:ui/components/client";
+
+    const createNewDropdown = new DropdownHelper(
+        "taxonomy-create-new"
+    );
+
+    createNewDropdown.registerClickCallback((value) => {
+        window.location.assign(value);
+    })
+</script>

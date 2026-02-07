@@ -1,0 +1,29 @@
+---
+import '../styles/dashboard-base.css';
+import '../styles/dashboard-diff.css';
+import type { ComponentProps } from 'astro/types';
+import BaseLayout from './BaseLayout.astro';
+
+interface Props extends ComponentProps<typeof BaseLayout> {}
+
+const headProps = Astro.props;
+---
+
+<BaseLayout {...headProps} generators={false}>
+  <main>
+    <div class="container">
+      <slot />
+    </div>
+  </main>
+  <style>
+    .container {
+      margin: 0 auto;
+      padding: 0 1rem;
+      padding-top: 2rem;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      width: 100%;
+    }
+  </style>
+</BaseLayout>

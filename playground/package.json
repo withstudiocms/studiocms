@@ -1,0 +1,32 @@
+{
+  "name": "node-playground",
+  "type": "module",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "astro": "astro",
+    "preview": "astro preview",
+    "studiocms": "studiocms",
+    "migrate": "pnpm studiocms migrate"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "typescript": "catalog:",
+    "astro-integration-kit": "catalog:"
+  },
+  "dependencies": {
+    "@astrojs/node": "catalog:astrojs",
+    "@libsql/client": "catalog:kysely",
+    "@studiocms/blog": "workspace:^",
+    "@studiocms/md": "workspace:^",
+    "@studiocms/wysiwyg": "workspace:^",
+    "@studiocms/s3-storage": "workspace:^",
+    "astro": "catalog:astrojs",
+    "kysely-turso": "catalog:kysely",
+    "studiocms": "workspace:^",
+    "sharp": "catalog:"
+  }
+}

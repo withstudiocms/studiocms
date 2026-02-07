@@ -1,0 +1,96 @@
+name: CI - Crowdin Sync
+
+on:
+  workflow_dispatch:
+    inputs:
+      direction:
+        description: "Direction of translation sync"
+        required: true
+        default: "download"
+        type: choice
+        options:
+          - download
+          - upload
+  repository_dispatch:
+    types: [file.translated, file.approved, file.added, file.updated]
+  push:
+    paths:
+      - "packages/studiocms/src/virtuals/i18n/translations/**"
+      - "packages/studiocms/src/handlers/plugin-i18n/**"
+      - "packages/studiocms/src/integrations/webVitals/i18n/**"
+    branches:
+      - main
+
+permissions: {}
+
+env:
+  FORCE_COLOR: true
+  # 7 GiB by default on GitHub, setting to 6 GiB
+  # https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners#supported-runners-and-hardware-resources
+  NODE_OPTIONS: --max-old-space-size=6144
+
+jobs:
+  crowdin-download:
+    name: Download Crowdin Translations
+    runs-on: ubuntu-latest
+    if: (github.event_name == 'workflow_dispatch' && github.event.inputs.direction == 'download') || (github.event_name == 'repository_dispatch')
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Setup Apollo Git Bot
+        id: bot-token
+        uses: actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf # v2.2.1
+        with:
+          app-id: ${{ secrets.STUDIOCMS_GIT_BOT_APP_ID }}
+          private-key: ${{ secrets.STUDIOCMS_GIT_BOT_PRIVATE_KEY }}
+
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+          token: ${{ steps.bot-token.outputs.token }}
+
+      - name: Crowdin pull
+        uses: crowdin/github-action@b4b468cffefb50bdd99dd83e5d2eaeb63c880380 # v2.14.0
+        id: crowdin-pull
+        with:
+          upload_sources: false
+          download_translations: true
+          localization_branch_name: l10n_main
+          create_pull_request: true
+          pull_request_title: "feat(i18n): Crowdin Translation Sync"
+          pull_request_body: "Merge this PR to sync with Crowdin"
+          pull_request_base_branch_name: "main"
+        env:
+          GITHUB_TOKEN: ${{ steps.bot-token.outputs.token }}
+          CROWDIN_PROJECT_ID: ${{ secrets.CROWDIN_PROJECT_ID }}
+          CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
+
+      - name: Dispatch event if PR created (Artemis is listening)
+        if: steps.crowdin-pull.outputs.pull_request_created == 'true'
+        uses: peter-evans/repository-dispatch@28959ce8df70de7be546dd1250a005dd32156697 # v4.0.1
+        with:
+          event-type: crowdin.create
+          client-payload: '{ "pull_request_url": ${{ steps.crowdin-pull.outputs.pull_request_url }} }'
+
+  crowdin-upload:
+    name: Upload Crowdin Sources
+    runs-on: ubuntu-latest
+    if: (github.event_name == 'workflow_dispatch' && github.event.inputs.direction == 'upload') || (github.event_name == 'push')
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      - name: Crowdin push
+        uses: crowdin/github-action@b4b468cffefb50bdd99dd83e5d2eaeb63c880380 # v2.14.0
+        with:
+          upload_sources: true
+          download_translations: false
+        env:
+          CROWDIN_PROJECT_ID: ${{ secrets.CROWDIN_PROJECT_ID }}
+          CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}

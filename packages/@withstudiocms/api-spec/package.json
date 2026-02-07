@@ -1,0 +1,94 @@
+{
+	"name": "@withstudiocms/api-spec",
+	"version": "0.2.0",
+	"description": "API Specification for StudioCMS",
+	"license": "MIT",
+	"author": {
+		"name": "withstudiocms",
+		"url": "https://studiocms.dev"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/withstudiocms/studiocms.git",
+		"directory": "packages/@withstudiocms/api-spec"
+	},
+	"keywords": [
+		"studiocms",
+		"effect",
+		"effect-ts",
+		"effect-ts-astro"
+	],
+	"homepage": "https://studiocms.dev",
+	"contributors": [
+		"Adammatthiesen",
+		"jdtjenkins",
+		"dreyfus92",
+		"code.spirit"
+	],
+	"type": "module",
+	"publishConfig": {
+		"access": "public",
+		"provenance": true
+	},
+	"sideEffects": false,
+	"files": [
+		"dist",
+		"LICENSE",
+		"CHANGELOG.md",
+		"README.md"
+	],
+	"scripts": {
+		"build": "tsdown",
+		"dev": "tsdown --watch",
+		"docs": "tsx ./scripts/test-srv.ts",
+		"effect-check": "pnpm effect-language-service diagnostics --project tsconfig.tspc.json",
+		"ci:effect-check": "pnpm effect-check --format github-actions",
+		"typecheck": "tspc -p tsconfig.tspc.json",
+		"update-scalar": "tsx ./scripts/build-scalar.ts"
+	},
+	"exports": {
+		".": {
+			"types": "./dist/index.d.mts",
+			"default": "./dist/index.mjs"
+		},
+		"./astro-context": {
+			"types": "./dist/astro-context.d.mts",
+			"default": "./dist/astro-context.mjs"
+		},
+		"./auth": {
+			"types": "./dist/auth/index.d.mts",
+			"default": "./dist/auth/index.mjs"
+		},
+		"./dashboard": {
+			"types": "./dist/dashboard/index.d.mts",
+			"default": "./dist/dashboard/index.mjs"
+		},
+		"./integrations": {
+			"types": "./dist/integrations/index.d.mts",
+			"default": "./dist/integrations/index.mjs"
+		},
+		"./rest-api": {
+			"types": "./dist/rest-api/index.d.mts",
+			"default": "./dist/rest-api/index.mjs"
+		},
+		"./scalar": {
+			"types": "./dist/scalar.d.mts",
+			"default": "./dist/scalar.mjs"
+		},
+		"./sdk": {
+			"types": "./dist/sdk/index.d.mts",
+			"default": "./dist/sdk/index.mjs"
+		}
+	},
+	"dependencies": {},
+	"devDependencies": {
+		"tsdown": "catalog:"
+	},
+	"peerDependencies": {
+		"@effect/platform": "catalog:effect",
+		"@effect/platform-node": "catalog:effect",
+		"@withstudiocms/sdk": "workspace:^",
+		"astro": "catalog:min",
+		"effect": "catalog:effect"
+	}
+}

@@ -1,0 +1,40 @@
+---
+import { StudioCMSRenderer } from 'studiocms:renderer';
+import { runSDK, SDKCoreJs } from 'studiocms:sdk';
+import PostHeader from '../../components/PostHeader.astro';
+import Layout from '../../layouts/Layout.astro';
+
+// Get the slug from the URL
+const { slug } = Astro.params;
+
+// If no slug is provided, redirect to 404
+if (!slug) {
+	return new Response(null, { status: 404 });
+}
+
+// Fetch the blog post content
+
+const post = await runSDK(SDKCoreJs.GET.page.bySlug(slug));
+
+// If no content is found, redirect to 404
+if (!post) {
+	return new Response(null, { status: 404 });
+}
+
+const { title, description, heroImage, publishedAt, updatedAt } = post;
+---
+
+<Layout {title} {description} {heroImage}>
+    <main>
+        <article>
+            <PostHeader
+                {title}
+                {description}
+                {heroImage}
+                {publishedAt}
+                {updatedAt}
+            />
+            <StudioCMSRenderer data={post} />
+        </article>
+    </main>
+</Layout>

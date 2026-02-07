@@ -1,0 +1,102 @@
+{
+  "name": "@withstudiocms/internal_helpers",
+  "version": "0.1.1",
+  "description": "Internal helper utilities for StudioCMS",
+  "author": {
+    "name": "withstudiocms",
+    "url": "https://studiocms.dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/withstudiocms/studiocms.git",
+    "directory": "packages/@withstudiocms/internal_helpers"
+  },
+  "contributors": [
+    "Adammatthiesen",
+    "jdtjenkins",
+    "dreyfus92",
+    "code.spirit"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "astro-studiocms",
+    "cms",
+    "studiocms"
+  ],
+  "homepage": "https://studiocms.dev",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "buildkit build 'src/**/*.{ts,astro,css,json,png}'",
+    "dev": "buildkit dev 'src/**/*.{ts,astro,css,json,png}'",
+    "test": "vitest",
+    "typecheck": "tspc -p tsconfig.tspc.json"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./utils": {
+      "types": "./dist/utils/index.d.ts",
+      "default": "./dist/utils/index.js"
+    },
+    "./astro-integration": {
+      "types": "./dist/astro-integration/index.d.ts",
+      "default": "./dist/astro-integration/index.js"
+    },
+    "./pathGenerators": {
+      "types": "./dist/pathGenerators.d.ts",
+      "default": "./dist/pathGenerators.js"
+    },
+    "./urlGenFactory": {
+      "types": "./dist/urlGenFactory.d.ts",
+      "default": "./dist/urlGenFactory.js"
+    },
+    "./headConfigSchema": {
+      "types": "./dist/headConfigSchema.d.ts",
+      "default": "./dist/headConfigSchema.js"
+    },
+    "./pathResolver": {
+      "types": "./dist/pathResolver.d.ts",
+      "default": "./dist/pathResolver.js"
+    },
+    "./debug-info-provider": {
+      "types": "./dist/debug-info-provider.d.ts",
+      "default": "./dist/debug-info-provider.js"
+    },
+    "./cli-providers": {
+      "types": "./dist/cli-providers/index.d.ts",
+      "default": "./dist/cli-providers/index.js"
+    },
+    "./cli-providers/definitions": {
+      "types": "./dist/cli-providers/definitions.d.ts",
+      "default": "./dist/cli-providers/definitions.js"
+    },
+    "./cli-providers/core/*": {
+      "types": "./dist/cli-providers/core/*.d.ts",
+      "default": "./dist/cli-providers/core/*.js"
+    }
+  },
+  "type": "module",
+  "dependencies": {
+    "astro-integration-kit": "catalog:",
+    "mdast-util-from-markdown": "^2.0.2",
+    "mdast-util-to-string": "^4.0.0",
+    "unist-util-visit": "^5.1.0",
+    "tinyexec": "^1.0.2"
+  },
+  "devDependencies": {
+    "@types/mdast": "catalog:",
+    "@types/node": "catalog:"
+  },
+  "peerDependencies": {
+    "astro": "catalog:min"
+  }
+}

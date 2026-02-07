@@ -1,0 +1,191 @@
+---
+import type { UserSessionData } from 'studiocms:auth/lib/types';
+import { useTranslations } from 'studiocms:i18n';
+import { Button } from 'studiocms:ui/components/button';
+import { Card } from 'studiocms:ui/components/card';
+import { Group } from 'studiocms:ui/components/group';
+import { Icon } from 'studiocms:ui/components/icon';
+import { Input } from 'studiocms:ui/components/input';
+
+interface Props {
+	currentUser: UserSessionData | null;
+}
+
+const { currentUser: data } = Astro.props as Props;
+
+const lang = Astro.locals.StudioCMS.defaultLang;
+const t = useTranslations(lang, '@studiocms/dashboard:profile');
+---
+
+<Card fullWidth as="form" id="basic-info-form" class="basic-info-form" action={Astro.locals.StudioCMS.routeMap.endpointLinks.profile}>
+
+    <div slot="header">
+        <h2>
+            <t-profile-basic key="basic-info-header">{t('basic-info-header')}</t-profile-basic>
+        </h2>
+    
+        <div class="form-header">
+            <Group>
+                <Button id="refresh-avatar" size='sm' variant={'outlined'} color={'info'} data-url={Astro.locals.StudioCMS.routeMap.endpointLinks.profile}>
+                    <Icon slot="start-content" name="heroicons:user-circle" width={24} height={24} />
+                    <t-profile-basic key="sync-with-libravatar">
+                        {t('sync-with-libravatar')}
+                    </t-profile-basic>
+                </Button>
+                <Button type='submit' size='sm' variant={'solid'} color='primary'>
+                    <Icon slot="start-content" name="heroicons:check" width={24} height={24} />
+                    <t-profile-basic key="basic-info-save-button">
+                        {t('basic-info-save-button')}
+                    </t-profile-basic>
+                </Button> 
+            </Group>
+        </div>
+    </div>
+
+    <div class="form-inputs">
+
+        <Input label={t('basic-info-display-name')} placeholder='John Doe' value={data?.user?.name} isRequired name='display-name' />
+
+        <Input label={t('basic-info-username')} placeholder='johndoe' value={data?.user?.username} isRequired name='username' />
+    
+        <Input label={t('basic-info-email')} placeholder='john@doe.com' value={data?.user?.email} isRequired name='email' />
+    
+        <Input label={t('basic-info-website')} placeholder='https://doe.com' value={data?.user?.url} name='account-url' />
+
+        <Input label={t('basic-avatar-url')} placeholder="https://seccdn.libravatar.org/avatar/..." value={data?.user?.avatar} name="avatar" />
+
+    </div>
+
+</Card>
+
+<script>
+    import { 
+        $i18n,
+        baseTranslation,
+        makeTranslation,
+        updateElmLabel,
+    } from 'studiocms:i18n/client';
+
+    const currentPage = '@studiocms/dashboard:profile';
+
+    const i18n = $i18n(currentPage, baseTranslation[currentPage]);
+    
+    i18n.subscribe(comp => {
+        updateElmLabel('display-name', comp['basic-info-display-name']);
+        updateElmLabel('username', comp['basic-info-username']);
+        updateElmLabel('email', comp['basic-info-email']);
+        updateElmLabel('account-url', comp['basic-info-website']);
+    });
+
+    if (!customElements.get('t-profile-basic')) {
+        customElements.define('t-profile-basic', makeTranslation(currentPage, i18n));
+    }
+</script>
+
+
+<script>
+    import { toast } from "studiocms:ui/components/toaster/client";
+
+    const syncAvatar = document.getElementById('refresh-avatar') as HTMLButtonElement;
+    const syncUrl = syncAvatar.dataset.url as string;
+
+    syncAvatar.addEventListener('click', async (e) => {
+        e.preventDefault();
+
+        const response = await fetch(syncUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ mode: 'avatar' })
+        })
+
+        const res = await response.json();
+
+        if (response.status !== 200) {
+            toast({
+                title: 'Error',
+                description: res.error,
+                type: 'danger'
+            })
+        }
+
+        if (response.status === 200) {
+            toast({
+                title: 'Success',
+                description: res.message,
+                type: 'success'
+            })
+        }
+    })
+
+    const basicInfoForm = document.getElementById('basic-info-form') as HTMLFormElement;
+        basicInfoForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const formData = new FormData(basicInfoForm);
+
+            const data = {
+                mode: 'basic',
+                data: {
+                    name: formData.get('display-name') as string,
+                    username: formData.get('username') as string,
+                    email: formData.get('email') as string,
+                    url: formData.get('account-url') ?? null,
+                    avatar: formData.get('avatar') ?? null,
+                }
+            }
+
+            const response = await fetch(basicInfoForm.action, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            })
+
+            const res = await response.json();
+
+            if (response.status !== 200) {
+                toast({
+                    title: 'Error',
+                    description: res.error,
+                    type: 'danger'
+                })
+            }
+
+            if (response.status === 200) {
+                toast({
+                    title: 'Success',
+                    description: res.message,
+                    type: 'success'
+                })
+            }
+
+        });
+</script>
+
+<style>
+
+    .basic-info-form {
+        position: relative;
+    }
+
+    .basic-info-form .form-inputs {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+
+        @media screen and (max-width: 768px) {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .form-header {
+        display: block;
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+    }
+
+</style>

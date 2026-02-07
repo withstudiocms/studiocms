@@ -1,0 +1,72 @@
+{
+  "name": "@withstudiocms/sdk",
+  "version": "0.2.0",
+  "description": "StudioCMS Database SDK",
+  "author": {
+    "name": "withstudiocms",
+    "url": "https://studiocms.dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/withstudiocms/studiocms.git",
+    "directory": "packages/@withstudiocms/sdk"
+  },
+  "contributors": [
+    "Adammatthiesen",
+    "jdtjenkins",
+    "dreyfus92",
+    "code.spirit"
+  ],
+  "license": "MIT",
+  "homepage": "https://studiocms.dev",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "pnpm buildkit build 'src/**/*.{ts,json}'",
+    "dev": "pnpm buildkit dev 'src/**/*.{ts,json}'",
+    "create-migration": "tsx scripts/create-migration.ts",
+    "effect-check": "pnpm effect-language-service diagnostics --project tsconfig.tspc.json",
+    "ci:effect-check": "pnpm effect-check --format github-actions",
+    "typecheck": "tspc -p tsconfig.tspc.json"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./context": {
+      "types": "./dist/context.d.ts",
+      "default": "./dist/context.js"
+    },
+    "./tables": {
+      "types": "./dist/tables.d.ts",
+      "default": "./dist/tables.js"
+    },
+    "./types": {
+      "types": "./dist/types.d.ts",
+      "default": "./dist/types.js"
+    },
+    "./migrator": {
+      "types": "./dist/migrator.d.ts",
+      "default": "./dist/migrator.js"
+    },
+    "./*": "./dist/*"
+  },
+  "type": "module",
+  "dependencies": {
+    "diff": "catalog:",
+    "diff2html": "^3.4.55",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "@withstudiocms/effect": "workspace:^",
+    "@withstudiocms/kysely": "workspace:^",
+    "tsx": "^4.21.0"
+  }
+}

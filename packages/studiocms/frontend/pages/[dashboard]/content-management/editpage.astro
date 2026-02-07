@@ -1,0 +1,113 @@
+---
+import { getRegistryComponents } from 'studiocms:component-registry/runtime';
+import { useTranslations } from 'studiocms:i18n';
+import { runSDK, SDKCoreJs } from 'studiocms:sdk';
+import { Effect } from 'effect';
+import ComponentRegistryUI from '#frontend/components/shared/ComponentRegistryUI.astro';
+import BrowserCopyOutput from '#frontend/components/shared/storage-manager/BrowserCopyOutput.astro';
+import BrowserInputArray from '#frontend/components/shared/storage-manager/BrowserInputArray.astro';
+import EditPage from '../../../components/dashboard/content-mgmt/EditPage.astro';
+import InnerSidebarElement from '../../../components/dashboard/content-mgmt/InnerSidebarElement.astro';
+import PageHeader from '../../../components/dashboard/content-mgmt/PageHeader.astro';
+import Layout from '../../../layouts/DashboardLayout.astro';
+
+const { siteConfig: config, defaultLang: lang, security } = Astro.locals.StudioCMS;
+
+const currentUser = security?.userSessionData ?? null;
+
+const t = useTranslations(lang, '@studiocms/dashboard:content-index');
+
+const registryData = getRegistryComponents();
+
+const urlParams = Astro.url.searchParams;
+const editId = urlParams.get('edit') || '';
+
+const [pageData, users, folderList, categories, tags] = await runSDK(
+	Effect.all([
+		SDKCoreJs.GET.page.byId(editId),
+		SDKCoreJs.GET.users.all(),
+		SDKCoreJs.GET.folderList(),
+		SDKCoreJs.GET.categories.getAll(),
+		SDKCoreJs.GET.tags.getAll(),
+	])
+);
+---
+
+<Layout 
+  title={t('title')}
+  description={t('description')}
+  requiredPermission='editor'
+  sidebar='double'
+  {lang}
+  {config}
+  {currentUser}
+  >
+
+  <div slot="external">
+    <BrowserInputArray triggerInputs={['page-hero-image']} />
+    <BrowserCopyOutput id='storage-file-copy-output' />
+    <ComponentRegistryUI 
+      registryData={registryData} 
+      triggerId='access-component-registry' 
+      />
+  </div>
+
+  <div slot="double-sidebar" class="inner-sidebar-container">
+    <div class="sidebar-links-container">
+      <InnerSidebarElement {lang} />
+    </div>
+  </div>
+
+  <div slot="header">
+    <PageHeader {lang} editPage />
+  </div>
+
+  { pageData && <EditPage {lang} {config} {pageData} {users} {folderList} {categories} {tags} />}
+
+</Layout>
+
+<script>
+    import { 
+        $i18n,
+        $localeSettings,
+        baseTranslation,
+        defaultLang,
+        documentUpdater,
+    } from 'studiocms:i18n/client';
+  
+    let lang = defaultLang;
+
+    const currentPage = '@studiocms/dashboard:content-index';
+
+    $localeSettings.subscribe((locale) => {
+      lang = locale || defaultLang;
+    });
+
+    const i18n = $i18n(currentPage, baseTranslation[currentPage]);
+      
+    i18n.subscribe(comp => {
+      documentUpdater(comp, lang)
+    });
+</script>
+
+<style>
+
+  .sidebar-links-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    min-height: 99vh;
+    height: 100%;
+    gap: 0.5rem;
+  }
+
+  .inner-sidebar-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 100vh;
+    max-height: 100%;
+    padding: 1.5rem;
+  }
+</style>

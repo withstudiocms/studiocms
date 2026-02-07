@@ -1,0 +1,243 @@
+---
+import { Icon } from 'studiocms:ui/components/icon';
+
+const heroIconsUserDataUri =
+	'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAADSklEQVR4AdSWS2xMYRTHjQXRRupRKVWrJhrxSCRigTQpYUHq0VYsarwi8RgJ0rCwFJEQEQ1psZFQXWgGRZB6NdFalkSFFRutV1UJNhLj9+dcOubeud8dC2lzfvd/7vedc77TO999DB/2n/+GZgOpVCoOSegx5K/N5WJGugIsNhHusNBZqIJiQ/455tqgiDFni9QAVZthIVyBBTAWJsBKeAOL4Tw4m3MD/GebqVoBV2Ox2ArohAHog1bGZ0MfLCJ2A+pkzg1QrRpkB3X4G5p4xdhOkOknkYYSpYE5Vu2pqZ/ctUFdDXOzS5QGvlkplxyXmJ/lnAOJfgSyMh0C0AbVVJcOLkRp4JQV3GeaJmy8SQzUg6xRBxecG2CTaaffpGgli12DeVAAhaDb8CFzhXCZ2Ouokzk3YNU2ordhGXTCALyDS6AH0C10CzhbpAb4z16DHjZxVtCivWgPJCHO3BJ4i+9skRrwqrJIE1TBZCiBGmjy5qNoTg1EWSAsNlIDbLZi2AEt0A2fDPkX8BOguyFs3d/zTg1QNB+OkPUcjkMNTIfRhvzV+CfgBbGHYBR+qIU2QCG97dqpVAcjoRuOgpqYggr5GnvCuWL2ou3kjkOzWtYGKFBAdgfoPfAR1S02iw1XB0l4achXgzOJ2QaKnYt2WA1cfwtsgETNtZA2FXR/l7LYaUhx7muag5NMloI+XKahzdSKob6mRXwnGEyA7nm949dQ+D3nTmax2hN6SC0lSVcOyTTfBuhYl36/hddS8IP5zmI56y3hADW1Ye30j/g2wLQ21Ri0i0JtaE5G7g0SH8N40PsCSbegBiot7J7pv4hXw6uZViuogRkWpdvP3JzFq6E7JKNIUAP63FbwJn67KsjTSRSUA/o2XGd5Xk07/SVBDei7/zshq0Bvun6KtcIeqIUKKAM9IfNQ+RrTnGL07dBvufrtVesM5xnm2wCbZyuRer9vR+/DCFgOh0FvPX18PsP/DF9AvsY0pxjFKke5up2LqLmLuAzzbUBRJOh7vxEt57wEVKABvQgPQO+Fr6iQrzHNKWY343pNl5PfAHqWMJRpgQ0MDqVAL9RDAqphPujJmI8K+RrTnGKOMa6PlcFlfH2nBnwzHQfDwn4AAAD//6qWhy8AAAAGSURBVAMAJXQ0UKI3Vu0AAAAASUVORK5CYII=';
+
+interface Props {
+	/**
+	 * The name of the user.
+	 */
+	name: string;
+	/**
+	 * The description of the user. Could be a role, a handle, etc.
+	 */
+	description: string;
+	/**
+	 * The avatar of the user. Either a URL to an image or an imported image.
+	 */
+	avatar?: string;
+	/**
+	 * Additional classes to apply to the user container.
+	 */
+	class?: string;
+	/**
+	 * The loading strategy for the image. Defaults to `lazy`.
+	 */
+	loading?: 'eager' | 'lazy';
+
+	/**
+	 * The timeout delay for loading the avatar image. Defaults to 5000ms.
+	 */
+	timeoutDelay?: number;
+
+	id: string;
+}
+
+const {
+	name,
+	description,
+	avatar,
+	class: className,
+	loading = 'lazy',
+	timeoutDelay = 3000,
+	id,
+} = Astro.props;
+---
+
+<div class="sui-user-container" class:list={[className]} id={id}>
+    <div class="sui-avatar-container">
+        {
+			avatar ? (
+				<studiocms-avatar
+					data-avatar-url={avatar}
+					data-avatar-timeout={timeoutDelay}
+					data-avatar-fallback={heroIconsUserDataUri}
+					data-avatar-name={name}
+					data-avatar-loading={loading}
+				>
+					<img
+						src={heroIconsUserDataUri}
+						width={64}
+						height={64}
+						class="sui-avatar-img"
+						alt={name}
+						loading={loading}
+						decoding="async"
+						referrerpolicy="no-referrer"
+					/>
+				</studiocms-avatar>
+			) : (
+                <Icon
+                    name="heroicons:user"
+                    width={24}
+                    height={24}
+                    role="img"
+                    aria-label={`Placeholder avatar for ${name}`}
+                />
+            )
+        }
+    </div>
+    <div class="sui-text-content">
+        <span class="sui-name">{name}</span>
+        <span class="sui-description">{description}</span>
+    </div>
+</div>
+
+<script>
+	class StudioCMSAvatar extends HTMLElement {
+		connectedCallback() {
+			const avatarUrl = this.dataset.avatarUrl;
+			const timeoutDelay = parseInt(this.dataset.avatarTimeout || '3000', 10);
+			const fallbackDataUri = this.dataset.avatarFallback;
+			const avatarName = this.dataset.avatarName || 'User';
+
+			if (!avatarUrl) return;
+			if (!fallbackDataUri) return;
+
+			const img = this.querySelector('img');
+			if (!img) return;
+
+			this.loadAvatar(img, avatarUrl, timeoutDelay, fallbackDataUri, avatarName);
+		}
+
+		isValidAvatarUrl(url: string): boolean {
+			try {
+				const urlObj = new URL(url);
+
+				const validProtocols = ['https:', 'data:'];
+				if (!validProtocols.includes(urlObj.protocol)) {
+					return false;
+				}
+
+				const isSvg =
+					url.toLowerCase().endsWith('.svg') ||
+					url.toLowerCase().includes('.svg?') ||
+					url.toLowerCase().includes('image/svg');
+
+				if (isSvg) {
+					return false;
+				}
+
+				return true;
+			} catch {
+				return false;
+			}
+		}
+
+		async verifyAvatarUrl(url: string, timeoutMs: number): Promise<boolean> {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+			try {
+				const response = await fetch(url, {
+					method: 'HEAD',
+					signal: controller.signal,
+					cache: 'no-cache',
+				});
+
+				return response.ok;
+			} catch (error) {
+				return false;
+ 	        } finally {
+                clearTimeout(timeoutId);
+			}
+		}
+
+		showFallbackIcon(img: HTMLImageElement, fallbackDataUri: string): void {
+			const container = img.parentElement;
+			if (!container) return;
+			img.src = fallbackDataUri;
+		}
+
+		async loadAvatar(
+			img: HTMLImageElement,
+			url: string,
+			timeoutMs: number,
+			fallbackDataUri: string,
+			name: string
+		): Promise<void> {
+			if (!this.isValidAvatarUrl(url)) {
+				this.showFallbackIcon(img, fallbackDataUri);
+				return;
+			}
+
+			if (url.startsWith('data:')) {
+				img.src = url;
+				img.classList.add('sui-avatar-loaded');
+				return;
+			}
+
+			const isAccessible = await this.verifyAvatarUrl(url, timeoutMs);
+
+			if (!isAccessible) {
+				if (fallbackDataUri && img.src !== fallbackDataUri) {
+					img.src = fallbackDataUri;
+				} else {
+					this.showFallbackIcon(img, fallbackDataUri);
+				}
+				return;
+			}
+			img.onload = () => {
+				img.classList.add('sui-avatar-loaded');
+			};
+
+			img.onerror = () => {
+				if (fallbackDataUri && img.src !== fallbackDataUri) {
+					img.src = fallbackDataUri;
+				} else {
+					this.showFallbackIcon(img, fallbackDataUri);
+				}
+			};
+			img.src = url;
+		}
+	}
+	if (!customElements.get('studiocms-avatar')) {
+		customElements.define('studiocms-avatar', StudioCMSAvatar);
+	}
+</script>
+
+<style>
+    .sui-user-container {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 1rem;
+    }
+    .sui-avatar-container {
+        width: 2.5rem;
+        height: 2.5rem;
+        background-color: var(--default-base);
+        border-radius: var(--radius-full);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        border: 1px solid var(--border);
+    }
+    .sui-avatar-img {
+        width: 100%;
+        height: auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+		opacity: 0.5;
+		transition: opacity 0.2s ease-in;
+    }
+	.sui-avatar-img.sui-avatar-loaded {
+		opacity: 1;
+	}
+    .sui-text-content {
+        display: flex;
+        flex-direction: column;
+        gap: 0.125rem;
+    }
+    .sui-name {
+        font-size: 1em;
+        font-weight: 600;
+    }
+    .sui-description {
+        font-size: 0.875em;
+        font-weight: 400;
+        color: var(--text-muted);
+    }
+</style>

@@ -1,0 +1,133 @@
+---
+import { type UiLanguageKeys, useTranslations } from 'studiocms:i18n';
+import { runSDK, SDKCoreJs } from 'studiocms:sdk';
+import { Input } from 'studiocms:ui/components/input';
+import { Select } from 'studiocms:ui/components/select';
+
+const folderList = await runSDK(SDKCoreJs.GET.folderList());
+
+const parentFolderOptions = [
+	{ value: 'null', label: 'None' },
+	...folderList.map(({ id: value, name: label }) => ({ value, label })),
+];
+
+interface Props {
+	lang: UiLanguageKeys;
+}
+
+const { lang } = Astro.props;
+
+const t = useTranslations(lang, '@studiocms/dashboard:content-folder');
+
+const searchParams = Astro.url.searchParams;
+
+const preselectedParentFolder = searchParams.get('parent-folder') ?? 'null';
+---
+<div id="create-folder-container" data-content-management-url={Astro.locals.StudioCMS.routeMap.mainLinks.contentManagement}>
+
+    <form id="create-folder-form" action={Astro.locals.StudioCMS.routeMap.endpointLinks.content.folder}>
+
+        <Input label={t('input-folder-name')} name="folder-name" isRequired />
+        
+        <Select label={t('input-folder-parent')} name="parent-folder" fullWidth options={parentFolderOptions} defaultValue={preselectedParentFolder} />
+    
+    </form>
+
+</div>
+
+<script>
+    import { 
+        $i18n,
+        baseTranslation,
+        updateElmLabel,
+        updateSelectElmLabel
+    } from 'studiocms:i18n/client';
+
+    const currentPage = '@studiocms/dashboard:content-folder';
+
+    const i18n = $i18n(currentPage, baseTranslation[currentPage]);
+      
+    i18n.subscribe(comp => {
+        updateElmLabel('folder-name', comp['input-folder-name']);
+        updateSelectElmLabel('parent-folder', comp['input-folder-parent']);
+    });
+</script>
+
+<script>
+import { toast } from "studiocms:ui/components/toaster/client";
+
+    const form = document.getElementById('create-folder-form') as HTMLFormElement;
+    const createContainer = document.getElementById('create-folder-container') as HTMLDivElement;
+
+    const { contentManagementUrl } = createContainer.dataset;
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const formData = new FormData(form);
+
+        function parseParentFolder(value: string) {
+            if (value === 'null') {
+                return null;
+            }
+
+            return value;
+        }
+
+        type JsonData = {
+            folderName: string;
+            parentFolder: string | null;
+        }
+        
+        const data: JsonData = {
+            folderName: formData.get('folder-name') as string,
+            parentFolder: parseParentFolder(formData.get('parent-folder') as string),
+        }
+
+        console.log(data);
+
+        const response = await fetch(form.action, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
+
+        const res = await response.json();
+
+        if (response.status !== 200) {
+            toast({
+                title: 'Error',
+                description: res.error,
+                type: 'danger'
+            })
+            return;
+        }
+
+        if (response.status === 200) {
+            toast({
+                title: 'Success',
+                description: res.message,
+                type: 'success'
+            })
+            if (contentManagementUrl) window.location.href = contentManagementUrl;
+            return;
+        }
+    });
+</script>
+
+<style>
+    #create-folder-container {
+        height: 100%;
+        width: 100%;
+        min-width: 100%;
+    }
+
+    #create-folder-form {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        padding-top: .5rem;
+    }
+</style>

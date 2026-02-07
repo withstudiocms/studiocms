@@ -1,0 +1,102 @@
+{
+	"name": "@withstudiocms/effect",
+	"version": "0.3.0",
+	"description": "Effect-TS Utilities for Astro",
+	"license": "MIT",
+	"author": {
+		"name": "withstudiocms",
+		"url": "https://studiocms.dev"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/withstudiocms/studiocms.git",
+		"directory": "packages/@withstudiocms/effect"
+	},
+	"keywords": [
+		"astro-studiocms",
+		"cms",
+		"studiocms",
+		"astro",
+		"withastro",
+		"effect",
+		"effect-ts",
+		"effect-ts-astro"
+	],
+	"homepage": "https://studiocms.dev",
+	"contributors": [
+		"Adammatthiesen",
+		"jdtjenkins",
+		"dreyfus92",
+		"code.spirit"
+	],
+	"publishConfig": {
+		"access": "public",
+		"provenance": true
+	},
+	"sideEffects": false,
+	"files": [
+		"dist",
+		"LICENSE",
+		"CHANGELOG.md",
+		"README.md"
+	],
+	"scripts": {
+		"build": "buildkit build 'src/**/*.ts'",
+		"dev": "buildkit dev 'src/**/*.ts'",
+		"test": "vitest",
+		"effect-check": "pnpm effect-language-service diagnostics --project tsconfig.tspc.json",
+		"ci:effect-check": "pnpm effect-check --format github-actions",
+		"typecheck": "tspc -p tsconfig.tspc.json"
+	},
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"default": "./dist/index.js"
+		},
+		"./astro": {
+			"types": "./dist/astro/index.d.ts",
+			"default": "./dist/astro/index.js"
+		},
+		"./astro/*": {
+			"types": "./dist/astro/*.d.ts",
+			"default": "./dist/astro/*.js"
+		},
+		"./effect": {
+			"types": "./dist/effect.d.ts",
+			"default": "./dist/effect.js"
+		},
+		"./scrypt": {
+			"types": "./dist/scrypt.d.ts",
+			"default": "./dist/scrypt.js"
+		},
+		"./smtp": {
+			"types": "./dist/smtp.d.ts",
+			"default": "./dist/smtp.js"
+		},
+		"./clack": {
+			"types": "./dist/clack.d.ts",
+			"default": "./dist/clack.js"
+		}
+	},
+	"type": "module",
+	"dependencies": {
+		"@clack/prompts": "^1.0.0",
+		"deepmerge-ts": "catalog:",
+		"micromatch": "^4.0.8",
+		"nodemailer": "^7.0.13",
+		"socks": "^2.8.7"
+	},
+	"devDependencies": {
+		"@types/micromatch": "^4.0.10",
+		"@types/node": "catalog:",
+		"@types/nodemailer": "^7.0.9",
+		"typescript": "catalog:"
+	},
+	"peerDependencies": {
+		"@effect/cli": "catalog:effect",
+		"@effect/platform": "catalog:effect",
+		"@effect/platform-node": "catalog:effect",
+		"astro": "catalog:min",
+		"effect": "catalog:effect"
+	}
+}

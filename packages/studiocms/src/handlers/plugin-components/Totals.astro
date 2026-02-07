@@ -1,0 +1,114 @@
+---
+import { runSDK, SDKCoreJs } from 'studiocms:sdk';
+import { Card } from 'studiocms:ui/components/card';
+import { Icon } from 'studiocms:ui/components/icon';
+import { Effect } from '../../effect.js';
+import { allowedIdentifiers } from './utils.js';
+
+const [allPages, totalUsers] = await runSDK(
+	Effect.all([SDKCoreJs.GET.pages(true), SDKCoreJs.GET.users.all()])
+);
+
+// Filter out the pages that are not allowed
+const totalPages = allPages.filter((page) => allowedIdentifiers.includes(page.package));
+
+// Filter out for draft pages
+const totalDraftPages = totalPages.filter((page) => page.draft === true);
+
+const genericTranslationProps = {
+	plugin: 'studiocms',
+	component: 'overview',
+};
+---
+
+<div class="totals-grid-item-container">
+    <div class="totals-grid-item">
+        <a href={Astro.locals.StudioCMS.routeMap.mainLinks.contentManagement}>
+            <Card class="totals-grid-item-card">
+                <div class="totals-grid-item-content">
+                    <Icon name="heroicons:document-text" height={24} width={24} />
+                    <div class="totals-grid-item-text">
+                        <span class="totals-grid-item-label"><p-translations {...genericTranslationProps} key="total-pages">Total Pages</p-translations></span>
+                        <span>{totalPages.length}</span>
+                    </div>
+                </div>
+            </Card>
+        </a>
+    </div>
+    <div class="totals-grid-item">
+        <a href={Astro.locals.StudioCMS.routeMap.mainLinks.contentManagement}>
+            <Card class="totals-grid-item-card">
+                <div class="totals-grid-item-content">
+                    <Icon name="heroicons:document" height={24} width={24} />
+                    <div class="totals-grid-item-text">
+                        <span class="totals-grid-item-label"><p-translations {...genericTranslationProps} key="draft-pages">Draft Pages</p-translations></span>
+                        <span>{totalDraftPages.length}</span>
+                    </div>
+                </div>
+            </Card>
+        </a>
+    </div>
+    <div class="totals-grid-item">
+        <a href={Astro.locals.StudioCMS.routeMap.mainLinks.userManagement}>
+            <Card class="totals-grid-item-card">
+                <div class="totals-grid-item-content">
+                    <Icon name="heroicons:user-group" height={24} width={24} />
+                    <div class="totals-grid-item-text">
+                        <span class="totals-grid-item-label"><p-translations {...genericTranslationProps} key="total-users">Total Users</p-translations></span>
+                        <span>{totalUsers.length}</span>
+                    </div>
+                </div>
+            </Card>
+        </a>
+    </div>
+</div>
+
+<style>
+    a {
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .totals-grid-item-card {
+        background-color: var(--background-step-2);
+        width: 100%;
+        height: 100%;
+        transition: all 0.15s ease;
+    }
+
+    .totals-grid-item-card:hover {
+        background-color: var(--background-step-3);
+    }
+
+    .totals-grid-item-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 0.5rem;
+    }
+
+    .totals-grid-item {
+        width: 100%;
+    }
+
+    .totals-grid-item-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem;
+    }
+
+    .totals-grid-item-text {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 1rem;
+        gap: 0.5rem;
+    }
+
+    .totals-grid-item-label {
+        font-size: small;
+        font-weight: 500;
+    }
+</style>

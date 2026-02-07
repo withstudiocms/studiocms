@@ -1,0 +1,70 @@
+{
+  "name": "@studiocms/google",
+  "version": "0.2.0",
+  "description": "Add Google OAuth Support to your StudioCMS project with ease!",
+  "author": {
+    "name": "withstudiocms",
+    "url": "https://studiocms.dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/withstudiocms/studiocms.git",
+    "directory": "packages/@studiocms/google"
+  },
+  "contributors": [
+    "Adammatthiesen",
+    "jdtjenkins",
+    "dreyfus92",
+    "code.spirit"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "astro",
+    "astrocms",
+    "astrodb",
+    "astrostudio",
+    "astro-studio",
+    "astro-studiocms",
+    "cms",
+    "studiocms",
+    "plugin",
+    "studiocms-plugin"
+  ],
+  "homepage": "https://studiocms.dev",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "buildkit build 'src/**/*.{ts,astro,css,json,png}'",
+    "dev": "buildkit dev 'src/**/*.{ts,astro,css,json,png}'",
+    "typecheck": "tspc -p tsconfig.tspc.json",
+    "effect-check": "pnpm effect-language-service diagnostics --project tsconfig.tspc.json",
+    "ci:effect-check": "pnpm effect-check --format github-actions",
+    "test": "vitest"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "type": "module",
+  "dependencies": {
+    "astro-integration-kit": "catalog:",
+    "arctic": "catalog:"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "astro": "catalog:min",
+    "studiocms": "workspace:^",
+    "vite": "catalog:min"
+  },
+  "peerDependencies": {
+    "effect": "catalog:effect"
+  }
+}

@@ -1,0 +1,26 @@
+---
+interface Props {
+	siteTitle: string;
+}
+
+const { siteTitle } = Astro.props;
+const today = new Date();
+---
+
+<footer>
+	&copy; <span id="footer-year">{today.getFullYear()}</span> {siteTitle}. All rights reserved.
+</footer>
+
+<script is:inline>
+	const footerYear = document.getElementById('footer-year');
+	footerYear.textContent = new Date().getFullYear();
+</script>
+
+<style>
+	footer {
+		padding: 2em 1em 6em 1em;
+		background: linear-gradient(var(--gray-gradient)) no-repeat;
+		color: rgb(var(--gray));
+		text-align: center;
+	}
+</style>

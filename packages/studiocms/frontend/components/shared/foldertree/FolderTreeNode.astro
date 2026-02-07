@@ -1,0 +1,497 @@
+---
+import { type UiLanguageKeys, useTranslations } from 'studiocms:i18n';
+import { Icon } from 'studiocms:ui/components/icon';
+import type { NodeLeafProps } from './shared';
+
+interface Props extends NodeLeafProps {
+	lang: UiLanguageKeys;
+}
+
+const { createFolderLink, createPageLink, editFolderLink, node, depth = 0, lang } = Astro.props;
+
+const nodeId = `folder-${node.id}`;
+const contentId = `content-${node.id}`;
+const href = node.page === false ? editFolderLink : '#';
+
+const t = useTranslations(lang, '@studiocms/dashboard:file-tree-renderer');
+---
+
+<folder-tree-node
+    data-node-id={nodeId}
+    data-depth={depth}
+    data-href={href}
+    data-folder-id={node.id}
+    data-create-subfolder-link={createFolderLink}
+    data-create-page-link={createPageLink}
+    class="tree-node"
+    role="treeitem"
+    aria-expanded="false"
+>
+    <div id={`${nodeId}-tree-node-header`} class="tree-node-header">
+        <button
+            id={`${nodeId}-tree-node-toggle`}
+            class="tree-node-toggle"
+            type="button"
+            aria-controls={contentId}
+            aria-label={`Toggle ${node.name} folder`}
+        >
+            {/*<Icon
+                name="heroicons:chevron-right"
+                class="chevron-icon"
+                width={16}
+                height={16}
+            />*/}
+        </button>
+        <div class="tree-node-content">
+            <Icon
+                name="heroicons:folder"
+                class="folder-icon closed"
+                width={20}
+                height={20}
+            />
+            <Icon
+                name="heroicons:folder-open"
+                class="folder-icon open"
+                width={20}
+                height={20}
+            />
+            <Icon
+                name="heroicons:folder-open-solid"
+                class="folder-icon selected"
+                width={20}
+                height={20}
+            />
+            <span class="tree-node-label">{node.name}</span>
+        </div>
+        <button
+            id={`${nodeId}-tree-node-menu-trigger`}
+            class="tree-node-menu-trigger"
+            type="button"
+            aria-label={`Open menu for ${node.name}`}
+            aria-haspopup="menu"
+            aria-controls={`${nodeId}-context-menu`}
+        >
+            <Icon
+                name="heroicons:ellipsis-vertical"
+                width={16}
+                height={16}
+            />
+        </button>
+    </div>
+    <div class="tree-node-children" id={contentId}>
+        <div class="tree-node-children-inner">
+            <slot />
+        </div>
+    </div>
+    <div id={`${nodeId}-context-menu`} class="context-menu" role="menu">
+        <button class="context-menu-item" role="menuitem" data-action="edit">
+            <Icon name="heroicons:pencil" width={16} height={16} />
+            <span>
+                <t-file-tree-renderer key="edit-folder">
+                    {t('edit-folder')}
+                </t-file-tree-renderer>
+            </span>
+        </button>
+        <button
+            class="context-menu-item"
+            role="menuitem"
+            data-action="create-folder"
+        >
+            <Icon name="heroicons:folder-plus" width={16} height={16} />
+            <span>
+                <t-file-tree-renderer key="create-sub-folder">
+                    {t('create-sub-folder')}
+                </t-file-tree-renderer>
+            </span>
+        </button>
+        <button
+            class="context-menu-item"
+            role="menuitem"
+            data-action="create-page"
+        >
+            <Icon name="heroicons:document-plus" width={16} height={16} />
+            <span>
+                <t-file-tree-renderer key="create-sub-page">
+                    {t('create-sub-page')}
+                </t-file-tree-renderer>
+            </span>
+        </button>
+    </div>
+</folder-tree-node>
+
+<script>
+    import { $i18n, baseTranslation, makeTranslation } from 'studiocms:i18n/client';
+
+    const currentPage = "@studiocms/dashboard:file-tree-renderer";
+
+    const i18n = $i18n(currentPage, baseTranslation[currentPage]);
+
+    if (!customElements.get("t-file-tree-renderer")) {
+        customElements.define(
+            "t-file-tree-renderer",
+            makeTranslation(currentPage, i18n),
+        );
+    }
+</script>
+
+<script>
+    class FolderTreeNode extends HTMLElement {
+        private toggleButton: HTMLButtonElement | null = null;
+        private menuTriggerButton: HTMLButtonElement | null = null;
+        private header: HTMLElement | null = null;
+        private contextMenu: HTMLElement | null = null;
+        private isExpanded = false;
+        private href: string;
+        private boundCollapseAll = () => this.collapse();
+        private boundExpandAll = () => this.expand();
+        private boundDocumentClick = (e: MouseEvent) => {
+            if (
+                this.contextMenu &&
+                !this.contextMenu.contains(e.target as Node) &&
+                e.target !== this.menuTriggerButton &&
+                !this.menuTriggerButton?.contains(e.target as Node)
+            ) {
+                this.hideContextMenu();
+            }
+        };
+        private boundDocumentKeydown = (e: KeyboardEvent) => {
+            if (e.key === "Escape") this.hideContextMenu();
+        };
+
+        constructor() {
+            super();
+            this.href = this.getAttribute("data-href") || "#";
+        }
+
+        connectedCallback() {
+            const nodeId = this.getAttribute("data-node-id");
+
+            this.toggleButton = this.querySelector(
+                `#${nodeId}-tree-node-toggle`,
+            );
+            this.menuTriggerButton = this.querySelector(
+                `#${nodeId}-tree-node-menu-trigger`,
+            );
+            this.header = this.querySelector(`#${nodeId}-tree-node-header`);
+            this.contextMenu = this.querySelector(`#${nodeId}-context-menu`);
+            this.setupEventListeners();
+            this.loadExpandedState();
+            this.setupContextMenu();
+            this.setupActiveState();
+        }
+
+        setupEventListeners() {
+            // Toggle on button click
+            this.toggleButton?.addEventListener("click", (e) => {
+                e.stopPropagation();
+                this.toggle();
+            });
+
+            // Toggle on header click (but not the button or menu trigger)
+            this.header?.addEventListener("click", (e) => {
+                if (
+                    e.target !== this.toggleButton &&
+                    !this.toggleButton?.contains(e.target as Node) &&
+                    e.target !== this.menuTriggerButton &&
+                    !this.menuTriggerButton?.contains(e.target as Node)
+                ) {
+                    this.toggle();
+                }
+            });
+
+            // Menu trigger button click
+            this.menuTriggerButton?.addEventListener("click", (e) => {
+                e.stopPropagation();
+                this.toggleContextMenu(e as MouseEvent);
+            });
+
+            // Keyboard support
+            this.addEventListener("keydown", (e) => {
+                switch (e.key) {
+                    case "Enter":
+                    case " ":
+                        e.preventDefault();
+                        this.toggle();
+                        break;
+                    case "ArrowRight":
+                        if (!this.isExpanded) {
+                            e.preventDefault();
+                            this.expand();
+                        }
+                        break;
+                    case "ArrowLeft":
+                        if (this.isExpanded) {
+                            e.preventDefault();
+                            this.collapse();
+                        }
+                        break;
+                }
+            });
+
+            // Custom window event for mass-collapse
+            window.addEventListener("folderTreeNode-collapseAllFolders", this.boundCollapseAll);
+
+            window.addEventListener("folderTreeNode-expandAllFolders", this.boundExpandAll);
+        }
+
+        disconnectedCallback() {
+            window.removeEventListener(
+                "folderTreeNode-collapseAllFolders",
+                this.boundCollapseAll,
+            );
+            window.removeEventListener(
+                "folderTreeNode-expandAllFolders",
+                this.boundExpandAll,
+            );
+
+            document.removeEventListener("click", this.boundDocumentClick);
+            document.removeEventListener("keydown", this.boundDocumentKeydown);
+        }
+
+        setupContextMenu() {
+            // Show context menu on right-click
+            this.header?.addEventListener("contextmenu", (e) => {
+                e.preventDefault();
+                this.showContextMenu(e as MouseEvent);
+            });
+
+            // Hide context menu when clicking outside
+            document.addEventListener("click", this.boundDocumentClick);
+
+            // Handle context menu actions
+            const menuItems =
+                this.contextMenu?.querySelectorAll(".context-menu-item");
+            menuItems?.forEach((item) => {
+                item.addEventListener("click", (e) => {
+                    e.stopPropagation();
+                    const action = (item as HTMLElement).getAttribute(
+                        "data-action",
+                    );
+                    this.handleContextMenuAction(action);
+                    this.hideContextMenu();
+                });
+            });
+
+            // Close menu on Escape key
+            document.addEventListener("keydown", this.boundDocumentKeydown);
+        }
+
+        genUrl(base: string, params?: Record<string, string>) {
+            const url = new URL(base, window.location.origin);
+
+            if (params) {
+                for (const [key, value] of Object.entries(params)) {
+                    url.searchParams.set(key, value);
+                }
+            }
+
+            return url.href;
+        }
+
+        setupActiveState() {
+            let hrefEdit = null;
+            try {
+                const url = this.genUrl(this.href, {
+                    folder: this.getAttribute("data-folder-id") || "",
+                });
+
+                hrefEdit = new URL(url).searchParams.get("folder");
+            } catch {}
+            const currentEdit = new URL(window.location.href).searchParams.get(
+                "folder",
+            );
+
+            const isActive =
+                hrefEdit !== null &&
+                currentEdit !== null &&
+                hrefEdit === currentEdit;
+
+            if (isActive) {
+                this.setAttribute("aria-current", "page");
+            } else {
+                this.removeAttribute("aria-current");
+            }
+        }
+
+        toggleContextMenu(e: MouseEvent) {
+            if (this.contextMenu?.classList.contains("active")) {
+                this.hideContextMenu();
+            } else {
+                this.showContextMenu(e);
+            }
+        }
+
+        showContextMenu(e: MouseEvent) {
+            if (!this.contextMenu) {
+                console.error("Context menu not found");
+                return;
+            }
+
+            // Get the folder tree container
+            const container = this.closest("folder-tree-container");
+            if (!container) {
+                console.error("Folder tree container not found");
+                return;
+            }
+
+            const containerRect = container.getBoundingClientRect();
+
+            // Position the menu at cursor (using clientX/clientY for fixed positioning)
+            this.contextMenu.style.left = `${e.clientX}px`;
+            this.contextMenu.style.top = `${e.clientY}px`;
+            this.contextMenu.classList.add("active");
+
+            // Update aria attributes
+            this.menuTriggerButton?.setAttribute("aria-expanded", "true");
+
+            // Adjust if menu goes off-screen
+            requestAnimationFrame(() => {
+                if (!this.contextMenu) return;
+                const menuRect = this.contextMenu.getBoundingClientRect();
+
+                // Calculate constrained position
+                let left = e.clientX;
+                let top = e.clientY;
+
+                // Check right boundary (viewport and container)
+                const maxRight = Math.min(window.innerWidth, containerRect.right);
+                if (left + menuRect.width > maxRight) {
+                    left = Math.max(containerRect.left, maxRight - menuRect.width);
+                }
+
+                // Check bottom boundary (viewport and container)
+                const maxBottom = Math.min(window.innerHeight, containerRect.bottom);
+                if (top + menuRect.height > maxBottom) {
+                    top = Math.max(containerRect.top, maxBottom - menuRect.height);
+                }
+
+                // Ensure menu doesn't go outside left/top of container
+                left = Math.max(containerRect.left, left);
+                top = Math.max(containerRect.top, top);
+
+                this.contextMenu.style.left = `${left}px`;
+                this.contextMenu.style.top = `${top}px`;
+            });
+        }
+
+        hideContextMenu() {
+            this.contextMenu?.classList.remove("active");
+            this.menuTriggerButton?.setAttribute("aria-expanded", "false");
+        }
+
+        handleContextMenuAction(action: string | null) {
+            const href = this.getAttribute("data-href") || "#";
+            const folderId = this.getAttribute("data-folder-id") || "null";
+
+            const createFolderUrl =
+                this.getAttribute("data-create-subfolder-link") || "#";
+            const createPageUrl =
+                this.getAttribute("data-create-page-link") || "#";
+
+            switch (action) {
+                case "edit":
+                    const editLink = this.genUrl(href, { folder: folderId });
+                    window.location.href = editLink;
+                    break;
+
+                case "create-folder":
+                    const createFolderLink = this.genUrl(createFolderUrl, {
+                        'parent-folder': folderId,
+                    });
+                    window.location.href = createFolderLink;
+                    break;
+
+                case "create-page":
+                    const createPageLink = this.genUrl(createPageUrl, {
+                        'parent-folder': folderId,
+                    });
+                    window.location.href = createPageLink;
+                    break;
+            }
+        }
+
+        toggle() {
+            if (this.isExpanded) {
+                this.collapse();
+            } else {
+                this.expand();
+            }
+        }
+
+        expand() {
+            this.isExpanded = true;
+            this.setAttribute("aria-expanded", "true");
+            this.saveExpandedState();
+        }
+
+        collapse() {
+            this.isExpanded = false;
+            this.setAttribute("aria-expanded", "false");
+            this.saveExpandedState();
+        }
+
+        interactWithDB(onsuccess: IDBOpenDBRequest["onsuccess"]) {
+            const result = indexedDB.open("studiocms-folder-tree-node", 1);
+
+            result.onupgradeneeded = (event) => {
+                const db = (event.target as IDBOpenDBRequest).result;
+                db.createObjectStore("nodes", { keyPath: "id" });
+            };
+
+            result.onsuccess = onsuccess;
+
+            result.onerror = (event) => {
+                console.error(
+                    "IndexedDB error:",
+                    (event.target as IDBOpenDBRequest).error,
+                );
+            };
+        }
+
+        saveExpandedState() {
+            const nodeId = this.getAttribute("data-node-id");
+            if (!nodeId) return;
+            return this.interactWithDB((event) => {
+                const db = (event.target as IDBOpenDBRequest).result;
+                const transaction = db.transaction("nodes", "readwrite");
+                const store = transaction.objectStore("nodes");
+
+                store.put({ id: nodeId, expanded: this.isExpanded });
+
+                transaction.oncomplete = () => {
+                    db.close();
+                };
+            });
+        }
+
+        loadExpandedState() {
+            const nodeId = this.getAttribute("data-node-id");
+            if (!nodeId) return;
+            return this.interactWithDB((event) => {
+                const db = (event.target as IDBOpenDBRequest).result;
+                const transaction = db.transaction("nodes", "readonly");
+                const store = transaction.objectStore("nodes");
+
+                const getRequest = store.get(nodeId);
+                getRequest.onsuccess = (event) => {
+                    const result = (event.target as IDBRequest).result;
+                    if (result) {
+                        this.isExpanded = result.expanded;
+                        this.setAttribute(
+                            "aria-expanded",
+                            String(this.isExpanded),
+                        );
+                    }
+                };
+
+                transaction.oncomplete = () => {
+                    db.close();
+                };
+            });
+        }
+    }
+
+    if (!customElements.get("folder-tree-node")) {
+        customElements.define("folder-tree-node", FolderTreeNode);
+    }
+</script>

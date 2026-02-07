@@ -1,0 +1,147 @@
+name: CI - Testing
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'packages/**/**'
+      - 'playground/**/**'
+      - '.github/workflows/ci-testing.yml'
+    branches:
+      - main
+  pull_request:
+    paths:
+      - 'packages/**/**'
+      - 'playground/**/**'
+      - '.github/workflows/ci-testing.yml'
+    types:
+      - opened
+      - reopened
+      - synchronize
+
+concurrency:
+  group: ${{ github.workflow }}-testing-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  typecheck:
+    name: Type Checks
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        cmd: ["withstudiocms", "studiocms", "studiocms-packages"]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      - name: Run ${{ matrix.cmd }} TypeCheck
+        uses: ./.github/actions/type-check
+        with:
+          cmd: ${{ matrix.cmd }}
+
+  effect-check:
+    name: Effect Diagnostics
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        cmd: ["withstudiocms", "studiocms", "studiocms-packages"]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      - name: Run ${{ matrix.cmd }} Effect Diagnostics
+        uses: ./.github/actions/effect-check
+        with:
+          cmd: ${{ matrix.cmd }}
+
+  vitest-tests:
+    name: Code Coverage & Test Report
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # For Allure GitHub Pages deployment
+      pull-requests: write # For Allure PR comments
+      id-token: write # For Codecov upload
+    env:
+      NODE_OPTIONS: "--max_old_space_size=4096"
+    steps:
+      - name: Check out code using Git
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: true
+
+      - name: Install Tools & Dependencies
+        uses: withstudiocms/automations/.github/actions/install@7caa6bf5171347ed3b56a7f65ef030f0fbc15774 # main
+
+      - name: Build packages
+        run: pnpm ci:build
+
+      - name: Run Tests & Code Coverage
+        run: pnpm ci:test
+
+      # Allure Reports Require to be ran from within our repository only
+      # So we check if the PR is from a fork or from the same repository
+      - name: Generate Allure Report and Deploy
+        if: always() && (github.event.pull_request.head.repo.full_name == github.repository || github.ref == 'refs/heads/main')
+        uses: ./.github/actions/allure-report
+        with:
+          gh_pages_branch: testing/allure
+          gh_page_history: testing/allure
+          allure_report_id: studiocms-tests
+          allure_report_dir: allure-results
+          cname: tests.studiocms.dev
+
+      - name: Upload coverage report to Codecov
+        uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de # v5.5.2
+        with:
+          use_oidc: true
+          slug: withstudiocms/studiocms
+          directory: "./coverage/"
+          files: "./coverage-final.json"
+          flags: integrations,plugins,tools-utils
+          report_type: "coverage"
+
+      - name: Upload test results to Codecov
+        uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de # v5.5.2
+        with:
+          use_oidc: true
+          slug: withstudiocms/studiocms
+          files: "./junit-report.xml"
+          flags: integrations,plugins,tools-utils
+          report_type: "test_results"
+
+  bundle-analysis:
+    name: Bundle Analysis
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        cmd: ["blog", "headless"]
+    permissions:
+      contents: read
+      id-token: write #  For Codecov Bundle Analysis upload
+    env:
+      NODE_OPTIONS: "--max_old_space_size=4096"
+      CMS_LIBSQL_URL: "file:./studiocms-bundle-tests.db"
+      # This key is only for bundle test analysis and has no access to any other resources
+      # Please do not reuse it for other purposes
+      CMS_ENCRYPTION_KEY: IQVGyaV8HH5pXwUvWHY4OQ==
+    steps:
+      - name: Check out code using Git
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 2
+          persist-credentials: false
+
+      - name: Build Astro Bundle Test for @${{ matrix.cmd }}
+        uses: ./.github/actions/bundle-analysis
+        with:
+          cmd: ${{ matrix.cmd }}

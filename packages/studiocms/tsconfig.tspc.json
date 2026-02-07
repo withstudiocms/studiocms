@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig.tspc.json",
+  "include": ["src", "frontend"],
+  "exclude": ["dist"],
+  "compilerOptions": {
+    "outDir": "./dist",
+    "baseUrl": ".",
+    "rootDir": "."
+  }
+}

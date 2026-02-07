@@ -1,0 +1,14 @@
+{
+  "name": "@test/registry-test",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "@withstudiocms/component-registry": "workspace:^",
+    "astro": "catalog:astrojs",
+    "astro-integration-kit": "catalog:"
+  }
+}

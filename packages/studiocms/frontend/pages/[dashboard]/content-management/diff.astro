@@ -1,0 +1,367 @@
+---
+import { FormattedDate } from 'studiocms:components';
+import { useTranslations } from 'studiocms:i18n';
+import { SDKCore } from 'studiocms:sdk';
+import { Button } from 'studiocms:ui/components/button';
+import { Card } from 'studiocms:ui/components/card';
+import { Group } from 'studiocms:ui/components/group';
+import { Input } from 'studiocms:ui/components/input';
+import { Effect, genLogger, runEffect } from '@withstudiocms/effect';
+import InnerSidebarElement from '../../../components/dashboard/content-mgmt/InnerSidebarElement.astro';
+import PageHeader from '../../../components/dashboard/content-mgmt/PageHeader.astro';
+import Layout from '../../../layouts/DashboardLayout.astro';
+
+const { siteConfig: config, defaultLang: lang, security } = Astro.locals.StudioCMS;
+
+const currentUser = security?.userSessionData ?? null;
+
+const t = useTranslations(lang, '@studiocms/dashboard:content-index');
+const td = useTranslations(lang, '@studiocms/dashboard:content-diff');
+const urlParams = Astro.url.searchParams;
+const diffId = urlParams.get('diff');
+
+if (!diffId) return Astro.redirect('/404');
+
+const { user, diff } = await runEffect(
+	genLogger('studiocms/routes/dashboard/content-management/diff.users-diff')(function* () {
+		const sdk = yield* SDKCore;
+
+		const [users, diff] = yield* Effect.all([
+			sdk.GET.users.all(),
+			sdk.diffTracking.get.single(diffId),
+		]);
+
+		const user = (id: string) => users.find((u) => u.id === id)?.name;
+
+		return { user, diff };
+	})
+);
+
+if (!diff) return Astro.redirect('/404');
+
+const [page, metaDataChanges, diffContentHTML] = await runEffect(
+	genLogger('studiocms/routes/dashboard/content-management/diff.page-meta')(function* () {
+		const sdk = yield* SDKCore;
+
+		return yield* Effect.all([
+			sdk.GET.page.byId(diff.pageId),
+			sdk.diffTracking.utils.getMetaDataDifferences(diff.pageMetaData.start, diff.pageMetaData.end),
+			sdk.diffTracking.utils.getDiffHTML(diff.diff ?? ''),
+		]);
+	})
+);
+
+if (!page) return new Response(null, { status: 404 });
+---
+
+<Layout
+  title={t("title")}
+  description={t("description")}
+  requiredPermission="editor"
+  sidebar="double"
+  {lang}
+  {config}
+  {currentUser}
+>
+  <div slot="double-sidebar" class="inner-sidebar-container">
+    <div class="sidebar-links-container">
+      <InnerSidebarElement {lang} />
+    </div>
+  </div>
+
+  <div slot="header">
+    <PageHeader {lang} />
+    <span style="width: 100%; display: flex; padding: 1rem 0; gap: 1rem;">
+      <Button
+        variant="outlined"
+        color="info"
+        size="sm"
+        href={`${Astro.locals.StudioCMS.routeMap.mainLinks.contentManagementEdit}?edit=${page.id}`}
+        ><t-content-diff key="view-page">{td("view-page")}</t-content-diff>
+      </Button>
+
+      <Group>
+        <Button
+          id="revert-metadata"
+          variant={"outlined"}
+          color={"primary"}
+          size="sm"
+          disabled={metaDataChanges.length === 0}
+          data-id={diff.id}
+          data-url={Astro.locals.StudioCMS.routeMap.endpointLinks.content.diff}
+          data-type="data"
+          ><t-content-diff key="revert-metadata"
+            >{td("revert-metadata")}</t-content-diff
+          >
+        </Button>
+        <Button
+          id="revert-content"
+          variant={"outlined"}
+          color={"primary"}
+          size="sm"
+          data-id={diff.id}
+          data-url={Astro.locals.StudioCMS.routeMap.endpointLinks.content.diff}
+          data-type="content"
+          ><t-content-diff key="revert-content"
+            >{td("revert-content")}</t-content-diff
+          >
+        </Button>
+        <Button
+          id="revert-all-changes"
+          variant={"outlined"}
+          color={"primary"}
+          size="sm"
+          data-id={diff.id}
+          data-url={Astro.locals.StudioCMS.routeMap.endpointLinks.content.diff}
+          data-type="both"
+          ><t-content-diff key="revert-all">{td("revert-all")}</t-content-diff>
+        </Button>
+      </Group>
+    </span>
+    <Card style="margin-left: 2rem;">
+      <table class="page-diff-info">
+        <tr>
+          <td
+            ><t-content-diff key="page-title">{td("page-title")}</t-content-diff
+            ></td
+          >
+          <td>{page.title}</td>
+        </tr>
+        <tr>
+          <td
+            ><t-content-diff key="edited-by">{td("edited-by")}</t-content-diff
+            ></td
+          >
+          <td>{user(diff.userId)}</td>
+        </tr>
+        <tr>
+          <td
+            ><t-content-diff key="edited-on">{td("edited-on")}</t-content-diff
+            ></td
+          >
+          <td><FormattedDate date={diff.timestamp!} /></td>
+        </tr>
+      </table>
+    </Card>
+  </div>
+
+  <h4>
+    <t-content-diff key="page-metadata">{td("page-metadata")}</t-content-diff>
+  </h4>
+
+  {
+    metaDataChanges.length > 0 ? (
+      metaDataChanges.map(({ current, label, previous }) => (
+        <div class="diff-screen metadata-diffs">
+          <div>{label}</div>
+          <div class="form-row">
+            <Input label="Previous" value={`${previous}`} disabled />
+            <Input label="Current" value={`${current}`} disabled />
+          </div>
+        </div>
+      ))
+    ) : (
+      <div class="diff-screen metadata-diffs">
+        <div>
+          <t-content-diff key="no-metadata-changes">
+            {td("no-metadata-changes")}
+          </t-content-diff>
+        </div>
+      </div>
+    )
+  }
+
+  <h4>
+    <t-content-diff key="page-content">{td("page-content")}</t-content-diff>
+  </h4>
+
+  <div set:html={diffContentHTML} class="diff-screen" />
+</Layout>
+
+<script>
+  import { toast } from "studiocms:ui/components/toaster/client";
+
+  const revertMetaData = document.getElementById(
+    "revert-metadata",
+  ) as HTMLButtonElement;
+  const revertContent = document.getElementById(
+    "revert-content",
+  ) as HTMLButtonElement;
+  const revertAllChanges = document.getElementById(
+    "revert-all-changes",
+  ) as HTMLButtonElement;
+
+  async function runEvent({ dataset }: HTMLButtonElement, event: MouseEvent) {
+    const { url, id, type } = dataset;
+
+    event.preventDefault();
+
+    if (!url || !id || !type) {
+      toast({
+        title: "Error",
+        description:
+          "Something went wrong, Please refresh the page and try again.",
+        type: "danger",
+      });
+      return;
+    }
+
+    const response = await fetch(url, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      method: "POST",
+      body: JSON.stringify({ id, type }),
+    });
+
+    const res = await response.json();
+
+    if (response.status !== 200) {
+      toast({
+        title: "Error",
+        description: res.error,
+        type: "danger",
+      });
+      return;
+    }
+
+    if (response.status === 200) {
+      toast({
+        title: "Success",
+        description: res.message,
+        type: "success",
+      });
+      return;
+    }
+  }
+
+  revertMetaData.addEventListener(
+    "click",
+    async (e) => await runEvent(revertMetaData, e),
+  );
+
+  revertContent.addEventListener(
+    "click",
+    async (e) => await runEvent(revertContent, e),
+  );
+
+  revertAllChanges.addEventListener(
+    "click",
+    async (e) => await runEvent(revertAllChanges, e),
+  );
+</script>
+
+<script>
+  import {
+    $i18n,
+    $localeSettings,
+    baseTranslation,
+    defaultLang,
+    documentUpdater,
+    makeTranslation,
+  } from "studiocms:i18n/client";
+
+  let lang = defaultLang;
+
+  const currentPage = "@studiocms/dashboard:content-index";
+  const currentDiffPage = "@studiocms/dashboard:content-diff";
+
+  $localeSettings.subscribe((locale) => {
+    lang = locale || defaultLang;
+  });
+
+  const i18n = $i18n(currentPage, baseTranslation[currentPage]);
+  const i18nDiff = $i18n(currentDiffPage, baseTranslation[currentDiffPage]);
+
+  i18n.subscribe((comp) => {
+    documentUpdater(comp, lang);
+  });
+
+  if (!customElements.get("t-content-diff")) {
+    customElements.define(
+      "t-content-diff",
+      makeTranslation(currentPage, i18nDiff),
+    );
+  }
+</script>
+
+<style>
+
+  .sidebar-links-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    min-height: 99vh;
+    height: 100%;
+    gap: 0.5rem;
+  }
+
+  .inner-sidebar-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 100vh;
+    max-height: 100%;
+    padding: 1.5rem;
+  }
+
+  h4 {
+    margin: 1rem auto;
+    padding-left: 2rem;
+  }
+
+  .diff-screen {
+    margin: 0 auto;
+    width: 100%;
+    max-width: 1100px;
+  }
+
+  @media screen and (max-width: 1500px) {
+    .diff-screen {
+      max-width: 800px;
+    }
+  }
+
+  @media screen and (max-width: 1380px) {
+    .diff-screen {
+      max-width: 600px;
+    }
+  }
+
+  .form-row {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .metadata-diffs {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+  }
+
+  table {
+    border-collapse: collapse;
+
+    tr {
+      border-bottom: 2px solid var(--background-step-2);
+    }
+
+    tr:nth-child(even) {
+      background-color: var(--background-step-2);
+    }
+
+    tr:last-child {
+      border-bottom: none;
+    }
+
+    td {
+      padding: 0.5rem;
+    }
+
+    td:last-child {
+      border-left: 2px solid var(--background-step-3);
+    }
+  }
+</style>

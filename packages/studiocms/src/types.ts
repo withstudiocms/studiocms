@@ -1,0 +1,164 @@
+/// <reference types="../ui.d.ts" />
+/// <reference types="../astroenv.d.ts" />
+
+import type { Messages } from '@withstudiocms/internal_helpers/astro-integration';
+import type { InjectedRoute } from 'astro';
+import type { SanitizeOptions } from 'ultrahtml/transformers/sanitize';
+import type { StudioCMSOptions } from './schemas/index.js';
+import type { CombinedPageData } from './virtuals/sdk/types.js';
+
+/**
+ * Represents a route object that can be used for a Array of routes for the Astro integration injectRoute() function.
+ *
+ * @deprecated use InjectedRoute from 'astro' instead
+ */
+export type Route = InjectedRoute;
+
+/**
+ * Options for starting the server.
+ *
+ * @property {string} pkgName - The name of the package.
+ * @property {string} pkgVersion - The version of the package.
+ * @property {boolean} verbose - Flag to enable verbose logging.
+ * @property {Messages} messages - The messages configuration.
+ */
+export type ServerStartOptions = {
+	pkgName: string;
+	pkgVersion: string;
+	verbose: boolean;
+	messages: Messages;
+};
+
+/**
+ * Options for setting up the configuration.
+ *
+ * @property pkgName - The name of the package.
+ * @property pkgVersion - The version of the package.
+ * @property opts - The options for StudioCMS.
+ * @property messages - The messages to be used.
+ */
+export type ConfigSetupOptions = {
+	pkgName: string;
+	pkgVersion: string;
+	opts: StudioCMSOptions;
+	messages: Messages;
+};
+
+/**
+ * A utility type that recursively makes all properties of a given type `T` optional.
+ *
+ * This is particularly useful for creating partial versions of deeply nested objects.
+ *
+ * @template T - The type to be transformed into a deep partial.
+ */
+export type DeepPartial<T> = {
+	[P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
+};
+
+/**
+ * Props for a plugin page type renderer component.
+ *
+ * @property data - Partial combined page data to be rendered by the plugin.
+ */
+export interface PluginPageTypeRendererProps {
+	data: DeepPartial<CombinedPageData>;
+}
+
+export interface PluginPageTypeEditorProps {
+	/**
+	 * Page identifier useful for identifying the page in the editor.
+	 * This is used to identify the page in the editor and should be unique.
+	 */
+	id?: string;
+
+	/**
+	 * The content of the page from the database
+	 */
+	content?: string;
+}
+
+/**
+ * Represents a generic asynchronous function that takes an input of type `I` and returns a Promise resolving to type `O`.
+ *
+ * @typeParam I - The input type for the function.
+ * @typeParam O - The output type that the Promise resolves to. Defaults to `I` if not specified.
+ * @param input - The input parameter of type `I`.
+ * @returns A Promise that resolves to a value of type `O`.
+ */
+export type GenericAsyncFn<I, O = I> = (input: I) => Promise<O>;
+
+/**
+ * Represents a plugin renderer with optional sanitization and rendering logic.
+ *
+ * @property name - The unique name of the plugin renderer.
+ * @property sanitizeOpts - Optional configuration for content sanitization.
+ * @property renderer - Optional asynchronous function to render content as a string.
+ */
+export interface PluginRenderer {
+	name: string;
+	sanitizeOpts?: SanitizeOptions;
+	renderer?: GenericAsyncFn<string>;
+}
+
+/**
+ * Internal type representing an Astro component.
+ *
+ * This type is used within the StudioCMS system and is not intended for public use.
+ *
+ * Astro components do not have a properly exported type, so we use `any` here.
+ */
+// biome-ignore lint/suspicious/noExplicitAny: Astro components do not have a properly exported type
+export type Internal_SCMS_AstroComponent = (props: any) => any;
+
+/**
+ * Represents an augmentation for rendering components.
+ *
+ * @property type - The type of render augment, always set to 'component'.
+ * @property components - A record mapping component names to their corresponding AstroComponent instances.
+ */
+export interface ComponentRenderAugment {
+	type: 'component';
+	id: string;
+	safeId: string;
+	components: Record<string, Internal_SCMS_AstroComponent>;
+}
+
+/**
+ * Represents an augmentation for rendering with a prefix.
+ *
+ * @property {'prefix'} type - The type of render augmentation, always set to 'prefix'.
+ * @property {Record<string, AstroComponent>} components - A mapping of component names to their corresponding Astro components.
+ * @property {string} html - The HTML string to be rendered with the prefix.
+ */
+interface PrefixRenderAugment {
+	type: 'prefix';
+	id: string;
+	safeId: string;
+	components: Record<string, Internal_SCMS_AstroComponent>;
+	html: string;
+}
+
+/**
+ * Represents an augmentation for rendering suffix components in an Astro context.
+ *
+ * @property {'suffix'} type - Specifies the type of render augmentation.
+ * @property {Record<string, AstroComponent>} components - A mapping of component names to their corresponding Astro components.
+ * @property {string} html - The HTML string generated by the suffix render process.
+ */
+interface SuffixRenderAugment {
+	type: 'suffix';
+	id: string;
+	safeId: string;
+	components: Record<string, Internal_SCMS_AstroComponent>;
+	html: string;
+}
+
+/**
+ * Represents a union type for prefix and suffix render augmentations.
+ */
+export type PrefixSuffixAugment = PrefixRenderAugment | SuffixRenderAugment;
+
+/**
+ * Represents a union type for different kinds of render augmentations.
+ */
+export type RenderAugment = PrefixSuffixAugment | ComponentRenderAugment;

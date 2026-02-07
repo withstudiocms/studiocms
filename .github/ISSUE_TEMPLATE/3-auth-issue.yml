@@ -1,0 +1,58 @@
+name: Auth Issue
+description: File a auth issue report.
+title: "[Auth]: "
+labels: ["plugin: auth"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this auth issue report!
+  - type: dropdown
+    id: issue-type
+    attributes:
+      label: Issue Type
+      description: What type of issue are you reporting?
+      options:
+        - Bug
+        - Feature Request
+        - Other
+      default: 0
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Also tell us, what did you expect to happen?
+      placeholder: Tell us what you see!
+      value: "An issue happened!"
+    validations:
+      required: true
+  - type: dropdown
+    id: package
+    attributes:
+      label: Package
+      description: Which package is the auth issue report for?
+      options:
+        - "@studiocms/auth0"
+        - "@studiocms/discord"
+        - "@studiocms/github"
+        - "@studiocms/google"
+        - "@withstudiocms/auth-kit"
+      default: 0
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: What version are you running?
+      placeholder: 0.1.0-beta.0
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant log output
+      description: Please copy and paste any relevant log output. This will be automatically formatted into code, so no need for backticks.
+      render: shell
