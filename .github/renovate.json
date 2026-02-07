@@ -53,7 +53,7 @@
     {
       "groupName": "Template Dependencies",
       "matchManagers": ["npm"],
-      "matchFileNames": ["templates/**"]
+      "matchFileNames": ["templates/**/**.json"]
     }
   ],
   "ignoreDeps": [
