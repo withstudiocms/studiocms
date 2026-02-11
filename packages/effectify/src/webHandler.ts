@@ -1,8 +1,9 @@
 import { Readable } from 'node:stream';
 import type { ReadableStream as WebReadableStream } from 'node:stream/web';
-import { HttpServerRequest } from '@effect/platform';
+import * as HttpServerRequest from '@effect/platform/HttpServerRequest';
 import * as HttpServerResponse from '@effect/platform/HttpServerResponse';
-import { Data, Effect } from 'effect';
+import * as Data from 'effect/Data';
+import * as Effect from 'effect/Effect';
 
 /**
  * Custom error class for handling errors in the web handler, providing context about the request and the error.
