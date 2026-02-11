@@ -211,6 +211,10 @@ const config: KnipConfig = {
 		'packages/create-studiocms': {
 			...baseWithStudioCMSConfig,
 		},
+		'packages/effectify': {
+			...baseWithStudioCMSConfig,
+			ignoreBinaries: ['tsx'],
+		},
 		...atStudioCMSPackages.reduce(
 			(acc, pkg) => {
 				acc[`packages/@studiocms/${pkg}`] = {
