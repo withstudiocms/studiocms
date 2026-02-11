@@ -1,0 +1,73 @@
+{
+	"name": "effectify",
+	"version": "0.0.0",
+	"description": "Utilities for Effect in JavaScript and TypeScript projects",
+	"license": "MIT",
+	"author": {
+		"name": "withstudiocms",
+		"url": "https://studiocms.dev"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/withstudiocms/studiocms.git",
+		"directory": "packages/effectify"
+	},
+	"keywords": [
+	],
+	"homepage": "https://studiocms.dev",
+	"contributors": [
+		"Adammatthiesen",
+		"jdtjenkins",
+		"dreyfus92",
+		"code.spirit"
+	],
+	"type": "module",
+	"publishConfig": {
+		"access": "public",
+		"provenance": true
+	},
+	"sideEffects": false,
+	"files": [
+		"dist",
+		"LICENSE",
+		"CHANGELOG.md",
+		"README.md"
+	],
+	"scripts": {
+		"build": "tsdown",
+		"dev": "tsdown --watch",
+		"effect-check": "pnpm effect-language-service diagnostics --project tsconfig.tspc.json",
+		"ci:effect-check": "pnpm effect-check --format github-actions",
+		"typecheck": "tspc -p tsconfig.tspc.json",
+		"update-scalar": "tsx ./scripts/update-scalar.ts"
+	},
+	"exports": {
+		"./astro/*": {
+			"types": "./dist/astro/*.d.mts",
+			"default": "./dist/astro/*.mjs"
+		},
+		"./scalar": {
+			"types": "./dist/scalar.d.mts",
+			"default": "./dist/scalar.mjs"
+		},
+		"./webHandler": {
+			"types": "./dist/webHandler.d.mts",
+			"default": "./dist/webHandler.mjs"
+		}
+	},
+	"dependencies": {},
+	"devDependencies": {
+		"tsdown": "catalog:"
+	},
+	"peerDependencies": {
+		"@effect/platform": "catalog:effect",
+		"@effect/platform-node": "catalog:effect",
+		"astro": "catalog:min",
+		"effect": "catalog:effect"
+	},
+	"peerDependenciesMeta": {
+		"astro": {
+			"optional": true
+		}
+	}
+}
