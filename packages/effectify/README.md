@@ -12,7 +12,7 @@ A utility library that bridges Effect-ts with various utilities and projects, su
 ## Installation
 
 ```bash
-pnpm add @studiocms/effectify
+pnpm add effectify
 ```
 
 ## Core Dependencies
