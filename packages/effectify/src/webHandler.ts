@@ -16,7 +16,7 @@ export class WebHandlerError extends Data.TaggedError('WebHandlerError')<{
 /**
  * Utility function to process the URL from the HttpServerRequest, taking into account headers like 'host' and 'x-forwarded-proto'.
  */
-const processUrl = Effect.fn((headers: Headers, req: HttpServerRequest.HttpServerRequest) =>
+export const processUrl = Effect.fn((headers: Headers, req: HttpServerRequest.HttpServerRequest) =>
 	Effect.try({
 		try: () => {
 			const origin = new URL(req.originalUrl);
