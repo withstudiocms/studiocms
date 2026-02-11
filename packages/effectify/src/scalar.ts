@@ -1,5 +1,4 @@
 import type * as HttpApi from '@effect/platform/HttpApi';
-import type { Api } from '@effect/platform/HttpApi';
 import { Router } from '@effect/platform/HttpApiBuilder';
 import * as HttpServerResponse from '@effect/platform/HttpServerResponse';
 import * as OpenApi from '@effect/platform/OpenApi';
@@ -336,11 +335,11 @@ const makeHandler = (options: {
 export const layer = (options: {
 	readonly title: string;
 	readonly description?: string | undefined;
+	readonly sources: Source[];
 	readonly customHeader?: CustomHeaderProps | undefined;
 	readonly path?: `/${string}` | undefined;
-	readonly sources: Source[];
 	readonly scalar?: ScalarConfig;
-}): Layer.Layer<never, never, Api> =>
+}): Layer.Layer<never, never, never> =>
 	Router.use(
 		Effect.fnUntraced(function* (router) {
 			const handler = makeHandler(options);
