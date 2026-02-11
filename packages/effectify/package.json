@@ -50,6 +50,10 @@
 			"types": "./dist/scalar.d.mts",
 			"default": "./dist/scalar.mjs"
 		},
+		"./scrypt": {
+			"types": "./dist/scrypt.d.mts",
+			"default": "./dist/scrypt.mjs"
+		},
 		"./webHandler": {
 			"types": "./dist/webHandler.d.mts",
 			"default": "./dist/webHandler.mjs"
