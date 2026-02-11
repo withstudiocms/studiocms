@@ -15,12 +15,6 @@ A utility library that bridges Effect-ts with various utilities and projects, su
 pnpm add effectify
 ```
 
-## Core Dependencies
-
-- `effect` - Functional programming patterns
-- `@effect/platform` - Platform-specific Effect utilities
-- `astro` - Required for API route integration (optional peer dep)
-
 ## Usage
 
 TODO
