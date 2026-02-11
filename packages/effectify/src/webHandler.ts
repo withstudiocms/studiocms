@@ -1,9 +1,17 @@
 import { Readable } from 'node:stream';
 import type { ReadableStream as WebReadableStream } from 'node:stream/web';
 import { HttpServerRequest } from '@effect/platform';
-import { RequestError } from '@effect/platform/HttpServerError';
 import * as HttpServerResponse from '@effect/platform/HttpServerResponse';
-import { Effect } from 'effect';
+import { Data, Effect } from 'effect';
+
+/**
+ * Custom error class for handling errors in the web handler, providing context about the request and the error.
+ */
+export class WebHandlerError extends Data.TaggedError('WebHandlerError')<{
+	request: HttpServerRequest.HttpServerRequest;
+	description?: string;
+	cause?: unknown;
+}> {}
 
 /**
  * Utility function to process the URL from the HttpServerRequest, taking into account headers like 'host' and 'x-forwarded-proto'.
@@ -21,9 +29,8 @@ const processUrl = Effect.fn((headers: Headers, req: HttpServerRequest.HttpServe
 			return url;
 		},
 		catch: (cause) =>
-			new RequestError({
+			new WebHandlerError({
 				request: req,
-				reason: 'Decode',
 				description: 'An error occurred while processing the request URL',
 				cause,
 			}),
@@ -33,31 +40,32 @@ const processUrl = Effect.fn((headers: Headers, req: HttpServerRequest.HttpServe
 /**
  * Converts an HttpServerRequest to a standard Web Request.
  */
-export const ServerRequestToRequest = Effect.fn(function* (
-	req: HttpServerRequest.HttpServerRequest
-) {
-	const headers = new Headers(req.headers as Record<string, string>);
-	const url = yield* processUrl(headers, req); // Using the processUrl function to construct the URL
+export const ServerRequestToRequest = Effect.fn(
+	function* (req: HttpServerRequest.HttpServerRequest) {
+		const headers = new Headers(req.headers as Record<string, string>);
+		const url = yield* processUrl(headers, req); // Using the processUrl function to construct the URL
 
-	let bodyInit: BodyInit | null = null;
-	if (req.method !== 'GET' && req.method !== 'HEAD') {
-		const arrayBuffer = yield* req.arrayBuffer;
-		if (arrayBuffer.byteLength > 0) {
-			bodyInit = new Uint8Array(arrayBuffer);
-		} else {
-			bodyInit = new Uint8Array(0);
+		let bodyInit: BodyInit | null = null;
+		if (req.method !== 'GET' && req.method !== 'HEAD') {
+			const arrayBuffer = yield* req.arrayBuffer;
+			if (arrayBuffer.byteLength > 0) {
+				bodyInit = new Uint8Array(arrayBuffer);
+			} else {
+				bodyInit = new Uint8Array(0);
+			}
 		}
-	}
 
-	const request = new Request(url, {
-		method: req.method,
-		headers,
-		redirect: 'manual',
-		body: bodyInit,
-	});
+		const request = new Request(url, {
+			method: req.method,
+			headers,
+			redirect: 'manual',
+			body: bodyInit,
+		});
 
-	return request;
-});
+		return request;
+	},
+	Effect.catchTag('RequestError', (error) => new WebHandlerError(error))
+);
 
 /**
  * Converts a standard Web Response to an HttpServerResponse.
@@ -87,9 +95,8 @@ export const webHandlerToEffectHttpHandler = Effect.fn(function* (
 	const webResponse = yield* Effect.tryPromise({
 		try: () => handler(request),
 		catch: (cause) =>
-			new RequestError({
+			new WebHandlerError({
 				request: req,
-				reason: 'Transport',
 				description: 'An error occurred while processing the request',
 				cause,
 			}),
