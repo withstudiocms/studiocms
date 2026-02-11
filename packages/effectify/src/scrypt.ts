@@ -9,7 +9,7 @@ import { Brand, Context, Data, Effect, Layer } from 'effect';
  *
  * @extends Data.TaggedError
  */
-export class ScryptError extends Data.TaggedError('ScryptError')<{ error: Error }> {}
+export class ScryptError extends Data.TaggedError('ScryptError')<{ error: unknown }> {}
 
 /**
  * Configuration options for the Scrypt key derivation function.
@@ -68,20 +68,20 @@ export class ScryptConfig extends Context.Tag('ScryptConfig')<ScryptConfig, Scry
  */
 export class Scrypt extends Effect.Service<Scrypt>()('Scrypt', {
 	effect: Effect.gen(function* () {
-		const config = yield* ScryptConfig;
+		const { keylen, options } = yield* ScryptConfig;
 
 		return (password: BinaryLike, salt: BinaryLike) =>
 			Effect.async<Buffer, ScryptError>((resume) => {
 				try {
-					scrypt(password, salt, config.keylen, config.options, (err, derivedKey) => {
-						if (err) {
-							resume(Effect.fail(new ScryptError({ error: err })));
+					scrypt(password, salt, keylen, options, (error, derivedKey) => {
+						if (error) {
+							resume(Effect.fail(new ScryptError({ error })));
 						} else {
 							resume(Effect.succeed(derivedKey));
 						}
 					});
 				} catch (error) {
-					resume(Effect.fail(new ScryptError({ error: error as Error })));
+					resume(Effect.fail(new ScryptError({ error })));
 				}
 			});
 	}),
