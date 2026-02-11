@@ -1,5 +1,9 @@
 import { type BinaryLike, type ScryptOptions, scrypt } from 'node:crypto';
-import { Brand, Context, Data, Effect, Layer } from 'effect';
+import * as Brand from 'effect/Brand';
+import * as Context from 'effect/Context';
+import * as Data from 'effect/Data';
+import * as Effect from 'effect/Effect';
+import * as Layer from 'effect/Layer';
 
 /**
  * Represents an error specific to the Scrypt operation.
