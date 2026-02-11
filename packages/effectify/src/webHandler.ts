@@ -41,13 +41,13 @@ const processUrl = Effect.fn((headers: Headers, req: HttpServerRequest.HttpServe
  * Converts an HttpServerRequest to a standard Web Request.
  */
 export const ServerRequestToRequest = Effect.fn(
-	function* (req: HttpServerRequest.HttpServerRequest) {
-		const headers = new Headers(req.headers as Record<string, string>);
-		const url = yield* processUrl(headers, req); // Using the processUrl function to construct the URL
+	function* (originalRequest: HttpServerRequest.HttpServerRequest) {
+		const headers = new Headers(originalRequest.headers as Record<string, string>);
+		const url = yield* processUrl(headers, originalRequest); // Using the processUrl function to construct the URL
 
 		let bodyInit: BodyInit | null = null;
-		if (req.method !== 'GET' && req.method !== 'HEAD') {
-			const arrayBuffer = yield* req.arrayBuffer;
+		if (originalRequest.method !== 'GET' && originalRequest.method !== 'HEAD') {
+			const arrayBuffer = yield* originalRequest.arrayBuffer;
 			if (arrayBuffer.byteLength > 0) {
 				bodyInit = new Uint8Array(arrayBuffer);
 			} else {
@@ -56,7 +56,7 @@ export const ServerRequestToRequest = Effect.fn(
 		}
 
 		const request = new Request(url, {
-			method: req.method,
+			method: originalRequest.method,
 			headers,
 			redirect: 'manual',
 			body: bodyInit,
@@ -85,21 +85,37 @@ export const ResponseToHttpServerResponse = Effect.fn(function* (webResponse: Re
 });
 
 /**
+ * Converts a web handler function to an Effect HttpServerRequest handler, wrapping it in error handling to catch any issues that arise during processing.
+ *
+ * @param handler - The web handler function that takes a Request and returns a Promise of a Response.
+ * @param originalRequest - The original HttpServerRequest that is being processed.
+ * @returns An Effect that represents the asynchronous processing of the request and response, with error handling.
+ */
+export const tryWebHandler = (
+	handler: (request: Request) => Promise<Response>,
+	request: HttpServerRequest.HttpServerRequest
+) =>
+	ServerRequestToRequest(request).pipe(
+		Effect.flatMap((webHandlerRequest) =>
+			Effect.tryPromise({
+				try: () => handler(webHandlerRequest),
+				catch: (cause) =>
+					new WebHandlerError({
+						request,
+						description: 'An error occurred while processing the request',
+						cause,
+					}),
+			})
+		)
+	);
+
+/**
  * Converts a web handler function to an Effect HttpServerRequest handler.
  */
 export const webHandlerToEffectHttpHandler = Effect.fn(function* (
 	handler: (request: Request) => Promise<Response>
 ) {
-	const req = yield* HttpServerRequest.HttpServerRequest;
-	const request = yield* ServerRequestToRequest(req);
-	const webResponse = yield* Effect.tryPromise({
-		try: () => handler(request),
-		catch: (cause) =>
-			new WebHandlerError({
-				request: req,
-				description: 'An error occurred while processing the request',
-				cause,
-			}),
-	});
+	const originalRequest = yield* HttpServerRequest.HttpServerRequest;
+	const webResponse = yield* tryWebHandler(handler, originalRequest);
 	return yield* ResponseToHttpServerResponse(webResponse);
 });
