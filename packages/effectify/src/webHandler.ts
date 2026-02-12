@@ -22,7 +22,9 @@ export const processUrl = Effect.fn((headers: Headers, req: HttpServerRequest.Ht
 		try: () => {
 			const origin = new URL(req.originalUrl);
 			const host = headers.get('host') ?? origin.host;
-			const protocol = headers.get('x-forwarded-proto') ?? origin.protocol;
+			const protocol = headers.get('x-forwarded-proto')
+				? `${headers.get('x-forwarded-proto')}:`
+				: origin.protocol;
 			const url =
 				req.url.startsWith('http://') || req.url.startsWith('https://')
 					? req.url
