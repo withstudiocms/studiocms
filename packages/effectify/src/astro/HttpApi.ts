@@ -92,7 +92,7 @@ export const registerSigterm = (dispose: () => Promise<void>): void => {
  * @returns An Astro APIRoute handler.
  */
 export const HttpApiToAstroRoute = <LA, LE>(
-	layer: Layer.Layer<LA | HttpApi.Api, LE>,
+	layer: Layer.Layer<LA, LE>,
 	options?: {
 		readonly middleware?: (
 			httpApp: HttpApp.Default
@@ -103,8 +103,10 @@ export const HttpApiToAstroRoute = <LA, LE>(
 		readonly memoMap?: Layer.MemoMap;
 	}
 ): APIRoute => {
+	// We assert the type here to allow Layers that don't actually require HttpApi.Api to be used, since the handler will only require the services it needs from the Layer. This provides more flexibility in how the Layer is constructed and allows for better composition of services.
+	const safeLayer = layer as Layer.Layer<LA | HttpApi.Api, LE>;
 	const { handler, dispose } = HttpApiBuilder.toWebHandler(
-		Layer.merge(layer, HttpServer.layerContext),
+		Layer.merge(safeLayer, HttpServer.layerContext),
 		options
 	);
 	registerSigterm(dispose);
