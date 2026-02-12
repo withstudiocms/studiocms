@@ -166,3 +166,7 @@ component_management:
       name: "@withstudiocms/cli-kit"
       paths:
         - packages/@withstudiocms/cli-kit/**
+    - component_id: effectify
+      name: "effectify"
+      paths:
+        - packages/effectify/**
