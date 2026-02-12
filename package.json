@@ -39,7 +39,7 @@
 
     "build": "pnpm build:packages",
     "build:studiocms": "pnpm build:packages",
-    "build:packages": "pnpm ci:snapshot-templates && pnpm --filter studiocms --filter create-studiocms --filter @studiocms/* --filter @withstudiocms/* build",
+    "build:packages": "pnpm ci:snapshot-templates && pnpm --filter studiocms --filter create-studiocms --filter effectify --filter @studiocms/* --filter @withstudiocms/* build",
 
     "create-migration": "pnpm --filter @withstudiocms/sdk create-migration",
 
@@ -65,15 +65,15 @@
 
     "ci:typecheck:studiocms": "pnpm --filter studiocms typecheck",
     "ci:typecheck:studiocms-packages": "pnpm --filter @studiocms/* --filter create-studiocms typecheck",
-    "ci:typecheck:withstudiocms": "pnpm --filter @withstudiocms/* typecheck",
+    "ci:typecheck:withstudiocms": "pnpm --filter @withstudiocms/* --filter effectify typecheck",
 
     "effect-check:studiocms": "pnpm --filter studiocms effect-check",
     "effect-check:studiocms-packages": "pnpm --filter @studiocms/* --filter create-studiocms effect-check",
-    "effect-check:withstudiocms": "pnpm --filter @withstudiocms/* effect-check",
+    "effect-check:withstudiocms": "pnpm --filter @withstudiocms/* --filter effectify effect-check",
 
     "ci:effect-check:studiocms": "pnpm --filter studiocms ci:effect-check",
     "ci:effect-check:studiocms-packages": "pnpm --filter @studiocms/* --filter create-studiocms -r --workspace-concurrency=1 ci:effect-check",
-    "ci:effect-check:withstudiocms": "pnpm --filter @withstudiocms/* -r --workspace-concurrency=1 ci:effect-check",
+    "ci:effect-check:withstudiocms": "pnpm --filter @withstudiocms/* --filter effectify -r --workspace-concurrency=1 ci:effect-check",
 
     "bundle-test:blog": "pnpm --filter @bundletests/studiocms-blog build",
     "bundle-test:headless": "pnpm --filter @bundletests/studiocms-headless build"

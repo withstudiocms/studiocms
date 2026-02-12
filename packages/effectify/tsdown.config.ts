@@ -2,7 +2,7 @@ import { defineConfig } from 'tsdown';
 
 export default defineConfig({
 	entry: 'src/**/*.ts',
-	clean: true,
+	clean: false,
 	treeshake: true,
 	unbundle: true,
 	format: ['esm'],

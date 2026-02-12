@@ -34,8 +34,8 @@
 		"README.md"
 	],
 	"scripts": {
-		"build": "tsdown",
-		"dev": "tsdown --watch",
+		"build": "tsdown --config tsdown.config.ts --clean",
+		"dev": "tsdown --config tsdown.config.ts --watch",
 		"test": "vitest",
 		"effect-check": "pnpm effect-language-service diagnostics --project tsconfig.tspc.json",
 		"ci:effect-check": "pnpm effect-check --format github-actions",
