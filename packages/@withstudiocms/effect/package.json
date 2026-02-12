@@ -83,7 +83,7 @@
 		"@clack/prompts": "^1.0.0",
 		"deepmerge-ts": "catalog:",
 		"micromatch": "^4.0.8",
-		"nodemailer": "^7.0.13",
+		"nodemailer": "^8.0.1",
 		"socks": "^2.8.7"
 	},
 	"devDependencies": {
