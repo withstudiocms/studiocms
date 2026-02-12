@@ -83,15 +83,16 @@ export type PossiblyOptionalColumnTypes<
 	Select extends Schema.Schema.All,
 	Insert extends Schema.Schema.All | Schema.optional<Schema.Schema.All>,
 	Update extends Schema.Schema.All | Schema.optional<Schema.Schema.All>,
-> = Insert extends Schema.optional<infer InsertType>
-	? Update extends Schema.optional<infer UpdateType>
-		? OptionalColumnTypes<Select, InsertType, UpdateType>
-		: never
-	: Insert extends Schema.Schema.All
-		? Update extends Schema.Schema.All
-			? ColumnTypes<Select, Insert, Update>
+> =
+	Insert extends Schema.optional<infer InsertType>
+		? Update extends Schema.optional<infer UpdateType>
+			? OptionalColumnTypes<Select, InsertType, UpdateType>
 			: never
-		: never;
+		: Insert extends Schema.Schema.All
+			? Update extends Schema.Schema.All
+				? ColumnTypes<Select, Insert, Update>
+				: never
+			: never;
 
 /**
  * Create a typed ColumnType schema that describes how a single database column
