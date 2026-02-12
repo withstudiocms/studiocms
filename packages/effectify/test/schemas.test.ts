@@ -2,7 +2,7 @@ import * as allure from 'allure-js-commons';
 import { Schema } from 'effect';
 import { ParseError } from 'effect/ParseResult';
 import { describe, expect, test } from 'vitest';
-import { FunctionSchema } from '../src/schemas';
+import { FunctionSchema, SyncFunctionSchema } from '../src/schemas';
 import { parentSuiteName, sharedTags } from './test-utils.js';
 
 const localSuiteName = 'Custom Schema Tests';
@@ -195,6 +195,92 @@ describe(parentSuiteName, () => {
 				await allure.step('Decode raw function with complex schema', async () => {
 					try {
 						const decoded = Schema.decodeSync(functionSchema)(rawFunction as any);
+						const result = await decoded(data);
+						await validate(result);
+					} catch (error) {
+						await validate(error);
+					}
+				});
+			});
+		});
+	});
+
+	[
+		{
+			name: 'should validate and decode a synchronous function with correct input and output types',
+			argsSchema: Schema.Struct({
+				username: Schema.String,
+				password: Schema.String,
+			}),
+			returnSchema: Schema.Boolean,
+			rawFunction: (data: { username: string; password: string }) =>
+				data.username === 'admin' && data.password === '123',
+			data: { username: 'admin', password: '123' },
+			validate: async (result: any) => {
+				expect(result).toBe(true);
+			},
+		},
+		{
+			name: 'should fail when decoding a non-function value with SyncFunctionSchema',
+			argsSchema: Schema.Struct({ value: Schema.String }),
+			returnSchema: Schema.String,
+			rawFunction: 'not a function' as any,
+			data: null,
+			validate: async (error: any) => {
+				expect(error).toBeInstanceOf(Error);
+			},
+		},
+		{
+			name: 'should validate function arguments at runtime with SyncFunctionSchema',
+			argsSchema: Schema.Struct({ count: Schema.Number }),
+			returnSchema: Schema.Number,
+			rawFunction: (data: { count: number }) => data.count * 2,
+			data: { count: 5 },
+			validate: async (result: any) => {
+				expect(result).toBe(10);
+			},
+		},
+		{
+			name: 'should validate function return values with SyncFunctionSchema',
+			argsSchema: Schema.Struct({ value: Schema.String }),
+			returnSchema: Schema.Number,
+			rawFunction: (_data: { value: string }) => 42,
+			data: { value: 'test' },
+			validate: async (result: any) => {
+				expect(result).toBe(42);
+			},
+		},
+		{
+			name: 'should handle nested object schemas with SyncFunctionSchema',
+			argsSchema: Schema.Struct({
+				user: Schema.Struct({
+					id: Schema.Number,
+					profile: Schema.Struct({
+						name: Schema.String,
+					}),
+				}),
+			}),
+			returnSchema: Schema.String,
+			rawFunction: (data: any) => data.user.profile.name,
+			data: {
+				user: { id: 1, profile: { name: 'Bob' } },
+			},
+			validate: async (result: any) => {
+				expect(result).toBe('Bob');
+			},
+		},
+	].forEach(({ name, argsSchema, returnSchema, rawFunction, data, validate }) => {
+		test(`SyncFunctionSchema decode: ${name}`, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('SyncFunctionSchema');
+			await allure.tags(...sharedTags);
+
+			await allure.step('Create SyncFunctionSchema', async () => {
+				const functionSchema = SyncFunctionSchema(argsSchema as any, returnSchema as any);
+				await allure.step('Decode raw function', async () => {
+					try {
+						const decoded = Schema.decodeSync(functionSchema)(rawFunction);
 						const result = await decoded(data);
 						await validate(result);
 					} catch (error) {
