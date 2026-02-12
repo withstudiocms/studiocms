@@ -1,7 +1,10 @@
 import { Readable } from 'node:stream';
 import type { ReadableStream as WebReadableStream } from 'node:stream/web';
+import { HttpApiBuilder } from '@effect/platform';
+import type { PathInput } from '@effect/platform/HttpRouter';
 import * as HttpServerRequest from '@effect/platform/HttpServerRequest';
 import * as HttpServerResponse from '@effect/platform/HttpServerResponse';
+import type { Layer } from 'effect';
 import * as Data from 'effect/Data';
 import * as Effect from 'effect/Effect';
 
@@ -127,3 +130,20 @@ export const webHandlerToEffectHttpHandler = Effect.fn('webHandler.webHandlerToE
 		return yield* ResponseToHttpServerResponse(webResponse);
 	}
 );
+
+/**
+ * Utility function to convert a Effect-based web handler into a format that can be used with the HttpApiBuilder from Effect. This allows you to define your web handlers using Effect and then easily integrate them into an HTTP API.
+ *
+ * @param path - The path for the HTTP route that this handler will be associated with.
+ * @param handler - The Effect-based web handler function that processes the request and returns a response.
+ * @returns A Layer that can be used to add this handler to an HttpApiBuilder router.
+ */
+export const EffectHttpHandlerToHttpApi = (
+	path: PathInput,
+	handler: Effect.Effect<
+		HttpServerResponse.HttpServerResponse,
+		WebHandlerError,
+		HttpServerRequest.HttpServerRequest
+	>
+): Layer.Layer<never, never, never> =>
+	HttpApiBuilder.Router.use((router) => router.all(path, handler));
