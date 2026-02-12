@@ -45,7 +45,8 @@
 		"effect-check": "pnpm effect-language-service diagnostics --project tsconfig.tspc.json",
 		"ci:effect-check": "pnpm effect-check --format github-actions",
 		"typecheck": "tspc -p tsconfig.tspc.json",
-		"update-scalar": "tsx ./scripts/update-scalar.ts"
+		"update-scalar": "tsx ./scripts/update-scalar.ts",
+		"scratch:fn": "tsx ./scratchpad/functionSchema.ts"
 	},
 	"exports": {
 		"./astro/*": {
@@ -55,6 +56,10 @@
 		"./scalar": {
 			"types": "./dist/scalar.d.mts",
 			"default": "./dist/scalar.mjs"
+		},
+		"./schemas": {
+			"types": "./dist/schemas.d.mts",
+			"default": "./dist/schemas.mjs"
 		},
 		"./scrypt": {
 			"types": "./dist/scrypt.d.mts",
