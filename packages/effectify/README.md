@@ -178,6 +178,7 @@ const EffectHttpHandler = webHandlerToEffectHttpHandler(mockWebHandler);
 Utility function to convert a Effect-based web handler into a format that can be used with the HttpApiBuilder from Effect. This allows you to define your web handlers using Effect and then easily integrate them into an HTTP API.
 
 ```ts
+// src/pages/[...api].ts
 import { webHandlerToEffectHttpHandler, EffectHttpHandlerToHttpApi } from 'effectify/webHandler';
 
 const mockWebHandler = async (request: Request) => {
