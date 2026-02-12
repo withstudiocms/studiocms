@@ -25,7 +25,13 @@ async function run() {
 
 	// Create a new changeset
 	const changesetId = await write(
-		{ summary, releases: [{ name: '@withstudiocms/effect', type: 'patch' }] },
+		{
+			summary,
+			releases: [
+				{ name: '@withstudiocms/effect', type: 'patch' },
+				{ name: 'effectify', type: 'patch' },
+			],
+		},
 		process.cwd()
 	);
 
