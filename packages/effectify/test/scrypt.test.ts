@@ -40,7 +40,7 @@ describe(parentSuiteName, () => {
 			await ctx.parameter('ScryptError Tag', scryptError._tag);
 			await ctx.parameter('Original Error Message', (scryptError.error as Error).message);
 
-			expect(scryptError._tag).toBe('ScryptError');
+			expect(scryptError._tag).toBe('effectify/scrypt.ScryptError');
 			expect(scryptError.error).toBe(originalError);
 		});
 
@@ -319,7 +319,7 @@ describe(parentSuiteName, () => {
 				expect(exit._tag).toBe('Failure');
 				const error = exit.cause.toJSON();
 				await ctx.parameter('Error Tag', (error as any).failure._tag);
-				expect((error as any).failure._tag).toBe('ScryptError');
+				expect((error as any).failure._tag).toBe('effectify/scrypt.ScryptError');
 			}
 		});
 	});

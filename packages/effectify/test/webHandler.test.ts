@@ -46,7 +46,7 @@ describe(parentSuiteName, () => {
 				cause: new Error('Original error'),
 			});
 
-			expect(error._tag).toBe('WebHandlerError');
+			expect(error._tag).toBe('effectify/webHandler.WebHandlerError');
 			expect(error.request).toBe(mockRequest);
 			expect(error.description).toBe('Test error');
 
@@ -210,7 +210,7 @@ describe(parentSuiteName, () => {
 			},
 			validate: async (result: Exit.Exit<Response, WebHandlerError>) => {
 				expect(result).toStrictEqual(
-					Exit.fail(expect.objectContaining({ _tag: 'WebHandlerError' }))
+					Exit.fail(expect.objectContaining({ _tag: 'effectify/webHandler.WebHandlerError' }))
 				);
 			},
 		},
