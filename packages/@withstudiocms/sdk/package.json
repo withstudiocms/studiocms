@@ -60,7 +60,7 @@
   "type": "module",
   "dependencies": {
     "diff": "catalog:",
-    "diff2html": "^3.4.55",
+    "diff2html": "^3.4.56",
     "zod": "^3.25.76"
   },
   "devDependencies": {

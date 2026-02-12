@@ -77,9 +77,7 @@ export const RouteSummaryRowSchema = z.tuple([
 	CoreWebVitalsMetricTypeSchema,
 	WebVitalsRatingSchema,
 	// value
-	z
-		.number()
-		.gte(0),
+	z.number().gte(0),
 	// sample size
 	z.number(),
 ]);
@@ -100,21 +98,13 @@ export const MetricSummaryRowSchema = z.tuple([
 	WebVitalsMetricTypeSchema,
 	WebVitalsRatingSchema,
 	// value
-	z
-		.number()
-		.gte(0),
+	z.number().gte(0),
 	// density
-	z
-		.number()
-		.gte(0),
+	z.number().gte(0),
 	// rating end
-	z
-		.union([z.literal(0), z.literal(1)])
-		.transform(Boolean),
+	z.union([z.literal(0), z.literal(1)]).transform(Boolean),
 	// percentile
-	z
-		.number()
-		.or(z.null()),
+	z.number().or(z.null()),
 	// sample size
 	z.number(),
 ]);

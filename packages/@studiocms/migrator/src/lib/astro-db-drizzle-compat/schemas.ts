@@ -135,9 +135,7 @@ export const dateColumnSchema = z.object({
 			.union([
 				sqlSchema,
 				// transform to ISO string for serialization
-				z
-					.date()
-					.transform((d) => d.toISOString()),
+				z.date().transform((d) => d.toISOString()),
 			])
 			.optional(),
 	}),
