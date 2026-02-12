@@ -153,6 +153,7 @@ export default defineConfig({
 				'**/virtuals/i18n/LanguageSelector.astro',
 				'**/virtuals/i18n/plugin.ts',
 				'**/integrations/webVitals/i18n/*.ts',
+				'**/effectify/src/_internal/**',
 			],
 		},
 	},
