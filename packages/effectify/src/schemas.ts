@@ -21,10 +21,10 @@ import { Effect, ParseResult, Schema } from 'effect';
  *   async (data) => data.username === 'admin' && data.password === '123'
  * );
  */
-export const FunctionSchema = <A, I, AA, II>(
-	argsSchema: Schema.Schema<A, I, never>,
-	returnSchema: Schema.Schema<AA, II, never>
-): Schema.Schema<(args: A) => Promise<AA>, (args: I) => Promise<II>, never> =>
+export const FunctionSchema = <A, I, AA, II, R = never, RR = never>(
+	argsSchema: Schema.Schema<A, I, R>,
+	returnSchema: Schema.Schema<AA, II, RR>
+): Schema.Schema<(args: A) => Promise<AA>, (args: I) => Promise<II>, R | RR> =>
 	Schema.declare(
 		[argsSchema, returnSchema],
 		{
