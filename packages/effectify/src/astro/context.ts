@@ -34,6 +34,9 @@ import * as Context from 'effect/Context';
  * Make sure to provide the appropriate context when invoking your Effect handlers to ensure that
  * the `AstroAPIContext` is available.
  */
-export class AstroAPIContext extends Context.Reference<AstroAPIContext>()('AstroAPIContext', {
-	defaultValue: () => ({}) as APIContext,
-}) {}
+export class AstroAPIContext extends Context.Reference<AstroAPIContext>()(
+	'effectify/astro/context.AstroAPIContext',
+	{
+		defaultValue: () => ({}) as APIContext,
+	}
+) {}

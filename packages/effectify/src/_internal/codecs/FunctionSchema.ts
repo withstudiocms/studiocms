@@ -9,6 +9,8 @@ import type { Declaration, ParseOptions } from 'effect/SchemaAST';
  * @param promise - Whether the function is asynchronous (returns a Promise)
  *
  * @returns A decoder function that can be used in the FunctionSchema declaration
+ *
+ * @internal
  */
 export function createFunctionSchemaDecoder<A, I, AA, II>(
 	argsSchema: Schema.Schema<A, I, never>,
@@ -97,6 +99,8 @@ export function createFunctionSchemaDecoder<A, I, AA, II>(
  * @param promise - Whether the function is asynchronous (returns a Promise)
  *
  * @returns An encoder function that can be used in the FunctionSchema declaration
+ *
+ * @internal
  */
 export function createFunctionSchemaEncoder<A, I, AA, II>(
 	argsSchema: Schema.Schema<A, I, never>,

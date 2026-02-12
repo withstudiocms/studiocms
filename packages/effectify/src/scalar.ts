@@ -215,6 +215,9 @@ export const makeHtmlComponent = (options: {
 	return baseHtml;
 };
 
+/**
+ * Props for the custom header component in Scalar documentation.
+ */
 export type CustomHeaderProps = {
 	title?: {
 		link: string;
@@ -227,6 +230,12 @@ export type CustomHeaderProps = {
 	}[];
 };
 
+/**
+ * Creates an HTTP handler for serving Scalar API documentation, with optional custom header and theming.
+ *
+ * @param options - Configuration options for the Scalar documentation handler.
+ * @returns An Effect that produces an HttpServerResponse containing the Scalar documentation page.
+ */
 const makeHandler = (options: {
 	readonly title: string;
 	readonly description?: string | undefined;
