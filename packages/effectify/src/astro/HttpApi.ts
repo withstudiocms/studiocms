@@ -15,8 +15,10 @@ import { AstroAPIContext } from './context.ts';
  *
  * @param request - The original Request object.
  * @returns A new Request object with decoded URL.
+ *
+ * @internal
  */
-const decodeRequestUrl = (request: Request): Request => {
+export const decodeRequestUrl = (request: Request): Request => {
 	const url = new URL(request.url);
 	url.pathname = url.pathname.replace(/%40/g, '@');
 
@@ -28,8 +30,10 @@ const decodeRequestUrl = (request: Request): Request => {
  *
  * @param handler - The request handler function.
  * @returns An Astro APIRoute handler.
+ *
+ * @internal
  */
-function buildEndpoint(
+export function buildEndpoint(
 	handler: (request: Request, context?: Context.Context<never> | undefined) => Promise<Response>
 ): APIRoute {
 	return async (context) => {
@@ -65,8 +69,10 @@ let sigtermBound = false;
  * Registers a disposer function to be called on SIGTERM.
  *
  * @param dispose - The disposer function to register.
+ *
+ * @internal
  */
-const registerSigterm = (dispose: () => Promise<void>): void => {
+export const registerSigterm = (dispose: () => Promise<void>): void => {
 	sigtermDisposers.push(dispose);
 	if (sigtermBound || typeof process === 'undefined' || !process?.on) return;
 	sigtermBound = true;
