@@ -61,7 +61,7 @@ const projectsWithTests: { scope?: string; names: string[] }[] = [
 		],
 	},
 	{
-		names: ['studiocms'],
+		names: ['studiocms', 'effectify'],
 	},
 ];
 
