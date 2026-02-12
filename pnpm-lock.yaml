@@ -1429,7 +1429,7 @@ importers:
         specifier: ^5.17.1
         version: 5.17.1(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
       mysql2:
-        specifier: ^3.16.2
+        specifier: ^3.16.3
         version: 3.16.3
       sharp:
         specifier: ^0.34.3
