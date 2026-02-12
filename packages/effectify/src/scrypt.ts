@@ -74,7 +74,7 @@ export class Scrypt extends Effect.Service<Scrypt>()('Scrypt', {
 	effect: Effect.gen(function* () {
 		const { keylen, options } = yield* ScryptConfig;
 
-		return (password: BinaryLike, salt: BinaryLike) =>
+		return Effect.fn('Scrypt.run')((password: BinaryLike, salt: BinaryLike) =>
 			Effect.async<Buffer, ScryptError>((resume) => {
 				try {
 					scrypt(password, salt, keylen, options, (error, derivedKey) => {
@@ -87,7 +87,8 @@ export class Scrypt extends Effect.Service<Scrypt>()('Scrypt', {
 				} catch (error) {
 					resume(Effect.fail(new ScryptError({ error })));
 				}
-			});
+			})
+		);
 	}),
 }) {
 	/**
