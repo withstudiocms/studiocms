@@ -187,7 +187,7 @@ describe(parentSuiteName, () => {
 		test(`FunctionSchema complex schemas: ${name}`, async () => {
 			await allure.parentSuite(parentSuiteName);
 			await allure.suite(localSuiteName);
-			await allure.subSuite('FunctionSchema - Complex Schemas');
+			await allure.subSuite('FunctionSchema');
 			await allure.tags(...sharedTags);
 
 			await allure.step('Create FunctionSchema', async () => {
