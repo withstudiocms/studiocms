@@ -1,7 +1,7 @@
 {
 	"name": "effectify",
 	"version": "0.0.0",
-	"description": "Utilities for Effect in JavaScript and TypeScript projects",
+	"description": "Utility library that bridges Effect-ts with various utilities and projects, such as Astro!",
 	"license": "MIT",
 	"author": {
 		"name": "withstudiocms",
@@ -13,6 +13,11 @@
 		"directory": "packages/effectify"
 	},
 	"keywords": [
+		"effect-ts",
+		"effect",
+		"utilities",
+		"web",
+		"withstudiocms"
 	],
 	"homepage": "https://studiocms.dev",
 	"contributors": [
