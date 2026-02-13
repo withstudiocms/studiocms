@@ -80,7 +80,9 @@
 			"default": "./dist/sdk/index.mjs"
 		}
 	},
-	"dependencies": {},
+	"dependencies": {
+		"effectify": "workspace:^"
+	},
 	"devDependencies": {
 		"tsdown": "catalog:"
 	},
