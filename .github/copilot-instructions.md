@@ -1,3 +1,16 @@
+---
+name: Repo Guidelines
+description: Strict constraints for AI agents
+---
+
+# AI Agent Constraints
+* **No Pull Requests:** Do not create or submit Pull Requests (PRs) under any circumstances. 
+* **Workflow:** Provide code changes as diffs or full file contents in the chat interface only.
+* **Review Only:** You may provide code reviews or suggestions, but you are prohibited from initiating the merge process or opening new PRs.
+* **Collaboration:** Collaborate with human developers by providing code snippets, explanations, and guidance, but do not take direct actions in the repository.
+  * **Compliance:** Adhere strictly to these constraints to ensure a clear separation of responsibilities between AI agents and human developers.
+  * **Human Only:** AI agents are not permitted to generate or modify full code in this repository. All code contributions must be made by human developers based on the guidance provided by AI agents. You may provide code snippets or suggestions, but the final implementation must be done by a human developer.
+
 # GitHub Copilot Instructions for StudioCMS
 
 This file provides context and guidelines for GitHub Copilot when working with the StudioCMS codebase.
@@ -10,8 +23,10 @@ StudioCMS is an open-source, SSR Astro-native CMS built with TypeScript and Effe
 - **Astro** (SSR mode with adapter required)
 - **TypeScript** (strict typing)
 - **Effect-ts** (functional programming patterns)
-- **libSQL** via @astrojs/db
-- **pnpm** (preferred package manager)
+- **Database** via @withstudiocms/kysely (powered by Kysely)
+  - Supports: libSQL, MySQL, PostgreSQL
+- **pnpm** 10.17.0 (preferred package manager)
+- **Node.js** >=22.20.0 required
 
 ### Project Structure
 - `packages/studiocms/` - Core CMS package
@@ -54,17 +69,10 @@ const someOperation = pipe(
 ```
 
 ### Database Patterns
-- Use Astro DB schema definitions
-- Always handle potential null/undefined values
-- Prefer type-safe database operations
-
-```typescript
-// Example database operation
-import { db, eq } from 'astro:db';
-import { Users } from '../schema';
-
-const user = await db.select().from(Users).where(eq(Users.id, userId));
-```
+- Database operations are handled internally by StudioCMS core
+- Uses Kysely via @withstudiocms/kysely for type-safe database operations
+- Supports libSQL, MySQL, and PostgreSQL
+- Always handle potential null/undefined values in your code
 
 ## Authentication Patterns
 
@@ -95,11 +103,15 @@ export function myPlugin(options?: MyPluginOptions): StudioCMSPlugin {
 
 ### Plugin Registration
 ```javascript
-// studiocms.config.mjs
+// studiocms.config.mts
 import { defineStudioCMSConfig } from 'studiocms/config';
 import myPlugin from '@studiocms/my-plugin';
 
 export default defineStudioCMSConfig({
+  dbStartPage: false,
+  db: {
+    dialect: 'libsql', // or 'mysql' or 'postgres'
+  },
   plugins: [
     myPlugin(),
   ],
@@ -141,16 +153,55 @@ const message = t('key.path');
 
 ### Required
 ```bash
-ASTRO_DB_REMOTE_URL=libsql://your-database.turso.io
-ASTRO_DB_APP_TOKEN=your-token
-CMS_ENCRYPTION_KEY="..." # Required for auth
+# Authentication (Always Required)
+CMS_ENCRYPTION_KEY="..." # Generate: openssl rand -base64 16
+
+# Database - Choose ONE of the following:
+
+# Option 1: libSQL (Turso, local file, or self-hosted)
+CMS_LIBSQL_URL=libsql://your-database.turso.io
+CMS_LIBSQL_AUTH_TOKEN=your-token
+# Optional for libSQL:
+# CMS_LIBSQL_SYNC_INTERVAL=
+# CMS_LIBSQL_SYNC_URL=
+
+# Option 2: MySQL
+CMS_MYSQL_DATABASE=your-database-name
+CMS_MYSQL_USER=your-database-user
+CMS_MYSQL_PASSWORD=your-database-password
+CMS_MYSQL_HOST=your-database-host
+CMS_MYSQL_PORT=3306
+
+# Option 3: PostgreSQL
+CMS_POSTGRES_DATABASE=your-database-name
+CMS_POSTGRES_USER=your-database-user
+CMS_POSTGRES_PASSWORD=your-database-password
+CMS_POSTGRES_HOST=your-database-host
+CMS_POSTGRES_PORT=5432
 ```
 
 ### OAuth (Plugin-specific)
 ```bash
+# GitHub OAuth (@studiocms/github)
 CMS_GITHUB_CLIENT_ID=
 CMS_GITHUB_CLIENT_SECRET=
 CMS_GITHUB_REDIRECT_URI=http://localhost:4321/studiocms_api/auth/github/callback
+
+# Discord OAuth (@studiocms/discord)
+CMS_DISCORD_CLIENT_ID=
+CMS_DISCORD_CLIENT_SECRET=
+CMS_DISCORD_REDIRECT_URI=http://localhost:4321/studiocms_api/auth/discord/callback
+
+# Google OAuth (@studiocms/google)
+CMS_GOOGLE_CLIENT_ID=
+CMS_GOOGLE_CLIENT_SECRET=
+CMS_GOOGLE_REDIRECT_URI=http://localhost:4321/studiocms_api/auth/google/callback
+
+# Auth0 OAuth (@studiocms/auth0)
+CMS_AUTH0_CLIENT_ID=
+CMS_AUTH0_CLIENT_SECRET=
+CMS_AUTH0_DOMAIN=
+CMS_AUTH0_REDIRECT_URI=http://localhost:4321/studiocms_api/auth/auth0/callback
 ```
 
 ## API Patterns
@@ -188,14 +239,16 @@ export const GET: APIRoute = async ({ params, request }) => {
 ## Common Pitfalls to Avoid
 
 ### Astro-Specific
-- Don't suggest SSG mode (StudioCMS requires SSR)
-- Don't forget the required `site` config in astro.config.mjs
-- Remember that server-side code runs in Node.js context
+- Don't suggest SSG mode (StudioCMS requires SSR with `output: 'server'`)
+- Don't forget the required SSR adapter (node, vercel, etc.)
+- Remember that server-side code runs in Node.js context only (Bun and Deno are NOT supported)
+- Don't reference Astro Studio - it's been sunset
 
 ### Database
 - Always handle potential database connection issues
 - Don't assume data exists without proper checks
-- Use proper SQL escaping via Astro DB
+- Database operations are handled by StudioCMS core via Kysely
+- Configure correct `db.dialect` for your database type (libSQL, MySQL, or PostgreSQL)
 
 ### Authentication
 - Don't hardcode credentials
@@ -211,7 +264,7 @@ export const GET: APIRoute = async ({ params, request }) => {
 
 ### Core Dependencies
 - `astro` - Framework
-- `@astrojs/db` - Database layer
+- `@withstudiocms/kysely` - Database layer (powered by Kysely)
 - `effect` - Functional programming
 - `typescript` - Type safety
 
@@ -225,15 +278,21 @@ export const GET: APIRoute = async ({ params, request }) => {
 ```bash
 # Setup
 pnpm install
-pnpm astro db push --remote
+
+# Database migrations
+pnpm playground:migrate --latest  # Update DB schema to latest version
+pnpm create-migration              # Create a new migration
 
 # Development
-pnpm dev --remote
-pnpm build --remote
+pnpm dev
+pnpm build
 pnpm astro check
 
 # Plugin development
 pnpm --filter @studiocms/plugin-name dev
+
+# Upgrades
+studiocms-upgrade                  # Upgrade StudioCMS packages (Dont use within the monorepo, use in your project that depends on StudioCMS)
 ```
 
 ## Deployment Considerations
@@ -244,9 +303,11 @@ pnpm --filter @studiocms/plugin-name dev
 - Proper environment variable configuration
 
 ### Build Process
-- Always build with `--remote` flag for database access
+- Run database migrations before deployment
 - Ensure all plugins are properly built
 - Verify authentication configuration in production
+- Ensure correct database environment variables are set
+- Configure `db.dialect` to match your production database
 
 ---
 

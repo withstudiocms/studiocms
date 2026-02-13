@@ -1,5 +1,19 @@
 # AGENTS.md — StudioCMS
 
+# Agent Policies
+
+## Prohibited Actions (All Agents)
+* **No Pull Requests:** Do not create or submit Pull Requests (PRs) under any circumstances. 
+* **Workflow:** Provide code changes as diffs or full file contents in the chat interface only.
+* **Review Only:** You may provide code reviews or suggestions, but you are prohibited from initiating the merge process or opening new PRs.
+* **Collaboration:** Collaborate with human developers by providing code snippets, explanations, and guidance, but do not take direct actions in the repository.
+  * **Compliance:** Adhere strictly to these constraints to ensure a clear separation of responsibilities between AI agents and human developers.
+  * **Human Only:** AI agents are not permitted to generate or modify full code in this repository. All code contributions must be made by human developers based on the guidance provided by AI agents. You may provide code snippets or suggestions, but the final implementation must be done by a human developer.
+
+## Specific Agent Agent Policies
+### @coderabbit / @coderabbitai
+* Allowed to review, and perform programmed actions as allowed in the current config.
+
 ## Project Overview
 
 **StudioCMS** is an MIT-licensed, open-source SSR Astro-native CMS built with TypeScript and Effect-ts. It serves as a headless CMS requiring custom frontend development and must run in server-side rendering mode.
@@ -17,12 +31,12 @@
 |---|---|---|
 | **Framework** | Astro | Must use SSR mode (`output: 'server'`), never SSG |
 | **Language** | TypeScript | Strict typing enforced |
-| **Database** | libSQL via @astrojs/db | Astro Studio is sunset — don't reference it |
+| **Database** | @withstudiocms/kysely | Powered by Kysely - supports libSQL, MySQL, PostgreSQL |
 | **Effect System** | Effect-ts | Functional programming patterns |
 | **Markdown** | MarkedJS, MarkDoc, native Astro MD | Extension support |
 | **Auth** | Plugins (GitHub, Discord, Google, Auth0) + built-in username/password | OAuth requires plugin installation |
-| **Package Manager** | pnpm (preferred) | npm/yarn also supported |
-| **Runtime** | Node.js only | Bun and Deno are NOT supported |
+| **Package Manager** | pnpm 10.17.0 (preferred) | npm/yarn also supported |
+| **Runtime** | Node.js >=22.20.0 only | Bun and Deno are NOT supported |
 
 ## Monorepo Structure
 
@@ -36,31 +50,59 @@ packages/
 ├── @studiocms/auth0/             # Auth0 OAuth plugin
 ├── @studiocms/cloudinary-image-service/
 ├── @studiocms/s3-storage/
-├── @studiocms/migrator/
+├── @studiocms/migrator/          # Database migration utility
+├── @studiocms/upgrade/           # Package upgrade utility
+├── @studiocms/devapps/           # Development applications
 ├── @studiocms/html/              # Content renderer plugins
 ├── @studiocms/markdoc/
 ├── @studiocms/md/
 ├── @studiocms/mdx/
 ├── @studiocms/wysiwyg/
 ├── @withstudiocms/sdk/           # SDK / internal packages
-├── @withstudiocms/kysely/
+├── @withstudiocms/kysely/        # Kysely database layer
 ├── @withstudiocms/effect/
 ├── @withstudiocms/buildkit/
+├── @withstudiocms/auth-kit/      # Authentication utilities
+├── @withstudiocms/cli-kit/       # CLI toolkit
+├── @withstudiocms/api-spec/      # API specification
+├── @withstudiocms/component-registry/
+├── @withstudiocms/config-utils/
+├── @withstudiocms/internal_helpers/
+├── @withstudiocms/template-lang/
 └── ...other packages
 ```
 
 ## Dev Environment Setup
 
 ### Prerequisites
-- Node.js (version specified in `.prototools`)
-- pnpm (preferred package manager)
-- libSQL database (Turso, self-hosted, or other libSQL provider)
+- Node.js >=22.20.0 (version specified in `.prototools`)
+- pnpm 10.17.0 (preferred package manager)
+- Database: libSQL (Turso, self-hosted, or local file), MySQL, or PostgreSQL
 
 ### Environment Variables
 ```bash
-# Database (Required)
-ASTRO_DB_REMOTE_URL=libsql://your-database.turso.io
-ASTRO_DB_APP_TOKEN=your-database-token
+# Database (Required - Choose ONE option)
+
+# Option 1: libSQL (Turso, local file, or self-hosted)
+CMS_LIBSQL_URL=libsql://your-database.turso.io
+CMS_LIBSQL_AUTH_TOKEN=your-database-token
+# Optional:
+# CMS_LIBSQL_SYNC_INTERVAL=
+# CMS_LIBSQL_SYNC_URL=
+
+# Option 2: MySQL
+CMS_MYSQL_DATABASE=your-database-name
+CMS_MYSQL_USER=your-database-user
+CMS_MYSQL_PASSWORD=your-database-password
+CMS_MYSQL_HOST=your-database-host
+CMS_MYSQL_PORT=3306
+
+# Option 3: PostgreSQL
+CMS_POSTGRES_DATABASE=your-database-name
+CMS_POSTGRES_USER=your-database-user
+CMS_POSTGRES_PASSWORD=your-database-password
+CMS_POSTGRES_HOST=your-database-host
+CMS_POSTGRES_PORT=5432
 
 # Base Authentication (Required)
 CMS_ENCRYPTION_KEY="..." # Generate: openssl rand -base64 16
@@ -92,20 +134,24 @@ CMS_AUTH0_REDIRECT_URI=http://localhost:4321/studiocms_api/auth/auth0/callback
 # Install dependencies
 pnpm install
 
-# Push database schema (first time or after schema changes)
-pnpm astro db push --remote
+# Database migrations
+pnpm playground:migrate --latest  # Update DB schema to latest version
+pnpm create-migration              # Create a new migration
 
 # Start development server
-pnpm dev --remote
+pnpm dev
 
 # Build for production
-pnpm build --remote
+pnpm build
 
 # Type checking
 pnpm astro check
 
 # Work on a specific plugin
 pnpm --filter @studiocms/plugin-name dev
+
+# Upgrade packages
+studiocms-upgrade                 # Upgrade StudioCMS packages (Dont use within the monorepo, use in your project that depends on StudioCMS)
 ```
 
 ### OAuth Callback URLs
@@ -119,10 +165,9 @@ pnpm --filter @studiocms/plugin-name dev
 
 ## Configuration
 
-### Astro Configuration (`astro.config.mjs`)
+### Astro Configuration (`astro.config.mts`)
 ```javascript
 import { defineConfig } from 'astro/config';
-import db from '@astrojs/db';
 import node from '@astrojs/node';
 import studioCMS from 'studiocms';
 
@@ -131,19 +176,21 @@ export default defineConfig({
   output: 'server',                 // REQUIRED — SSR mode
   adapter: node({ mode: "standalone" }), // REQUIRED — SSR adapter
   integrations: [
-    db(),
     studioCMS(),
   ],
 });
 ```
 
-### StudioCMS Configuration (`studiocms.config.mjs`)
+### StudioCMS Configuration (`studiocms.config.mts`)
 ```javascript
 import { defineStudioCMSConfig } from 'studiocms/config';
 import blog from '@studiocms/blog';
 
 export default defineStudioCMSConfig({
   dbStartPage: false,
+  db: {
+    dialect: 'libsql', // or 'mysql' or 'postgres'
+  },
   plugins: [
     blog(),
     // Add other plugins here
@@ -217,20 +264,7 @@ export const GET: APIRoute = async ({ params, request }) => {
 ```
 
 ### Database Operations
-```typescript
-import { db, eq, and } from 'astro:db';
-import { Posts } from './schema';
-
-const post = await db
-  .select()
-  .from(Posts)
-  .where(and(eq(Posts.slug, slug), eq(Posts.published, true)))
-  .get();
-
-if (!post) {
-  throw new Error(`Post with slug "${slug}" not found`);
-}
-```
+Database operations are handled internally by StudioCMS core using Kysely via `@withstudiocms/kysely`. The system provides type-safe database operations and supports libSQL, MySQL, and PostgreSQL. Always handle potential null/undefined values in your application code.
 
 ## Plugin Development
 
@@ -292,24 +326,29 @@ const welcomeMessage = t('dashboard.welcome');
 
 ### Never do these
 - Suggest SSG mode — StudioCMS requires SSR (`output: 'server'`).
-- Reference Astro Studio — it's been sunset; use libSQL directly.
-- Assume Bun or Deno support — only Node.js is supported.
+- Reference Astro Studio — it's been sunset.
+- Reference @astrojs/db — replaced by @withstudiocms/kysely.
+- Use `astro db` commands — use migration commands instead.
+- Assume Bun or Deno support — only Node.js >=22.20.0 is supported.
 - Assume OAuth is built-in — OAuth providers require plugin packages.
-- Omit `site` config in `astro.config.mjs` — it's always required.
 - Omit the SSR adapter — must have one configured (node, vercel, etc.).
+- Show database operation code examples — they're handled internally by StudioCMS core.
 
 ### Always do these
 - Use `CMS_` prefix for StudioCMS environment variables.
-- Use `--remote` flag for database operations (`pnpm dev --remote`, `pnpm build --remote`).
+- Use migration commands (`pnpm playground:migrate --latest`, `pnpm create-migration`).
 - Use strict TypeScript typing throughout.
 - Install the specific plugin package for each OAuth provider (`@studiocms/github`, etc.).
+- Configure `db.dialect` in studiocms.config to match your database type.
+- Ensure Node.js version is >=22.20.0.
 
 ## Testing Instructions
 
 - Run `pnpm astro check` for TypeScript validation.
 - Write tests for new features when applicable.
 - Test with different authentication providers.
-- For database schema changes: test migrations, update types, run `astro db push --remote`.
+- For database schema changes: create migrations with `pnpm create-migration`, test thoroughly, run `pnpm playground:migrate --latest`.
+- Test with different database types (libSQL, MySQL, PostgreSQL) when making database-related changes.
 
 ## PR Instructions
 
@@ -325,9 +364,10 @@ const welcomeMessage = t('dashboard.welcome');
 |---|---|
 | Authentication not working | Is `CMS_ENCRYPTION_KEY` set? |
 | OAuth failing | Is the plugin installed? Are callback URLs correct? |
-| Database connection issues | Are `ASTRO_DB_REMOTE_URL` and `ASTRO_DB_APP_TOKEN` set? Are you using `--remote`? |
+| Database connection issues | Are database environment variables set correctly? Is `db.dialect` configured? |
+| Migration failures | Is the database accessible? Are credentials correct? |
 | Vite dependency errors in dev | Normal in dev mode — try a production build. |
-| Deploy failures | Is an SSR adapter configured? Are env vars set in production? Is the DB accessible? |
+| Deploy failures | Is an SSR adapter configured? Are env vars set in production? Is the DB accessible? Is `db.dialect` set correctly? |
 
 ## Community & Support
 
@@ -341,13 +381,14 @@ const welcomeMessage = t('dashboard.welcome');
 ```bash
 npm create studiocms@latest        # Create new project from template
 pnpm install                       # Install dependencies
-pnpm dev --remote                  # Start dev server
-pnpm build --remote                # Build for production
+pnpm dev                           # Start dev server
+pnpm build                         # Build for production
 pnpm astro check                   # Type checking
-pnpm astro db push --remote        # Push schema changes
-pnpm astro db pull --remote        # Pull remote schema
+pnpm playground:migrate --latest   # Run database migrations
+pnpm create-migration              # Create new migration
 pnpm add @studiocms/blog           # Add blog plugin
 pnpm --filter @studiocms/plugin dev # Work on specific plugin
+studiocms-upgrade                  # Upgrade StudioCMS packages (Dont use this within the monorepo, this is for user-projects only)
 ```
 
 ---
