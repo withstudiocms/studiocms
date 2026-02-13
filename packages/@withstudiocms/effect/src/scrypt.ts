@@ -1,5 +1,8 @@
 import type { BinaryLike, ScryptOptions } from 'node:crypto';
-import { Scrypt as EffectifyScrypt } from 'effectify/scrypt';
+import {
+	Scrypt as EffectifyScrypt,
+	ScryptConfigOptions as EffectifyScryptConfigOptions,
+} from 'effectify/scrypt';
 import { Brand, Context, Effect, Layer } from './effect.js';
 
 export { ScryptError } from 'effectify/scrypt';
@@ -63,10 +66,23 @@ export class ScryptConfig extends Context.Tag('ScryptConfig')<ScryptConfig, Scry
  */
 export class Scrypt extends Effect.Service<Scrypt>()('Scrypt', {
 	effect: Effect.gen(function* () {
-		const config = yield* ScryptConfig;
-		const _scrypt = yield* EffectifyScrypt.pipe(Effect.provide(EffectifyScrypt.makeLive(config)));
+		// Process Configs
+		const StudioCMSConfig = yield* ScryptConfig;
+		const effectifyConfig = EffectifyScryptConfigOptions(StudioCMSConfig);
 
-		const run = (password: BinaryLike) => _scrypt(password, config.encryptionKey);
+		// Get Live Scrypt Effect
+		const LiveService = EffectifyScrypt.makeLive(effectifyConfig);
+
+		// Create Scrypt Effect
+		const _scrypt = yield* EffectifyScrypt.pipe(Effect.provide(LiveService));
+
+		/**
+		 * Derives a key from the given password using the Scrypt algorithm.
+		 *
+		 * @param password - The input password as a binary-like value.
+		 * @returns An Effect that, when executed, will produce the derived key as a Buffer.
+		 */
+		const run = (password: BinaryLike) => _scrypt(password, StudioCMSConfig.encryptionKey);
 
 		return {
 			run,
