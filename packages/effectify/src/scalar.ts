@@ -257,7 +257,9 @@ const makeHandler = (options: {
       content="width=device-width, initial-scale=1" />
 	<link rel="icon" type="image/svg+xml" href="/favicon.svg">
 	<link rel="icon" href="/favicon.ico">
-    <style>
+    ${
+			options.customHeader
+				? `<style>
       :root {
         --scalar-custom-header-height: 50px;
       }
@@ -301,7 +303,9 @@ const makeHandler = (options: {
 	  .custom-header i {
 		font-style: italic;
 	  }
-    </style>
+    </style>`
+				: ''
+		}
   </head>
   <body>
     ${

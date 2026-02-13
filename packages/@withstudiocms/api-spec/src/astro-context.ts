@@ -1,15 +1,10 @@
 import { HttpApiMiddleware, HttpApiSchema } from '@effect/platform';
 import { StudioCMSUsersTable } from '@withstudiocms/sdk/tables';
-import type { APIContext } from 'astro';
 import * as Context from 'effect/Context';
 import * as Schema from 'effect/Schema';
+import { AstroAPIContext } from 'effectify/astro/context';
 
-/**
- * A Context Reference for Astro API route locals.
- */
-export class AstroAPIContext extends Context.Reference<AstroAPIContext>()('AstroAPIContext', {
-	defaultValue: () => ({}) as APIContext,
-}) {}
+export { AstroAPIContext };
 
 /**
  * Session data structure extracted from Astro locals.
