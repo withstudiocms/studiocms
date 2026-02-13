@@ -63,7 +63,7 @@ ASTRO_DB_REMOTE_URL=libsql://your-database.turso.io
 ASTRO_DB_APP_TOKEN=your-database-token
 
 # Base Authentication (Required)
-CMS_ENCRYPTION_KEY="..." # Generate: openssl rand --base64 16
+CMS_ENCRYPTION_KEY="..." # Generate: openssl rand -base64 16
 
 # GitHub OAuth (Optional — requires @studiocms/github plugin)
 CMS_GITHUB_CLIENT_ID=
