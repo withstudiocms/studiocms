@@ -162,8 +162,7 @@ knowledge_base:
     filePatterns:
       - ".github/copilot-instructions.md"
       - ".cursorrules"
-      - "CLAUDE.md"
-      - "GEMINI.md"
+      - "AGENTS.md"
   learnings:
     scope: auto
   issues:
