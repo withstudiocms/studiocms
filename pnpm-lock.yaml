@@ -944,6 +944,9 @@ importers:
       effect:
         specifier: catalog:effect
         version: 3.19.16
+      effectify:
+        specifier: workspace:^
+        version: link:../../effectify
       micromatch:
         specifier: ^4.0.8
         version: 4.0.8

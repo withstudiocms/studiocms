@@ -82,6 +82,7 @@
 	"dependencies": {
 		"@clack/prompts": "^1.0.0",
 		"deepmerge-ts": "catalog:",
+		"effectify": "workspace:^",
 		"micromatch": "^4.0.8",
 		"nodemailer": "^8.0.1",
 		"socks": "^2.8.7"

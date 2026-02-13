@@ -1,15 +1,8 @@
-import { type BinaryLike, type ScryptOptions, scrypt } from 'node:crypto';
-import { Brand, Context, Data, Effect, Layer } from './effect.js';
+import type { BinaryLike, ScryptOptions } from 'node:crypto';
+import { Scrypt as EffectifyScrypt } from 'effectify/scrypt';
+import { Brand, Context, Effect, Layer } from './effect.js';
 
-/**
- * Represents an error specific to the Scrypt operation.
- *
- * This class extends a tagged error to provide additional context
- * about errors that occur during Scrypt-related operations.
- *
- * @extends Data.TaggedError
- */
-export class ScryptError extends Data.TaggedError('ScryptError')<{ error: Error }> {}
+export { ScryptError } from 'effectify/scrypt';
 
 /**
  * Configuration options for the Scrypt key derivation function.
@@ -71,27 +64,9 @@ export class ScryptConfig extends Context.Tag('ScryptConfig')<ScryptConfig, Scry
 export class Scrypt extends Effect.Service<Scrypt>()('Scrypt', {
 	effect: Effect.gen(function* () {
 		const config = yield* ScryptConfig;
+		const _scrypt = yield* EffectifyScrypt.pipe(Effect.provide(EffectifyScrypt.makeLive(config)));
 
-		const run = (password: BinaryLike) =>
-			Effect.async<Buffer, ScryptError>((resume) => {
-				try {
-					scrypt(
-						password,
-						config.encryptionKey,
-						config.keylen,
-						config.options,
-						(err, derivedKey) => {
-							if (err) {
-								resume(Effect.fail(new ScryptError({ error: err })));
-							} else {
-								resume(Effect.succeed(derivedKey));
-							}
-						}
-					);
-				} catch (error) {
-					resume(Effect.fail(new ScryptError({ error: error as Error })));
-				}
-			});
+		const run = (password: BinaryLike) => _scrypt(password, config.encryptionKey);
 
 		return {
 			run,
