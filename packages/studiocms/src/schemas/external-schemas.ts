@@ -1,5 +1,5 @@
 import { type AvailableIcons, availableIcons } from 'studiocms:ui/icons';
-import type { AstroIntegration } from 'astro';
+import type { AstroIntegration, AstroIntegrationLogger } from 'astro';
 import * as Schema from 'effect/Schema';
 import { SyncFunctionSchema } from 'effectify/schemas';
 import type { SanitizeOptions } from 'ultrahtml/transformers/sanitize';
@@ -66,5 +66,29 @@ export const AstroIntegrationSchema = Schema.declare(
 		title: 'AstroIntegrationSchema',
 		identifier: 'AstroIntegrationSchema',
 		description: 'Schema for validating Astro integrations used in plugin configurations.',
+	}
+);
+
+/**
+ * Schema for validating Astro integration loggers used in plugin configurations.
+ */
+export const AstroIntegrationLoggerSchema = Schema.declare(
+	(input: unknown): input is AstroIntegrationLogger => {
+		if (typeof input !== 'object' || input === null) {
+			return false;
+		}
+		if (
+			'info' in input &&
+			typeof input.info === 'function' &&
+			'warn' in input &&
+			typeof input.warn === 'function' &&
+			'error' in input &&
+			typeof input.error === 'function' &&
+			'debug' in input &&
+			typeof input.debug === 'function'
+		) {
+			return true;
+		}
+		return false;
 	}
 );
