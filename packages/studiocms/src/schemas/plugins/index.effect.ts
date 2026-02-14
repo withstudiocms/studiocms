@@ -318,17 +318,27 @@ const makeHookSchema = <A, I, R = never>(argsSchema: Schema.Schema<A, I, R>) =>
 	FunctionSchema(argsSchema, Schema.Void);
 
 /**
+ * Internal Shared Plugin hooks schema for validating the structure of hooks that are shared across different plugin types within the StudioCMS system, including hooks for Astro configuration, authentication service, dashboard configuration, frontend configuration, rendering configuration, image service configuration, and sitemap configuration. This schema ensures that the shared hooks adhere to the expected structure, allowing for seamless integration of plugin functionality into the StudioCMS system while providing necessary tools for logging and debugging through the integration logger.
+ *
+ * Note: This schema is intended for internal use within the plugin system and may not include all possible hooks or configurations that plugins can implement, but rather focuses on the common hooks that are shared across different plugin types.
+ */
+export const InternalPluginHooksSchema = Schema.Struct({
+	'studiocms:astro-config': makeHookSchema(astroConfigHookSchema),
+	'studiocms:auth': makeHookSchema(AuthServiceHookSchema),
+	'studiocms:dashboard': makeHookSchema(DashboardHookSchema),
+	'studiocms:frontend': makeHookSchema(FrontendHookSchema),
+	'studiocms:rendering': makeHookSchema(RenderingHookSchema),
+	'studiocms:image-service': makeHookSchema(ImageServiceHookSchema),
+	'studiocms:sitemap': makeHookSchema(SitemapHookSchema),
+});
+
+/**
  * Base Plugin Hooks Schema for validating the structure of hooks provided by plugins, including hooks for Astro configuration, authentication service, dashboard configuration, frontend configuration, rendering configuration, image service configuration, and sitemap configuration. This schema ensures that the hooks provided by plugins adhere to the expected structure, allowing for seamless integration of plugin functionality into the StudioCMS system while providing necessary tools for logging and debugging through the integration logger.
  */
 export const BasePluginHooksSchema = Schema.mutable(
-	Schema.Struct({
-		'studiocms:astro-config': makeHookSchema(astroConfigHookSchema),
-		'studiocms:auth': makeHookSchema(AuthServiceHookSchema),
-		'studiocms:dashboard': makeHookSchema(DashboardHookSchema),
-		'studiocms:frontend': makeHookSchema(FrontendHookSchema),
-		'studiocms:rendering': makeHookSchema(RenderingHookSchema),
-		'studiocms:image-service': makeHookSchema(ImageServiceHookSchema),
-		'studiocms:sitemap': makeHookSchema(SitemapHookSchema),
+	Schema.Struct(InternalPluginHooksSchema.fields, {
+		key: Schema.String,
+		value: Schema.Unknown,
 	})
 );
 
@@ -341,9 +351,16 @@ export type BasePluginHooks = typeof BasePluginHooksSchema.Type;
  * Schema for validating the structure of storage manager hooks provided by plugins, allowing plugins to specify custom storage manager configurations within the StudioCMS system. This schema extends the BasePluginHooksSchema to include a specific hook for setting the storage manager configuration, ensuring that any implementation of the storage manager hook adheres to the expected structure and provides necessary functionality for managing storage managers while maintaining compatibility with the overall StudioCMS system.
  */
 export const StorageManagerPluginHooksSchema = Schema.mutable(
-	Schema.Struct({
-		'studiocms:storage-manager': makeHookSchema(StorageManagerHookSchema),
-	})
+	Schema.Struct(
+		{
+			...InternalPluginHooksSchema.fields,
+			'studiocms:storage-manager': makeHookSchema(StorageManagerHookSchema),
+		},
+		{
+			key: Schema.String,
+			value: Schema.Unknown,
+		}
+	)
 );
 
 /**
@@ -392,7 +409,7 @@ export type PluginHookParameters<
 /**
  * Schema for validating the structure of the storage manager plugin configuration, including metadata such as identifier, name, minimum required version of StudioCMS, dependencies on other plugins, and the specific hooks related to storage management that the plugin implements. This schema extends the base plugin schema to include storage manager-specific hooks, ensuring that any implementation of a storage manager plugin adheres to the expected structure and provides necessary functionality for managing storage within the StudioCMS system while maintaining compatibility with the overall system.
  */
-export class StudioCMSStorageManagerSchema extends StudioCMSPluginSchema.extend<StudioCMSStorageManagerSchema>(
+export class StudioCMSStorageManagerSchema extends StudiOCMSPluginBaseSchema.extend<StudioCMSStorageManagerSchema>(
 	'StudioCMSStorageManagerSchema'
 )({
 	hooks: StorageManagerPluginHooksSchema,
