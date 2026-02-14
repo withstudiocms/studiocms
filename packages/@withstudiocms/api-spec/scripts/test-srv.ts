@@ -71,4 +71,5 @@ const HttpLive = HttpApiBuilder.serve(HttpMiddleware.logger).pipe(
 
 // Launch the server
 // Note there is a type error here, since we are only implementing docs, and not the full API, but it works fine for testing purposes
-Layer.launch(HttpLive).pipe(NodeRuntime.runMain);
+// So we cast the types
+Layer.launch(HttpLive as Layer.Layer<never, never, never>).pipe(NodeRuntime.runMain);
