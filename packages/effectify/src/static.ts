@@ -84,7 +84,7 @@ export const makeStaticFileHttpApiRouter =
 					const response = yield* HttpServerResponse.file(filePath, {});
 
 					// If the file does not match the pattern for hashed filenames, return the response as is. Otherwise, set a long cache duration for the file.
-					if (!/\.[a-z0-9]{8,}\.[A-z0-9]+(?:\.map)?$/.exec(filePath)) {
+					if (!/\.[a-z0-9]{8,}\.[A-Za-z0-9]+(?:\.map)?$/.exec(filePath)) {
 						return yield* response;
 					}
 
