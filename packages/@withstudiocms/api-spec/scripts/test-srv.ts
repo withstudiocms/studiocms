@@ -15,15 +15,14 @@ import {
 // Create a route for the API documentation
 const DocsRouteLive = layer({
 	title: 'StudioCMS API Documentation',
+	description:
+		'The Documentation for the StudioCMS API, including all available endpoints and specifications.',
 	customHeader: {
 		title: {
 			text: 'StudioCMS API Documentation',
 			link: '/docs',
 		},
-		nav: [],
 	},
-	description:
-		'The Documentation for the StudioCMS API, including all available endpoints and specifications.',
 	path: '/docs',
 	sources: [
 		{
