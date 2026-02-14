@@ -90,5 +90,10 @@ export const AstroIntegrationLoggerSchema = Schema.declare(
 			return true;
 		}
 		return false;
+	},
+	{
+		title: 'AstroIntegrationLoggerSchema',
+		identifier: 'AstroIntegrationLoggerSchema',
+		description: 'Schema for validating Astro integration loggers used in plugin configurations.',
 	}
 );
