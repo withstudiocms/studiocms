@@ -10,6 +10,11 @@ import type {
 import { findConfig } from './watcher.js';
 import { parseAndMerge, parseConfig } from './zod-utils.js';
 
+// TODO: Deprecate the configResolverBuilder in favor of the effect-based config resolver
+// once StudioCMS has fully migrated to using effect-based schemas for configuration validation and processing.
+// The effect-based approach provides better support for asynchronous operations and more complex validation logic,
+// making it a more robust solution for handling configuration in Astro integrations.
+
 /* v8 ignore start */
 // This function is tested indirectly via the integration tests in this package
 /**
