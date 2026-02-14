@@ -1,7 +1,12 @@
 import type { z } from 'astro/zod';
 import { defineUtility } from 'astro-integration-kit';
+import { Schema } from 'effect';
 import { loadConfigFile } from './loader.js';
-import type { ConfigResolverBuilderOpts, WatchConfigFileOptions } from './types.js';
+import type {
+	ConfigResolverBuilderEffectOpts,
+	ConfigResolverBuilderOpts,
+	WatchConfigFileOptions,
+} from './types.js';
 import { findConfig } from './watcher.js';
 import { parseAndMerge, parseConfig } from './zod-utils.js';
 
@@ -52,6 +57,49 @@ export const configResolverBuilder = <S extends z.ZodTypeAny>({
 		return mergedConfig;
 	});
 /* v8 ignore stop */
+
+/**
+ * Builds an effect-based config resolver utility for Astro integrations.
+ *
+ * This function creates a utility that loads a configuration file and processes it through an effect-based schema.
+ * If a configuration file is found, it is loaded and passed to the provided effect schema for processing.
+ * If no configuration file is found, the effect schema is executed with an empty object as input.
+ *
+ * @template A - The type of the configuration object that will be produced by the effect.
+ * @template I - The type of the input to the effect that produces the configuration object.
+ * @param params - The configuration resolver options for effect-based processing.
+ * @param params.configPaths - Array of possible config file paths to search for.
+ * @param params.label - A label used for logging.
+ * @param params.effectSchema - The schema for the effect that will produce the configuration object.
+ * @returns A utility function to be used in the Astro config setup hook, which loads a config file and processes it through an effect-based schema.
+ */
+export const configResolverBuilderEffect = <A, I>({
+	configPaths,
+	label,
+	effectSchema,
+}: ConfigResolverBuilderEffectOpts<A, I>) =>
+	defineUtility('astro:config:setup')(async ({ logger: l, config: { root: astroRoot } }) => {
+		// Generate a logger for the config resolver
+		const logger = l.fork(`${label}:config`);
+
+		// Load the config file
+		const loadedConfigFile = await loadConfigFile<A>(astroRoot, configPaths, label);
+
+		// If no config file was found, return the result of the effect with an empty object as input
+		if (!loadedConfigFile) {
+			logger.info('No config file found. Using default configuration.');
+			return await Schema.decodeUnknownPromise(effectSchema)({});
+		}
+
+		// Parse the loaded config file using the provided effect schema
+		const parsedConfig = await Schema.decodeUnknownPromise(effectSchema)(loadedConfigFile);
+
+		// Log a message indicating that the config file was loaded and parsed successfully
+		logger.info('Config file loaded and parsed successfully.');
+
+		// Return the parsed configuration object
+		return parsedConfig;
+	});
 
 /* v8 ignore start */
 // This function is tested indirectly via the integration tests in this package
