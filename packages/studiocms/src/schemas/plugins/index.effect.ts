@@ -409,7 +409,7 @@ export type PluginHookParameters<
 /**
  * Schema for validating the structure of the storage manager plugin configuration, including metadata such as identifier, name, minimum required version of StudioCMS, dependencies on other plugins, and the specific hooks related to storage management that the plugin implements. This schema extends the base plugin schema to include storage manager-specific hooks, ensuring that any implementation of a storage manager plugin adheres to the expected structure and provides necessary functionality for managing storage within the StudioCMS system while maintaining compatibility with the overall system.
  */
-export class StudioCMSStorageManagerSchema extends StudioCMSPluginSchema.extend<StudioCMSStorageManagerSchema>(
+export class StudioCMSStorageManagerSchema extends StudiOCMSPluginBaseSchema.extend<StudioCMSStorageManagerSchema>(
 	'StudioCMSStorageManagerSchema'
 )({
 	hooks: StorageManagerPluginHooksSchema,
