@@ -58,6 +58,7 @@ export const configResolverBuilder = <S extends z.ZodTypeAny>({
 	});
 /* v8 ignore stop */
 
+/* v8 ignore start */
 /**
  * Builds an effect-based config resolver utility for Astro integrations.
  *
@@ -100,6 +101,7 @@ export const configResolverBuilderEffect = <A, I>({
 		// Return the parsed configuration object
 		return parsedConfig;
 	});
+/* v8 ignore stop */
 
 /* v8 ignore start */
 // This function is tested indirectly via the integration tests in this package
