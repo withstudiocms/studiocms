@@ -86,5 +86,5 @@ catalogs:
     react-dom: ^19.2.4
   studiocms:
     "@studiocms/markdown-remark-processor": ^1.2.0
-    "@studiocms/ui": ^1.1.1
+    "@studiocms/ui": ^1.1.2
     "@studiocms/web-vitals": ^4.5.3
