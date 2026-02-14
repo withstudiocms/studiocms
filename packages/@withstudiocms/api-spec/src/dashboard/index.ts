@@ -119,7 +119,7 @@ export class StudioCMSDashboardApiSpec extends HttpApi.make('StudioCMSDashboardA
 	.annotate(Title, 'StudioCMS Dashboard API Specification')
 	.annotate(
 		Description,
-		'Main API specification for the StudioCMS Dashboard, providing endpoints for managing and interacting with the StudioCMS Dashboard. This specification includes comprehensive metadata such as licensing, versioning, and contact information.'
+		'Main API specification for the StudioCMS Dashboard, providing endpoints for managing and interacting with the StudioCMS Dashboard. This specification includes comprehensive metadata such as licensing, versioning, and contact information.\n\n## External Resources\n\n- [Main Website](https://studiocms.dev)\n- [StudioCMS GitHub Repository](https://github.com/withstudiocms/studiocms)\n- [Discord Community](https://chat.studiocms.dev)\n- [API Source definitions](https://github.com/withstudiocms/studiocms/blob/main/packages/%40withstudiocms/api-spec/)\n\n---\n\n_This API specification is automatically generated and maintained by the StudioCMS team._'
 	)
 	.annotate(License, {
 		name: 'MIT',

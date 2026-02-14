@@ -8,11 +8,12 @@ import {
 	Version,
 } from '@effect/platform/OpenApi';
 import pkg from '../package.json';
-import { AuthApi } from './auth/index.js';
-import { DashboardApi } from './dashboard/index.js';
-import { IntegrationsApi } from './integrations/index.js';
-import { RestApiV1PublicSpec, RestApiV1SecureSpec } from './rest-api/v1/index.js';
-import { SDKApi } from './sdk/index.js';
+
+export { StudioCMSAuthApi } from './auth/index.js';
+export { StudioCMSDashboardApiSpec } from './dashboard/index.js';
+export { StudioCMSIntegrationsApiSpec } from './integrations/index.js';
+export { StudioCMSRestApiV1Spec } from './rest-api/v1/index.js';
+export { StudioCMSSDKApiSpec } from './sdk/index.js';
 
 /**
  * StudioCMS API Specification
@@ -71,23 +72,4 @@ export class StudioCMSAPISpec extends HttpApi.make('StudioCMSAPISpec')
 			url: 'https://docs.studiocms.dev/en/',
 			description: 'StudioCMS Documentation',
 		},
-	}))
-
-	// Auth API
-	.add(AuthApi)
-
-	// Dashboard API
-	.add(DashboardApi)
-
-	// Integrations API
-	.add(IntegrationsApi)
-
-	// Rest API v1
-	.add(RestApiV1PublicSpec)
-	.add(RestApiV1SecureSpec)
-
-	// SDK API
-	.add(SDKApi)
-
-	// Prefix all paths with /studiocms_api
-	.prefix('/studiocms_api') {}
+	})) {}

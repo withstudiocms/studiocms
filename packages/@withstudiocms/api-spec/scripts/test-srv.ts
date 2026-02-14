@@ -4,21 +4,57 @@ import * as NodeHttpServer from '@effect/platform-node/NodeHttpServer';
 import * as NodeRuntime from '@effect/platform-node/NodeRuntime';
 import { Layer } from 'effect';
 import { layer } from 'effectify/scalar';
-import { StudioCMSAPISpec } from '../src/index.js';
+import {
+	StudioCMSAuthApi,
+	StudioCMSDashboardApiSpec,
+	StudioCMSIntegrationsApiSpec,
+	StudioCMSRestApiV1Spec,
+	StudioCMSSDKApiSpec,
+} from '../src/index.js';
 
 // Create a route for the API documentation
 const DocsRouteLive = layer({
-	title: 'API Documentation',
+	title: 'StudioCMS API Documentation',
+	customHeader: {
+		title: {
+			text: 'StudioCMS API Documentation',
+			link: '/docs',
+		},
+		nav: [],
+	},
+	description:
+		'The Documentation for the StudioCMS API, including all available endpoints and specifications.',
 	path: '/docs',
 	sources: [
 		{
-			title: 'API Documentation',
-			httpApi: StudioCMSAPISpec,
+			title: 'Auth API',
+			httpApi: StudioCMSAuthApi,
+		},
+		{
+			title: 'Dashboard API',
+			httpApi: StudioCMSDashboardApiSpec,
+		},
+		{
+			title: 'Integrations API',
+			httpApi: StudioCMSIntegrationsApiSpec,
+		},
+		{
+			title: 'REST API v1',
+			httpApi: StudioCMSRestApiV1Spec,
+		},
+		{
+			title: 'SDK API',
+			httpApi: StudioCMSSDKApiSpec,
 		},
 	],
 });
 
-const MyApiLive = HttpApiBuilder.api(StudioCMSAPISpec);
+const APIStack = StudioCMSDashboardApiSpec.addHttpApi(StudioCMSAuthApi)
+	.addHttpApi(StudioCMSIntegrationsApiSpec)
+	.addHttpApi(StudioCMSRestApiV1Spec)
+	.addHttpApi(StudioCMSSDKApiSpec);
+
+const MyApiLive = HttpApiBuilder.api(APIStack);
 
 // Configure and serve the API
 const HttpLive = HttpApiBuilder.serve(HttpMiddleware.logger).pipe(
