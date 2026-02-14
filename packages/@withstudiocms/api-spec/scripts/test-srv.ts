@@ -3,7 +3,7 @@ import { HttpApiBuilder, HttpMiddleware, HttpServer } from '@effect/platform';
 import * as NodeHttpServer from '@effect/platform-node/NodeHttpServer';
 import * as NodeRuntime from '@effect/platform-node/NodeRuntime';
 import { Layer } from 'effect';
-import { layer } from 'effectify/scalar';
+import { layer as scalarLayer } from 'effectify/scalar';
 import {
 	StudioCMSAuthApi,
 	StudioCMSDashboardApiSpec,
@@ -13,7 +13,7 @@ import {
 } from '../src/index.js';
 
 // Create a route for the API documentation
-const DocsRouteLive = layer({
+const DocsRouteLive = scalarLayer({
 	title: 'StudioCMS API Documentation',
 	description:
 		'The Documentation for the StudioCMS API, including all available endpoints and specifications.',
@@ -48,11 +48,13 @@ const DocsRouteLive = layer({
 	],
 });
 
+// Combine all API specifications into a single stack
 const APIStack = StudioCMSDashboardApiSpec.addHttpApi(StudioCMSAuthApi)
 	.addHttpApi(StudioCMSIntegrationsApiSpec)
 	.addHttpApi(StudioCMSRestApiV1Spec)
 	.addHttpApi(StudioCMSSDKApiSpec);
 
+// Create the live API implementation
 const MyApiLive = HttpApiBuilder.api(APIStack);
 
 // Configure and serve the API
