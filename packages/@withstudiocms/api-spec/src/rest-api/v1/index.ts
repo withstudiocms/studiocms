@@ -7,11 +7,14 @@ import {
 	Transform,
 	Version,
 } from '@effect/platform/OpenApi';
+import pkg from '../../../package.json';
 import { RestApiV1PublicSpec } from './public/index.js';
 import { RestApiV1SecureSpec } from './secure/index.js';
 
 export * from './public/index.js';
 export * from './secure/index.js';
+
+const restApiVersion = `studiocms@${pkg.version}/rest-api/v1.0.0`;
 
 /**
  * StudioCMS REST API v1 Specification
@@ -50,7 +53,7 @@ export class StudioCMSRestApiV1Spec extends HttpApi.make('StudioCMSRestApiV1Spec
 		url: 'https://docs.studiocms.dev/en/how-it-works/restapi/',
 		description: 'StudioCMS REST API Documentation',
 	})
-	.annotate(Version, '1.0.0')
+	.annotate(Version, restApiVersion)
 	.annotate(Transform, (data) => ({
 		...data,
 		info: {
