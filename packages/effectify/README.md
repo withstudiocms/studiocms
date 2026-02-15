@@ -167,12 +167,22 @@ Creates an HTTP API router that serves static files from a specified directory. 
 import { makeStaticFileHttpApiRouter } from 'effectify/static';
 
 const TestStatic = makeStaticFileHttpApiRouter({
-	htmlIndex: true,
-	path: '/*' // Allows setting custom base path for static assets (default shown)
+	htmlIndex: true, // (optional) Allows for serving index.html
+	pathPrefix: '/assets' // (optional) Allows setting custom base path for served assets (leave blank for base route)
 })(import.meta.dirname, 'static'); // Directory would be /src/static/
 
 // If the source directory was /src/index.ts and the assets was located at /assets/
 // then you would use (import.meta.dirname, '..', 'assets')
+```
+
+#### `makeStaticFileMiddleware`
+
+The router above is simply a wrapper around this middleware, and has the same settings.
+
+```ts
+import { makeStaticFileMiddleware } from 'effectify/static';
+
+const StaticMiddleware = makeStaticFileMiddleware()(import.meta.dirname, 'static');
 ```
 
 ### `effectify/webHandler`
