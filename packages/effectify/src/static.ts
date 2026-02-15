@@ -60,6 +60,14 @@ export interface StaticFileConfig {
 }
 
 /**
+ * A regular expression to match file paths that contain a hash, which is commonly used in filenames for cache busting (e.g., `app.abcdef123456.js`). This regex checks for a period followed by at least 8 hexadecimal characters, optionally followed by additional segments separated by hyphens, underscores, or periods, and ending with a valid file extension for static assets.
+ *
+ * This regex is used to determine whether a requested file should be served with long-term caching headers, as files with hashed filenames are typically immutable and can be cached indefinitely.
+ */
+const HASHED_ASSET =
+	/\.[\da-f]{8,}(?:[-_.][\da-f]+)*\.(?:js|css|mjs|cjs|json|woff2?|ttf|eot|svg|png|jpe?g|gif|webp|avif|ico)(?:\.map)?$/i;
+
+/**
  * Creates an HTTP middleware that serves static files from a specified directory. The middleware can be configured to serve an `index.html` file for the root path and to set appropriate caching headers for files with hashed filenames.
  *
  * This middleware can be used in an Effect HTTP API to serve static files alongside your API routes. It checks if the requested file exists and is a file, and if so, serves it with appropriate caching headers for files that match a specific pattern (e.g., hashed filenames). If the file does not exist or is not a file, it allows the request to continue to the next middleware or route handler.
@@ -117,24 +125,21 @@ export const makeStaticFileMiddleware =
 				// Serve the static file using HttpServerResponse.file and set appropriate caching headers for files that match the specified pattern (e.g., hashed filenames).
 				const response = yield* HttpServerResponse.file(filePath);
 
-				// If the file does not match the pattern for hashed filenames, return the response as is. Otherwise, set a long cache duration for the file.
-				if (!/\.[a-z0-9]{8,}\.[A-Za-z0-9]+(?:\.map)?$/.exec(filePath)) {
-					// Log that we are serving a file without caching headers for debugging purposes
-					yield* reportEnding(start, `Served static file ${urlToTest} without caching headers.`);
+				// Set the default Cache-Control header value to prevent caching for files that do not match the hashed filename pattern, and prepare a log message indicating that the file is being served without caching headers.
+				let cacheControlValue = 'public, max-age=0, must-revalidate';
+				let logMessage = `Served static file ${urlToTest} without caching headers.`;
 
-					// Return the response without setting caching headers for files that do not match the hashed filename pattern, as these files may change frequently and should not be cached aggressively.
-					return response;
+				// If the file matches the hashed filename pattern, update the Cache-Control header value to allow long-term caching and update the log message accordingly. This allows files with hashed filenames to be cached for a long duration while other files are not cached aggressively.
+				if (HASHED_ASSET.test(filePath)) {
+					cacheControlValue = `public, max-age=${Duration.toSeconds('365 days')}, immutable`;
+					logMessage = `Served static file ${urlToTest} with caching headers.`;
 				}
 
-				// Log that we are serving a file with caching headers for debugging purposes
-				yield* reportEnding(start, `Served static file ${urlToTest} with caching headers.`);
+				// Log the caching decision for debugging purposes
+				yield* reportEnding(start, logMessage);
 
-				// Set the Cache-Control header to cache the file for 365 days and mark it as immutable, which is suitable for files with hashed filenames that won't change.
-				return HttpServerResponse.setHeader(
-					response,
-					'Cache-Control',
-					`public, max-age=${Duration.toSeconds('365 days')}, immutable`
-				);
+				// Set the Cache-Control header based on whether the file matches the hashed filename pattern, allowing files with hashed filenames to be cached for a long duration while other files are not cached aggressively.
+				return HttpServerResponse.setHeader(response, 'Cache-Control', cacheControlValue);
 			}).pipe(Effect.withLogSpan('effectify.StaticFileMiddleware'))
 		);
 
