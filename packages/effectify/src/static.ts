@@ -69,9 +69,10 @@ export const makeStaticFileMiddleware =
 				const resolvedDirPath = path.resolve(...pathToDirectory);
 
 				// Determine the current URL by removing the path prefix if it is configured. This allows the middleware to correctly resolve the file path even if the static files are served under a specific path prefix.
-				const currentUrl = config?.pathPrefix
-					? request.url.replace(config.pathPrefix, '')
-					: request.url;
+				const currentUrl =
+					config?.pathPrefix && request.url.startsWith(config.pathPrefix)
+						? request.url.slice(config.pathPrefix.length)
+						: request.url;
 
 				// If htmlIndex is enabled and the request URL is the root path, serve the index.html file from the specified directory. Otherwise, resolve the file path based on the request URL.
 				const urlToTest = config?.htmlIndex && currentUrl === '/' ? '/index.html' : currentUrl;
@@ -80,7 +81,10 @@ export const makeStaticFileMiddleware =
 				const filePath = path.resolve(...pathToDirectory, urlToTest.slice(1));
 
 				// Check if the resolved file path is within the allowed directory and if it is a file. If not, log a debug message and continue with the original application flow. This check is performed before the htmlIndex check to ensure that if the root path is requested and htmlIndex is enabled, it will correctly serve the index.html file if it exists, while still ensuring that any other requested files are properly validated.
-				if (!filePath.startsWith(resolvedDirPath) || !(yield* isFile(filePath))) {
+				if (
+					!(filePath === resolvedDirPath || filePath.startsWith(`${resolvedDirPath}${path.sep}`)) ||
+					!(yield* isFile(filePath))
+				) {
 					// Log that the requested file was not found or is not a file for debugging purposes
 					yield* reportEnding(
 						start,
