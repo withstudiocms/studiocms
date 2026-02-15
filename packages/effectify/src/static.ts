@@ -90,8 +90,11 @@ export const makeStaticFileMiddleware =
 						? request.url.slice(config.pathPrefix.length)
 						: request.url;
 
+				// Strip query string and fragment, then decode percent-encoded characters
+				const cleanUrl = decodeURIComponent(currentUrl.split('?')[0].split('#')[0]);
+
 				// If htmlIndex is enabled and the request URL is the root path, serve the index.html file from the specified directory. Otherwise, resolve the file path based on the request URL.
-				const urlToTest = config?.htmlIndex && currentUrl === '/' ? '/index.html' : currentUrl;
+				const urlToTest = config?.htmlIndex && cleanUrl === '/' ? '/index.html' : cleanUrl;
 
 				// Resolve the full file path based on the request URL
 				const filePath = path.resolve(...pathToDirectory, urlToTest.slice(1));
