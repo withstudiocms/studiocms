@@ -1,11 +1,6 @@
 import * as Schema from 'effect/Schema';
-import {
-	BooleanDefaultFalse,
-	BooleanDefaultTrue,
-	DateTimeFormatOptions,
-	OptionalWithDefaults,
-} from '../custom.js';
-import { I18nKeySchema } from '../external-schemas.js';
+import { BooleanDefaultFalse, BooleanDefaultTrue, OptionalWithDefaults } from '../custom.js';
+import { DateTimeFormatOptions, I18nKeySchema } from '../external-schemas.js';
 import { StudioCMSPluginSchema, StudioCMSStorageManagerSchema } from '../plugins/index.effect.js';
 import { AuthConfigSchema } from './auth.effect.js';
 import { DashboardConfigSchema } from './dashboard.effect.js';
@@ -62,7 +57,10 @@ export type LocaleConfigResolved = typeof LocaleConfigSchema.Type;
  */
 export const FeaturesConfigSchema = Schema.Struct({
 	// TODO: Setup RobotsTXT Effect Schemas
-	robotsTXT: Schema.optional(Schema.Never),
+	robotsTXT: Schema.optional(Schema.Never).annotations({
+		description:
+			'Robots TXT Configuration - Configure the robots.txt settings for the dashboard, allowing for customization of the robots.txt file served by the dashboard to control how search engines and web crawlers interact with the dashboard.',
+	}),
 	injectQuickActionsMenu: BooleanDefaultTrue.annotations({
 		description:
 			'Inject Quick Actions Menu - Allows injecting a quick actions menu in the dashboard for easy access to common actions',
