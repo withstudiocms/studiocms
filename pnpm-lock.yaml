@@ -1183,6 +1183,9 @@ importers:
       effect:
         specifier: catalog:effect
         version: 3.19.16
+      effectify:
+        specifier: workspace:^
+        version: link:../effectify
       fuse.js:
         specifier: ^7.1.0
         version: 7.1.0
