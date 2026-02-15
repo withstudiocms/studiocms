@@ -1,4 +1,5 @@
 import * as Schema from 'effect/Schema';
+import { RobotsTXTConfigSchema } from '../../integrations/robots/schema.effect.js';
 import { BooleanDefaultFalse, BooleanDefaultTrue, OptionalWithDefaults } from '../custom.js';
 import { DateTimeFormatOptions, I18nKeySchema } from '../external-schemas.js';
 import { StudioCMSPluginSchema, StudioCMSStorageManagerSchema } from '../plugins/index.effect.js';
@@ -53,11 +54,15 @@ export type LocaleConfig = typeof LocaleConfigSchema.Encoded;
 export type LocaleConfigResolved = typeof LocaleConfigSchema.Type;
 
 /**
+ * Schema for defining the options for the RobotsTXT integration within StudioCMS, which includes user agents, allowed and disallowed paths, crawl delay, and clean parameters for the robots.txt configuration.
+ */
+export const StudioCMSRobotsTXTConfigSchema = Schema.Union(Schema.Boolean, RobotsTXTConfigSchema);
+
+/**
  * Schema for the features configuration, which includes various feature flags and settings for the dashboard, such as enabling/disabling the dashboard, authentication, SDK settings, and more.
  */
 export const FeaturesConfigSchema = Schema.Struct({
-	// TODO: Setup RobotsTXT Effect Schemas
-	robotsTXT: Schema.optional(Schema.Never).annotations({
+	robotsTXT: OptionalWithDefaults(StudioCMSRobotsTXTConfigSchema, true).annotations({
 		description:
 			'Robots TXT Configuration - Configure the robots.txt settings for the dashboard, allowing for customization of the robots.txt file served by the dashboard to control how search engines and web crawlers interact with the dashboard.',
 	}),
