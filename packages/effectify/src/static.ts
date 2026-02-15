@@ -112,7 +112,7 @@ export const makeStaticFileMiddleware =
 				}
 
 				// Serve the static file using HttpServerResponse.file and set appropriate caching headers for files that match the specified pattern (e.g., hashed filenames).
-				const response = yield* HttpServerResponse.file(filePath, {});
+				const response = yield* HttpServerResponse.file(filePath);
 
 				// If the file does not match the pattern for hashed filenames, return the response as is. Otherwise, set a long cache duration for the file.
 				if (!/\.[a-z0-9]{8,}\.[A-Za-z0-9]+(?:\.map)?$/.exec(filePath)) {
