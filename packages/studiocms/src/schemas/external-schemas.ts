@@ -1,8 +1,10 @@
 import { type AvailableIcons, availableIcons } from 'studiocms:ui/icons';
 import type { AstroIntegration, AstroIntegrationLogger } from 'astro';
+import { ParseResult } from 'effect';
 import * as Schema from 'effect/Schema';
 import { SyncFunctionSchema } from 'effectify/schemas';
 import type { SanitizeOptions } from 'ultrahtml/transformers/sanitize';
+import { availableTranslationFileKeys } from '../virtuals/i18n/v-files.js';
 
 /**
  * Schema for validating UI icon names against the list of available icons in StudioCMS.
@@ -97,3 +99,40 @@ export const AstroIntegrationLoggerSchema = Schema.declare(
 		description: 'Schema for validating Astro integration loggers used in plugin configurations.',
 	}
 );
+
+/**
+ * Schema for validating translation keys used in plugin configurations.
+ *
+ * This schema checks if the provided input is a string and if it exists in the list of available translation file keys, ensuring that only valid translation keys are used in plugin configurations.
+ */
+export const I18nKeySchema = Schema.transformOrFail(Schema.String, Schema.String, {
+	strict: true,
+	decode: (input, _options, ast) => {
+		// Check if the input is a string
+		if (typeof input !== 'string') {
+			return ParseResult.fail(
+				new ParseResult.Type(ast, input, 'Expected a string for I18nKeySchema')
+			);
+		}
+
+		// Check if the input is one of the available translation file keys
+		if (!availableTranslationFileKeys.includes(input)) {
+			return ParseResult.fail(
+				new ParseResult.Type(
+					ast,
+					input,
+					`Invalid translation key. Expected one of: ${availableTranslationFileKeys.join(', ')}`
+				)
+			);
+		}
+
+		// If the input is valid, return it as a successful parse result
+		return ParseResult.succeed(input);
+	},
+	encode: (output) => ParseResult.succeed(output),
+}).annotations({
+	title: 'I18nKeySchema',
+	identifier: 'I18nKeySchema',
+	description:
+		'Schema for validating translation keys used in plugin configurations, ensuring that only valid translation keys from the available translation file keys are accepted.',
+});
