@@ -1,7 +1,6 @@
 import { Duration } from 'effect';
 import * as Schema from 'effect/Schema';
 import { DefaultCacheLifetime } from '../../consts.js';
-import { OptionalWithDefaults } from '../custom.js';
 
 /**
  * Schema for the cache lifetime configuration, which is an optional duration that defaults to 5 minutes if not provided.
@@ -95,14 +94,6 @@ export const SDKConfigSchema = Schema.transform(InputSDKConfigSchema, OutputSDKC
 	title: 'SDK Configuration',
 	description: 'Configuration options related to the SDK, including cache settings',
 	identifier: 'SDKConfig',
-});
-
-/**
- * Schema for the SDK configuration with defaults, which allows configuring the SDK with cache settings and defaults to enabled with a 5 minute lifetime if not provided.
- */
-export const SDKConfigSchemaWithDefaults = OptionalWithDefaults(SDKConfigSchema, true).annotations({
-	description:
-		'SDK Configuration with Default - Allows configuring the SDK with cache settings, defaults to enabled with a 5 minute lifetime',
 });
 
 /**
