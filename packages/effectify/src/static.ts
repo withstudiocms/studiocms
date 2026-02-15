@@ -40,8 +40,18 @@ const catchAll = HttpRouter.all('*', HttpServerResponse.text('Not Found', { stat
 const reportEnding = Effect.fn(function* (start: DateTime.Utc, message: string) {
 	const end = DateTime.unsafeNow();
 	const duration = end.epochMillis - start.epochMillis;
-	yield* Effect.logDebug(`${message} Time taken: ${Duration.toMillis(duration)}ms`);
+	yield* Effect.logDebug(`${message} Time taken: ${duration}ms`);
 });
+
+/**
+ * Configuration options for the Static File Middleware.
+ *
+ * This interface defines the optional configuration parameters for the static file middleware, including whether to serve an `index.html` file for the root path and an optional path prefix for serving static files.
+ */
+export interface StaticFileOpts {
+	htmlIndex?: boolean;
+	pathPrefix?: string;
+}
 
 /**
  * Creates an HTTP middleware that serves static files from a specified directory. The middleware can be configured to serve an `index.html` file for the root path and to set appropriate caching headers for files with hashed filenames.
@@ -52,7 +62,7 @@ const reportEnding = Effect.fn(function* (start: DateTime.Utc, message: string) 
  * @returns A function that takes a variable number of path segments to specify the directory from which to serve static files, and returns an HttpApiBuilder.Router that can be used in an Effect HTTP API.
  */
 export const makeStaticFileMiddleware =
-	(config?: { htmlIndex?: boolean; pathPrefix?: string }) =>
+	(config?: StaticFileOpts) =>
 	(...pathToDirectory: string[]) =>
 		HttpMiddleware.make((app) =>
 			Effect.gen(function* () {
@@ -126,7 +136,7 @@ export const makeStaticFileMiddleware =
  * @returns A function that takes a variable number of path segments to specify the directory from which to serve static files, and returns an HttpApiBuilder.Router that can be used in an Effect HTTP API.
  */
 export const makeStaticFileHttpApiRouter =
-	(config?: { htmlIndex?: boolean; pathPrefix?: string }) =>
+	(config?: StaticFileOpts) =>
 	(...pathToDirectory: string[]) => {
 		const staticFileRouter = HttpRouter.empty.pipe(
 			catchAll,
