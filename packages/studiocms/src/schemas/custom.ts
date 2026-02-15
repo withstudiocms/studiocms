@@ -61,4 +61,11 @@ export const StringWithDefault = (defaultValue: string) =>
 export const OptionalWithDefaults = <A, I>(schema: Schema.Schema<A, I, never>, defaultValue: I) =>
 	Schema.optionalWith(schema, {
 		default: () => Schema.decodeSync(schema)(defaultValue),
+	}).annotations({
+		default: Schema.decodeSync(schema)(defaultValue),
+		description: `An optional value that defaults to ${JSON.stringify(defaultValue)} if not provided.`,
+		documentation: `This schema is used to define an optional configuration option that defaults to ${JSON.stringify(
+			defaultValue
+		)} if the user does not provide a value.`,
+		title: `Optional with Default ${JSON.stringify(defaultValue)}`,
 	});
