@@ -916,6 +916,9 @@ importers:
       deepmerge-ts:
         specifier: 'catalog:'
         version: 7.1.5
+      effect:
+        specifier: catalog:effect
+        version: 3.19.16
       esbuild:
         specifier: 'catalog:'
         version: 0.25.12
@@ -1183,6 +1186,9 @@ importers:
       effect:
         specifier: catalog:effect
         version: 3.19.16
+      effectify:
+        specifier: workspace:^
+        version: link:../effectify
       fuse.js:
         specifier: ^7.1.0
         version: 7.1.0

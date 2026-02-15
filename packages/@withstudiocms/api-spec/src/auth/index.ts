@@ -58,7 +58,7 @@ export class StudioCMSAuthApi extends HttpApi.make('StudioCMSAuthApi')
 	.annotate(Title, 'StudioCMS Authentication HTTP API')
 	.annotate(
 		Description,
-		'HTTP API specification for StudioCMS Authentication, providing endpoints for OAuth flows and session management.'
+		'HTTP API specification for StudioCMS Authentication, providing endpoints for OAuth flows and session management.\n\n## External Resources\n\n- [Main Website](https://studiocms.dev)\n- [StudioCMS GitHub Repository](https://github.com/withstudiocms/studiocms)\n- [Discord Community](https://chat.studiocms.dev)\n- [API Source definitions](https://github.com/withstudiocms/studiocms/blob/main/packages/%40withstudiocms/api-spec/)\n\n---\n\n_This API specification is automatically generated and maintained by the StudioCMS team._'
 	)
 	.annotate(Version, pkg.version)
 	.annotate(License, {
