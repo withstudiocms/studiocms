@@ -65,7 +65,7 @@ export class StudioCMSSDKApiSpec extends HttpApi.make('StudioCMSSDKApiSpec')
 	.annotate(Title, 'StudioCMS SDK API Specification')
 	.annotate(
 		Description,
-		'API specification for the StudioCMS SDK, providing endpoints and utilities for SDK interactions.'
+		'API specification for the StudioCMS SDK, providing endpoints and utilities for SDK interactions.\n\n## External Resources\n\n- [Main Website](https://studiocms.dev)\n- [StudioCMS GitHub Repository](https://github.com/withstudiocms/studiocms)\n- [Discord Community](https://chat.studiocms.dev)\n- [API Source definitions](https://github.com/withstudiocms/studiocms/blob/main/packages/%40withstudiocms/api-spec/)\n\n---\n\n_This API specification is automatically generated and maintained by the StudioCMS team._'
 	)
 	.annotate(License, {
 		name: 'MIT',
