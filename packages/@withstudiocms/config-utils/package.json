@@ -62,6 +62,7 @@
     "@types/node": "catalog:"
   },
   "peerDependencies": {
-    "astro": "catalog:min"
+    "astro": "catalog:min",
+    "effect": "catalog:effect"
   }
 }
