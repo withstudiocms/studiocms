@@ -48,8 +48,14 @@ const reportEnding = Effect.fn(function* (start: DateTime.Utc, message: string) 
  *
  * This interface defines the optional configuration parameters for the static file middleware, including whether to serve an `index.html` file for the root path and an optional path prefix for serving static files.
  */
-export interface StaticFileOpts {
+export interface StaticFileConfig {
+	/**
+	 * If set to true, the middleware will serve an `index.html` file from the specified directory when the root path (`/`) is requested. This is useful for single-page applications where the `index.html` file serves as the entry point for the application.
+	 */
 	htmlIndex?: boolean;
+	/**
+	 * An optional path prefix for serving static files. If specified, the middleware will only serve files that match this prefix, allowing you to serve static files under a specific URL path.
+	 */
 	pathPrefix?: string;
 }
 
@@ -62,7 +68,7 @@ export interface StaticFileOpts {
  * @returns A function that takes a variable number of path segments to specify the directory from which to serve static files, and returns an HttpApiBuilder.Router that can be used in an Effect HTTP API.
  */
 export const makeStaticFileMiddleware =
-	(config?: StaticFileOpts) =>
+	(config?: StaticFileConfig) =>
 	(...pathToDirectory: string[]) =>
 		HttpMiddleware.make((app) =>
 			Effect.gen(function* () {
@@ -136,7 +142,7 @@ export const makeStaticFileMiddleware =
  * @returns A function that takes a variable number of path segments to specify the directory from which to serve static files, and returns an HttpApiBuilder.Router that can be used in an Effect HTTP API.
  */
 export const makeStaticFileHttpApiRouter =
-	(config?: StaticFileOpts) =>
+	(config?: StaticFileConfig) =>
 	(...pathToDirectory: string[]) => {
 		const staticFileRouter = HttpRouter.empty.pipe(
 			catchAll,
