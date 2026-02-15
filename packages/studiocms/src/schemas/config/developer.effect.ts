@@ -10,7 +10,9 @@ export const DemoModeSchema = Schema.Union(
 		username: Schema.String,
 		password: Schema.String,
 	})
-);
+).annotations({
+	description: 'Demo Mode Configuration - Allows enabling demo mode with a username and password',
+});
 
 /**
  * Schema for the developer configuration.
