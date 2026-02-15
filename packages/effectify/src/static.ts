@@ -120,7 +120,7 @@ export const makeStaticFileMiddleware =
 					yield* reportEnding(start, `Served static file ${urlToTest} without caching headers.`);
 
 					// Return the response without setting caching headers for files that do not match the hashed filename pattern, as these files may change frequently and should not be cached aggressively.
-					return yield* response;
+					return response;
 				}
 
 				// Log that we are serving a file with caching headers for debugging purposes
