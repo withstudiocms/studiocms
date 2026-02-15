@@ -127,7 +127,7 @@ export const makeStaticFileMiddleware =
 				yield* reportEnding(start, `Served static file ${urlToTest} with caching headers.`);
 
 				// Set the Cache-Control header to cache the file for 365 days and mark it as immutable, which is suitable for files with hashed filenames that won't change.
-				return yield* HttpServerResponse.setHeader(
+				return HttpServerResponse.setHeader(
 					response,
 					'Cache-Control',
 					`public, max-age=${Duration.toSeconds('365 days')}, immutable`
