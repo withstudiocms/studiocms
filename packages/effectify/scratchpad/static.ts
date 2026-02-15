@@ -9,7 +9,7 @@ import {
 } from '@effect/platform';
 import * as NodeHttpServer from '@effect/platform-node/NodeHttpServer';
 import * as NodeRuntime from '@effect/platform-node/NodeRuntime';
-import { DateTime, Effect, Layer, Schema } from 'effect';
+import { DateTime, Effect, Layer, Logger, LogLevel, Schema } from 'effect';
 import { makeStaticFileHttpApiRouter } from '../src/static';
 
 // Example of using the makeStaticFileHttpApiRouter to serve static files from a directory named 'static' in the current directory, with htmlIndex enabled to serve index.html for the root path
@@ -54,4 +54,9 @@ const HttpLive = HttpApiBuilder.serve(HttpMiddleware.logger).pipe(
 );
 
 // Launch the server
-Layer.launch(HttpLive).pipe(NodeRuntime.runMain);
+Layer.launch(HttpLive).pipe(
+	// Set the minimum log level to debug to see detailed logs about incoming requests and static file serving
+	Logger.withMinimumLogLevel(LogLevel.Debug),
+	// Run the server using the Node runtime
+	NodeRuntime.runMain
+);
