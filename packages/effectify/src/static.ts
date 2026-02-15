@@ -7,7 +7,7 @@ import {
 	HttpServerResponse,
 	Path,
 } from '@effect/platform';
-import { DateTime, Duration, Effect, pipe } from 'effect';
+import { Data, DateTime, Duration, Effect, pipe } from 'effect';
 
 /**
  * Utility function to check if a given path corresponds to a file.
@@ -67,6 +67,15 @@ export interface StaticFileConfig {
 const HASHED_ASSET =
 	/\.[\da-f]{8,}(?:[-_.][\da-f]+)*\.(?:js|css|mjs|cjs|json|woff2?|ttf|eot|svg|png|jpe?g|gif|webp|avif|ico)(?:\.map)?$/i;
 
+export class StaticFileMiddlewareError extends Data.TaggedError('StaticFileMiddlewareError')<{
+	message: string;
+	cause: unknown;
+}> {}
+
+class MalformedUrl {
+	readonly _tag = 'MalformedUrl';
+}
+
 /**
  * Creates an HTTP middleware that serves static files from a specified directory. The middleware can be configured to serve an `index.html` file for the root path and to set appropriate caching headers for files with hashed filenames.
  *
@@ -99,7 +108,24 @@ export const makeStaticFileMiddleware =
 						: request.url;
 
 				// Strip query string and fragment, then decode percent-encoded characters
-				const cleanUrl = decodeURIComponent(currentUrl.split('?')[0].split('#')[0]);
+				const cleanUrl = yield* Effect.try({
+					try: () => decodeURIComponent(currentUrl.split('?')[0].split('#')[0]),
+					catch: (cause) =>
+						new StaticFileMiddlewareError({ message: `Malformed URL: ${currentUrl}`, cause }),
+				}).pipe(
+					Effect.catchTag('StaticFileMiddlewareError', (error) =>
+						pipe(Effect.logError(error.message), Effect.as(new MalformedUrl()))
+					)
+				);
+
+				// If the URL is malformed, log the error and continue with the original application flow, allowing other middleware or route handlers to process the request as needed.
+				if (cleanUrl instanceof MalformedUrl) {
+					// Log the malformed URL error for debugging purposes
+					yield* Effect.logDebug(`Malformed URL encountered: ${currentUrl}`);
+
+					// Continue with the original application flow if the URL is malformed, allowing other middleware or route handlers to process the request as needed.
+					return yield* app;
+				}
 
 				// If htmlIndex is enabled and the request URL is the root path, serve the index.html file from the specified directory. Otherwise, resolve the file path based on the request URL.
 				const urlToTest = config?.htmlIndex && cleanUrl === '/' ? '/index.html' : cleanUrl;
