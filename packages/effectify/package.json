@@ -46,7 +46,8 @@
 		"ci:effect-check": "pnpm effect-check --format github-actions",
 		"typecheck": "tspc -p tsconfig.tspc.json",
 		"update-scalar": "tsx ./scripts/update-scalar.ts",
-		"scratch:fn": "tsx ./scratchpad/functionSchema.ts"
+		"scratch:fn": "tsx ./scratchpad/functionSchema.ts",
+		"scratch:static": "tsx ./scratchpad/static.ts"
 	},
 	"exports": {
 		"./astro/*": {
@@ -64,6 +65,10 @@
 		"./scrypt": {
 			"types": "./dist/scrypt.d.mts",
 			"default": "./dist/scrypt.mjs"
+		},
+		"./static": {
+			"types": "./dist/static.d.mts",
+			"default": "./dist/static.mjs"
 		},
 		"./webHandler": {
 			"types": "./dist/webHandler.d.mts",
