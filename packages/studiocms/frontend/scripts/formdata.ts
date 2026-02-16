@@ -147,7 +147,7 @@ export const StringOrStringArrayToStringArraySchema = Schema.transformOrFail(
 		strict: true,
 		decode: (input, _options, ast) => {
 			if (typeof input === 'string') {
-				const isStringifiedArray = /^\s*\[\s*(".*?"\s*,\s*)*(".*?"\s*)?\]\s*$/.test(input);
+				const isStringifiedArray = /^\s*\[\s*("[^"]*"\s*,\s*)*("[^"]*"\s*)?\]\s*$/.test(input);
 				if (isStringifiedArray) {
 					try {
 						const parsed = JSON.parse(input);
