@@ -1,5 +1,6 @@
 import { describe, expect, test } from '@effect/vitest';
 import * as allure from 'allure-js-commons';
+import { Schema } from 'effect';
 import { AppsConfigSchema, StudioCMSDevAppsSchema } from '../../src/schema/index';
 import { parentSuiteName, sharedTags } from '../test-utils.js';
 
@@ -47,7 +48,7 @@ describe(parentSuiteName, () => {
 			await allure.step(
 				`AppsConfigSchema should parse config: ${JSON.stringify(input)}`,
 				async (ctx) => {
-					const result = AppsConfigSchema.parse(input);
+					const result = Schema.decodeUnknownSync(AppsConfigSchema)(input);
 
 					await ctx.parameter('input', JSON.stringify(input, null, 2));
 					await ctx.parameter('result', JSON.stringify(result, null, 2));
@@ -76,7 +77,7 @@ describe(parentSuiteName, () => {
 				async (ctx) => {
 					let threw = false;
 					try {
-						AppsConfigSchema.parse(input);
+						Schema.decodeUnknownSync(AppsConfigSchema)(input);
 					} catch (e) {
 						threw = true;
 					}
@@ -139,7 +140,7 @@ describe(parentSuiteName, () => {
 			await allure.step(
 				`StudioCMSDevAppsSchema should parse config: ${JSON.stringify(input)}`,
 				async (ctx) => {
-					const result = StudioCMSDevAppsSchema.parse(input);
+					const result = Schema.decodeUnknownSync(StudioCMSDevAppsSchema)(input);
 
 					await ctx.parameter('input', JSON.stringify(input, null, 2));
 					await ctx.parameter('result', JSON.stringify(result, null, 2));
@@ -174,7 +175,7 @@ describe(parentSuiteName, () => {
 				async (ctx) => {
 					let threw = false;
 					try {
-						StudioCMSDevAppsSchema.parse(input);
+						Schema.decodeUnknownSync(StudioCMSDevAppsSchema)(input);
 					} catch (e) {
 						threw = true;
 					}

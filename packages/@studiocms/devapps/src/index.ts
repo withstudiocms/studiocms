@@ -1,5 +1,6 @@
 import type { AstroIntegration } from 'astro';
 import { addVirtualImports, createResolver, injectDevRoute } from 'astro-integration-kit';
+import { Schema } from 'effect';
 import { type StudioCMSDevAppsOptions, StudioCMSDevAppsSchema } from './schema/index.js';
 import { pathGenerator } from './utils/pathGenerator.js';
 
@@ -36,9 +37,9 @@ import { pathGenerator } from './utils/pathGenerator.js';
  * };
  * ```
  */
-export function studioCMSDevApps(opts?: StudioCMSDevAppsOptions): AstroIntegration {
+export function studioCMSDevApps(opts: StudioCMSDevAppsOptions = {}): AstroIntegration {
 	// Parse Options
-	const options = StudioCMSDevAppsSchema.parse(opts);
+	const options = Schema.decodeSync(StudioCMSDevAppsSchema)(opts);
 
 	// Resolver for Virtual Imports and Endpoints
 	const { resolve } = createResolver(import.meta.url);
