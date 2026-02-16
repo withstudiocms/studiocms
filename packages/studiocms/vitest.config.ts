@@ -3,6 +3,7 @@ import createPathResolver from '@withstudiocms/internal_helpers/pathResolver';
 import type { AstroIntegration } from 'astro';
 import { getViteConfig } from 'astro/config';
 import { addVirtualImports } from 'astro-integration-kit';
+import { Schema } from 'effect';
 import { defineProject, mergeConfig } from 'vitest/config';
 import { configShared } from '../../vitest.shared.js';
 import { type StudioCMSOptions, StudioCMSOptionsSchema } from './src/schemas/config/index.js';
@@ -20,7 +21,7 @@ const CMSConfig: StudioCMSOptions = {
 	dbStartPage: false,
 };
 
-const testConfig = StudioCMSOptionsSchema.parse(CMSConfig);
+const testConfig = Schema.decodeSync(StudioCMSOptionsSchema)(CMSConfig);
 
 const pluginRenderers: {
 	pageType: string;
