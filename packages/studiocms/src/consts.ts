@@ -7,6 +7,7 @@ import {
 	availablePermissionRanks,
 } from '@withstudiocms/auth-kit/types';
 import type { AstroConfig } from 'astro';
+import { Duration } from 'effect';
 import type { RobotsConfig } from './integrations/robots/schema.js';
 import type { TimeString } from './schemas/config/sdk.js';
 import { stripIconify } from './utils/stripIconify.js';
@@ -55,6 +56,13 @@ export const TemplateConfigId: string = 'SCMS_EMAIL_TEMPLATES_1';
  * This value is used in ./schemas/config/sdk.ts to set the default cache lifetime.
  */
 export const defaultCacheLifeTime: TimeString = '5m';
+
+/**
+ * Utility Constant for Default Cache Lifetime
+ *
+ * This constant represents the default cache lifetime as a Duration object, which can be used throughout the codebase for consistency when referring to the default cache lifetime.
+ */
+export const DefaultCacheLifetime = Duration.minutes(5);
 
 /**
  * Utility Constant for One Day in Milliseconds
