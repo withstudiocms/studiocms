@@ -102,7 +102,7 @@ export const studioCMSAnalyticsPlugin = (opts: { driverDialect: DbDialectType; v
 				// Add the web vitals integration to Astro
 				addIntegrations(webVitalsIntegration());
 			},
-			'studiocms:dashboard': ({ setDashboard }) => {
+			'studiocms:dashboard': async ({ setDashboard }) => {
 				setDashboard({
 					translations,
 					dashboardGridItems: [

@@ -133,10 +133,10 @@ export function studiocmsMD(
 		name: 'StudioCMS Markdown',
 		studiocmsMinimumVersion: '0.1.0-beta.21',
 		hooks: {
-			'studiocms:astro-config': ({ addIntegrations }) => {
+			'studiocms:astro-config': async ({ addIntegrations }) => {
 				addIntegrations(internalMarkdownIntegration(resolvedOptions));
 			},
-			'studiocms:rendering': ({ setRendering }) => {
+			'studiocms:rendering': async ({ setRendering }) => {
 				setRendering({
 					pageTypes: [markdownPageType],
 				});

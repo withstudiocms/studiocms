@@ -41,7 +41,7 @@ export function studiocmsHTML(options: HTMLSchemaOptions = {}): StudioCMSPlugin 
 		name: 'StudioCMS HTML',
 		studiocmsMinimumVersion: '0.1.0-beta.21',
 		hooks: {
-			'studiocms:astro-config': ({ addIntegrations }) => {
+			'studiocms:astro-config': async ({ addIntegrations }) => {
 				addIntegrations({
 					name: packageIdentifier,
 					hooks: {
@@ -52,7 +52,7 @@ export function studiocmsHTML(options: HTMLSchemaOptions = {}): StudioCMSPlugin 
 					},
 				});
 			},
-			'studiocms:rendering': ({ setRendering }) => {
+			'studiocms:rendering': async ({ setRendering }) => {
 				setRendering({
 					pageTypes: [
 						// Define the HTML page type

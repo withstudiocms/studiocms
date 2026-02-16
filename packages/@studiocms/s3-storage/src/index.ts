@@ -43,7 +43,7 @@ export function studiocmsS3Storage(): StudioCMSStorageManager {
 		name: 'StudioCMS S3 Storage',
 		studiocmsMinimumVersion: '0.1.0-beta.31',
 		hooks: {
-			'studiocms:storage-manager': ({ setStorageManager, logger }) => {
+			'studiocms:storage-manager': async ({ setStorageManager, logger }) => {
 				logger.info('StudioCMS S3 Storage initialized.');
 				setStorageManager({
 					managerPath: resolve('./s3-storage-manager.js'),

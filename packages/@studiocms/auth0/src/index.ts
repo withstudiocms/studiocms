@@ -43,7 +43,7 @@ export function studiocmsAuth0(): StudioCMSPlugin {
 		name: 'StudioCMS Auth0 Provider Plugin',
 		studiocmsMinimumVersion: '0.1.0-beta.22',
 		hooks: {
-			'studiocms:auth': ({ setAuthService }) => {
+			'studiocms:auth': async ({ setAuthService }) => {
 				setAuthService({
 					oAuthProvider: {
 						name: 'auth0',

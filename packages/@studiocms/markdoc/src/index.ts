@@ -88,10 +88,10 @@ export function studiocmsMarkDoc(options?: MarkDocPluginOptions): StudioCMSPlugi
 		studiocmsMinimumVersion: '0.1.0-beta.21',
 		requires: ['@studiocms/md'],
 		hooks: {
-			'studiocms:astro-config': ({ addIntegrations }) => {
+			'studiocms:astro-config': async ({ addIntegrations }) => {
 				addIntegrations(internalMarkDocIntegration(packageIdentifier, resolvedOptions));
 			},
-			'studiocms:rendering': ({ setRendering }) => {
+			'studiocms:rendering': async ({ setRendering }) => {
 				setRendering({
 					pageTypes: [
 						// Define the MarkDoc page type

@@ -108,10 +108,10 @@ export function studiocmsMDX(options?: MDXPluginOptions): StudioCMSPlugin {
 		studiocmsMinimumVersion: '0.1.0-beta.21',
 		requires: ['@studiocms/md'],
 		hooks: {
-			'studiocms:astro-config': ({ addIntegrations }) => {
+			'studiocms:astro-config': async ({ addIntegrations }) => {
 				addIntegrations(internalMDXIntegration(packageIdentifier, resolvedOptions));
 			},
-			'studiocms:rendering': ({ setRendering }) => {
+			'studiocms:rendering': async ({ setRendering }) => {
 				setRendering({
 					pageTypes: [
 						// Define the MDX page type

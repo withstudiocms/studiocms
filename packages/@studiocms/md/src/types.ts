@@ -1,5 +1,5 @@
 import { Schema } from 'effect';
-import { SanitizeOptionsSchema } from 'studiocms/schemas.effect';
+import { SanitizeOptionsSchema } from 'studiocms/schemas';
 
 /**
  * Base schema for Markdown options, containing common properties shared between different Markdown configurations.

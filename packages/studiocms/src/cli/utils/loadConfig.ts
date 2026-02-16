@@ -1,8 +1,5 @@
-import {
-	loadConfigFile as _loadConfigFile,
-	parseAndMerge as _parseAndMerge,
-} from '@withstudiocms/config-utils';
-import { Effect } from 'effect';
+import { loadConfigFile as _loadConfigFile } from '@withstudiocms/config-utils';
+import { Effect, Schema } from 'effect';
 import { configPaths } from '../../consts.js';
 import { type StudioCMSOptions, StudioCMSOptionsSchema } from '../../schemas/index.js';
 
@@ -17,13 +14,13 @@ const loadConfigFile = Effect.fn((root: URL) =>
 );
 
 /**
- * Parses and merges the StudioCMS configuration using the provided config object.
+ * Parses the StudioCMS configuration using the provided config object.
  *
- * @param config - The configuration object to parse and merge.
- * @returns An Effect that resolves to the merged StudioCMSOptions.
+ * @param config - The configuration object to parse.
+ * @returns An Effect that resolves to the parsed StudioCMSOptions.
  */
-const parseAndMerge = Effect.fn((config: StudioCMSOptions | undefined) =>
-	Effect.try(() => _parseAndMerge(StudioCMSOptionsSchema, config))
+const parse = Effect.fn((config: StudioCMSOptions | undefined) =>
+	Schema.decode(StudioCMSOptionsSchema)(config ?? {})
 );
 
 /**
@@ -32,4 +29,4 @@ const parseAndMerge = Effect.fn((config: StudioCMSOptions | undefined) =>
  * @param root - The root directory URL where the configuration file is located.
  * @returns An Effect that resolves to the merged StudioCMSOptions.
  */
-export const loadConfig = (root: URL) => loadConfigFile(root).pipe(Effect.flatMap(parseAndMerge));
+export const loadConfig = (root: URL) => loadConfigFile(root).pipe(Effect.flatMap(parse));

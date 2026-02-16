@@ -1,5 +1,5 @@
 import { Schema } from 'studiocms/effect';
-import { SanitizeOptionsSchema } from 'studiocms/schemas.effect';
+import { SanitizeOptionsSchema } from 'studiocms/schemas';
 import type { studioCMSProjectDataSchema } from './schema.js';
 
 export interface WysiwygDBContent

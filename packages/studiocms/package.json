@@ -76,10 +76,6 @@
 			"types": "./dist/schemas/index.d.ts",
 			"default": "./dist/schemas/index.js"
 		},
-		"#schemas.effect": {
-			"types": "./dist/schemas/index.effect.d.ts",
-			"default": "./dist/schemas/index.effect.js"
-		},
 		"#schemas/*": {
 			"types": "./dist/schemas/*.d.ts",
 			"default": "./dist/schemas/*.js"
@@ -163,10 +159,6 @@
 			"types": "./dist/plugins.d.ts",
 			"default": "./dist/plugins.js"
 		},
-		"./plugins.effect": {
-			"types": "./dist/plugins.effect.d.ts",
-			"default": "./dist/plugins.effect.js"
-		},
 		"./sdk/base": {
 			"types": "./dist/virtuals/sdk/index.d.ts",
 			"default": "./dist/virtuals/sdk/index.js"
@@ -178,10 +170,6 @@
 		"./schemas": {
 			"types": "./dist/schemas/index.d.ts",
 			"default": "./dist/schemas/index.js"
-		},
-		"./schemas.effect": {
-			"types": "./dist/schemas/index.effect.d.ts",
-			"default": "./dist/schemas/index.effect.js"
 		},
 		"./runtime": {
 			"types": "./dist/runtime/index.d.ts",

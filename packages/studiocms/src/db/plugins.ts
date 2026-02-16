@@ -1,11 +1,8 @@
-import {
-	loadConfigFile as _loadConfigFile,
-	parseAndMerge as _parseAndMerge,
-} from '@withstudiocms/config-utils';
+import { loadConfigFile as _loadConfigFile } from '@withstudiocms/config-utils';
 import { getDBClientLive } from '@withstudiocms/kysely/client';
 import type { StudioCMSDatabaseSchema } from '@withstudiocms/sdk/tables';
 import { configPaths } from '../consts.js';
-import { Effect } from '../effect.js';
+import { Effect, Schema } from '../effect.js';
 import { type StudioCMSOptions, StudioCMSOptionsSchema } from '../schemas/index.js';
 import { type DbDialectType, getDbDriver, parseDbDialect } from './index.js';
 
@@ -21,16 +18,16 @@ const loadConfigFile = Effect.fn((root: URL) =>
 );
 
 /**
- * Parse and merge the loaded configuration with the default configuration
+ * Parse the loaded configuration with the default configuration
  */
-const parseAndMerge = Effect.fn((config: StudioCMSOptions | undefined) =>
-	Effect.try(() => _parseAndMerge(StudioCMSOptionsSchema, config))
+const parse = Effect.fn((config: StudioCMSOptions | undefined) =>
+	Schema.decode(StudioCMSOptionsSchema)(config ?? {})
 );
 
 /**
- * Effect to load and merge the StudioCMS configuration
+ * Effect to load and parse the StudioCMS configuration
  */
-const loadConfig = (root: URL) => loadConfigFile(root).pipe(Effect.flatMap(parseAndMerge));
+const loadConfig = (root: URL) => loadConfigFile(root).pipe(Effect.flatMap(parse));
 
 /**
  * Effect to retrieve the database dialect from the configuration

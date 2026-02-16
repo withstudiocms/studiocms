@@ -126,8 +126,8 @@ export const DashboardConfigSchema = Schema.mutable(
 		dashboardGridItems: Schema.optional(Schema.Array(GridItemInputSchema)),
 		dashboardPages: Schema.optional(
 			Schema.Struct({
-				user: dashboardPagesArray,
-				admin: dashboardPagesArray,
+				user: Schema.optional(dashboardPagesArray),
+				admin: Schema.optional(dashboardPagesArray),
 			})
 		),
 		settingsPage: SettingsPageSchema,
@@ -170,7 +170,7 @@ export type SCMSFrontendFnOpts = typeof FrontendConfigSchema.Type;
 export const RenderingConfigSchema = Schema.mutable(
 	Schema.Struct({
 		pageTypes: PageTypesSchema,
-		augments: RenderAugmentsSchema,
+		augments: Schema.optional(RenderAugmentsSchema),
 	})
 );
 

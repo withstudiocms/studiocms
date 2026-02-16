@@ -1,5 +1,5 @@
 import { Schema } from 'studiocms/effect';
-import { SanitizeOptionsSchema } from 'studiocms/schemas.effect';
+import { SanitizeOptionsSchema } from 'studiocms/schemas';
 
 /**
  * Schema definition for HTML configuration in StudioCMS.
