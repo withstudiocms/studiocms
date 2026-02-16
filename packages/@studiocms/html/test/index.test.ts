@@ -177,7 +177,9 @@ describe(parentSuiteName, () => {
 			expect(shared.htmlConfig).toBeUndefined();
 			integrationArg.hooks['astro:config:done']();
 			expect(shared.htmlConfig).toBeDefined();
-			expect(shared.htmlConfig).toEqual({});
+			expect(shared.htmlConfig).toEqual({
+				sanitize: {},
+			});
 		});
 
 		await allure.step('Should call studiocms:rendering hook correctly', async (ctx) => {

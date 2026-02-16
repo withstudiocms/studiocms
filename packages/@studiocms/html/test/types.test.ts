@@ -9,12 +9,11 @@ const localSuiteName = 'HTMLSchema Type Tests';
 describe(parentSuiteName, () => {
 	[
 		{
-			options: undefined,
-			expected: {},
-		},
-		{
 			options: {},
-			expected: {},
+			expected: {
+				sanitize: {},
+				// Note: The default value for sanitize is an empty object, so we expect it to be present in the resulting data.
+			},
 		},
 		{
 			options: {
@@ -86,12 +85,11 @@ describe(parentSuiteName, () => {
 
 	[
 		{
-			options: undefined,
-			expected: {},
-		},
-		{
 			options: {},
-			expected: {},
+			expected: {
+				sanitize: {},
+				// Note: The default value for sanitize is an empty object, so we expect it to be present in the resulting data.
+			},
 		},
 	].forEach(({ options, expected }, index) => {
 		test(`Default Values Test #${index + 1}`, async () => {

@@ -12,6 +12,7 @@ export const HTMLSchema = Schema.Struct({
 		}),
 		{
 			default: () => ({}),
+			exact: true,
 		}
 	),
 }).annotations({
