@@ -342,14 +342,9 @@ const preselectedParentFolder = searchParams.get('parent-folder') ?? 'null';
 </script>
 
 <script>
-  import type { tsPageData } from "studiocms:sdk/types";
   import { toast } from "studiocms:ui/components/toaster/client";
-  import {
-    formDataToRecord,
-    studioCMSCreatePageDataSchema,
-  } from "../../../scripts/formdata-utils.js";
-
-  type tsPageDataInsert = tsPageData['Insert']['Type'];
+  import * as Schema from 'effect/Schema';
+  import { CreatePageDataFromFormDataObjectSchema, ObjectFromFormData } from "../../../scripts/formdata.js";
 
   // get the elements
   const createPageForm = document.getElementById(
@@ -372,21 +367,6 @@ const preselectedParentFolder = searchParams.get('parent-folder') ?? 'null';
     );
   });
 
-  const formDataKeysToPageDataKeys: Record<string, keyof tsPageDataInsert> = {
-    "page-title": "title",
-    "page-slug": "slug",
-    "page-description": "description",
-    "page-hero-image": "heroImage",
-    "page-type": "package",
-    "show-in-nav": "showOnNav",
-    "parent-folder": "parentFolder",
-    draft: "draft",
-    categories: "categories",
-    tags: "tags",
-    "show-author": "showAuthor",
-    "show-contributors": "showContributors",
-  };
-
   async function runFormAction(
     e: Event,
     form: HTMLFormElement,
@@ -397,20 +377,28 @@ const preselectedParentFolder = searchParams.get('parent-folder') ?? 'null';
 
     formData.set("draft", isDraft ? "true" : "false");
 
-    const formDataObject = formDataToRecord(
-      formData,
-      formDataKeysToPageDataKeys,
-    );
-
     const augments = [...formData.getAll("cms-plugin-augments")].filter((a) => a !== 'no-augments') as string[];
 
-    const formResult = studioCMSCreatePageDataSchema.safeParse({
-      ...formDataObject,
-      augments,
+    const decodedFormDataObject = Schema.decodeEither(ObjectFromFormData)(formData);
+
+    if (decodedFormDataObject._tag === "Left") {
+      console.error("Form data object decoding error:", decodedFormDataObject.left);
+      toast({
+        title: "Error",
+        description:
+          "There was an error with the form data. Please check the console for details.",
+        type: "danger",
+      });
+      return;
+    }
+
+    const decodedFormData = Schema.decodeUnknownEither(CreatePageDataFromFormDataObjectSchema)({
+      ...decodedFormDataObject.right,
+      augments
     });
 
-    if (!formResult.success) {
-      console.error(formResult.error);
+    if (decodedFormData._tag === "Left") {
+      console.error("Form data decoding error:", decodedFormData.left);
       toast({
         title: "Error",
         description:
@@ -422,7 +410,7 @@ const preselectedParentFolder = searchParams.get('parent-folder') ?? 'null';
 
     const response = await fetch(form.action, {
       method: "POST",
-      body: formResult.data ? JSON.stringify(formResult.data) : undefined,
+      body: decodedFormData.right ? JSON.stringify(decodedFormData.right) : undefined,
     });
 
     const res = await response.json();
