@@ -1377,7 +1377,7 @@ importers:
   templates/blog-postgres:
     dependencies:
       '@astrojs/node':
-        specifier: ^9.5.2
+        specifier: ^9.5.3
         version: 9.5.3(astro@5.17.2(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
       '@studiocms/blog':
         specifier: ^0.2.0
@@ -1386,7 +1386,7 @@ importers:
         specifier: ^0.2.0
         version: link:../../packages/@studiocms/md
       astro:
-        specifier: ^5.17.1
+        specifier: ^5.17.2
         version: 5.17.2(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
       pg:
         specifier: ^8.18.0
