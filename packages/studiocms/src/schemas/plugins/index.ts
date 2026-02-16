@@ -1,5 +1,5 @@
 import * as Schema from 'effect/Schema';
-import { FunctionSchema } from 'effectify/schemas';
+import { FunctionSchema, SyncFunctionSchema } from 'effectify/schemas';
 import { AstroIntegrationLoggerSchema, AstroIntegrationSchema } from '../external-schemas.js';
 import { PluginTranslationsSchema } from './i18n.js';
 import {
@@ -343,7 +343,15 @@ export type SCMSStorageManagerHook = typeof StorageManagerHookSchema.Type;
  * Helper function to create a hook schema for a given set of arguments, allowing for the validation of hooks that plugins can implement to integrate with various aspects of the StudioCMS system. This function takes an argument schema and returns a function schema that validates the structure of the hook function, ensuring that it adheres to the expected format and provides necessary functionality for integrating with the StudioCMS system while maintaining compatibility and security.
  */
 const makeHookSchema = <A, I, R = never>(argsSchema: Schema.Schema<A, I, R>) =>
-	Schema.optional(FunctionSchema(argsSchema, Schema.Void));
+	Schema.optional(
+		Schema.Union(
+			FunctionSchema(argsSchema, Schema.Void),
+			SyncFunctionSchema(argsSchema, Schema.Void)
+		)
+	).annotations({
+		description:
+			'A hook schema for validating the structure of hooks that plugins can implement to integrate with various aspects of the StudioCMS system.',
+	});
 
 /**
  * Internal Shared Plugin hooks schema for validating the structure of hooks that are shared across different plugin types within the StudioCMS system, including hooks for Astro configuration, authentication service, dashboard configuration, frontend configuration, rendering configuration, image service configuration, and sitemap configuration. This schema ensures that the shared hooks adhere to the expected structure, allowing for seamless integration of plugin functionality into the StudioCMS system while providing necessary tools for logging and debugging through the integration logger.

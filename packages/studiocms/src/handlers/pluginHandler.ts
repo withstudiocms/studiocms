@@ -412,8 +412,7 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 				hook: H,
 				args: Omit<PluginHookParameters<H>, 'logger'>
 			) => {
-				// biome-ignore lint/complexity/noBannedTypes: the 'Function' type is necessary here for dynamic hook execution
-				const hookFunction = hooks[hook] as Function | undefined;
+				const hookFunction = hooks[hook];
 				if (typeof hookFunction === 'function') {
 					return await runEffect(
 						Effect.tryPromise(

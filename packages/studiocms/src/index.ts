@@ -4,7 +4,6 @@
  * directives must be first at the top of the file and can only be preceded by this comment.
  */
 /// <reference types="@studiocms/ui/v/types" preserve="true" />
-/// <reference types="./global.d.ts" preserve="true" />
 /// <reference types="./virtual.d.ts" preserve="true" />
 /// <reference types="./theme.d.ts" preserve="true" />
 
