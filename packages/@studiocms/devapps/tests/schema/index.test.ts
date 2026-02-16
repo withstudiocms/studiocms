@@ -33,7 +33,7 @@ describe(parentSuiteName, () => {
 			},
 		},
 		{
-			input: undefined,
+			input: {},
 			expected: {
 				wpImporter: { enabled: true, endpoint: 'wp-api-importer' },
 			},
@@ -109,7 +109,7 @@ describe(parentSuiteName, () => {
 			},
 		},
 		{
-			input: undefined,
+			input: {},
 			expected: {
 				endpoint: '_studiocms-devapps',
 				verbose: false,
