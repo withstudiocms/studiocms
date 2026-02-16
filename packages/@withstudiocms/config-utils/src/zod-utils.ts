@@ -9,6 +9,8 @@ import { deepmerge } from 'deepmerge-ts';
  * @param opts - The configuration options to be validated.
  * @returns The validated and parsed configuration options as the schema's output type.
  * @throws {Error} If the configuration options are invalid or if an unknown error occurs during parsing.
+ *
+ * @deprecated Zod-based config parsing is being phased out in favor of effect-based schemas for better support of asynchronous operations and more complex validation logic. It is recommended to migrate to the new effect-based approach for improved robustness and flexibility in handling configuration in Astro integrations. This function will eventually be replaced by an effect-based config parser, so transitioning to the new method is advised for future compatibility.
  */
 export function parseConfig<T extends z.ZodTypeAny>(schema: T, opts: unknown): T['_output'] {
 	try {
@@ -31,6 +33,8 @@ export function parseConfig<T extends z.ZodTypeAny>(schema: T, opts: unknown): T
  *
  * @param schema - The Zod schema to process.
  * @returns A new Zod schema with all defaults removed and fields made optional where applicable.
+ *
+ * @deprecated Zod-based config parsing is being phased out in favor of effect-based schemas for better support of asynchronous operations and more complex validation logic. It is recommended to migrate to the new effect-based approach for improved robustness and flexibility in handling configuration in Astro integrations. This function will eventually be replaced by an effect-based config parser, so transitioning to the new method is advised for future compatibility.
  */
 export function deepRemoveDefaults(schema: z.ZodTypeAny): z.ZodTypeAny {
 	if (schema instanceof z.ZodDefault) return deepRemoveDefaults(schema.removeDefault());
@@ -79,6 +83,8 @@ export function deepRemoveDefaults(schema: z.ZodTypeAny): z.ZodTypeAny {
  * - The returned value conforms to the schema's output type (T['_output']).
  * @example
  * // const merged = parseAndMerge(myZodSchema, { port: 3000 });
+ *
+ * @deprecated Zod-based config parsing is being phased out in favor of effect-based schemas for better support of asynchronous operations and more complex validation logic. It is recommended to migrate to the new effect-based approach for improved robustness and flexibility in handling configuration in Astro integrations. This function will eventually be replaced by an effect-based config parser, so transitioning to the new method is advised for future compatibility.
  */
 export function parseAndMerge<T extends z.ZodTypeAny>(
 	schema: T,
