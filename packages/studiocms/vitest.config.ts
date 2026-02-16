@@ -1,7 +1,3 @@
-import { icons as circleFlags } from '@iconify-json/circle-flags';
-import { icons as flatColorIcons } from '@iconify-json/flat-color-icons';
-import { icons as simpleIcons } from '@iconify-json/simple-icons';
-import studiocmsUi from '@studiocms/ui';
 import { convertToSafeString, rendererComponentFilter } from '@withstudiocms/internal_helpers';
 import createPathResolver from '@withstudiocms/internal_helpers/pathResolver';
 import type { AstroIntegration } from 'astro';
@@ -10,6 +6,7 @@ import { addVirtualImports } from 'astro-integration-kit';
 import { defineProject, mergeConfig } from 'vitest/config';
 import { configShared } from '../../vitest.shared.js';
 import { type StudioCMSOptions, StudioCMSOptionsSchema } from './src/schemas/config/index.js';
+import { TestStudioCmsUiInstance } from './src/test-utils.js';
 import {
 	availableTranslationFileKeys,
 	availableTranslations,
@@ -102,17 +99,7 @@ export default defineProject(
 			},
 		}),
 		{
-			integrations: [
-				testIntegration,
-				studiocmsUi({
-					noInjectCSS: true,
-					icons: {
-						flatcoloricons: flatColorIcons,
-						simpleicons: simpleIcons,
-						'lang-flags': circleFlags,
-					},
-				}),
-			],
+			integrations: [testIntegration, TestStudioCmsUiInstance()],
 		}
 	)
 );

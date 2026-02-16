@@ -1,3 +1,7 @@
+import { icons as circleFlags } from '@iconify-json/circle-flags';
+import { icons as flatColorIcons } from '@iconify-json/flat-color-icons';
+import { icons as simpleIcons } from '@iconify-json/simple-icons';
+import studiocmsUi from '@studiocms/ui';
 import type { AstroIntegration, AstroIntegrationLogger } from 'astro';
 import type {
 	SCMSAuthServiceFnOpts,
@@ -10,6 +14,26 @@ import type {
 	StudioCMSPlugin,
 } from './schemas/index.js';
 import type { PluginRenderer } from './types.js';
+
+/**
+ * Factory function to create a test instance of the StudioCMS UI plugin with predefined icon sets.
+ *
+ * This function initializes the StudioCMS UI plugin with the `noInjectCSS` option set to `true`
+ * and includes a selection of icons from the `flat-color-icons`, `simple-icons`, and `circle-flags` icon sets.
+ * It is intended for use in testing environments where the full UI functionality is not required, but access to
+ * the plugin's features and icons is necessary for validating plugin behavior.
+ *
+ * @returns A configured instance of the StudioCMS UI plugin for testing purposes.
+ */
+export const TestStudioCmsUiInstance = () =>
+	studiocmsUi({
+		noInjectCSS: true,
+		icons: {
+			flatcoloricons: flatColorIcons,
+			simpleicons: simpleIcons,
+			'lang-flags': circleFlags,
+		},
+	});
 
 type HookRun<T> = { hasHook: boolean; hookResults: T };
 export interface PluginHookResults {

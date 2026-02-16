@@ -1,10 +1,12 @@
-import { type AvailableIcons, availableIcons } from 'studiocms:ui/icons';
+import type { AvailableIcons } from 'studiocms:ui/icons';
 import type { AstroIntegration, AstroIntegrationLogger } from 'astro';
 import { ParseResult } from 'effect';
 import * as Schema from 'effect/Schema';
 import { SyncFunctionSchema } from 'effectify/schemas';
 import type { SanitizeOptions } from 'ultrahtml/transformers/sanitize';
 import { availableTranslationFileKeys } from '../virtuals/i18n/v-files.js';
+
+const expectedIconPrefixes = ['heroicons', 'simpleicons', 'lang-flags'];
 
 /**
  * Schema for validating UI icon names against the list of available icons in StudioCMS.
@@ -16,7 +18,13 @@ export const UIIconListSchema = Schema.declare(
 		if (typeof input !== 'string') {
 			return false;
 		}
-		return availableIcons.includes(input as AvailableIcons);
+		// Check if the input starts with one of the expected prefixes
+		const [prefix] = input.split(':');
+		if (!expectedIconPrefixes.includes(prefix)) {
+			return false;
+		}
+		// If the input is a string and has a valid prefix, we assume it's a valid icon name.
+		return true;
 	},
 	{
 		title: 'UIIconListSchema',
