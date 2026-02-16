@@ -132,14 +132,11 @@ export const StudioCMSDevAppsSchema = Schema.Struct({
 });
 
 /**
- * Represents the options for StudioCMS development applications.
- *
- * This type is derived from the `_input` property of the `StudioCMSDevAppsSchema` object.
+ * Represents the input configuration for StudioCMS development applications.
  */
 export type StudioCMSDevAppsOptions = typeof StudioCMSDevAppsSchema.Encoded;
 
 /**
- * Represents the configuration type for StudioCMS development applications.
- * This type is derived from the output of the `StudioCMSDevAppsSchema`.
+ * Represents the fully parsed configuration for StudioCMS development applications.
  */
 export type StudioCMSDevAppsConfig = typeof StudioCMSDevAppsSchema.Type;
