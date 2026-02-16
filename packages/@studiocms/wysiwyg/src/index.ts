@@ -8,6 +8,7 @@
 
 import type { AstroIntegration } from 'astro';
 import { createResolver } from 'astro-integration-kit';
+import { Schema } from 'studiocms/effect';
 import { definePlugin, type StudioCMSPlugin } from 'studiocms/plugins';
 import { GRAPES_CSS_PATH, PARTIAL_PATH, STORE_ENDPOINT_PATH } from './consts.js';
 import { shared } from './lib/shared.js';
@@ -23,10 +24,10 @@ import { WYSIWYGSchema, type WYSIWYGSchemaOptions } from './types.js';
  */
 export function internalWysiwygIntegration(
 	packageIdentifier: string,
-	options?: WYSIWYGSchemaOptions
+	options: WYSIWYGSchemaOptions = {}
 ): AstroIntegration {
 	// Validate and parse the provided options using the WYSIWYG schema
-	const resolvedOptions = WYSIWYGSchema.parse(options);
+	const resolvedOptions = Schema.decodeSync(WYSIWYGSchema)(options);
 
 	// Helper function to create route entrypoints
 	const resEntrypoint = (path: string) => `@studiocms/wysiwyg/routes/${path}`;
@@ -87,12 +88,12 @@ export function internalWysiwygIntegration(
  * ]
  * ```
  */
-function wysiwyg(opts?: WYSIWYGSchemaOptions): StudioCMSPlugin {
+function wysiwyg(opts: WYSIWYGSchemaOptions = {}): StudioCMSPlugin {
 	// Resolve the path to the current file
 	const { resolve } = createResolver(import.meta.url);
 
 	// Validate and parse the provided options using the WYSIWYG schema
-	const options = WYSIWYGSchema.parse(opts);
+	const options = Schema.decodeSync(WYSIWYGSchema)(opts);
 
 	// Define the package identifier
 	const packageIdentifier = '@studiocms/wysiwyg';

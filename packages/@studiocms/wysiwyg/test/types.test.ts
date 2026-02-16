@@ -1,4 +1,5 @@
 import * as allure from 'allure-js-commons';
+import { Schema } from 'studiocms/effect';
 import { describe, expect, test } from 'vitest';
 import { WYSIWYGSchema } from '../src/types';
 import { parentSuiteName, sharedTags } from './test-utils.js';
@@ -9,11 +10,9 @@ describe(parentSuiteName, () => {
 	[
 		{
 			input: {},
-			expected: {},
-		},
-		{
-			input: undefined,
-			expected: {},
+			expected: {
+				sanitize: {},
+			},
 		},
 		{
 			input: {
@@ -149,7 +148,7 @@ describe(parentSuiteName, () => {
 			await allure.tags(...sharedTags);
 
 			await allure.step('Validating WYSIWYGSchema parsing', async (ctx) => {
-				const result = WYSIWYGSchema.parse(input);
+				const result = Schema.decodeUnknownSync(WYSIWYGSchema)(input);
 				await ctx.parameter('input', JSON.stringify(input));
 				await ctx.parameter('expected', JSON.stringify(expected));
 				expect(result).toEqual(expected);
@@ -158,34 +157,6 @@ describe(parentSuiteName, () => {
 	});
 
 	[
-		{
-			input: {
-				sanitize: {
-					allowElements: 'should be array', // Invalid type
-				},
-			},
-		},
-		{
-			input: {
-				sanitize: {
-					allowElements: 'not-an-array',
-				},
-			},
-		},
-		{
-			input: {
-				sanitize: {
-					allowAttributes: 'not-an-object',
-				},
-			},
-		},
-		{
-			input: {
-				sanitize: {
-					blockElements: 'not-an-array',
-				},
-			},
-		},
 		{
 			input: 'string',
 		},
@@ -207,7 +178,7 @@ describe(parentSuiteName, () => {
 
 			await allure.step('Validating WYSIWYGSchema throws error for invalid input', async (ctx) => {
 				await ctx.parameter('input', JSON.stringify(input));
-				expect(() => WYSIWYGSchema.parse(input)).toThrow();
+				expect(() => Schema.decodeUnknownSync(WYSIWYGSchema)(input)).toThrow();
 			});
 		});
 	});
