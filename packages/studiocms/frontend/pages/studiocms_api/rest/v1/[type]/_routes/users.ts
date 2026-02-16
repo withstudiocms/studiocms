@@ -11,8 +11,8 @@ import {
 	OptionsResponse,
 	parseAPIContextJson,
 } from '@withstudiocms/effect';
-import { z } from 'astro/zod';
 import { Effect, Schema } from 'effect';
+import { isValidEmail } from '#schemas/external-schemas';
 import type { EndpointRoute } from './../../../../../../utils/rest-router.js';
 import { verifyAuthTokenFromHeader } from '../../../utils/auth-token.js';
 
@@ -179,10 +179,7 @@ export const usersRouter: EndpointRoute = {
 					}
 
 					// If the email is invalid, return an error
-					const checkEmail = z.coerce
-						.string()
-						.email({ message: 'Email address is invalid' })
-						.safeParse(email);
+					const checkEmail = isValidEmail(email);
 					if (!checkEmail.success) {
 						return apiResponseLogger(400, `Invalid email: ${checkEmail.error.message}`);
 					}

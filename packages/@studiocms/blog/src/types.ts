@@ -1,9 +1,8 @@
 import { extname } from 'node:path';
-import { z } from 'astro/zod';
-import { HeadConfigSchema } from 'studiocms/lib/head';
+import { ParseResult, Schema } from 'effect';
+import { type HeadConfig, HeadConfigSchema, type HeadUserConfig } from 'studiocms/lib/head';
 
-export type HeadUserConfig = z.input<ReturnType<typeof HeadConfigSchema>>;
-export type HeadConfig = z.output<ReturnType<typeof HeadConfigSchema>>;
+export type { HeadConfig, HeadUserConfig };
 
 export const faviconTypeMap = {
 	'.ico': 'image/x-icon',
@@ -18,77 +17,75 @@ export function isFaviconExt(ext: string): ext is keyof typeof faviconTypeMap {
 	return ext in faviconTypeMap;
 }
 
-/**
- * Options for configuring the StudioCMS Blog.
- */
-export const FrontEndConfigSchema = z
-	.object({
-		/**
-		 * HTML Default Language - The default language for the HTML tag
-		 * @default 'en'
-		 */
-		htmlDefaultLanguage: z.string().optional().default('en'),
+export const FaviconSchema = Schema.transformOrFail(Schema.String, Schema.String, {
+	strict: true,
+	decode: (input, _options, ast) => {
+		const ext = extname(input).toLocaleLowerCase();
+		if (!isFaviconExt(ext)) {
+			return ParseResult.fail(
+				new ParseResult.Type(ast, input, 'favicon must be a .ico, .gif, .jpg, .png, or .svg file')
+			);
+		}
+		return ParseResult.succeed(input);
+	},
+	encode: (input) => ParseResult.succeed(input),
+}).annotations({
+	title: 'Favicon',
+	identifier: 'FaviconSchema',
+	description: 'The path to the favicon file. Must be a .ico, .gif, .jpg, .png, or .svg file.',
+	examples: ['/favicon.ico', '/favicon.png', '/favicon.svg'],
+});
 
-		/**
-		 * HTML Default Header - The default head configuration for the Frontend
-		 */
-		htmlDefaultHead: HeadConfigSchema(),
+export const FrontEndBlogSchema = Schema.Struct({
+	title: Schema.optionalWith(Schema.String, {
+		default: () => 'Blog',
+	}).annotations({
+		description: 'The title of the blog',
+	}),
+	enableRSS: Schema.optionalWith(Schema.Boolean, {
+		default: () => true,
+	}).annotations({
+		description: 'Enable RSS feed',
+	}),
+	route: Schema.optionalWith(Schema.String, {
+		default: () => '/blog',
+	}).annotations({
+		description: 'The route for the blog',
+		examples: ['/blog', '/news', '/articles'],
+	}),
+}).annotations({
+	description: 'The configuration for the blog',
+});
 
-		/**
-		 * Favicon Configuration - The default favicon configuration for the Frontend
-		 */
-		favicon: z
-			.string()
-			.refine(
-				(fav) => {
-					const ext = extname(fav);
-					return isFaviconExt(ext);
-				},
-				{
-					message: 'favicon must be a .ico, .gif, .jpg, .png, or .svg file',
-				}
-			)
-			.optional()
-			.default('/favicon.svg'),
+export const FrontEndConfigSchema = Schema.Struct({
+	htmlDefaultLanguage: Schema.optionalWith(Schema.String, {
+		default: () => 'en',
+	}).annotations({
+		description: 'The default language for the HTML tag',
+	}),
+	htmlDefaultHead: HeadConfigSchema.fields.head.annotations({
+		description: 'The default head configuration for the Frontend',
+	}),
+	favicon: Schema.optionalWith(FaviconSchema, {
+		default: () => '/favicon.svg',
+	}).annotations({
+		description: 'The default favicon configuration for the Frontend',
+	}),
+	sitemap: Schema.optionalWith(Schema.Boolean, {
+		default: () => true,
+	}).annotations({
+		description: 'Enable sitemap generation',
+	}),
+	injectRoutes: Schema.optionalWith(Schema.Boolean, {
+		default: () => true,
+	}).annotations({
+		description: 'Inject routes',
+	}),
+	blog: Schema.optionalWith(FrontEndBlogSchema, {
+		default: () => FrontEndBlogSchema.make({}),
+	}).annotations({
+		description: 'The configuration for the blog',
+	}),
+});
 
-		/**
-		 * Enable sitemap generation
-		 * @default true
-		 */
-		sitemap: z.boolean().optional().default(true),
-
-		/**
-		 * Inject routes
-		 * @default true
-		 */
-		injectRoutes: z.boolean().optional().default(true),
-
-		/**
-		 * The configuration for the blog
-		 */
-		blog: z
-			.object({
-				/**
-				 * The title of the blog
-				 */
-				title: z.string().optional().default('Blog'),
-
-				/**
-				 * Enable RSS feed
-				 */
-				enableRSS: z.boolean().optional().default(true),
-
-				/**
-				 * The route for the blog
-				 * @default '/blog'
-				 * @example '/news'
-				 */
-				route: z.string().optional().default('/blog'),
-			})
-			.optional()
-			.default({}),
-	})
-	.optional()
-	.default({});
-
-export type StudioCMSBlogOptions = z.infer<typeof FrontEndConfigSchema>;
+export type StudioCMSBlogOptions = typeof FrontEndConfigSchema.Encoded;

@@ -984,6 +984,9 @@ importers:
       astro-integration-kit:
         specifier: 'catalog:'
         version: 0.19.1(astro@5.17.2(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
+      effect:
+        specifier: catalog:effect
+        version: 3.19.16
       mdast-util-from-markdown:
         specifier: ^2.0.2
         version: 2.0.2

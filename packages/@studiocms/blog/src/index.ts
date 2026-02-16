@@ -1,14 +1,15 @@
 import type { AstroIntegration } from 'astro';
 import { addVirtualImports, createResolver } from 'astro-integration-kit';
+import { Schema } from 'effect';
 import { pathWithBase } from 'studiocms/lib/pathGenerators';
 import { definePlugin, type StudioCMSPlugin } from 'studiocms/plugins';
 import { FrontEndConfigSchema, type StudioCMSBlogOptions } from './types.js';
 
 const packageIdentifier = '@studiocms/blog';
 
-export function internalBlogIntegration(options?: StudioCMSBlogOptions): AstroIntegration {
+export function internalBlogIntegration(options: StudioCMSBlogOptions = {}): AstroIntegration {
 	// Resolve the options and set defaults
-	const resolvedOptions = FrontEndConfigSchema.parse(options);
+	const resolvedOptions = Schema.decodeSync(FrontEndConfigSchema)(options);
 
 	const {
 		blog: { title, enableRSS, route: orgRoute },
@@ -110,9 +111,9 @@ export function internalBlogIntegration(options?: StudioCMSBlogOptions): AstroIn
  * @param {boolean} [options.sitemap] - Whether to trigger sitemap generation. Defaults to true.
  * @param {boolean} [options.injectRoutes] - Whether to inject routes for the blog. Defaults to true.
  */
-export function studioCMSBlogPlugin(options?: StudioCMSBlogOptions): StudioCMSPlugin {
+export function studioCMSBlogPlugin(options: StudioCMSBlogOptions = {}): StudioCMSPlugin {
 	// Resolve the options and set defaults
-	const resolvedOptions = FrontEndConfigSchema.parse(options);
+	const resolvedOptions = Schema.decodeSync(FrontEndConfigSchema)(options);
 
 	const {
 		blog: { title, route: orgRoute },

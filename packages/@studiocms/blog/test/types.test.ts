@@ -1,4 +1,5 @@
 import * as allure from 'allure-js-commons';
+import { Schema } from 'effect';
 import { describe, expect, test } from 'vitest';
 import { FrontEndConfigSchema, faviconTypeMap, isFaviconExt } from '../src/types';
 import { parentSuiteName, sharedTags } from './test-utils.js';
@@ -51,7 +52,7 @@ describe(parentSuiteName, () => {
 
 			await allure.parameter('Schema input', JSON.stringify({}));
 
-			const parsed = FrontEndConfigSchema.parse({});
+			const parsed = Schema.decodeSync(FrontEndConfigSchema)({});
 
 			await allure.parameter('Parsed Config', JSON.stringify(parsed, null, 2));
 
@@ -83,7 +84,7 @@ describe(parentSuiteName, () => {
 			await allure.parameter('Favicon Input', fav);
 
 			await allure.step(`Validating favicon: ${fav}`, async () => {
-				expect(() => FrontEndConfigSchema.parse({ favicon: fav })).not.toThrow();
+				expect(() => Schema.decodeSync(FrontEndConfigSchema)({ favicon: fav })).not.toThrow();
 			});
 		});
 	});
@@ -98,7 +99,7 @@ describe(parentSuiteName, () => {
 			await allure.parameter('Favicon Input', fav);
 
 			await allure.step(`Validating favicon: ${fav}`, async () => {
-				expect(() => FrontEndConfigSchema.parse({ favicon: fav })).toThrow(
+				expect(() => Schema.decodeSync(FrontEndConfigSchema)({ favicon: fav })).toThrow(
 					/favicon must be a .ico, .gif, .jpg, .png, or .svg file/
 				);
 			});
@@ -131,7 +132,7 @@ describe(parentSuiteName, () => {
 
 			await allure.parameter('Config Input', JSON.stringify(input, null, 2));
 
-			const parsed = FrontEndConfigSchema.parse(input);
+			const parsed = Schema.decodeSync(FrontEndConfigSchema)(input);
 
 			await allure.parameter('Parsed Config', JSON.stringify(parsed, null, 2));
 

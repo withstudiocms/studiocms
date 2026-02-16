@@ -14,7 +14,7 @@ import {
 	OptionsResponse,
 	readAPIContextJson,
 } from '@withstudiocms/effect';
-import { z } from 'astro/zod';
+import { isValidEmail } from '#schemas/external-schemas';
 
 type tsUsersUpdate = tsUsers['Update']['Type'];
 
@@ -99,10 +99,7 @@ export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
 						}
 
 						// If the email is invalid, return an error
-						const checkEmail = z.coerce
-							.string()
-							.email({ message: 'Email address is invalid' })
-							.safeParse(data.email);
+						const checkEmail = isValidEmail(data.email);
 
 						if (!checkEmail.success)
 							return apiResponseLogger(400, `Invalid email: ${checkEmail.error.message}`);

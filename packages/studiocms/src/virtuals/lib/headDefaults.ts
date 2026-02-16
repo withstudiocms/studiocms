@@ -1,12 +1,9 @@
 import { extname } from 'node:path';
 import version from 'studiocms:version';
 import type { AstroGlobalPartial } from 'astro';
-import type { z } from 'astro/zod';
 import { lookup } from 'mrmime';
 import { StudioCMSCoreError } from '../../errors.js';
-import { HeadConfigSchema } from './head.js';
-
-const _schema = HeadConfigSchema;
+import type { HeadUserConfig } from './head.js';
 
 /**
  * A union type representing the possible file extensions for favicon images.
@@ -86,7 +83,7 @@ export const headDefaults = (
 	ogImage: string | undefined,
 	canonical: URL | undefined
 ) => {
-	const headDefaults: z.input<ReturnType<typeof _schema>> = [
+	const headDefaults: HeadUserConfig = [
 		{ tag: 'meta', attrs: { charset: 'utf-8' } },
 		{
 			tag: 'meta',

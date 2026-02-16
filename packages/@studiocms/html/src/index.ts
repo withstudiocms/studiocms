@@ -7,6 +7,7 @@
 /// <reference types="studiocms/v/types" />
 
 import { createResolver } from 'astro-integration-kit';
+import { Schema } from 'effect';
 import { definePlugin, type StudioCMSPlugin } from 'studiocms/plugins';
 import { shared } from './lib/shared.js';
 import { HTMLSchema, type HTMLSchemaOptions } from './types.js';
@@ -20,7 +21,7 @@ import { HTMLSchema, type HTMLSchemaOptions } from './types.js';
  * @param options - Optional configuration for the HTML schema.
  * @returns The StudioCMS plugin configuration object.
  */
-export function studiocmsHTML(options?: HTMLSchemaOptions): StudioCMSPlugin {
+export function studiocmsHTML(options: HTMLSchemaOptions = {}): StudioCMSPlugin {
 	// Resolve the path to the current file
 	const { resolve } = createResolver(import.meta.url);
 
@@ -28,11 +29,11 @@ export function studiocmsHTML(options?: HTMLSchemaOptions): StudioCMSPlugin {
 	const packageIdentifier = '@studiocms/html';
 
 	// Resolve the options and set defaults if not provided
-	const parseResult = HTMLSchema.safeParse(options);
-	if (!parseResult.success) {
-		throw new Error(`Invalid HTML options: ${parseResult.error.message}`);
+	const parseResult = Schema.decodeEither(HTMLSchema)(options);
+	if (parseResult._tag === 'Left') {
+		throw new Error(`Invalid HTML options: ${parseResult.left.message}`);
 	}
-	const resolvedOptions = parseResult.data;
+	const resolvedOptions = parseResult.right;
 
 	// Return the plugin configuration
 	return definePlugin({

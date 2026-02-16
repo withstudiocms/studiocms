@@ -3,7 +3,7 @@ import { getAvatarUrl } from '@withstudiocms/auth-kit/utils/libravatar';
 import { StudioCMSColorwayInfo } from '@withstudiocms/cli-kit/colors';
 import { group, log, password, select, text } from '@withstudiocms/effect/clack';
 import { StudioCMSPermissions, StudioCMSUsersTable } from '@withstudiocms/sdk/tables';
-import { z } from 'astro/zod';
+import { isValidEmail } from '#schemas/external-schemas';
 import { Effect, runEffect, Schema } from '../../../effect.js';
 import { StudioCMSCliError } from '../../utils/errors.js';
 import { getCliDbClient } from '../../utils/getCliDbClient.js';
@@ -151,8 +151,8 @@ export const createUsers: EffectStepFn = Effect.fn(function* (context, _debug, d
 						placeholder: 'john@doe.tld',
 						validate: (email) => {
 							const e = email?.trim().toLowerCase();
-							const emailSchema = z.string().email({ message: 'Email address is invalid' });
-							const response = emailSchema.safeParse(e);
+							if (!e) return 'Email is required';
+							const response = isValidEmail(e);
 							if (!response.success) return response.error.message;
 							if (currentUsers.find((user) => user.email === e)) {
 								return 'There is already a user with that email.';

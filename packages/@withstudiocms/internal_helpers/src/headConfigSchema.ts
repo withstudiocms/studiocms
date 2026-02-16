@@ -1,27 +1,79 @@
-import { z } from 'astro/zod';
+import { Schema } from 'effect';
 
-export const HeadConfigSchema = () =>
-	z
-		.array(
-			z.object({
-				/** Name of the HTML tag to add to `<head>`, e.g. `'meta'`, `'link'`, or `'script'`. */
-				tag: z.enum(['title', 'base', 'link', 'style', 'meta', 'script', 'noscript', 'template']),
-				/** Attributes to set on the tag, e.g. `{ rel: 'stylesheet', href: '/custom.css' }`. */
-				attrs: z.record(z.union([z.string(), z.boolean(), z.undefined()])).default({}),
-				/** Content to place inside the tag (optional). */
-				content: z.string().default(''),
+/**
+ * Schema definition for a single head entry, which represents an HTML tag to be added to the document head.
+ */
+const HeadTag = Schema.Literal(
+	'title',
+	'base',
+	'link',
+	'style',
+	'meta',
+	'script',
+	'noscript',
+	'template'
+);
+
+/**
+ * Schema definition for the attribute value of a head entry, which can be a string, boolean, or undefined.
+ */
+const AttributeValue = Schema.Union(Schema.String, Schema.Boolean, Schema.Undefined);
+
+/**
+ * Schema definition for the attributes of a head entry, which is a record of string keys and attribute values.
+ */
+const HeadAttrs = Schema.Record({
+	key: Schema.String,
+	value: AttributeValue,
+});
+
+/**
+ * Schema definition for the head configuration, which is an array of objects representing HTML tags to be added to the document head.
+ */
+export const BaseHeadConfigSchema = Schema.mutable(
+	Schema.Array(
+		Schema.mutable(
+			Schema.Struct({
+				tag: HeadTag,
+				attrs: Schema.optionalWith(HeadAttrs, {
+					default: () => ({}),
+				}),
+				content: Schema.optionalWith(Schema.String, {
+					default: () => '',
+				}),
 			})
 		)
-		.default([]);
+	)
+);
 
-export type HeadUserConfig = z.input<ReturnType<typeof HeadConfigSchema>>;
-export type HeadConfig = z.output<ReturnType<typeof HeadConfigSchema>>;
+/**
+ * Schema definition for the user-facing head configuration, which is the encoded form of the base head configuration schema.
+ */
+export type HeadUserConfig = typeof BaseHeadConfigSchema.Encoded;
 
-export const HeadSchema = HeadConfigSchema();
+/**
+ * Schema definition for the fully parsed head configuration, which is the type-safe form of the base head configuration schema.
+ */
+export type HeadConfig = typeof BaseHeadConfigSchema.Type;
+
+/**
+ * Schema definition for the overall head configuration object, which contains an optional `head` property that is an array of head entries.
+ */
+export const HeadConfigSchema = Schema.Struct({
+	// We are using a nested schema here to make decoding and validation easier, but the user-facing type is just an array of head entries.
+	head: Schema.optionalWith(BaseHeadConfigSchema, {
+		default: () => [],
+	}).annotations({
+		description: 'An array of objects representing HTML tags to be added to the document head.',
+		documentation:
+			'This schema defines the structure for head configuration objects, which specify HTML tags and their attributes to be included in the document head. Each entry in the array represents a single HTML tag, its attributes, and optional content.',
+		title: 'Head Configuration Schema',
+	}),
+});
 
 /** Create a fully parsed, merged, and sorted head entry array from multiple sources. */
 export function createHead(defaults: HeadUserConfig, ...heads: HeadConfig[]) {
-	let head = HeadSchema.parse(defaults);
+	let head = Schema.decodeSync(HeadConfigSchema)({ head: defaults }).head;
 	for (const next of heads) {
 		head = mergeHead(head, next);
 	}
