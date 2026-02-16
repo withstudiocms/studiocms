@@ -1,4 +1,5 @@
-import { z } from 'astro/zod';
+import { Schema } from 'effect';
+import { RatingSchema } from '../schemas.js';
 
 /**
  * Enum schema for Web Vitals rating.
@@ -8,13 +9,13 @@ import { z } from 'astro/zod';
  * - 'needs-improvement': Indicates that the web vitals need improvement.
  * - 'poor': Indicates that the web vitals are performing poorly.
  */
-export const WebVitalsRatingSchema = z.enum(['good', 'needs-improvement', 'poor']);
+export const WebVitalsRatingSchema = RatingSchema;
 
 /**
  * Type representing the inferred type of the WebVitalsRatingSchema.
  * This type is generated using the `z.infer` utility from the `zod` library.
  */
-export type WebVitalsRating = z.infer<typeof WebVitalsRatingSchema>;
+export type WebVitalsRating = typeof RatingSchema.Type;
 
 /**
  * Enum schema for Core Web Vitals metric types.
@@ -26,7 +27,7 @@ export type WebVitalsRating = z.infer<typeof WebVitalsRatingSchema>;
  *
  * These metrics are used to measure the performance and user experience of web pages.
  */
-export const CoreWebVitalsMetricTypeSchema = z.enum(['CLS', 'INP', 'LCP']);
+export const CoreWebVitalsMetricTypeSchema = Schema.Literal('CLS', 'INP', 'LCP');
 
 /**
  * Type definition for Core Web Vitals metrics.
@@ -35,7 +36,7 @@ export const CoreWebVitalsMetricTypeSchema = z.enum(['CLS', 'INP', 'LCP']);
  * It represents the structure of the core web vitals metrics used in the application.
  *
  */
-export type CoreWebVitalsMetricType = z.infer<typeof CoreWebVitalsMetricTypeSchema>;
+export type CoreWebVitalsMetricType = typeof CoreWebVitalsMetricTypeSchema.Type;
 
 /**
  * Schema for Web Vitals Metric Types.
@@ -47,8 +48,9 @@ export type CoreWebVitalsMetricType = z.infer<typeof CoreWebVitalsMetricTypeSche
  * - `FID`: First Input Delay
  * - `TTFB`: Time to First Byte
  */
-export const WebVitalsMetricTypeSchema = CoreWebVitalsMetricTypeSchema.or(
-	z.enum(['FCP', 'FID', 'TTFB'])
+export const WebVitalsMetricTypeSchema = Schema.Union(
+	CoreWebVitalsMetricTypeSchema,
+	Schema.Literal('FCP', 'FID', 'TTFB')
 );
 
 /**
@@ -59,7 +61,7 @@ export const WebVitalsMetricTypeSchema = CoreWebVitalsMetricTypeSchema.or(
  *
  * @see WebVitalsMetricTypeSchema
  */
-export type WebVitalsMetricType = z.infer<typeof WebVitalsMetricTypeSchema>;
+export type WebVitalsMetricType = typeof WebVitalsMetricTypeSchema.Type;
 
 /**
  * Schema for summarizing route metrics.
@@ -71,16 +73,25 @@ export type WebVitalsMetricType = z.infer<typeof WebVitalsMetricTypeSchema>;
  * 4. Value (number, must be greater than or equal to 0)
  * 5. Sample size (number)
  */
-export const RouteSummaryRowSchema = z.tuple([
+export const RouteSummaryRowSchema = Schema.Tuple(
 	// route path
-	z.string(),
+	Schema.String,
 	CoreWebVitalsMetricTypeSchema,
 	WebVitalsRatingSchema,
 	// value
-	z.number().gte(0),
+	Schema.Number.pipe(Schema.greaterThanOrEqualTo(0)),
 	// sample size
-	z.number(),
-]);
+	Schema.Number
+);
+
+/**
+ * Type representing a summary row of route metrics.
+ */
+export const RatingEndSchema = Schema.transform(Schema.Literal(0, 1), Schema.Boolean, {
+	strict: true,
+	decode: (input) => input === 1,
+	encode: (input) => (input ? 1 : 0),
+});
 
 /**
  * Schema for a summary row of web vitals metrics.
@@ -94,17 +105,17 @@ export const RouteSummaryRowSchema = z.tuple([
  * - `percentile`: A number representing the percentile of the metric, or null.
  * - `sample size`: A number representing the sample size.
  */
-export const MetricSummaryRowSchema = z.tuple([
+export const MetricSummaryRowSchema = Schema.Tuple(
 	WebVitalsMetricTypeSchema,
 	WebVitalsRatingSchema,
 	// value
-	z.number().gte(0),
+	Schema.Number.pipe(Schema.greaterThanOrEqualTo(0)),
 	// density
-	z.number().gte(0),
+	Schema.Number.pipe(Schema.greaterThanOrEqualTo(0)),
 	// rating end
-	z.union([z.literal(0), z.literal(1)]).transform(Boolean),
+	RatingEndSchema,
 	// percentile
-	z.number().or(z.null()),
+	Schema.NullOr(Schema.Number),
 	// sample size
-	z.number(),
-]);
+	Schema.Number
+);

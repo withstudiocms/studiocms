@@ -13,7 +13,6 @@ import {
 } from '@withstudiocms/internal_helpers/utils';
 import type { AstroIntegration, InjectedRoute } from 'astro';
 import { AstroError } from 'astro/errors';
-import type { z } from 'astro/zod';
 import { addVirtualImports, defineUtility } from 'astro-integration-kit';
 import boxen from 'boxen';
 import { compare as semCompare } from 'semver';
@@ -22,11 +21,11 @@ import { StudioCMSDefaultRobotsConfig } from '../consts.js';
 import { StudioCMSError } from '../errors.js';
 import { dynamicSitemap, type RobotsConfig, robotsTXT } from '../integrations/plugins.js';
 import { studioCMSAnalyticsPlugin } from '../plugins/analytics/index.js';
+import type { RenderAugmentSchema } from '../schemas/index.effect.js';
 import type {
 	AvailableDashboardPages,
 	BasePluginHooks,
 	PluginHookParameters,
-	RenderAugmentSchema,
 	SafePluginListItemType,
 	SafePluginListType,
 	StorageManagerHookParameters,
@@ -679,7 +678,7 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 				);
 		}
 
-		function convertToRuntimeAugment(augment: z.infer<typeof RenderAugmentSchema>) {
+		function convertToRuntimeAugment(augment: typeof RenderAugmentSchema.Type) {
 			const id = augment.id;
 			const safeId = convertToSafeString(id);
 			const type = augment.type;
