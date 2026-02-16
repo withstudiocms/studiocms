@@ -8,7 +8,12 @@ export const WPImporterInputSchema = Schema.Union(
 	Schema.Struct({
 		endpoint: Schema.String,
 	})
-);
+).annotations({
+	title: 'WP Importer Input Configuration',
+	identifier: 'WPImporterInputConfig',
+	description:
+		'The input configuration for the StudioCMS WP API Importer App. Can be a boolean to enable/disable or an object to specify the endpoint.',
+});
 
 /**
  * Represents the configuration for the WP Importer application within StudioCMS.
@@ -16,6 +21,11 @@ export const WPImporterInputSchema = Schema.Union(
 export const WPImporterOutputSchema = Schema.Struct({
 	enabled: Schema.Boolean,
 	endpoint: Schema.String,
+}).annotations({
+	title: 'WP Importer Output Configuration',
+	identifier: 'WPImporterOutputConfig',
+	description:
+		'The output configuration for the StudioCMS WP API Importer App, including enabled status and endpoint.',
 });
 
 /**
@@ -89,6 +99,10 @@ export const AppsConfigSchema = Schema.Struct({
 		description:
 			'Configuration for the StudioCMS WP API Importer App. Can be a boolean to enable/disable or a string to specify the endpoint.',
 	}),
+}).annotations({
+	title: 'StudioCMS Apps Configuration',
+	identifier: 'StudioCMSAppsConfig',
+	description: 'Configuration for the StudioCMS development applications.',
 });
 
 /**
@@ -110,6 +124,11 @@ export const StudioCMSDevAppsSchema = Schema.Struct({
 	}).annotations({
 		description: 'Configuration for the StudioCMS development applications.',
 	}),
+}).annotations({
+	title: 'StudioCMS DevApps Configuration',
+	identifier: 'StudioCMSDevAppsConfig',
+	description:
+		'Configuration schema for StudioCMS development applications, including endpoint settings and individual app configurations.',
 });
 
 /**
