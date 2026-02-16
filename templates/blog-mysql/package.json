@@ -21,11 +21,11 @@
     "typescript": "^5.9.3"
   },
   "dependencies": {
-    "@astrojs/node": "^9.5.2",
+    "@astrojs/node": "^9.5.3",
     "@studiocms/blog": "^0.2.0",
     "@studiocms/md": "^0.2.0",
-    "astro": "^5.17.1",
-    "mysql2": "^3.16.3",
+    "astro": "^5.17.2",
+    "mysql2": "^3.17.1",
     "sharp": "^0.34.3",
     "studiocms": "^0.3.0"
   }
