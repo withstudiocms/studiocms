@@ -1,12 +1,12 @@
 import * as allure from 'allure-js-commons';
+import { Schema } from 'effect';
 import { describe, expect } from 'vitest';
 import {
 	definePlugin,
 	SafePluginListItemSchema,
 	SafePluginListSchema,
 	type StudioCMSImageService,
-	StudioCMSSanitizeOptionsSchema,
-} from '../../../src/schemas/plugins/index';
+} from '../../../src/schemas/index';
 import { allureTester } from '../../fixtures/allureTester';
 import { parentSuiteName, sharedTags } from '../../test-utils';
 
@@ -21,50 +21,6 @@ describe(parentSuiteName, () => {
 	const test = allureTester({
 		suiteName: localSuiteName,
 		suiteParentName: parentSuiteName,
-	});
-
-	[
-		{
-			data: {
-				allowElements: ['div', 'span'],
-				blockElements: ['script'],
-				dropElements: ['iframe'],
-				allowAttributes: { class: ['div', 'span'] },
-				dropAttributes: { style: ['div'] },
-				allowComponents: true,
-				allowCustomElements: false,
-				allowComments: true,
-			},
-			expected: true,
-		},
-		{
-			data: undefined,
-			expected: true,
-		},
-		{
-			data: { allowElements: 'not-an-array' },
-			expected: false,
-		},
-	].forEach(({ data, expected }, index) => {
-		const testName = `StudioCMSSanitizeOptionsSchema test case #${index + 1}`;
-		const tags = [...sharedTags, 'schema:plugins', 'schema:StudioCMSSanitizeOptionsSchema'];
-
-		test(testName, async ({ setupAllure }) => {
-			await setupAllure({
-				subSuiteName: 'StudioCMSSanitizeOptionsSchema tests',
-				tags: [...tags],
-				parameters: {
-					data: JSON.stringify(data),
-				},
-			});
-
-			const result = StudioCMSSanitizeOptionsSchema.safeParse(data);
-			if (expected) {
-				expect(result.success).toBe(true);
-			} else {
-				expect(result.success).toBe(false);
-			}
-		});
 	});
 
 	[
@@ -95,11 +51,11 @@ describe(parentSuiteName, () => {
 				},
 			});
 
-			const result = SafePluginListItemSchema.safeParse(data);
+			const result = Schema.decodeUnknownEither(SafePluginListItemSchema)(data);
 			if (expected) {
-				expect(result.success).toBe(true);
+				expect(result._tag).toBe('Right');
 			} else {
-				expect(result.success).toBe(false);
+				expect(result._tag).toBe('Left');
 			}
 		});
 	});
@@ -139,11 +95,11 @@ describe(parentSuiteName, () => {
 				},
 			});
 
-			const result = SafePluginListSchema.safeParse(data);
+			const result = Schema.decodeUnknownEither(SafePluginListSchema)(data);
 			if (expected) {
-				expect(result.success).toBe(true);
+				expect(result._tag).toBe('Right');
 			} else {
-				expect(result.success).toBe(false);
+				expect(result._tag).toBe('Left');
 			}
 		});
 	});

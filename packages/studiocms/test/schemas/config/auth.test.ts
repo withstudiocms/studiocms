@@ -1,5 +1,6 @@
+import { Schema } from 'effect';
 import { describe, expect } from 'vitest';
-import { authConfigSchema } from '../../../src/schemas/config/auth';
+import { AuthConfigSchema } from '../../../src/schemas/config/auth';
 import { allureTester } from '../../fixtures/allureTester';
 import { parentSuiteName, sharedTags } from '../../test-utils';
 
@@ -14,16 +15,6 @@ describe(parentSuiteName, () => {
 	[
 		{
 			data: {},
-			expected: {
-				enabled: true,
-				providers: {
-					usernameAndPassword: true,
-					usernameAndPasswordConfig: { allowUserRegistration: true },
-				},
-			},
-		},
-		{
-			data: undefined,
 			expected: {
 				enabled: true,
 				providers: {
@@ -71,7 +62,7 @@ describe(parentSuiteName, () => {
 				},
 			});
 
-			const result = authConfigSchema.parse(data);
+			const result = Schema.decodeUnknownSync(AuthConfigSchema)(data);
 			expect(result).toEqual(expected);
 		});
 	});

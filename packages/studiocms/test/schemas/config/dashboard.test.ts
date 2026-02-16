@@ -1,5 +1,6 @@
+import { Schema } from 'effect';
 import { describe, expect } from 'vitest';
-import { dashboardConfigSchema } from '../../../src/schemas/config/dashboard';
+import { DashboardConfigSchema } from '../../../src/schemas/config/dashboard';
 import { allureTester } from '../../fixtures/allureTester';
 import { parentSuiteName, sharedTags } from '../../test-utils';
 
@@ -51,10 +52,6 @@ describe(parentSuiteName, () => {
 				faviconURL: '/custom.svg',
 			},
 		},
-		{
-			opts: undefined,
-			expectedResult: _dashboardConfigSchemaExpectedResult,
-		},
 	].forEach(({ opts, expectedResult }, index) => {
 		const testName = `dashboardConfigSchema optional test case #${index + 1}`;
 		const tags = [...sharedTags, 'schema:config', 'schema:dashboardConfigSchema'];
@@ -68,7 +65,7 @@ describe(parentSuiteName, () => {
 				},
 			});
 
-			const result = dashboardConfigSchema.parse(opts);
+			const result = Schema.decodeUnknownSync(DashboardConfigSchema)(opts);
 			expect(result).toBeDefined();
 			expect(result.dashboardEnabled).toBe(expectedResult.dashboardEnabled);
 			expect(result.inject404Route).toBe(expectedResult.inject404Route);
@@ -94,6 +91,10 @@ describe(parentSuiteName, () => {
 				inject404Route: 'no',
 			},
 		},
+		{
+			opts: undefined,
+			expectedResult: _dashboardConfigSchemaExpectedResult,
+		},
 	].forEach(({ opts }, index) => {
 		const testName = `dashboardConfigSchema invalid data test case #${index + 1}`;
 		const tags = [...sharedTags, 'schema:config', 'schema:dashboardConfigSchema'];
@@ -107,7 +108,7 @@ describe(parentSuiteName, () => {
 				},
 			});
 
-			expect(() => dashboardConfigSchema.parse(opts)).toThrow();
+			expect(() => Schema.decodeUnknownSync(DashboardConfigSchema)(opts)).toThrow();
 		});
 	});
 });
