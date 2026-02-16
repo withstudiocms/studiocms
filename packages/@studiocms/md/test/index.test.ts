@@ -192,6 +192,7 @@ describe(parentSuiteName, () => {
 					callouts: 'vitepress' as const,
 					autoLinkHeadings: false,
 					discordSubtext: false,
+					sanitize: {},
 				};
 
 				const plugin: ReturnType<typeof studiocmsMD> = studiocmsMD(customOptions);
