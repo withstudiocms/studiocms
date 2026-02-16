@@ -71,7 +71,7 @@ describe(parentSuiteName, () => {
 				const schema = Schema.decodeUnknownSync(HeadConfigSchema);
 
 				await allure.step('Parsing input with HeadConfigSchema', async (ctx) => {
-					const parsed = schema(input).head;
+					const parsed = schema({ head: input }).head;
 					await ctx.parameter('parsed', JSON.stringify(parsed));
 
 					await ctx.parameter('parsed length', String(parsed.length));
