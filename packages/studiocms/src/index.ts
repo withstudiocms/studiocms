@@ -12,7 +12,11 @@ import { promises as fsP, writeFileSync } from 'node:fs';
 import { runtimeLogger } from '@inox-tools/runtime-logger';
 import studiocmsUi from '@studiocms/ui';
 import { componentRegistryHandler } from '@withstudiocms/component-registry';
-import { configResolverBuilder, exists, watchConfigFileBuilder } from '@withstudiocms/config-utils';
+import {
+	configResolverBuilderEffect,
+	exists,
+	watchConfigFileBuilder,
+} from '@withstudiocms/config-utils';
 import { Effect, runEffect } from '@withstudiocms/effect';
 import {
 	addIntegrationArray,
@@ -99,10 +103,10 @@ export const studiocms = (): AstroIntegration => {
 	});
 
 	// Config Resolver Builder
-	const configResolver = configResolverBuilder({
+	const configResolver = configResolverBuilderEffect({
 		configPaths,
 		label: name,
-		zodSchema: StudioCMSOptionsSchema,
+		effectSchema: StudioCMSOptionsSchema,
 	});
 
 	// Messages Array for Logging

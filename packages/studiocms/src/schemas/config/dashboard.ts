@@ -1,71 +1,62 @@
-import { z } from 'astro/zod';
+import * as Schema from 'effect/Schema';
+import {
+	BooleanDefaultFalse,
+	BooleanDefaultTrue,
+	OptionalWithDefaults,
+	StringWithDefault,
+} from '../custom.js';
 
-export interface DashboardConfig {
-	/** OPTIONAL - This allows the user to enable or disable the Astro StudioCMS dashboard but still provide all the helper's and utilities to those who are customizing their setup, doing so will disable the dashboard and you will need to manage your content via your database
-	 *
-	 * @default true
-	 */
-	dashboardEnabled?: boolean;
+/**
+ * Schema for the security configuration of the dashboard.
+ */
+export const SecurityConfigSchema = Schema.Struct({
+	hideGeneratorTags: BooleanDefaultFalse.annotations({
+		description: 'Hide Generator Tags - Hides generator tags in the HTML output of the dashboard',
+	}),
+}).annotations({
+	title: 'Dashboard Security Configuration',
+	description: 'Configuration options related to the security of the dashboard',
+	identifier: 'DashboardSecurityConfig',
+});
 
-	/**
-	 * OPTIONAL - This allows the user to enable or disable the default 404 route for the dashboard
-	 *
-	 * @default true
-	 */
-	inject404Route?: boolean;
+/**
+ * Schema for the dashboard configuration.
+ */
+export const DashboardConfigSchema = Schema.Struct({
+	dashboardEnabled: BooleanDefaultTrue.annotations({
+		description: 'Dashboard Enabled - Allows enabling or disabling of the dashboard',
+	}),
+	inject404Route: BooleanDefaultTrue.annotations({
+		description: 'Inject 404 Route - Allows injecting a 404 route for the dashboard',
+	}),
+	faviconURL: StringWithDefault('/favicon.svg').annotations({
+		description: 'Favicon URL - Allows overriding the default Favicon URL to a custom URL',
+	}),
+	dashboardRouteOverride: Schema.optional(Schema.String).annotations({
+		description:
+			'Dashboard Route Override - Allows overriding the default dashboard route to a custom route',
+		usage:
+			'The default route is `dashboard` without any `/` or `\\` characters. If you want to override the route to `/admin` you would set this value to `admin`',
+	}),
+	versionCheck: BooleanDefaultTrue.annotations({
+		description:
+			'Version Check - Allows enabling or disabling of the version check for the dashboard',
+	}),
+	security: OptionalWithDefaults(SecurityConfigSchema, {}).annotations({
+		description: 'Security Configuration - Allows configuring security settings for the dashboard',
+	}),
+}).annotations({
+	title: 'Dashboard Configuration',
+	description: 'Configuration options related to the dashboard',
+	identifier: 'DashboardConfig',
+});
 
-	/**
-	 * OPTIONAL - This allows the user to override the default Favicon URL to a custom URL
-	 */
-	faviconURL?: string;
+/**
+ * Type for the dashboard configuration.
+ */
+export type DashboardConfig = typeof DashboardConfigSchema.Encoded;
 
-	/**
-	 * OPTIONAL - This allows the user to override the default dashboard route to a custom route
-	 *
-	 * **Note: Use with caution, this is an advanced feature**
-	 *
-	 * @usage - The default route is `dashboard` without any `/` or `\` characters. If you want to override the route to `/admin` you would set this value to `admin`
-	 *
-	 * @default "dashboard"
-	 */
-	dashboardRouteOverride?: string;
-
-	/**
-	 * OPTIONAL - This allows the user to enable or disable the version check for the dashboard
-	 *
-	 * This will check for the latest version of StudioCMS and notify the user
-	 * if there is a new version available.
-	 *
-	 * @default true
-	 */
-	versionCheck?: boolean;
-
-	/**
-	 * OPTIONAL - This allows the user to configure security settings for the dashboard
-	 */
-	security?: {
-		/**
-		 * OPTIONAL - This allows the user to hide generator tags in the HTML output of the dashboard
-		 *
-		 * @default false
-		 */
-		hideGeneratorTags?: boolean;
-	};
-}
-
-export const dashboardConfigSchema = z
-	.object({
-		dashboardEnabled: z.boolean().optional().default(true),
-		inject404Route: z.boolean().optional().default(true),
-		faviconURL: z.string().optional().default('/favicon.svg'),
-		dashboardRouteOverride: z.string().optional(),
-		versionCheck: z.boolean().optional().default(true),
-		security: z
-			.object({
-				hideGeneratorTags: z.boolean().optional().default(false),
-			})
-			.optional()
-			.default({}),
-	})
-	.optional()
-	.default({});
+/**
+ * Resolved type for the dashboard configuration.
+ */
+export type DashboardConfigResolved = typeof DashboardConfigSchema.Type;

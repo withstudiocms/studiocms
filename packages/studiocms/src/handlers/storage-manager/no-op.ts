@@ -17,7 +17,7 @@ export const NoOpStorageManager = (version: string): StudioCMSStorageManager =>
 		name: 'Core No-Op Storage (built-in)',
 		studiocmsMinimumVersion: version,
 		hooks: {
-			'studiocms:storage-manager': ({ setStorageManager, logger }) => {
+			'studiocms:storage-manager': async ({ setStorageManager, logger }) => {
 				logger.info('No-Op Storage initialized.');
 				setStorageManager({
 					managerPath: resolve('./core/no-op-storage-manager.js'),

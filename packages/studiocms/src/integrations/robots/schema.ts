@@ -1,266 +1,224 @@
-import { z } from 'astro/zod';
+import * as Schema from 'effect/Schema';
+
+export const Spider360 = Schema.Literal('360Spider', '360Spider-Image', '360Spider-Video');
+export const HaoSouSpider = Schema.Literal('HaoSouSpider');
+export const AdsBotGoogle = Schema.Literal(
+	'AdsBot-Google',
+	'AdsBot-Google-Mobile',
+	'AdsBot-Google-Mobile-Apps'
+);
+export const Googlebot = Schema.Literal(
+	'Googlebot',
+	'Googlebot-Image',
+	'Googlebot-Mobile',
+	'Googlebot-News',
+	'Googlebot-Video'
+);
+export const MediapartnersGoogle = Schema.Literal('Mediapartners-Google');
+export const adidxbot = Schema.Literal('adidxbot');
+export const bingbot = Schema.Literal('bingbot');
+export const BingPreview = Schema.Literal('BingPreview');
+export const MicrosoftPreview = Schema.Literal('MicrosoftPreview');
+export const msnbot = Schema.Literal('msnbot', 'msnbot-media');
+export const Applebot = Schema.Literal('Applebot', 'AppleNewsBot');
+export const Baiduspider = Schema.Literal(
+	'Baiduspider',
+	'Baiduspider-image',
+	'Baiduspider-mobile',
+	'Baiduspider-news',
+	'Baiduspider-video'
+);
+export const coccoc = Schema.Literal('coccoc', 'coccocbot-image', 'coccocbot-web');
+export const DuckDuckBot = Schema.Literal('DuckDuckBot', 'DuckDuckGo-Favicons-Bot');
+export const facebook = Schema.Literal('facebookcatalog', 'facebookexternalhit', 'Facebot');
+export const gooblog = Schema.Literal('gooblog');
+export const ichiro = Schema.Literal('ichiro');
+export const Sogou = Schema.Literal(
+	'Sogou blog',
+	'Sogou inst spider',
+	'Sogou News Spider',
+	'Sogou Orion spider',
+	'Sogou spider2',
+	'Sogou web spider'
+);
+export const Yandex = Schema.Literal('Yandex', 'YandexMobileBot');
+export const AlgoliaCrawler = Schema.Literal('Algolia Crawler');
+export const BublupBot = Schema.Literal('BublupBot');
+export const CCBot = Schema.Literal('CCBot');
+export const Cliqzbot = Schema.Literal('Cliqzbot');
+export const Daumoa = Schema.Literal('Daumoa');
+export const DeuSu = Schema.Literal('DeuSu');
+export const EuripBot = Schema.Literal('EuripBot');
+export const Exploratodo = Schema.Literal('Exploratodo');
+export const Feedly = Schema.Literal('Feedly');
+export const Findxbot = Schema.Literal('Findxbot');
+export const istellabot = Schema.Literal('istellabot');
+export const JikeSpider = Schema.Literal('JikeSpider');
+export const Lycos = Schema.Literal('Lycos');
+export const MailRu = Schema.Literal('Mail.Ru');
+export const MojeekBot = Schema.Literal('MojeekBot');
+export const OrangeBot = Schema.Literal('OrangeBot');
+export const Pinterest = Schema.Literal('Pinterest');
+export const Plukkie = Schema.Literal('Plukkie');
+export const Qwantify = Schema.Literal('Qwantify');
+export const Rambler = Schema.Literal('Rambler');
+export const SemanticScholarBot = Schema.Literal('SemanticScholarBot');
+export const SeSchemanamBot = Schema.Literal('SeSchemanamBot');
+export const Sosospider = Schema.Literal('Sosospider');
+export const Slurp = Schema.Literal('Slurp');
+export const Twitterbot = Schema.Literal('Twitterbot');
+export const WhatsApp = Schema.Literal('WhatsApp');
+export const yacybot = Schema.Literal('yacybot');
+export const YepBot = Schema.Literal('YepBot');
+export const Yeti = Schema.Literal('Yeti');
+export const YioopBot = Schema.Literal('YioopBot');
+export const yooSchemaBot = Schema.Literal('yooSchemaBot');
+export const YoudaoBot = Schema.Literal('YoudaoBot');
 
 /**
- * A Zod schema representing a union of known search engine user agent identifiers.
- *
- * This schema is used to validate or restrict values to a predefined set of search engine bot names,
- * such as 'Googlebot', 'bingbot', 'Yandex', and others. It is useful for scenarios where you need to
- * identify or whitelist/blacklist specific search engine crawlers by their user agent strings.
- *
- * @example
- * SearchEngines.parse('Googlebot'); // passes
- * SearchEngines.parse('UnknownBot'); // throws ZodError
+ * Union of all supported search engine bots for the robots.txt configuration.
  */
-const SearchEngines = z.union([
-	z.literal('360Spider'),
-	z.literal('360Spider-Image'),
-	z.literal('360Spider-Video'),
-	z.literal('HaoSouSpider'),
-	z.literal('AdsBot-Google'),
-	z.literal('AdsBot-Google-Mobile'),
-	z.literal('AdsBot-Google-Mobile-Apps'),
-	z.literal('Googlebot'),
-	z.literal('Googlebot-Image'),
-	z.literal('Googlebot-Mobile'),
-	z.literal('Googlebot-News'),
-	z.literal('Googlebot-Video'),
-	z.literal('Mediapartners-Google'),
-	z.literal('adidxbot'),
-	z.literal('bingbot'),
-	z.literal('BingPreview'),
-	z.literal('MicrosoftPreview'),
-	z.literal('msnbot'),
-	z.literal('msnbot-media'),
-	z.literal('Applebot'),
-	z.literal('AppleNewsBot'),
-	z.literal('Baiduspider'),
-	z.literal('Baiduspider-image'),
-	z.literal('Baiduspider-mobile'),
-	z.literal('Baiduspider-news'),
-	z.literal('Baiduspider-video'),
-	z.literal('coccoc'),
-	z.literal('coccocbot-image'),
-	z.literal('coccocbot-web'),
-	z.literal('DuckDuckBot'),
-	z.literal('DuckDuckGo-Favicons-Bot'),
-	z.literal('facebookcatalog'),
-	z.literal('facebookexternalhit'),
-	z.literal('Facebot'),
-	z.literal('gooblog'),
-	z.literal('ichiro'),
-	z.literal('Sogou blog'),
-	z.literal('Sogou inst spider'),
-	z.literal('Sogou News Spider'),
-	z.literal('Sogou Orion spider'),
-	z.literal('Sogou spider2'),
-	z.literal('Sogou web spider'),
-	z.literal('Yandex'),
-	z.literal('YandexMobileBot'),
-	z.literal('Algolia Crawler'),
-	z.literal('BublupBot'),
-	z.literal('CCBot'),
-	z.literal('Cliqzbot'),
-	z.literal('Daumoa'),
-	z.literal('DeuSu'),
-	z.literal('EuripBot'),
-	z.literal('Exploratodo'),
-	z.literal('Feedly'),
-	z.literal('Findxbot'),
-	z.literal('istellabot'),
-	z.literal('JikeSpider'),
-	z.literal('Lycos'),
-	z.literal('Mail.Ru'),
-	z.literal('MojeekBot'),
-	z.literal('OrangeBot'),
-	z.literal('Pinterest'),
-	z.literal('Plukkie'),
-	z.literal('Qwantify'),
-	z.literal('Rambler'),
-	z.literal('SemanticScholarBot'),
-	z.literal('SeznamBot'),
-	z.literal('Sosospider'),
-	z.literal('Slurp'),
-	z.literal('Twitterbot'),
-	z.literal('WhatsApp'),
-	z.literal('yacybot'),
-	z.literal('YepBot'),
-	z.literal('Yeti'),
-	z.literal('YioopBot'),
-	z.literal('yoozBot'),
-	z.literal('YoudaoBot'),
-]);
+export const SearchEngines = Schema.Union(
+	Spider360,
+	HaoSouSpider,
+	AdsBotGoogle,
+	Googlebot,
+	MediapartnersGoogle,
+	adidxbot,
+	bingbot,
+	BingPreview,
+	MicrosoftPreview,
+	msnbot,
+	Applebot,
+	Baiduspider,
+	coccoc,
+	DuckDuckBot,
+	facebook,
+	gooblog,
+	ichiro,
+	Sogou,
+	Yandex,
+	AlgoliaCrawler,
+	BublupBot,
+	CCBot,
+	Cliqzbot,
+	Daumoa,
+	DeuSu,
+	EuripBot,
+	Exploratodo,
+	Feedly,
+	Findxbot,
+	istellabot,
+	JikeSpider,
+	Lycos,
+	MailRu,
+	MojeekBot,
+	OrangeBot,
+	Pinterest,
+	Plukkie,
+	Qwantify,
+	Rambler,
+	SemanticScholarBot,
+	SeSchemanamBot,
+	Sosospider,
+	Slurp,
+	Twitterbot,
+	WhatsApp,
+	yacybot,
+	YepBot,
+	Yeti,
+	YioopBot,
+	yooSchemaBot,
+	YoudaoBot
+);
 
 /**
- * A Zod schema that validates either a single string or an array of strings.
- *
- * This union schema is useful for cases where a value can be provided as a single string
- * or as a list of strings, allowing for flexible input validation.
- *
- * @example
- * StringArrayUnion.parse("hello"); // passes
- * StringArrayUnion.parse(["hello", "world"]); // passes
- * StringArrayUnion.parse(42); // fails
+ * Utility Union Schema for allowing either a single string or an array of strings, used for the allow and disallow fields in the robots.txt policy configuration.
  */
-const StringArrayUnion = z.union([z.string(), z.array(z.string())]);
+export const StringArrayUnion = Schema.Union(Schema.String, Schema.Array(Schema.String));
 
 /**
- * A Zod schema that validates a value as either a string array (as defined by `StringArrayUnion`)
- * or a boolean. This allows for flexible input types where the value can be an array of strings
- * or a boolean value (`true` or `false`).
+ * Union of all user agents that can be specified in the robots.txt policy configuration, including the wildcard "*" to apply to all user agents.
  */
-const StringArrayBooleanUnion = z.union([StringArrayUnion, z.boolean()]);
+export const UserAgentSchema = Schema.Union(Schema.Literal('*'), SearchEngines);
 
 /**
- * A Zod schema that validates a value as either a string or a boolean.
- *
- * This union schema can be used to accept values that are of type `string` or `boolean`.
- *
- * @example
- * StringBooleanUnion.parse("hello"); // passes
- * StringBooleanUnion.parse(true);    // passes
- * StringBooleanUnion.parse(42);      // fails
+ * Schema for defining the options for a robots.txt policy, including user agents, allowed and disallowed paths, crawl delay, and clean parameters.
  */
-const StringBooleanUnion = z.union([z.string(), z.boolean()]);
-
-/**
- * Schema for validating user agent strings in robots.txt rules.
- *
- * Accepts either the wildcard '*' (representing all user agents) or a value from the `SearchEngines` schema.
- *
- * @see {@link SearchEngines} for the list of supported search engine user agents.
- */
-export const UserAgentSchema = z.union([z.literal('*'), SearchEngines]);
-
-export const PolicyOptionsSchema = z.object({
-	/**
-	 * @description
-	 * [ Required ] Indicates the robot to which the rules listed in `robots.txt` apply.
-	 * @example
-	 * ```ts
-	 * policy:[
-	 *  {
-	 *    userAgent: [
-	 *      'Googlebot',
-	 *      'Applebot',
-	 *      'Baiduspider',
-	 *      'bingbot'
-	 *    ],
-	 *    // crawling rule(s) for above bots
-	 *  }
-	 * ]
-	 * ```
-	 * Verified bots, refer to [DITIG](https://www.ditig.com/robots-txt-template#regular-template) or [Cloudflare Radar](https://radar.cloudflare.com/traffic/verified-bots).
-	 */
-	userAgent: z.union([UserAgentSchema, z.array(UserAgentSchema)]).optional(),
-	/**
-	 * @description
-	 * [ At least one or more `allow` or `disallow` entries per rule ] Allows indexing site sections or individual pages.
-	 * @example
-	 * ```ts
-	 * policy:[{allow:["/"]}]
-	 * ```
-	 * Path-based URL matching, refer to [SYNTAX](https://developers.google.com/search/docs/crawling-indexing/robots/robots_txt#url-matching-based-on-path-values) via Google.
-	 */
-	allow: StringArrayUnion.optional(),
-	/**
-	 * @description
-	 * [ At least one or more `disallow` or `allow` entries per rule ] Prohibits indexing site sections or individual pages.
-	 * @example
-	 * ```ts
-	 * policy:[
-	 *  {
-	 *    disallow:[
-	 *      "/admin",
-	 *      "/uploads/1989-08-21/*.jpg$"
-	 *    ]
-	 *  }
-	 * ]
-	 * ```
-	 * Path-based URL matching, refer to [SYNTAX](https://developers.google.com/search/docs/crawling-indexing/robots/robots_txt#url-matching-based-on-path-values) via Google.
-	 */
-	disallow: StringArrayUnion.optional(),
-	/**
-	 * @description
-	 * [ Optional ] Specifies the minimum interval (in seconds) for the search robot to wait after loading one page, before starting to load another.
-	 *
-	 * @example
-	 * ```ts
-	 * policy:[{crawlDelay:5}]
-	 * ```
-	 * About the [Crawl-delay](https://yandex.com/support/webmaster/robot-workings/crawl-delay.html#crawl-delay) directive.
-	 */
-	crawlDelay: z.number().optional(),
-	/**
-	 * @description
-	 * [ Optional ] Indicates to the robot that the page URL contains parameters (like UTM tags) that should be ignored when indexing it.
-	 *
-	 * @example
-	 * ```bash
-	 * # for URLs like:
-	 * www.example2.com/index.php?page=1&sid=2564126ebdec301c607e5df
-	 * www.example2.com/index.php?page=1&sid=974017dcd170d6c4a5d76ae
-	 * ```
-	 * ```ts
-	 * policy:[
-	 *  {
-	 *    cleanParam: [
-	 *      "sid /index.php",
-	 *    ]
-	 *  }
-	 * ]
-	 * ```
-	 * For additional examples, please consult
-	 * Yandex's [SYNTAX](https://yandex.com/support/webmaster/robot-workings/clean-param.html#clean-param__additional) guide.
-	 */
-	cleanParam: StringArrayUnion.optional(),
+export const PolicyOptionsSchema = Schema.Struct({
+	userAgent: Schema.optional(
+		Schema.Union(UserAgentSchema, Schema.Array(UserAgentSchema))
+	).annotations({
+		description:
+			'User Agent - Specify the user agent(s) that the policy applies to. This can be a single user agent, an array of user agents, or the wildcard "*" to apply to all user agents.',
+	}),
+	allow: Schema.optional(StringArrayUnion).annotations({
+		description:
+			'Allow - Specify the paths that are allowed for the specified user agents. This can be a single path or an array of paths.',
+	}),
+	disallow: Schema.optional(StringArrayUnion).annotations({
+		description:
+			'Disallow - Specify the paths that are disallowed for the specified user agents. This can be a single path or an array of paths.',
+	}),
+	crawlDelay: Schema.optional(Schema.Number).annotations({
+		description:
+			'Crawl Delay - Specify the crawl delay in seconds for the specified user agents. This tells search engine bots how many seconds to wait between requests to the server.',
+	}),
+	cleanParam: Schema.optional(StringArrayUnion).annotations({
+		description:
+			'Clean Param - Specify URL parameters that should be ignored by search engine bots when crawling the site. This can help prevent duplicate content issues caused by URL parameters.',
+	}),
+}).annotations({
+	title: 'Policy Options Schema',
+	description:
+		'Schema for defining the options for a robots.txt policy, including user agents, allowed and disallowed paths, crawl delay, and clean parameters.',
+	identifier: 'PolicyOptions',
 });
 
-export const RobotsTXTConfigSchema = z.object({
-	/**
-	 * @default false
-	 * @description
-	 * [ Optional ] Some crawlers(Yandex) support and only accept domain names.
-	 * @example
-	 * ```ts
-	 * integrations:[
-	 *  robots({
-	 *    host: siteUrl.replace(/^https?:\/\/|:\d+/g, "")
-	 *  })
-	 * ]
-	 * ```
-	 */
-	host: StringBooleanUnion.optional(),
-	/**
-	 * @description
-	 * [ Optional, zero or more per file ] The location of a sitemap for this website.
-	 * @example
-	 * ```ts
-	 * sitemap: [
-	 *  "https://example.com/sitemap.xml",
-	 *  "https://www.example.com/sitemap.xml"
-	 * ]
-	 * ```
-	 * The value of the [SITEMAP](https://developers.google.com/search/docs/crawling-indexing/robots/robots_txt#sitemap) field is case-sensitive.
-	 */
-	sitemap: StringArrayBooleanUnion.optional(),
-	/**
-	 * @description
-	 * [ Optional ] List of `policy` rules.
-	 * @default
-	 * ```ts
-	 * policy:[
-	 *  {
-	 *    userAgent: "*",
-	 *    allow: "/"
-	 *  }
-	 * ]
-	 * ```
-	 * For more help, refer to [SYNTAX](https://yandex.com/support/webmaster/controlling-robot/robots-txt.html#recommend) by Yandex.
-	 */
-	policy: z.array(PolicyOptionsSchema).optional(),
+/**
+ * Robots.txt configuration schema, which includes options for host, sitemap, and an array of policy options.
+ */
+export const RobotsTXTConfigSchema = Schema.Struct({
+	host: Schema.optional(Schema.Union(Schema.String, Schema.Boolean)).annotations({
+		description:
+			'Host - Specify the preferred domain for the site. This can be a string (e.g., "www.example.com") or a boolean (true to use the current domain, false to omit the Host directive).',
+	}),
+	sitemap: Schema.optional(Schema.Union(StringArrayUnion, Schema.Boolean)).annotations({
+		description:
+			'Sitemap - Specify the URL(s) of the sitemap(s) for the site. This can be a single URL, an array of URLs, or a boolean (true to use the default sitemap location, false to omit the Sitemap directive).',
+	}),
+	policy: Schema.optional(Schema.Array(PolicyOptionsSchema)).annotations({
+		description:
+			'Policy - An array of policy objects that define the rules for different user agents. Each policy object can specify the user agents it applies to, allowed and disallowed paths, crawl delay, and clean parameters.',
+	}),
+}).annotations({
+	title: 'Robots.txt Configuration Schema',
+	description:
+		'Schema for configuring the robots.txt file, including host, sitemap, and policy options.',
+	identifier: 'RobotsTXTConfig',
 });
 
-export type SearchEngine = z.infer<typeof SearchEngines>;
-export type UserAgent = z.infer<typeof UserAgentSchema>;
-export type PolicyOptions = z.infer<typeof PolicyOptionsSchema>;
-export type RobotsConfig = z.infer<typeof RobotsTXTConfigSchema>;
+/**
+ * Type for the Robots TXT Search Engine Bots, which includes all supported search engine bots for the robots.txt configuration.
+ */
+export type SearchEngine = typeof SearchEngines.Type;
+
+/**
+ * Type for the User Agent, which can be either a specific search engine bot or the wildcard "*" to apply to all user agents.
+ */
+export type UserAgent = typeof UserAgentSchema.Type;
+
+/**
+ * Type for the policy options, which includes user agents, allowed and disallowed paths, crawl delay, and clean parameters for the robots.txt configuration.
+ */
+export type PolicyOptions = typeof PolicyOptionsSchema.Type;
+
+/**
+ * Type for the robots.txt configuration, which includes options for host, sitemap, and an array of policy options.
+ */
+export type RobotsConfig = typeof RobotsTXTConfigSchema.Type;
+
+/**
+ * Resolved type for the robots.txt configuration, where all optional fields have been resolved to their default values if not provided.
+ */
+export type RobotsConfigResolved = typeof RobotsTXTConfigSchema.Encoded;

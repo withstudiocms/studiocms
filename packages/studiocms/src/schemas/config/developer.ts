@@ -1,31 +1,38 @@
-import { z } from 'astro/zod';
+import * as Schema from 'effect/Schema';
+import { OptionalWithDefaults } from '../custom.js';
 
-export interface DeveloperConfig {
-	/**
-	 * Enable demo mode for the site
-	 *
-	 * If set to an object, the site will be in demo mode, and the user will be able to login with the provided username and password.
-	 *
-	 * @default false
-	 * @example
-	 * ```ts
-	 * {
-	 *   demoMode: {
-	 *     username: "demo_user",
-	 *     password: "some-demo-password"
-	 *   }
-	 * }
-	 * ```
-	 */
-	demoMode?: false | { username: string; password: string };
-}
-
-export const developerConfigSchema = z
-	.object({
-		demoMode: z
-			.union([z.literal(false), z.object({ username: z.string(), password: z.string() })])
-			.optional()
-			.default(false),
+/**
+ * Schema for the demo mode configuration.
+ */
+export const DemoModeSchema = Schema.Union(
+	Schema.Boolean,
+	Schema.Struct({
+		username: Schema.String,
+		password: Schema.String,
 	})
-	.optional()
-	.default({ demoMode: false });
+).annotations({
+	description: 'Demo Mode Configuration - Allows enabling demo mode with a username and password',
+});
+
+/**
+ * Schema for the developer configuration.
+ */
+export const DeveloperConfigSchema = Schema.Struct({
+	demoMode: OptionalWithDefaults(DemoModeSchema, false).annotations({
+		description: 'Demo Mode - Allows enabling or disabling of the demo mode',
+	}),
+}).annotations({
+	title: 'Developer Configuration',
+	description: 'Configuration options related to development features',
+	identifier: 'DeveloperConfig',
+});
+
+/**
+ * Type for the developer configuration.
+ */
+export type DeveloperConfig = typeof DeveloperConfigSchema.Encoded;
+
+/**
+ * Resolved type for the developer configuration.
+ */
+export type DeveloperConfigResolved = typeof DeveloperConfigSchema.Type;

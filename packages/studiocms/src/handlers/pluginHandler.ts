@@ -19,15 +19,16 @@ import { compare as semCompare } from 'semver';
 import { loadEnv } from 'vite';
 import { StudioCMSDefaultRobotsConfig } from '../consts.js';
 import { StudioCMSError } from '../errors.js';
-import { dynamicSitemap, type RobotsConfig, robotsTXT } from '../integrations/plugins.js';
+import { dynamicSitemap, robotsTXT } from '../integrations/plugins.js';
 import { studioCMSAnalyticsPlugin } from '../plugins/analytics/index.js';
-import type { RenderAugmentSchema } from '../schemas/index.effect.js';
 import type {
 	AvailableDashboardPages,
 	BasePluginHooks,
 	PluginHookParameters,
+	RenderAugmentSchema,
 	SafePluginListItemType,
 	SafePluginListType,
+	SCMSAuthServiceFnOpts,
 	StorageManagerHookParameters,
 	StudioCMSConfig,
 	StudioCMSPlugin,
@@ -74,7 +75,7 @@ export const defaultPlugin: StudioCMSPlugin = {
 	identifier: 'studiocms',
 	studiocmsMinimumVersion: pkgVersion,
 	hooks: {
-		'studiocms:dashboard': ({ setDashboard }) => {
+		'studiocms:dashboard': async ({ setDashboard }) => {
 			setDashboard({
 				translations,
 				dashboardGridItems: [
@@ -157,7 +158,7 @@ export const defaultPlugin: StudioCMSPlugin = {
  */
 type PluginRequire = {
 	source: string;
-	requires: string[];
+	requires: readonly string[];
 };
 
 /**
@@ -218,7 +219,7 @@ type Options = {
 	pkgVersion: string;
 	plugins: StudioCMSPlugin[] | undefined;
 	storageManager: StudioCMSStorageManager | undefined;
-	robotsTXTConfig: boolean | RobotsConfig;
+	robotsTXTConfig: boolean | StudioCMSConfig['features']['robotsTXT'];
 	dashboardRoute: (path: string) => string;
 	webVitals: boolean;
 	dialect: StudioCMSConfig['db']['dialect'];
@@ -411,11 +412,13 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 				hook: H,
 				args: Omit<PluginHookParameters<H>, 'logger'>
 			) => {
-				if (typeof hooks[hook] === 'function') {
+				// biome-ignore lint/complexity/noBannedTypes: the 'Function' type is necessary here for dynamic hook execution
+				const hookFunction = hooks[hook] as Function | undefined;
+				if (typeof hookFunction === 'function') {
 					return await runEffect(
 						Effect.tryPromise(
 							async () =>
-								await hooks[hook]?.({
+								await hookFunction({
 									// biome-ignore lint/suspicious/noExplicitAny: needed for dynamic hook args
 									...(args as any),
 									logger: pLogger,
@@ -581,13 +584,7 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 		 * @param unInjectedAuthProviders - The list of un-injected auth providers.
 		 */
 		function registerOAuthProvider(
-			oAuthProvider: {
-				endpointPath: string;
-				formattedName: string;
-				name: string;
-				svg: string;
-				requiredEnvVariables?: string[];
-			},
+			oAuthProvider: SCMSAuthServiceFnOpts['oAuthProvider'],
 			messages: Messages,
 			unInjectedAuthProviders: Array<{
 				name: string;
@@ -721,7 +718,7 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 			const smHookRunner = runSMHook(storageManager);
 
 			await smHookRunner({
-				setStorageManager({ managerPath }) {
+				async setStorageManager({ managerPath }) {
 					if (managerPath) {
 						finalStorageManagerModulePath = managerPath;
 						finalStorageManagerName = storageManager.name;
@@ -735,7 +732,7 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 				const hookRunner = runHook({ hooks, safeData });
 
 				await hookRunner('studiocms:auth', {
-					setAuthService({ oAuthProvider }) {
+					async setAuthService({ oAuthProvider }) {
 						if (oAuthProvider)
 							registerOAuthProvider(oAuthProvider, messages, unInjectedAuthProviders);
 					},
@@ -813,7 +810,7 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 			const smHookRunner = runSMHook(storageManager);
 
 			await smHookRunner({
-				setStorageManager({ managerPath }) {
+				async setStorageManager({ managerPath }) {
 					if (managerPath) {
 						finalStorageManagerModulePath = managerPath;
 						finalStorageManagerName = storageManager.name;
@@ -832,7 +829,7 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 				const hookRunner = runHook({ hooks, safeData });
 
 				await hookRunner('studiocms:astro-config', {
-					addIntegrations(integration) {
+					async addIntegrations(integration) {
 						if (integration) {
 							if (Array.isArray(integration)) {
 								integrations.push(...integration.map((integration) => ({ integration })));
@@ -844,7 +841,7 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 				});
 
 				await hookRunner('studiocms:auth', {
-					setAuthService({ oAuthProvider }) {
+					async setAuthService({ oAuthProvider }) {
 						if (oAuthProvider)
 							registerOAuthProvider(oAuthProvider, messages, unInjectedAuthProviders);
 					},
@@ -914,7 +911,7 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 							foundSettingsPage = settingsPage;
 						}
 					},
-					augmentDashboard({ components, scripts }) {
+					async augmentDashboard({ components, scripts }) {
 						if (components !== undefined) {
 							const fixed = Object.entries(components).reduce(
 								(acc, [compKey, compPath]) => {
@@ -936,7 +933,7 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 				});
 
 				await hookRunner('studiocms:sitemap', {
-					setSitemap({ sitemaps: pluginSitemaps, triggerSitemap }) {
+					async setSitemap({ sitemaps: pluginSitemaps, triggerSitemap }) {
 						if (triggerSitemap) sitemapEnabled = triggerSitemap;
 
 						if (pluginSitemaps) {
@@ -946,7 +943,7 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 				});
 
 				await hookRunner('studiocms:frontend', {
-					setFrontend({ frontendNavigationLinks }) {
+					async setFrontend({ frontendNavigationLinks }) {
 						if (frontendNavigationLinks) {
 							foundFrontendNavigationLinks = frontendNavigationLinks;
 						}
@@ -954,7 +951,7 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 				});
 
 				await hookRunner('studiocms:rendering', {
-					setRendering({ pageTypes, augments }) {
+					async setRendering({ pageTypes, augments }) {
 						for (const { apiEndpoint, identifier, rendererComponent } of pageTypes || []) {
 							if (apiEndpoint) {
 								pluginEndpoints.push({
@@ -994,7 +991,7 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 				});
 
 				await hookRunner('studiocms:image-service', {
-					setImageService({ imageService }) {
+					async setImageService({ imageService }) {
 						if (imageService) {
 							imageServiceKeys.push({
 								identifier: imageService.identifier,

@@ -1,228 +1,173 @@
-import { z } from 'astro/zod';
+import * as Schema from 'effect/Schema';
 import { RobotsTXTConfigSchema } from '../../integrations/robots/schema.js';
-import { availableTranslationsKeys } from '../../virtuals/i18n/v-files.js';
-import type { StudioCMSPlugin, StudioCMSStorageManager } from '../plugins/index.js';
-import { type AuthConfig, authConfigSchema } from './auth.js';
-import { type DashboardConfig, dashboardConfigSchema } from './dashboard.js';
-import { type DBConfigSchema, dbConfigSchema } from './db.js';
-import { type DeveloperConfig, developerConfigSchema } from './developer.js';
-import { SDKSchema, type StudioCMS_SDKOptions } from './sdk.js';
+import { BooleanDefaultFalse, BooleanDefaultTrue, OptionalWithDefaults } from '../custom.js';
+import { DateTimeFormatOptions, I18nKeySchema } from '../external-schemas.js';
+import { StudioCMSPluginSchema, StudioCMSStorageManagerSchema } from '../plugins/index.js';
+import { AuthConfigSchema } from './auth.js';
+import { DashboardConfigSchema } from './dashboard.js';
+import { DbConfigSchema } from './db.js';
+import { DeveloperConfigSchema } from './developer.js';
+import { SDKConfigSchema } from './sdk.js';
 
-//
-// Exported Schemas for use in other internal packages
-//
-export { dashboardConfigSchema };
+/**
+ * Schema for Locale I18n Configuration, which includes settings for the default locale used in the dashboard translations.
+ */
+export const LocaleI18nConfigSchema = Schema.Struct({
+	defaultLocale: OptionalWithDefaults(I18nKeySchema, 'en').annotations({
+		description: 'Default Locale - Set the default locale for the dashboard translations',
+	}),
+}).annotations({
+	title: 'Locale I18n Configuration',
+	description:
+		'Locale I18n Configuration - Configure the internationalization settings for the dashboard',
+	identifier: 'LocaleI18nConfig',
+});
 
-interface LocaleConfig {
-	/**
-	 * Date Locale used for formatting dates
-	 *
-	 * @default 'en-us'
-	 */
-	dateLocale?: string;
+/**
+ * Schema for the locale configuration, which includes settings for date locale, date time format, and internationalization configuration for the dashboard.
+ */
+export const LocaleConfigSchema = Schema.Struct({
+	dateLocale: OptionalWithDefaults(Schema.String, 'en-us').annotations({
+		description: 'Date Locale - Set the locale for date formatting in the dashboard',
+	}),
+	dateTimeFormat: OptionalWithDefaults(DateTimeFormatOptions, {
+		year: 'numeric',
+		month: 'short',
+		day: 'numeric',
+	}).annotations({
+		description: 'Date Time Format - Set the date and time formatting options for the dashboard',
+	}),
+	i18n: OptionalWithDefaults(LocaleI18nConfigSchema, {}).annotations({
+		description:
+			'I18n Configuration - Configure the internationalization settings for the dashboard',
+	}),
+});
 
-	/**
-	 * DateTime Format Options
-	 *
-	 * @default
-	 * { year: 'numeric', month: 'short', day: 'numeric' }
-	 */
-	dateTimeFormat?: Intl.DateTimeFormatOptions;
+/**
+ * Type for the locale configuration.
+ */
+export type LocaleConfig = typeof LocaleConfigSchema.Encoded;
 
-	/**
-	 * I18n Specific Settings
-	 */
-	i18n?: {
-		/**
-		 * Default Locale for the StudioCMS
-		 *
-		 * This option sets the default language for the StudioCMS application.
-		 *
-		 * It must be one of the available translation keys or 'en' for English.
-		 *
-		 * @remarks
-		 * All translations are 2-letter language codes as per ISO 639-1 standard.
-		 * Existing available translations can be found in the `/src/virtuals/i18n/translations/` directory. or on [Crowdin](https://crowdin.com/project/studiocms).
-		 *
-		 * @default 'en'
-		 */
-		defaultLocale?: string;
-	};
-}
+/**
+ * Resolved type for the locale configuration.
+ */
+export type LocaleConfigResolved = typeof LocaleConfigSchema.Type;
 
-export interface FeaturesConfig {
-	/**
-	 * Allows the user to enable/disable the use of the StudioCMS Custom `astro-robots-txt` Integration
-	 *
-	 * @default robotsTXT: { policy: [ { userAgent: ['*'], allow: ['/'], disallow: ['/dashboard/'] } ] }
-	 */
-	robotsTXT?: boolean | z.infer<typeof RobotsTXTConfigSchema>;
+/**
+ * Schema for defining the options for the RobotsTXT integration within StudioCMS, which includes user agents, allowed and disallowed paths, crawl delay, and clean parameters for the robots.txt configuration.
+ */
+export const StudioCMSRobotsTXTConfigSchema = Schema.Union(Schema.Boolean, RobotsTXTConfigSchema);
 
-	/**
-	 * Enable Quick Actions Menu - Whether to enable the quick actions menu which allows easy access to your dashboard while logged in on non-dashboard pages.
-	 * @default true
-	 */
-	injectQuickActionsMenu?: boolean;
+/**
+ * Schema for the features configuration, which includes various feature flags and settings for the dashboard, such as enabling/disabling the dashboard, authentication, SDK settings, and more.
+ */
+export const FeaturesConfigSchema = Schema.Struct({
+	robotsTXT: OptionalWithDefaults(StudioCMSRobotsTXTConfigSchema, true).annotations({
+		description:
+			'Robots TXT Configuration - Configure the robots.txt settings for the dashboard, allowing for customization of the robots.txt file served by the dashboard to control how search engines and web crawlers interact with the dashboard.',
+	}),
+	injectQuickActionsMenu: BooleanDefaultTrue.annotations({
+		description:
+			'Inject Quick Actions Menu - Allows injecting a quick actions menu in the dashboard for easy access to common actions',
+	}),
+	sdk: OptionalWithDefaults(SDKConfigSchema, true).annotations({
+		description:
+			'SDK Configuration with Default - Allows configuring the SDK with cache settings, defaults to enabled with a 5 minute lifetime',
+	}),
+	dashboardConfig: OptionalWithDefaults(DashboardConfigSchema, {}).annotations({
+		description:
+			'Dashboard Configuration - Configure settings related to the dashboard, such as enabling/disabling the dashboard, customizing the favicon, and configuring security settings.',
+	}),
+	authConfig: OptionalWithDefaults(AuthConfigSchema, {}).annotations({
+		description:
+			'Authentication Configuration - Configure settings related to authentication, such as enabling/disabling authentication and configuring authentication providers.',
+	}),
+	developerConfig: OptionalWithDefaults(DeveloperConfigSchema, {}).annotations({
+		description:
+			'Developer Configuration - Configure settings related to development features, such as enabling/disabling demo mode.',
+	}),
+	preferredImageService: Schema.optional(Schema.String).annotations({
+		description:
+			'Preferred Image Service - Set the preferred image service for handling image processing tasks, such as resizing and optimization. This can be set to a specific image service provider or left undefined to use the default image service.',
+	}),
+	webVitals: BooleanDefaultFalse.annotations({
+		description:
+			'Web Vitals - Enable or disable the collection of web vitals metrics for performance monitoring and optimization.',
+	}),
+}).annotations({
+	title: 'Features Configuration',
+	description:
+		'Features Configuration - Configure various features for the dashboard, such as enabling/disabling the dashboard, authentication, SDK settings, and more.',
+	identifier: 'FeaturesConfig',
+});
 
-	/**
-	 * SDKSchema is a Zod schema that validates the SDK configuration.
-	 * It can either be a boolean or an object containing cache configuration.
-	 *
-	 * If it is a boolean, it defaults to `true` and transforms into an object
-	 * with default cache configuration.
-	 *
-	 * If it is an object, it must contain the `cacheConfig` property which is
-	 * validated by the `SDKCacheSchema`.
-	 */
-	sdk?: StudioCMS_SDKOptions;
+/**
+ * Type for the features configuration.
+ */
+export type FeaturesConfig = typeof FeaturesConfigSchema.Encoded;
 
-	/**
-	 * Allows customization of the Dashboard Configuration
-	 */
-	dashboardConfig?: DashboardConfig;
+/**
+ * Resolved type for the features configuration, where all optional fields have been resolved to their default values if not provided.
+ */
+export type FeaturesConfigResolved = typeof FeaturesConfigSchema.Type;
 
-	/**
-	 * Auth Configuration - Allows customization of the Authentication Configuration
-	 */
-	authConfig?: AuthConfig;
+/**
+ * Schema for the processed SDK configuration, which is the resulting configuration after processing the input SDK configuration, including cache settings with defaults applied.
+ */
+export const StudioCMSOptionsSchema = Schema.Struct({
+	dbStartPage: BooleanDefaultTrue.annotations({
+		description: 'DB Start Page - Whether to start into setup mode',
+	}),
+	verbose: BooleanDefaultFalse.annotations({
+		description: 'Verbose Logging - Whether to enable verbose logging for debugging purposes',
+	}),
+	logLevel: Schema.optionalWith(
+		Schema.Literal('All', 'Fatal', 'Error', 'Warning', 'Info', 'Debug', 'Trace', 'None'),
+		{
+			default: () => 'Info',
+		}
+	).annotations({
+		description: 'Log Level - Set the LogLevel for Effect based code',
+	}),
+	db: OptionalWithDefaults(DbConfigSchema, {}).annotations({
+		description: 'Database Configuration - Configure the database settings for StudioCMS',
+	}),
+	plugins: Schema.optional(Schema.mutable(Schema.Array(StudioCMSPluginSchema))).annotations({
+		description: 'Plugins - Add plugins to the StudioCMS to extend its functionality',
+	}),
+	storageManager: Schema.optional(StudioCMSStorageManagerSchema).annotations({
+		description:
+			'Storage Manager - Configure the storage manager for handling file uploads and storage',
+	}),
+	componentRegistry: Schema.optional(
+		Schema.Record({
+			key: Schema.String,
+			value: Schema.String,
+		})
+	).annotations({
+		description:
+			'Component Registry - A record of custom components that can be used in the dashboard, where the key is the component name and the value is the path to the component',
+	}),
+	locale: OptionalWithDefaults(LocaleConfigSchema, {}).annotations({
+		description: 'Locale Configuration - Configure locale specific settings for the dashboard',
+	}),
+	features: OptionalWithDefaults(FeaturesConfigSchema, {}).annotations({
+		description:
+			'Features Configuration - Configure various features for the dashboard, such as enabling/disabling the dashboard, authentication, SDK settings, and more.',
+	}),
+}).annotations({
+	title: 'StudioCMS Configuration',
+	description:
+		'Main configuration schema for StudioCMS, including database settings, plugins, storage manager, locale settings, and feature flags.',
+	identifier: 'StudioCMSConfig',
+});
 
-	/**
-	 * Developer Options/Configuration
-	 */
-	developerConfig?: DeveloperConfig;
+/**
+ * Type for the main StudioCMS configuration.
+ */
+export type StudioCMSOptions = typeof StudioCMSOptionsSchema.Encoded;
 
-	/**
-	 * Set the identifier of the Preferred Image Service
-	 *
-	 * Requires an Image Service to be installed such as 'cloudinary-js'
-	 */
-	preferredImageService?: string;
-
-	/**
-	 * Enable Web Vitals Collection and Dashboard
-	 *
-	 * @default false
-	 */
-	webVitals?: boolean;
-}
-
-export interface StudioCMSOptions {
-	/**
-	 * Project Initialization Page - Used during First Time Setup to initialize the database
-	 *
-	 * @default true
-	 */
-	dbStartPage?: boolean;
-
-	/**
-	 * Whether to show verbose output
-	 * @default false
-	 */
-	verbose?: boolean;
-
-	/**
-	 * Set the LogLevel for Effect based code
-	 */
-	logLevel?: 'All' | 'Fatal' | 'Error' | 'Warning' | 'Info' | 'Debug' | 'Trace' | 'None';
-
-	/**
-	 * Database Configuration
-	 */
-	db?: DBConfigSchema;
-
-	/**
-	 * Add Plugins to the StudioCMS
-	 */
-	plugins?: StudioCMSPlugin[];
-
-	/**
-	 * Storage Manager Configuration
-	 */
-	storageManager?: StudioCMSStorageManager;
-
-	/**
-	 * Component Registry
-	 */
-	componentRegistry?: Record<string, string>;
-
-	/**
-	 * Locale specific settings
-	 */
-	locale?: LocaleConfig;
-
-	/**
-	 * Allows adjusting the StudioCMS Dashboard features
-	 */
-	features?: FeaturesConfig;
-}
-
-export const StudioCMSOptionsSchema = z
-	.object({
-		dbStartPage: z.boolean().optional().default(true),
-		verbose: z.boolean().optional().default(false),
-		logLevel: z
-			.union([
-				z.literal('All'),
-				z.literal('Fatal'),
-				z.literal('Error'),
-				z.literal('Warning'),
-				z.literal('Info'),
-				z.literal('Debug'),
-				z.literal('Trace'),
-				z.literal('None'),
-			])
-			.optional()
-			.default('Info'),
-		db: dbConfigSchema,
-		plugins: z.custom<StudioCMSPlugin[]>().optional(),
-		storageManager: z.custom<StudioCMSStorageManager>().optional(),
-		componentRegistry: z.record(z.string()).optional(),
-		locale: z
-			.object({
-				dateLocale: z.string().optional().default('en-us'),
-				dateTimeFormat: z.custom<Intl.DateTimeFormatOptions>().optional().default({
-					year: 'numeric',
-					month: 'short',
-					day: 'numeric',
-				}),
-				i18n: z
-					.object({
-						defaultLocale: z
-							.string()
-							.superRefine((val, ctx) => {
-								if (!availableTranslationsKeys.includes(val)) {
-									ctx.addIssue({
-										code: z.ZodIssueCode.custom,
-										message: `Locale '${val}' is not supported. Available locales are: ${availableTranslationsKeys.join(
-											', '
-										)}`,
-									});
-									return z.NEVER;
-								}
-							})
-							.optional()
-							.default('en'),
-					})
-					.optional()
-					.default({}),
-			})
-			.optional()
-			.default({}),
-		features: z
-			.object({
-				robotsTXT: z.union([RobotsTXTConfigSchema, z.boolean()]).optional().default(true),
-				injectQuickActionsMenu: z.boolean().optional().default(true),
-				sdk: SDKSchema,
-				dashboardConfig: dashboardConfigSchema,
-				authConfig: authConfigSchema,
-				developerConfig: developerConfigSchema,
-				preferredImageService: z.string().optional(),
-				webVitals: z.boolean().optional().default(false),
-			})
-			.optional()
-			.default({}),
-	})
-	.optional()
-	.default({});
-
-export type StudioCMSConfig = typeof StudioCMSOptionsSchema._output;
+/**
+ * Resolved type for the main StudioCMS configuration, where all optional fields have been resolved to their default values if not provided.
+ */
+export type StudioCMSConfig = typeof StudioCMSOptionsSchema.Type;

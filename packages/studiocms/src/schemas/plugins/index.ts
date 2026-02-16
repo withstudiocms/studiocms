@@ -1,490 +1,433 @@
-import type { AstroIntegrationLogger } from 'astro';
-import { z } from 'astro/zod';
-import { pluginTranslationsSchema } from './i18n.js';
+import * as Schema from 'effect/Schema';
+import { FunctionSchema } from 'effectify/schemas';
+import { AstroIntegrationLoggerSchema, AstroIntegrationSchema } from '../external-schemas.js';
+import { PluginTranslationsSchema } from './i18n.js';
 import {
-	astroIntegrationSchema,
 	DashboardPageSchema,
 	FrontendNavigationLinksSchema,
-	type GridItemInput,
+	GridItemInputSchema,
 	PageTypesSchema,
 	SettingsPageSchema,
 } from './shared.js';
 
-/**
- * Schema for augmenting component rendering.
- *
- * This schema defines an object with:
- * - `type`: A literal string value 'component' indicating the schema type.
- * - `components`: A record mapping string keys to string values, representing component identifiers and their corresponding values.
- */
-const ComponentRenderAugmentSchema = z.object({
-	type: z.literal('component'),
-	id: z.string(),
-	components: z.record(z.string()),
-});
+export type {
+	AvailableDashboardPages,
+	DashboardPage,
+	FinalDashboardPage,
+	SettingsField,
+	StudioCMSColorwaySchema,
+} from './shared.js';
 
 /**
- * Schema for a render augment component with a 'prefix' type.
- *
- * Extends the `ComponentRenderAugmentSchema` by adding:
- * - `type`: A literal value 'prefix' to distinguish this augment type.
- * - `html`: A string containing the HTML content to be rendered as a prefix.
+ * This module defines schemas for rendering augmentations in the StudioCMS plugin system.
  */
-const PrefixRenderAugmentSchema = ComponentRenderAugmentSchema.extend({
-	type: z.literal('prefix'),
-	html: z.string(),
-});
+export class RenderAugmentBaseSchema extends Schema.Class<RenderAugmentBaseSchema>(
+	'RenderAugmentBaseSchema'
+)({
+	id: Schema.String,
+	components: Schema.Record({
+		key: Schema.String,
+		value: Schema.String,
+	}),
+}) {}
 
 /**
- * Schema for a render augment component with a 'suffix' type.
- *
- * Extends the `ComponentRenderAugmentSchema` by adding:
- * - `type`: A literal value of 'suffix' to distinguish this augment type.
- * - `html`: A string containing the HTML content to be rendered as the suffix.
+ * Represents an augmentation to the rendering process that adds a component with specified properties.
  */
-const SuffixRenderAugmentSchema = ComponentRenderAugmentSchema.extend({
-	type: z.literal('suffix'),
-	html: z.string(),
-});
+export class ComponentRenderAugmentSchema extends RenderAugmentBaseSchema.extend<ComponentRenderAugmentSchema>(
+	'ComponentRenderAugmentSchema'
+)({
+	type: Schema.Literal('component'),
+}) {}
 
 /**
- * A Zod schema that allows validation against one of the following augment schemas:
- * - `ComponentRenderAugmentSchema`
- * - `PrefixRenderAugmentSchema`
- * - `SuffixRenderAugmentSchema`
- *
- * This union schema is used to validate render augmentations for plugins,
- * ensuring that the input matches one of the supported augment schema types.
+ * Represents an augmentation to the rendering process that adds HTML content before the main content (prefix).
  */
-export const RenderAugmentSchema = z.union([
+export class PrefixRenderAugmentSchema extends RenderAugmentBaseSchema.extend<PrefixRenderAugmentSchema>(
+	'PrefixRenderAugmentSchema'
+)({
+	type: Schema.Literal('prefix'),
+	html: Schema.String,
+}) {}
+
+/**
+ * Represents an augmentation to the rendering process that adds HTML content after the main content (suffix).
+ */
+export class SuffixRenderAugmentSchema extends RenderAugmentBaseSchema.extend<SuffixRenderAugmentSchema>(
+	'SuffixRenderAugmentSchema'
+)({
+	type: Schema.Literal('suffix'),
+	html: Schema.String,
+}) {}
+
+/**
+ * Represents an augmentation to the rendering process, which can be of three types:
+ * - Component: Augments the rendering by adding a component with specified properties.
+ * - Prefix: Augments the rendering by adding HTML content before the main content.
+ * - Suffix: Augments the rendering by adding HTML content after the main content.
+ */
+export const RenderAugmentSchema = Schema.Union(
 	ComponentRenderAugmentSchema,
 	PrefixRenderAugmentSchema,
-	SuffixRenderAugmentSchema,
-]);
+	SuffixRenderAugmentSchema
+);
 
 /**
- * An optional array schema for render augments.
- *
- * This schema validates an array of `RenderAugmentSchema` objects, or `undefined` if not provided.
- * Useful for specifying additional rendering augmentations in a flexible manner.
+ * Represents an array of rendering augmentations, allowing for multiple augmentations to be applied to the rendering process.
  */
-export const RenderAugmentsSchema = z.array(RenderAugmentSchema).optional();
+export const RenderAugmentsSchema = Schema.Array(RenderAugmentSchema);
 
 /**
- * Schema for options used to sanitize HTML content in StudioCMS.
- *
- * @remarks
- * This schema defines the configuration for controlling which elements and attributes
- * are allowed, blocked, or dropped during the sanitization process. It also provides
- * options for handling components, custom elements, and comments.
- *
- * @property allowElements - An array of strings specifying elements that should not be removed. All other elements will be dropped.
- * @property blockElements - An array of strings specifying elements that should be removed, but their children will be kept.
- * @property dropElements - An array of strings specifying elements (including nested elements) that should be removed entirely.
- * @property allowAttributes - An object mapping attribute names to arrays of allowed tag names. Only matching attributes will be retained.
- * @property dropAttributes - An object mapping attribute names to arrays of tag names for which the attribute should be dropped.
- * @property allowComponents - If true, components will be checked against built-in and custom configuration to determine retention. Default is false.
- * @property allowCustomElements - If true, custom elements will be checked against built-in and custom configuration to determine retention. Default is false.
- * @property allowComments - If true, HTML comments will be retained. Default is false.
+ * Represents an array of dashboard pages, allowing for multiple pages to be added to the StudioCMS dashboard through plugins.
  */
-export const StudioCMSSanitizeOptionsSchema = z
-	.object({
-		/** An Array of strings indicating elements that the sanitizer should not remove. All elements not in the array will be dropped. */
-		allowElements: z.array(z.string()).optional(),
-		/** An Array of strings indicating elements that the sanitizer should remove. Children will be kept. */
-		blockElements: z.array(z.string()).optional(),
-		/** An Array of strings indicating elements (including nested elements) that the sanitizer should remove. */
-		dropElements: z.array(z.string()).optional(),
-		/** An object where each key is the attribute name and the value is an array of allowed tag names. Matching attributes will not be removed. All attributes that are not in the array will be dropped. */
-		allowAttributes: z.record(z.array(z.string())).optional(),
-		/** An object where each key is the attribute name and the value is an array of dropped tag names. Matching attributes will be removed. */
-		dropAttributes: z.record(z.array(z.string())).optional(),
-		/** A boolean value to remove components and their children. If set to true, components will be subject to built-in and custom configuration checks (and will be retained or dropped based on those checks). Default is `false`. */
-		allowComponents: z.boolean().optional(),
-		/** A boolean value to remove custom elements and their children. If set to true, custom elements will be subject to built-in and custom configuration checks (and will be retained or dropped based on those checks). Default is `false` */
-		allowCustomElements: z.boolean().optional(),
-		/** A boolean value to remove HTML comments. Set to true in order to keep comments. Default is `false`. */
-		allowComments: z.boolean().optional(),
-	})
-	.optional();
-
-const dashboardPagesArray = z.array(DashboardPageSchema).optional();
-
-const astroIntegrationLoggerSchema = z.custom<AstroIntegrationLogger>();
+export const dashboardPagesArray = Schema.Array(DashboardPageSchema);
 
 /**
- * A schema for a safe plugin list item in StudioCMS.
- * This schema omits certain properties from the `StudioCMSPluginSchema`:
- * - `integration`
- * - `studiocmsMinimumVersion`
- * - `sitemaps`
- * - `dashboardGridItems`
- * - `triggerSitemap`
- *
- * These properties are excluded to ensure that the plugin list item schema
- * only includes the necessary and safe properties for use in the application.
+ * Safe Plugin List Item Schema for validating plugin information without including potentially unsafe or complex properties such as render functions or integration loggers. This schema focuses on validating basic plugin metadata and configuration pages, ensuring that the essential information about the plugin is correctly structured while omitting properties that may require more complex validation or could pose security risks if not handled properly.
  */
-export const SafePluginListItemSchema = z.object({
-	/**
-	 * Identifier of the plugin from the package.json
-	 */
-	identifier: z.string(),
-
-	/**
-	 * Label of the plugin to be displayed in the StudioCMS Dashboard
-	 */
-	name: z.string(),
-
-	/**
-	 * If this exists, the plugin will have its own setting page
-	 */
-	settingsPage: SettingsPageSchema.optional(),
-
-	/**
-	 * Navigation Links for use with the `@studiocms/frontend` package to display links in the frontend
-	 */
-	frontendNavigationLinks: FrontendNavigationLinksSchema.optional(),
-
-	/**
-	 * Page Type definition. If this is present, the plugin wants to be able to modify the page creation process
-	 */
-	pageTypes: PageTypesSchema.optional(),
-});
-
-export const SafePluginListSchema = z.array(SafePluginListItemSchema);
-
-const SitemapConfigSchema = z.object({
-	/**
-	 * If this is true, the plugin will enable the Sitemap
-	 */
-	triggerSitemap: z.boolean().optional(),
-
-	/**
-	 * Allows the plugin to add sitemap endpoints
-	 */
-	sitemaps: z
-		.array(
-			z.object({
-				/**
-				 * The name of the plugin
-				 */
-				pluginName: z.string(),
-
-				/**
-				 * The path to the sitemap XML file
-				 */
-				sitemapXMLEndpointPath: z.string().or(z.instanceof(URL)),
-			})
-		)
-		.optional(),
-});
-
-const DashboardConfigSchema = z.object({
-	/**
-	 * The translations for the plugin in the following format:
-	 *
-	 * ```json
-	 * {
-	 *   "en": {
-	 *    "component1": {
-	 *      "title": "Title",
-	 *      "description": "Description"
-	 *    },
-	 *    "component2": {
-	 *      "title": "Title",
-	 *      "description": "Description"
-	 *    }
-	 *   },
-	 *   "fr": {
-	 *    "component1": {
-	 *      "title": "Titre",
-	 *      "description": "Description"
-	 *    },
-	 *    "component2": {
-	 *      "title": "Titre",
-	 *      "description": "Description"
-	 *    }
-	 *   }
-	 * }
-	 * ```
-	 */
-	translations: pluginTranslationsSchema,
-
-	/**
-	 * Allows the plugin to add custom dashboard grid items
-	 */
-	dashboardGridItems: z.custom<GridItemInput[]>().optional(),
-
-	/**
-	 * Dashboard Pages for the plugin
-	 */
-	dashboardPages: z
-		.object({
-			/**
-			 * Pages for the user role
-			 *
-			 * These are shown in the "Dashboard" section of the dashboard sidebar
-			 */
-			user: dashboardPagesArray,
-
-			/**
-			 * Pages for the editor role
-			 *
-			 * These are shown in the "Admin" section of the dashboard sidebar
-			 */
-			admin: dashboardPagesArray,
-		})
-		.optional(),
-
-	/**
-	 * If this exists, the plugin will have its own setting page
-	 */
+export const SafePluginListItemSchema = Schema.Struct({
+	identifier: Schema.String,
+	name: Schema.String,
 	settingsPage: SettingsPageSchema,
-});
-
-const DashboardAugmentSchema = z.object({
-	/**
-	 * Scripts to be added to the dashboard
-	 *
-	 * Scripts should be paths to the client side files that will be loaded in the dashboard
-	 *
-	 * These files should be able to imported as ambient modules
-	 */
-	scripts: z.array(z.string()).optional(),
-
-	/**
-	 * Astro Components to be added to the dashboard
-	 *
-	 * These components should be self-contained and not rely on any external state
-	 *
-	 * The key is the component identifier, and the value is the path to the component file
-	 */
-	components: z.record(z.string()).optional(),
-});
-
-const FrontendConfigSchema = z.object({
-	/**
-	 * Navigation Links for use with the `@studiocms/frontend` package to display links in the frontend
-	 */
 	frontendNavigationLinks: FrontendNavigationLinksSchema,
-});
-
-const RenderingConfigSchema = z.object({
-	/**
-	 * Page Type definition. If this is present, the plugin wants to be able to modify the page creation process
-	 */
 	pageTypes: PageTypesSchema,
-
-	/**
-	 * Augments to modify component rendering
-	 *
-	 * When adding new augments, please ensure that the `id` field is unique across all augments.
-	 *
-	 * the `id` field is also used to identify augment translations from the plugin translations
-	 * schema, below is an example of how to add augment translations:
-	 *
-	 * ```json
-	 * {
-	 *   "en": {
-	 *    "augments": {
-	 *      "augment-id": "This is the augment text"
-	 *    }
-	 *   },
-	 *   "fr": {
-	 *    "augments": {
-	 *      "augment-id": "Ceci est le texte d'augmentation"
-	 *    }
-	 *   }
-	 * }
-	 * ```
-	 */
-	augments: RenderAugmentsSchema,
 });
-
-const ImageServiceConfigSchema = z.object({
-	imageService: z
-		.object({
-			/**
-			 * Identifier used for the `preferredImageService` setting on StudioCMS
-			 */
-			identifier: z.string(),
-			/**
-			 * The Service Path to the file that contains your service, the service must be exported as a default export.
-			 *
-			 * For an example of a service, checkout `/src/imageServices/cloudinary-js-service.ts` and its plugin `/src/imageServices/cloudinary-js.ts` within the StudioCMS package on GitHub.
-			 */
-			servicePath: z.string().or(z.instanceof(URL)),
-		})
-		.optional(),
-});
-
-const AuthServiceConfigSchema = z.object({
-	oAuthProvider: z.object({
-		/**
-		 * The name of the OAuth provider, e.g., 'google', 'github', etc.
-		 */
-		name: z.string(),
-
-		/**
-		 * The formatted name of the OAuth provider, e.g., 'Google', 'GitHub', etc.
-		 */
-		formattedName: z.string(),
-
-		/**
-		 * The inline SVG image for the OAuth provider button.
-		 * This should be a string containing the SVG markup.
-		 *
-		 * Note: Please ensure the class `oauth-logo` is included in the SVG for styling purposes.
-		 *
-		 * @example
-		 * `<svg width="24px" height="24px" viewBox="0 0 98 96" xmlns="http://www.w3.org/2000/svg" class="oauth-logo">...</svg>`,
-		 */
-		svg: z.string(),
-
-		/**
-		 * The path to the endpoint file that handles the OAuth authentication for this provider.
-		 * This should be a string or URL pointing to the endpoint ts file.
-		 *
-		 * Note: The endpoint should export two functions:
-		 * - `initSession`: Initializes the session for the OAuth provider.
-		 * - `initCallback`: Handles the callback from the OAuth provider after authentication.
-		 *
-		 * @example
-		 * `/src/auth/providers/google.ts`
-		 */
-		endpointPath: z.string(),
-
-		/**
-		 * Required environment variables for the OAuth provider.
-		 * This is an optional array of strings that specifies which environment variables are required for the OAuth provider to function correctly.
-		 * If specified, these variables must be set in the environment for the OAuth provider to work.
-		 */
-		requiredEnvVariables: z.array(z.string()).optional(),
-	}),
-});
-
-const StorageManagerConfigSchema = z.object({
-	managerPath: z.string(),
-});
-
-type BaseHookSchema = {
-	logger: typeof astroIntegrationLoggerSchema;
-};
-
-const baseHookSchema: z.ZodObject<BaseHookSchema> = z.object({
-	logger: astroIntegrationLoggerSchema,
-});
-
-const astroConfigHookSchema = baseHookSchema.extend({
-	addIntegrations: z.function(
-		z.tuple([z.union([astroIntegrationSchema, z.array(astroIntegrationSchema)])]),
-		z.void()
-	),
-});
-
-type SCMSAstroConfigHook = z.infer<typeof astroConfigHookSchema>;
-
-const studiocms_SitemapHookSchema = baseHookSchema.extend({
-	setSitemap: z.function(z.tuple([SitemapConfigSchema]), z.void()),
-});
-
-type StudioCMSSitemapHook = z.infer<typeof studiocms_SitemapHookSchema>;
-
-const studiocms_DashboardHookSchema = baseHookSchema.extend({
-	setDashboard: z.function(z.tuple([DashboardConfigSchema]), z.void()),
-	augmentDashboard: z.function(z.tuple([DashboardAugmentSchema]), z.void()),
-});
-
-type StudioCMSDashboardHook = z.infer<typeof studiocms_DashboardHookSchema>;
-
-const studiocms_FrontendHookSchema = baseHookSchema.extend({
-	setFrontend: z.function(z.tuple([FrontendConfigSchema]), z.void()),
-});
-
-type StudioCMSFrontendHook = z.infer<typeof studiocms_FrontendHookSchema>;
-
-const studiocms_RenderingHookSchema = baseHookSchema.extend({
-	setRendering: z.function(z.tuple([RenderingConfigSchema]), z.void()),
-});
-
-type StudioCMSRenderingHook = z.infer<typeof studiocms_RenderingHookSchema>;
-
-const studiocms_ImageServiceHookSchema = baseHookSchema.extend({
-	setImageService: z.function(z.tuple([ImageServiceConfigSchema]), z.void()),
-});
-
-type StudioCMSImageServiceHook = z.infer<typeof studiocms_ImageServiceHookSchema>;
-
-const studiocms_AuthHookSchema = baseHookSchema.extend({
-	setAuthService: z.function(z.tuple([AuthServiceConfigSchema]), z.void()),
-});
-
-const studiocms_StorageManagerHookSchema = baseHookSchema.extend({
-	setStorageManager: z.function(z.tuple([StorageManagerConfigSchema]), z.void()),
-});
-
-type StudioCMSStorageManagerHook = z.infer<typeof studiocms_StorageManagerHookSchema>;
-
-export type SCMSSiteMapFnOpts = z.infer<typeof SitemapConfigSchema>;
-export type SCMSDashboardFnOpts = z.infer<typeof DashboardConfigSchema>;
-export type SCMSDashboardAugmentFnOpts = z.infer<typeof DashboardAugmentSchema>;
-export type SCMSFrontendFnOpts = z.infer<typeof FrontendConfigSchema>;
-export type SCMSRenderingFnOpts = z.infer<typeof RenderingConfigSchema>;
-export type SCMSImageServiceFnOpts = z.infer<typeof ImageServiceConfigSchema>;
-export type SCMSAuthServiceFnOpts = z.infer<typeof AuthServiceConfigSchema>;
-export type SCMSStorageManagerFnOpts = z.infer<typeof StorageManagerConfigSchema>;
-type StudioCMSAuthServiceHook = z.infer<typeof studiocms_AuthHookSchema>;
-
-type PluginHook<OPT> = (options: OPT) => void | Promise<void>;
 
 /**
- * Interface representing the base hooks for plugins in the StudioCMS system.
+ * Safe Plugin List Schema for validating an array of plugins, where each plugin is validated against the SafePluginListItemSchema. This schema ensures that the list of plugins provided to the StudioCMS system adheres to the expected structure and contains valid metadata and configuration pages for each plugin, while excluding properties that may require more complex validation or could pose security risks if not handled properly.
  */
-export interface BasePluginHooks {
-	'studiocms:astro-config': PluginHook<SCMSAstroConfigHook>;
-	'studiocms:auth': PluginHook<StudioCMSAuthServiceHook>;
-	'studiocms:dashboard': PluginHook<StudioCMSDashboardHook>;
-	'studiocms:frontend': PluginHook<StudioCMSFrontendHook>;
-	'studiocms:rendering': PluginHook<StudioCMSRenderingHook>;
-	'studiocms:image-service': PluginHook<StudioCMSImageServiceHook>;
-	'studiocms:sitemap': PluginHook<StudioCMSSitemapHook>;
-}
+export const SafePluginListSchema = Schema.mutable(Schema.Array(SafePluginListItemSchema));
 
-export interface StorageManagerPluginHooks {
-	'studiocms:storage-manager': PluginHook<StudioCMSStorageManagerHook>;
-}
+/**
+ * Schema for StudioCMS Sitemap configuration, allowing plugins to specify whether they trigger sitemap generation and to define custom sitemaps with their corresponding XML endpoint paths. This schema ensures that the sitemap configuration provided by plugins adheres to the expected structure, enabling seamless integration of sitemap generation into the StudioCMS system while providing flexibility for plugins to define their own sitemaps as needed.
+ */
+export const SitemapConfigSchema = Schema.mutable(
+	Schema.Struct({
+		triggerSitemap: Schema.optional(Schema.Boolean),
+		sitemaps: Schema.optional(
+			Schema.Array(
+				Schema.Struct({
+					pluginName: Schema.String,
+					sitemapXMLEndpointPath: Schema.Union(Schema.String, Schema.URL),
+				})
+			)
+		),
+	})
+);
 
-export interface StudioCMSPlugin {
-	/**
-	 * The identifier of the plugin, usually the package name.
-	 */
-	identifier: string;
-	/**
-	 * The name of the plugin, displayed in the StudioCMS Dashboard.
-	 */
-	name: string;
-	/**
-	 * The minimum version of StudioCMS required for this plugin to function correctly.
-	 * This is used to ensure compatibility between the plugin and the StudioCMS core.
-	 * It should be a semantic version string (e.g., "1.0.0").
-	 * If the plugin is not compatible with the current version of StudioCMS, it should not be loaded.
-	 * This is a required field.
-	 * @example "1.0.0"
-	 */
-	studiocmsMinimumVersion: string;
-	/**
-	 * List of plugins that this plugin requires to function correctly.
-	 * This is used to ensure that all required plugins are loaded before this plugin.
-	 * If any required plugin is not found, this plugin will not be loaded.
-	 * This is an optional field.
-	 * @example ["@studiocms/plugin-example", "@studiocms/plugin-another-example"]
-	 */
-	requires?: string[];
-	hooks: {
-		[K in keyof StudioCMS.PluginHooks]?: StudioCMS.PluginHooks[K];
-	} & Partial<Record<string, unknown>>;
-}
+export type SCMSSiteMapFnOpts = typeof SitemapConfigSchema.Type;
 
+/**
+ * Schema for validating the dashboard configuration provided by plugins, including translations, dashboard grid items, and dashboard pages for both user and admin interfaces. This schema ensures that the dashboard configuration adheres to the expected structure, allowing plugins to seamlessly integrate their custom dashboard components and pages into the StudioCMS system while providing necessary translations for internationalization support.
+ */
+export const DashboardConfigSchema = Schema.mutable(
+	Schema.Struct({
+		translations: PluginTranslationsSchema,
+		dashboardGridItems: Schema.optional(Schema.Array(GridItemInputSchema)),
+		dashboardPages: Schema.optional(
+			Schema.Struct({
+				user: dashboardPagesArray,
+				admin: dashboardPagesArray,
+			})
+		),
+		settingsPage: SettingsPageSchema,
+	})
+);
+
+export type SCMSDashboardFnOpts = typeof DashboardConfigSchema.Type;
+
+/**
+ * Schema for validating dashboard augmentations provided by plugins, allowing for the addition of custom components or HTML content to the StudioCMS dashboard. This schema ensures that the dashboard augmentations adhere to the expected structure, enabling plugins to enhance the dashboard experience with their own customizations while maintaining compatibility with the overall StudioCMS system.
+ */
+export const DashboardAugmentSchema = Schema.mutable(
+	Schema.Struct({
+		scripts: Schema.optional(Schema.Array(Schema.String)),
+		components: Schema.optional(
+			Schema.Record({
+				key: Schema.String,
+				value: Schema.String,
+			})
+		),
+	})
+);
+
+export type SCMSDashboardAugmentFnOpts = typeof DashboardAugmentSchema.Type;
+
+/**
+ * Schema for validating the frontend configuration provided by plugins, specifically focusing on the frontend navigation links that plugins can add to the StudioCMS interface. This schema ensures that the frontend configuration adheres to the expected structure, allowing plugins to seamlessly integrate their custom navigation links into the StudioCMS system while providing a consistent user experience across different plugins.
+ */
+export const FrontendConfigSchema = Schema.mutable(
+	Schema.Struct({
+		frontendNavigationLinks: FrontendNavigationLinksSchema,
+	})
+);
+
+export type SCMSFrontendFnOpts = typeof FrontendConfigSchema.Type;
+
+/**
+ * Schema for validating the rendering configuration provided by plugins, including the page types that the plugin can render and any augmentations to the rendering process. This schema ensures that the rendering configuration adheres to the expected structure, allowing plugins to define how they integrate with the rendering system of StudioCMS while providing necessary information about the page types they support and any customizations they apply to the rendering process.
+ */
+export const RenderingConfigSchema = Schema.mutable(
+	Schema.Struct({
+		pageTypes: PageTypesSchema,
+		augments: RenderAugmentsSchema,
+	})
+);
+
+export type SCMSRenderingFnOpts = typeof RenderingConfigSchema.Type;
+
+/**
+ * Schema for validating the image service configuration provided by plugins, allowing plugins to specify an image service with its identifier and service path. This schema ensures that the image service configuration adheres to the expected structure, enabling plugins to integrate their custom image services into the StudioCMS system while providing necessary information about the service for proper functionality.
+ */
+export const ImageServiceConfigSchema = Schema.mutable(
+	Schema.Struct({
+		imageService: Schema.optional(
+			Schema.Struct({
+				identifier: Schema.String,
+				servicePath: Schema.Union(Schema.String, Schema.URL),
+			})
+		),
+	})
+);
+
+export type SCMSImageServiceFnOpts = typeof ImageServiceConfigSchema.Type;
+
+/**
+ * Schema for validating the authentication service configuration provided by plugins, allowing plugins to specify an authentication service with its OAuth provider details. This schema ensures that the authentication service configuration adheres to the expected structure, enabling plugins to integrate their custom authentication services into the StudioCMS system while providing necessary information about the OAuth provider for proper functionality.
+ */
+export const AuthServiceConfigSchema = Schema.mutable(
+	Schema.Struct({
+		oAuthProvider: Schema.Struct({
+			name: Schema.String,
+			formattedName: Schema.String,
+			svg: Schema.String,
+			endpointPath: Schema.String,
+			requiredEnvVariables: Schema.optional(Schema.Array(Schema.String)),
+		}),
+	})
+);
+
+export type SCMSAuthServiceFnOpts = typeof AuthServiceConfigSchema.Type;
+
+/**
+ * Schema for validating the storage manager configuration provided by plugins, allowing plugins to specify a storage manager with its identifier and manager path. This schema ensures that the storage manager configuration adheres to the expected structure, enabling plugins to integrate their custom storage managers into the StudioCMS system while providing necessary information about the manager for proper functionality.
+ */
+export const StorageManagerConfigSchema = Schema.Struct({
+	managerPath: Schema.String,
+});
+
+/**
+ * Base Hook Schema for validating the structure of hooks provided by plugins, including the integration logger that hooks can use to log messages within the StudioCMS system. This schema ensures that the hooks adhere to the expected structure, allowing plugins to implement their custom logic while providing necessary tools for logging and debugging through the integration logger.
+ */
+export class BaseHookSchema extends Schema.Class<BaseHookSchema>('BaseHookSchema')({
+	logger: AstroIntegrationLoggerSchema,
+}) {}
+
+/**
+ * Schema for validating the structure of the astroConfig hook provided by plugins, allowing plugins to add custom integrations to the Astro configuration within the StudioCMS system. This schema extends the BaseHookSchema to include a specific function for adding integrations, ensuring that the astroConfig hook adheres to the expected structure and provides necessary functionality for integrating with Astro while maintaining compatibility with the overall StudioCMS system.
+ */
+export class astroConfigHookSchema extends BaseHookSchema.extend<astroConfigHookSchema>(
+	'astroConfigHookSchema'
+)({
+	addIntegrations: FunctionSchema(
+		Schema.Union(AstroIntegrationSchema, Schema.mutable(Schema.Array(AstroIntegrationSchema))),
+		Schema.Void
+	),
+}) {}
+
+/**
+ * Type definition for the astroConfig hook, representing the expected structure of the hook function that plugins can implement to add custom integrations to the Astro configuration within the StudioCMS system. This type definition ensures that any implementation of the astroConfig hook adheres to the expected structure and provides necessary functionality for integrating with Astro while maintaining compatibility with the overall StudioCMS system.
+ */
+export type SCMSAstroConfigHook = typeof astroConfigHookSchema.Type;
+
+/**
+ * Schema for validating the structure of the sitemap hook provided by plugins, allowing plugins to specify custom sitemap configurations and trigger sitemap generation within the StudioCMS system. This schema extends the BaseHookSchema to include a specific function for setting the sitemap configuration, ensuring that the sitemap hook adheres to the expected structure and provides necessary functionality for managing sitemaps while maintaining compatibility with the overall StudioCMS system.
+ */
+export class SitemapHookSchema extends BaseHookSchema.extend<SitemapHookSchema>(
+	'SitemapHookSchema'
+)({
+	setSitemap: FunctionSchema(SitemapConfigSchema, Schema.Void),
+}) {}
+
+/**
+ * Type definition for the sitemap hook, representing the expected structure of the hook function that plugins can implement to specify custom sitemap configurations and trigger sitemap generation within the StudioCMS system. This type definition ensures that any implementation of the sitemap hook adheres to the expected structure and provides necessary functionality for managing sitemaps while maintaining compatibility with the overall StudioCMS system.
+ */
+export type SCMSSitemapHook = typeof SitemapHookSchema.Type;
+
+/**
+ * Schema for validating the structure of the dashboard hook provided by plugins, allowing plugins to specify custom dashboard configurations and augmentations within the StudioCMS system. This schema extends the BaseHookSchema to include specific functions for setting the dashboard configuration and augmenting the dashboard, ensuring that the dashboard hook adheres to the expected structure and provides necessary functionality for managing and customizing the dashboard while maintaining compatibility with the overall StudioCMS system.
+ */
+export class DashboardHookSchema extends BaseHookSchema.extend<DashboardHookSchema>(
+	'DashboardHookSchema'
+)({
+	setDashboard: FunctionSchema(DashboardConfigSchema, Schema.Void),
+	augmentDashboard: FunctionSchema(DashboardAugmentSchema, Schema.Void),
+}) {}
+
+/**
+ * Type definition for the dashboard hook, representing the expected structure of the hook function that plugins can implement to specify custom dashboard configurations and augmentations within the StudioCMS system. This type definition ensures that any implementation of the dashboard hook adheres to the expected structure and provides necessary functionality for managing and customizing the dashboard while maintaining compatibility with the overall StudioCMS system.
+ */
+export type SCMSDashboardHook = typeof DashboardHookSchema.Type;
+
+/**
+ * Schema for validating the structure of the frontend hook provided by plugins, allowing plugins to specify custom frontend configurations and navigation links within the StudioCMS system. This schema extends the BaseHookSchema to include a specific function for setting the frontend configuration, ensuring that the frontend hook adheres to the expected structure and provides necessary functionality for managing frontend navigation while maintaining compatibility with the overall StudioCMS system.
+ */
+export class FrontendHookSchema extends BaseHookSchema.extend<FrontendHookSchema>(
+	'FrontendHookSchema'
+)({
+	setFrontend: FunctionSchema(FrontendConfigSchema, Schema.Void),
+}) {}
+
+/**
+ * Type definition for the frontend hook, representing the expected structure of the hook function that plugins can implement to specify custom frontend configurations and navigation links within the StudioCMS system. This type definition ensures that any implementation of the frontend hook adheres to the expected structure and provides necessary functionality for managing frontend navigation while maintaining compatibility with the overall StudioCMS system.
+ */
+export type SCMSFrontendHook = typeof FrontendHookSchema.Type;
+
+/**
+ * Schema for validating the structure of the rendering hook provided by plugins, allowing plugins to specify custom rendering configurations and augmentations within the StudioCMS system. This schema extends the BaseHookSchema to include a specific function for setting the rendering configuration, ensuring that the rendering hook adheres to the expected structure and provides necessary functionality for managing rendering behavior while maintaining compatibility with the overall StudioCMS system.
+ */
+export class RenderingHookSchema extends BaseHookSchema.extend<RenderingHookSchema>(
+	'RenderingHookSchema'
+)({
+	setRendering: FunctionSchema(RenderingConfigSchema, Schema.Void),
+}) {}
+
+/**
+ * Type definition for the rendering hook, representing the expected structure of the hook function that plugins can implement to specify custom rendering configurations and augmentations within the StudioCMS system. This type definition ensures that any implementation of the rendering hook adheres to the expected structure and provides necessary functionality for managing rendering behavior while maintaining compatibility with the overall StudioCMS system.
+ */
+export type SCMSRenderingHook = typeof RenderingHookSchema.Type;
+
+/**
+ * Schema for validating the structure of the image service hook provided by plugins, allowing plugins to specify custom image service configurations within the StudioCMS system. This schema extends the BaseHookSchema to include a specific function for setting the image service configuration, ensuring that the image service hook adheres to the expected structure and provides necessary functionality for managing image services while maintaining compatibility with the overall StudioCMS system.
+ */
+export class ImageServiceHookSchema extends BaseHookSchema.extend<ImageServiceHookSchema>(
+	'ImageServiceHookSchema'
+)({
+	setImageService: FunctionSchema(ImageServiceConfigSchema, Schema.Void),
+}) {}
+
+/**
+ * Type definition for the image service hook, representing the expected structure of the hook function that plugins can implement to specify custom image service configurations within the StudioCMS system. This type definition ensures that any implementation of the image service hook adheres to the expected structure and provides necessary functionality for managing image services while maintaining compatibility with the overall StudioCMS system.
+ */
+export type SCMSImageServiceHook = typeof ImageServiceHookSchema.Type;
+
+/**
+ * Schema for validating the structure of the authentication service hook provided by plugins, allowing plugins to specify custom authentication service configurations within the StudioCMS system. This schema extends the BaseHookSchema to include a specific function for setting the authentication service configuration, ensuring that the authentication service hook adheres to the expected structure and provides necessary functionality for managing authentication services while maintaining compatibility with the overall StudioCMS system.
+ */
+export class AuthServiceHookSchema extends BaseHookSchema.extend<AuthServiceHookSchema>(
+	'AuthServiceHookSchema'
+)({
+	setAuthService: FunctionSchema(AuthServiceConfigSchema, Schema.Void),
+}) {}
+
+/**
+ * Type definition for the authentication service hook, representing the expected structure of the hook function that plugins can implement to specify custom authentication service configurations within the StudioCMS system. This type definition ensures that any implementation of the authentication service hook adheres to the expected structure and provides necessary functionality for managing authentication services while maintaining compatibility with the overall StudioCMS system.
+ */
+export type SCMSAuthServiceHook = typeof AuthServiceHookSchema.Type;
+
+/**
+ * Schema for validating the structure of the storage manager hook provided by plugins, allowing plugins to specify custom storage manager configurations within the StudioCMS system. This schema extends the BaseHookSchema to include a specific function for setting the storage manager configuration, ensuring that the storage manager hook adheres to the expected structure and provides necessary functionality for managing storage managers while maintaining compatibility with the overall StudioCMS system.
+ */
+export class StorageManagerHookSchema extends BaseHookSchema.extend<StorageManagerHookSchema>(
+	'StorageManagerHookSchema'
+)({
+	setStorageManager: FunctionSchema(StorageManagerConfigSchema, Schema.Void),
+}) {}
+
+/**
+ * Type definition for the storage manager hook, representing the expected structure of the hook function that plugins can implement to specify custom storage manager configurations within the StudioCMS system. This type definition ensures that any implementation of the storage manager hook adheres to the expected structure and provides necessary functionality for managing storage managers while maintaining compatibility with the overall StudioCMS system.
+ */
+export type SCMSStorageManagerHook = typeof StorageManagerHookSchema.Type;
+
+/**
+ * Helper function to create a hook schema for a given set of arguments, allowing for the validation of hooks that plugins can implement to integrate with various aspects of the StudioCMS system. This function takes an argument schema and returns a function schema that validates the structure of the hook function, ensuring that it adheres to the expected format and provides necessary functionality for integrating with the StudioCMS system while maintaining compatibility and security.
+ */
+const makeHookSchema = <A, I, R = never>(argsSchema: Schema.Schema<A, I, R>) =>
+	Schema.optional(FunctionSchema(argsSchema, Schema.Void));
+
+/**
+ * Internal Shared Plugin hooks schema for validating the structure of hooks that are shared across different plugin types within the StudioCMS system, including hooks for Astro configuration, authentication service, dashboard configuration, frontend configuration, rendering configuration, image service configuration, and sitemap configuration. This schema ensures that the shared hooks adhere to the expected structure, allowing for seamless integration of plugin functionality into the StudioCMS system while providing necessary tools for logging and debugging through the integration logger.
+ *
+ * Note: This schema is intended for internal use within the plugin system and may not include all possible hooks or configurations that plugins can implement, but rather focuses on the common hooks that are shared across different plugin types.
+ */
+export const InternalPluginHooksSchema = Schema.Struct({
+	'studiocms:astro-config': makeHookSchema(astroConfigHookSchema),
+	'studiocms:auth': makeHookSchema(AuthServiceHookSchema),
+	'studiocms:dashboard': makeHookSchema(DashboardHookSchema),
+	'studiocms:frontend': makeHookSchema(FrontendHookSchema),
+	'studiocms:rendering': makeHookSchema(RenderingHookSchema),
+	'studiocms:image-service': makeHookSchema(ImageServiceHookSchema),
+	'studiocms:sitemap': makeHookSchema(SitemapHookSchema),
+});
+
+/**
+ * Base Plugin Hooks Schema for validating the structure of hooks provided by plugins, including hooks for Astro configuration, authentication service, dashboard configuration, frontend configuration, rendering configuration, image service configuration, and sitemap configuration. This schema ensures that the hooks provided by plugins adhere to the expected structure, allowing for seamless integration of plugin functionality into the StudioCMS system while providing necessary tools for logging and debugging through the integration logger.
+ */
+export const BasePluginHooksSchema = Schema.mutable(
+	Schema.Struct(InternalPluginHooksSchema.fields, {
+		key: Schema.String,
+		value: Schema.Unknown,
+	})
+);
+
+/**
+ * Type definition for the base plugin hooks, representing the expected structure of the hooks that plugins can implement to integrate with various aspects of the StudioCMS system. This type definition ensures that any implementation of the base plugin hooks adheres to the expected structure and provides necessary functionality for integrating with the StudioCMS system while maintaining compatibility and security.
+ */
+export type BasePluginHooks = typeof BasePluginHooksSchema.Type;
+
+/**
+ * Schema for validating the structure of storage manager hooks provided by plugins, allowing plugins to specify custom storage manager configurations within the StudioCMS system. This schema extends the BasePluginHooksSchema to include a specific hook for setting the storage manager configuration, ensuring that any implementation of the storage manager hook adheres to the expected structure and provides necessary functionality for managing storage managers while maintaining compatibility with the overall StudioCMS system.
+ */
+export const StorageManagerPluginHooksSchema = Schema.mutable(
+	Schema.Struct(
+		{
+			...InternalPluginHooksSchema.fields,
+			'studiocms:storage-manager': makeHookSchema(StorageManagerHookSchema),
+		},
+		{
+			key: Schema.String,
+			value: Schema.Unknown,
+		}
+	)
+);
+
+/**
+ * Type definition for the storage manager plugin hooks, representing the expected structure of the hooks that plugins can implement to specify custom storage manager configurations within the StudioCMS system. This type definition ensures that any implementation of the storage manager plugin hooks adheres to the expected structure and provides necessary functionality for managing storage managers while maintaining compatibility with the overall StudioCMS system.
+ */
+export type StorageManagerPluginHooks = typeof StorageManagerPluginHooksSchema.Type;
+
+/**
+ * Schema for validating the structure of the base plugin configuration, including essential metadata such as identifier, name, minimum required version of StudioCMS, and dependencies on other plugins. This schema ensures that the basic information about the plugin is correctly structured, allowing for seamless integration of plugins into the StudioCMS system while providing necessary information about the plugin and its functionality.
+ */
+export class StudiOCMSPluginBaseSchema extends Schema.Class<StudiOCMSPluginBaseSchema>(
+	'StudiOCMSPluginBaseSchema'
+)({
+	identifier: Schema.String,
+	name: Schema.String,
+	studiocmsMinimumVersion: Schema.String,
+	requires: Schema.optional(Schema.Array(Schema.String)),
+}) {}
+
+/**
+ * Schema for validating the structure of the entire plugin configuration, including metadata such as identifier, name, minimum required version of StudioCMS, dependencies on other plugins, and the hooks that the plugin implements. This schema ensures that the plugin configuration adheres to the expected structure, allowing for seamless integration of plugins into the StudioCMS system while providing necessary information about the plugin and its functionality.
+ */
+export class StudioCMSPluginSchema extends StudiOCMSPluginBaseSchema.extend<StudioCMSPluginSchema>(
+	'StudioCMSPluginSchema'
+)({
+	hooks: BasePluginHooksSchema,
+}) {}
+
+/**
+ * Type definition for the StudioCMS plugin, representing the expected structure of the plugin configuration that plugins must adhere to in order to integrate with the StudioCMS system. This type definition ensures that any plugin implementation adheres to the expected structure and provides necessary information about the plugin and its functionality while maintaining compatibility with the overall StudioCMS system.
+ */
+export type StudioCMSPlugin = typeof StudioCMSPluginSchema.Type;
+
+/**
+ * Type definition for the parameters of a given plugin hook, allowing for the extraction of the expected parameters for a specific hook function that plugins can implement to integrate with various aspects of the StudioCMS system. This type definition ensures that any implementation of a plugin hook adheres to the expected structure and provides necessary functionality for integrating with the StudioCMS system while maintaining compatibility and security.
+ *
+ * @template Hook - The specific hook for which to extract parameters, defined as a key of the StudioCMSPlugin's hooks.
+ * @template Fn - The type of the hook function, inferred from the StudioCMSPlugin's hooks based on the provided Hook key.
+ */
 export type PluginHookParameters<
 	Hook extends keyof StudioCMSPlugin['hooks'],
 	Fn = StudioCMSPlugin['hooks'][Hook],
@@ -492,30 +435,33 @@ export type PluginHookParameters<
 > = Fn extends (...args: any) => any ? Parameters<Fn>[0] : never;
 
 /**
- * Interface representing a StudioCMS plugin that provides storage management functionality.
+ * Schema for validating the structure of the storage manager plugin configuration, including metadata such as identifier, name, minimum required version of StudioCMS, dependencies on other plugins, and the specific hooks related to storage management that the plugin implements. This schema extends the base plugin schema to include storage manager-specific hooks, ensuring that any implementation of a storage manager plugin adheres to the expected structure and provides necessary functionality for managing storage within the StudioCMS system while maintaining compatibility with the overall system.
  */
-export interface StudioCMSStorageManager extends StudioCMSPlugin {
-	hooks: {
-		[K in keyof StudioCMS.StorageManagerHooks]?: StudioCMS.StorageManagerHooks[K];
-	} & Partial<Record<string, unknown>>;
-}
+export class StudioCMSStorageManagerSchema extends StudiOCMSPluginBaseSchema.extend<StudioCMSStorageManagerSchema>(
+	'StudioCMSStorageManagerSchema'
+)({
+	hooks: StorageManagerPluginHooksSchema,
+}) {}
 
+/**
+ * Type definition for the StudioCMS storage manager plugin, representing the expected structure of the plugin configuration that storage manager plugins must adhere to in order to integrate with the StudioCMS system. This type definition ensures that any implementation of a storage manager plugin adheres to the expected structure and provides necessary information about the plugin and its functionality while maintaining compatibility with the overall StudioCMS system.
+ */
+export type StudioCMSStorageManager = typeof StudioCMSStorageManagerSchema.Type;
+
+/**
+ * Type definition for the parameters of a given storage manager plugin hook, allowing for the extraction of the expected parameters for a specific storage manager hook function that plugins can implement to integrate with the storage management aspect of the StudioCMS system. This type definition ensures that any implementation of a storage manager plugin hook adheres to the expected structure and provides necessary functionality for integrating with the storage management system while maintaining compatibility and security.
+ *
+ * @template Hook - The specific storage manager hook for which to extract parameters, defined as a key of the StudioCMSStorageManagerPlugin's hooks.
+ * @template Fn - The type of the hook function, inferred from the StudioCMSStorageManagerPlugin's hooks based on the provided Hook key.
+ */
 export type StorageManagerHookParameters<
-	Hook extends keyof StudioCMS.StorageManagerHooks,
-	Fn = StudioCMS.StorageManagerHooks[Hook],
+	Hook extends keyof StudioCMSStorageManager['hooks'],
+	Fn = StudioCMSStorageManager['hooks'][Hook],
 	// biome-ignore lint/suspicious/noExplicitAny: This is a valid use case for explicit any.
 > = Fn extends (...args: any) => any ? Parameters<Fn>[0] : never;
 
-export type SafePluginListItemType = z.infer<typeof SafePluginListItemSchema>;
-export type SafePluginListType = z.infer<typeof SafePluginListSchema>;
-
-export type {
-	AvailableDashboardPages,
-	DashboardPage,
-	FinalDashboardPage,
-	SettingsField,
-	StudioCMSColorway,
-} from './shared.js';
+export type SafePluginListItemType = typeof SafePluginListItemSchema.Type;
+export type SafePluginListType = typeof SafePluginListSchema.Type;
 
 /**
  * Defines a plugin for StudioCMS.

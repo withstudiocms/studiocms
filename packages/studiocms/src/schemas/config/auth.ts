@@ -1,50 +1,53 @@
-import { z } from 'astro/zod';
+import * as Schema from 'effect/Schema';
+import { BooleanDefaultTrue, OptionalWithDefaults } from '../custom.js';
 
-export interface AuthConfig {
-	/** Auth Providers - Allows enabling or disabling of the Authentication Providers */
-	providers?: {
-		/** Username and Password Auth Provider */
-		usernameAndPassword?: boolean;
+/**
+ * Schema for the username and password authentication provider configuration.
+ */
+export const UsernameAndPasswordConfigSchema = Schema.Struct({
+	allowUserRegistration: BooleanDefaultTrue.annotations({
+		description: 'Allow User Registration - Allows users to register an account',
+	}),
+}).annotations({
+	title: 'Username and Password Auth Provider Configuration',
+	description: 'Username and Password Auth Provider Configuration',
+	identifier: 'UsernameAndPasswordConfig',
+});
 
-		/**
-		 * Username and Password Auth Provider Configuration
-		 */
-		usernameAndPasswordConfig?: {
-			/**
-			 * Allow User Registration - Allows users to register an account
-			 *
-			 * @default true
-			 */
-			allowUserRegistration?: boolean;
-		};
-	};
+/**
+ * Schema for the authentication providers configuration.
+ */
+export const AuthProvidersConfigSchema = Schema.Struct({
+	usernameAndPassword: BooleanDefaultTrue.annotations({
+		description: 'Username and Password Auth Provider',
+	}),
+	usernameAndPasswordConfig: OptionalWithDefaults(UsernameAndPasswordConfigSchema, {}),
+}).annotations({
+	title: 'Auth Providers',
+	description: 'Auth Providers - Allows enabling or disabling of the Authentication Providers',
+	identifier: 'AuthProvidersConfig',
+});
 
-	/**
-	 * Auth Enabled - Allows enabling or disabling of the Authentication Configuration
-	 *
-	 * @default true
-	 */
-	enabled?: boolean;
-}
+/**
+ * Schema for the authentication configuration.
+ */
+export const AuthConfigSchema = Schema.Struct({
+	enabled: BooleanDefaultTrue.annotations({
+		description: 'Auth Enabled - Allows enabling or disabling of the Authentication Configuration',
+	}),
+	providers: OptionalWithDefaults(AuthProvidersConfigSchema, {}),
+}).annotations({
+	title: 'Authentication Configuration',
+	description: 'Authentication Configuration',
+	identifier: 'AuthConfig',
+});
 
-//
-// AUTH CONFIG SCHEMA
-//
-export const authConfigSchema = z
-	.object({
-		providers: z
-			.object({
-				usernameAndPassword: z.boolean().optional().default(true),
-				usernameAndPasswordConfig: z
-					.object({
-						allowUserRegistration: z.boolean().optional().default(true),
-					})
-					.optional()
-					.default({}),
-			})
-			.optional()
-			.default({}),
-		enabled: z.boolean().optional().default(true),
-	})
-	.optional()
-	.default({});
+/**
+ * Type for the authentication configuration.
+ */
+export type AuthConfig = typeof AuthConfigSchema.Encoded;
+
+/**
+ * Resolved type for the authentication configuration.
+ */
+export type AuthConfigResolved = typeof AuthConfigSchema.Type;
