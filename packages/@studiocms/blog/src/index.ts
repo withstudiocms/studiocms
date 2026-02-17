@@ -2,7 +2,8 @@ import type { AstroIntegration } from 'astro';
 import { addVirtualImports, createResolver } from 'astro-integration-kit';
 import { Schema } from 'effect';
 import { pathWithBase } from 'studiocms/lib/pathGenerators';
-import { definePlugin, type StudioCMSPlugin } from 'studiocms/plugins';
+import { definePlugin } from 'studiocms/plugins';
+import type { StudioCMSPluginDef } from 'studiocms/schemas';
 import { FrontEndConfigSchema, type StudioCMSBlogOptions } from './types.js';
 
 const packageIdentifier = '@studiocms/blog';
@@ -84,7 +85,7 @@ export function internalBlogIntegration(options: StudioCMSBlogOptions = {}): Ast
  * Creates and configures the StudioCMS Blog plugin.
  *
  * @param {StudioCMSBlogOptions} [options] - Optional configuration options for the blog plugin.
- * @returns {StudioCMSPlugin} The configured StudioCMS plugin.
+ * @returns {StudioCMSPluginDef} The configured StudioCMS plugin.
  *
  * @remarks
  * This function sets up the StudioCMS Blog plugin with the provided options or default values.
@@ -111,7 +112,7 @@ export function internalBlogIntegration(options: StudioCMSBlogOptions = {}): Ast
  * @param {boolean} [options.sitemap] - Whether to trigger sitemap generation. Defaults to true.
  * @param {boolean} [options.injectRoutes] - Whether to inject routes for the blog. Defaults to true.
  */
-export function studioCMSBlogPlugin(options: StudioCMSBlogOptions = {}): StudioCMSPlugin {
+export function studioCMSBlogPlugin(options: StudioCMSBlogOptions = {}): StudioCMSPluginDef {
 	// Resolve the options and set defaults
 	const resolvedOptions = Schema.decodeSync(FrontEndConfigSchema)(options);
 

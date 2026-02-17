@@ -8,7 +8,8 @@
 
 import type { AstroIntegration } from 'astro';
 import { addVirtualImports, createResolver } from 'astro-integration-kit';
-import { definePlugin, type StudioCMSPlugin } from 'studiocms/plugins';
+import { definePlugin } from 'studiocms/plugins';
+import type { StudioCMSPluginDef } from 'studiocms/schemas';
 import { shared } from './lib/shared.js';
 import type { MDXPluginOptions } from './types.js';
 
@@ -67,7 +68,7 @@ export function internalMDXIntegration(
  * Creates and configures the StudioCMS MDX plugin.
  *
  * @param {MDXPluginOptions} [options] - Optional configuration options for the MDX plugin.
- * @returns {StudioCMSPlugin} The configured StudioCMS plugin.
+ * @returns {StudioCMSPluginDef} The configured StudioCMS plugin.
  *
  * @example
  * ```typescript
@@ -81,7 +82,7 @@ export function internalMDXIntegration(
  * ]
  * ```
  */
-export function studiocmsMDX(options?: MDXPluginOptions): StudioCMSPlugin {
+export function studiocmsMDX(options?: MDXPluginOptions): StudioCMSPluginDef {
 	// Resolve the path to the current file
 	const { resolve } = createResolver(import.meta.url);
 

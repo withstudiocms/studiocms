@@ -9,7 +9,8 @@
 import type { AstroIntegration } from 'astro';
 import { addVirtualImports, createResolver } from 'astro-integration-kit';
 import { Schema } from 'effect';
-import { definePlugin, type StudioCMSPlugin } from 'studiocms/plugins';
+import { definePlugin } from 'studiocms/plugins';
+import type { StudioCMSPluginDef } from 'studiocms/schemas';
 import { shared } from './lib/shared.js';
 import { MarkdownOptionsSchema, type MarkdownSchemaOptions } from './types.js';
 
@@ -100,7 +101,7 @@ export function internalMarkdownIntegration(
  */
 export function studiocmsMD(
 	options: MarkdownSchemaOptions = { flavor: 'studiocms' }
-): StudioCMSPlugin {
+): StudioCMSPluginDef {
 	// Resolve the path to the current file
 	const { resolve } = createResolver(import.meta.url);
 

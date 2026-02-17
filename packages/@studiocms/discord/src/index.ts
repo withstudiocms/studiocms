@@ -7,7 +7,8 @@
 /// <reference types="astro/client" />
 
 import { createResolver } from 'astro-integration-kit';
-import { definePlugin, type StudioCMSPlugin } from 'studiocms/plugins';
+import { definePlugin } from 'studiocms/plugins';
+import type { StudioCMSPluginDef } from 'studiocms/schemas';
 
 /**
  * Creates and returns the StudioCMS Discord Provider Plugin.
@@ -16,7 +17,7 @@ import { definePlugin, type StudioCMSPlugin } from 'studiocms/plugins';
  * It sets up the necessary configuration, including the required environment variables,
  * OAuth endpoint, and SVG logo for Discord.
  *
- * @returns {StudioCMSPlugin} The configured StudioCMS Discord Provider Plugin.
+ * @returns {StudioCMSPluginDef} The configured StudioCMS Discord Provider Plugin.
  *
  * @remarks
  * - Requires the following environment variables to be set:
@@ -24,7 +25,7 @@ import { definePlugin, type StudioCMSPlugin } from 'studiocms/plugins';
  *   - `CMS_DISCORD_CLIENT_SECRET`
  *   - `CMS_DISCORD_REDIRECT_URI`
  */
-export function studiocmsDiscord(): StudioCMSPlugin {
+export function studiocmsDiscord(): StudioCMSPluginDef {
 	// Resolve the path to the current file
 	const { resolve } = createResolver(import.meta.url);
 

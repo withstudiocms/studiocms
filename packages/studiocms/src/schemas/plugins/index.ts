@@ -470,8 +470,8 @@ export type SafePluginListType = typeof SafePluginListSchema.Type;
  * @param options - The configuration options for the plugin.
  * @returns The plugin configuration.
  */
-export function definePlugin(options: StudioCMSPluginDef): StudioCMSPlugin {
-	return Schema.decodeSync(StudioCMSPluginSchema)(options);
+export function definePlugin(options: StudioCMSPluginDef): StudioCMSPluginDef {
+	return options;
 }
 
 /**
@@ -480,8 +480,10 @@ export function definePlugin(options: StudioCMSPluginDef): StudioCMSPlugin {
  * @param options - The configuration options for the storage manager plugin.
  * @returns The storage manager plugin configuration.
  */
-export function defineStorageManager(options: StudioCMSStorageManagerDef): StudioCMSStorageManager {
-	return Schema.decodeSync(StudioCMSStorageManagerSchema)(options);
+export function defineStorageManager(
+	options: StudioCMSStorageManagerDef
+): StudioCMSStorageManagerDef {
+	return options;
 }
 
 export type ImageServiceExtraProps = {

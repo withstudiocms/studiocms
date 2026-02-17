@@ -8,7 +8,8 @@
 
 import { createResolver } from 'astro-integration-kit';
 import { Schema } from 'effect';
-import { definePlugin, type StudioCMSPlugin } from 'studiocms/plugins';
+import { definePlugin } from 'studiocms/plugins';
+import type { StudioCMSPluginDef } from 'studiocms/schemas';
 import { shared } from './lib/shared.js';
 import { HTMLSchema, type HTMLSchemaOptions } from './types.js';
 
@@ -21,7 +22,7 @@ import { HTMLSchema, type HTMLSchemaOptions } from './types.js';
  * @param options - Optional configuration for the HTML schema.
  * @returns The StudioCMS plugin configuration object.
  */
-export function studiocmsHTML(options: HTMLSchemaOptions = {}): StudioCMSPlugin {
+export function studiocmsHTML(options: HTMLSchemaOptions = {}): StudioCMSPluginDef {
 	// Resolve the path to the current file
 	const { resolve } = createResolver(import.meta.url);
 

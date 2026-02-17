@@ -8,7 +8,8 @@
 
 import type { AstroIntegration } from 'astro';
 import { addVirtualImports, createResolver } from 'astro-integration-kit';
-import { definePlugin, type StudioCMSPlugin } from 'studiocms/plugins';
+import { definePlugin } from 'studiocms/plugins';
+import type { StudioCMSPluginDef } from 'studiocms/schemas';
 import { shared } from './lib/shared.js';
 import type { MarkDocPluginOptions } from './types.js';
 
@@ -62,7 +63,7 @@ export function internalMarkDocIntegration(
 	};
 }
 
-export function studiocmsMarkDoc(options?: MarkDocPluginOptions): StudioCMSPlugin {
+export function studiocmsMarkDoc(options?: MarkDocPluginOptions): StudioCMSPluginDef {
 	// Resolve the path to the current file
 	const { resolve } = createResolver(import.meta.url);
 

@@ -9,7 +9,8 @@
 import type { AstroIntegration } from 'astro';
 import { createResolver } from 'astro-integration-kit';
 import { Schema } from 'studiocms/effect';
-import { definePlugin, type StudioCMSPlugin } from 'studiocms/plugins';
+import { definePlugin } from 'studiocms/plugins';
+import type { StudioCMSPluginDef } from 'studiocms/schemas';
 import { GRAPES_CSS_PATH, PARTIAL_PATH, STORE_ENDPOINT_PATH } from './consts.js';
 import { shared } from './lib/shared.js';
 import { WYSIWYGSchema, type WYSIWYGSchemaOptions } from './types.js';
@@ -88,7 +89,7 @@ export function internalWysiwygIntegration(
  * ]
  * ```
  */
-function wysiwyg(opts: WYSIWYGSchemaOptions = {}): StudioCMSPlugin {
+function wysiwyg(opts: WYSIWYGSchemaOptions = {}): StudioCMSPluginDef {
 	// Resolve the path to the current file
 	const { resolve } = createResolver(import.meta.url);
 
