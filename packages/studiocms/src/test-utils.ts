@@ -72,7 +72,7 @@ export interface PluginHookResults {
  * ```
  */
 export class StudioCMSPluginTester {
-	private readonly plugin: StudioCMSPlugin;
+	readonly plugin: StudioCMSPlugin;
 	private readonly injectedLogger?: AstroIntegrationLogger;
 
 	constructor(plugin: StudioCMSPluginDef, logger?: AstroIntegrationLogger) {

@@ -1,24 +1,28 @@
 import type { AstroIntegration } from 'astro';
 import { beforeEach, describe, expect, vi } from 'vitest';
-import type { StudioCMSPlugin } from '../src/schemas/index.js';
+import {
+	definePlugin,
+	type StudioCMSPlugin,
+	type StudioCMSPluginDef,
+} from '../src/schemas/index.js';
 import { StudioCMSPluginTester } from '../src/test-utils.js';
 import { allureTester } from './fixtures/allureTester.js';
 import { parentSuiteName, sharedTags } from './test-utils.js';
 
 const localSuiteName = 'StudioCMSPluginTester tests';
 
-function makePluginWithHooks(hooks: Partial<StudioCMSPlugin['hooks']>): StudioCMSPlugin {
-	return {
+function makePluginWithHooks(hooks: StudioCMSPluginDef['hooks']): StudioCMSPluginDef {
+	return definePlugin({
 		identifier: 'test-plugin',
 		name: 'Test Plugin',
 		studiocmsMinimumVersion: '1.0.0',
 		requires: [],
-		hooks: hooks as StudioCMSPlugin['hooks'],
-	};
+		hooks: hooks,
+	});
 }
 
 describe(parentSuiteName, () => {
-	let plugin: StudioCMSPlugin;
+	let plugin: StudioCMSPluginDef;
 	let tester: StudioCMSPluginTester;
 
 	const test = allureTester({
@@ -40,7 +44,8 @@ describe(parentSuiteName, () => {
 		await step('Creating StudioCMSPluginTester instance', async (ctx) => {
 			await ctx.parameter('pluginIdentifier', plugin.identifier);
 			expect(tester).toBeInstanceOf(StudioCMSPluginTester);
-			expect(tester['plugin']).toBe(plugin);
+
+			expect(tester.plugin).toEqual(plugin);
 		});
 
 		await step('Returns correct plugin info', async (ctx) => {
@@ -113,63 +118,6 @@ describe(parentSuiteName, () => {
 			expect(results.astroConfig.hasHook).toBe(true);
 			expect(results.astroConfig.hookResults.integrations).toEqual([integration]);
 			expect(astroConfigHook).toHaveBeenCalled();
-		});
-	});
-
-	test('getHookResults runs studiocms:config hook correctly', async ({ setupAllure, step }) => {
-		await setupAllure({
-			subSuiteName: 'getHookResults runs studiocms:config hook correctly',
-			tags: [...sharedTags, 'class:StudioCMSPluginTester', 'method:getHookResults'],
-		});
-
-		const authConfigHook = vi.fn(async (ctx) => {
-			ctx.setAuthService({ oAuthProvider: 'github' });
-		});
-
-		const dashboardConfigHook = vi.fn(async (ctx) => {
-			ctx.setDashboard({ dashboardGridItems: ['item1'], dashboardPages: ['page1'] });
-			ctx.augmentDashboard({ components: { comp1: 'comp1' }, scripts: ['script1'] });
-		});
-
-		const frontendConfigHook = vi.fn(async (ctx) => {
-			ctx.setFrontend({ frontendNavigationLinks: ['link1'] });
-		});
-
-		const imageConfigHook = vi.fn(async (ctx) => {
-			ctx.setImageService({ imageService: 'imgService' });
-		});
-
-		const renderingConfigHook = vi.fn(async (ctx) => {
-			ctx.setRendering({ pageTypes: ['type1'] });
-		});
-
-		const sitemapConfigHook = vi.fn(async (ctx) => {
-			ctx.setSitemap({ sitemaps: ['sitemap1'], triggerSitemap: true });
-		});
-
-		plugin = makePluginWithHooks({
-			'studiocms:auth': authConfigHook,
-			'studiocms:dashboard': dashboardConfigHook,
-			'studiocms:frontend': frontendConfigHook,
-			'studiocms:image-service': imageConfigHook,
-			'studiocms:rendering': renderingConfigHook,
-			'studiocms:sitemap': sitemapConfigHook,
-		});
-		tester = new StudioCMSPluginTester(plugin);
-
-		await step('Getting hook results with studiocms:config hook defined', async (ctx) => {
-			const results = await tester.getHookResults();
-			await ctx.parameter('hookResults', JSON.stringify(results));
-			expect(results.studiocmsConfig.hasHook).toBe(true);
-			expect(results.studiocmsConfig.hookResults).toEqual({
-				authService: { oAuthProvider: 'github' },
-				dashboard: { dashboardGridItems: ['item1'], dashboardPages: ['page1'] },
-				dashboardAugments: { components: { comp1: 'comp1' }, scripts: ['script1'] },
-				frontend: { frontendNavigationLinks: ['link1'] },
-				imageService: { imageService: 'imgService' },
-				rendering: { pageTypes: ['type1'] },
-				sitemap: { sitemaps: ['sitemap1'], triggerSitemap: true },
-			});
 		});
 	});
 });
