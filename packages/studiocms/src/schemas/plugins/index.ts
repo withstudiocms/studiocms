@@ -371,12 +371,7 @@ export const InternalPluginHooksSchema = Schema.Struct({
 /**
  * Base Plugin Hooks Schema for validating the structure of hooks provided by plugins, including hooks for Astro configuration, authentication service, dashboard configuration, frontend configuration, rendering configuration, image service configuration, and sitemap configuration. This schema ensures that the hooks provided by plugins adhere to the expected structure, allowing for seamless integration of plugin functionality into the StudioCMS system while providing necessary tools for logging and debugging through the integration logger.
  */
-export const BasePluginHooksSchema = Schema.mutable(
-	Schema.Struct(InternalPluginHooksSchema.fields, {
-		key: Schema.String,
-		value: Schema.Unknown,
-	})
-);
+export const BasePluginHooksSchema = Schema.mutable(InternalPluginHooksSchema);
 
 /**
  * Type definition for the base plugin hooks, representing the expected structure of the hooks that plugins can implement to integrate with various aspects of the StudioCMS system. This type definition ensures that any implementation of the base plugin hooks adheres to the expected structure and provides necessary functionality for integrating with the StudioCMS system while maintaining compatibility and security.
@@ -387,16 +382,10 @@ export type BasePluginHooks = typeof BasePluginHooksSchema.Type;
  * Schema for validating the structure of storage manager hooks provided by plugins, allowing plugins to specify custom storage manager configurations within the StudioCMS system. This schema extends the BasePluginHooksSchema to include a specific hook for setting the storage manager configuration, ensuring that any implementation of the storage manager hook adheres to the expected structure and provides necessary functionality for managing storage managers while maintaining compatibility with the overall StudioCMS system.
  */
 export const StorageManagerPluginHooksSchema = Schema.mutable(
-	Schema.Struct(
-		{
-			...InternalPluginHooksSchema.fields,
-			'studiocms:storage-manager': makeHookSchema(StorageManagerHookSchema),
-		},
-		{
-			key: Schema.String,
-			value: Schema.Unknown,
-		}
-	)
+	Schema.Struct({
+		...InternalPluginHooksSchema.fields,
+		'studiocms:storage-manager': makeHookSchema(StorageManagerHookSchema),
+	})
 );
 
 /**
@@ -407,8 +396,8 @@ export type StorageManagerPluginHooks = typeof StorageManagerPluginHooksSchema.T
 /**
  * Schema for validating the structure of the base plugin configuration, including essential metadata such as identifier, name, minimum required version of StudioCMS, and dependencies on other plugins. This schema ensures that the basic information about the plugin is correctly structured, allowing for seamless integration of plugins into the StudioCMS system while providing necessary information about the plugin and its functionality.
  */
-export class StudiOCMSPluginBaseSchema extends Schema.Class<StudiOCMSPluginBaseSchema>(
-	'StudiOCMSPluginBaseSchema'
+export class StudioCMSPluginBaseSchema extends Schema.Class<StudioCMSPluginBaseSchema>(
+	'StudioCMSPluginBaseSchema'
 )({
 	identifier: Schema.String,
 	name: Schema.String,
@@ -419,7 +408,7 @@ export class StudiOCMSPluginBaseSchema extends Schema.Class<StudiOCMSPluginBaseS
 /**
  * Schema for validating the structure of the entire plugin configuration, including metadata such as identifier, name, minimum required version of StudioCMS, dependencies on other plugins, and the hooks that the plugin implements. This schema ensures that the plugin configuration adheres to the expected structure, allowing for seamless integration of plugins into the StudioCMS system while providing necessary information about the plugin and its functionality.
  */
-export class StudioCMSPluginSchema extends StudiOCMSPluginBaseSchema.extend<StudioCMSPluginSchema>(
+export class StudioCMSPluginSchema extends StudioCMSPluginBaseSchema.extend<StudioCMSPluginSchema>(
 	'StudioCMSPluginSchema'
 )({
 	hooks: BasePluginHooksSchema,
@@ -429,6 +418,8 @@ export class StudioCMSPluginSchema extends StudiOCMSPluginBaseSchema.extend<Stud
  * Type definition for the StudioCMS plugin, representing the expected structure of the plugin configuration that plugins must adhere to in order to integrate with the StudioCMS system. This type definition ensures that any plugin implementation adheres to the expected structure and provides necessary information about the plugin and its functionality while maintaining compatibility with the overall StudioCMS system.
  */
 export type StudioCMSPlugin = typeof StudioCMSPluginSchema.Type;
+
+export type StudioCMSPluginDef = typeof StudioCMSPluginSchema.Encoded;
 
 /**
  * Type definition for the parameters of a given plugin hook, allowing for the extraction of the expected parameters for a specific hook function that plugins can implement to integrate with various aspects of the StudioCMS system. This type definition ensures that any implementation of a plugin hook adheres to the expected structure and provides necessary functionality for integrating with the StudioCMS system while maintaining compatibility and security.
@@ -445,7 +436,7 @@ export type PluginHookParameters<
 /**
  * Schema for validating the structure of the storage manager plugin configuration, including metadata such as identifier, name, minimum required version of StudioCMS, dependencies on other plugins, and the specific hooks related to storage management that the plugin implements. This schema extends the base plugin schema to include storage manager-specific hooks, ensuring that any implementation of a storage manager plugin adheres to the expected structure and provides necessary functionality for managing storage within the StudioCMS system while maintaining compatibility with the overall system.
  */
-export class StudioCMSStorageManagerSchema extends StudiOCMSPluginBaseSchema.extend<StudioCMSStorageManagerSchema>(
+export class StudioCMSStorageManagerSchema extends StudioCMSPluginBaseSchema.extend<StudioCMSStorageManagerSchema>(
 	'StudioCMSStorageManagerSchema'
 )({
 	hooks: StorageManagerPluginHooksSchema,
@@ -455,6 +446,8 @@ export class StudioCMSStorageManagerSchema extends StudiOCMSPluginBaseSchema.ext
  * Type definition for the StudioCMS storage manager plugin, representing the expected structure of the plugin configuration that storage manager plugins must adhere to in order to integrate with the StudioCMS system. This type definition ensures that any implementation of a storage manager plugin adheres to the expected structure and provides necessary information about the plugin and its functionality while maintaining compatibility with the overall StudioCMS system.
  */
 export type StudioCMSStorageManager = typeof StudioCMSStorageManagerSchema.Type;
+
+export type StudioCMSStorageManagerDef = typeof StudioCMSStorageManagerSchema.Encoded;
 
 /**
  * Type definition for the parameters of a given storage manager plugin hook, allowing for the extraction of the expected parameters for a specific storage manager hook function that plugins can implement to integrate with the storage management aspect of the StudioCMS system. This type definition ensures that any implementation of a storage manager plugin hook adheres to the expected structure and provides necessary functionality for integrating with the storage management system while maintaining compatibility and security.
@@ -477,8 +470,8 @@ export type SafePluginListType = typeof SafePluginListSchema.Type;
  * @param options - The configuration options for the plugin.
  * @returns The plugin configuration.
  */
-export function definePlugin(options: StudioCMSPlugin): StudioCMSPlugin {
-	return options;
+export function definePlugin(options: StudioCMSPluginDef): StudioCMSPlugin {
+	return Schema.decodeSync(StudioCMSPluginSchema)(options);
 }
 
 /**
@@ -487,8 +480,8 @@ export function definePlugin(options: StudioCMSPlugin): StudioCMSPlugin {
  * @param options - The configuration options for the storage manager plugin.
  * @returns The storage manager plugin configuration.
  */
-export function defineStorageManager(options: StudioCMSStorageManager): StudioCMSStorageManager {
-	return options;
+export function defineStorageManager(options: StudioCMSStorageManagerDef): StudioCMSStorageManager {
+	return Schema.decodeSync(StudioCMSStorageManagerSchema)(options);
 }
 
 export type ImageServiceExtraProps = {

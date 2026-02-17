@@ -521,7 +521,7 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 				hook: storageManagerHook,
 			};
 
-			return { smPlugin: plugin, smManager: storageManager };
+			return { smPlugin: plugin as StudioCMSPlugin, smManager: storageManager };
 		}
 
 		function getPluginsAndStorageManager() {
