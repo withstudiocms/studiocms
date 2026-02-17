@@ -1,4 +1,4 @@
-import { Cause, deepmerge, Effect, runEffect } from '@withstudiocms/effect';
+import { Cause, deepmerge, Effect, runEffect, Schema } from '@withstudiocms/effect';
 import {
 	integrationLogger,
 	type Messages,
@@ -21,18 +21,20 @@ import { StudioCMSDefaultRobotsConfig } from '../consts.js';
 import { StudioCMSError } from '../errors.js';
 import { dynamicSitemap, robotsTXT } from '../integrations/plugins.js';
 import { studioCMSAnalyticsPlugin } from '../plugins/analytics/index.js';
-import type {
-	AvailableDashboardPages,
-	BasePluginHooks,
-	PluginHookParameters,
-	RenderAugmentSchema,
-	SafePluginListItemType,
-	SafePluginListType,
-	SCMSAuthServiceFnOpts,
-	StorageManagerHookParameters,
-	StudioCMSConfig,
-	StudioCMSPlugin,
-	StudioCMSStorageManager,
+import {
+	type AvailableDashboardPages,
+	type BasePluginHooks,
+	type PluginHookParameters,
+	type RenderAugmentSchema,
+	type SafePluginListItemType,
+	type SafePluginListType,
+	type SCMSAuthServiceFnOpts,
+	type StorageManagerHookParameters,
+	type StudioCMSConfig,
+	type StudioCMSPlugin,
+	StudioCMSPluginSchema,
+	type StudioCMSStorageManager,
+	StudioCMSStorageManagerSchema,
 } from '../schemas/index.js';
 import type {
 	PluginAugmentsTranslationCollection,
@@ -491,10 +493,12 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 
 			if (webVitals)
 				pluginsToProcess.push(
-					studioCMSAnalyticsPlugin({
-						driverDialect: dialect,
-						version: pkgVersion,
-					})
+					Schema.decodeSync(StudioCMSPluginSchema)(
+						studioCMSAnalyticsPlugin({
+							driverDialect: dialect,
+							version: pkgVersion,
+						})
+					)
 				);
 
 			// Add any user-defined plugins to the list
@@ -533,7 +537,7 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 				manager = storageManager;
 			} else {
 				// If no storage manager is defined, use the No-Op Storage Manager
-				manager = NoOpStorageManager(pkgVersion);
+				manager = Schema.decodeSync(StudioCMSStorageManagerSchema)(NoOpStorageManager(pkgVersion));
 			}
 
 			const { smManager, smPlugin } = splitStorageManager(manager);
