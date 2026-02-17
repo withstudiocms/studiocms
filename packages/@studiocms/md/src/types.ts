@@ -1,84 +1,124 @@
-import { z } from 'astro/zod';
-import { StudioCMSSanitizeOptionsSchema } from 'studiocms/schemas';
+import { Schema } from 'effect';
+import { SanitizeOptionsSchema } from 'studiocms/schemas';
 
 /**
- * Schema definition for Astro-flavored Markdown content.
- *
- * @remarks
- * This schema is used to validate Markdown objects that are specifically
- * intended for use with the Astro flavor. It ensures that the `flavor`
- * property is set to `'astro'` and that the `sanitize` property conforms
- * to the `StudioCMSSanitizeOptionsSchema`.
- *
- * @property flavor - Specifies the Markdown flavor, must be `'astro'`.
- * @property sanitize - Sanitization options for Markdown content, validated
- *                      against `StudioCMSSanitizeOptionsSchema`.
+ * Base schema for Markdown options, containing common properties shared between different Markdown configurations.
  */
-export const AstroMarkdownSchema = z.object({
-	/**
-	 * Specifies the Markdown flavor, fixed to 'astro'.
-	 * This property is used to differentiate between different Markdown configurations.
-	 */
-	flavor: z.literal('astro'),
-	/**
-	 * Schema for options used to sanitize Markdown content in StudioCMS.
-	 *
-	 * @remarks
-	 * This schema defines the configuration for controlling which elements and attributes
-	 * are allowed, blocked, or dropped during the sanitization process. It also provides
-	 * options for handling components, custom elements, and comments.
-	 */
-	sanitize: StudioCMSSanitizeOptionsSchema,
+export class BaseMarkdownOptionsSchema extends Schema.Class<BaseMarkdownOptionsSchema>(
+	'BaseMarkdownOptionsSchema'
+)(
+	{
+		sanitize: Schema.optionalWith(SanitizeOptionsSchema, {
+			default: () => ({}),
+		}).annotations({
+			description:
+				'Sanitization options for Markdown content, validated against `SanitizeOptionsSchema`.',
+		}),
+	},
+	{
+		title: 'BaseMarkdownOptionsSchema',
+		identifier: 'BaseMarkdownOptionsSchema',
+		description:
+			'Base schema for Markdown options, containing common properties shared between different Markdown configurations.',
+	}
+) {}
+
+/**
+ * Schema for Markdown options specific to the Astro flavor, extending the base Markdown options schema.
+ */
+export class AstroMarkdownOptionsSchema extends BaseMarkdownOptionsSchema.extend<AstroMarkdownOptionsSchema>(
+	'AstroMarkdownOptionsSchema'
+)(
+	{
+		flavor: Schema.Literal('astro').annotations({
+			description:
+				'Specifies the Markdown flavor, fixed to "astro". This property is used to differentiate between different Markdown configurations.',
+		}),
+	},
+	{
+		title: 'AstroMarkdownOptionsSchema',
+		identifier: 'AstroMarkdownOptionsSchema',
+		description: 'Schema for Markdown options specific to the Astro flavor.',
+	}
+) {}
+
+/**
+ * A boolean schema that only accepts the value false. This schema is used to validate options that should only allow false as a valid value, such as disabling certain features or styles in Markdown configurations.
+ */
+const FalseOnlyBoolean = Schema.declare((input: unknown): input is false => input === false, {
+	title: 'FalseOnlyBoolean',
+	description: 'A boolean schema that only accepts the value false.',
+	identifier: 'FalseOnlyBoolean',
+	jsonSchema: {
+		type: 'boolean',
+		enum: [false],
+	},
 });
 
 /**
- * Schema definition for StudioCMS Markdown configuration.
- *
- * @extends AstroMarkdownSchema
- * @property {'studiocms'} flavor - Specifies the markdown flavor, fixed to 'studiocms'.
- * @property {'github' | 'obsidian' | 'vitepress' | false} [callouts='obsidian'] - Optional callouts style, defaults to 'obsidian'.
- * @property {boolean} [autoLinkHeadings=true] - Optionally enables automatic linking of headings, defaults to true.
- * @property {boolean} [discordSubtext=true] - Optionally enables Discord subtext, defaults to true.
+ * Schema for Markdown options specific to the StudioCMS flavor, extending the base Markdown options schema.
  */
-export const StudioCMSMarkdownSchema = AstroMarkdownSchema.extend({
-	/**
-	 * Specifies the markdown flavor, fixed to 'studiocms'.
-	 * This property is used to differentiate between different Markdown configurations.
-	 */
-	flavor: z.literal('studiocms'),
-	/**
-	 * Optional callouts style, defaults to 'obsidian'.
-	 * This property allows users to choose a specific callout theme for Markdown content.
-	 */
-	callouts: z
-		.union([z.literal('github'), z.literal('obsidian'), z.literal('vitepress'), z.literal(false)])
-		.optional()
-		.default('obsidian'),
-	/**
-	 * Optionally enables automatic linking of headings, defaults to true.
-	 * This property allows users to automatically create links for headings in Markdown content.
-	 */
-	autoLinkHeadings: z.boolean().optional().default(true),
-	/**
-	 * Optionally enables Discord subtext, defaults to true.
-	 * This property allows users to include Discord-style subtext in Markdown content.
-	 */
-	discordSubtext: z.boolean().optional().default(true),
+export class StudioCMSMarkdownOptionsSchema extends BaseMarkdownOptionsSchema.extend<StudioCMSMarkdownOptionsSchema>(
+	'StudioCMSMarkdownOptionsSchema'
+)(
+	{
+		flavor: Schema.Literal('studiocms').annotations({
+			description:
+				'Specifies the markdown flavor, fixed to "studiocms". This property is used to differentiate between different Markdown configurations.',
+		}),
+		callouts: Schema.optionalWith(
+			Schema.Union(FalseOnlyBoolean, Schema.Literal('github', 'obsidian', 'vitepress')),
+			{
+				default: () => 'obsidian',
+			}
+		).annotations({
+			description:
+				'Optional callouts style, can be set to "github", "obsidian", "vitepress", or false. This property allows users to choose a specific callout theme for Markdown content.',
+		}),
+		autoLinkHeadings: Schema.optionalWith(Schema.Boolean, {
+			default: () => true,
+		}).annotations({
+			description:
+				'Optionally enables automatic linking of headings, defaults to true. This property allows users to automatically create links for headings in Markdown content.',
+		}),
+		discordSubtext: Schema.optionalWith(Schema.Boolean, {
+			default: () => true,
+		}).annotations({
+			description:
+				'Optionally enables Discord subtext, defaults to true. This property allows users to include Discord-style subtext in Markdown content.',
+		}),
+	},
+	{
+		title: 'StudioCMSMarkdownOptionsSchema',
+		identifier: 'StudioCMSMarkdownOptionsSchema',
+		description: 'Schema for Markdown options specific to the StudioCMS flavor.',
+	}
+) {}
+
+/**
+ * Union schema for Markdown options, allowing for either Astro or StudioCMS specific configurations. This schema is used to validate the options provided for Markdown support in StudioCMS.
+ */
+export const MarkdownOptionsSchema = Schema.Union(
+	AstroMarkdownOptionsSchema,
+	StudioCMSMarkdownOptionsSchema
+).annotations({
+	title: 'MarkdownOptionsSchema',
+	identifier: 'MarkdownOptionsSchema',
+	description:
+		'Union schema for Markdown options, allowing for either Astro or StudioCMS specific configurations. This schema is used to validate the options provided for Markdown support in StudioCMS.',
 });
 
 /**
- * Defines a Zod schema for Markdown content, allowing either `AstroMarkdownSchema` or `StudioCMSMarkdownSchema`.
- * The schema is optional and defaults to an object with the flavor set to 'studiocms'.
- *
- * @remarks
- * This schema is useful for validating Markdown data that may conform to different formats,
- * providing flexibility in content handling within the application.
+ * Type representing the options for configuring Markdown support in StudioCMS when using the Astro flavor. This type is derived from the `AstroMarkdownOptionsSchema` and includes properties specific to the Astro configuration of Markdown support.
  */
-export const MarkdownSchema = z
-	.union([AstroMarkdownSchema, StudioCMSMarkdownSchema])
-	.optional()
-	.default({ flavor: 'studiocms' });
+export type AstroMarkdownOptions = typeof AstroMarkdownOptionsSchema.Encoded;
 
-export type AstroMarkdownOptions = z.infer<typeof AstroMarkdownSchema>;
-export type StudioCMSMarkdownOptions = z.infer<typeof StudioCMSMarkdownSchema>;
-export type MarkdownSchemaOptions = z.infer<typeof MarkdownSchema>;
+/**
+ * Type representing the options for configuring Markdown support in StudioCMS when using the Astro flavor. This type is derived from the `AstroMarkdownOptionsSchema` and includes properties specific to the Astro configuration of Markdown support.
+ */
+export type StudioCMSMarkdownOptions = typeof StudioCMSMarkdownOptionsSchema.Encoded;
+
+/**
+ * Type representing the options for configuring Markdown support in StudioCMS. This type is derived from the `MarkdownOptionsSchema` and can represent either Astro or StudioCMS specific configurations.
+ */
+export type MarkdownSchemaOptions = typeof MarkdownOptionsSchema.Encoded;

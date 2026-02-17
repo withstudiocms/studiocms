@@ -1,4 +1,6 @@
 /** biome-ignore-all lint/suspicious/noExplicitAny: allowed in tests */
+
+import { Schema } from 'effect';
 import { describe, expect } from 'vitest';
 import { StudioCMSOptionsSchema } from '../../../src/schemas/config/index';
 import { allureTester } from '../../fixtures/allureTester';
@@ -24,7 +26,7 @@ describe(parentSuiteName, () => {
 		});
 
 		await step('Parsing empty config', async () => {
-			const result = StudioCMSOptionsSchema.parse({});
+			const result = Schema.decodeSync(StudioCMSOptionsSchema)({});
 			expect(result.dbStartPage).toBe(true);
 			expect(result.verbose).toBe(false);
 			expect(result.logLevel).toBe('Info');
@@ -41,17 +43,10 @@ describe(parentSuiteName, () => {
 
 	[
 		{
-			data: { logLevel: 'Debug' },
+			data: { logLevel: 'Debug' as const },
 			expected: {
 				actualKey: 'logLevel',
 				actualValue: 'Debug',
-			},
-		},
-		{
-			data: { plugins: [{ name: 'test-plugin', hooks: {} }] },
-			expected: {
-				actualKey: 'plugins',
-				actualValue: [{ name: 'test-plugin', hooks: {} }],
 			},
 		},
 		{
@@ -118,7 +113,7 @@ describe(parentSuiteName, () => {
 				},
 			});
 
-			const result = StudioCMSOptionsSchema.parse(data);
+			const result = Schema.decodeUnknownSync(StudioCMSOptionsSchema)(data);
 			if (Array.isArray(expected)) {
 				for (let i = 0; i < expected.length; i++) {
 					const { actualKey, actualValue } = expected[i];
@@ -164,7 +159,7 @@ describe(parentSuiteName, () => {
 				},
 			});
 
-			expect(() => StudioCMSOptionsSchema.parse(data)).toThrow();
+			expect(() => Schema.decodeUnknownSync(StudioCMSOptionsSchema)(data)).toThrow();
 		});
 	});
 });

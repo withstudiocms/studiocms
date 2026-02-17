@@ -9,7 +9,6 @@ import {
 import type { AstroConfig } from 'astro';
 import { Duration } from 'effect';
 import type { RobotsConfig } from './integrations/robots/schema.js';
-import type { TimeString } from './schemas/config/sdk.js';
 import { stripIconify } from './utils/stripIconify.js';
 import { makeAPIRoute } from './virtuals/lib/makeAPIRoute.js';
 import { stripLeadingAndTrailingSlashes } from './virtuals/lib/pathGenerators.js';
@@ -49,13 +48,6 @@ export const CMSNotificationSettingsId: string = '1';
 export const Next_NotificationSettingsId: string = 'SCMS_NOTIFICATION_SETTINGS_1';
 
 export const TemplateConfigId: string = 'SCMS_EMAIL_TEMPLATES_1';
-
-/**
- * The default lifetime for cached items.
- * This value is used to determine how long an item should remain in the cache before it is considered expired.
- * This value is used in ./schemas/config/sdk.ts to set the default cache lifetime.
- */
-export const defaultCacheLifeTime: TimeString = '5m';
 
 /**
  * Utility Constant for Default Cache Lifetime

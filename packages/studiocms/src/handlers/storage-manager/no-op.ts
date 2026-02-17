@@ -1,5 +1,5 @@
 import createPathResolver from '@withstudiocms/internal_helpers/pathResolver';
-import { defineStorageManager, type StudioCMSStorageManager } from '../../schemas/index.js';
+import { defineStorageManager, type StudioCMSStorageManagerDef } from '../../schemas/index.js';
 
 const { resolve } = createPathResolver(import.meta.url);
 
@@ -11,13 +11,13 @@ const { resolve } = createPathResolver(import.meta.url);
  * @param version - The minimum StudioCMS version required for this storage manager.
  * @returns A StudioCMSStorageManager plugin definition.
  */
-export const NoOpStorageManager = (version: string): StudioCMSStorageManager =>
+export const NoOpStorageManager = (version: string): StudioCMSStorageManagerDef =>
 	defineStorageManager({
 		identifier: 'studiocms',
 		name: 'Core No-Op Storage (built-in)',
 		studiocmsMinimumVersion: version,
 		hooks: {
-			'studiocms:storage-manager': ({ setStorageManager, logger }) => {
+			'studiocms:storage-manager': async ({ setStorageManager, logger }) => {
 				logger.info('No-Op Storage initialized.');
 				setStorageManager({
 					managerPath: resolve('./core/no-op-storage-manager.js'),

@@ -1,4 +1,5 @@
 import * as allure from 'allure-js-commons';
+import { Schema } from 'effect';
 import { describe, expect, test } from 'vitest';
 import {
 	createHead,
@@ -67,10 +68,10 @@ describe(parentSuiteName, () => {
 				await allure.parameter('input', JSON.stringify(input));
 				await allure.parameter('expected', JSON.stringify(exp));
 
-				const schema = HeadConfigSchema();
+				const schema = Schema.decodeUnknownSync(HeadConfigSchema);
 
 				await allure.step('Parsing input with HeadConfigSchema', async (ctx) => {
-					const parsed = schema.parse(input);
+					const parsed = schema({ head: input }).head;
 					await ctx.parameter('parsed', JSON.stringify(parsed));
 
 					await ctx.parameter('parsed length', String(parsed.length));

@@ -1,19 +1,27 @@
-import { z } from 'astro/zod';
-import { StudioCMSSanitizeOptionsSchema } from 'studiocms/schemas';
+import { Schema } from 'studiocms/effect';
+import { SanitizeOptionsSchema } from 'studiocms/schemas';
 
 /**
- * Defines the schema for HTML configuration options.
- *
- * The schema includes an optional `sanitize` property, which is validated
- * using the `StudioCMSSanitizeOptionsSchema`. If no value is provided,
- * the default is an empty object.
+ * Schema definition for HTML configuration in StudioCMS.
  */
-export const HTMLSchema = z
-	.object({
-		/** Sanitization options for HTML content. See {@link StudioCMSSanitizeOptionsSchema} for details. */
-		sanitize: StudioCMSSanitizeOptionsSchema,
-	})
-	.optional()
-	.default({});
+export const HTMLSchema = Schema.Struct({
+	sanitize: Schema.optionalWith(
+		SanitizeOptionsSchema.annotations({
+			description:
+				'Sanitization options for HTML content. See StudioCMSSanitizeOptionsSchema for details.',
+		}),
+		{
+			default: () => ({}),
+			exact: true,
+		}
+	),
+}).annotations({
+	description: 'The configuration for HTML content in StudioCMS.',
+	title: 'HTML Configuration',
+	identifier: 'HTMLSchemaBase',
+});
 
-export type HTMLSchemaOptions = z.infer<typeof HTMLSchema>;
+/**
+ * Type definition for the HTML configuration options in StudioCMS.
+ */
+export type HTMLSchemaOptions = typeof HTMLSchema.Encoded;

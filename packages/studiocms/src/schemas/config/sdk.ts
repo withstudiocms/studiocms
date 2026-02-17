@@ -1,200 +1,107 @@
-import { z } from 'astro/zod';
-import { defaultCacheLifeTime } from '../../consts.js';
+import { Duration } from 'effect';
+import * as Schema from 'effect/Schema';
+import { DefaultCacheLifetime } from '../../consts.js';
 
-export const TimeUnitSchema = z.union([z.literal('m'), z.literal('h')]);
+/**
+ * Schema for the cache lifetime configuration, which is an optional duration that defaults to 5 minutes if not provided.
+ */
+export const LifeTimeSchema = Schema.optionalWith(Schema.DurationFromSelf, {
+	default: () => DefaultCacheLifetime,
+}).annotations({
+	description: 'Cache Lifetime - The duration for which the cache is valid',
+});
 
-type TimeUnit = z.infer<typeof TimeUnitSchema>;
-
-export const TimeStringSchema = z
-	.string()
-	.regex(/^\d+(m|h)$/, {
-		message: "Invalid time string format. Must be a number followed by 'm' or 'h'.",
+/**
+ * Schema for the cache configuration, which can be either a boolean to enable/disable caching or an object to specify the cache lifetime.
+ */
+export const CacheConfigSchema = Schema.Union(
+	Schema.Boolean,
+	Schema.Struct({
+		lifetime: LifeTimeSchema,
 	})
-	.transform<number>((value) => {
-		// Define time multipliers
-		const timeUnits: Record<TimeUnit, number> = {
-			m: 60 * 1000, // Minutes to milliseconds
-			h: 60 * 60 * 1000, // Hours to milliseconds
-		};
-
-		// Extract the numeric value and unit from the input string
-		const match = value.match(/^(\d+)([mh])$/);
-
-		/* v8 ignore start */
-		if (!match) {
-			throw new Error("Invalid time format. Use values like '5m', '1h', etc.");
-		}
-		/* v8 ignore stop */
-
-		const val = Number.parseInt(match[1] as string, 10);
-		const unit = match[2] as TimeUnit;
-
-		return val * timeUnits[unit];
-	});
-
-export type TimeString = typeof TimeStringSchema._input;
-
-/**
- * Schema for cache configuration.
- */
-export const CacheConfigSchema = z.object({
-	/**
-	 * Cache Lifetime
-	 *
-	 * `{number}{unit}` - e.g. '5m' for 5 minutes or '1h' for 1 hour
-	 * @default '5m'
-	 */
-	lifetime: TimeStringSchema.optional().default(defaultCacheLifeTime),
+).annotations({
+	description: 'Cache Configuration - Allows enabling/disabling cache and setting cache lifetime',
 });
 
 /**
- * Schema for processed cache configuration.
- *
- * Extends the base CacheConfigSchema with additional properties.
- *
- * Properties:
- * - `enabled` (boolean): Indicates if the cache is enabled.
- *   - @default true
+ * Default cache lifetime in milliseconds (5 minutes).
  */
-export const ProcessedCacheConfigSchema = z.object({
-	/**
-	 * Cache Enabled
-	 *
-	 * @default true
-	 */
-	enabled: z.boolean().default(true),
-	/**
-	 * Cache Lifetime
-	 *
-	 * `{number}{unit}` - e.g. '5m' for 5 minutes or '1h' for 1 hour
-	 * @default '5m'
-	 */
-	lifetime: TimeStringSchema.default(defaultCacheLifeTime),
+export const InputSDKConfigSchema = Schema.Union(
+	Schema.Boolean,
+	Schema.Struct({
+		cacheConfig: CacheConfigSchema,
+	})
+).annotations({
+	description: 'SDK Configuration - Allows configuring the SDK with cache settings',
 });
 
 /**
- * Represents the configuration for the cache.
- *
- * This type is inferred from the `CacheConfigSchema` using Zod's `infer` method.
- * It ensures that the cache configuration adheres to the schema defined in `CacheConfigSchema`.
+ * Schema for the processed cache configuration, which has a boolean to indicate if caching is enabled and a number for the cache lifetime in milliseconds.
  */
-export type CacheConfig = z.infer<typeof CacheConfigSchema>;
-
-/**
- * Represents the processed cache configuration inferred from the ProcessedCacheConfigSchema.
- *
- * This type is used to define the structure of the cache configuration after it has been
- * processed and validated by the schema.
- */
-export type ProcessedCacheConfig = z.infer<typeof ProcessedCacheConfigSchema>;
-
-/**
- * Schema for SDK cache configuration.
- *
- * This schema allows for either a boolean value or a more detailed cache configuration object.
- *
- * - If a boolean value is provided:
- *   - `true`: Enables caching with a default lifetime.
- *   - `false`: Disables caching.
- * - If a cache configuration object is provided, it must conform to `CacheConfigSchema`.
- *
- * The schema is optional and defaults to `true` (enabled with default lifetime).
- *
- * The transformation ensures that the resulting configuration is of type `ProcessedCacheConfig`:
- * - If a boolean value is provided, it is transformed into an object with `enabled` and `lifetime` properties.
- * - If a cache configuration object is provided, it is transformed to ensure `enabled` is always `true`.
- */
-export const SDKCacheSchema = z
-	.union([z.boolean(), CacheConfigSchema])
-	.optional()
-	.default(true)
-	.transform<ProcessedCacheConfig>((cacheConfig) => {
-		if (typeof cacheConfig === 'boolean') {
-			return {
-				enabled: cacheConfig,
-				lifetime: TimeStringSchema.parse(defaultCacheLifeTime),
-			};
-		}
-		return { enabled: true, lifetime: cacheConfig.lifetime };
-	});
-
-/**
- * Schema for processing SDK configuration.
- */
-export const ProcessedSDKSchema = z.object({
-	/**
-	 * Cache Configuration
-	 *
-	 * @default cacheConfig: { lifetime: '5m' }
-	 */
-	cacheConfig: ProcessedCacheConfigSchema,
+export const OutputSDKConfigSchema = Schema.Struct({
+	cacheConfig: Schema.Struct({
+		lifetime: Schema.Number,
+		enabled: Schema.Boolean,
+	}).annotations({
+		description:
+			'Processed Cache Configuration - Contains the processed cache settings with lifetime in milliseconds and enabled status',
+	}),
+}).annotations({
+	description:
+		'Processed SDK Configuration - The resulting configuration after processing the input SDK configuration',
 });
 
 /**
- * Type definition for the processed SDK configuration.
+ * Gets the default cache configuration based on whether caching is enabled or not.
  *
- * This type is inferred from the `ProcessedSDKSchema` using Zod's `infer` method.
- * It represents the structure of the SDK configuration after it has been processed.
+ * @param enabled - A boolean indicating whether caching is enabled or not.
+ * @returns An object containing the cache configuration with lifetime in milliseconds and enabled status.
  */
-export type ProcessedSDKConfig = z.infer<typeof ProcessedSDKSchema>;
-
-export type StudioCMS_SDKOptions =
-	| boolean
-	| {
-			/**
-			 * Cache Configuration
-			 *
-			 * @default cacheConfig: { lifetime: '5m' }
-			 */
-			cacheConfig?:
-				| boolean
-				| {
-						/**
-						 * Cache Lifetime
-						 *
-						 * `{number}{unit}` - e.g. '5m' for 5 minutes or '1h' for 1 hour
-						 * @default '5m'
-						 */
-						lifetime?: string | undefined;
-				  }
-				| undefined;
-	  }
-	| undefined;
-
-export interface StudioCMS_SDKConfig {
+export const getDefaultCacheConfig = (enabled: boolean) => ({
 	cacheConfig: {
-		lifetime: number;
-		enabled: boolean;
-	};
-}
+		lifetime: Duration.toMillis(DefaultCacheLifetime),
+		enabled,
+	},
+});
 
 /**
- * SDKSchema is a Zod schema that validates the SDK configuration.
- * It can either be a boolean or an object containing cache configuration.
- *
- * If it is a boolean, it defaults to `true` and transforms into an object
- * with default cache configuration.
- *
- * If it is an object, it must contain the `cacheConfig` property which is
- * validated by the `SDKCacheSchema`.
+ * Processes the input SDK configuration and returns the processed cache configuration.
  */
-export const SDKSchema = z
-	.union([
-		z.boolean(),
-		z.object({
-			cacheConfig: SDKCacheSchema,
-		}),
-	])
-	.optional()
-	.default(true)
-	.transform<ProcessedSDKConfig>((sdkConfig) => {
-		if (typeof sdkConfig === 'boolean') {
-			return {
-				cacheConfig: {
-					enabled: sdkConfig,
-					lifetime: TimeStringSchema.parse(defaultCacheLifeTime),
-				},
-			};
+export const SDKConfigSchema = Schema.transform(InputSDKConfigSchema, OutputSDKConfigSchema, {
+	strict: true,
+	decode: (input) => {
+		if (typeof input === 'boolean') {
+			return getDefaultCacheConfig(input);
 		}
-		return sdkConfig;
-	});
+		if (typeof input.cacheConfig === 'boolean') {
+			return getDefaultCacheConfig(input.cacheConfig);
+		}
+		return {
+			cacheConfig: {
+				enabled: true,
+				lifetime: input.cacheConfig?.lifetime
+					? Duration.toMillis(input.cacheConfig.lifetime)
+					: Duration.toMillis(DefaultCacheLifetime),
+			},
+		};
+	},
+	encode: (output) => ({
+		cacheConfig: {
+			lifetime: Duration.millis(output.cacheConfig.lifetime),
+		},
+	}),
+}).annotations({
+	title: 'SDK Configuration',
+	description: 'Configuration options related to the SDK, including cache settings',
+	identifier: 'SDKConfig',
+});
+
+/**
+ * Type for the SDK configuration.
+ */
+export type SDKConfig = typeof SDKConfigSchema.Encoded;
+
+/**
+ * Resolved type for the SDK configuration.
+ */
+export type SDKConfigResolved = typeof SDKConfigSchema.Type;

@@ -1,20 +1,26 @@
-import { z } from 'astro/zod';
-
-export interface DBConfigSchema {
-	/**
-	 * Database Dialect to use
-	 *
-	 * @default 'libsql'
-	 */
-	dialect?: 'libsql' | 'postgres' | 'mysql';
-}
+import * as Schema from 'effect/Schema';
 
 /**
- * Database Configuration Schema
+ * Schema for the database configuration.
  */
-export const dbConfigSchema = z
-	.object({
-		dialect: z.enum(['libsql', 'postgres', 'mysql']).optional().default('libsql'),
-	})
-	.optional()
-	.default({});
+export const DbConfigSchema = Schema.Struct({
+	dialect: Schema.optionalWith(Schema.Literal('libsql', 'postgres', 'mysql'), {
+		default: () => 'libsql',
+	}).annotations({
+		description: 'Database Dialect to use',
+	}),
+}).annotations({
+	title: 'Database Configuration',
+	description: 'Configuration options related to the database',
+	identifier: 'DbConfig',
+});
+
+/**
+ * Type for the database configuration.
+ */
+export type DbConfig = typeof DbConfigSchema.Encoded;
+
+/**
+ * Resolved type for the database configuration.
+ */
+export type DbConfigResolved = typeof DbConfigSchema.Type;

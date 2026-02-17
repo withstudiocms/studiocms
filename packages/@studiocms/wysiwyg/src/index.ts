@@ -8,7 +8,9 @@
 
 import type { AstroIntegration } from 'astro';
 import { createResolver } from 'astro-integration-kit';
-import { definePlugin, type StudioCMSPlugin } from 'studiocms/plugins';
+import { Schema } from 'studiocms/effect';
+import { definePlugin } from 'studiocms/plugins';
+import type { StudioCMSPluginDef } from 'studiocms/schemas';
 import { GRAPES_CSS_PATH, PARTIAL_PATH, STORE_ENDPOINT_PATH } from './consts.js';
 import { shared } from './lib/shared.js';
 import { WYSIWYGSchema, type WYSIWYGSchemaOptions } from './types.js';
@@ -23,10 +25,10 @@ import { WYSIWYGSchema, type WYSIWYGSchemaOptions } from './types.js';
  */
 export function internalWysiwygIntegration(
 	packageIdentifier: string,
-	options?: WYSIWYGSchemaOptions
+	options: WYSIWYGSchemaOptions = {}
 ): AstroIntegration {
 	// Validate and parse the provided options using the WYSIWYG schema
-	const resolvedOptions = WYSIWYGSchema.parse(options);
+	const resolvedOptions = Schema.decodeSync(WYSIWYGSchema)(options);
 
 	// Helper function to create route entrypoints
 	const resEntrypoint = (path: string) => `@studiocms/wysiwyg/routes/${path}`;
@@ -87,12 +89,12 @@ export function internalWysiwygIntegration(
  * ]
  * ```
  */
-function wysiwyg(opts?: WYSIWYGSchemaOptions): StudioCMSPlugin {
+function wysiwyg(opts: WYSIWYGSchemaOptions = {}): StudioCMSPluginDef {
 	// Resolve the path to the current file
 	const { resolve } = createResolver(import.meta.url);
 
 	// Validate and parse the provided options using the WYSIWYG schema
-	const options = WYSIWYGSchema.parse(opts);
+	const options = Schema.decodeSync(WYSIWYGSchema)(opts);
 
 	// Define the package identifier
 	const packageIdentifier = '@studiocms/wysiwyg';
@@ -101,13 +103,13 @@ function wysiwyg(opts?: WYSIWYGSchemaOptions): StudioCMSPlugin {
 	return definePlugin({
 		identifier: packageIdentifier,
 		name: 'StudioCMS WYSIWYG Editor',
-		studiocmsMinimumVersion: '0.1.0-beta.23',
+		studiocmsMinimumVersion: '0.3.0',
 		hooks: {
-			'studiocms:astro-config': ({ addIntegrations }) => {
+			'studiocms:astro-config': async ({ addIntegrations }) => {
 				// Add the WYSIWYG editor integration to the Astro configuration
 				addIntegrations(internalWysiwygIntegration(packageIdentifier, options));
 			},
-			'studiocms:rendering': ({ setRendering }) => {
+			'studiocms:rendering': async ({ setRendering }) => {
 				// Set the rendering configuration for the WYSIWYG editor
 				// This will allow the editor to be rendered in the StudioCMS environment
 				// and provide the necessary components for the editor.

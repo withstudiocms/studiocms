@@ -1,759 +1,510 @@
-import type { AvailableIcons } from 'studiocms:ui/icons';
-import type { AstroIntegration } from 'astro';
-import { z } from 'astro/zod';
-import type { SanitizeOptions } from 'ultrahtml/transformers/sanitize';
+import { ParseResult } from 'effect';
+import * as Schema from 'effect/Schema';
 import { availableTranslationFileKeys } from '../../virtuals/i18n/v-files.js';
-
-// https://github.com/withastro/astro/blob/910eb00fe0b70ca80bd09520ae100e8c78b675b5/packages/astro/src/core/config/schema.ts#L113
-export const astroIntegrationSchema = z.object({
-	name: z.string(),
-	hooks: z.object({}).passthrough().default({}),
-}) as z.Schema<AstroIntegration>;
-
-// export const ValidationFunction = z.function().args(z.any()).returns(z.string().or(z.boolean()));
-
-// export const TransformFunction = z.function().args(z.any()).returns(z.any());
+import {
+	AstroComponentSchema,
+	SanitizeOptionsSchema,
+	UIIconListSchema,
+} from '../external-schemas.js';
 
 /**
- * Schema for a StudioCMS colorway.
+ * Available Translation File Keys for plugin translations.
  */
-export const StudioCMSColorway = z.enum([
+export const I18nLabelSchema = Schema.transformOrFail(
+	Schema.Record({
+		key: Schema.String,
+		value: Schema.String,
+	}),
+	Schema.Record({
+		key: Schema.String,
+		value: Schema.String,
+	}),
+	{
+		strict: true,
+		decode: (input, _options, ast) => {
+			if (typeof input !== 'object' || input === null) {
+				return ParseResult.fail(new ParseResult.Type(ast, input, 'Expected an object'));
+			}
+			const result: Record<string, string> = {};
+			for (const key in input) {
+				if (typeof input[key] !== 'string') {
+					return ParseResult.fail(
+						new ParseResult.Type(ast, input[key], `Expected value for key '${key}' to be a string`)
+					);
+				}
+				result[key] = input[key];
+			}
+			const unknown = Object.keys(result).filter((k) => !availableTranslationFileKeys.includes(k));
+			if (unknown.length > 0) {
+				return ParseResult.fail(
+					new ParseResult.Type(
+						ast,
+						input,
+						`Unknown/Unsupported translation keys: ${unknown.join(', ')}\n\nSupported keys are: ${availableTranslationFileKeys.join(', ')}`
+					)
+				);
+			}
+			return ParseResult.succeed(result);
+		},
+		encode: (input) => ParseResult.succeed(input),
+	}
+);
+
+/**
+ * StudioCMS Colorway Schema
+ */
+export const StudioCMSColorwaySchema = Schema.Literal(
 	'primary',
 	'success',
 	'warning',
 	'danger',
 	'info',
-	'mono',
-]);
-
-/**
- * Schema for a base field.
- *
- * This schema includes the following properties:
- * - `name`: The name of the field used in the form submission data.
- * - `label`: The label of the field displayed in the form.
- * - `required`: A boolean indicating whether the field is required.
- * - `readOnly`: A boolean indicating whether the field is read-only (disabled).
- */
-const BaseFieldSchema = z.object({
-	/**
-	 * The name of the field used in the form submission data
-	 */
-	name: z.string(),
-	/**
-	 * The label of the field displayed in the form
-	 */
-	label: z.string(),
-	/**
-	 * Is the field required
-	 */
-	required: z.boolean().optional(),
-	/**
-	 * Is the field read only (disabled)
-	 */
-	readOnly: z.boolean().optional(),
-});
-
-/**
- * Schema for a field that supports a colorway.
- *
- * This schema extends the `BaseFieldSchema` and includes the following properties:
- * - `color`: An optional enum specifying the colorway of the field. Possible values are 'primary', 'success', 'warning', 'danger', 'info', and 'mono'.
- */
-const SupportsColorSchema = BaseFieldSchema.extend({
-	color: StudioCMSColorway.optional(),
-});
-
-/**
- * Schema for a field that supports a placeholder.
- *
- * This schema extends the `BaseFieldSchema` and includes the following properties:
- * - `placeholder`: An optional string representing the placeholder text for the field.
- */
-const SupportsPlaceHolderSchema = BaseFieldSchema.extend({
-	placeholder: z.string().optional(),
-});
-
-/**
- * Schema for a checkbox field.
- *
- * This schema extends the `SupportsColorSchema` and includes the following properties:
- * - `input`: A literal string 'checkbox' indicating the type of input field.
- * - `defaultChecked`: An optional boolean indicating whether the checkbox is checked by default.
- * - `size`: An optional enum specifying the size of the checkbox. Possible values are 'sm', 'md', and 'lg'.
- */
-const CheckboxFieldSchema = SupportsColorSchema.extend({
-	input: z.literal('checkbox'),
-	defaultChecked: z.boolean().optional(),
-	size: z.enum(['sm', 'md', 'lg']).optional(),
-});
-
-/**
- * Schema for a text input field.
- *
- * This schema extends the `SupportsPlaceHolderSchema` and includes the following properties:
- * - `input`: A literal string 'input' indicating the type of input field.
- * - `type`: An optional enum specifying the type of the input field. Possible values are 'text', 'password', 'email', 'number', 'tel', 'url', and 'search'.
- * - `defaultValue`: An optional string representing the default value of the input field.
- */
-const TextInputFieldSchema = SupportsPlaceHolderSchema.extend({
-	input: z.literal('input'),
-	type: z.enum(['text', 'password', 'email', 'number', 'tel', 'url', 'search']).optional(),
-	defaultValue: z.string().optional(),
-});
-
-/**
- * Schema for a text area field.
- *
- * This schema extends the `SupportsPlaceHolderSchema` and includes the following properties:
- * - `input`: A literal string 'textarea' indicating the type of input field.
- * - `defaultValue`: An optional string representing the default value of the text area.
- */
-const TextAreaFieldSchema = SupportsPlaceHolderSchema.extend({
-	input: z.literal('textarea'),
-	defaultValue: z.string().optional(),
-});
-
-/**
- * Schema for shared options.
- *
- * This schema defines an array of objects, where each object represents an option with the following properties:
- * - `label`: A string representing the label of the option.
- * - `value`: A string representing the value of the option.
- * - `disabled`: An optional boolean indicating whether the option is disabled.
- */
-const SharedOptionsSchema = z.array(
-	z.object({
-		label: z.string(),
-		value: z.string(),
-		disabled: z.boolean().optional(),
-	})
+	'mono'
 );
 
 /**
- * Schema for a radio group field.
- *
- * This schema extends the SupportsColorSchema and includes additional properties
- * specific to a radio group field.
- *
- * @property {string} input - Must be the literal string 'radio'.
- * @property {'horizontal' | 'vertical'} [direction] - Optional direction of the radio group, can be either 'horizontal' or 'vertical'.
- * @property {string} [defaultValue] - Optional default value for the radio group.
- * @property {SharedOptionsSchema} options - Options for the radio group, defined by the SharedOptionsSchema.
+ * StudioCMS Size Schema
  */
-const RadioGroupFieldSchema = SupportsColorSchema.extend({
-	input: z.literal('radio'),
-	direction: z.enum(['horizontal', 'vertical']).optional(),
-	defaultValue: z.string().optional(),
-	options: SharedOptionsSchema,
+export const StudioCMSSizeSchema = Schema.Literal('sm', 'md', 'lg');
+
+/**
+ * Shared Options Schema for select fields in plugins.
+ *
+ * This schema defines the structure of options that can be shared across different select fields, including a label, value, and an optional disabled property.
+ */
+export const SharedOptionsSchemaItem = Schema.Struct({
+	label: Schema.String,
+	value: Schema.String,
+	disabled: Schema.optional(Schema.Boolean),
 });
 
 /**
- * Schema for a select field, extending the SupportsPlaceHolderSchema.
+ * Shared Options Schema for select fields in plugins.
  *
- * @extends SupportsPlaceHolderSchema
- *
- * @property {z.Literal<'select'>} input - Specifies that the input type is 'select'.
- * @property {z.ZodOptional<z.ZodEnum<['basic', 'search']>>} type - Optional type of the select field, can be 'basic' or 'search'.
- * @property {z.ZodOptional<z.ZodString>} defaultValue - Optional default value for the select field.
- * @property {SharedOptionsSchema} options - Schema for the options available in the select field.
+ * This schema defines an array of options that can be shared across different select fields, where each option follows the structure defined in SharedOptionsSchemaItem.
  */
-const SelectFieldSchema = SupportsPlaceHolderSchema.extend({
-	input: z.literal('select'),
-	type: z.enum(['basic', 'search']).optional(),
-	defaultValue: z.string().optional(),
-	options: SharedOptionsSchema,
-});
+export const SharedOptionsSchema = Schema.Array(SharedOptionsSchemaItem);
 
 /**
- * A union schema that represents different types of field schemas.
- * This schema can be one of the following:
- * - CheckboxFieldSchema
- * - TextInputFieldSchema
- * - TextAreaFieldSchema
- * - RadioGroupFieldSchema
- * - SelectFieldSchema
+ * Schema for validating StudioCMS permissions.
+ *
+ * This schema ensures that the provided permission value is one of the predefined permission levels in StudioCMS, such as 'owner', 'admin', 'editor', 'visitor', or 'none'.
  */
-export const FieldSchema = z.union([
+export const StudioCMSPermissionsSchema = Schema.Literal(
+	'owner',
+	'admin',
+	'editor',
+	'visitor',
+	'none'
+);
+
+/**
+ * Base Field Schema for plugin fields.
+ *
+ * This schema defines the common properties for all plugin fields, such as name, label, and optional properties like required and readOnly.
+ */
+export class BaseFieldSchema extends Schema.Class<BaseFieldSchema>('BaseFieldSchema')({
+	name: Schema.String,
+	label: Schema.String,
+	required: Schema.optional(Schema.Boolean),
+	readOnly: Schema.optional(Schema.Boolean),
+}) {}
+
+/**
+ * Supports Colorway Schema for plugin fields that support colorways.
+ *
+ * This schema extends the BaseFieldSchema and adds an optional colorway property, which can be one of the predefined colorways in the StudioCMSColorwaySchema.
+ */
+export class SupportsColorwaySchema extends BaseFieldSchema.extend<SupportsColorwaySchema>(
+	'SupportsColorwaySchema'
+)({
+	colorway: Schema.optional(StudioCMSColorwaySchema),
+}) {}
+
+/**
+ * Supports PlaceHolder Schema for plugin fields that support placeholders.
+ *
+ * This schema extends the BaseFieldSchema and adds an optional placeholder property, which is a string that can be used as a placeholder in input fields.
+ */
+export class SupportsPlaceHolderSchema extends BaseFieldSchema.extend<SupportsPlaceHolderSchema>(
+	'SupportsPlaceHolderSchema'
+)({
+	placeholder: Schema.optional(Schema.String),
+}) {}
+
+/**
+ * Checkbox Field Schema for checkbox input fields in plugins.
+ *
+ * This schema extends the SupportsColorwaySchema and adds specific properties for checkbox fields, such as defaultChecked and size.
+ */
+export class CheckboxFieldSchema extends SupportsColorwaySchema.extend<CheckboxFieldSchema>(
+	'CheckboxFieldSchema'
+)({
+	input: Schema.Literal('checkbox'),
+	defaultChecked: Schema.optional(Schema.Boolean),
+	size: Schema.optional(StudioCMSSizeSchema),
+}) {}
+
+/**
+ * Text Input Field Schema for text input fields in plugins.
+ *
+ * This schema extends the SupportsPlaceHolderSchema and adds specific properties for text input fields, such as type and defaultValue.
+ */
+export class TextInputFieldSchema extends SupportsPlaceHolderSchema.extend<TextInputFieldSchema>(
+	'TextInputFieldSchema'
+)({
+	input: Schema.Literal('input'),
+	type: Schema.optional(
+		Schema.Literal('text', 'password', 'email', 'number', 'tel', 'url', 'search')
+	),
+	defaultValue: Schema.optional(Schema.String),
+}) {}
+
+/**
+ * Text Area Field Schema for textarea input fields in plugins.
+ *
+ * This schema extends the SupportsPlaceHolderSchema and adds specific properties for textarea fields, such as defaultValue.
+ */
+export class TextAreaFieldSchema extends SupportsPlaceHolderSchema.extend<TextAreaFieldSchema>(
+	'TextAreaFieldSchema'
+)({
+	input: Schema.Literal('textarea'),
+	defaultValue: Schema.optional(Schema.String),
+}) {}
+
+/**
+ * Radio Group Field Schema for radio group input fields in plugins.
+ *
+ * This schema extends the SupportsColorwaySchema and adds specific properties for radio group fields, such as direction, defaultValue, and options.
+ */
+export class RadioGroupFieldSchema extends SupportsColorwaySchema.extend<RadioGroupFieldSchema>(
+	'RadioGroupFieldSchema'
+)({
+	input: Schema.Literal('radio'),
+	direction: Schema.optional(Schema.Literal('horizontal', 'vertical')),
+	defaultValue: Schema.optional(Schema.String),
+	options: SharedOptionsSchema,
+}) {}
+
+/**
+ * Select Field Schema for select input fields in plugins.
+ *
+ * This schema extends the SupportsColorwaySchema and adds specific properties for select fields, such as type, defaultValue, and options.
+ */
+export class SelectFieldSchema extends SupportsColorwaySchema.extend<SelectFieldSchema>(
+	'SelectFieldSchema'
+)({
+	input: Schema.Literal('select'),
+	type: Schema.optional(Schema.Literal('basic', 'search')),
+	defaultValue: Schema.optional(Schema.String),
+	options: SharedOptionsSchema,
+}) {}
+
+/**
+ * Field Schema for plugin fields in StudioCMS.
+ */
+export const FieldSchema = Schema.Union(
 	CheckboxFieldSchema,
 	TextInputFieldSchema,
 	TextAreaFieldSchema,
 	RadioGroupFieldSchema,
-	SelectFieldSchema,
-]);
+	SelectFieldSchema
+);
 
 /**
- * Schema definition for a row field.
+ * Row Field Schema for grouping multiple fields in a row within plugin settings.
  *
- * This schema extends the BaseFieldSchema and includes additional properties specific to a row field.
+ * This schema extends the BaseFieldSchema and adds specific properties for row fields, such as alignCenter, gapSize, and an array of fields that can be included in the row.
+ */
+export class RowFieldSchema extends BaseFieldSchema.extend<RowFieldSchema>('RowFieldSchema')({
+	input: Schema.Literal('row'),
+	alignCenter: Schema.optional(Schema.Boolean),
+	gapSize: Schema.optional(StudioCMSSizeSchema),
+	fields: Schema.Array(FieldSchema),
+}) {}
+
+/**
+ * Settings Field Schema for defining the structure of fields used in plugin settings.
  *
- * Properties:
- * - `input`: A literal type with the value 'row'.
- * - `alignCenter`: An optional boolean indicating whether the row should be center-aligned.
- * - `gapSize`: An optional enum specifying the gap size between fields. Possible values are 'sm', 'md', and 'lg'.
- * - `fields`: A lazy-loaded array of FieldSchema, allowing for recursive field definitions.
+ * This schema is a union of all the individual field schemas, allowing for flexibility in defining various types of fields within plugin settings.
  */
-const RowFieldSchema = BaseFieldSchema.extend({
-	input: z.literal('row'),
-	alignCenter: z.boolean().optional(),
-	gapSize: z.enum(['sm', 'md', 'lg']).optional(),
-	fields: z.lazy(() => FieldSchema.array()), // Recursive definition
-});
+export const SettingsFieldSchema = Schema.Union(FieldSchema, RowFieldSchema);
 
 /**
- * A schema that represents the settings field.
- * It is a union of `FieldSchema` and `RowFieldSchema`.
+ * Type for the Settings Field, which can be any of the defined field types in the SettingsFieldSchema.
  */
-export const SettingsFieldSchema = z.union([FieldSchema, RowFieldSchema]);
+export type SettingsField = typeof SettingsFieldSchema.Type;
 
 /**
- * Represents the type inferred from the `SettingsFieldSchema` schema.
+ * Base Dashboard Page Props Schema for defining the properties of a dashboard page in StudioCMS.
  *
- * This type is used to define the structure of settings fields within the application.
+ * This schema includes properties such as title, description, route, icon, required permissions, and optional components for page actions and body content, providing a structured way to define the configuration of dashboard pages in plugins.
  */
-export type SettingsField = z.infer<typeof SettingsFieldSchema>;
-
-/**
- * A custom schema for i18n label translations.
- */
-export const i18nLabelSchema = z.record(z.string().min(1)).superRefine((val, ctx) => {
-	const unknown = Object.keys(val).filter((k) => !availableTranslationFileKeys.includes(k));
-	if (unknown.length) {
-		ctx.addIssue({
-			code: z.ZodIssueCode.custom,
-			message: `Unsupported locale keys: ${unknown.join(', ')}. Allowed: ${availableTranslationFileKeys.join(', ')}.`,
-		});
-	}
-});
-
-/**
- * Schema for a base dashboard page props.
- *
- * This schema includes the following properties:
- * - `title`: The title of the dashboard page.
- * - `description`: The description of the dashboard page.
- * - `requiredPermissions`: A string literal representing the required permissions to access the page.
- * - `pageHeaderComponent`: The component to render in the page header.
- * - `pageBodyComponent`: The component to render in the page body.
- */
-const BaseDashboardPagePropsSchema = z.object({
-	/**
-	 * The title of the dashboard page
-	 */
-	title: i18nLabelSchema,
-	/**
-	 * The description of the dashboard page
-	 */
-	description: z.string(),
-	/**
-	 * The desired route of the dashboard page
-	 */
-	route: z.string(),
-	/**
-	 * The icon to display in the sidebar
-	 *
-	 * @default 'cube-transparent'
-	 * @optional
-	 */
-	icon: z.string().default('heroicons:cube-transparent').optional(),
-	/**
-	 * The required permissions to access the page
-	 */
-	requiredPermissions: z
-		.union([
-			z.literal('owner'),
-			z.literal('admin'),
-			z.literal('editor'),
-			z.literal('visitor'),
-			z.literal('none'),
-		])
-		.default('none')
-		.optional(),
-	/**
-	 * The component to render in the page header to display action buttons
-	 */
-	pageActionsComponent: z.string().optional(),
-	/**
-	 * The component to render in the page body
-	 */
-	pageBodyComponent: z.string(),
-});
-
-/**
- * Schema for a base dashboard page props.
- *
- * This schema extends the `BaseDashboardPagePropsSchema` and includes the following properties:
- * - `slug`: The slug of the dashboard page.
- */
-const AvailableBaseSchema = BaseDashboardPagePropsSchema.extend({
-	/**
-	 * The slug of the dashboard page
-	 */
-	slug: z.string(),
-});
-
-/**
- * Schema for a custom Astro component.
- */
-// biome-ignore lint/suspicious/noExplicitAny: This is a valid use case for explicit any.
-const AstroComponentSchema = z.custom<(_props: any) => any>();
-
-/**
- * Schema for a base dashboard page props.
- *
- * This schema extends the `AvailableBaseSchema` and includes the following properties:
- * - `components`: An object containing the components to render in the dashboard page.
- */
-const FinalBaseSchema = AvailableBaseSchema.extend({
-	components: z.object({
-		PageActionsComponent: AstroComponentSchema.optional(),
-		PageBodyComponent: AstroComponentSchema,
-		InnerSidebarComponent: AstroComponentSchema.optional(),
+export class BaseDashboardPagePropsSchema extends Schema.Class<BaseDashboardPagePropsSchema>(
+	'BaseDashboardPagePropsSchema'
+)({
+	title: I18nLabelSchema,
+	description: Schema.String,
+	route: Schema.String,
+	icon: Schema.optionalWith(UIIconListSchema, {
+		default: () => 'heroicons:cube-transparent',
 	}),
-});
+	requiredPermissions: Schema.optionalWith(StudioCMSPermissionsSchema, {
+		default: () => 'none',
+	}),
+	pageActionsComponent: Schema.optional(Schema.String),
+	pageBodyComponent: Schema.String,
+}) {}
 
 /**
- * Schema for a single sidebar dashboard page.
+ * Available Base Schema for defining the properties of an available plugin in StudioCMS.
  *
- * This schema extends the `BaseDashboardPagePropsSchema` and includes the following properties:
- * - `sidebar`: A literal string 'single' indicating a single sidebar layout.
+ * This schema extends the BaseDashboardPagePropsSchema and adds a slug property, which is a string that serves as a unique identifier for the plugin, allowing for structured configuration of available plugins in the system.
  */
-const SingleSidebarSchema = BaseDashboardPagePropsSchema.extend({
-	/**
-	 * The sidebar layout
-	 */
-	sidebar: z.literal('single'),
-});
+export class AvailableBaseSchema extends BaseDashboardPagePropsSchema.extend<AvailableBaseSchema>(
+	'AvailableBaseSchema'
+)({
+	slug: Schema.String,
+}) {}
 
 /**
- * Schema for a single sidebar dashboard page.
+ * Final Base Schema for defining the properties of a final plugin in StudioCMS.
  *
- * This schema extends the `AvailableBaseSchema` and includes the following properties:
- * - `sidebar`: A literal string 'single' indicating a single sidebar layout.
+ * This schema extends the AvailableBaseSchema and adds a components property, which is an object that can include optional PageActionsComponent, a required PageBodyComponent, and an optional InnerSidebarComponent, all of which are validated as Astro components, providing a structured way to define the final configuration of plugins in the system.
  */
-const AvailableSingleSchema = AvailableBaseSchema.extend({
-	/**
-	 * The sidebar layout
-	 */
-	sidebar: z.literal('single'),
-});
+export class FinalBaseSchema extends AvailableBaseSchema.extend<FinalBaseSchema>('FinalBaseSchema')(
+	{
+		components: Schema.Struct({
+			PageActionsComponent: Schema.optional(AstroComponentSchema),
+			PageBodyComponent: AstroComponentSchema,
+			InnerSidebarComponent: Schema.optional(AstroComponentSchema),
+		}),
+	}
+) {}
 
 /**
- * Schema for a single sidebar dashboard page.
+ * Single Sidebar Schema for defining the properties of a plugin with a single sidebar layout in StudioCMS.
+ */
+export class SingleSidebarSchema extends BaseDashboardPagePropsSchema.extend<SingleSidebarSchema>(
+	'SingleSidebarSchema'
+)({
+	sidebar: Schema.Literal('single'),
+}) {}
+
+/**
+ * Available Final Schema for defining the properties of a final plugin with a single sidebar layout in StudioCMS.
+ */
+export class AvailableSingleSchema extends AvailableBaseSchema.extend<AvailableSingleSchema>(
+	'AvailableSingleSchema'
+)({
+	sidebar: Schema.Literal('single'),
+}) {}
+
+/**
+ * Final Single Schema for defining the properties of a final plugin with a single sidebar layout in StudioCMS.
+ */
+export class FinalSingleSchema extends FinalBaseSchema.extend<FinalSingleSchema>(
+	'FinalSingleSchema'
+)({
+	sidebar: Schema.Literal('single'),
+}) {}
+
+/**
+ * Double Sidebar Schema for defining the properties of a plugin with a double sidebar layout in StudioCMS.
+ */
+export class DoubleSidebarSchema extends BaseDashboardPagePropsSchema.extend<DoubleSidebarSchema>(
+	'DoubleSidebarSchema'
+)({
+	sidebar: Schema.Literal('double'),
+	innerSidebarComponent: Schema.String,
+}) {}
+
+/**
+ * Available Double Schema for defining the properties of a final plugin with a double sidebar layout in StudioCMS.
+ */
+export class AvailableDoubleSchema extends AvailableBaseSchema.extend<AvailableDoubleSchema>(
+	'AvailableDoubleSchema'
+)({
+	sidebar: Schema.Literal('double'),
+	innerSidebarComponent: Schema.String,
+}) {}
+
+/**
+ * Final Double Schema for defining the properties of a final plugin with a double sidebar layout in StudioCMS.
+ */
+export class FinalDoubleSchema extends FinalBaseSchema.extend<FinalDoubleSchema>(
+	'FinalDoubleSchema'
+)({
+	sidebar: Schema.Literal('double'),
+	innerSidebarComponent: Schema.String,
+}) {}
+
+/**
+ * Dashboard Page Schema for defining the properties of a dashboard page in StudioCMS, which can have either a single or double sidebar layout.
+ */
+export const DashboardPageSchema = Schema.Union(SingleSidebarSchema, DoubleSidebarSchema);
+
+/**
+ * Available Dashboard Base Schema for defining the properties of an available plugin in StudioCMS, which can have either a single or double sidebar layout.
+ */
+export const AvailableDashboardBaseSchema = Schema.Union(
+	AvailableSingleSchema,
+	AvailableDoubleSchema
+);
+
+/**
+ * Final Dashboard Base Schema for defining the properties of a final plugin in StudioCMS, which can have either a single or double sidebar layout.
+ */
+export const FinalDashboardBaseSchema = Schema.Union(FinalSingleSchema, FinalDoubleSchema);
+
+/**
+ * Available Dashboard Pages Schema for defining the properties of available dashboard pages in StudioCMS, categorized by user and admin access levels.
  *
- * This schema extends the `FinalBaseSchema` and includes the following properties:
- * - `sidebar`: A literal string 'single' indicating a single sidebar layout.
+ * This schema defines an object with optional user and admin properties, each of which is an array of AvailableDashboardBaseSchema, allowing for structured configuration of available dashboard pages based on access levels in the system.
  */
-const FinalSingleSchema = FinalBaseSchema.extend({
-	/**
-	 * The sidebar layout
-	 */
-	sidebar: z.literal('single'),
-});
-
-/**
- * Schema for a double sidebar dashboard page.
- *
- * This schema extends the `BaseDashboardPagePropsSchema` and includes the following properties:
- * - `sidebar`: A literal string 'double' indicating a double sidebar layout.
- * - `innerSidebarComponent`: The component to render in the inner sidebar.
- */
-const DoubleSidebarSchema = BaseDashboardPagePropsSchema.extend({
-	/**
-	 * The sidebar layout
-	 */
-	sidebar: z.literal('double'),
-	/**
-	 * The component to render in the inner sidebar
-	 */
-	innerSidebarComponent: z.string(),
-});
-
-/**
- * Schema for a double sidebar dashboard page.
- *
- * This schema extends the `AvailableBaseSchema` and includes the following properties:
- * - `sidebar`: A literal string 'double' indicating a double sidebar layout.
- * - `innerSidebarComponent`: The component to render in the inner sidebar.
- */
-const AvailableDoubleSchema = AvailableBaseSchema.extend({
-	/**
-	 * The sidebar layout
-	 */
-	sidebar: z.literal('double'),
-	/**
-	 * The component to render in the inner sidebar
-	 */
-	innerSidebarComponent: z.string(),
-});
-
-/**
- * Schema for a double sidebar dashboard page.
- *
- * This schema extends the `FinalBaseSchema` and includes the following properties:
- * - `sidebar`: A literal string 'double' indicating a double sidebar layout.
- * - `innerSidebarComponent`: The component to render in the inner sidebar.
- */
-const FinalDoubleSchema = FinalBaseSchema.extend({
-	/**
-	 * The sidebar layout
-	 */
-	sidebar: z.literal('double'),
-	/**
-	 * The component to render in the inner sidebar
-	 */
-	innerSidebarComponent: z.string(),
-});
-
-/**
- * A union schema that represents different types of dashboard page schemas.
- * This schema can be one of the following:
- * - SingleSidebarSchema
- * - DoubleSidebarSchema
- */
-export const DashboardPageSchema = z.union([SingleSidebarSchema, DoubleSidebarSchema]);
-
-/**
- * A union schema that represents different types of available dashboard base schemas.
- * This schema can be one of the following:
- * - AvailableSingleSchema
- * - AvailableDoubleSchema
- */
-export const AvailableDashboardBaseSchema = z.union([AvailableSingleSchema, AvailableDoubleSchema]);
-
-/**
- * A union schema that represents different types of final dashboard base schemas.
- * This schema can be one of the following:
- * - FinalSingleSchema
- * - FinalDoubleSchema
- */
-export const FinalDashboardBaseSchema = z.union([FinalSingleSchema, FinalDoubleSchema]);
-
-/**
- * Schema for an array of available dashboard pages.
- *
- * This schema defines an object with the following properties:
- * - `user`: An optional array of `AvailableDashboardBaseSchema` representing the available dashboard pages for users.
- * - `admin`: An optional array of `AvailableDashboardBaseSchema` representing the available dashboard pages for admins.
- */
-export const AvailableDashboardPagesSchema = z.object({
-	/**
-	 * Available dashboard pages for users
-	 */
-	user: z.array(AvailableDashboardBaseSchema).optional(),
-	/**
-	 * Available dashboard pages for admins
-	 */
-	admin: z.array(AvailableDashboardBaseSchema).optional(),
-});
-
-export const SettingsPageSchema = z
-	.object({
-		/**
-		 * Fields according to specification
-		 */
-		fields: z.array(SettingsFieldSchema),
-
-		/**
-		 * The endpoint for the settings
-		 *
-		 * Should export a APIRoute named `onSave` that runs when the settings page is saved
-		 */
-		endpoint: z.string(),
+export const AvailableDashboardPagesSchema = Schema.mutable(
+	Schema.Struct({
+		user: Schema.optional(Schema.mutable(Schema.Array(AvailableDashboardBaseSchema))),
+		admin: Schema.optional(Schema.mutable(Schema.Array(AvailableDashboardBaseSchema))),
 	})
-	.optional();
+);
 
-export const FrontendNavigationLinksSchema = z
-	.array(
-		z.object({
-			/**
-			 * Display label for the link
-			 */
-			label: z.string(),
+/**
+ * Settings Page Schema for defining the properties of a settings page in StudioCMS plugins.
+ *
+ * This schema defines an object with an array of fields and an endpoint string, allowing for structured configuration of settings pages within plugins, where each field follows the structure defined in the SettingsFieldSchema.
+ */
+export const SettingsPageSchema = Schema.optional(
+	Schema.Struct({
+		fields: Schema.Array(SettingsFieldSchema),
+		endpoint: Schema.String,
+	})
+);
 
-			/**
-			 * URL to link to
-			 */
-			href: z.string(),
+/**
+ * Frontend Navigation Links Schema for defining the structure of frontend navigation links in StudioCMS plugins.
+ *
+ * This schema defines an optional array of navigation link objects, where each object contains a label and an href string, allowing for structured configuration of frontend navigation links within plugins.
+ */
+export const FrontendNavigationLinksSchema = Schema.optional(
+	Schema.Array(
+		Schema.Struct({
+			label: Schema.String,
+			href: Schema.String,
 		})
 	)
-	.optional();
+);
 
-export const PageTypesSchema = z
-	.array(
-		z.object({
-			/**
-			 * Label that is shown in the select input
-			 */
-			label: z.string(),
-
-			/**
-			 * Identifier that is saved in the database
-			 * @example
-			 * // Single page type per plugin
-			 * 'studiocms'
-			 * '@studiocms/blog'
-			 * // Multiple page types per plugin (Use unique identifiers for each type to avoid conflicts)
-			 * '@mystudiocms/plugin:pageType1'
-			 * '@mystudiocms/plugin:pageType2'
-			 * '@mystudiocms/plugin:pageType3'
-			 * '@mystudiocms/plugin:pageType4'
-			 */
-			identifier: z.string(),
-
-			/**
-			 * Description that is shown below the "Page Content" header if this type is selected
-			 */
-			description: z.string().optional(),
-
-			/**
-			 * The path to the actual component that is displayed for the page content
-			 *
-			 * Component should have a `content` prop that is a string to be able to display current content.
-			 *
-			 * **NOTE:** If you storing a single string in the database, you can use the form name `page-content` for the content output. and it will be stored in the normal `content` field in the database.
-			 * You can also use the apiEndpoints to create custom endpoints for the page type.
-			 *
-			 * @example
-			 * ```ts
-			 * import { createResolver } from 'astro-integration-kit';
-			 * const { resolve } = createResolver(import.meta.url)
-			 *
-			 * {
-			 *  pageContentComponent: resolve('./components/MyContentEditor.astro'),
-			 * }
-			 * ```
-			 */
-			pageContentComponent: z.string().optional(),
-
-			/**
-			 * The path to the file that contains the default exported object with the `PluginRenderer` interface.
-			 *
-			 * This is used to render the content on the frontend.
-			 *
-			 * ```ts
-			 * import { createResolver } from 'astro-integration-kit';
-			 * const { resolve } = createResolver(import.meta.url);
-			 *
-			 * {
-			 *   rendererComponent: resolve('./renderers/MyRenderer.ts'),
-			 * }
-			 * ```
-			 *
-			 * with the following export in `MyRenderer.ts`:
-			 * ```ts
-			 * import type { PluginRenderer } from 'studiocms/types';
-			 *
-			 * const MyRenderer: PluginRenderer = {
-			 *   name: 'my-renderer',
-			 *   sanitizeOpts: {
-			 *     // ultrahtml sanitize options
-			 *   },
-			 *   renderer: async (content) => {
-			 *     // Custom rendering logic here
-			 *     return `<div class="my-rendered-content">${content}</div>`;
-			 *   },
-			 * };
-			 *
-			 * export default MyRenderer;
-			 * ```
-			 */
-			rendererComponent: z.string().optional(),
-
-			/**
-			 * Fields that are shown in the page metadata tab when creating or editing a page of this type
-			 */
-			fields: z.array(SettingsFieldSchema).optional(),
-
-			/**
-			 * API Endpoint file for the page type
-			 *
-			 * API endpoints are used to create, edit, and delete pages of this type,
-			 * endpoints will be provided the full Astro APIContext from the Astro APIRoute.
-			 *
-			 * File should export at least one of the following:
-			 * - `onCreate`
-			 * - `onEdit`
-			 * - `onDelete`
-			 *
-			 * @example
-			 * ```ts
-			 * // my-plugin.ts
-			 * import { createResolver } from 'astro-integration-kit';
-			 * const { resolve } = createResolver(import.meta.url)
-			 *
-			 * {
-			 *  apiEndpoint: resolve('./api/pageTypeApi.ts'),
-			 * }
-			 *
-			 * // api/pageTypeApi.ts
-			 * import { PluginAPIRoute } from 'studiocms/plugins';
-			 *
-			 * export const onCreate: PluginAPIRoute<'onCreate'> = async ({ AstroCtx, pageData }) => {
-			 *   // Custom logic here
-			 *   return new Response();
-			 * }
-			 * ```
-			 */
-			apiEndpoint: z.string().optional(),
+/**
+ * Page Types Schema for defining the structure of page types in StudioCMS plugins.
+ *
+ * This schema defines an optional array of page type objects, where each object contains properties such as label, identifier, description, pageContentComponent, rendererComponent, fields, and apiEndpoint, allowing for structured configuration of different page types within plugins.
+ */
+export const PageTypesSchema = Schema.optional(
+	Schema.Array(
+		Schema.Struct({
+			label: Schema.String,
+			identifier: Schema.String,
+			description: Schema.optional(Schema.String),
+			pageContentComponent: Schema.optional(Schema.String),
+			rendererComponent: Schema.optional(Schema.String),
+			fields: Schema.optional(Schema.Array(SettingsFieldSchema)),
+			apiEndpoint: Schema.optional(Schema.String),
 		})
 	)
-	.optional();
+);
 
 /**
- * Represents the type inferred from the `DashboardPageSchema` schema.
- *
- * This type is used to define the structure of dashboard pages within the application.
+ * Type for a Dashboard Page, which can be either a SingleSidebarSchema or a DoubleSidebarSchema, defining the properties and layout of a dashboard page in StudioCMS.
  */
-export type DashboardPage = typeof DashboardPageSchema._input;
+export type DashboardPage = typeof DashboardPageSchema.Type;
 
 /**
- * Represents the type inferred from the `AvailableDashboardBaseSchema` schema.
- *
- * This type is used to define the structure of available dashboard pages within the application.
+ * Type for Available Dashboard Pages, which includes optional user and admin properties, each containing an array of AvailableDashboardBaseSchema, defining the structure of available dashboard pages based on access levels in StudioCMS.
  */
-export type AvailableDashboardPages = typeof AvailableDashboardPagesSchema._output;
+export type AvailableDashboardPages = typeof AvailableDashboardPagesSchema.Type;
 
 /**
- * Represents the type inferred from the `FinalDashboardBaseSchema` schema.
- *
- * This type is used to define the structure of final dashboard pages within the application.
+ * Type for a Final Dashboard Page, which can be either a FinalSingleSchema or a FinalDoubleSchema, defining the properties and layout of a final dashboard page in StudioCMS.
  */
-export type FinalDashboardPage = typeof FinalDashboardBaseSchema._output;
+export type FinalDashboardPage = typeof FinalDashboardBaseSchema.Type;
 
 /**
- * Represents the input for a grid item in the dashboard.
+ * Schema for defining the structure of a grid item used in plugins, which includes properties such as name, span, variant, required permissions, header information, and body content with optional sanitization options, allowing for structured configuration of grid items within plugins in StudioCMS.
  */
-export interface GridItemInput {
-	/**
-	 * The name of the grid item.
-	 */
-	name: string;
-
-	/**
-	 * The span of the grid item, which can be 1, 2, or 3.
-	 */
-	span: 1 | 2 | 3;
-
-	/**
-	 * The variant of the grid item, which can be 'default' or 'filled'.
-	 */
-	variant: 'default' | 'filled';
-
-	/**
-	 * The required permission level to view the grid item.
-	 * Optional. Can be 'owner', 'admin', 'editor', or 'visitor'.
-	 */
-	requiresPermission?: 'owner' | 'admin' | 'editor' | 'visitor';
-
-	/**
-	 * The header of the grid item.
-	 * Optional.
-	 */
-	header?: {
-		/**
-		 * The title of the header.
-		 */
-		title: string;
-
-		/**
-		 * The icon of the header.
-		 * Optional.
-		 */
-		icon?: AvailableIcons;
-	};
-
-	/**
-	 * The body of the grid item.
-	 * Optional.
-	 */
-	body?: {
-		/**
-		 * The HTML content of the body.
-		 */
-		html: string;
-
-		/**
-		 * The components within the body.
-		 * Optional.
-		 */
-		components?: Record<string, string>;
-
-		/**
-		 * The options for sanitizing the HTML content.
-		 * Optional.
-		 */
-		sanitizeOpts?: SanitizeOptions;
-	};
-}
+export class GridItemInputBaseSchema extends Schema.Class<GridItemInputBaseSchema>(
+	'GridItemInputBaseSchema'
+)({
+	name: Schema.String,
+	span: Schema.Literal(1, 2, 3),
+	variant: Schema.Literal('default', 'filled'),
+	requiresPermission: Schema.optional(Schema.Literal('owner', 'admin', 'editor', 'visitor')),
+	header: Schema.optional(
+		Schema.Struct({
+			title: Schema.String,
+			icon: Schema.optional(UIIconListSchema),
+		})
+	),
+}) {}
 
 /**
- * Represents an item that can be used in a dashboard grid.
+ * Schema for a usable grid item, which extends the GridItemInputBaseSchema and includes an optional body property that can contain HTML content, component references, and sanitization options, allowing for structured configuration of usable grid items within plugins in StudioCMS.
  */
-export interface GridItemUsable {
-	/**
-	 * The name of the grid item.
-	 */
-	name: string;
-
-	/**
-	 * The span of the grid item, which can be 1, 2, or 3.
-	 */
-	span: 1 | 2 | 3;
-
-	/**
-	 * The variant of the grid item, which can be 'default' or 'filled'.
-	 */
-	variant: 'default' | 'filled';
-
-	/**
-	 * Optional. The permission required to use the grid item.
-	 * Can be 'owner', 'admin', 'editor', or 'visitor'.
-	 */
-	requiresPermission?: 'owner' | 'admin' | 'editor' | 'visitor';
-
-	/**
-	 * Optional. The header of the grid item.
-	 */
-	header?: {
-		/**
-		 * The title of the header.
-		 */
-		title: string;
-
-		/**
-		 * Optional. The icon of the header.
-		 */
-		icon?: AvailableIcons;
-	};
-
-	/**
-	 * Optional. The body of the grid item.
-	 */
-	body?: {
-		/**
-		 * The HTML content of the body.
-		 */
-		html: string;
-
-		/**
-		 * Optional. The components of the body.
-		 *
-		 */
-		// biome-ignore lint/suspicious/noExplicitAny: This is a valid use case for explicit any.
-		components?: Record<string, any>;
-
-		/**
-		 * Optional. The options for sanitizing the HTML content.
-		 */
-		sanitizeOpts?: SanitizeOptions;
-	};
-}
+export class GridItemInputSchema extends GridItemInputBaseSchema.extend<GridItemInputSchema>(
+	'GridItemInputSchema'
+)({
+	body: Schema.optional(
+		Schema.Struct({
+			html: Schema.String,
+			components: Schema.optional(
+				Schema.Record({
+					key: Schema.String,
+					value: Schema.String,
+				})
+			),
+			sanitizeOpts: Schema.optional(SanitizeOptionsSchema),
+		})
+	),
+}) {}
 
 /**
- * Represents an item in the dashboard grid.
- * Extends the properties of `GridItemUsable` and adds an `enabled` flag.
+ * Schema for a grid item, which extends the GridItemInputSchema and adds an enabled property to indicate whether the grid item is active or not, allowing for structured configuration of grid items with enabled state within plugins in StudioCMS.
  */
-export interface GridItem extends GridItemUsable {
-	enabled: boolean;
-}
+export class GridItemUsableSchema extends GridItemInputBaseSchema.extend<GridItemUsableSchema>(
+	'GridItemUsableSchema'
+)({
+	body: Schema.optional(
+		Schema.Struct({
+			html: Schema.String,
+			components: Schema.optional(
+				Schema.Record({
+					key: Schema.String,
+					value: Schema.Any,
+				})
+			),
+			sanitizeOpts: Schema.optional(SanitizeOptionsSchema),
+		})
+	),
+}) {}
+
+/**
+ * Schema for a grid item, which extends the GridItemUsableSchema and adds an enabled property to indicate whether the grid item is active or not, allowing for structured configuration of grid items with enabled state within plugins in StudioCMS.
+ */
+export class GridItemSchema extends GridItemUsableSchema.extend<GridItemSchema>('GridItemSchema')({
+	enabled: Schema.Boolean,
+}) {}
+
+/**
+ * Type for a Grid Item Input, which includes properties such as name, span, variant, required permissions, header information, and body content with optional sanitization options, defining the structure of a grid item input used in plugins within StudioCMS.
+ */
+export type GridItemInput = typeof GridItemInputSchema.Type;
+
+/**
+ * Type for a usable Grid Item, which includes properties such as name, span, variant, required permissions, header information, body content with optional sanitization options, and an enabled state, defining the structure of a usable grid item used in plugins within StudioCMS.
+ */
+export type GridItemUsable = typeof GridItemUsableSchema.Type;
+
+/**
+ * Type for a Grid Item, which includes properties such as name, span, variant, required permissions, header information, body content with optional sanitization options, and an enabled state, defining the structure of a grid item used in plugins within StudioCMS.
+ */
+export type GridItem = typeof GridItemSchema.Type;

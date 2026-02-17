@@ -1,10 +1,12 @@
-import { type AvailableIcons, availableIcons } from 'studiocms:ui/icons';
+import type { AvailableIcons } from 'studiocms:ui/icons';
 import type { AstroIntegration, AstroIntegrationLogger } from 'astro';
 import { ParseResult } from 'effect';
 import * as Schema from 'effect/Schema';
 import { SyncFunctionSchema } from 'effectify/schemas';
 import type { SanitizeOptions } from 'ultrahtml/transformers/sanitize';
 import { availableTranslationFileKeys } from '../virtuals/i18n/v-files.js';
+
+const expectedIconPrefixes = ['heroicons', 'simpleicons', 'lang-flags'];
 
 /**
  * Schema for validating UI icon names against the list of available icons in StudioCMS.
@@ -16,7 +18,13 @@ export const UIIconListSchema = Schema.declare(
 		if (typeof input !== 'string') {
 			return false;
 		}
-		return availableIcons.includes(input as AvailableIcons);
+		// Check if the input starts with one of the expected prefixes
+		const [prefix] = input.split(':');
+		if (!expectedIconPrefixes.includes(prefix)) {
+			return false;
+		}
+		// If the input is a string and has a valid prefix, we assume it's a valid icon name.
+		return true;
 	},
 	{
 		title: 'UIIconListSchema',
@@ -207,3 +215,84 @@ export class DateTimeFormatOptions extends Schema.Class<DateTimeFormatOptions>(
 		identifier: 'DateTimeFormatOptions',
 	}
 ) {}
+
+/**
+ * A schema for validating email addresses in StudioCMS.
+ *
+ * This schema uses a regular expression to check if the input string is in a valid email format, ensuring that any email addresses provided in plugin configurations or other parts of StudioCMS adhere to standard email formatting rules. Designed to replace `z.coerce.string().email({ message: 'Email address is invalid' })` with a more aligned validator using the effect schema system.
+ *
+ * Example usage:
+ * ```ts
+ * import { Schema } from 'studiocms/effect';
+ * import { ValidEmailSchema } from 'studiocms/schemas';
+ *
+ * const result = Schema.decode(ValidEmailSchema)('example@example.com');
+ * //    ^ result: Effect<string, ParseResult.ParseError, never>
+ * ```
+ */
+export const ValidEmailSchema = Schema.transformOrFail(Schema.String, Schema.String, {
+	strict: true,
+	decode: (input, _options, ast) => {
+		const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+		if (!emailRegex.test(input)) {
+			return ParseResult.fail(
+				new ParseResult.Type(
+					ast,
+					input,
+					'Invalid email format, expected a valid email address. (e.g., example@example.com)'
+				)
+			);
+		}
+		return ParseResult.succeed(input);
+	},
+	encode: (output) => ParseResult.succeed(output),
+}).annotations({
+	title: 'ValidEmailSchema',
+	identifier: 'ValidEmailSchema',
+	description:
+		'A schema for validating email addresses in StudioCMS, ensuring that any provided email addresses adhere to standard email formatting rules.',
+	examples: ['example@example.com', 'john@doe.com'],
+	documentation:
+		'This schema uses a regular expression to validate that the input string is in a valid email format, making it suitable for validating email addresses in plugin configurations or other parts of StudioCMS.',
+	jsonSchema: {
+		type: 'string',
+		format: 'email',
+	},
+});
+
+/**
+ * A type representing the result of validating an email address using the ValidEmailSchema, which can either be a success with the valid email string or a failure with a ParseError.
+ */
+export type ValidationResultSuccess<T> = {
+	success: true;
+	data: T;
+};
+
+/**
+ * A utility type representing the result of a successful validation operation, containing the validated data.
+ */
+export type ValidationResultFailure = {
+	success: false;
+	error: ParseResult.ParseError;
+};
+
+/**
+ * A utility type representing the result of a validation operation, which can either be a success with the validated data or a failure with an error.
+ */
+export type ValidationResult<T> = ValidationResultSuccess<T> | ValidationResultFailure;
+
+/**
+ * Utility function to validate an email address using the ValidEmailSchema.
+ *
+ * Designed to be a drop-in replacement for zod's safeParse method for email validation, this function checks if the provided email string is valid according to the ValidEmailSchema and returns a ValidationResult indicating success or failure of the validation.
+ *
+ * @param email - The email address to validate.
+ * @returns True if the email is valid according to the ValidEmailSchema, or a string error message if it is invalid.
+ */
+export const isValidEmail = (email: string): ValidationResult<string> => {
+	const result = Schema.decodeEither(ValidEmailSchema)(email);
+	if (result._tag === 'Left') {
+		return { success: false, error: result.left };
+	}
+	return { success: true, data: email };
+};

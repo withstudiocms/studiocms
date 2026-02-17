@@ -8,7 +8,8 @@
 
 import type { AstroIntegration } from 'astro';
 import { addVirtualImports, createResolver } from 'astro-integration-kit';
-import { definePlugin, type StudioCMSPlugin } from 'studiocms/plugins';
+import { definePlugin } from 'studiocms/plugins';
+import type { StudioCMSPluginDef } from 'studiocms/schemas';
 import { shared } from './lib/shared.js';
 import type { MarkDocPluginOptions } from './types.js';
 
@@ -62,7 +63,7 @@ export function internalMarkDocIntegration(
 	};
 }
 
-export function studiocmsMarkDoc(options?: MarkDocPluginOptions): StudioCMSPlugin {
+export function studiocmsMarkDoc(options?: MarkDocPluginOptions): StudioCMSPluginDef {
 	// Resolve the path to the current file
 	const { resolve } = createResolver(import.meta.url);
 
@@ -85,13 +86,13 @@ export function studiocmsMarkDoc(options?: MarkDocPluginOptions): StudioCMSPlugi
 	return definePlugin({
 		identifier: packageIdentifier,
 		name: 'StudioCMS MarkDoc',
-		studiocmsMinimumVersion: '0.1.0-beta.21',
+		studiocmsMinimumVersion: '0.3.0',
 		requires: ['@studiocms/md'],
 		hooks: {
-			'studiocms:astro-config': ({ addIntegrations }) => {
+			'studiocms:astro-config': async ({ addIntegrations }) => {
 				addIntegrations(internalMarkDocIntegration(packageIdentifier, resolvedOptions));
 			},
-			'studiocms:rendering': ({ setRendering }) => {
+			'studiocms:rendering': async ({ setRendering }) => {
 				setRendering({
 					pageTypes: [
 						// Define the MarkDoc page type

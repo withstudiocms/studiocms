@@ -11,7 +11,8 @@ export const prerender = false;
 export const ALL: APIRoute = async ({ request }) => {
 	try {
 		const rawBody = await request.json();
-		const body = ServerMetricSchema.array().parse(rawBody);
+		const parser = Schema.decodeUnknownSync(Schema.Array(ServerMetricSchema));
+		const body = parser(rawBody);
 		const db = await runEffect(getAnalyticsDbClient(config.db.dialect));
 
 		const insert = db.withEncoder({

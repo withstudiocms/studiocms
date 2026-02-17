@@ -8,7 +8,8 @@
 
 import type { AstroIntegration } from 'astro';
 import { addVirtualImports, createResolver } from 'astro-integration-kit';
-import { definePlugin, type StudioCMSPlugin } from 'studiocms/plugins';
+import { definePlugin } from 'studiocms/plugins';
+import type { StudioCMSPluginDef } from 'studiocms/schemas';
 import { shared } from './lib/shared.js';
 import type { MDXPluginOptions } from './types.js';
 
@@ -67,7 +68,7 @@ export function internalMDXIntegration(
  * Creates and configures the StudioCMS MDX plugin.
  *
  * @param {MDXPluginOptions} [options] - Optional configuration options for the MDX plugin.
- * @returns {StudioCMSPlugin} The configured StudioCMS plugin.
+ * @returns {StudioCMSPluginDef} The configured StudioCMS plugin.
  *
  * @example
  * ```typescript
@@ -81,7 +82,7 @@ export function internalMDXIntegration(
  * ]
  * ```
  */
-export function studiocmsMDX(options?: MDXPluginOptions): StudioCMSPlugin {
+export function studiocmsMDX(options?: MDXPluginOptions): StudioCMSPluginDef {
 	// Resolve the path to the current file
 	const { resolve } = createResolver(import.meta.url);
 
@@ -105,13 +106,13 @@ export function studiocmsMDX(options?: MDXPluginOptions): StudioCMSPlugin {
 	return definePlugin({
 		identifier: packageIdentifier,
 		name: 'StudioCMS MDX',
-		studiocmsMinimumVersion: '0.1.0-beta.21',
+		studiocmsMinimumVersion: '0.3.0',
 		requires: ['@studiocms/md'],
 		hooks: {
-			'studiocms:astro-config': ({ addIntegrations }) => {
+			'studiocms:astro-config': async ({ addIntegrations }) => {
 				addIntegrations(internalMDXIntegration(packageIdentifier, resolvedOptions));
 			},
-			'studiocms:rendering': ({ setRendering }) => {
+			'studiocms:rendering': async ({ setRendering }) => {
 				setRendering({
 					pageTypes: [
 						// Define the MDX page type

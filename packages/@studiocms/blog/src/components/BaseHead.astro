@@ -1,14 +1,7 @@
 ---
 import '../styles/base.css';
 import config from 'studiocms:blog/frontend-config';
-import {
-	createHead,
-	type HeadConfig,
-	type HeadConfigSchema,
-	type HeadUserConfig,
-	headDefaults,
-} from 'studiocms:lib';
-import type { z } from 'astro/zod';
+import { createHead, type HeadConfig, type HeadUserConfig, headDefaults } from 'studiocms:lib';
 import { getHeroImage } from './heroHelper.js';
 
 let htmlDefaultHead: HeadUserConfig = [];
@@ -38,7 +31,7 @@ const ogImage = getHeroImage(image, Astro);
 
 const makeHeader = headDefaults(title, description, lang, Astro, favicon, ogImage, canonicalURL);
 
-const StudioCMSFrontEndHeads: z.input<ReturnType<typeof HeadConfigSchema>> = [
+const StudioCMSFrontEndHeads: HeadUserConfig = [
 	// Fonts
 	{ tag: 'link', attrs: { rel: 'preconnect', href: 'https://fonts.googleapis.com' } },
 	{ tag: 'link', attrs: { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' } },

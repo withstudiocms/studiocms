@@ -7,7 +7,9 @@
 /// <reference types="studiocms/v/types" />
 
 import { createResolver } from 'astro-integration-kit';
-import { definePlugin, type StudioCMSPlugin } from 'studiocms/plugins';
+import { Schema } from 'effect';
+import { definePlugin } from 'studiocms/plugins';
+import type { StudioCMSPluginDef } from 'studiocms/schemas';
 import { shared } from './lib/shared.js';
 import { HTMLSchema, type HTMLSchemaOptions } from './types.js';
 
@@ -20,7 +22,7 @@ import { HTMLSchema, type HTMLSchemaOptions } from './types.js';
  * @param options - Optional configuration for the HTML schema.
  * @returns The StudioCMS plugin configuration object.
  */
-export function studiocmsHTML(options?: HTMLSchemaOptions): StudioCMSPlugin {
+export function studiocmsHTML(options: HTMLSchemaOptions = {}): StudioCMSPluginDef {
 	// Resolve the path to the current file
 	const { resolve } = createResolver(import.meta.url);
 
@@ -28,19 +30,19 @@ export function studiocmsHTML(options?: HTMLSchemaOptions): StudioCMSPlugin {
 	const packageIdentifier = '@studiocms/html';
 
 	// Resolve the options and set defaults if not provided
-	const parseResult = HTMLSchema.safeParse(options);
-	if (!parseResult.success) {
-		throw new Error(`Invalid HTML options: ${parseResult.error.message}`);
+	const parseResult = Schema.decodeEither(HTMLSchema)(options);
+	if (parseResult._tag === 'Left') {
+		throw new Error(`Invalid HTML options: ${parseResult.left.message}`);
 	}
-	const resolvedOptions = parseResult.data;
+	const resolvedOptions = parseResult.right;
 
 	// Return the plugin configuration
 	return definePlugin({
 		identifier: packageIdentifier,
 		name: 'StudioCMS HTML',
-		studiocmsMinimumVersion: '0.1.0-beta.21',
+		studiocmsMinimumVersion: '0.3.0',
 		hooks: {
-			'studiocms:astro-config': ({ addIntegrations }) => {
+			'studiocms:astro-config': async ({ addIntegrations }) => {
 				addIntegrations({
 					name: packageIdentifier,
 					hooks: {
@@ -51,7 +53,7 @@ export function studiocmsHTML(options?: HTMLSchemaOptions): StudioCMSPlugin {
 					},
 				});
 			},
-			'studiocms:rendering': ({ setRendering }) => {
+			'studiocms:rendering': async ({ setRendering }) => {
 				setRendering({
 					pageTypes: [
 						// Define the HTML page type

@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import type { AstroConfig, AstroIntegration } from 'astro';
 import { generateContent, printInfo } from './core.js';
-import { type RobotsConfig, RobotsTXTConfigSchema } from './schema.js';
+import type { RobotsConfig } from './schema.js';
 import { getFileSizeInKilobytes, measureExecutionTime } from './utils.js';
 
 /**
@@ -13,12 +13,10 @@ import { getFileSizeInKilobytes, measureExecutionTime } from './utils.js';
  * @param astroConfig Robots Configuration
  * @returns AstroIntegration
  */
-export default function createRobotsIntegration(options: RobotsConfig): AstroIntegration {
+export default function createRobotsIntegration(config: RobotsConfig): AstroIntegration {
 	let astroConfig: AstroConfig;
 	let finalSiteMapHref: string;
 	let executionTime: number;
-
-	const config = RobotsTXTConfigSchema.parse(options);
 
 	return {
 		name: 'studiocms/robotstxt',

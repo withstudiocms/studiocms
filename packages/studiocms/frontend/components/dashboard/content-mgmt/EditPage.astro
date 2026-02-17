@@ -526,14 +526,9 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
 </script>
 
 <script>
-  import type { tsPageData } from "studiocms:sdk/types";
   import { toast } from "studiocms:ui/components/toaster/client";
-  import {
-    formDataToRecord,
-    studioCMSEditPageDataAndContentSchema,
-  } from "../../../scripts/formdata-utils.js";
-
-  type tsPageDataInsert = tsPageData['Insert']['Type'];
+  import * as Schema from 'effect/Schema';
+  import { EditPageDataFromFormDataObjectSchema, ObjectFromFormData } from "../../../scripts/formdata.js";
 
   // get the elements
   const editPageForm = document.getElementById(
@@ -583,37 +578,30 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
 
   type KnownDataKeys = (typeof knownDataKeys)[number];
 
-  const formDataKeysToPageDataKeys: Record<
-    KnownFormDataKeys,
-    keyof tsPageDataInsert | "contentId" | "content"
-  > = {
-    "page-title": "title",
-    "page-slug": "slug",
-    "page-description": "description",
-    "page-hero-image": "heroImage",
-    "page-type": "package",
-    "show-in-nav": "showOnNav",
-    "parent-folder": "parentFolder",
-    draft: "draft",
-    categories: "categories",
-    tags: "tags",
-    "show-author": "showAuthor",
-    "show-contributors": "showContributors",
-    "page-content-id": "contentId",
-    "page-content": "content",
-    "page-id": "id",
-  };
-
   const { contentManagementUrl } = createContainer.dataset;
 
   editPageForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     const formData = new FormData(editPageForm);
 
-    const formDataObject = formDataToRecord(
-      formData,
-      formDataKeysToPageDataKeys,
-    );
+    const augments = [...formData.getAll("cms-plugin-augments")].filter(
+      (a) => a !== "no-augments",
+    ) as string[];
+
+    const decodedFormDataObject = Schema.decodeEither(ObjectFromFormData)(formData);
+
+    if (decodedFormDataObject._tag === "Left") {
+      console.error(decodedFormDataObject.left);
+      toast({
+        title: "Error",
+        description:
+          "There was an error with the form data. Please check the console for details.",
+        type: "danger",
+      });
+      return;
+    }
+
+    const formDataObject = decodedFormDataObject.right;
 
     const pluginsFormData = Object.entries(formDataObject).reduce(
       (acc, [key, value]) => {
@@ -630,18 +618,14 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
       {} as Record<string, FormDataEntryValue>,
     );
 
-    const augments = [...formData.getAll("cms-plugin-augments")].filter(
-      (a) => a !== "no-augments",
-    ) as string[];
-
-    const formResult = studioCMSEditPageDataAndContentSchema.safeParse({
+    const decodedFormData = Schema.decodeUnknownEither(EditPageDataFromFormDataObjectSchema)({
       ...formDataObject,
       augments,
       pluginFields: pluginsFormData,
-    });
+    })
 
-    if (!formResult.success) {
-      console.error(formResult.error);
+    if (decodedFormData._tag === "Left") {
+      console.error(decodedFormData.left);
       toast({
         title: "Error",
         description:
@@ -653,8 +637,8 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
 
     const response = await fetch(editPageForm.action, {
       method: "PATCH",
-      body: formResult.data
-        ? JSON.stringify({ ...formResult.data, pluginFields: pluginsFormData })
+      body: decodedFormData.right
+        ? JSON.stringify({ ...decodedFormData.right, pluginFields: pluginsFormData })
         : undefined,
     });
 

@@ -1,24 +1,29 @@
-import { z } from 'astro/zod';
-import type { Schema } from 'studiocms/effect';
-import { StudioCMSSanitizeOptionsSchema } from 'studiocms/schemas';
+import { Schema } from 'studiocms/effect';
+import { SanitizeOptionsSchema } from 'studiocms/schemas';
 import type { studioCMSProjectDataSchema } from './schema.js';
 
 export interface WysiwygDBContent
 	extends Schema.SimplifyMutable<typeof studioCMSProjectDataSchema.Type> {}
 
 /**
- * Defines the schema for HTML configuration options.
- *
- * The schema includes an optional `sanitize` property, which is validated
- * using the `StudioCMSSanitizeOptionsSchema`. If no value is provided,
- * the default is an empty object.
+ * Schema for WYSIWYG configuration options.
  */
-export const WYSIWYGSchema = z
-	.object({
-		/** Sanitization options for WYSIWYG content. See {@link StudioCMSSanitizeOptionsSchema} for details. */
-		sanitize: StudioCMSSanitizeOptionsSchema,
+export const WYSIWYGSchema = Schema.mutable(
+	Schema.Struct({
+		sanitize: Schema.optionalWith(SanitizeOptionsSchema, {
+			default: () => ({}),
+		}).annotations({
+			description:
+				'Sanitization options for WYSIWYG content. See {@link SanitizeOptionsSchema} for details.',
+		}),
 	})
-	.optional()
-	.default({});
+).annotations({
+	title: 'WYSIWYG Configuration Options',
+	identifier: 'WYSIWYGSchema',
+	description: 'Defines the schema for HTML configuration options.',
+});
 
-export type WYSIWYGSchemaOptions = z.infer<typeof WYSIWYGSchema>;
+/**
+ * Type representing the WYSIWYG schema options.
+ */
+export type WYSIWYGSchemaOptions = typeof WYSIWYGSchema.Encoded;

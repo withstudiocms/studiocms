@@ -7,7 +7,8 @@
 /// <reference types="astro/client" />
 
 import { createResolver } from 'astro-integration-kit';
-import { definePlugin, type StudioCMSPlugin } from 'studiocms/plugins';
+import { definePlugin } from 'studiocms/plugins';
+import type { StudioCMSPluginDef } from 'studiocms/schemas';
 
 /**
  * Creates and returns the StudioCMS GitHub plugin configuration.
@@ -16,13 +17,13 @@ import { definePlugin, type StudioCMSPlugin } from 'studiocms/plugins';
  * It sets up the necessary authentication service, including the provider's name,
  * endpoint path, required environment variables, and SVG logo.
  *
- * @returns {StudioCMSPlugin} The configured StudioCMS GitHub plugin.
+ * @returns {StudioCMSPluginDef} The configured StudioCMS GitHub plugin.
  *
  * @example
  * import { studiocmsGithub } from '@studiocms/github';
  * const githubPlugin = studiocmsGithub();
  */
-export function studiocmsGithub(): StudioCMSPlugin {
+export function studiocmsGithub(): StudioCMSPluginDef {
 	// Resolve the path to the current file
 	const { resolve } = createResolver(import.meta.url);
 
@@ -33,9 +34,9 @@ export function studiocmsGithub(): StudioCMSPlugin {
 	return definePlugin({
 		identifier: packageIdentifier,
 		name: 'StudioCMS GitHub Plugin',
-		studiocmsMinimumVersion: '0.1.0-beta.22',
+		studiocmsMinimumVersion: '0.3.0',
 		hooks: {
-			'studiocms:auth': ({ setAuthService }) => {
+			'studiocms:auth': async ({ setAuthService }) => {
 				setAuthService({
 					oAuthProvider: {
 						name: 'github',

@@ -7,7 +7,8 @@
 /// <reference types="astro/client" />
 
 import { createResolver } from 'astro-integration-kit';
-import { definePlugin, type StudioCMSPlugin } from 'studiocms/plugins';
+import { definePlugin } from 'studiocms/plugins';
+import type { StudioCMSPluginDef } from 'studiocms/schemas';
 
 /**
  * Creates and returns the StudioCMS Google Plugin.
@@ -16,7 +17,7 @@ import { definePlugin, type StudioCMSPlugin } from 'studiocms/plugins';
  * It defines the necessary configuration, including the required environment variables,
  * OAuth provider details, and the endpoint path for authentication.
  *
- * @returns {StudioCMSPlugin} The configured StudioCMS Google Plugin instance.
+ * @returns {StudioCMSPluginDef} The configured StudioCMS Google Plugin instance.
  *
  * @remarks
  * - Requires the following environment variables to be set:
@@ -26,7 +27,7 @@ import { definePlugin, type StudioCMSPlugin } from 'studiocms/plugins';
  * - Minimum supported StudioCMS version: `0.1.0-beta.22`
  * - Registers the Google OAuth provider with a custom SVG logo.
  */
-export function studiocmsGoogle(): StudioCMSPlugin {
+export function studiocmsGoogle(): StudioCMSPluginDef {
 	// Resolve the path to the current file
 	const { resolve } = createResolver(import.meta.url);
 
@@ -37,9 +38,9 @@ export function studiocmsGoogle(): StudioCMSPlugin {
 	return definePlugin({
 		identifier: packageIdentifier,
 		name: 'StudioCMS Google Plugin',
-		studiocmsMinimumVersion: '0.1.0-beta.22',
+		studiocmsMinimumVersion: '0.3.0',
 		hooks: {
-			'studiocms:auth': ({ setAuthService }) => {
+			'studiocms:auth': async ({ setAuthService }) => {
 				setAuthService({
 					oAuthProvider: {
 						name: 'google',

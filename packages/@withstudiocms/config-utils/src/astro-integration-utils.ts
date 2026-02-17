@@ -31,6 +31,9 @@ import { parseAndMerge, parseConfig } from './zod-utils.js';
  * @param params.label - A label used for logging.
  * @param params.zodSchema - The Zod schema used to validate and parse the config.
  * @returns A utility function to be used in the Astro config setup hook, which loads, validates, and merges configuration.
+ *
+ * @deprecated Use `configResolverBuilderEffect` instead, which provides better support for asynchronous operations and more complex validation logic through effect-based schemas.
+ * This function will eventually be replaced by the effect-based config resolver, so it is recommended to migrate to the new approach for improved robustness and flexibility in handling configuration in Astro integrations.
  */
 export const configResolverBuilder = <S extends z.ZodTypeAny>({
 	configPaths,

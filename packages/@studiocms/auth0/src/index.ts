@@ -7,7 +7,8 @@
 /// <reference types="studiocms/v/types" />
 
 import { createResolver } from 'astro-integration-kit';
-import { definePlugin, type StudioCMSPlugin } from 'studiocms/plugins';
+import { definePlugin } from 'studiocms/plugins';
+import type { StudioCMSPluginDef } from 'studiocms/schemas';
 
 /**
  * Registers the StudioCMS Auth0 plugin.
@@ -15,7 +16,7 @@ import { definePlugin, type StudioCMSPlugin } from 'studiocms/plugins';
  * This plugin integrates Auth0 as an OAuth provider for StudioCMS, enabling authentication via Auth0.
  * It sets up the necessary configuration, including required environment variables and endpoint path.
  *
- * @returns {StudioCMSPlugin} The configured StudioCMS Auth0 plugin.
+ * @returns {StudioCMSPluginDef} The configured StudioCMS Auth0 plugin.
  *
  * @remarks
  * - The following environment variables must be set:
@@ -30,7 +31,7 @@ import { definePlugin, type StudioCMSPlugin } from 'studiocms/plugins';
  * const plugin = studiocmsAuth0();
  * ```
  */
-export function studiocmsAuth0(): StudioCMSPlugin {
+export function studiocmsAuth0(): StudioCMSPluginDef {
 	// Resolve the path to the current file
 	const { resolve } = createResolver(import.meta.url);
 
@@ -41,9 +42,9 @@ export function studiocmsAuth0(): StudioCMSPlugin {
 	return definePlugin({
 		identifier: packageIdentifier,
 		name: 'StudioCMS Auth0 Provider Plugin',
-		studiocmsMinimumVersion: '0.1.0-beta.22',
+		studiocmsMinimumVersion: '0.3.0',
 		hooks: {
-			'studiocms:auth': ({ setAuthService }) => {
+			'studiocms:auth': async ({ setAuthService }) => {
 				setAuthService({
 					oAuthProvider: {
 						name: 'auth0',

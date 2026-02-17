@@ -8,7 +8,6 @@ import {
 	CMSNotificationSettingsId,
 	CMSSiteConfigId,
 	currentRESTAPIVersions,
-	defaultCacheLifeTime,
 	FAVICON_ASSETS,
 	GhostUserDefaults,
 	LinkNewOAuthCookieName,
@@ -67,11 +66,6 @@ describe(parentSuiteName, () => {
 			name: 'Next_NotificationSettingsId',
 			actual: Next_NotificationSettingsId,
 			expected: 'SCMS_NOTIFICATION_SETTINGS_1',
-		},
-		{
-			name: 'defaultCacheLifeTime',
-			actual: defaultCacheLifeTime,
-			expected: '5m',
 		},
 		{
 			name: 'versionCacheLifetime',

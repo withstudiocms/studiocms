@@ -1,90 +1,142 @@
-import { z } from 'astro/zod';
+import { ParseResult, Schema } from 'effect';
 
 /**
- * Schema for the configuration of StudioCMS development applications.
- *
- * This schema defines the configuration options for the following applications:
- *
- * - **Astro DB LibSQL Viewer App**: Controlled by the `libSQLViewer` property.
- * - **StudioCMS WP API Importer App**: Controlled by the `wpImporter` property.
- *
- * The schema provides default values and transformation logic to ensure the configuration
- * is in the expected format.
- *
- * @property libSQLViewer - Configuration for the Astro DB LibSQL Viewer App.
- * - `boolean` - Indicates whether the app is enabled. Defaults to `true`.
- *
- * @property wpImporter - Configuration for the StudioCMS WP API Importer App.
- * - `boolean` - Indicates whether the app is enabled.
- * - `object` - Contains additional configuration options:
- *   - `endpoint` - The API endpoint for the importer. Defaults to `'wp-api-importer'`.
- *
- * @returns An object with the transformed configuration:
- * - `libSQLViewer` - An object with an `enabled` property indicating the app's status.
- * - `wpImporter` - An object with `enabled` and `endpoint` properties for the app's configuration.
+ * Represents the input configuration for the WP Importer application within StudioCMS.
  */
-export const AppsConfigSchema = z
-	.object({
-		/**
-		 * StudioCMS WP API Importer App Config
-		 */
-		wpImporter: z.union([
-			z.boolean(),
-			z.object({
-				endpoint: z.string().optional().default('wp-api-importer'),
-			}),
-		]),
+export const WPImporterInputSchema = Schema.Union(
+	Schema.Boolean,
+	Schema.Struct({
+		endpoint: Schema.String,
 	})
-	.optional()
-	.default({
-		wpImporter: { endpoint: 'wp-api-importer' },
-	})
-	.transform((val) => {
-		let wpAPI: { enabled: boolean; endpoint: string };
-
-		if (typeof val.wpImporter === 'boolean') {
-			wpAPI = { enabled: val.wpImporter, endpoint: 'wp-api-importer' };
-		} else {
-			wpAPI = { enabled: true, endpoint: val.wpImporter.endpoint };
-		}
-
-		return {
-			wpImporter: wpAPI,
-		};
-	});
+).annotations({
+	title: 'WP Importer Input Configuration',
+	identifier: 'WPImporterInputConfig',
+	description:
+		'The input configuration for the StudioCMS WP API Importer App. Can be a boolean to enable/disable or an object to specify the endpoint.',
+});
 
 /**
- * Schema definition for StudioCMS development applications configuration.
- *
- * This schema defines the structure of the configuration object for StudioCMS
- * development applications. It includes the following properties:
- *
- * - `endpoint` (optional): A string representing the endpoint for the dev apps.
- *   Defaults to '_studiocms-devapps'.
- * - `verbose` (optional): A boolean indicating whether verbose logging is enabled.
- *   Defaults to `false`.
- * - `appsConfig`: The configuration schema for the applications.
- *
- * The entire schema is optional and defaults to an empty object if not provided.
+ * Represents the configuration for the WP Importer application within StudioCMS.
  */
-export const StudioCMSDevAppsSchema = z
-	.object({
-		endpoint: z.string().optional().default('_studiocms-devapps'),
-		verbose: z.boolean().optional().default(false),
-		appsConfig: AppsConfigSchema,
-	})
-	.optional()
-	.default({});
+export const WPImporterOutputSchema = Schema.Struct({
+	enabled: Schema.Boolean,
+	endpoint: Schema.String,
+}).annotations({
+	title: 'WP Importer Output Configuration',
+	identifier: 'WPImporterOutputConfig',
+	description:
+		'The output configuration for the StudioCMS WP API Importer App, including enabled status and endpoint.',
+});
 
 /**
- * Represents the options for StudioCMS development applications.
- *
- * This type is derived from the `_input` property of the `StudioCMSDevAppsSchema` object.
+ * Default configuration for the WP Importer application within StudioCMS.
  */
-export type StudioCMSDevAppsOptions = typeof StudioCMSDevAppsSchema._input;
+const wpImporterDefaults = {
+	enabled: true,
+	endpoint: 'wp-api-importer',
+};
 
 /**
- * Represents the configuration type for StudioCMS development applications.
- * This type is derived from the output of the `StudioCMSDevAppsSchema`.
+ * A schema for validating the configuration of the WP Importer application within StudioCMS.
  */
-export type StudioCMSDevAppsConfig = z.infer<typeof StudioCMSDevAppsSchema>;
+export const WPImporterSchema = Schema.transformOrFail(
+	WPImporterInputSchema,
+	WPImporterOutputSchema,
+	{
+		strict: true,
+		decode: (input, _options, ast) => {
+			if (typeof input !== 'boolean' && typeof input !== 'object') {
+				return ParseResult.fail(
+					new ParseResult.Type(
+						ast,
+						input,
+						'Expected boolean or object for WP Importer configuration'
+					)
+				);
+			}
+			if (typeof input === 'boolean') {
+				return ParseResult.succeed({
+					...wpImporterDefaults,
+					enabled: input,
+				});
+			}
+			if (typeof input === 'object' && typeof input.endpoint === 'string') {
+				return ParseResult.succeed({
+					...wpImporterDefaults,
+					endpoint: input.endpoint,
+				});
+			}
+			return ParseResult.fail(
+				new ParseResult.Type(ast, input, 'Invalid type for WP Importer configuration')
+			);
+		},
+		encode: (input) => {
+			if (input.enabled === false) {
+				return ParseResult.succeed(false);
+			}
+			if (input.endpoint !== wpImporterDefaults.endpoint) {
+				return ParseResult.succeed({
+					endpoint: input.endpoint,
+				});
+			}
+			return ParseResult.succeed(true);
+		},
+	}
+).annotations({
+	title: 'WP Importer Configuration',
+	identifier: 'WPImporterConfig',
+	description:
+		'Configuration for the StudioCMS WP API Importer App. Can be a boolean to enable/disable or a string to specify the endpoint.',
+});
+
+/**
+ * Represents the configuration for the WP Importer application within StudioCMS.
+ */
+export const AppsConfigSchema = Schema.Struct({
+	wpImporter: Schema.optionalWith(WPImporterSchema, {
+		default: () => wpImporterDefaults,
+	}).annotations({
+		description:
+			'Configuration for the StudioCMS WP API Importer App. Can be a boolean to enable/disable or a string to specify the endpoint.',
+	}),
+}).annotations({
+	title: 'StudioCMS Apps Configuration',
+	identifier: 'StudioCMSAppsConfig',
+	description: 'Configuration for the StudioCMS development applications.',
+});
+
+/**
+ * Represents the configuration for StudioCMS development applications.
+ */
+export const StudioCMSDevAppsSchema = Schema.Struct({
+	endpoint: Schema.optionalWith(Schema.String, {
+		default: () => '_studiocms-devapps',
+	}).annotations({
+		description: 'The endpoint for the StudioCMS development applications.',
+	}),
+	verbose: Schema.optionalWith(Schema.Boolean, {
+		default: () => false,
+	}).annotations({
+		description: 'Enable verbose logging for StudioCMS development applications.',
+	}),
+	appsConfig: Schema.optionalWith(AppsConfigSchema, {
+		default: () => AppsConfigSchema.make({}),
+	}).annotations({
+		description: 'Configuration for the StudioCMS development applications.',
+	}),
+}).annotations({
+	title: 'StudioCMS DevApps Configuration',
+	identifier: 'StudioCMSDevAppsConfig',
+	description:
+		'Configuration schema for StudioCMS development applications, including endpoint settings and individual app configurations.',
+});
+
+/**
+ * Represents the input configuration for StudioCMS development applications.
+ */
+export type StudioCMSDevAppsOptions = typeof StudioCMSDevAppsSchema.Encoded;
+
+/**
+ * Represents the fully parsed configuration for StudioCMS development applications.
+ */
+export type StudioCMSDevAppsConfig = typeof StudioCMSDevAppsSchema.Type;

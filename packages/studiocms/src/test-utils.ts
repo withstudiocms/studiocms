@@ -1,15 +1,42 @@
+import { icons as circleFlags } from '@iconify-json/circle-flags';
+import { icons as flatColorIcons } from '@iconify-json/flat-color-icons';
+import { icons as simpleIcons } from '@iconify-json/simple-icons';
+import studiocmsUi from '@studiocms/ui';
 import type { AstroIntegration, AstroIntegrationLogger } from 'astro';
-import type {
-	SCMSAuthServiceFnOpts,
-	SCMSDashboardAugmentFnOpts,
-	SCMSDashboardFnOpts,
-	SCMSFrontendFnOpts,
-	SCMSImageServiceFnOpts,
-	SCMSRenderingFnOpts,
-	SCMSSiteMapFnOpts,
-	StudioCMSPlugin,
+import { Schema } from 'effect';
+import {
+	type SCMSAuthServiceFnOpts,
+	type SCMSDashboardAugmentFnOpts,
+	type SCMSDashboardFnOpts,
+	type SCMSFrontendFnOpts,
+	type SCMSImageServiceFnOpts,
+	type SCMSRenderingFnOpts,
+	type SCMSSiteMapFnOpts,
+	type StudioCMSPlugin,
+	type StudioCMSPluginDef,
+	StudioCMSPluginSchema,
 } from './schemas/index.js';
 import type { PluginRenderer } from './types.js';
+
+/**
+ * Factory function to create a test instance of the StudioCMS UI plugin with predefined icon sets.
+ *
+ * This function initializes the StudioCMS UI plugin with the `noInjectCSS` option set to `true`
+ * and includes a selection of icons from the `flat-color-icons`, `simple-icons`, and `circle-flags` icon sets.
+ * It is intended for use in testing environments where the full UI functionality is not required, but access to
+ * the plugin's features and icons is necessary for validating plugin behavior.
+ *
+ * @returns A configured instance of the StudioCMS UI plugin for testing purposes.
+ */
+export const TestStudioCmsUiInstance = () =>
+	studiocmsUi({
+		noInjectCSS: true,
+		icons: {
+			flatcoloricons: flatColorIcons,
+			simpleicons: simpleIcons,
+			'lang-flags': circleFlags,
+		},
+	});
 
 type HookRun<T> = { hasHook: boolean; hookResults: T };
 export interface PluginHookResults {
@@ -45,11 +72,11 @@ export interface PluginHookResults {
  * ```
  */
 export class StudioCMSPluginTester {
-	private readonly plugin: StudioCMSPlugin;
+	readonly plugin: StudioCMSPlugin;
 	private readonly injectedLogger?: AstroIntegrationLogger;
 
-	constructor(plugin: StudioCMSPlugin, logger?: AstroIntegrationLogger) {
-		this.plugin = plugin;
+	constructor(plugin: StudioCMSPluginDef, logger?: AstroIntegrationLogger) {
+		this.plugin = Schema.decodeSync(StudioCMSPluginSchema)(plugin);
 		this.injectedLogger = logger;
 	}
 
@@ -98,7 +125,7 @@ export class StudioCMSPluginTester {
 		if (typeof this.plugin.hooks['studiocms:astro-config'] === 'function') {
 			await this.plugin.hooks['studiocms:astro-config']({
 				logger: this.createMockLogger(),
-				addIntegrations: (newIntegrations) => {
+				addIntegrations: async (newIntegrations) => {
 					const toAdd = Array.isArray(newIntegrations) ? newIntegrations : [newIntegrations];
 					integrations.push(...toAdd);
 				},
@@ -148,7 +175,7 @@ export class StudioCMSPluginTester {
 		if (typeof hooks['studiocms:auth'] === 'function') {
 			await hooks['studiocms:auth']({
 				logger,
-				setAuthService: ({ oAuthProvider }) => {
+				setAuthService: async ({ oAuthProvider }) => {
 					if (oAuthProvider !== undefined) {
 						authService.oAuthProvider = oAuthProvider;
 					}
@@ -159,7 +186,7 @@ export class StudioCMSPluginTester {
 		if (typeof hooks['studiocms:dashboard'] === 'function') {
 			await hooks['studiocms:dashboard']({
 				logger,
-				setDashboard: ({ dashboardGridItems, dashboardPages }) => {
+				setDashboard: async ({ dashboardGridItems, dashboardPages }) => {
 					if (dashboardGridItems !== undefined) {
 						dashboard.dashboardGridItems = dashboardGridItems;
 					}
@@ -167,7 +194,7 @@ export class StudioCMSPluginTester {
 						dashboard.dashboardPages = dashboardPages;
 					}
 				},
-				augmentDashboard: ({ components, scripts }) => {
+				augmentDashboard: async ({ components, scripts }) => {
 					if (components !== undefined) {
 						dashboardAugments.components = components;
 					}
@@ -181,7 +208,7 @@ export class StudioCMSPluginTester {
 		if (typeof hooks['studiocms:frontend'] === 'function') {
 			await hooks['studiocms:frontend']({
 				logger,
-				setFrontend: ({ frontendNavigationLinks }) => {
+				setFrontend: async ({ frontendNavigationLinks }) => {
 					if (frontendNavigationLinks !== undefined) {
 						frontend.frontendNavigationLinks = frontendNavigationLinks;
 					}
@@ -192,7 +219,7 @@ export class StudioCMSPluginTester {
 		if (typeof hooks['studiocms:image-service'] === 'function') {
 			await hooks['studiocms:image-service']({
 				logger,
-				setImageService: ({ imageService: imgService }) => {
+				setImageService: async ({ imageService: imgService }) => {
 					if (imgService !== undefined) {
 						imageService.imageService = imgService;
 					}
@@ -203,7 +230,7 @@ export class StudioCMSPluginTester {
 		if (typeof hooks['studiocms:rendering'] === 'function') {
 			await hooks['studiocms:rendering']({
 				logger,
-				setRendering: ({ pageTypes, augments }) => {
+				setRendering: async ({ pageTypes, augments }) => {
 					if (pageTypes !== undefined) {
 						rendering.pageTypes = pageTypes;
 					}
@@ -217,7 +244,7 @@ export class StudioCMSPluginTester {
 		if (typeof hooks['studiocms:sitemap'] === 'function') {
 			await hooks['studiocms:sitemap']({
 				logger,
-				setSitemap: ({ sitemaps, triggerSitemap }) => {
+				setSitemap: async ({ sitemaps, triggerSitemap }) => {
 					if (sitemaps !== undefined) {
 						sitemap.sitemaps = sitemaps;
 					}
@@ -269,7 +296,7 @@ export class StudioCMSPluginTester {
 			'studiocms:image-service',
 			'studiocms:rendering',
 			'studiocms:sitemap',
-		];
+		] as const;
 		return hookKeys.some((key) => typeof this.plugin.hooks[key] === 'function');
 	}
 

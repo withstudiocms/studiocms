@@ -7,7 +7,8 @@
 /// <reference types="studiocms/v/types" />
 
 import { createResolver } from 'astro-integration-kit';
-import { defineStorageManager, type StudioCMSStorageManager } from 'studiocms/plugins';
+import { defineStorageManager } from 'studiocms/plugins';
+import type { StudioCMSStorageManagerDef } from 'studiocms/schemas';
 
 /**
  * Creates and configures a StudioCMS S3 Storage Manager plugin.
@@ -30,7 +31,7 @@ import { defineStorageManager, type StudioCMSStorageManager } from 'studiocms/pl
  * const s3Storage = studiocmsS3Storage();
  * ```
  */
-export function studiocmsS3Storage(): StudioCMSStorageManager {
+export function studiocmsS3Storage(): StudioCMSStorageManagerDef {
 	// Resolve the path to the current file
 	const { resolve } = createResolver(import.meta.url);
 
@@ -41,9 +42,9 @@ export function studiocmsS3Storage(): StudioCMSStorageManager {
 	return defineStorageManager({
 		identifier: packageIdentifier,
 		name: 'StudioCMS S3 Storage',
-		studiocmsMinimumVersion: '0.1.0-beta.31',
+		studiocmsMinimumVersion: '0.3.0',
 		hooks: {
-			'studiocms:storage-manager': ({ setStorageManager, logger }) => {
+			'studiocms:storage-manager': async ({ setStorageManager, logger }) => {
 				logger.info('StudioCMS S3 Storage initialized.');
 				setStorageManager({
 					managerPath: resolve('./s3-storage-manager.js'),

@@ -27,7 +27,7 @@ describe(parentSuiteName, () => {
 			expect(plugin).toBeDefined();
 			expect(plugin.identifier).toBe('@studiocms/wysiwyg');
 			expect(plugin.name).toBe('StudioCMS WYSIWYG Editor');
-			expect(plugin.studiocmsMinimumVersion).toBe('0.1.0-beta.23');
+			expect(plugin.studiocmsMinimumVersion).toBe('0.3.0');
 			expect(plugin.hooks).toBeDefined();
 		});
 

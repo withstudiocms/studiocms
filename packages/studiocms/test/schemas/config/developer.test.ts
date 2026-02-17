@@ -1,5 +1,6 @@
+import { Schema } from 'effect';
 import { describe, expect } from 'vitest';
-import { developerConfigSchema } from '../../../src/schemas/config/developer';
+import { DeveloperConfigSchema } from '../../../src/schemas/config/developer';
 import { allureTester } from '../../fixtures/allureTester';
 import { parentSuiteName, sharedTags } from '../../test-utils';
 
@@ -12,10 +13,6 @@ describe(parentSuiteName, () => {
 	});
 
 	[
-		{
-			data: undefined,
-			expected: { demoMode: false },
-		},
 		{
 			data: { demoMode: false },
 			expected: { demoMode: false },
@@ -41,12 +38,15 @@ describe(parentSuiteName, () => {
 				},
 			});
 
-			const result = developerConfigSchema.parse(data);
+			const result = Schema.decodeUnknownSync(DeveloperConfigSchema)(data);
 			expect(result).toEqual(expected);
 		});
 	});
 
 	[
+		{
+			data: undefined,
+		},
 		{
 			data: { demoMode: { password: 'demo_pass' } },
 		},
@@ -69,7 +69,7 @@ describe(parentSuiteName, () => {
 				},
 			});
 
-			expect(() => developerConfigSchema.parse(data)).toThrow();
+			expect(() => Schema.decodeUnknownSync(DeveloperConfigSchema)(data)).toThrow();
 		});
 	});
 });

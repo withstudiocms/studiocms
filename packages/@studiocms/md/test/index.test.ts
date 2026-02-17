@@ -48,7 +48,7 @@ describe(parentSuiteName, () => {
 			expect(plugin).toBeDefined();
 			expect(plugin.identifier).toBe('@studiocms/md');
 			expect(plugin.name).toBe('StudioCMS Markdown');
-			expect(plugin.studiocmsMinimumVersion).toBe('0.1.0-beta.21');
+			expect(plugin.studiocmsMinimumVersion).toBe('0.3.0');
 			expect(plugin.hooks).toBeDefined();
 		});
 
@@ -192,6 +192,7 @@ describe(parentSuiteName, () => {
 					callouts: 'vitepress' as const,
 					autoLinkHeadings: false,
 					discordSubtext: false,
+					sanitize: {},
 				};
 
 				const plugin: ReturnType<typeof studiocmsMD> = studiocmsMD(customOptions);

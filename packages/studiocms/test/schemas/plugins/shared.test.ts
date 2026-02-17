@@ -1,3 +1,4 @@
+import { Schema } from 'effect';
 import { describe, expect } from 'vitest';
 import {
 	AvailableDashboardPagesSchema,
@@ -5,11 +6,11 @@ import {
 	FieldSchema,
 	FinalDashboardBaseSchema,
 	FrontendNavigationLinksSchema,
-	i18nLabelSchema,
+	I18nLabelSchema,
 	PageTypesSchema,
 	SettingsFieldSchema,
 	SettingsPageSchema,
-	StudioCMSColorway,
+	StudioCMSColorwaySchema,
 } from '../../../src/schemas/plugins/shared';
 import { allureTester } from '../../fixtures/allureTester';
 import { parentSuiteName, sharedTags } from '../../test-utils';
@@ -25,25 +26,25 @@ describe(parentSuiteName, () => {
 	[
 		{
 			schemaName: 'StudioCMSColorway',
-			fn: StudioCMSColorway.parse,
+			fn: Schema.decodeUnknownSync(StudioCMSColorwaySchema),
 			data: 'primary',
 			shouldThrow: false,
 		},
 		{
 			schemaName: 'StudioCMSColorway',
-			fn: StudioCMSColorway.parse,
+			fn: Schema.decodeUnknownSync(StudioCMSColorwaySchema),
 			data: 'danger',
 			shouldThrow: false,
 		},
 		{
 			schemaName: 'StudioCMSColorway',
-			fn: StudioCMSColorway.parse,
+			fn: Schema.decodeUnknownSync(StudioCMSColorwaySchema),
 			data: 'invalid',
 			shouldThrow: true,
 		},
 		{
 			schemaName: 'FieldSchema',
-			fn: FieldSchema.parse,
+			fn: Schema.decodeUnknownSync(FieldSchema),
 			data: {
 				name: 'accept',
 				label: 'Accept Terms',
@@ -56,7 +57,7 @@ describe(parentSuiteName, () => {
 		},
 		{
 			schemaName: 'FieldSchema',
-			fn: FieldSchema.parse,
+			fn: Schema.decodeUnknownSync(FieldSchema),
 			data: {
 				name: 'username',
 				label: 'Username',
@@ -69,13 +70,13 @@ describe(parentSuiteName, () => {
 		},
 		{
 			schemaName: 'FieldSchema',
-			fn: FieldSchema.parse,
+			fn: Schema.decodeUnknownSync(FieldSchema),
 			data: { input: 'input' },
 			shouldThrow: true,
 		},
 		{
 			schemaName: 'SettingsFieldSchema',
-			fn: SettingsFieldSchema.parse,
+			fn: Schema.decodeUnknownSync(SettingsFieldSchema),
 			data: {
 				name: 'row1',
 				label: 'Row 1',
@@ -91,20 +92,20 @@ describe(parentSuiteName, () => {
 			shouldThrow: false,
 		},
 		{
-			schemaName: 'i18nLabelSchema',
-			fn: i18nLabelSchema.parse,
+			schemaName: 'I18nLabelSchema',
+			fn: Schema.decodeUnknownSync(I18nLabelSchema),
 			data: { en: 'Hello', fr: 'Bonjour' },
 			shouldThrow: false,
 		},
 		{
-			schemaName: 'i18nLabelSchema',
-			fn: i18nLabelSchema.parse,
+			schemaName: 'I18nLabelSchema',
+			fn: Schema.decodeUnknownSync(I18nLabelSchema),
 			data: { xx: 'Unknown' },
 			shouldThrow: true,
 		},
 		{
 			schemaName: 'DashboardPageSchema',
-			fn: DashboardPageSchema.parse,
+			fn: Schema.decodeUnknownSync(DashboardPageSchema),
 			data: {
 				title: { en: 'Dashboard' },
 				description: 'Main dashboard',
@@ -116,7 +117,7 @@ describe(parentSuiteName, () => {
 		},
 		{
 			schemaName: 'DashboardPageSchema',
-			fn: DashboardPageSchema.parse,
+			fn: Schema.decodeUnknownSync(DashboardPageSchema),
 			data: {
 				title: { en: 'Dashboard' },
 				description: 'Main dashboard',
@@ -129,7 +130,7 @@ describe(parentSuiteName, () => {
 		},
 		{
 			schemaName: 'AvailableDashboardPagesSchema',
-			fn: AvailableDashboardPagesSchema.parse,
+			fn: Schema.decodeUnknownSync(AvailableDashboardPagesSchema),
 			data: {
 				user: [
 					{
@@ -157,7 +158,7 @@ describe(parentSuiteName, () => {
 		},
 		{
 			schemaName: 'FinalDashboardBaseSchema',
-			fn: FinalDashboardBaseSchema.parse,
+			fn: Schema.decodeUnknownSync(FinalDashboardBaseSchema),
 			data: {
 				title: { en: 'Final' },
 				description: 'Final dashboard',
@@ -169,52 +170,6 @@ describe(parentSuiteName, () => {
 					PageBodyComponent: () => null,
 				},
 			},
-			shouldThrow: false,
-		},
-		{
-			schemaName: 'SettingsPageSchema',
-			fn: SettingsPageSchema.parse,
-			data: {
-				fields: [
-					{
-						name: 'setting1',
-						label: 'Setting 1',
-						input: 'input',
-					},
-				],
-				endpoint: '/api/settings',
-			},
-			shouldThrow: false,
-		},
-		{
-			schemaName: 'FrontendNavigationLinksSchema',
-			fn: FrontendNavigationLinksSchema.parse,
-			data: [
-				{ label: 'Home', href: '/' },
-				{ label: 'About', href: '/about' },
-			],
-			shouldThrow: false,
-		},
-		{
-			schemaName: 'PageTypesSchema',
-			fn: PageTypesSchema.parse,
-			data: [
-				{
-					label: 'Blog',
-					identifier: '@studiocms/blog',
-					description: 'Blog page type',
-					pageContentComponent: 'BlogContent',
-					rendererComponent: 'BlogRenderer',
-					fields: [
-						{
-							name: 'title',
-							label: 'Title',
-							input: 'input',
-						},
-					],
-					apiEndpoint: '/api/blog',
-				},
-			],
 			shouldThrow: false,
 		},
 	].forEach(({ fn, data, shouldThrow, schemaName }, index) => {

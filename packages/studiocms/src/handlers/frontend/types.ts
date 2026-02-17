@@ -32,7 +32,7 @@ export interface RouteConfig {
 	extraRoutes: InjectedRoute[];
 	developerConfig: {
 		demoMode:
-			| false
+			| boolean
 			| {
 					username: string;
 					password: string;

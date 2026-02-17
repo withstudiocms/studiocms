@@ -1,3 +1,11 @@
+// TODO: Time to phase-out the usage of this package for migrating from AstroDB (Drizzle) to Kysely.
+// This package was created to provide a migration path for users of StudioCMS who were using previous
+// versions of StudioCMS that relied on AstroDB with Drizzle, allowing them to migrate their data to
+// the new Kysely-based implementation without losing their existing data.
+// With Astro v6 quickly approaching and the fact that our vendored AstroDB implementation is using Zod v3,
+// which is not compatible with the Zod v4 used in the new Astro version, we should drop the drizzle migrator
+// And simplify this package to be a simple optional webUI for schema migrations (already existing feature)
+
 import { type ColumnBuilderBaseConfig, type ColumnDataType, sql } from 'drizzle-orm';
 import type { LibSQLDatabase } from 'drizzle-orm/libsql';
 import {

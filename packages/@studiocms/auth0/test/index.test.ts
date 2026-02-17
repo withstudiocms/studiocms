@@ -34,7 +34,7 @@ describe(parentSuiteName, () => {
 			expect(pluginInfo).toBeDefined();
 			expect(pluginInfo.identifier).toBe('@studiocms/auth0');
 			expect(pluginInfo.name).toBe('StudioCMS Auth0 Provider Plugin');
-			expect(pluginInfo.studiocmsMinimumVersion).toBe('0.1.0-beta.22');
+			expect(pluginInfo.studiocmsMinimumVersion).toBe('0.3.0');
 			expect(pluginInfo.requires).toBeUndefined();
 		});
 

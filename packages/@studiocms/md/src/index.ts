@@ -8,26 +8,30 @@
 
 import type { AstroIntegration } from 'astro';
 import { addVirtualImports, createResolver } from 'astro-integration-kit';
-import { definePlugin, type StudioCMSPlugin } from 'studiocms/plugins';
+import { Schema } from 'effect';
+import { definePlugin } from 'studiocms/plugins';
+import type { StudioCMSPluginDef } from 'studiocms/schemas';
 import { shared } from './lib/shared.js';
-import { MarkdownSchema, type MarkdownSchemaOptions } from './types.js';
+import { MarkdownOptionsSchema, type MarkdownSchemaOptions } from './types.js';
 
 const packageIdentifier = '@studiocms/md';
 
-export function internalMarkdownIntegration(options?: MarkdownSchemaOptions): AstroIntegration {
+export function internalMarkdownIntegration(
+	options: MarkdownSchemaOptions = { flavor: 'studiocms' }
+): AstroIntegration {
 	// Resolve the path to the current file
 	const { resolve } = createResolver(import.meta.url);
 	// Resolve the path to the internal renderer
 	const internalRenderer = resolve('./lib/markdown-prerender.js');
 
 	// Resolve the options and set defaults if not provided
-	const parseResult = MarkdownSchema.safeParse(options);
+	const parseResult = Schema.decodeEither(MarkdownOptionsSchema)(options);
 	/* v8 ignore start */
-	if (!parseResult.success) {
-		throw new Error(`Invalid markdown options: ${parseResult.error.message}`);
+	if (parseResult._tag === 'Left') {
+		throw new Error(`Invalid markdown options: ${parseResult.left.message}`);
 	}
 	/* v8 ignore stop */
-	const resolvedOptions = parseResult.data;
+	const resolvedOptions = parseResult.right;
 
 	// Define the resolved Callout Theme
 	let resolvedCalloutTheme: string | undefined;
@@ -95,17 +99,20 @@ export function internalMarkdownIntegration(options?: MarkdownSchemaOptions): As
  * const plugin = studiocmsMD({ flavor: 'studiocms', callouts: 'obsidian' });
  * ```
  */
-export function studiocmsMD(options?: MarkdownSchemaOptions): StudioCMSPlugin {
+export function studiocmsMD(
+	options: MarkdownSchemaOptions = { flavor: 'studiocms' }
+): StudioCMSPluginDef {
 	// Resolve the path to the current file
 	const { resolve } = createResolver(import.meta.url);
 
 	// Resolve the options and set defaults if not provided
-	const parseResult = MarkdownSchema.safeParse(options);
-	if (!parseResult.success) {
-		throw new Error(`Invalid markdown options: ${parseResult.error.message}`);
+	const parseResult = Schema.decodeEither(MarkdownOptionsSchema)(options);
+	/* v8 ignore start */
+	if (parseResult._tag === 'Left') {
+		throw new Error(`Invalid markdown options: ${parseResult.left.message}`);
 	}
-	const resolvedOptions = parseResult.data;
-
+	/* v8 ignore stop */
+	const resolvedOptions = parseResult.right;
 	/**
 	 * Defines the configuration for the Markdown page type in StudioCMS.
 	 *
@@ -125,12 +132,12 @@ export function studiocmsMD(options?: MarkdownSchemaOptions): StudioCMSPlugin {
 	return definePlugin({
 		identifier: packageIdentifier,
 		name: 'StudioCMS Markdown',
-		studiocmsMinimumVersion: '0.1.0-beta.21',
+		studiocmsMinimumVersion: '0.3.0',
 		hooks: {
-			'studiocms:astro-config': ({ addIntegrations }) => {
+			'studiocms:astro-config': async ({ addIntegrations }) => {
 				addIntegrations(internalMarkdownIntegration(resolvedOptions));
 			},
-			'studiocms:rendering': ({ setRendering }) => {
+			'studiocms:rendering': async ({ setRendering }) => {
 				setRendering({
 					pageTypes: [markdownPageType],
 				});

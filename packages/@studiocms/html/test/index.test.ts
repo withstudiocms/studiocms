@@ -46,7 +46,7 @@ describe(parentSuiteName, () => {
 			expect(plugin).toBeDefined();
 			expect(plugin.identifier).toBe('@studiocms/html');
 			expect(plugin.name).toBe('StudioCMS HTML');
-			expect(plugin.studiocmsMinimumVersion).toBe('0.1.0-beta.21');
+			expect(plugin.studiocmsMinimumVersion).toBe('0.3.0');
 			expect(plugin.hooks).toBeDefined();
 		});
 	});
@@ -77,7 +77,7 @@ describe(parentSuiteName, () => {
 				expect(plugin).toBeDefined();
 				expect(plugin.identifier).toBe('@studiocms/html');
 				expect(plugin.name).toBe('StudioCMS HTML');
-				expect(plugin.studiocmsMinimumVersion).toBe('0.1.0-beta.21');
+				expect(plugin.studiocmsMinimumVersion).toBe('0.3.0');
 				expect(plugin.hooks).toBeDefined();
 			}
 		);
@@ -177,7 +177,9 @@ describe(parentSuiteName, () => {
 			expect(shared.htmlConfig).toBeUndefined();
 			integrationArg.hooks['astro:config:done']();
 			expect(shared.htmlConfig).toBeDefined();
-			expect(shared.htmlConfig).toEqual({});
+			expect(shared.htmlConfig).toEqual({
+				sanitize: {},
+			});
 		});
 
 		await allure.step('Should call studiocms:rendering hook correctly', async (ctx) => {

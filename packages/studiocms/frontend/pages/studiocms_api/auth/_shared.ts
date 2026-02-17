@@ -9,7 +9,7 @@ import {
 } from '@withstudiocms/effect';
 import type { APIContext } from 'astro';
 import { AstroError } from 'astro/errors';
-import { z } from 'astro/zod';
+import { isValidEmail } from '#schemas/external-schemas';
 
 export class FormDataEntryFields extends Schema.Class<FormDataEntryFields>('FormDataEntryFields')({
 	title: Schema.String,
@@ -39,8 +39,7 @@ export class AuthAPIUtils extends Effect.Service<AuthAPIUtils>()(
 				validateEmail: (email: string) =>
 					Effect.try({
 						try: () => {
-							const emailSchema = z.coerce.string().email({ message: 'Email address is invalid' });
-							return emailSchema.safeParse(email);
+							return isValidEmail(email);
 						},
 						catch: () => new AstroError('Failed to parse email with zod.'),
 					}),

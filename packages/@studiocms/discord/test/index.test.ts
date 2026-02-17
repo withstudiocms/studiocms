@@ -34,7 +34,7 @@ describe(parentSuiteName, () => {
 			expect(pluginInfo).toBeDefined();
 			expect(pluginInfo.identifier).toBe('@studiocms/discord');
 			expect(pluginInfo.name).toBe('StudioCMS Discord Provider Plugin');
-			expect(pluginInfo.studiocmsMinimumVersion).toBe('0.1.0-beta.22');
+			expect(pluginInfo.studiocmsMinimumVersion).toBe('0.3.0');
 			expect(pluginInfo.requires).toBeUndefined();
 		});
 

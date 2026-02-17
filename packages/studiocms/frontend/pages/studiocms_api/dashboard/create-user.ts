@@ -12,8 +12,8 @@ import {
 	OptionsResponse,
 	readAPIContextJson,
 } from '@withstudiocms/effect';
-import { z } from 'astro/zod';
 import { ValidRanks } from '#consts';
+import { isValidEmail } from '#schemas/external-schemas';
 
 type JSONData = {
 	username: string | undefined;
@@ -118,10 +118,7 @@ export const { POST, OPTIONS, ALL } = createEffectAPIRoutes(
 				}
 
 				// If the email is invalid, return an error
-				const checkEmail = z.coerce
-					.string()
-					.email({ message: 'Email address is invalid' })
-					.safeParse(email);
+				const checkEmail = isValidEmail(email);
 
 				if (!checkEmail.success) {
 					return apiResponseLogger(400, `Invalid email: ${checkEmail.error.message}`);
