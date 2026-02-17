@@ -43,7 +43,7 @@ function cloudinaryImageService() {
 	return definePlugin({
 		name: `Cloudinary JS Image Service (${identifier})`,
 		identifier: name,
-		studiocmsMinimumVersion: '0.1.0-beta.19',
+		studiocmsMinimumVersion: '0.3.0',
 		hooks: {
 			'studiocms:astro-config': async ({ addIntegrations }) => {
 				addIntegrations(CloudinaryENVIntegration());

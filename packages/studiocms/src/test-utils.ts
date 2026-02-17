@@ -3,15 +3,18 @@ import { icons as flatColorIcons } from '@iconify-json/flat-color-icons';
 import { icons as simpleIcons } from '@iconify-json/simple-icons';
 import studiocmsUi from '@studiocms/ui';
 import type { AstroIntegration, AstroIntegrationLogger } from 'astro';
-import type {
-	SCMSAuthServiceFnOpts,
-	SCMSDashboardAugmentFnOpts,
-	SCMSDashboardFnOpts,
-	SCMSFrontendFnOpts,
-	SCMSImageServiceFnOpts,
-	SCMSRenderingFnOpts,
-	SCMSSiteMapFnOpts,
-	StudioCMSPlugin,
+import { Schema } from 'effect';
+import {
+	type SCMSAuthServiceFnOpts,
+	type SCMSDashboardAugmentFnOpts,
+	type SCMSDashboardFnOpts,
+	type SCMSFrontendFnOpts,
+	type SCMSImageServiceFnOpts,
+	type SCMSRenderingFnOpts,
+	type SCMSSiteMapFnOpts,
+	type StudioCMSPlugin,
+	type StudioCMSPluginDef,
+	StudioCMSPluginSchema,
 } from './schemas/index.js';
 import type { PluginRenderer } from './types.js';
 
@@ -72,8 +75,8 @@ export class StudioCMSPluginTester {
 	private readonly plugin: StudioCMSPlugin;
 	private readonly injectedLogger?: AstroIntegrationLogger;
 
-	constructor(plugin: StudioCMSPlugin, logger?: AstroIntegrationLogger) {
-		this.plugin = plugin;
+	constructor(plugin: StudioCMSPluginDef, logger?: AstroIntegrationLogger) {
+		this.plugin = Schema.decodeSync(StudioCMSPluginSchema)(plugin);
 		this.injectedLogger = logger;
 	}
 

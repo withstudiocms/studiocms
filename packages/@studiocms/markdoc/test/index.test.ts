@@ -40,7 +40,7 @@ describe(parentSuiteName, () => {
 			expect(plugin).toBeDefined();
 			expect(plugin.identifier).toBe('@studiocms/markdoc');
 			expect(plugin.name).toBe('StudioCMS MarkDoc');
-			expect(plugin.studiocmsMinimumVersion).toBe('0.1.0-beta.21');
+			expect(plugin.studiocmsMinimumVersion).toBe('0.3.0');
 			expect(plugin.requires).toEqual(['@studiocms/md']);
 			expect(plugin.hooks).toBeDefined();
 		});

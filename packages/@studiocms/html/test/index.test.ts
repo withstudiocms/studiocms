@@ -46,7 +46,7 @@ describe(parentSuiteName, () => {
 			expect(plugin).toBeDefined();
 			expect(plugin.identifier).toBe('@studiocms/html');
 			expect(plugin.name).toBe('StudioCMS HTML');
-			expect(plugin.studiocmsMinimumVersion).toBe('0.1.0-beta.21');
+			expect(plugin.studiocmsMinimumVersion).toBe('0.3.0');
 			expect(plugin.hooks).toBeDefined();
 		});
 	});
@@ -77,7 +77,7 @@ describe(parentSuiteName, () => {
 				expect(plugin).toBeDefined();
 				expect(plugin.identifier).toBe('@studiocms/html');
 				expect(plugin.name).toBe('StudioCMS HTML');
-				expect(plugin.studiocmsMinimumVersion).toBe('0.1.0-beta.21');
+				expect(plugin.studiocmsMinimumVersion).toBe('0.3.0');
 				expect(plugin.hooks).toBeDefined();
 			}
 		);

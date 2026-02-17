@@ -133,7 +133,7 @@ export function studioCMSBlogPlugin(options: StudioCMSBlogOptions = {}): StudioC
 	return definePlugin({
 		identifier: packageIdentifier,
 		name: 'StudioCMS Blog',
-		studiocmsMinimumVersion: '0.1.0-beta.21',
+		studiocmsMinimumVersion: '0.3.0',
 		requires: ['@studiocms/md'],
 		hooks: {
 			'studiocms:astro-config': async ({ addIntegrations }) => {

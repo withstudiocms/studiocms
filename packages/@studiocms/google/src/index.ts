@@ -38,7 +38,7 @@ export function studiocmsGoogle(): StudioCMSPluginDef {
 	return definePlugin({
 		identifier: packageIdentifier,
 		name: 'StudioCMS Google Plugin',
-		studiocmsMinimumVersion: '0.1.0-beta.22',
+		studiocmsMinimumVersion: '0.3.0',
 		hooks: {
 			'studiocms:auth': async ({ setAuthService }) => {
 				setAuthService({

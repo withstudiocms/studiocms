@@ -40,7 +40,7 @@ export function studiocmsHTML(options: HTMLSchemaOptions = {}): StudioCMSPluginD
 	return definePlugin({
 		identifier: packageIdentifier,
 		name: 'StudioCMS HTML',
-		studiocmsMinimumVersion: '0.1.0-beta.21',
+		studiocmsMinimumVersion: '0.3.0',
 		hooks: {
 			'studiocms:astro-config': async ({ addIntegrations }) => {
 				addIntegrations({
