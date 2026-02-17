@@ -293,7 +293,7 @@ export class StudioCMSPluginTester {
 			'studiocms:image-service',
 			'studiocms:rendering',
 			'studiocms:sitemap',
-		];
+		] as const;
 		return hookKeys.some((key) => typeof this.plugin.hooks[key] === 'function');
 	}
 
