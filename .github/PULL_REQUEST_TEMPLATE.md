@@ -8,6 +8,8 @@
 - Before/after screenshots can help as well.
 - Don't forget a changeset! Run `pnpm changeset`.
 
+<!-- NOTE: If you make changes to a package and do not include a changeset, your PR might be closed. -->
+
 ## Testing
 
 <!-- How was this change tested? -->
