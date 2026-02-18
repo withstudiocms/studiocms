@@ -48,9 +48,15 @@ body:
     attributes:
       label: Version
       description: What version are you running?
-      placeholder: 0.1.0-beta.0
+      placeholder: 0.1.0
     validations:
       required: true
+  - type: textarea
+    id: debug-output
+    attributes:
+      label: Debug output
+      description: Please copy and paste the output of `npm run studiocms debug`. This will be automatically formatted into code, so no need for backticks.
+      render: shell
   - type: dropdown
     id: browsers
     attributes:

@@ -33,7 +33,7 @@ body:
     attributes:
       label: Version
       description: What version are you running?
-      placeholder: 0.1.0-beta.0
+      placeholder: 0.1.0
     validations:
       required: true
   - type: textarea
