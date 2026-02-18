@@ -29,7 +29,7 @@ jobs:
     permissions:
       contents: read
       pull-requests: write
-    uses: withstudiocms/automations/.github/workflows/run-pnpm.yml@7caa6bf5171347ed3b56a7f65ef030f0fbc15774 # main
+    uses: withstudiocms/automations/.github/workflows/run-pnpm.yml@f286863f2f7a414794b9a10ee6f1cadbb07f722f # main
     secrets: inherit
     with:
       commands: > 
@@ -44,7 +44,7 @@ jobs:
       issues: write
       pull-requests: write
     secrets: inherit
-    uses: withstudiocms/automations/.github/workflows/preview.yml@7caa6bf5171347ed3b56a7f65ef030f0fbc15774 # main
+    uses: withstudiocms/automations/.github/workflows/preview.yml@f286863f2f7a414794b9a10ee6f1cadbb07f722f # main
     with:
       build-cmd: "pnpm ci:build"
 
@@ -57,6 +57,6 @@ jobs:
       issues: write
       pull-requests: write
     secrets: inherit
-    uses: withstudiocms/automations/.github/workflows/preview-pr.yml@7caa6bf5171347ed3b56a7f65ef030f0fbc15774 # main
+    uses: withstudiocms/automations/.github/workflows/preview-pr.yml@f286863f2f7a414794b9a10ee6f1cadbb07f722f # main
     with:
       build-cmd: "pnpm ci:build"
