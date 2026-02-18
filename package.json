@@ -14,6 +14,11 @@
     "packages/@withstudiocms/*",
     "packages/*"
   ],
+  "pnpm": {
+    "patchedDependencies": {
+      "@changesets/assemble-release-plan": "patches/@changesets__assemble-release-plan.patch"
+    }
+  },
   "scripts": {
     "effect-language-service": "effect-language-service",
     "start": "node ./playground/dist/server/entry.mjs",
