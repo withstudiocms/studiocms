@@ -1126,8 +1126,8 @@ importers:
         specifier: ^1.2.70
         version: 1.2.70
       '@inox-tools/runtime-logger':
-        specifier: ^0.7.1
-        version: 0.7.1(astro@5.17.2(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
+        specifier: ^0.8.1
+        version: 0.8.1(astro@5.17.2(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))(nanostores@1.1.0)
       '@libsql/client':
         specifier: catalog:kysely
         version: 0.15.15
@@ -2619,18 +2619,15 @@ packages:
     peerDependencies:
       astro: ^5.17.1
 
-  '@inox-tools/modular-station@0.7.1':
-    resolution: {integrity: sha512-EcOhQu5jPM/K9+EpNzSEnvVejbPHT68xVG1lJ9AnpM+BLjVEpMvSaeiQ/FaJaD03BvWzbCWcUPyJI4Ds3qSonA==}
+  '@inox-tools/modular-station@0.8.1':
+    resolution: {integrity: sha512-ikRu3RwD1516PM+gx+qui8h84fpMMgg7sXcij9fBjPQ+9e33u3xQHthf1l5/bY/b98dYfPL3QKDXqzqEjWsc1w==}
     peerDependencies:
       astro: ^5
 
-  '@inox-tools/runtime-logger@0.7.1':
-    resolution: {integrity: sha512-VK2FWbXyslfC1BYjt7Me9um36m+q6Hbpq66+glrmsM6+QaEnCkRAiPmXJ4WdfykTEUptDZdg5ulPYtPuPxQ+Bw==}
+  '@inox-tools/runtime-logger@0.8.1':
+    resolution: {integrity: sha512-Z9LyhMnr34JXiKUCqRex0L+mCmSlX9vWhpsUd4VYVDVBXYhHJAWO68m43lmZsQJSW9hv4UuCjNx/fkoeIdkF/g==}
     peerDependencies:
       astro: ^5
-
-  '@inox-tools/utils@0.8.1':
-    resolution: {integrity: sha512-SGjdzPcxJn6UOpSuxdg8Vm5s22EWhd4HSNWLymiN35+KbnoX3sgwoQMW4a6Zcv/HWdyZezl4Q7WUtZnt+UCuHw==}
 
   '@inox-tools/utils@1.0.0':
     resolution: {integrity: sha512-3WKDWCzMdzGcMmthYWo5FRaD+AFdaOtcbj5tqgGAnUdCFhnHoiVaZgEGM+AYlSTDGuFBhAIAPDLK0AN3xLJGXQ==}
@@ -8561,25 +8558,25 @@ snapshots:
       - nanostores
       - supports-color
 
-  '@inox-tools/modular-station@0.7.1(astro@5.17.2(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))':
+  '@inox-tools/modular-station@0.8.1(astro@5.17.2(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))(nanostores@1.1.0)':
     dependencies:
-      '@inox-tools/utils': 0.8.1
+      '@inox-tools/utils': 1.0.0(nanostores@1.1.0)
       astro: 5.17.2(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
       astro-integration-kit: 0.19.1(astro@5.17.2(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
       debug: 4.4.3
     transitivePeerDependencies:
+      - nanostores
       - supports-color
 
-  '@inox-tools/runtime-logger@0.7.1(astro@5.17.2(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))':
+  '@inox-tools/runtime-logger@0.8.1(astro@5.17.2(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))(nanostores@1.1.0)':
     dependencies:
-      '@inox-tools/modular-station': 0.7.1(astro@5.17.2(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
-      '@inox-tools/utils': 0.8.1
+      '@inox-tools/modular-station': 0.8.1(astro@5.17.2(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))(nanostores@1.1.0)
+      '@inox-tools/utils': 1.0.0(nanostores@1.1.0)
       astro: 5.17.2(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
       astro-integration-kit: 0.19.1(astro@5.17.2(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
     transitivePeerDependencies:
+      - nanostores
       - supports-color
-
-  '@inox-tools/utils@0.8.1': {}
 
   '@inox-tools/utils@1.0.0(nanostores@1.1.0)':
     optionalDependencies:
