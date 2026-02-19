@@ -90,7 +90,7 @@
 	"devDependencies": {
 		"@types/micromatch": "^4.0.10",
 		"@types/node": "catalog:",
-		"@types/nodemailer": "^7.0.9",
+		"@types/nodemailer": "^7.0.10",
 		"typescript": "catalog:"
 	},
 	"peerDependencies": {
