@@ -3,6 +3,7 @@ import { useTranslations } from 'studiocms:i18n';
 import pluginList from 'studiocms:plugins';
 import { Button } from 'studiocms:ui/components/button';
 import { Icon } from 'studiocms:ui/components/icon';
+import { setDataContext } from '@withstudiocms/effect/astro/data-middleware';
 import PageHeader from '../../../components/dashboard/PageHeader.astro';
 import SettingsRenderer from '../../../components/dashboard/plugins/SettingsRenderer.astro';
 import Layout from '../../../layouts/DashboardLayout.astro';
@@ -26,6 +27,15 @@ const pluginData = filteredPluginList.find((p) => p.identifier === plugin);
 if (!pluginData) {
 	return new Response(null, { status: 404 });
 }
+
+setDataContext(Astro, {
+	key: 'x-required-role',
+	value: 'editor',
+});
+setDataContext(Astro, {
+	key: 'x-redirect-url',
+	value: '/dashboard',
+});
 ---
 
 <Layout 

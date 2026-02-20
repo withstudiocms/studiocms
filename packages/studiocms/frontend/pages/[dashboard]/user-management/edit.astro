@@ -11,6 +11,7 @@ import { Input } from 'studiocms:ui/components/input';
 import { Modal } from 'studiocms:ui/components/modal';
 import { Select } from 'studiocms:ui/components/select';
 import { Effect, genLogger, runEffect } from '@withstudiocms/effect';
+import { setDataContext } from '@withstudiocms/effect/astro/data-middleware';
 import PageHeader from '../../../components/dashboard/PageHeader.astro';
 import InnerSidebarElement from '../../../components/dashboard/user-mgmt/InnerSidebarElement.astro';
 import RankCheck from '../../../components/dashboard/user-mgmt/RankCheck.astro';
@@ -62,6 +63,15 @@ const disableDelete = user?.permissionsData?.rank === 'owner' || user?.id === us
 if (isOwner) allowedRanks.unshift({ label: 'Owner', value: 'owner' });
 
 if (isAdmin) allowedRanks.unshift({ label: 'Administrator', value: 'admin' });
+
+setDataContext(Astro, {
+	key: 'x-required-role',
+	value: 'admin',
+});
+setDataContext(Astro, {
+	key: 'x-redirect-url',
+	value: '/dashboard',
+});
 ---
 <Layout
   title={t('title')}

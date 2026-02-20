@@ -3,6 +3,7 @@ import { useTranslations } from 'studiocms:i18n';
 import { runSDK, SDKCoreJs } from 'studiocms:sdk';
 import { Input } from 'studiocms:ui/components/input';
 import { Select } from 'studiocms:ui/components/select';
+import { setDataContext } from '@withstudiocms/effect/astro/data-middleware';
 import MetaContainer from '#frontend/components/dashboard/taxonomy/MetaContainer.astro';
 import TaxonomyLayout from '#frontend/layouts/TaxonomyLayout.astro';
 
@@ -28,6 +29,15 @@ const filterCurrent = (categoryId: number | undefined) => {
 	}
 	return editId ? Number.parseInt(editId, 10) !== categoryId : true;
 };
+
+setDataContext(Astro, {
+	key: 'x-required-role',
+	value: 'editor',
+});
+setDataContext(Astro, {
+	key: 'x-redirect-url',
+	value: '/dashboard',
+});
 ---
 
 <TaxonomyLayout type="categories">

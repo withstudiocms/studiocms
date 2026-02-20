@@ -2,6 +2,7 @@
 import '../../styles/404.css';
 import { useTranslations } from 'studiocms:i18n';
 import { Button } from 'studiocms:ui/components/button';
+import { setDataContext } from '@withstudiocms/effect/astro/data-middleware';
 import Layout from '../../layouts/DashboardLayout.astro';
 
 const { siteConfig: config, defaultLang: lang, security } = Astro.locals.StudioCMS;
@@ -15,6 +16,11 @@ const userId = currentUser?.user?.id;
 if (!userId) {
 	return Astro.redirect(Astro.locals.StudioCMS.routeMap.authLinks.loginURL);
 }
+
+setDataContext(Astro, {
+	key: 'x-required-role',
+	value: 'none',
+});
 ---
 
 <Layout 

@@ -1,5 +1,6 @@
 ---
 import { useTranslations } from 'studiocms:i18n';
+import { setDataContext } from '@withstudiocms/effect/astro/data-middleware';
 import DashboardGrid from '../../components/dashboard/DashboardGrid.astro';
 import DashboardPageHeader from '../../components/dashboard/DashboardPageHeader.astro';
 import Layout from '../../layouts/DashboardLayout.astro';
@@ -9,6 +10,15 @@ const { siteConfig: config, defaultLang: lang, security } = Astro.locals.StudioC
 const currentUser = security?.userSessionData ?? null;
 
 const t = useTranslations(lang, '@studiocms/dashboard:index');
+
+setDataContext(Astro, {
+	key: 'x-required-role',
+	value: 'editor',
+});
+setDataContext(Astro, {
+	key: 'x-redirect-url',
+	value: '/profile',
+});
 ---
 
 <Layout 
