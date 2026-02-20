@@ -31,10 +31,22 @@ export enum EnvBuilderAction {
 }
 
 function emptyStringToUndefined(value: string): string | undefined {
-	return value.trim() === '' ? undefined : value.trim();
+	if (typeof value !== 'string') {
+		return undefined;
+	}
+	if (value?.trim() === '') {
+		return undefined;
+	}
+	return value;
 }
 
 function NumberStringToUndefined(value: string): number | undefined {
+	if (typeof value !== 'string') {
+		return undefined;
+	}
+	if (value?.trim() === '') {
+		return undefined;
+	}
 	const num = Number(value);
 	return Number.isNaN(num) ? undefined : num;
 }
