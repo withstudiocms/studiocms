@@ -34,20 +34,18 @@ function emptyStringToUndefined(value: string | undefined): string | undefined {
 	if (typeof value !== 'string') {
 		return undefined;
 	}
-	if (value?.trim() === '') {
+	if (value.trim() === '') {
 		return undefined;
 	}
 	return value;
 }
 
 function NumberStringToUndefined(value: string | undefined): number | undefined {
-	if (typeof value !== 'string') {
+	const emptyStringResult = emptyStringToUndefined(value);
+	if (emptyStringResult === undefined) {
 		return undefined;
 	}
-	if (value?.trim() === '') {
-		return undefined;
-	}
-	const num = Number(value);
+	const num = Number(emptyStringResult);
 	return Number.isNaN(num) ? undefined : num;
 }
 
