@@ -200,8 +200,7 @@ export const onRequest = defineMiddlewareRouter([
 						requiredRole
 					);
 
-					const userPermissionLevel =
-						context.locals.StudioCMS.security?.userSessionData.permissionLevel;
+					const userPermissionLevel = userSessionData.permissionLevel;
 
 					if (!userPermissionLevel) {
 						yield* Effect.logDebug(

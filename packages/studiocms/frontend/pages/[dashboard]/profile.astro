@@ -24,6 +24,15 @@ const {
 const shouldShowOAuth = showOAuth && providerData.some(({ enabled }) => enabled);
 
 const isAllowedAPITokens = Astro.locals.StudioCMS.security?.userPermissionLevel.isEditor ?? false;
+
+setDataContext(Astro, {
+	key: 'x-required-role',
+	value: 'visitor',
+});
+setDataContext(Astro, {
+	key: 'x-redirect-url',
+	value: Astro.locals.StudioCMS.routeMap.authLinks.logoutURL,
+});
 ---
 
 <Layout 

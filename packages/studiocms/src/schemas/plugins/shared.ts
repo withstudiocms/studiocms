@@ -113,7 +113,7 @@ export class BaseFieldSchema extends Schema.Class<BaseFieldSchema>('BaseFieldSch
 /**
  * Supports Colorway Schema for plugin fields that support colorways.
  *
- * This schema extends the BaseFieldSchema and adds an optional colorway property, which can be one of the predefined colorways in the StudioCMSColorwaySchema.
+ * This schema extends the BaseFieldSchema and adds an optional color property, which can be one of the predefined colorways in the StudioCMSColorwaySchema.
  */
 export class SupportsColorwaySchema extends BaseFieldSchema.extend<SupportsColorwaySchema>(
 	'SupportsColorwaySchema'

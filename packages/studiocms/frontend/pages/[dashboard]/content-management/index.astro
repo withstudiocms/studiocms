@@ -17,7 +17,7 @@ setDataContext(Astro, {
 });
 setDataContext(Astro, {
 	key: 'x-redirect-url',
-	value: '/dashboard',
+	value: Astro.locals.StudioCMS.routeMap.mainLinks.dashboardIndex,
 });
 ---
 

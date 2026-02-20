@@ -25,11 +25,11 @@ const registryData = getRegistryComponents();
 
 setDataContext(Astro, {
 	key: 'x-required-role',
-	value: 'editor',
+	value: 'owner',
 });
 setDataContext(Astro, {
 	key: 'x-redirect-url',
-	value: '/dashboard',
+	value: Astro.locals.StudioCMS.routeMap.mainLinks.dashboardIndex,
 });
 ---
 
