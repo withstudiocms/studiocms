@@ -2,6 +2,7 @@
 import { useTranslations } from 'studiocms:i18n';
 import { runSDK, SDKCoreJs } from 'studiocms:sdk';
 import { Effect } from '@withstudiocms/effect';
+import { setDataContext } from '@withstudiocms/effect/astro/data-middleware';
 import EditFolder from '../../../components/dashboard/content-mgmt/EditFolder.astro';
 import InnerSidebarElement from '../../../components/dashboard/content-mgmt/InnerSidebarElement.astro';
 import PageHeader from '../../../components/dashboard/content-mgmt/PageHeader.astro';
@@ -24,6 +25,15 @@ if (!currentFolder) {
 	console.warn(`Folder with ID ${editId} not found.`);
 	return new Response(null, { status: 404 });
 }
+
+setDataContext(Astro, {
+	key: 'x-required-role',
+	value: 'editor',
+});
+setDataContext(Astro, {
+	key: 'x-redirect-url',
+	value: Astro.locals.StudioCMS.routeMap.mainLinks.dashboardIndex,
+});
 ---
 
 <Layout 

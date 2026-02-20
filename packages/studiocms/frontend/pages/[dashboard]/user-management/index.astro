@@ -1,5 +1,6 @@
 ---
 import { useTranslations } from 'studiocms:i18n';
+import { setDataContext } from '@withstudiocms/effect/astro/data-middleware';
 import PageHeader from '../../../components/dashboard/PageHeader.astro';
 import InnerSidebarElement from '../../../components/dashboard/user-mgmt/InnerSidebarElement.astro';
 import Layout from '../../../layouts/DashboardLayout.astro';
@@ -9,6 +10,15 @@ const { siteConfig: config, defaultLang: lang, security } = Astro.locals.StudioC
 const currentUser = security?.userSessionData ?? null;
 
 const t = useTranslations(lang, '@studiocms/dashboard:user-mngmt-index');
+
+setDataContext(Astro, {
+	key: 'x-required-role',
+	value: 'admin',
+});
+setDataContext(Astro, {
+	key: 'x-redirect-url',
+	value: Astro.locals.StudioCMS.routeMap.mainLinks.dashboardIndex,
+});
 ---
 <Layout 
   title={t('title')}

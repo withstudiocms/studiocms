@@ -13,6 +13,7 @@ import { Select } from 'studiocms:ui/components/select';
 import { TabItem, Tabs } from 'studiocms:ui/components/tabs';
 import { Toggle } from 'studiocms:ui/components/toggle';
 import { Effect, genLogger, runEffect } from '@withstudiocms/effect';
+import { setDataContext } from '@withstudiocms/effect/astro/data-middleware';
 import PageHeader from '../../components/dashboard/PageHeader.astro';
 import TemplateEditor from '../../components/dashboard/smtp-config/TemplateEditor.astro';
 import Layout from '../../layouts/DashboardLayout.astro';
@@ -51,6 +52,15 @@ if (!mailerConfig) {
 const notificationSettingKeys = Object.keys(notificationSettings.data).filter(
 	(key) => key !== '_config_version'
 ) as Array<keyof ConfigFinal<StudioCMSNotificationSettings>>;
+
+setDataContext(Astro, {
+	key: 'x-required-role',
+	value: 'owner',
+});
+setDataContext(Astro, {
+	key: 'x-redirect-url',
+	value: Astro.locals.StudioCMS.routeMap.mainLinks.dashboardIndex,
+});
 ---
 
 <Layout

@@ -2,6 +2,7 @@
 import { useTranslations } from 'studiocms:i18n';
 import { Button } from 'studiocms:ui/components/button';
 import { Icon } from 'studiocms:ui/components/icon';
+import { setDataContext } from '@withstudiocms/effect/astro/data-middleware';
 import BrowserInputArray from '#frontend/components/shared/storage-manager/BrowserInputArray.astro';
 import ConfigForm from '../../components/dashboard/configuration/ConfigForm.astro';
 import PageHeader from '../../components/dashboard/PageHeader.astro';
@@ -12,6 +13,15 @@ const { siteConfig: config, defaultLang: lang, security } = Astro.locals.StudioC
 const currentUser = security?.userSessionData ?? null;
 
 const t = useTranslations(lang, '@studiocms/dashboard:configuration');
+
+setDataContext(Astro, {
+	key: 'x-required-role',
+	value: 'owner',
+});
+setDataContext(Astro, {
+	key: 'x-redirect-url',
+	value: Astro.locals.StudioCMS.routeMap.mainLinks.dashboardIndex,
+});
 ---
 
 <Layout 

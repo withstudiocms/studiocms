@@ -12,22 +12,54 @@
 
 import crypto from 'node:crypto';
 import { User, VerifyEmail } from 'studiocms:auth/lib';
-import { dashboardConfig } from 'studiocms:config';
+import config, { dashboardConfig } from 'studiocms:config';
 import { defaultLang } from 'studiocms:i18n';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import { SDKCore } from 'studiocms:sdk';
 import SCMSUiVersion from 'studiocms:ui/version';
 import SCMSVersion from 'studiocms:version';
-import { defineMiddlewareRouter, Effect } from '@withstudiocms/effect';
-import micromatch from 'micromatch';
+import {
+	Config,
+	defineDataMiddleware,
+	defineMiddlewareRouter,
+	Effect,
+	Layer,
+	Logger,
+	type LogLevel,
+	MiddlewareError,
+	Schema,
+} from '@withstudiocms/effect';
 import { STUDIOCMS_EDITOR_CSRF_COOKIE_NAME } from '#consts';
-import { authenticatedRoutes } from './_authmap.js';
 import { getUserPermissions, makeFallbackSiteConfig, SetLocal, setLocals } from './utils.js';
+
+// Load the log level from the configuration and apply it as a layer
+const LogLevelLive = Config.withDefault(
+	Config.logLevel('STUDIOCMS_LOGLEVEL'),
+	config.logLevel
+).pipe(
+	Effect.tap((level) => Effect.log(`StudioCMS Middleware Log Level set to: ${level}`)),
+	Effect.andThen((level) =>
+		// Set the minimum log level
+		Logger.minimumLogLevel(level as LogLevel.LogLevel)
+	),
+	Layer.unwrapEffect, // Convert the effect into a layer
+	Layer.provide(Logger.pretty) // Ensure that the Logger.pretty layer is included
+);
 
 // Import the dashboard route override from the configuration
 // If no override is set, it defaults to 'dashboard'
 // This allows for flexibility in the dashboard route without hardcoding it
 const dashboardRoute = dashboardConfig.dashboardRouteOverride || 'dashboard';
+
+/**
+ * Helper function to create a standard 200 OK response.
+ *
+ * This function is used to return a successful response from the middleware when access is granted.
+ * It simplifies the response creation process and ensures consistency across the middleware handlers.
+ *
+ * @returns A Response object with a 200 OK status.
+ */
+const okResponse = () => new Response(null, { status: 200 });
 
 /**
  * Main middleware sequence for StudioCMS.
@@ -114,12 +146,6 @@ export const onRequest = defineMiddlewareRouter([
 		}),
 	},
 	{
-		/**
-		 * Middleware function to handle user authentication for the dashboard.
-		 * This middleware checks if the user is logged in and redirects to the login page if not
-		 * authenticated. It also excludes certain paths from this check, such as login, signup,
-		 * logout, and forgot password routes.
-		 */
 		includePaths: [`/${dashboardRoute}/**`],
 		excludePaths: [
 			`/${dashboardRoute}/login`,
@@ -134,66 +160,81 @@ export const onRequest = defineMiddlewareRouter([
 			`/${dashboardRoute}/password-reset/**`,
 		],
 		priority: 3,
-		handler: Effect.fn(function* (context, next) {
-			const getUserData = yield* Effect.gen(function* () {
-				const { getUserData } = yield* User;
-				return getUserData;
-			});
+		handler: defineDataMiddleware(
+			Schema.Struct({
+				'x-required-role': Schema.optional(
+					Schema.Literal('owner', 'admin', 'editor', 'visitor', 'none')
+				),
+				'x-redirect-url': Schema.optional(Schema.String),
+			}),
+			Effect.fn(
+				function* (context, data) {
+					const getUserData = (yield* User).getUserData;
 
-			// Retrieve the user session data from the context locals or fetch it
-			const userSessionData =
-				context.locals.StudioCMS.security?.userSessionData ?? (yield* getUserData(context));
+					yield* Effect.logDebug('Data middleware received headers:', data);
 
-			// Check if the user is logged in and redirect to the login page if not
-			if (!userSessionData.isLoggedIn) return context.redirect(StudioCMSRoutes.authLinks.loginURL);
+					// Get the required role from the headers, defaulting to 'none' if not provided
+					// This is an 'Opt-in' Middleware
+					const requiredRole = data['x-required-role'] ?? 'none';
+					const redirectUrl = data['x-redirect-url'] ?? `/${dashboardRoute}`;
 
-			// Get the current path
-			const currentPath = context.url.pathname;
-
-			// Check if the user has permission to access the current route
-			// If not, redirect to the dashboard home page
-			const userPermissionLevel =
-				context.locals.StudioCMS.security?.userSessionData.permissionLevel;
-
-			if (!userPermissionLevel) {
-				// How did the user get here? Log them out to reset session
-				return context.redirect(`/${dashboardRoute}/logout`);
-			}
-
-			// Using micromatch to handle wildcard route matching
-			const matchChance1 = authenticatedRoutes.find((route) =>
-				micromatch.isMatch(currentPath, route.pathname)
-			);
-
-			// if trailing `/` exists, try matching without it
-			const matchChance2 =
-				matchChance1 ||
-				(() => {
-					if (currentPath.endsWith('/')) {
-						const trimmedPath = currentPath.slice(0, -1);
-						return authenticatedRoutes.find((route) =>
-							micromatch.isMatch(trimmedPath, route.pathname)
+					// If the required role is 'none', allow access without checking user data
+					if (requiredRole === 'none') {
+						yield* Effect.logDebug(
+							'No required role specified, allowing access without authentication'
 						);
+						return okResponse();
 					}
-					return null;
-				})();
 
-			if (matchChance1 || matchChance2) {
-				// biome-ignore lint/style/noNonNullAssertion: only used after checking for existence
-				const matchingRoute = matchChance1 || matchChance2!;
-				const requiredLevel = matchingRoute.requiredPermissionLevel;
-				const levels = ['visitor', 'editor', 'admin', 'owner'];
-				const userLevelIndex = levels.indexOf(userPermissionLevel);
-				const requiredLevelIndex = levels.indexOf(requiredLevel);
+					// Retrieve the user session data from the context locals or fetch it
+					const userSessionData =
+						context.locals.StudioCMS.security?.userSessionData ?? (yield* getUserData(context));
 
-				if (userLevelIndex < requiredLevelIndex) {
-					return context.redirect(`/${dashboardRoute}`);
-				}
-			}
+					if (!userSessionData.isLoggedIn) {
+						yield* Effect.logDebug('User is not logged in, redirecting to login page');
+						return context.redirect(StudioCMSRoutes.authLinks.loginURL);
+					}
 
-			// Else, Continue to the next middleware
-			return next();
-		}),
+					yield* Effect.logDebug(
+						'User is logged in, checking permissions for required role:',
+						requiredRole
+					);
+
+					const userPermissionLevel = userSessionData.permissionLevel;
+
+					if (!userPermissionLevel) {
+						yield* Effect.logDebug(
+							'User permission level is missing, redirecting to logout to reset session'
+						);
+						// How did the user get here? Log them out to reset session
+						return context.redirect(`/${dashboardRoute}/logout`);
+					}
+
+					yield* Effect.logDebug(
+						`User permission level: ${userPermissionLevel}, required role: ${requiredRole}`
+					);
+
+					const levels = ['visitor', 'editor', 'admin', 'owner'];
+					const userLevelIndex = levels.indexOf(userPermissionLevel);
+					const requiredLevelIndex = levels.indexOf(requiredRole);
+
+					if (userLevelIndex < requiredLevelIndex) {
+						yield* Effect.logDebug(
+							`User does not have required permissions (user level: ${userPermissionLevel}, required level: ${requiredRole}), redirecting to:`,
+							redirectUrl
+						);
+						return context.redirect(redirectUrl);
+					}
+
+					yield* Effect.logDebug('User has required permissions, allowing access');
+					return okResponse();
+				},
+				Effect.provide(LogLevelLive),
+				Effect.catchAll(
+					(cause) => new MiddlewareError({ message: 'Failed to get user data', cause })
+				)
+			)
+		),
 	},
 	{
 		/**

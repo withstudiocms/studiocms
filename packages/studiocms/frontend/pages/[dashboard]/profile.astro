@@ -1,6 +1,7 @@
 ---
 import { authConfig } from 'studiocms:config';
 import { useTranslations } from 'studiocms:i18n';
+import { setDataContext } from '@withstudiocms/effect/astro/data-middleware';
 import PageHeader from '../../components/dashboard/PageHeader.astro';
 import APITokens from '../../components/dashboard/profile/APITokens.astro';
 import BasicInfo from '../../components/dashboard/profile/BasicInfo.astro';
@@ -23,6 +24,15 @@ const {
 const shouldShowOAuth = showOAuth && providerData.some(({ enabled }) => enabled);
 
 const isAllowedAPITokens = Astro.locals.StudioCMS.security?.userPermissionLevel.isEditor ?? false;
+
+setDataContext(Astro, {
+	key: 'x-required-role',
+	value: 'visitor',
+});
+setDataContext(Astro, {
+	key: 'x-redirect-url',
+	value: Astro.locals.StudioCMS.routeMap.authLinks.logoutURL,
+});
 ---
 
 <Layout 

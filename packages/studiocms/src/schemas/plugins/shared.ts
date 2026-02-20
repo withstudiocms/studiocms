@@ -83,7 +83,7 @@ export const SharedOptionsSchemaItem = Schema.Struct({
  *
  * This schema defines an array of options that can be shared across different select fields, where each option follows the structure defined in SharedOptionsSchemaItem.
  */
-export const SharedOptionsSchema = Schema.Array(SharedOptionsSchemaItem);
+export const SharedOptionsSchema = Schema.mutable(Schema.Array(SharedOptionsSchemaItem));
 
 /**
  * Schema for validating StudioCMS permissions.
@@ -113,12 +113,12 @@ export class BaseFieldSchema extends Schema.Class<BaseFieldSchema>('BaseFieldSch
 /**
  * Supports Colorway Schema for plugin fields that support colorways.
  *
- * This schema extends the BaseFieldSchema and adds an optional colorway property, which can be one of the predefined colorways in the StudioCMSColorwaySchema.
+ * This schema extends the BaseFieldSchema and adds an optional color property, which can be one of the predefined colorways in the StudioCMSColorwaySchema.
  */
 export class SupportsColorwaySchema extends BaseFieldSchema.extend<SupportsColorwaySchema>(
 	'SupportsColorwaySchema'
 )({
-	colorway: Schema.optional(StudioCMSColorwaySchema),
+	color: Schema.optional(StudioCMSColorwaySchema),
 }) {}
 
 /**

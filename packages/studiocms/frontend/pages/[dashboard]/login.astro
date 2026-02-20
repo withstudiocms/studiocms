@@ -20,7 +20,7 @@ let DemoMode: {
 	enabled: false,
 };
 
-if (developerConfig.demoMode) {
+if (typeof developerConfig.demoMode === 'object') {
 	DemoMode = {
 		enabled: true,
 		username: developerConfig.demoMode.username,

@@ -1,10 +1,20 @@
 ---
 import { useTranslations } from 'studiocms:i18n';
+import { setDataContext } from '@withstudiocms/effect/astro/data-middleware';
 import TaxonomyLayout from '#frontend/layouts/TaxonomyLayout.astro';
 
 const { defaultLang: lang } = Astro.locals.StudioCMS;
 
 const t = useTranslations(lang, '@studiocms/dashboard:taxonomy-index');
+
+setDataContext(Astro, {
+	key: 'x-required-role',
+	value: 'editor',
+});
+setDataContext(Astro, {
+	key: 'x-redirect-url',
+	value: Astro.locals.StudioCMS.routeMap.mainLinks.dashboardIndex,
+});
 ---
 
 <TaxonomyLayout type='index'>

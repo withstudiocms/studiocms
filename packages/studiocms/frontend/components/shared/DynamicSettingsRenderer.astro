@@ -8,7 +8,7 @@ import { Select } from 'studiocms:ui/components/select';
 import { Textarea } from 'studiocms:ui/components/textarea';
 
 export interface Props {
-	fields: SettingsField[];
+	fields: readonly SettingsField[];
 }
 
 const { fields } = Astro.props;
