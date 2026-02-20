@@ -1215,9 +1215,6 @@ importers:
       micromark-extension-gfm:
         specifier: ^3.0.0
         version: 3.0.0
-      micromatch:
-        specifier: ^4.0.8
-        version: 4.0.8
       mrmime:
         specifier: ^2.0.1
         version: 2.0.1
@@ -1252,9 +1249,6 @@ importers:
       '@types/mdast':
         specifier: ^4.0.4
         version: 4.0.4
-      '@types/micromatch':
-        specifier: ^4.0.10
-        version: 4.0.10
       '@types/node':
         specifier: 'catalog:'
         version: 22.19.6
