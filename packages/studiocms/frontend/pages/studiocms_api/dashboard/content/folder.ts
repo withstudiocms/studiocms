@@ -116,7 +116,7 @@ export const { POST, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 				 */
 				const checkForChildrenFolders = sdk.dbService.withCodec({
 					encoder: Schema.String,
-					decoder: Schema.Array(StudioCMSPageFolderStructure),
+					decoder: Schema.Array(StudioCMSPageFolderStructure.Select),
 					callbackFn: (client, id) =>
 						client((db) =>
 							db
@@ -132,7 +132,7 @@ export const { POST, PATCH, DELETE, OPTIONS, ALL } = createEffectAPIRoutes(
 				 */
 				const checkForChildrenPages = sdk.dbService.withCodec({
 					encoder: Schema.String,
-					decoder: Schema.Array(StudioCMSPageData),
+					decoder: Schema.Array(StudioCMSPageData.Select),
 					callbackFn: (client, id) =>
 						client((db) =>
 							db
