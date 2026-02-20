@@ -30,7 +30,7 @@ export enum EnvBuilderAction {
 	none = 'none',
 }
 
-function emptyStringToUndefined(value: string): string | undefined {
+function emptyStringToUndefined(value: string | undefined): string | undefined {
 	if (typeof value !== 'string') {
 		return undefined;
 	}
@@ -40,7 +40,7 @@ function emptyStringToUndefined(value: string): string | undefined {
 	return value;
 }
 
-function NumberStringToUndefined(value: string): number | undefined {
+function NumberStringToUndefined(value: string | undefined): number | undefined {
 	if (typeof value !== 'string') {
 		return undefined;
 	}
