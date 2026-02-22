@@ -17,6 +17,10 @@
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     },
+    "./components": {
+      "types": "./dist/integration/components/live.d.ts",
+      "default": "./dist/integration/components/live.js"
+    },
     "./core": {
       "types": "./dist/core/index.d.ts",
       "default": "./dist/core/index.js"
@@ -29,10 +33,18 @@
       "types": "./dist/integration/index.d.ts",
       "default": "./dist/integration/index.js"
     },
+    "./shared": {
+      "types": "./dist/integration/shared.d.ts",
+      "default": "./dist/integration/shared.js"
+    },
     "./styles/*": "./dist/styles/*",
     "./types": {
       "types": "./dist/types.d.ts",
       "default": "./dist/types.js"
+    },
+    "./utils": {
+      "types": "./dist/integration/utils.d.ts",
+      "default": "./dist/integration/utils.js"
     }
   },
   "scripts": {
@@ -64,6 +76,7 @@
     "remark-parse": "^11.0.0",
     "remark-rehype": "^11.1.2",
     "remark-smartypants": "^3.0.2",
+    "ultrahtml": "^1.6.0",
     "unified": "^11.0.5",
     "unist-util-visit": "^5.0.0",
     "vfile": "^6.0.3"

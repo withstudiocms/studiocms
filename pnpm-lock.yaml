@@ -636,6 +636,9 @@ importers:
       remark-smartypants:
         specifier: ^3.0.2
         version: 3.0.2
+      ultrahtml:
+        specifier: ^1.6.0
+        version: 1.6.0
       unified:
         specifier: ^11.0.5
         version: 11.0.5

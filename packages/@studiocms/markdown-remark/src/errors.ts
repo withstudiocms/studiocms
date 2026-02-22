@@ -1,3 +1,9 @@
+import { AstroError } from 'astro/errors';
+
+export class MarkdownRemarkError extends AstroError {
+	name = 'StudioCMS Markdown Remark Error';
+}
+
 /**
  * Utility function to prefix an error message with additional context. This is useful for providing more informative error messages without losing the original error's information.
  *
