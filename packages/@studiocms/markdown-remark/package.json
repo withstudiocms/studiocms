@@ -16,26 +16,60 @@
     ".": {
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
+    },
+    "./core": {
+      "types": "./dist/core/index.d.ts",
+      "default": "./dist/core/index.js"
+    },
+    "./errors": {
+      "types": "./dist/errors.d.ts",
+      "default": "./dist/errors.js"
+    },
+    "./types": {
+      "types": "./dist/types.d.ts",
+      "default": "./dist/types.js"
     }
   },
-  "files": [
-    "dist"
-  ],
   "scripts": {
     "prepublish": "pnpm build",
     "build": "tsdown --config tsdown.config.ts",
     "dev": "tsdown --config tsdown.config.ts --watch --no-clean",
     "test": "pnpm build && vitest run"
   },
+  "publishConfig": {
+    "provenance": true
+  },
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "@astrojs/internal-helpers": "^0.7.5",
+    "hastscript": "^9.0.0",
+    "hast-util-from-html": "^2.0.3",
+    "hast-util-is-element": "^3.0.0",
+    "hast-util-to-string": "^3.0.1",
+    "html-escaper": "^3.0.3",
+    "import-meta-resolve": "^4.2.0",
+    "mdast-util-definitions": "^6.0.0",
+    "mdast-util-find-and-replace": "^3.0.2",
+    "rehype-raw": "^7.0.0",
+    "rehype-stringify": "^10.0.1",
+    "rehype-autolink-headings": "^7.1.0",
+    "remark-gfm": "^4.0.1",
+    "remark-parse": "^11.0.0",
+    "remark-rehype": "^11.1.2",
+    "remark-smartypants": "^3.0.2",
+    "unified": "^11.0.5",
+    "unist-util-visit": "^5.0.0",
+    "vfile": "^6.0.3"
+  },
+  "devDependencies": {
+    "@types/hast": "^3.0.4",
+    "@types/html-escaper": "^3.0.4",
+    "@types/mdast": "^4.0.4"
+  },
   "peerDependencies": {
     "astro": "catalog:min",
     "vite": "catalog:min"
-  },
-  "dependencies": {
-  },
-  "devDependencies": {
-  },
-  "publishConfig": {
-    "provenance": true
   }
 }
