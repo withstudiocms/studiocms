@@ -1,5 +1,13 @@
 import type { AstroConfig, AstroUserConfig, RemotePattern } from 'astro';
 import type { HTMLString } from 'astro/runtime/server/index.js';
+import type * as hast from 'hast';
+import type * as unified from 'unified';
+
+// biome-ignore lint/suspicious/noExplicitAny: Dynamic Rehype plugin types
+export type RehypePlugin<PluginParameters extends any[] = any[]> = unified.Plugin<
+	PluginParameters,
+	hast.Root
+>;
 
 /**
  * A utility type that excludes `undefined` from a given type `T`. This is useful for ensuring that certain properties are always defined, even if they were optional in the original type.

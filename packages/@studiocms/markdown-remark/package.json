@@ -45,6 +45,7 @@
   ],
   "dependencies": {
     "@astrojs/internal-helpers": "^0.7.5",
+    "github-slugger": "^2.0.0",
     "hastscript": "^9.0.0",
     "hast-util-from-html": "^2.0.3",
     "hast-util-is-element": "^3.0.0",
@@ -65,9 +66,12 @@
     "vfile": "^6.0.3"
   },
   "devDependencies": {
+    "@types/estree": "^1.0.8",
     "@types/hast": "^3.0.4",
     "@types/html-escaper": "^3.0.4",
-    "@types/mdast": "^4.0.4"
+    "@types/mdast": "^4.0.4",
+    "@types/unist": "^3.0.3",
+    "mdast-util-mdx-expression": "^2.0.1"
   },
   "peerDependencies": {
     "astro": "catalog:min",
