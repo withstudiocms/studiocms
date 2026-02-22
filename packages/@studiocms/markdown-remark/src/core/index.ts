@@ -1,5 +1,4 @@
 import { HTMLString } from 'astro/runtime/server/escape.js';
-import type { Root } from 'mdast';
 import rehypeAutoLink from 'rehype-autolink-headings';
 import rehypeRaw from 'rehype-raw';
 import rehypeStringify from 'rehype-stringify';
@@ -7,7 +6,7 @@ import remarkGfm from 'remark-gfm';
 import remarkParse from 'remark-parse';
 import remarkRehype from 'remark-rehype';
 import remarkSmartypants from 'remark-smartypants';
-import { type Processor, unified } from 'unified';
+import { unified } from 'unified';
 import { VFile } from 'vfile';
 import { prefixError } from '../errors.ts';
 import type {
@@ -55,11 +54,6 @@ export const markdownConfigDefaults: StudioCMSMarkdownConfig = {
 		discordSubtext: true,
 	},
 };
-
-/**
- * Singleton instance of the unified processor. We initialize this lazily in the createMarkdownProcessor function to avoid unnecessary work if the processor is never used, but we want to ensure that we reuse the same instance for all markdown processing to improve performance.
- */
-let _parser: Processor<Root, undefined, undefined, undefined, undefined> | null = null;
 
 /**
  * Creates a Markdown processor with the specified options.
@@ -115,79 +109,73 @@ export const createMarkdownProcessor = async (
 		}
 		discordSubtext = studiocms.discordSubtext ?? discordSubtext;
 	}
+	// Load user remark plugins.
+	const loadedRemarkPlugins = await Promise.all(loadPlugins(remarkPlugins));
 
-	// We only want to initialize the unified processor once, since it can be expensive to set up with all the plugins. By caching it in a module-level variable, we can ensure that we reuse the same processor instance for all markdown rendering, which can improve performance.
-	if (!_parser) {
-		// Load user remark plugins.
-		const loadedRemarkPlugins = await Promise.all(loadPlugins(remarkPlugins));
+	// Load user rehype plugins.
+	const loadedRehypePlugins = await Promise.all(loadPlugins(rehypePlugins));
 
-		// Load user rehype plugins.
-		const loadedRehypePlugins = await Promise.all(loadPlugins(rehypePlugins));
+	// Initialize the parser
+	const parser = unified().use(remarkParse);
 
-		// Initialize the parser
-		const parser = unified().use(remarkParse);
-
-		// gfm
-		if (gfm) {
-			parser.use(remarkGfm);
-		}
-
-		// smartypants
-		if (smartypants) {
-			parser.use(remarkSmartypants);
-		}
-
-		// Discord subtext
-		if (discordSubtext) {
-			parser.use(remarkDiscordSubtext);
-		}
-
-		// User remark plugins
-		for (const [plugin, pluginOpts] of loadedRemarkPlugins) {
-			parser.use(plugin, pluginOpts);
-		}
-
-		// Apply later in case user plugins resolve relative image paths
-		parser.use(remarkCollectImages, opts?.image);
-
-		// Remark -> Rehype
-		parser.use(remarkRehype, {
-			allowDangerousHtml: true,
-			passThrough: [],
-			...remarkRehypeOptions,
-		});
-
-		// User rehype plugins
-		for (const [plugin, pluginOpts] of loadedRehypePlugins) {
-			parser.use(plugin, pluginOpts);
-		}
-
-		// Images / Assets support
-		parser.use(rehypeImages);
-
-		// Headings
-		parser.use(rehypeHeadingIds, { experimentalHeadingIdCompat });
-
-		// Autolink headings
-		if (autolink) {
-			parser.use(rehypeAutoLink, rehypeAutolinkOptions);
-		}
-
-		// Callouts
-		if (calloutsEnabled) {
-			parser.use(rehypeCallouts, calloutsConfig);
-		}
-
-		// Stringify to HTML
-		parser.use(rehypeRaw).use(rehypeStringify, {
-			allowDangerousHtml: true,
-		});
-
-		_parser = parser;
+	// gfm
+	if (gfm) {
+		parser.use(remarkGfm);
 	}
 
+	// smartypants
+	if (smartypants) {
+		parser.use(remarkSmartypants);
+	}
+
+	// Discord subtext
+	if (discordSubtext) {
+		parser.use(remarkDiscordSubtext);
+	}
+
+	// User remark plugins
+	for (const [plugin, pluginOpts] of loadedRemarkPlugins) {
+		parser.use(plugin, pluginOpts);
+	}
+
+	// Apply later in case user plugins resolve relative image paths
+	parser.use(remarkCollectImages, opts?.image);
+
+	// Remark -> Rehype
+	parser.use(remarkRehype, {
+		allowDangerousHtml: true,
+		passThrough: [],
+		...remarkRehypeOptions,
+	});
+
+	// User rehype plugins
+	for (const [plugin, pluginOpts] of loadedRehypePlugins) {
+		parser.use(plugin, pluginOpts);
+	}
+
+	// Images / Assets support
+	parser.use(rehypeImages);
+
+	// Headings
+	parser.use(rehypeHeadingIds, { experimentalHeadingIdCompat });
+
+	// Autolink headings
+	if (autolink) {
+		parser.use(rehypeAutoLink, rehypeAutolinkOptions);
+	}
+
+	// Callouts
+	if (calloutsEnabled) {
+		parser.use(rehypeCallouts, calloutsConfig);
+	}
+
+	// Stringify to HTML
+	parser.use(rehypeRaw).use(rehypeStringify, {
+		allowDangerousHtml: true,
+	});
+
 	// We assign the parser to a separate variable to ensure that the type is correctly inferred for the render function below. If we use _parser directly, TypeScript may not correctly infer the type of the unified processor, which can lead to issues with type checking in the render function.
-	const liveParser = _parser;
+	const liveParser = parser;
 
 	return {
 		render: async (content, opts): Promise<MarkdownProcessorRenderResult> => {

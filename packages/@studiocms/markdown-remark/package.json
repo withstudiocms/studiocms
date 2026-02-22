@@ -25,6 +25,10 @@
       "types": "./dist/core/index.d.ts",
       "default": "./dist/core/index.js"
     },
+    "./core/frontmatter": {
+      "types": "./dist/core/frontmatter.d.ts",
+      "default": "./dist/core/frontmatter.js"
+    },
     "./errors": {
       "types": "./dist/errors.d.ts",
       "default": "./dist/errors.js"
@@ -50,7 +54,8 @@
   "scripts": {
     "prepublish": "pnpm build",
     "build": "tsdown --config tsdown.config.ts",
-    "dev": "tsdown --config tsdown.config.ts --watch --no-clean"
+    "dev": "tsdown --config tsdown.config.ts --watch --no-clean",
+    "test": "vitest"
   },
   "publishConfig": {
     "provenance": true
@@ -67,6 +72,7 @@
     "hast-util-to-string": "^3.0.1",
     "html-escaper": "^3.0.3",
     "import-meta-resolve": "^4.2.0",
+    "js-yaml": "^4.1.1",
     "mdast-util-definitions": "^6.0.0",
     "mdast-util-find-and-replace": "^3.0.2",
     "rehype-raw": "^7.0.0",
@@ -76,6 +82,7 @@
     "remark-parse": "^11.0.0",
     "remark-rehype": "^11.1.2",
     "remark-smartypants": "^3.0.2",
+    "smol-toml": "^1.6.0",
     "ultrahtml": "^1.6.0",
     "unified": "^11.0.5",
     "unist-util-visit": "^5.0.0",
@@ -85,6 +92,7 @@
     "@types/estree": "^1.0.8",
     "@types/hast": "^3.0.4",
     "@types/html-escaper": "^3.0.4",
+    "@types/js-yaml": "^4.0.9",
     "@types/mdast": "^4.0.4",
     "@types/unist": "^3.0.3",
     "mdast-util-mdx-expression": "^2.0.1"
