@@ -2,7 +2,7 @@ import { StudioCMSColorwayBg } from '@withstudiocms/cli-kit/colors';
 import { label } from '@withstudiocms/cli-kit/messages';
 import { intro, tasks } from '@withstudiocms/effect/clack';
 import { Cli, Effect, Layer, PlatformNode } from '@withstudiocms/effect/effect';
-import { readJson } from '@withstudiocms/internal_helpers/utils';
+import pkgJson from '../package.json';
 import { CommandConfig } from './args.ts';
 import { type EffectStepFn, getContext } from './context.ts';
 import { dependencies } from './steps/dependencies.ts';
@@ -12,11 +12,6 @@ import { next } from './steps/next.ts';
 import { projectName } from './steps/projectName.ts';
 import { template } from './steps/template.ts';
 import { verify } from './steps/verify.ts';
-
-/**
- * Get the package.json data for this package
- */
-const pkgJson = readJson<{ version: string }>(new URL('../package.json', import.meta.url));
 
 /**
  * Define the CLI command for the create-studiocms application
