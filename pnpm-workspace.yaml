@@ -55,7 +55,6 @@ catalog:
 # Specific dependency catalogs for certain groups of packages
 catalogs:
   astrojs:
-    "@astrojs/check": ^0.9.6
     "@astrojs/node": ^9.5.3
     "@astrojs/rss": ^4.0.15
     astro: ^5.17.2
@@ -75,12 +74,9 @@ catalogs:
   min:
     "@astrojs/internal-helpers": ^0.7.5
     "@astrojs/markdown-remark": ^6.3.3
-    "@libsql/client": ^0.15.15
-    "@studiocms/web-vitals": ^4.5.3
     astro: ^5.12.9
     vite: ^6.3.4
   react:
-    "@astrojs/react": ^4.4.2
     "@types/react": ^19.2.14
     "@types/react-dom": ^19.2.3
     react: ^19.2.4
@@ -88,4 +84,3 @@ catalogs:
   studiocms:
     "@studiocms/markdown-remark-processor": ^1.2.0
     "@studiocms/ui": ^1.1.2
-    "@studiocms/web-vitals": ^4.5.3
