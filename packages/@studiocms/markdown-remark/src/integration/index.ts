@@ -6,7 +6,7 @@ import { markdownConfigDefaults } from '../core/index.ts';
 import type { StudioCMSMarkdownRemarkIntegrationOptions } from '../types.ts';
 import { defaultIntegrationOptions } from './consts.ts';
 import { addVirtualImports } from './integration-utils.ts';
-import { shared } from './shared.ts';
+import { setSharedConfig } from './shared.ts';
 
 /**
  * Astro Integration for StudioCMS's Markdown Remark processor.
@@ -23,6 +23,7 @@ const markdownRemark = (
 		injectCSS = defaultIntegrationOptions.injectCSS,
 		components = {},
 		markdownExtended = markdownConfigDefaults.studiocms,
+		verbose = false,
 	} = opts;
 
 	const { resolve } = createPathResolver(import.meta.url);
@@ -42,11 +43,17 @@ const markdownRemark = (
 
 	const virtualComponents = resolve('./components/virtual.js');
 
+	const messages: string[] = [];
+
 	return {
 		name: '@studiocms/markdown-remark',
 		hooks: {
 			'astro:config:setup': (params) => {
 				const { resolve: astroRootResolve } = createPathResolver(params.config.root.pathname);
+
+				const logger = params.logger;
+
+				logger.info('Setting up Markdown Remark integration...');
 
 				// Add virtual imports for the Markdown Remark processor
 				addVirtualImports(params, {
@@ -69,15 +76,41 @@ const markdownRemark = (
 					},
 				});
 
+				// Log the user-defined components length if verbose mode is enabled.
+				if (verbose) {
+					messages.push(`User defined components: ${Object.keys(components).length}`);
+				}
+
 				// Inject the CSS for the Markdown processor if enabled
 				if (injectCSS) {
 					params.injectScript('page-ssr', 'import "studiocms:markdown-remark/css";');
+					if (verbose) {
+						messages.push('CSS injection is enabled.');
+					}
+				}
+
+				if (verbose) {
+					messages.forEach((message) => logger.info(message));
 				}
 			},
-			'astro:config:done': ({ config }) => {
+			'astro:config:done': ({ config, logger }) => {
+				if (verbose) {
+					logger.info('Final Markdown Remark configuration:');
+					logger.info(`Inject CSS: ${injectCSS}`);
+					logger.info(
+						`Components: ${Object.keys(components).length > 0 ? Object.keys(components).join(', ') : 'None'}`
+					);
+					logger.info(`Markdown Extended options: ${JSON.stringify(markdownExtended)}`);
+				}
+
 				// Store the markdown config and studiocms config in a shared object so that it can be accessed by the virtual components.
-				shared.markdownConfig = config.markdown;
-				shared.studiocms = markdownExtended;
+				setSharedConfig({
+					markdownConfig: config.markdown,
+					studiocms: markdownExtended,
+				});
+
+				// Log that the integration has been successfully set up.
+				logger.info('Markdown Remark integration successfully set up!');
 			},
 		},
 	};

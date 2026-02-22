@@ -4,7 +4,7 @@ import { HTMLString, renderSlot } from 'astro/runtime/server/index.js';
 import { createMarkdownProcessor } from '../../core/index.ts';
 import type { MarkdownProcessorRenderOptions } from '../../types.ts';
 import { importComponentsKeys } from '../runtime.ts';
-import { shared } from '../shared.ts';
+import { getMDConfig } from '../shared.ts';
 import { createComponentProxy, mergeRecords, transformHTML } from '../utils.ts';
 import type {
 	ComponentSlots,
@@ -18,10 +18,7 @@ export type { Props, RenderResponse } from './types.ts';
 
 const predefinedComponents = await importComponentsKeys();
 
-const processor = await createMarkdownProcessor({
-	...shared.markdownConfig,
-	studiocms: shared.studiocms,
-});
+const processor = await createMarkdownProcessor(getMDConfig());
 
 /**
  * Renders the given markdown content using the specified options.
@@ -93,14 +90,18 @@ export const Markdown: (props: Props) => any = Object.assign(
 			},
 			async *[Symbol.asyncIterator]() {
 				if (typeof content === 'string') {
-					const { html } = await render(
-						content,
-						{
-							fileURL: new URL(import.meta.url),
-						},
-						{ $$result, components }
-					);
-					yield html;
+					try {
+						const { html } = await render(
+							content,
+							{
+								fileURL: new URL(import.meta.url),
+							},
+							{ $$result, components }
+						);
+						yield html;
+					} catch {
+						yield renderSlot($$result, slotted);
+					}
 				} else {
 					yield renderSlot($$result, slotted);
 				}

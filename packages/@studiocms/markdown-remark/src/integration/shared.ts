@@ -1,17 +1,27 @@
-import type { AstroMarkdownConfig, StudioCMSMarkdownExtendedOptions } from '../types.ts';
+import type {
+	AstroMarkdownConfig,
+	StudioCMSMarkdownExtendedOptions,
+	StudioCMSMarkdownProcessorOptions,
+} from '../types.ts';
 
 /**
  * Interface representing shared configuration for markdown.
  *
  * @interface Shared
- * @property {AstroConfig['markdown']} markdownConfig - The markdown configuration from AstroConfig.
+ * @property {AstroMarkdownConfig} markdownConfig - The markdown configuration from AstroConfig.
+ * @property {StudioCMSMarkdownExtendedOptions} studiocms - The extended markdown options specific to StudioCMS.
  */
 export interface Shared {
 	markdownConfig: AstroMarkdownConfig;
 	studiocms: StudioCMSMarkdownExtendedOptions;
 }
 
-export const symbol: symbol = Symbol.for('@studiocms/markdown-remark');
+/**
+ * A unique symbol used to store and access the shared configuration for markdown processing in the global scope. This allows different parts of the integration to access the same configuration without directly importing it, enabling better modularity and separation of concerns.
+ *
+ * @constant {symbol} symbol - The unique symbol used for the shared configuration.
+ */
+export const symbol: symbol = Symbol.for('@studiocms/markdown-remark:shared-config');
 
 /**
  * A shared object that is either retrieved from the global scope using a symbol or
@@ -31,4 +41,18 @@ export const shared: Shared =
 	// @ts-expect-error
 	(globalThis[symbol] = {
 		markdownConfig: {},
+		studiocms: {},
 	});
+
+/**
+ * Sets the shared configuration for markdown processing.
+ */
+export const setSharedConfig = ({ markdownConfig, studiocms }: Shared) => {
+	shared.markdownConfig = markdownConfig;
+	shared.studiocms = studiocms;
+};
+
+export const getMDConfig = (): StudioCMSMarkdownProcessorOptions => ({
+	...shared.markdownConfig,
+	studiocms: shared.studiocms,
+});

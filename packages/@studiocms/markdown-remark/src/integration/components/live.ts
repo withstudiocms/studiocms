@@ -27,17 +27,21 @@ export const Markdown: (props: Props) => any = Object.assign(
 			},
 			async *[Symbol.asyncIterator]() {
 				if (typeof attr.content === 'string') {
-					let components: Record<string, any> = {};
+					try {
+						let components: Record<string, any> = {};
 
-					if (attr.components) {
-						components = createComponentProxy(result, attr.components);
+						if (attr.components) {
+							components = createComponentProxy(result, attr.components);
+						}
+
+						const { code } = await processor.render(attr.content);
+
+						const html = await transformHTML(code, components);
+
+						yield new HTMLString(html);
+					} catch {
+						yield renderSlot(result, slotted);
 					}
-
-					const { code } = await processor.render(attr.content);
-
-					const html = await transformHTML(code, components);
-
-					yield new HTMLString(html);
 				} else {
 					yield renderSlot(result, slotted);
 				}

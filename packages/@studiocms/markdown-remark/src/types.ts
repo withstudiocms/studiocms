@@ -138,4 +138,5 @@ export interface StudioCMSMarkdownRemarkIntegrationOptions {
 	injectCSS?: boolean;
 	components?: Record<string, string>;
 	markdownExtended?: StudioCMSMarkdownExtendedOptions;
+	verbose?: boolean;
 }
