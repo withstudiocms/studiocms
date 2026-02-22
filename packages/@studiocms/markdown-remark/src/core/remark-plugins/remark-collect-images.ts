@@ -3,7 +3,7 @@ import type { Root } from 'mdast';
 import { definitions } from 'mdast-util-definitions';
 import { visit } from 'unist-util-visit';
 import type { VFile } from 'vfile';
-import type { StudioCMSMarkdownProcessorOptions } from '../../types.js';
+import type { StudioCMSMarkdownProcessorOptions } from '../../types.ts';
 
 export function remarkCollectImages(opts: StudioCMSMarkdownProcessorOptions['image']) {
 	const domains = opts?.domains ?? [];

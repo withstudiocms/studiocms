@@ -1,4 +1,4 @@
-import type { DefaultCallouts } from '../types.js';
+import type { DefaultCallouts } from '../types.ts';
 
 const commonColorsBlue: [string, string] = ['rgb(8, 109, 221)', 'rgb(2, 122, 255)'];
 const commonColorsTeal: [string, string] = ['rgb(0, 191, 188)', 'rgb(83, 223, 221)'];

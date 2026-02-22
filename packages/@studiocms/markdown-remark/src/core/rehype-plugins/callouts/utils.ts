@@ -1,10 +1,10 @@
 import type { Element, ElementContent } from 'hast';
 import { fromHtml } from 'hast-util-from-html';
 import { h } from 'hastscript';
-import { githubCallouts } from './themes/github.config.js';
-import { obsidianCallouts } from './themes/obsidian.config.js';
-import { vitepressCallouts } from './themes/vitepress.config.js';
-import type { Callouts, ConfigOptions, UserOptions } from './types.js';
+import { githubCallouts } from './themes/github.config.ts';
+import { obsidianCallouts } from './themes/obsidian.config.ts';
+import { vitepressCallouts } from './themes/vitepress.config.ts';
+import type { Callouts, ConfigOptions, UserOptions } from './types.ts';
 
 export const calloutRegex = /\[!(?<type>\w+)](?<collapsable>[+-]?)\s*(?<title>.*)/g;
 

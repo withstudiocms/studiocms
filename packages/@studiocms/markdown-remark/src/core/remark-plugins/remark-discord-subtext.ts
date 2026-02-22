@@ -11,11 +11,10 @@ const discordSubtextRegex = /^-# (.*)/;
  *
  * @returns A transformer function that processes the markdown AST.
  */
-export function remarkDiscordSubtext(): (tree: Root) => void {
-	return (tree: Root) => {
+export const remarkDiscordSubtext =
+	() =>
+	(tree: Root): void =>
 		findAndReplace(tree, [
 			discordSubtextRegex,
 			(_, $1) => ({ type: 'html', value: `<small>${$1}</small>` }),
 		]);
-	};
-}

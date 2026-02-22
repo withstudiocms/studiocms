@@ -5,7 +5,7 @@ import type { MdxTextExpression } from 'mdast-util-mdx-expression';
 import type { Node } from 'unist';
 import { visit } from 'unist-util-visit';
 import type { VFile } from 'vfile';
-import type { MarkdownHeading, RehypePlugin } from '../../types.js';
+import type { MarkdownHeading, RehypePlugin } from '../../types.ts';
 
 const rawNodeTypes = new Set(['text', 'raw', 'mdxTextExpression']);
 const codeTagNames = new Set(['code', 'pre']);

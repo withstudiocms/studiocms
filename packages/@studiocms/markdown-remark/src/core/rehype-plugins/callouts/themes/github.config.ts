@@ -1,4 +1,4 @@
-import type { DefaultCallouts } from '../types.js';
+import type { DefaultCallouts } from '../types.ts';
 
 export const githubCallouts: DefaultCallouts = {
 	note: {

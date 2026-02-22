@@ -49,14 +49,19 @@ export interface StudioCMSCalloutOptions {
 }
 
 /**
+ * The extended configuration options for the StudioCMS Markdown processor. This includes additional options specific to StudioCMS, such as callout configuration, autolinking, and Discord subtext. This type is intended to be used in conjunction with the base Astro Markdown options to provide a comprehensive configuration for the markdown processor.
+ */
+export interface StudioCMSMarkdownExtendedOptions {
+	callouts?: StudioCMSCalloutOptions | false;
+	autolink?: boolean;
+	discordSubtext?: boolean;
+}
+
+/**
  * StudioCMS Markdown configuration options that can be specified in the user's Astro configuration file. This extends the base Astro Markdown options with additional options specific to StudioCMS, such as callout configuration, autolinking, and Discord subtext.
  */
 export interface StudioCMSMarkdownOptions extends AstroUserMarkdownConfig {
-	studiocms?: {
-		callouts?: StudioCMSCalloutOptions | false;
-		autolink?: boolean;
-		discordSubtext?: boolean;
-	};
+	studiocms?: StudioCMSMarkdownExtendedOptions;
 }
 
 /**
@@ -124,4 +129,13 @@ export interface MarkdownHeading {
 	depth: number;
 	slug: string;
 	text: string;
+}
+
+/**
+ * The configuration options for the StudioCMS Markdown Remark integration. This includes options for injecting CSS, defining custom components, and extended markdown options specific to StudioCMS. This type is intended to be used when configuring the integration in the user's Astro configuration file.
+ */
+export interface StudioCMSMarkdownRemarkIntegrationOptions {
+	injectCSS?: boolean;
+	components?: Record<string, string>;
+	markdownExtended?: StudioCMSMarkdownExtendedOptions;
 }

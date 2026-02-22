@@ -3,7 +3,7 @@ import { isElement } from 'hast-util-is-element';
 import { h } from 'hastscript';
 import type { Plugin } from 'unified';
 import { visit } from 'unist-util-visit';
-import type { UserOptions } from './types.js';
+import type { UserOptions } from './types.ts';
 import {
 	calloutRegex,
 	expandCallouts,
@@ -14,7 +14,7 @@ import {
 	getIndicator,
 	handleBrAfterTitle,
 	splitByNewlineRegex,
-} from './utils.js';
+} from './utils.ts';
 
 /**
  * A rehype plugin for rendering themed callouts (admonitions/alerts).
@@ -192,4 +192,4 @@ export type {
 	HtmlTagNamesConfig,
 	RehypeCalloutsOptions,
 	UserOptions,
-} from './types.js';
+} from './types.ts';

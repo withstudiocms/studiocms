@@ -47,6 +47,7 @@
     "dist"
   ],
   "dependencies": {
+		"@withstudiocms/internal_helpers": "workspace:^",
     "github-slugger": "^2.0.0",
     "hastscript": "^9.0.0",
     "hast-util-from-html": "^2.0.3",

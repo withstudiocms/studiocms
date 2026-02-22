@@ -582,6 +582,9 @@ importers:
       '@astrojs/internal-helpers':
         specifier: catalog:min
         version: 0.7.5
+      '@withstudiocms/internal_helpers':
+        specifier: workspace:^
+        version: link:../../@withstudiocms/internal_helpers
       astro:
         specifier: catalog:min
         version: 5.17.2(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
