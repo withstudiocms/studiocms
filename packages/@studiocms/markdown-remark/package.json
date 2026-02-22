@@ -34,8 +34,7 @@
   "scripts": {
     "prepublish": "pnpm build",
     "build": "tsdown --config tsdown.config.ts",
-    "dev": "tsdown --config tsdown.config.ts --watch --no-clean",
-    "test": "pnpm build && vitest run"
+    "dev": "tsdown --config tsdown.config.ts --watch --no-clean"
   },
   "publishConfig": {
     "provenance": true
