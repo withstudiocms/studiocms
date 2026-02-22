@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/suspicious/noExplicitAny: Any is the return type of the Astro component */
 import type { SSRResult } from 'astro';
 import { HTMLString, renderSlot } from 'astro/runtime/server/index.js';
 import { createMarkdownProcessor } from '../../core/index.ts';
@@ -34,7 +35,6 @@ export async function render(
 	options?: MarkdownProcessorRenderOptions,
 	componentProxy?: RenderComponents
 ): Promise<RenderResponse> {
-	// biome-ignore lint/suspicious/noExplicitAny: Allows for dynamic components which can be of any type
 	let componentsRendered: Record<string, any> = {};
 
 	if (componentProxy) {
@@ -80,8 +80,7 @@ export async function render(
  *
  * The `Markdown` function is also assigned an `isAstroComponentFactory` property with the value `true`.
  */
-// @ts-expect-error
-// biome-ignore lint/suspicious/noExplicitAny: Any is the return type of the Astro component
+// @ts-expect-error - Fun Typescript stuff that we don't need to worry about right now
 export const Markdown: (props: Props) => any = Object.assign(
 	function Markdown(
 		$$result: SSRResult,
