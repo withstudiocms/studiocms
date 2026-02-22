@@ -137,11 +137,11 @@ import H1 from '../components/H1.astro';
 
 ## Changelog
 
-See the [Changelog](https://github.com/withstudiocms/markdown-remark/blob/main/packages/markdown-remark/CHANGELOG.md) for the change history of this package.
+See the [Changelog](https://github.com/withstudiocms/studiocms/blob/main/packages/@studiocms/markdown-remark/CHANGELOG.md) for the change history of this package.
 
 ## Contribution
 
-If you see any errors or room for improvement, feel free to open an [issue or pull request](https://github.com/withstudiocms/markdown-remark/) . Thank you in advance for contributing! ❤️
+If you see any errors or room for improvement, feel free to open an [issue or pull request](https://github.com/withstudiocms/studiocms/) . Thank you in advance for contributing! ❤️
 
 ## Licensing
 
