@@ -42,10 +42,7 @@ export const verify: EffectStepFn = Effect.fn('verify')(
 							initialValue: true,
 						});
 
-						if (
-							typeof updateConfirmed === 'symbol' ||
-							(typeof updateConfirmed === 'boolean' && updateConfirmed === true)
-						) {
+						if (updateConfirmed !== false) {
 							yield* log.info(
 								StudioCMSColorwayInfo(
 									'Check https://www.npmjs.com/package/create-studiocms for the latest version.'
