@@ -16,8 +16,10 @@ import type {
 
 export type { Props, RenderResponse } from './types.ts';
 
+// Get the predefined components that are available for use in the markdown content. This function imports the keys of the components that are registered in the integration and returns them as an object. These components can then be used in the markdown content by referencing their keys, allowing for dynamic rendering of custom components within the markdown content.
 const predefinedComponents = await importComponentsKeys();
 
+// Create a markdown processor instance using the complete markdown configuration for the integration. This processor will be used to render markdown content in the component.
 const processor = await createMarkdownProcessor(getMDConfig());
 
 /**

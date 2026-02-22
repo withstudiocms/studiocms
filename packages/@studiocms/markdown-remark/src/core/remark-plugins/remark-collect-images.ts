@@ -5,6 +5,12 @@ import { visit } from 'unist-util-visit';
 import type { VFile } from 'vfile';
 import type { StudioCMSMarkdownProcessorOptions } from '../../types.ts';
 
+/**
+ * Remark plugin to collect local and remote image paths from markdown content. This plugin traverses the markdown abstract syntax tree (AST) and identifies all image nodes, extracting their URLs. It distinguishes between local images (which are not valid URLs and do not start with a '/') and remote images (which are valid URLs). The collected image paths are then stored in the VFile's data under the `astro` property, allowing for easy access to the list of local and remote images used in the markdown content. This is particularly useful for optimizing image handling, such as preloading or generating responsive image sets.
+ *
+ * @param opts - The options for the image collection plugin, which can include allowed domains and remote patterns for validating remote image URLs.
+ * @returns A transformer function that processes the markdown AST and collects image paths.
+ */
 export function remarkCollectImages(opts: StudioCMSMarkdownProcessorOptions['image']) {
 	const domains = opts?.domains ?? [];
 	const remotePatterns = opts?.remotePatterns ?? [];

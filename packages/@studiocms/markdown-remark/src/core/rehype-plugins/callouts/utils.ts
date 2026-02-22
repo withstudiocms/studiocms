@@ -6,10 +6,19 @@ import { obsidianCallouts } from './themes/obsidian.config.ts';
 import { vitepressCallouts } from './themes/vitepress.config.ts';
 import type { Callouts, ConfigOptions, UserOptions } from './types.ts';
 
+/**
+ * Regular expression to match callout syntax in markdown. This regex captures the callout type, whether the callout is collapsible (indicated by a '+' or '-' sign), and the title of the callout. The regex is designed to match lines that start with `[!`, followed by the callout type, an optional collapsibility indicator, and then the title of the callout. This allows for flexible parsing of callouts in markdown content, enabling support for various callout types and configurations based on user-defined options.
+ */
 export const calloutRegex = /\[!(?<type>\w+)](?<collapsable>[+-]?)\s*(?<title>.*)/g;
 
+/**
+ * Regular expression to split the content of a callout into title and body based on the first newline character. The regex captures the prefix (title) and suffix (body) of the callout content, allowing for proper handling of callouts that have a title followed by content on a new line. This is particularly useful for ensuring that the callout's title is correctly identified and separated from its body content when processing the markdown AST.
+ */
 export const splitByNewlineRegex = /(?<prefix>[^\n]*)\n(?<suffix>[\S\s]*)/g;
 
+/**
+ * Predefined callout themes. Each theme contains a set of callout types with their corresponding indicators and styles. These themes can be used as a base for styling callouts in markdown content, and users can also customize them by providing their own callout configurations. The themes include popular styles such as GitHub, Obsidian, and VitePress, allowing for consistent and visually appealing callouts that match the overall design of the markdown content.
+ */
 export const themes = {
 	github: githubCallouts,
 	obsidian: obsidianCallouts,

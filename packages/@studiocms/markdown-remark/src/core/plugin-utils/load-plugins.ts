@@ -2,6 +2,12 @@
 import type * as unified from 'unified';
 import { importPlugin as _importPlugin } from './import-plugin.ts';
 
+/**
+ * Imports a plugin, which can be specified as either a string (representing the plugin name) or a unified plugin object. If the input is a string, it uses the `_importPlugin` function to dynamically import the plugin. If the input is already a unified plugin object, it simply returns it. This function allows for flexible plugin loading, supporting both dynamic imports and direct plugin objects.
+ *
+ * @param p - The plugin to import, which can be a string or a unified plugin object.
+ * @returns A promise that resolves to the imported plugin.
+ */
 async function importPlugin(p: string | unified.Plugin<any[], any>) {
 	if (typeof p === 'string') {
 		return await _importPlugin(p);

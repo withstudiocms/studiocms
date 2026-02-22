@@ -52,6 +52,11 @@ export const setSharedConfig = ({ markdownConfig, studiocms }: Shared) => {
 	shared.studiocms = studiocms;
 };
 
+/**
+ * Retrieves the complete markdown configuration for the StudioCMS Markdown Remark integration. This function combines the base markdown configuration from Astro with the extended options specific to StudioCMS, providing a comprehensive configuration object that can be used throughout the integration.
+ *
+ * @returns {StudioCMSMarkdownProcessorOptions} The complete markdown configuration for the integration, including both the base Astro markdown options and the extended StudioCMS options.
+ */
 export const getMDConfig = (): StudioCMSMarkdownProcessorOptions => ({
 	...shared.markdownConfig,
 	studiocms: shared.studiocms,

@@ -98,6 +98,7 @@ const markdownRemark = (
 				}
 			},
 			'astro:config:done': ({ config, logger }) => {
+				// Log the final configuration for the integration if verbose mode is enabled. This includes the injectCSS option, the user-defined components, and the extended markdown options specific to StudioCMS.
 				if (verbose) {
 					logger.info('Final Markdown Remark configuration:');
 					logger.info(`Inject CSS: ${injectCSS}`);

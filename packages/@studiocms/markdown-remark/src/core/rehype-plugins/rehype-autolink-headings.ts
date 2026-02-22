@@ -3,6 +3,11 @@ import { h } from 'hastscript';
 import { escape as esc } from 'html-escaper';
 import type { Options as rehypeAutolinkHeadingsOptions } from 'rehype-autolink-headings';
 
+/**
+ * Rehype plugin config for autolinking headings. This configuration specifies how the `rehype-autolink-headings` plugin should generate anchor links for headings in the markdown content. The configuration includes properties for styling the anchor links, defining their behavior (e.g., whether they should appear before or after the heading), and grouping the heading and anchor link together in a wrapper element. Additionally, it defines the content of the anchor link, which includes an SVG icon and screen reader text for accessibility. This configuration ensures that headings in the markdown content are easily linkable and accessible to users.
+ *
+ * @returns A configuration object for the `rehype-autolink-headings` plugin, specifying how the anchor links should be generated and styled.
+ */
 export const rehypeAutolinkOptions: rehypeAutolinkHeadingsOptions = {
 	properties: {
 		class: 'anchor-link',

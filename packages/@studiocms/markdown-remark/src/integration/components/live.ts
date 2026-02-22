@@ -7,6 +7,7 @@ import type { ComponentSlots, MarkdownComponentAttributes, Props } from './types
 
 export type { Props, RenderResponse } from './types.ts';
 
+// Get the markdown processor instance using the complete markdown configuration for the integration. This processor will be used to render markdown content in the component.
 const processor = await createMarkdownProcessor();
 
 // This file is the Generic version of the <Markdown /> Astro component.

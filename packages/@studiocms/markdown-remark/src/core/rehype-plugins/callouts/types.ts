@@ -1,3 +1,6 @@
+/**
+ * Types for the callouts plugin, defining the structure of callout configurations, HTML tag names, and the overall plugin options. These types are used to ensure that the configuration for the callouts plugin is consistent and well-defined, allowing users to customize their callouts while maintaining type safety. The types include definitions for individual callout properties, as well as the complete configuration options for the plugin, providing a clear and structured way to manage callout settings in markdown content.
+ */
 export interface CalloutConfig {
 	/**
 	 * The default title for this callout type.
@@ -39,6 +42,9 @@ export interface CalloutConfig {
 	color?: string | [string, string];
 }
 
+/**
+ * HTML tag names configuration for the callouts plugin, allowing users to customize the semantic structure of the generated callout elements. This configuration includes properties for defining the tag names for various parts of the callout, such as the container, title, content, and icons. By customizing these tag names, users can ensure that the generated HTML structure of the callouts aligns with their desired semantics and styling preferences.
+ */
 export interface HtmlTagNamesConfig {
 	/**
 	 * Tag name for the outer container of **non-collapsible** callouts.
@@ -101,6 +107,9 @@ export interface HtmlTagNamesConfig {
 	titleInnerTagName?: string;
 }
 
+/**
+ * The type for the callout configuration, which includes properties such as the title, indicator, and color for each callout type. This type is used to define the properties of both default and custom callouts in the plugin's configuration.
+ */
 export interface RehypeCalloutsOptions<TCallouts, THtmlTagNames> {
 	/**
 	 * Specifies your desired callout theme to automatically apply its default types.
@@ -177,9 +186,24 @@ export interface RehypeCalloutsOptions<TCallouts, THtmlTagNames> {
 	htmlTagNames?: THtmlTagNames;
 }
 
+/**
+ * The type for the callout configurations, which includes properties such as the title, indicator, and color for each callout type. This type is used to define the properties of both default and custom callouts in the plugin's configuration.
+ */
 export type Callouts = Record<string, CalloutConfig>;
+
+/**
+ * The type for the default callout configurations. This type is derived from the `Callouts` type, but with all properties required and no `undefined` values allowed. This ensures that the default configuration for callouts is fully defined and does not contain any optional properties, providing a clear and consistent structure for the callout configurations used by the plugin.
+ */
 export type DefaultCallouts = Record<string, Required<CalloutConfig>>;
+
+/**
+ * The user configuration options for the callouts plugin. This type is derived from the `RehypeCalloutsOptions` type, but with all properties optional and allowing for `undefined` values. This allows users to provide only the specific configuration options they want to customize, while still benefiting from the default values provided by the plugin for any options they do not specify.
+ */
 export type UserOptions = RehypeCalloutsOptions<CalloutConfig, HtmlTagNamesConfig>;
+
+/**
+ * The complete configuration options for the callouts plugin, with all properties required and no `undefined` values allowed. This type is derived from the `RehypeCalloutsOptions` type, but with all properties set to their required versions. This ensures that the configuration for the callouts plugin is fully defined and does not contain any optional properties, providing a clear and consistent structure for the plugin's configuration.
+ */
 export type ConfigOptions = Required<
 	RehypeCalloutsOptions<CalloutConfig, Required<HtmlTagNamesConfig>>
 >;

@@ -1,5 +1,8 @@
 import { AstroError } from 'astro/errors';
 
+/**
+ * Custom error class for Markdown Remark integration errors. This class extends the base AstroError class and provides a specific name for errors related to the Markdown Remark integration. This allows for better error handling and debugging when issues arise within the integration, as errors can be easily identified as coming from the Markdown Remark integration.
+ */
 export class MarkdownRemarkError extends AstroError {
 	name = 'StudioCMS Markdown Remark Error';
 }

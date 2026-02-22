@@ -141,5 +141,8 @@ export interface StudioCMSMarkdownRemarkIntegrationOptions {
 	verbose?: boolean;
 }
 
+/**
+ * The complete configuration for the StudioCMS Markdown Remark integration, with all properties required. This type is derived from the `StudioCMSMarkdownRemarkIntegrationOptions` type, but with all properties required and no `undefined` values allowed. This ensures that the configuration for the integration is fully defined and does not contain any optional properties.
+ */
 export type StudioCMSMarkdownRemarkIntegrationConfig =
 	Required<StudioCMSMarkdownRemarkIntegrationOptions>;

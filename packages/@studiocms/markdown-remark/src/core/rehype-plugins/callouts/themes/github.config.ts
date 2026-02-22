@@ -1,5 +1,8 @@
 import type { DefaultCallouts } from '../types.ts';
 
+/**
+ * Predefined callout theme based on GitHub's callout styles. This theme includes a set of default callout types such as "note", "tip", "important", "warning", and "caution", each with its own title, indicator (SVG icon), and color scheme. The colors are defined as tuples to allow for different colors for the indicator and the title. This theme can be used as a base for styling callouts in markdown content, providing a visually appealing and consistent design that matches the GitHub aesthetic.
+ */
 export const githubCallouts: DefaultCallouts = {
 	note: {
 		title: 'Note',

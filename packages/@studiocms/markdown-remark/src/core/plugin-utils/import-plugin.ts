@@ -5,7 +5,12 @@ import type * as unified from 'unified';
 
 let cwdUrlStr: string | undefined;
 
-// In non-browser environments, we can try to resolve from the filesystem too
+/**
+ * Dynamically imports a plugin given its name or path. The function first attempts to import the plugin from the current package, and if that fails, it tries to resolve and import the plugin from the user's project. This allows for flexible plugin usage, enabling users to specify plugins that are either bundled with the package or installed in their own project. The function returns a promise that resolves to the imported plugin, which can then be used in the markdown processing pipeline.
+ *
+ * @param p - The name or path of the plugin to import.
+ * @returns A promise that resolves to the imported plugin.
+ */
 export async function importPlugin(p: string): Promise<unified.Plugin> {
 	// Try import from this package first
 	try {
