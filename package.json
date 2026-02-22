@@ -106,6 +106,7 @@
     "execa": "^9.6.1",
     "knip": "^5.83.1",
     "pkg-pr-new": "^0.0.63",
+    "publint": "^0.3.17",
     "studiocms": "workspace:^",
     "tinyglobby": "catalog:",
     "typescript": "catalog:",
