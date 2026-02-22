@@ -109,6 +109,7 @@
     "tinyglobby": "catalog:",
     "typescript": "catalog:",
     "ts-patch": "^3.3.0",
+    "tsdown": "catalog:",
     "vite": "catalog:astrojs",
     "vitest": "^3.2.4",
     "jsdom": "^28.1.0"

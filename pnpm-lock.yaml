@@ -214,6 +214,9 @@ importers:
       ts-patch:
         specifier: ^3.3.0
         version: 3.3.0
+      tsdown:
+        specifier: 'catalog:'
+        version: 0.20.3(oxc-resolver@11.16.3)(typescript@5.9.3)
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
@@ -564,6 +567,15 @@ importers:
       studiocms:
         specifier: workspace:^
         version: link:../../studiocms
+      vite:
+        specifier: catalog:min
+        version: 6.4.1(@types/node@22.19.6)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.2)
+
+  packages/@studiocms/markdown-remark:
+    dependencies:
+      astro:
+        specifier: catalog:min
+        version: 5.17.2(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
       vite:
         specifier: catalog:min
         version: 6.4.1(@types/node@22.19.6)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.2)

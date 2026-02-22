@@ -1,0 +1,41 @@
+{
+  "name": "@studiocms/markdown-remark",
+  "version": "1.2.0",
+  "type": "module",
+  "author": "studiocms",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/withstudiocms/studiocms.git",
+    "directory": "packages/@studiocms/markdown-remark"
+  },
+  "bugs": "https://github.com/withstudiocms/studiocms/issues",
+  "homepage": "https://studiocms.dev",
+  "main": "./dist/index.js",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "prepublish": "pnpm build",
+    "build": "tsdown --config tsdown.config.ts",
+    "dev": "tsdown --config tsdown.config.ts --watch --no-clean",
+    "test": "pnpm build && vitest run"
+  },
+  "peerDependencies": {
+    "astro": "catalog:min",
+    "vite": "catalog:min"
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+  },
+  "publishConfig": {
+    "provenance": true
+  }
+}
