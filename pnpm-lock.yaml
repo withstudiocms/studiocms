@@ -1085,9 +1085,6 @@ importers:
       '@withstudiocms/effect':
         specifier: workspace:^
         version: link:../@withstudiocms/effect
-      '@withstudiocms/internal_helpers':
-        specifier: workspace:^
-        version: link:../@withstudiocms/internal_helpers
       effect:
         specifier: catalog:effect
         version: 3.19.17
