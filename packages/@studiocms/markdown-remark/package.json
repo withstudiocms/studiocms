@@ -25,6 +25,7 @@
       "types": "./dist/errors.d.ts",
       "default": "./dist/errors.js"
     },
+    "./styles/*": "./dist/styles/*",
     "./types": {
       "types": "./dist/types.d.ts",
       "default": "./dist/types.js"
