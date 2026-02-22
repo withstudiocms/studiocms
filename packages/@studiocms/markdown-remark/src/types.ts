@@ -140,3 +140,6 @@ export interface StudioCMSMarkdownRemarkIntegrationOptions {
 	markdownExtended?: StudioCMSMarkdownExtendedOptions;
 	verbose?: boolean;
 }
+
+export type StudioCMSMarkdownRemarkIntegrationConfig =
+	Required<StudioCMSMarkdownRemarkIntegrationOptions>;

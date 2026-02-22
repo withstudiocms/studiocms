@@ -2,7 +2,6 @@
 
 import createPathResolver from '@withstudiocms/internal_helpers/pathResolver';
 import type { AstroIntegration } from 'astro';
-import { markdownConfigDefaults } from '../core/index.ts';
 import type { StudioCMSMarkdownRemarkIntegrationOptions } from '../types.ts';
 import { defaultIntegrationOptions } from './consts.ts';
 import { addVirtualImports } from './integration-utils.ts';
@@ -21,9 +20,9 @@ const markdownRemark = (
 ): AstroIntegration => {
 	const {
 		injectCSS = defaultIntegrationOptions.injectCSS,
-		components = {},
-		markdownExtended = markdownConfigDefaults.studiocms,
-		verbose = false,
+		components = defaultIntegrationOptions.components,
+		markdownExtended = defaultIntegrationOptions.markdownExtended,
+		verbose = defaultIntegrationOptions.verbose,
 	} = opts;
 
 	const { resolve } = createPathResolver(import.meta.url);
@@ -41,8 +40,10 @@ const markdownRemark = (
 	// We resolve the callout theme path here so that we can conditionally import it in the virtual CSS module.
 	const resolvedCalloutTheme = resolve(`../styles/callouts/${calloutTheme}.css`);
 
+	// We resolve the virtual components path here so that it can be imported in the virtual module for the components. This allows us to keep the virtual module clean and focused on just exporting the components, while still allowing us to use the resolved path for the virtual imports.
 	const virtualComponents = resolve('./components/virtual.js');
 
+	// Message array for storing log messages
 	const messages: string[] = [];
 
 	return {
@@ -51,8 +52,10 @@ const markdownRemark = (
 			'astro:config:setup': (params) => {
 				const { resolve: astroRootResolve } = createPathResolver(params.config.root.pathname);
 
+				// Extract Logger from params for use in this hook
 				const logger = params.logger;
 
+				// Log the initial configuration options for the integration.
 				logger.info('Setting up Markdown Remark integration...');
 
 				// Add virtual imports for the Markdown Remark processor
@@ -89,6 +92,7 @@ const markdownRemark = (
 					}
 				}
 
+				// Log the collected messages if verbose mode is enabled.
 				if (verbose) {
 					messages.forEach((message) => logger.info(message));
 				}
