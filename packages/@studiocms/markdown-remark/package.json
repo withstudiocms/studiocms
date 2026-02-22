@@ -25,6 +25,10 @@
       "types": "./dist/errors.d.ts",
       "default": "./dist/errors.js"
     },
+    "./integration": {
+      "types": "./dist/integration/index.d.ts",
+      "default": "./dist/integration/index.js"
+    },
     "./styles/*": "./dist/styles/*",
     "./types": {
       "types": "./dist/types.d.ts",
