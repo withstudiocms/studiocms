@@ -2,10 +2,13 @@
 
 import createPathResolver from '@withstudiocms/internal_helpers/pathResolver';
 import type { AstroIntegration } from 'astro';
+import { MarkdownRemarkError } from '../errors.ts';
 import type { StudioCMSMarkdownRemarkIntegrationOptions } from '../types.ts';
 import { defaultIntegrationOptions } from './consts.ts';
 import { addVirtualImports } from './integration-utils.ts';
 import { setSharedConfig } from './shared.ts';
+
+const isValidJsIdentifier = (name: string) => /^[a-zA-Z_$][a-zA-Z0-9_$]*$/.test(name);
 
 /**
  * Astro Integration for StudioCMS's Markdown Remark processor.
@@ -70,10 +73,15 @@ const markdownRemark = (
 							export const componentKeys = ${JSON.stringify(Object.keys(components).map((name) => name.toLowerCase()))};
 
 							${Object.entries(components)
-								.map(
-									([name, path]) =>
-										`export { default as ${name.toLowerCase()} } from '${astroRootResolve(path)}';`
-								)
+								.map(([name, path]) => {
+									const id = name.toLowerCase();
+									if (!isValidJsIdentifier(id)) {
+										throw new MarkdownRemarkError(
+											`Invalid component name "${name}": must be a valid JavaScript identifier when lowercased.`
+										);
+									}
+									return `export { default as ${id} } from '${astroRootResolve(path)}';`;
+								})
 								.join('\n')}
 						`,
 					},

@@ -39,10 +39,6 @@ export const rehypeAutolinkOptions: rehypeAutolinkHeadingsOptions = {
 				})
 			)
 		),
-		h(
-			'span',
-			{ 'is:raw': true, class: 'sr-only' },
-			`'Read the “', ${esc(toStr(heading))}, '” section'`
-		),
+		h('span', { class: 'sr-only' }, `Read the "${esc(toStr(heading))}" section`),
 	],
 };

@@ -1,3 +1,4 @@
+import { escape as escapeHTML } from 'html-escaper';
 import type { Root } from 'mdast';
 import { findAndReplace } from 'mdast-util-find-and-replace';
 
@@ -21,5 +22,5 @@ export const remarkDiscordSubtext =
 	(tree: Root): void =>
 		findAndReplace(tree, [
 			discordSubtextRegex,
-			(_, $1) => ({ type: 'html', value: `<small>${$1}</small>` }),
+			(_, $1) => ({ type: 'html', value: `<small>${escapeHTML($1)}</small>` }),
 		]);

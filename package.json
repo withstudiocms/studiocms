@@ -36,7 +36,7 @@
     "clean:pnpm-lock": "pnpm clean:node && node ./scripts/clean-pnpm-lockfile.mjs",
     "reset:pnpm": "pnpm clean:pnpm-lock && pnpm install",
 
-    "allure:clean": "node -e \"require('fs').rmSync('allure-results', { recursive: true, force: true })\"",
+    "allure:clean": "node -e \"import('node:fs').then(({rmSync})=>rmSync('allure-results',{recursive:true,force:true}))\"",
     "allure:serve": "allure serve allure-results",
 
     "test": "pnpm allure:clean && vitest run",
