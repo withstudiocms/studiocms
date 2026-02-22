@@ -1,5 +1,5 @@
 import { defineConfig } from 'tsdown';
-import { sharedConfig } from '../../../tsdown.shared';
+import { sharedConfig } from '../../../tsdown.shared.ts';
 
 export default defineConfig({
 	...sharedConfig,
