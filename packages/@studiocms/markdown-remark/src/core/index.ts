@@ -17,7 +17,7 @@ import type {
 	StudioCMSMarkdownConfig,
 	StudioCMSMarkdownProcessorOptions,
 } from '../types.ts';
-import { loadPlugins } from './load-plugins.ts';
+import { loadPlugins } from './plugin-utils/load-plugins.ts';
 import {
 	rehypeAutolinkOptions,
 	rehypeCallouts,
