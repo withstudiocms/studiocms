@@ -4,7 +4,7 @@ import { verifyTemplate } from '@bluwy/giget-core';
 import { StudioCMSColorwayError, StudioCMSColorwayInfo } from '@withstudiocms/cli-kit/colors';
 import { confirm, log } from '@withstudiocms/effect/clack';
 import { Effect } from 'effect';
-import { compare as semCompare } from 'semver';
+import { compare as semCompare, valid as semValid } from 'semver';
 import pkg from '../../package.json';
 import { CLIError, type Context, type EffectStepFn } from '../context.ts';
 import { getTemplateTarget } from './template.ts';
@@ -32,7 +32,8 @@ export const verify: EffectStepFn = Effect.fn('verify')(
 			const latestVersion = yield* getLatestVersionEffect().pipe(Effect.orElseSucceed(() => null));
 
 			if (latestVersion) {
-				const comparison = semCompare(version, latestVersion);
+				const comparison =
+					semValid(version) && semValid(latestVersion) ? semCompare(version, latestVersion) : null;
 				switch (comparison) {
 					case -1: {
 						const updateConfirmed = yield* confirm({
