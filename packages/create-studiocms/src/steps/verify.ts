@@ -29,7 +29,7 @@ export const verify: EffectStepFn = Effect.fn('verify')(
 			// Check if we are on the latest version of the CLI
 			if (ctx.debug) yield* Effect.log('Checking for updates...');
 
-			const latestVersion = yield* getLatestVersionEffect();
+			const latestVersion = yield* getLatestVersionEffect().pipe(Effect.orElseSucceed(() => null));
 
 			if (latestVersion) {
 				const comparison = semCompare(version, latestVersion);
@@ -108,9 +108,14 @@ const isOnline = Effect.fn('isOnline')(() =>
 const getLatestVersionEffect = Effect.fn('getLatestVersion')(() =>
 	Effect.tryPromise({
 		try: () =>
-			fetch(`https://registry.npmjs.org/${name}/latest`)
-				.then((res) => res.json())
-				.then((data) => data.version as string),
+			fetch(`https://registry.npmjs.org/${name}/latest`, {
+				signal: AbortSignal.timeout(5000),
+			})
+				.then((res) => {
+					if (!res.ok) return null;
+					return res.json() as Promise<{ version?: string }>;
+				})
+				.then((data) => data?.version ?? null),
 		catch: (cause) => new CLIError({ cause }),
 	})
 );
