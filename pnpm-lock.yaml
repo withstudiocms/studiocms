@@ -100,6 +100,9 @@ catalogs:
       specifier: ^8.18.0
       version: 8.18.0
   min:
+    '@astrojs/internal-helpers':
+      specifier: ^0.7.5
+      version: 0.7.5
     '@astrojs/markdown-remark':
       specifier: ^6.3.3
       version: 6.3.10
@@ -574,7 +577,7 @@ importers:
   packages/@studiocms/markdown-remark:
     dependencies:
       '@astrojs/internal-helpers':
-        specifier: ^0.7.5
+        specifier: catalog:min
         version: 0.7.5
       astro:
         specifier: catalog:min

@@ -47,7 +47,6 @@
     "dist"
   ],
   "dependencies": {
-    "@astrojs/internal-helpers": "^0.7.5",
     "github-slugger": "^2.0.0",
     "hastscript": "^9.0.0",
     "hast-util-from-html": "^2.0.3",
@@ -77,6 +76,7 @@
     "mdast-util-mdx-expression": "^2.0.1"
   },
   "peerDependencies": {
+    "@astrojs/internal-helpers": "catalog:min",
     "astro": "catalog:min",
     "vite": "catalog:min"
   }
