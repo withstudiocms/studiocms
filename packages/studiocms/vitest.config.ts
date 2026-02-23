@@ -100,6 +100,16 @@ export default defineProject(
 			},
 		}),
 		{
+			image: {
+				remotePatterns: [
+					{
+						protocol: 'https',
+					},
+					{
+						protocol: 'http',
+					},
+				],
+			},
 			integrations: [testIntegration, TestStudioCmsUiInstance()],
 		}
 	)
