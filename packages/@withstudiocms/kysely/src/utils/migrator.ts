@@ -1,7 +1,7 @@
 /** biome-ignore-all lint/suspicious/noExplicitAny: It's okay, doing dynamic stuff */
 /* v8 ignore start */
 
-import { Data, Effect } from 'effect';
+import { Data, Effect, Schedule } from 'effect';
 import type { Kysely } from 'kysely';
 import { handleCause, SqlError } from './errors.js';
 import { addMissingIndexes, dropRemovedIndexes, getTableIndexes } from './indexes.js';
@@ -139,7 +139,7 @@ const schemaManager = Effect.fn('schemaManager')(function* (
 		let attempt = 0;
 		const maxAttempts = 10;
 
-		while (!saved && attempt < maxAttempts) {
+		const retryEffect = Effect.gen(function* () {
 			const id = now() + attempt;
 			attempt++;
 			saved = yield* Effect.tryPromise({
@@ -160,12 +160,19 @@ const schemaManager = Effect.fn('schemaManager')(function* (
 					return Effect.fail(cause);
 				})
 			);
-		}
+		});
+
+		yield* Effect.retry(retryEffect, {
+			times: maxAttempts,
+			schedule: Schedule.fixed('1 seconds'),
+		});
 
 		if (!saved) {
-			yield* Effect.logError(
-				`Failed to save schema after ${maxAttempts} attempts due to repeated ID conflicts`
-			);
+			return yield* new SqlError({
+				cause: new Error(
+					`Failed to save schema after ${maxAttempts} attempts due to repeated ID conflicts, which is likely caused by a clock issue. Please ensure the system clock is accurate and try again.`
+				),
+			});
 		}
 
 		return;
