@@ -55,9 +55,9 @@ catalog:
 # Specific dependency catalogs for certain groups of packages
 catalogs:
   astrojs:
-    "@astrojs/node": ^9.5.3
+    "@astrojs/node": ^9.5.4
     "@astrojs/rss": ^4.0.15
-    astro: ^5.17.2
+    astro: ^5.17.3
     vite: ^6.3.4
   effect:
     "@effect/cli": ^0.73.2
@@ -70,7 +70,7 @@ catalogs:
     kysely: ^0.28.11
     kysely-turso: ^0.1.1
     pg: ^8.18.0
-    mysql2: ^3.17.2
+    mysql2: ^3.17.3
   min:
     "@astrojs/internal-helpers": ^0.7.5
     "@astrojs/markdown-remark": ^6.3.3
