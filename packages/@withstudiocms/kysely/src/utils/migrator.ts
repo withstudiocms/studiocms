@@ -154,6 +154,7 @@ const schemaManager = Effect.fn('schemaManager')(function* (
 						.values({ definition, id: now() + attempt++ })
 						.executeTakeFirstOrThrow(),
 				catch: (cause) => {
+					// 23505 means unique ID conflict
 					if (cause instanceof Error && 'code' in cause && cause.code === '23505') {
 						return new SaveError();
 					}
