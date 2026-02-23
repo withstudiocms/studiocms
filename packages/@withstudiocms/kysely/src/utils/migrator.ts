@@ -136,7 +136,7 @@ const schemaManager = Effect.fn('schemaManager')(function* (
 		}
 
 		let attempt = 0;
-		const maxAttempts = 10;
+		const maxAttempts = 9; // With 1 second fixed delay, this allows for up to ~10 seconds of retries, which should be sufficient to resolve clock issues in most cases.
 
 		yield* Effect.retry(
 			Effect.gen(function* () {
@@ -157,6 +157,7 @@ const schemaManager = Effect.fn('schemaManager')(function* (
 			{
 				times: maxAttempts,
 				schedule: Schedule.fixed('1 seconds'),
+				while: (e) => e._tag === 'SaveError',
 			}
 		).pipe(
 			Effect.catchTag('SaveError', () => {
