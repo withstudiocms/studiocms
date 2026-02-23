@@ -145,14 +145,13 @@ const schemaManager = Effect.fn('schemaManager')(function* (
 
 		let saved = false;
 		let attempt = 0;
+		const maxAttempts = 10;
 
-		while (!saved) {
+		while (!saved && attempt < maxAttempts) {
+			const id = now() + attempt;
+			attempt++;
 			saved = yield* Effect.tryPromise({
-				try: () =>
-					db
-						.insertInto(v1TableName)
-						.values({ definition, id: now() + attempt++ })
-						.executeTakeFirstOrThrow(),
+				try: () => db.insertInto(v1TableName).values({ definition, id }).executeTakeFirstOrThrow(),
 				catch: (cause) => {
 					// 23505 means unique ID conflict
 					if (cause instanceof Error && 'code' in cause && cause.code === '23505') {
@@ -168,6 +167,12 @@ const schemaManager = Effect.fn('schemaManager')(function* (
 					}
 					return Effect.fail(cause);
 				})
+			);
+		}
+
+		if (!saved) {
+			yield* Effect.logError(
+				`Failed to save schema after ${maxAttempts} attempts due to repeated ID conflicts`
 			);
 		}
 
