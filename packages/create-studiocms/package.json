@@ -28,11 +28,12 @@
 	],
 	"devDependencies": {
 		"@bluwy/giget-core": "^0.1.6",
+		"@types/semver": "catalog:",
 		"@withstudiocms/cli-kit": "workspace:^",
 		"@withstudiocms/effect": "workspace:^",
-		"@withstudiocms/internal_helpers": "workspace:^",
 		"effect": "catalog:effect",
 		"package-json": "^10.0.1",
+		"semver": "catalog:",
 		"tsdown": "catalog:"
 	},
 	"engines": {
