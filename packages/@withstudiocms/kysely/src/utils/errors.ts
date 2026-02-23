@@ -1,4 +1,5 @@
 import { Cause, Data, Effect } from 'effect';
+import type { ParseError } from 'effect/ParseResult';
 
 /**
  * Represents an error that occurs during SQL execution.
@@ -18,7 +19,9 @@ export class DialectDeterminationError extends Data.TaggedError('DialectDetermin
  * @param cause - The cause of the migration failure.
  * @returns An effect that logs the error and dies.
  */
-export const handleCause = (cause: Cause.Cause<DialectDeterminationError | SqlError>) =>
+export const handleCause = (
+	cause: Cause.Cause<DialectDeterminationError | SqlError | ParseError>
+) =>
 	Effect.logError(`Migration failure: ${Cause.pretty(cause)}`).pipe(
 		Effect.map(() => Effect.die(new Error('Migration failed. See logs for details.')))
 	);
