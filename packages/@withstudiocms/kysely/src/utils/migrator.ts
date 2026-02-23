@@ -22,6 +22,10 @@ function now() {
 	return Math.floor(diff / 1000);
 }
 
+class SaveError extends Error {
+	readonly _tag = 'SaveError';
+}
+
 const schemaManager = Effect.fn('schemaManager')(function* (
 	db: Kysely<any>,
 	previousSchemaDefinition?: TableDefinition[]
@@ -139,11 +143,32 @@ const schemaManager = Effect.fn('schemaManager')(function* (
 			yield* createTable;
 		}
 
-		yield* Effect.tryPromise({
-			try: () =>
-				db.insertInto(v1TableName).values({ definition, id: now() }).executeTakeFirstOrThrow(),
-			catch: (cause) => new SqlError({ cause }),
-		});
+		let saved = false;
+		let attempt = 0;
+
+		while (!saved) {
+			saved = yield* Effect.tryPromise({
+				try: () =>
+					db
+						.insertInto(v1TableName)
+						.values({ definition, id: now() + attempt++ })
+						.executeTakeFirstOrThrow(),
+				catch: (cause) => {
+					if (cause instanceof Error && 'code' in cause && cause.code === '23505') {
+						return new SaveError();
+					}
+					return new SqlError({ cause });
+				},
+			}).pipe(
+				Effect.andThen(() => Effect.succeed(true)),
+				Effect.catchAll((cause) => {
+					if (cause instanceof SaveError) {
+						return Effect.succeed(false);
+					}
+					return Effect.fail(cause);
+				})
+			);
+		}
 
 		return;
 	}, Effect.catchAll(Effect.logError));
