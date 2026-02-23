@@ -160,13 +160,15 @@ const schemaManager = Effect.fn('schemaManager')(function* (
 				while: (e) => e._tag === 'SaveError',
 			}
 		).pipe(
-			Effect.catchTag('SaveError', () => {
-				console.error(
-					`Attempt ${attempt} failed due to ID conflict. This may be caused by a clock issue. Please ensure the system clock is accurate and try again.`
-				);
-
-				return Effect.succeed(false);
-			})
+			Effect.catchTag(
+				'SaveError',
+				() =>
+					new SqlError({
+						cause: new Error(
+							`Failed to save schema after ${maxAttempts + 1} attempts due to repeated ID conflicts, which is likely caused by a clock issue. Please ensure the system clock is accurate and try again.`
+						),
+					})
+			)
 		);
 
 		return;
