@@ -1,14 +1,14 @@
 /** biome-ignore-all lint/suspicious/noExplicitAny: It's okay, doing dynamic stuff */
 /* v8 ignore start */
 
-import { Effect } from 'effect';
+import { Data, Effect } from 'effect';
 import type { Kysely } from 'kysely';
 import { handleCause, SqlError } from './errors.js';
 import { addMissingIndexes, dropRemovedIndexes, getTableIndexes } from './indexes.js';
 import { getTableColumns, getTableTriggers, tableExists } from './introspection.js';
 import { addMissingColumns, createTable, detectRemovedTables } from './tables.js';
 import { addMissingTriggersForTable, dropRemovedTriggersForTable } from './triggers.js';
-import type { TableDefinition } from './types.js';
+import { parseTableSchema, stringifyTableSchema, type TableDefinition } from './types.js';
 
 export * from './types.js';
 
@@ -22,9 +22,7 @@ function now() {
 	return Math.floor(diff / 1000);
 }
 
-class SaveError extends Error {
-	readonly _tag = 'SaveError';
-}
+class SaveError extends Data.TaggedError('SaveError')<{ cause: unknown }> {}
 
 const schemaManager = Effect.fn('schemaManager')(function* (
 	db: Kysely<any>,
@@ -57,10 +55,7 @@ const schemaManager = Effect.fn('schemaManager')(function* (
 
 		if (rows.length > 0) {
 			const latestDefinition = rows[0].definition;
-			previousSchemaDefinitionInternal = yield* Effect.try({
-				try: () => JSON.parse(latestDefinition) as TableDefinition[],
-				catch: (cause) => new SqlError({ cause }),
-			});
+			previousSchemaDefinitionInternal = yield* parseTableSchema(latestDefinition);
 		}
 
 		// Create the new schema table if it doesn't exist
@@ -76,7 +71,7 @@ const schemaManager = Effect.fn('schemaManager')(function* (
 			: false;
 
 		if (!v1HasRows && previousSchemaDefinitionInternal.length > 0) {
-			const definition = JSON.stringify(previousSchemaDefinitionInternal);
+			const definition = yield* stringifyTableSchema(previousSchemaDefinitionInternal);
 			yield* Effect.tryPromise({
 				try: () =>
 					db.insertInto(v1TableName).values({ definition, id: now() }).executeTakeFirstOrThrow(),
@@ -119,10 +114,7 @@ const schemaManager = Effect.fn('schemaManager')(function* (
 		}
 
 		const latestDefinition = rows[0].definition;
-		return yield* Effect.try({
-			try: () => JSON.parse(latestDefinition) as TableDefinition[],
-			catch: (cause) => new SqlError({ cause }),
-		});
+		return yield* parseTableSchema(latestDefinition);
 	}).pipe(
 		Effect.catchAll(
 			Effect.fn(function* (cause) {
@@ -136,7 +128,7 @@ const schemaManager = Effect.fn('schemaManager')(function* (
 		useDbSchema ? loadPreviousSchemaFromDB : Effect.succeed(previousSchemaDefinitionInternal);
 
 	const saveSchema = Effect.fn('saveSchema')(function* (schemaDefinition: TableDefinition[]) {
-		const definition = JSON.stringify(schemaDefinition);
+		const definition = yield* stringifyTableSchema(schemaDefinition);
 		const exists = yield* tableExists(db, v1TableName);
 
 		if (!exists) {
@@ -155,7 +147,7 @@ const schemaManager = Effect.fn('schemaManager')(function* (
 				catch: (cause) => {
 					// 23505 means unique ID conflict
 					if (cause instanceof Error && 'code' in cause && cause.code === '23505') {
-						return new SaveError();
+						return new SaveError({ cause });
 					}
 					return new SqlError({ cause });
 				},
