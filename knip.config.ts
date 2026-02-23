@@ -63,6 +63,7 @@ const atStudioCMSPackages = [
 	'github',
 	'google',
 	'markdoc',
+	'markdown-remark',
 	'mdx',
 	'md',
 	'html',

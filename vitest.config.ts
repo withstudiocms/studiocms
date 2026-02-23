@@ -57,6 +57,7 @@ const projectsWithTests: { scope?: string; names: string[] }[] = [
 			'mdx',
 			'blog',
 			'markdoc',
+			'markdown-remark',
 			'wysiwyg',
 		],
 	},

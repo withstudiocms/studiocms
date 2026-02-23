@@ -1,6 +1,7 @@
 {
   "name": "root",
   "private": true,
+  "type": "module",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/withstudiocms/studiocms.git"
@@ -35,7 +36,7 @@
     "clean:pnpm-lock": "pnpm clean:node && node ./scripts/clean-pnpm-lockfile.mjs",
     "reset:pnpm": "pnpm clean:pnpm-lock && pnpm install",
 
-    "allure:clean": "node -e \"require('fs').rmSync('allure-results', { recursive: true, force: true })\"",
+    "allure:clean": "node -e \"import('node:fs').then(({rmSync})=>rmSync('allure-results',{recursive:true,force:true}))\"",
     "allure:serve": "allure serve allure-results",
 
     "test": "pnpm allure:clean && vitest run",
@@ -105,10 +106,12 @@
     "execa": "^9.6.1",
     "knip": "^5.83.1",
     "pkg-pr-new": "^0.0.63",
+    "publint": "^0.3.17",
     "studiocms": "workspace:^",
     "tinyglobby": "catalog:",
     "typescript": "catalog:",
     "ts-patch": "^3.3.0",
+    "tsdown": "catalog:",
     "vite": "catalog:astrojs",
     "vitest": "^3.2.4",
     "jsdom": "^28.1.0"

@@ -46,6 +46,7 @@ flags:
     paths:
       - packages/studiocms/**
       - packages/@studiocms/devapps/**
+      - packages/@studiocms/markdown-remark/**
   plugins:
     carryforward: false
     # These have to be listed individually due to
@@ -78,6 +79,10 @@ component_management:
       name: "@studiocms/devapps"
       paths:
         - packages/@studiocms/devapps/**
+    - component_id: studiocms_markdown_remark
+      name: "@studiocms/markdown-remark"
+      paths:
+        - packages/@studiocms/markdown-remark/**
 
     # StudioCMS Plugins
     - component_id: studiocms_auth0
