@@ -135,45 +135,38 @@ const schemaManager = Effect.fn('schemaManager')(function* (
 			yield* createTable;
 		}
 
-		let saved = false;
 		let attempt = 0;
 		const maxAttempts = 10;
 
-		const retryEffect = Effect.gen(function* () {
-			const id = now() + attempt;
-			attempt++;
-			saved = yield* Effect.tryPromise({
-				try: () => db.insertInto(v1TableName).values({ definition, id }).executeTakeFirstOrThrow(),
-				catch: (cause) => {
-					// 23505 means unique ID conflict
-					if (cause instanceof Error && 'code' in cause && cause.code === '23505') {
-						return new SaveError({ cause });
-					}
-					return new SqlError({ cause });
-				},
-			}).pipe(
-				Effect.andThen(() => Effect.succeed(true)),
-				Effect.catchAll((cause) => {
-					if (cause instanceof SaveError) {
-						return Effect.succeed(false);
-					}
-					return Effect.fail(cause);
-				})
-			);
-		});
+		yield* Effect.retry(
+			Effect.gen(function* () {
+				const id = now() + attempt;
+				attempt++;
+				return yield* Effect.tryPromise({
+					try: () =>
+						db.insertInto(v1TableName).values({ definition, id }).executeTakeFirstOrThrow(),
+					catch: (cause) => {
+						// 23505 means unique ID conflict
+						if (cause instanceof Error && 'code' in cause && cause.code === '23505') {
+							return new SaveError({ cause });
+						}
+						return new SqlError({ cause });
+					},
+				}).pipe(Effect.andThen(() => Effect.succeed(true)));
+			}),
+			{
+				times: maxAttempts,
+				schedule: Schedule.fixed('1 seconds'),
+			}
+		).pipe(
+			Effect.catchTag('SaveError', () => {
+				console.error(
+					`Attempt ${attempt} failed due to ID conflict. This may be caused by a clock issue. Please ensure the system clock is accurate and try again.`
+				);
 
-		yield* Effect.retry(retryEffect, {
-			times: maxAttempts,
-			schedule: Schedule.fixed('1 seconds'),
-		});
-
-		if (!saved) {
-			return yield* new SqlError({
-				cause: new Error(
-					`Failed to save schema after ${maxAttempts} attempts due to repeated ID conflicts, which is likely caused by a clock issue. Please ensure the system clock is accurate and try again.`
-				),
-			});
-		}
+				return Effect.succeed(false);
+			})
+		);
 
 		return;
 	}, Effect.catchAll(Effect.logError));
