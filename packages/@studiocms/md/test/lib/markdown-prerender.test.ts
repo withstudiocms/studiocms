@@ -16,7 +16,7 @@ vi.mock('@astrojs/markdown-remark', () => ({
 		})
 	),
 }));
-vi.mock('@studiocms/markdown-remark-processor', () => ({
+vi.mock('@studiocms/markdown-remark/core', () => ({
 	createMarkdownProcessor: vi.fn(() =>
 		Promise.resolve({
 			render: vi.fn(async (content: string) => ({ code: `<studiocms>${content}</studiocms>` })),

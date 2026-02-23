@@ -1,9 +1,7 @@
 import rendererConfig from 'studiocms:md/config';
 import { createMarkdownProcessor as createAstroMD } from '@astrojs/markdown-remark';
-import {
-	createMarkdownProcessor as createStudioCMSMD,
-	type StudioCMSMarkdownProcessorOptions,
-} from '@studiocms/markdown-remark-processor';
+import { createMarkdownProcessor as createStudioCMSMD } from '@studiocms/markdown-remark/core';
+import type { StudioCMSMarkdownProcessorOptions } from '@studiocms/markdown-remark/types';
 import { shared } from './shared.js';
 
 export function parseCallouts(opt: false | 'obsidian' | 'github' | 'vitepress' | undefined) {

@@ -126,9 +126,6 @@ catalogs:
       specifier: ^19.2.4
       version: 19.2.4
   studiocms:
-    '@studiocms/markdown-remark-processor':
-      specifier: ^1.2.0
-      version: 1.2.0
     '@studiocms/ui':
       specifier: ^1.1.2
       version: 1.1.2
@@ -682,9 +679,9 @@ importers:
 
   packages/@studiocms/md:
     dependencies:
-      '@studiocms/markdown-remark-processor':
-        specifier: catalog:studiocms
-        version: 1.2.0
+      '@studiocms/markdown-remark':
+        specifier: workspace:^
+        version: link:../markdown-remark
       astro-integration-kit:
         specifier: 'catalog:'
         version: 0.19.1(astro@5.17.3(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
@@ -1674,9 +1671,6 @@ packages:
 
   '@astrojs/compiler@2.13.0':
     resolution: {integrity: sha512-mqVORhUJViA28fwHYaWmsXSzLO9osbdZ5ImUfxBarqsYdMlPbqAqGJCxsNzvppp1BEzc1mJNjOVvQqeDN8Vspw==}
-
-  '@astrojs/internal-helpers@0.6.1':
-    resolution: {integrity: sha512-l5Pqf6uZu31aG+3Lv8nl/3s4DbUzdlxTWDof4pEpto6GUJNhhCbelVi9dEyurOVyqaelwmS9oSyOWOENSfgo9A==}
 
   '@astrojs/internal-helpers@0.7.5':
     resolution: {integrity: sha512-vreGnYSSKhAjFJCWAwe/CNhONvoc5lokxtRoZims+0wa3KbHBdPHSSthJsKxPd8d/aic6lWKpRTYGY/hsgK6EA==}
@@ -3729,9 +3723,6 @@ packages:
 
   '@standard-schema/spec@1.1.0':
     resolution: {integrity: sha512-l2aFy5jALhniG5HgqrD6jXLi/rUWrKvqN/qJx6yoJsgKhblVd+iqqU4RCXavm/jPityDo5TCvKMnpjKnOriy0w==}
-
-  '@studiocms/markdown-remark-processor@1.2.0':
-    resolution: {integrity: sha512-3qOupRze2HKO2VdcrN0c5j9ZYoM8hlhFjrs4m5pg4w5Do5I1MTuDDTXmfRnZ+CwDrXyUaYr+DK1Csb7zMYjzyA==}
 
   '@studiocms/ui@1.1.2':
     resolution: {integrity: sha512-Ldsk4gU4N0x1PkvtkgJJQVybGSu2WfZ8KBlZ9t77nJOEqSzncEL2+AZpJwmg3XRgMnfwyE92CAu2yPhx7/Kklw==}
@@ -7377,8 +7368,6 @@ snapshots:
 
   '@astrojs/compiler@2.13.0': {}
 
-  '@astrojs/internal-helpers@0.6.1': {}
-
   '@astrojs/internal-helpers@0.7.5': {}
 
   '@astrojs/markdown-remark@6.3.10':
@@ -9684,38 +9673,6 @@ snapshots:
       tslib: 2.8.1
 
   '@standard-schema/spec@1.1.0': {}
-
-  '@studiocms/markdown-remark-processor@1.2.0':
-    dependencies:
-      '@astrojs/internal-helpers': 0.6.1
-      '@astrojs/prism': 3.3.0
-      github-slugger: 2.0.0
-      hast-util-from-html: 2.0.3
-      hast-util-is-element: 3.0.0
-      hast-util-to-string: 3.0.1
-      hast-util-to-text: 4.0.2
-      hastscript: 9.0.1
-      html-escaper: 3.0.3
-      import-meta-resolve: 4.2.0
-      js-yaml: 4.1.1
-      mdast-util-definitions: 6.0.0
-      mdast-util-find-and-replace: 3.0.2
-      rehype-autolink-headings: 7.1.0
-      rehype-raw: 7.0.0
-      rehype-stringify: 10.0.1
-      remark-gfm: 4.0.1
-      remark-parse: 11.0.0
-      remark-rehype: 11.1.2
-      remark-smartypants: 3.0.2
-      shiki: 3.22.0
-      smol-toml: 1.6.0
-      unified: 11.0.5
-      unist-util-remove-position: 5.0.0
-      unist-util-visit: 5.1.0
-      unist-util-visit-parents: 6.0.2
-      vfile: 6.0.3
-    transitivePeerDependencies:
-      - supports-color
 
   '@studiocms/ui@1.1.2(astro@5.17.3(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))(vite@6.4.1(@types/node@22.19.6)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.2))':
     dependencies:
