@@ -10,6 +10,7 @@ import { CMSLogger } from '@withstudiocms/effect';
 import type { APIContext } from 'astro';
 import { Effect, Layer } from 'effect';
 import { AstroAPIContext } from 'effectify/astro/context';
+import type { StorageAPIEndpointFn } from '#storage-api';
 import APICore from '#storage-manager/core/api-core';
 import UrlMappingDatabase from '#storage-manager/core/database';
 import EffectifyAstroContextDriver from '#storage-manager/core/effectify-astro-context';
@@ -66,6 +67,41 @@ function getAPICore() {
 
 	return apiCore;
 }
+
+/**
+ * Helper function to create storage manager handlers with consistent error handling.
+ *
+ * This function takes a StorageAPIEndpointFn and returns a handler function that processes the request
+ * using the APICore instance. It includes error handling to catch and transform errors into a consistent format.
+ *
+ * @param _try - The StorageAPIEndpointFn to execute for the request.
+ * @returns A function that handles the API request and returns an Effect with the response or error.
+ */
+const makeStorageManagerHandler = (
+	_try: StorageAPIEndpointFn<
+		APIContext,
+		Effect.Effect<HttpServerResponse.HttpServerResponse, HttpBodyError, never>
+	>
+) =>
+	AstroAPIContext.pipe(
+		Effect.flatMap((ctx) =>
+			Effect.tryPromise({
+				try: () => _try(ctx),
+				catch: (error) =>
+					new IntegrationsAPIError({
+						error: `Failed to handle storage manager request: ${error instanceof Error ? error.message : String(error)}`,
+					}),
+			})
+		),
+		Effect.flatten,
+		Effect.catchTag(
+			'HttpBodyError',
+			() =>
+				new IntegrationsAPIError({
+					error: 'Failed to parse request body',
+				})
+		)
+	);
 
 /**
  * Integrations API Handler.
@@ -143,47 +179,9 @@ export const IntegrationsAPIHandler = HttpApiBuilder.group(
 					}).pipe(Effect.catchTag('QuickEscapeError', ({ data }) => Effect.succeed(data)));
 				})
 			)
-			.handleRaw('storageManager', () =>
-				AstroAPIContext.pipe(
-					Effect.flatMap((ctx) =>
-						Effect.tryPromise({
-							try: () => getAPICore().getPOST('locals')(ctx),
-							catch: (error) =>
-								new IntegrationsAPIError({
-									error: `Failed to handle storage manager request: ${error instanceof Error ? error.message : String(error)}`,
-								}),
-						})
-					),
-					Effect.flatten,
-					Effect.catchTag(
-						'HttpBodyError',
-						() =>
-							new IntegrationsAPIError({
-								error: 'Failed to parse request body',
-							})
-					)
-				)
-			)
+			.handleRaw('storageManager', () => makeStorageManagerHandler(getAPICore().getPOST('locals')))
 			.handleRaw('storageManagerUpload', () =>
-				AstroAPIContext.pipe(
-					Effect.flatMap((ctx) =>
-						Effect.tryPromise({
-							try: () => getAPICore().getPUT('locals')(ctx),
-							catch: (error) =>
-								new IntegrationsAPIError({
-									error: `Failed to handle storage manager upload request: ${error instanceof Error ? error.message : String(error)}`,
-								}),
-						})
-					),
-					Effect.flatten,
-					Effect.catchTag(
-						'HttpBodyError',
-						() =>
-							new IntegrationsAPIError({
-								error: 'Failed to parse request body',
-							})
-					)
-				)
+				makeStorageManagerHandler(getAPICore().getPUT('locals'))
 			)
 ).pipe(Layer.provide(AstroLocalsAuthLive));
 
