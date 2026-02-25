@@ -22,7 +22,7 @@ import {
 } from '@withstudiocms/effect';
 import { AuthSessionCookieName } from '#consts';
 import { createSimplePathRouter } from '#frontend/utils/rest-router.js';
-import { AuthAPIUtils } from './_shared';
+import { AuthAPIUtils } from '../_handlers/_utils/auth.js';
 
 const loginRegisterDependencies = Layer.mergeAll(AuthAPIUtils.Default, VerifyEmail.Default);
 const forgotPasswordDependencies = Layer.mergeAll(

@@ -4,6 +4,7 @@ import { authConfig, developerConfig } from 'studiocms:config';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import { Mailer } from 'studiocms:mailer';
 import { Notifications } from 'studiocms:notifier';
+import { oAuthProviders } from 'studiocms:plugins/auth/providers';
 import { SDKCore } from 'studiocms:sdk';
 import templateEngine from 'studiocms:template-engine';
 import routeConfig from 'virtual:studiocms/route-config';
@@ -14,9 +15,10 @@ import { AuthAPIError } from '@withstudiocms/api-spec/auth';
 import { appendSearchParamsToUrl } from '@withstudiocms/effect';
 import { Effect, Layer, pipe } from 'effect';
 import { AstroAPIContext } from 'effectify/astro/context';
+import { ResponseToHttpServerResponse } from 'effectify/webHandler';
 import { AuthSessionCookieName } from '#consts';
 import type { ValidationResult } from '#schemas/external-schemas';
-import { AuthAPIUtils } from '../auth/_shared';
+import { AuthAPIUtils } from './_utils/auth.js';
 
 const loginRegisterDependencies = Layer.mergeAll(AuthAPIUtils.Default, VerifyEmail.Default);
 const forgotPasswordDependencies = Layer.mergeAll(
@@ -452,8 +454,64 @@ export const AuthAPIHandler = HttpApiBuilder.group(StudioCMSAuthApi, 'auth', (ha
 		//
 		// oAuth Handlers
 		//
-		.handle('oAuthInit', () => Effect.void)
-		.handle('oAuthCallback', () => Effect.void)
+		.handle(
+			'oAuthInit',
+			Effect.fn(function* ({ path: { provider } }) {
+				if (!authEnabled || !oAuthEnabled) {
+					return yield* new NotFound();
+				}
+
+				const matchedProvider = oAuthProviders.find((p) => p.safeName === provider);
+
+				if (!matchedProvider || !matchedProvider.enabled || !matchedProvider.initSession) {
+					return yield* new NotFound();
+				}
+
+				const ctx = yield* AstroAPIContext;
+
+				const res = yield* Effect.tryPromise(async () => matchedProvider.initSession?.(ctx)).pipe(
+					Effect.catchAll((error) => {
+						console.error('API Error:', error);
+						return new AuthAPIError({ error: 'Internal Server Error' });
+					})
+				);
+
+				if (!res) {
+					return yield* new AuthAPIError({ error: 'Failed to initialize OAuth session' });
+				}
+
+				return yield* ResponseToHttpServerResponse(res);
+			})
+		)
+		.handle(
+			'oAuthCallback',
+			Effect.fn(function* ({ path: { provider } }) {
+				if (!authEnabled || !oAuthEnabled) {
+					return yield* new NotFound();
+				}
+
+				const matchedProvider = oAuthProviders.find((p) => p.safeName === provider);
+
+				if (!matchedProvider || !matchedProvider.enabled || !matchedProvider.initCallback) {
+					return yield* new NotFound();
+				}
+
+				const ctx = yield* AstroAPIContext;
+
+				const res = yield* Effect.tryPromise(async () => matchedProvider.initCallback?.(ctx)).pipe(
+					Effect.catchAll((error) => {
+						console.error('API Error:', error);
+						return new AuthAPIError({ error: 'Internal Server Error' });
+					})
+				);
+
+				if (!res) {
+					return yield* new AuthAPIError({ error: 'Failed to initialize OAuth callback' });
+				}
+
+				return yield* ResponseToHttpServerResponse(res);
+			})
+		)
 );
 
 /**
