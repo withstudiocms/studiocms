@@ -443,7 +443,7 @@ export const AuthAPIHandler = HttpApiBuilder.group(StudioCMSAuthApi, 'auth', (ha
 					return { ok: true };
 				},
 				// Provide the necessary dependencies for the login handler
-				// Effect.provide(loginRegisterDependencies),
+				Effect.provide(loginRegisterDependencies),
 				// Catch any errors that occur during the login process and return a generic error message to prevent exposing sensitive information about the failure.
 				Effect.catchTags({
 					...sharedCatchTags,
