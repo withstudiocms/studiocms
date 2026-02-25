@@ -3,7 +3,6 @@ import { HttpApiBuilder } from '@effect/platform';
 import { StudioCMSSDKApiSpec } from '@withstudiocms/api-spec';
 import { SDKAPIError } from '@withstudiocms/api-spec/sdk';
 import { Effect, Layer } from 'effect';
-import { AstroAPIContext } from 'effectify/astro/context';
 import { ProcessChangelog } from './_utils/changelog.js';
 
 /**
@@ -18,23 +17,15 @@ import { ProcessChangelog } from './_utils/changelog.js';
  */
 export const SDKAPIHandler = HttpApiBuilder.group(StudioCMSSDKApiSpec, 'sdk', (handlers) =>
 	handlers
-		.handle(
-			'fullChangelog',
-			Effect.fn(function* () {
-				const ctx = yield* AstroAPIContext;
-
-				return yield* ProcessChangelog.pipe(
-					Effect.flatMap(({ generateChangelog, getRawChangelog, renderChangelog }) =>
-						getRawChangelog().pipe(
-							Effect.flatMap(generateChangelog),
-							Effect.flatMap((changelogData) => renderChangelog(changelogData, ctx))
-						)
-					),
-					Effect.map((renderedChangelog) => ({ success: true, changelog: renderedChangelog })),
-					ProcessChangelog.Provide,
-					Effect.catchAll(() => new SDKAPIError({ error: 'Failed to generate changelog' }))
-				);
-			})
+		.handle('fullChangelog', () =>
+			ProcessChangelog.pipe(
+				Effect.flatMap(({ runPipeline }) => runPipeline),
+				Effect.map((renderedChangelog) => ({ success: true, changelog: renderedChangelog })),
+				ProcessChangelog.Provide,
+				Effect.catchAll(
+					(err) => new SDKAPIError({ error: err.message || 'Failed to generate changelog' })
+				)
+			)
 		)
 		.handle('listPages', () =>
 			SDKCore.pipe(

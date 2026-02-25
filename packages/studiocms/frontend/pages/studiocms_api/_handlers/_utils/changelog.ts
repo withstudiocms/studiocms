@@ -1,7 +1,7 @@
 import { Effect, genLogger, HTTPClient, Platform, readAPIContextJson } from '@withstudiocms/effect';
 import { loadChangelog, semverCategories } from '@withstudiocms/internal_helpers/utils';
-import type { APIContext } from 'astro';
-import { Data } from 'effect';
+import { Data, pipe } from 'effect';
+import { AstroAPIContext } from 'effectify/astro/context';
 import type { List, Root } from 'mdast';
 import { toMarkdown } from 'mdast-util-to-markdown';
 
@@ -82,16 +82,17 @@ export class ProcessChangelog extends Effect.Service<ProcessChangelog>()('Proces
 				}
 			);
 
-		const renderChangelog = (content: string, context: APIContext) =>
+		const renderChangelog = (content: string) =>
 			genLogger('routes/sdk/utils/changelog/ProcessChangelog/effect.renderChangelog')(function* () {
+				const ctx = yield* AstroAPIContext;
 				const currentRequestJson = yield* readAPIContextJson<{
 					currentURLOrigin: string;
-				}>(context);
+				}>(ctx);
 
 				const currentURLOrigin = currentRequestJson.currentURLOrigin;
 
 				const partialUrl = new URL(
-					context.locals.StudioCMS?.routeMap.endpointLinks.partials.render,
+					ctx.locals.StudioCMS?.routeMap.endpointLinks.partials.render,
 					currentURLOrigin
 				);
 
@@ -107,10 +108,23 @@ export class ProcessChangelog extends Effect.Service<ProcessChangelog>()('Proces
 				);
 			});
 
+		const runPipeline = pipe(
+			getRawChangelog(),
+			Effect.flatMap(generateChangelog),
+			Effect.flatMap(renderChangelog),
+			Effect.catchAll(
+				(error) =>
+					new ChangelogError({
+						message: `Failed to process changelog: ${error instanceof Error ? error.message : String(error)}`,
+					})
+			)
+		);
+
 		return {
 			getRawChangelog,
 			generateChangelog,
 			renderChangelog,
+			runPipeline,
 		};
 	}),
 	dependencies: [HTTPClient.Default],

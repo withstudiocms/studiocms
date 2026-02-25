@@ -339,12 +339,12 @@ export const AuthAPIHandler = HttpApiBuilder.group(StudioCMSAuthApi, 'auth', (ha
 			'register',
 			Effect.fn(
 				function* ({ payload: { username, password, email, displayname } }) {
-					yield* Effect.sleep(1000); // Simulate some processing time for the registration
-
+					// If auth is not enabled, return a 404 to avoid exposing the existence of the endpoint
 					if (!authEnabled || !usernameAndPasswordRoutesEnabled || !userRegistrationEnabled) {
 						return yield* new NotFound();
 					}
 
+					// Get the necessary dependencies for the register handler and run them in parallel
 					const [
 						sdk,
 						{ validateEmail },
@@ -371,40 +371,30 @@ export const AuthAPIHandler = HttpApiBuilder.group(StudioCMSAuthApi, 'auth', (ha
 						AstroAPIContext,
 					]);
 
-					const verifyUsernameResponse = yield* verifyUsernameInput(username).pipe(
-						Effect.catchAll(
-							(err) => new AuthAPIError({ error: `Username validation failed: ${String(err)}` })
-						)
+					const [verifyUsernameResponse, verifyPasswordResponse, checkEmail] = yield* Effect.all([
+						verifyUsernameInput(username),
+						verifyPasswordStrength(password),
+						validateEmail(email),
+					]).pipe(
+						Effect.catchAll((err) => {
+							console.error('Validation error:', err);
+							return new AuthAPIError({ error: `Validation failed: ${String(err)}` });
+						})
 					);
 
+					// If the username validation failed, return an error with the validation message
 					if (verifyUsernameResponse !== true) {
 						return yield* new AuthAPIError({
 							error: `Invalid username: ${verifyUsernameResponse}`,
 						});
 					}
 
-					// If the password is invalid, return an error
-					const verifyPasswordResponse = yield* verifyPasswordStrength(password).pipe(
-						Effect.catchAll(
-							(err) => new AuthAPIError({ error: `Password validation failed: ${String(err)}` })
-						)
-					);
-
+					// If the password validation failed, return an error with the validation message
 					if (verifyPasswordResponse !== true) {
 						return yield* new AuthAPIError({
 							error: `Invalid password: ${verifyPasswordResponse}`,
 						});
 					}
-
-					// If the email is invalid, return an error
-					const checkEmail = yield* validateEmail(email).pipe(
-						Effect.catchAll(() =>
-							Effect.succeed({
-								success: false,
-								error: new Error('Invalid email address provided.'),
-							} as ValidationResult<string>)
-						)
-					);
 
 					// If the email provided is not a valid email address, return an error. We do this to prevent abuse of the forgot password functionality which could lead to spamming users with password reset emails.
 					if (!checkEmail.success) {
@@ -413,33 +403,37 @@ export const AuthAPIHandler = HttpApiBuilder.group(StudioCMSAuthApi, 'auth', (ha
 						});
 					}
 
+					// Check if the username or email already exists in the system. We do this after validating the input to prevent unnecessary database queries for invalid input.
 					const { usernameSearch, emailSearch } = yield* sdk.AUTH.user
 						.searchUsersForUsernameOrEmail(username, checkEmail.data)
 						.pipe(Effect.catchAll(() => new AuthAPIError({ error: 'Unknown Server Error' })));
 
-					if (usernameSearch.length > 0) {
+					// If either the username or email already exists, return an error indicating that an account with the provided username or email already exists. We do this to prevent duplicate accounts and to enforce unique usernames and email addresses in the system.
+					if (usernameSearch.length > 0 || emailSearch.length > 0) {
 						return yield* new AuthAPIError({
-							error: 'Username is already taken.',
+							error: 'An account with this username or email already exists.',
 						});
 					}
 
-					if (emailSearch.length > 0) {
-						return yield* new AuthAPIError({
-							error: 'An account with this email already exists.',
-						});
-					}
-
-					const newUser = yield* createLocalUser(displayname, username, email, password).pipe(
-						Effect.catchAll(
-							(err) => new AuthAPIError({ error: `User creation failed: ${String(err)}` })
+					// Create the new user, send the verification email, and create a session for the user in parallel. We do this to optimize the registration process and reduce the time it takes for the user to be able to use their account after registering.
+					yield* createLocalUser(displayname, username, email, password).pipe(
+						Effect.flatMap((newUser) =>
+							Effect.all([
+								sendVerificationEmail(newUser.id).pipe(
+									Effect.catchAll(
+										(err) => new AuthAPIError({ error: `User creation failed: ${String(err)}` })
+									)
+								),
+								createUserSession(newUser.id, ctx).pipe(
+									Effect.catchAll(
+										(err) => new AuthAPIError({ error: `User creation failed: ${String(err)}` })
+									)
+								),
+							])
 						)
 					);
 
-					yield* Effect.all([
-						sendVerificationEmail(newUser.id),
-						createUserSession(newUser.id, ctx),
-					]);
-
+					// Return a success message indicating that the registration was successful. The frontend can then handle the response and redirect the user to the appropriate page, such as a page prompting them to verify their email address.
 					return { ok: true };
 				},
 				// Provide the necessary dependencies for the login handler
