@@ -64,9 +64,6 @@ function generateResetLink(token: { id: string; userId: string; token: string })
  */
 export const AuthAPIHandler = HttpApiBuilder.group(StudioCMSAuthApi, 'auth', (handlers) =>
 	handlers
-		//
-		// Main Auth Handlers
-		//
 		.handle(
 			'forgotPassword',
 			Effect.fn(
@@ -444,10 +441,13 @@ export const AuthAPIHandler = HttpApiBuilder.group(StudioCMSAuthApi, 'auth', (ha
 				})
 			)
 		)
+);
 
-		//
-		// oAuth Handlers
-		//
+/**
+ * OAuth API Handler for managing OAuth authentication flows, including initiating OAuth sessions and handling OAuth callbacks.
+ */
+export const OAuthAPIHandler = HttpApiBuilder.group(StudioCMSAuthApi, 'oauth', (handlers) =>
+	handlers
 		.handle(
 			'oAuthInit',
 			Effect.fn(function* ({ path: { provider } }) {
@@ -523,6 +523,13 @@ export const AuthAPIHandler = HttpApiBuilder.group(StudioCMSAuthApi, 'auth', (ha
 );
 
 /**
+ * Combined API Handler for all authentication-related endpoints, including both primary auth handlers and OAuth handlers.
+ */
+const AuthApiHandlersGroup = Layer.merge(AuthAPIHandler, OAuthAPIHandler);
+
+/**
  * Live implementation of the authentication API, providing handlers for login, logout, and forgot password functionality.
  */
-export const AuthAPILive = HttpApiBuilder.api(StudioCMSAuthApi).pipe(Layer.provide(AuthAPIHandler));
+export const AuthAPILive = HttpApiBuilder.api(StudioCMSAuthApi).pipe(
+	Layer.provide(AuthApiHandlersGroup)
+);
