@@ -139,6 +139,10 @@
 			"types": "./dist/index.d.ts",
 			"default": "./dist/index.js"
 		},
+		"./client/*": {
+			"types": "./dist/client/*.d.ts",
+			"default": "./dist/client/*.js"
+		},
 		"./config": {
 			"types": "./dist/config.d.ts",
 			"default": "./dist/config.js"

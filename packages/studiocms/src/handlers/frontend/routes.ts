@@ -70,28 +70,6 @@ export const setupRoutes: InjectedRoute[] = [
 		pattern: '/studiocms_api/dashboard/step-2',
 		entrypoint: 'setup-pages/studiocms_api/dashboard/step-2.ts',
 	},
-	{
-		pattern: '/studiocms_api/integrations/[...all]',
-		entrypoint: 'pages/studiocms_api/integrations/[...all].ts',
-	},
-	// Renderer service routes
-	{
-		pattern: '/studiocms_api/partials/render',
-		entrypoint: 'pages/studiocms_api/partials/render.astro',
-	},
-];
-
-/**
- * Routes to be injected when there is no database start page.
- *
- * These routes include SDK API endpoints and the renderer service.
- */
-export const noDbSetupRoutes: InjectedRoute[] = [
-	// SDK API routes
-	{
-		pattern: '/studiocms_api/sdk/[...path]',
-		entrypoint: 'pages/studiocms_api/sdk/[...path].ts',
-	},
 	// Renderer service routes
 	{
 		pattern: '/studiocms_api/partials/render',
@@ -102,6 +80,35 @@ export const noDbSetupRoutes: InjectedRoute[] = [
 		pattern: '/studiocms_api/integrations/[...all]',
 		entrypoint: 'pages/studiocms_api/integrations/[...all].ts',
 	},
+];
+
+/**
+ * Routes to be injected when there is no database start page.
+ *
+ * These routes include SDK API endpoints and the renderer service.
+ */
+export const noDbSetupRoutes: InjectedRoute[] = [
+	// Renderer service routes
+	{
+		pattern: '/studiocms_api/partials/render',
+		entrypoint: 'pages/studiocms_api/partials/render.astro',
+	},
+	// Integration routes
+	{
+		pattern: '/studiocms_api/integrations/[...all]',
+		entrypoint: 'pages/studiocms_api/integrations/[...all].ts',
+	},
+	// SDK API routes
+	{
+		pattern: '/studiocms_api/sdk/[...path]',
+		entrypoint: 'pages/studiocms_api/sdk/[...path].ts',
+	},
+	// TODO: Implement the combined API route that serves all API specs and documentation in one place
+	// StudioCMS Primary API routes
+	// {
+	// 	pattern: '/studiocms_api/[...all]',
+	// 	entrypoint: 'pages/studiocms_api/[...all].ts',
+	// },
 ];
 
 /**
