@@ -30,10 +30,7 @@ export const SDKAPIHandler = HttpApiBuilder.group(StudioCMSSDKApiSpec, 'sdk', (h
 		.handle('listPages', () =>
 			SDKCore.pipe(
 				Effect.flatMap((sdk) => sdk.GET.pages()),
-				Effect.map((pages) => {
-					const lastUpdated = new Date().toISOString();
-					return { lastUpdated, pages };
-				})
+				Effect.map((pages) => ({ lastUpdated: new Date().toISOString(), pages }))
 			)
 		)
 		.handle('updateLatestVersionCache', () =>
