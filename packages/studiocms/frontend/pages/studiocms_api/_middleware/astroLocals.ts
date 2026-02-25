@@ -15,7 +15,7 @@ export const AstroLocalsAuthLive = Layer.effect(
 		return {
 			localUser: (_localUser) =>
 				AstroAPIContext.pipe(
-					Effect.map((astro) => astro.locals.StudioCMS?.security?.userSessionData),
+					Effect.map(({ locals }) => locals.StudioCMS?.security?.userSessionData),
 					Effect.flatMap((user) =>
 						user ? Effect.succeed(CurrentUser.of(user)) : Effect.fail(new AstroLocalsMissing())
 					)
