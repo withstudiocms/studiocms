@@ -71,8 +71,8 @@ export const setupRoutes: InjectedRoute[] = [
 		entrypoint: 'setup-pages/studiocms_api/dashboard/step-2.ts',
 	},
 	{
-		pattern: '/studiocms_api/integrations/[type]/[...id]',
-		entrypoint: 'pages/studiocms_api/integrations/[type]/[...id].ts',
+		pattern: '/studiocms_api/integrations/[...all]',
+		entrypoint: 'pages/studiocms_api/integrations/[...all].ts',
 	},
 	// Renderer service routes
 	{
@@ -99,8 +99,8 @@ export const noDbSetupRoutes: InjectedRoute[] = [
 	},
 	// Integration routes
 	{
-		pattern: '/studiocms_api/integrations/[type]/[...id]',
-		entrypoint: 'pages/studiocms_api/integrations/[type]/[...id].ts',
+		pattern: '/studiocms_api/integrations/[...all]',
+		entrypoint: 'pages/studiocms_api/integrations/[...all].ts',
 	},
 ];
 
