@@ -100,6 +100,7 @@ export const noDbSetupRoutes: InjectedRoute[] = [
 	},
 	// SDK API routes
 	{
+		// TODO Flagged for replacement by combined API route
 		pattern: '/studiocms_api/sdk/[...path]',
 		entrypoint: 'pages/studiocms_api/sdk/[...path].ts',
 	},
@@ -118,10 +119,12 @@ export const noDbSetupRoutes: InjectedRoute[] = [
  */
 export const restRoutes: InjectedRoute[] = [
 	{
+		// TODO Flagged for replacement by combined API route
 		pattern: '/studiocms_api/rest/v1/[type]/[...id]',
 		entrypoint: 'pages/studiocms_api/rest/v1/[type]/[...id].ts',
 	},
 	{
+		// TODO Flagged for replacement by combined API route
 		pattern: '/studiocms_api/rest/v1/public/[type]/[...id]',
 		entrypoint: 'pages/studiocms_api/rest/v1/public/[type]/[...id].ts',
 	},
@@ -134,6 +137,7 @@ export const restRoutes: InjectedRoute[] = [
  */
 export const oAuthEnabledRoutes: InjectedRoute[] = [
 	{
+		// TODO Flagged for replacement by combined API route
 		pattern: '/studiocms_api/auth/[provider]/[...id]',
 		entrypoint: 'pages/studiocms_api/auth/[provider]/[...id].ts',
 	},
@@ -163,22 +167,27 @@ export const dashboardEnabledRoutes = (
 ): InjectedRoute[] => [
 	// Dashboard API Routes
 	{
+		// TODO Flagged for replacement by combined API route
 		pattern: '/studiocms_api/dashboard/templates',
 		entrypoint: 'pages/studiocms_api/dashboard/templates.ts',
 	},
 	{
+		// TODO Flagged for replacement by combined API route
 		pattern: '/studiocms_api/partials/editor',
 		entrypoint: 'pages/studiocms_api/partials/editor.astro',
 	},
 	{
+		// TODO Flagged for replacement by combined API route
 		pattern: '/studiocms_api/partials/user-list-items',
 		entrypoint: 'pages/studiocms_api/partials/user-list-items.astro',
 	},
 	{
+		// TODO Flagged for replacement by combined API route
 		pattern: '/studiocms_api/dashboard/search-list',
 		entrypoint: 'pages/studiocms_api/dashboard/search-list.ts',
 	},
 	{
+		// TODO Flagged for replacement by combined API route
 		pattern: '/studiocms_api/auth/[path]',
 		entrypoint: 'pages/studiocms_api/auth/[path].ts',
 	},
@@ -286,6 +295,7 @@ export const dashboardAPIEnabledRoutes = (
 		entrypoint: 'pages/[dashboard]/password-reset.astro',
 	},
 
+	// TODO Flagged for replacement by combined API route
 	// API Routes
 	{
 		pattern: '/studiocms_api/dashboard/config',
