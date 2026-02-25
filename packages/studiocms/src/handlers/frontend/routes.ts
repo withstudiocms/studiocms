@@ -459,3 +459,8 @@ export const getAstroProject = Effect.gen(function* () {
 		Effect.flatMap(injectMiddleware(config))
 	);
 });
+
+/**
+ * Get route configuration for StudioCMS.
+ */
+export const getRouteConfig = StudioCMSRouteConfig.pipe(Effect.flatMap(processedConfig));
