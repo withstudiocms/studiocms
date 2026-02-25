@@ -143,7 +143,7 @@ export const IntegrationsAPIHandler = HttpApiBuilder.group(
 					}).pipe(Effect.catchTag('QuickEscapeError', ({ data }) => Effect.succeed(data)));
 				})
 			)
-			.handle('storageManager', () =>
+			.handleRaw('storageManager', () =>
 				AstroAPIContext.pipe(
 					Effect.flatMap((ctx) =>
 						Effect.tryPromise({
@@ -164,7 +164,7 @@ export const IntegrationsAPIHandler = HttpApiBuilder.group(
 					)
 				)
 			)
-			.handle('storageManagerUpload', () =>
+			.handleRaw('storageManagerUpload', () =>
 				AstroAPIContext.pipe(
 					Effect.flatMap((ctx) =>
 						Effect.tryPromise({

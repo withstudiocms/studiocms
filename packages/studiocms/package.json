@@ -64,6 +64,10 @@
 		"studiocms": "./studiocms-cli.mjs"
 	},
 	"imports": {
+		"#client/*": {
+			"types": "./dist/client/*.d.ts",
+			"default": "./dist/client/*.js"
+		},
 		"#consts": {
 			"types": "./dist/consts.d.ts",
 			"default": "./dist/consts.js"
