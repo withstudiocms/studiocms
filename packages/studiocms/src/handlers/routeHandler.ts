@@ -50,6 +50,7 @@ export const routeHandler = defineUtility('astro:config:setup')(
 
 		// Execute both the route configuration retrieval and Astro project retrieval in parallel, then process the results
 		await Effect.all([
+			// Retrieve the processed route configuration and add it as a virtual import for use in other parts of the application
 			getRouteConfig.pipe(
 				Effect.map((config) => {
 					// Add virtual imports for the route configuration, allowing it to be imported in other parts of the application
@@ -61,6 +62,7 @@ export const routeHandler = defineUtility('astro:config:setup')(
 					});
 				})
 			),
+			// Retrieve the Astro project configuration, which includes the routes and middleware to be injected, and process them by injecting routes and adding middleware
 			getAstroProject.pipe(
 				Effect.flatMap(({ middleware, routes }) =>
 					Effect.all([
