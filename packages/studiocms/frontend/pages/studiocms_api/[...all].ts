@@ -1,3 +1,4 @@
+import type { Api } from '@effect/platform/HttpApi';
 import {
 	StudioCMSAuthApi,
 	StudioCMSDashboardApiSpec,
@@ -5,6 +6,7 @@ import {
 	StudioCMSRestApiV1Spec,
 	StudioCMSSDKApiSpec,
 } from '@withstudiocms/api-spec';
+import type { APIRoute } from 'astro';
 import { Layer } from 'effect';
 import { HttpApiToAstroRoute } from 'effectify/astro/HttpApi';
 import * as Scalar from 'effectify/scalar';
@@ -82,9 +84,11 @@ const APICollection = SDKAPILive;
  *
  * @returns A Layer that includes both the documentation route and the API handlers, or just the API handlers if documentation is disabled.
  */
-const APILive = withDocs ? Layer.merge(DocsRouteLive, APICollection) : APICollection;
+const APILive: Layer.Layer<Api, never, never> = withDocs
+	? Layer.merge(DocsRouteLive, APICollection)
+	: APICollection;
 
 /**
  * Astro API Route - Converts the combined Effect API stack into an Astro route for serving the API documentation and endpoints.
  */
-export const ALL = HttpApiToAstroRoute(APILive);
+export const ALL: APIRoute = HttpApiToAstroRoute(APILive);
