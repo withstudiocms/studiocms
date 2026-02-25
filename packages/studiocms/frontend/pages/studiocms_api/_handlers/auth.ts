@@ -17,7 +17,6 @@ import { Effect, Layer, pipe } from 'effect';
 import { AstroAPIContext } from 'effectify/astro/context';
 import { ResponseToHttpServerResponse } from 'effectify/webHandler';
 import { AuthSessionCookieName } from '#consts';
-import type { ValidationResult } from '#schemas/external-schemas';
 import { AuthAPIUtils } from './_utils/auth.js';
 
 const loginRegisterDependencies = Layer.mergeAll(AuthAPIUtils.Default, VerifyEmail.Default);
@@ -96,14 +95,7 @@ export const AuthAPIHandler = HttpApiBuilder.group(StudioCMSAuthApi, 'auth', (ha
 					}
 
 					// If the email is invalid, return an error
-					const checkEmail = yield* validateEmail(email).pipe(
-						Effect.catchAll(() =>
-							Effect.succeed({
-								success: false,
-								error: new Error('Invalid email address provided.'),
-							} as ValidationResult<string>)
-						)
-					);
+					const checkEmail = yield* validateEmail(email);
 
 					// If the email provided is not a valid email address, return an error. We do this to prevent abuse of the forgot password functionality which could lead to spamming users with password reset emails.
 					if (!checkEmail.success) {
