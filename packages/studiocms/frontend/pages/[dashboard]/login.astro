@@ -216,13 +216,78 @@ if (usernameAndPassword && SHOW_OAUTH) {
 </script>
 
 <script>
-    import { formListener } from '../../scripts/auth/formListener.js';
     import { ModalHelper } from 'studiocms:ui/components/modal/client';
     import { toast } from 'studiocms:ui/components/toaster/client';
+    import * as Effect from 'effect/Effect';
+    import * as Schema from 'effect/Schema';
+    import { authClient } from 'studiocms:client/apiClients';
+
+    class AuthError extends Schema.TaggedError<AuthError>()(
+        'AuthError',
+        {
+            title: Schema.String,
+            description: Schema.String,
+        }
+    ) {}
+
+    const sharedErrors = {
+        HttpApiDecodeError: () => new AuthError({ title: 'Error', description: 'Failed to decode server response' }),
+        NotFound: () => new AuthError({ title: 'Error', description: 'Login endpoint not found' }),
+        ParseError: () => new AuthError({ title: 'Error', description: 'Failed to parse server response' }),
+        RequestError: () => new AuthError({ title: 'Error', description: 'Network error occurred' }),
+        ResponseError: (err: { message: string }) => new AuthError({ title: 'Error', description: `Server responded with error: ${err.message}` }),
+        AuthAPIError: (err: { error?: string }) => new AuthError({ title: 'Error', description: err.error || 'Authentication failed' }),
+    }
     
     const loginForm = document.getElementById('login-form') as HTMLFormElement | null;
     if (loginForm) {
-        loginForm.addEventListener('submit', (event) => formListener(event, loginForm, 'login'));
+        loginForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const formData = new FormData(loginForm);
+
+            const response = await authClient.pipe(
+                Effect.flatMap((client) => client.auth.login({
+                    payload: formData,
+                })),
+                Effect.catchTags(sharedErrors),
+                Effect.catchTag('AuthError', (err) => Effect.succeed({
+                    ok: false as const,
+                    error: {
+                        title: err.title,
+                        description: err.description,
+                    },
+                })),
+                Effect.runPromise
+            )
+
+            if (response.ok) {
+                toast({
+                    title: 'Login successful',
+                    description: 'Redirecting to dashboard...',
+                    type: 'success',
+                })
+                if (typeof window !== 'undefined') {
+                    window.location.reload();
+                }
+                return;
+            } else if ('error' in response) {
+                toast({
+                    title: response.error.title,
+                    description: response.error.description,
+                    type: 'danger',
+                })
+                return;
+            } else {
+                toast({
+                    title: 'Error',
+                    description: 'An unknown error occurred',
+                    type: 'danger',
+                })
+                return;
+            }
+        })
+
     }
 
     const forgotPasswordLink = document.getElementById('forgot-password') as HTMLDivElement;
@@ -232,35 +297,43 @@ if (usernameAndPassword && SHOW_OAUTH) {
 
         forgotPasswordModal.registerConfirmCallback(async (formData) => {
             if (!formData) return;
+            const email = formData.get('email')?.toString()
 
-            const actionUrl = formData.get('action-url')?.toString() as string;
-
-            const data = {
-                email: formData.get('email')?.toString(),
-            };
-
-            const response = await fetch(actionUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data),
-            });
-
-            const result = await response.json();
-
-            if (response.ok) {
+            if (!email) {
                 toast({
-                    title: 'Success',
-                    description: result.message,
-                    type: 'success',
+                    title: 'Error',
+                    description: 'Email is required',
+                    type: 'danger',
+                })
+                return;
+            }
+
+            const response = await authClient.pipe(
+                Effect.flatMap((client) => client.auth.forgotPassword({
+                    payload: { email },
+                })),
+                Effect.catchTags(sharedErrors),
+                Effect.catchTag('AuthError', (err) => Effect.succeed({
+                    error: {
+                        title: err.title,
+                        description: err.description,
+                    },
+                })),
+                Effect.runPromise
+            )
+
+            if ('error' in response) {
+                toast({
+                    title: response.error.title,
+                    description: response.error.description,
+                    type: 'danger',
                 })
                 return;
             } else {
                 toast({
-                    title: 'Error',
-                    description: result.error || 'An error occurred',
-                    type: 'danger',
+                    title: 'Success',
+                    description: response.message,
+                    type: 'success',
                 })
                 return;
             }
