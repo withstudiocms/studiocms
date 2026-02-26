@@ -363,11 +363,6 @@ export const StudioCMSRoutes = {
 	},
 	sdk: {
 		/**
-		 * SDK route for listing pages.
-		 */
-		pages: sdkRoute('list-pages'),
-
-		/**
 		 * SDK route for updating the latest version cache.
 		 */
 		updateLatestVersionCache: sdkRoute('update-latest-version-cache'),

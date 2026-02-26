@@ -63,6 +63,7 @@ export const fullChangelogPost = HttpApiEndpoint.post('fullChangelog', '/full-ch
  *
  * @throws {SDKAPIError} Returns a 500 status code on server error
  */
+// TODO: This endpoint is unused and should be removed
 export const listPagesGet = HttpApiEndpoint.get('listPages', '/list-pages')
 	.annotate(Title, 'List Pages')
 	.annotate(Summary, 'Retrieve a list of pages.')

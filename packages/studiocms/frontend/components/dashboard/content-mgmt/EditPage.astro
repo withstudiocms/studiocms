@@ -74,8 +74,8 @@ const CurrentEditorComponent = editor;
 const pluginFields = pluginList
 	.flatMap(({ pageTypes }) => {
 		const pageTypeOutput: {
-			identifier: string;
-			fields?: SettingsField[];
+			readonly identifier: string;
+			readonly fields?: readonly SettingsField[];
 		}[] = [];
 
 		if (!pageTypes) {

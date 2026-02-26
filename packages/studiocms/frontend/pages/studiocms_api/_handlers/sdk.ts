@@ -53,18 +53,19 @@ export const SDKAPIHandler = HttpApiBuilder.group(StudioCMSSDKApiSpec, 'sdk', (h
 				catchError('Failed to generate changelog')
 			)
 		)
-		.handle('listPages', () =>
-			SDKCore.pipe(
-				Effect.flatMap((sdk) => sdk.GET.pages()),
-				Effect.map(makePagesResponse),
-				catchError('Failed to list SDK pages')
-			)
-		)
 		.handle('updateLatestVersionCache', () =>
 			SDKCore.pipe(
 				Effect.flatMap((sdk) => sdk.UPDATE.latestVersion()),
 				Effect.map(makeVersionResponse),
 				catchError('Failed to update latest version cache')
+			)
+		)
+		// TODO: This endpoint is unused and should be removed
+		.handle('listPages', () =>
+			SDKCore.pipe(
+				Effect.flatMap((sdk) => sdk.GET.pages()),
+				Effect.map(makePagesResponse),
+				catchError('Failed to list SDK pages')
 			)
 		)
 );
