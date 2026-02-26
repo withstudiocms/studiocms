@@ -6,6 +6,15 @@ import { Effect, Layer } from 'effect';
 import { ProcessChangelog } from './_utils/changelog.js';
 
 /**
+ * Utility function to catch errors in the Effect chain and convert them into SDKAPIError instances with a provided message. This is used to ensure that any errors that occur during the processing of SDK API requests are properly handled and returned in a consistent format to the client.
+ *
+ * @param message A custom error message to use in the SDKAPIError if an error occurs. This message provides context about where the error occurred and what operation was being attempted, making it easier for clients to understand the nature of the error when they receive it.
+ * @returns An Effect that catches any errors that occur in the chain and transforms them into SDKAPIError instances with the provided message.
+ */
+const catchError = (message: string) =>
+	Effect.catchAll((error: Error) => new SDKAPIError({ error: error.message || message }));
+
+/**
  * SDK API Handler - Handles all API routes related to the StudioCMS SDK, including changelog generation and page listing.
  *
  * Endpoints:
@@ -22,30 +31,21 @@ export const SDKAPIHandler = HttpApiBuilder.group(StudioCMSSDKApiSpec, 'sdk', (h
 				Effect.flatMap(({ runPipeline }) => runPipeline),
 				Effect.map((renderedChangelog) => ({ success: true, changelog: renderedChangelog })),
 				ProcessChangelog.Provide,
-				Effect.catchAll(
-					(err) => new SDKAPIError({ error: err.message || 'Failed to generate changelog' })
-				)
+				catchError('Failed to generate changelog')
 			)
 		)
 		.handle('listPages', () =>
 			SDKCore.pipe(
 				Effect.flatMap((sdk) => sdk.GET.pages()),
 				Effect.map((pages) => ({ lastUpdated: new Date().toISOString(), pages })),
-				Effect.catchAll(
-					(err) => new SDKAPIError({ error: err.message || 'Failed to list SDK pages' })
-				)
+				catchError('Failed to list SDK pages')
 			)
 		)
 		.handle('updateLatestVersionCache', () =>
 			SDKCore.pipe(
 				Effect.flatMap((sdk) => sdk.UPDATE.latestVersion()),
 				Effect.map((latestVersion) => ({ success: true, latestVersion })),
-				Effect.catchAll(
-					(err) =>
-						new SDKAPIError({
-							error: err.message || 'Failed to update latest version cache',
-						})
-				)
+				catchError('Failed to update latest version cache')
 			)
 		)
 );
