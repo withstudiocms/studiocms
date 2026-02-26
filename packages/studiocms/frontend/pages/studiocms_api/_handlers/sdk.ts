@@ -45,9 +45,9 @@ const makeVersionResponse = (latestVersion: { version: string; lastCacheUpdate: 
  */
 export const SDKAPIHandler = HttpApiBuilder.group(StudioCMSSDKApiSpec, 'sdk', (handlers) =>
 	handlers
-		.handle('fullChangelog', () =>
+		.handle('fullChangelog', ({ payload: { currentURLOrigin } }) =>
 			ProcessChangelog.pipe(
-				Effect.flatMap(({ runPipeline }) => runPipeline),
+				Effect.flatMap(({ runPipeline }) => runPipeline(currentURLOrigin)),
 				Effect.map(makeChangelogResponse),
 				ProcessChangelog.Provide,
 				catchError('Failed to generate changelog')

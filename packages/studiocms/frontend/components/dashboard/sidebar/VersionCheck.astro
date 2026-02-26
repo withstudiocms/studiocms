@@ -73,7 +73,18 @@ const status: false | 'outdated' | 'latest' | 'future' = (() => {
 
     reloadButton.addEventListener("click", async () => {
       reloadButton.disabled = true;
-      const { latestVersion, success } = await sdkClient.pipe(Effect.flatMap((client) => client.sdk.updateLatestVersionCache()), Effect.runPromise);
+
+      type FailureVersionResponse = {
+        readonly success: false;
+        readonly latestVersion: null;
+      };
+
+      const { latestVersion, success } = await Effect.orElse(
+        sdkClient.pipe(Effect.flatMap((client) => 
+          client.sdk.updateLatestVersionCache()
+        )),
+        () => Effect.succeed({ success: false, latestVersion: null } as FailureVersionResponse)
+      ).pipe(Effect.runPromise);
 
       if (success) {
         latestVersionElem.textContent = `v${latestVersion.version}`;

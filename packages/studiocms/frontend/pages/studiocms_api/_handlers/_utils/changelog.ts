@@ -1,4 +1,4 @@
-import { HTTPClient, Platform, readAPIContextJson } from '@withstudiocms/effect';
+import { HTTPClient, Platform } from '@withstudiocms/effect';
 import { loadChangelog, semverCategories } from '@withstudiocms/internal_helpers/utils';
 import { Data, Effect, pipe } from 'effect';
 import { AstroAPIContext } from 'effectify/astro/context';
@@ -104,14 +104,9 @@ export class ProcessChangelog extends Effect.Service<ProcessChangelog>()('Proces
 		 * @param content The processed changelog markdown content to be rendered.
 		 * @returns The rendered changelog content as returned by the partial endpoint.
 		 */
-		const renderChangelog = (content: string) =>
+		const renderChangelog = (currentURLOrigin: string) => (content: string) =>
 			Effect.gen(function* () {
 				const ctx = yield* AstroAPIContext;
-				const currentRequestJson = yield* readAPIContextJson<{
-					currentURLOrigin: string;
-				}>(ctx);
-
-				const currentURLOrigin = currentRequestJson.currentURLOrigin;
 
 				const partialUrl = new URL(
 					ctx.locals.StudioCMS?.routeMap.endpointLinks.partials.render,
@@ -133,17 +128,18 @@ export class ProcessChangelog extends Effect.Service<ProcessChangelog>()('Proces
 		/**
 		 * Runs the entire changelog processing pipeline, which includes fetching the raw changelog, generating the processed markdown, and rendering it. If any step in the pipeline fails, it returns a ChangelogError with details about the failure.
 		 */
-		const runPipeline = pipe(
-			getRawChangelog(),
-			Effect.flatMap(generateChangelog),
-			Effect.flatMap(renderChangelog),
-			Effect.catchAll(
-				(error) =>
-					new ChangelogError({
-						message: `Failed to process changelog: ${error instanceof Error ? error.message : String(error)}`,
-					})
-			)
-		);
+		const runPipeline = (currentURLOrigin: string) =>
+			pipe(
+				getRawChangelog(),
+				Effect.flatMap(generateChangelog),
+				Effect.flatMap(renderChangelog(currentURLOrigin)),
+				Effect.catchAll(
+					(error) =>
+						new ChangelogError({
+							message: `Failed to process changelog: ${error instanceof Error ? error.message : String(error)}`,
+						})
+				)
+			);
 
 		return {
 			getRawChangelog,
