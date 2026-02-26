@@ -12,6 +12,15 @@ declare module 'studiocms:logger' {
 	) => Response;
 }
 
+declare module 'studiocms:client/apiClients' {
+	export const authClient: typeof import('./client/apiClient').authClient;
+	export const dashboardClient: typeof import('./client/apiClient').dashboardClient;
+	export const integrationsClient: typeof import('./client/apiClient').integrationsClient;
+	export const restClient: typeof import('./client/apiClient').restClient;
+	export const sdkClient: typeof import('./client/apiClient').sdkClient;
+	export const apiClients: typeof import('./client/apiClient').apiClients;
+}
+
 declare module 'virtual:studiocms/route-config' {
 	export const routeConfig: import('./handlers/frontend/types').ProcessedRouteConfig;
 	export default routeConfig;

@@ -37,7 +37,9 @@ const status: false | 'outdated' | 'latest' | 'future' = (() => {
   import { dateTimeListener } from "../../../scripts/dateTimeListener.js";
   import { dateWithTimeAndZone } from "../../../scripts/dateWithTimeAndZone.js";
   import { timeAgo } from "../../../scripts/timeAgo.js";
-  // import type { VersionCacheObject } from "studiocms:sdk/types";
+  import * as Effect from 'effect/Effect';
+  import { sdkClient } from 'studiocms:client/apiClients';
+  import { toast } from 'studiocms:ui/components/toaster/client';
 
   function setupVersionChecker() {
     const reloadButton = document.getElementById(
@@ -70,21 +72,23 @@ const status: false | 'outdated' | 'latest' | 'future' = (() => {
     new ModalHelper("version-modal", "version-modal-trigger");
 
     reloadButton.addEventListener("click", async () => {
-      const response = await fetch(reloadButton.dataset.link!);
-      if (response.ok) {
-        const data: { success: boolean; latestVersion: { version: string; lastCacheUpdate: Date } } =
-          await response.json();
+      reloadButton.disabled = true;
+      const { latestVersion, success } = await sdkClient.pipe(Effect.flatMap((client) => client.sdk.updateLatestVersionCache()), Effect.runPromise);
 
-        if (data.success) {
-          latestVersionElem.textContent = `v${data.latestVersion.version}`;
-          timeElem.dateTime = new Date(
-            data.latestVersion.lastCacheUpdate,
-          ).toISOString();
-          timeElem.textContent = dateWithTimeAndZone(
-            new Date(data.latestVersion.lastCacheUpdate),
-          );
-          latestUpdateCheck.textContent = `(${timeAgo(new Date(data.latestVersion.lastCacheUpdate))})`;
-        }
+      if (success) {
+        latestVersionElem.textContent = `v${latestVersion.version}`;
+        timeElem.dateTime = new Date(latestVersion.lastCacheUpdate).toISOString();
+        timeElem.textContent = dateWithTimeAndZone(new Date(latestVersion.lastCacheUpdate));
+        latestUpdateCheck.textContent = `(${timeAgo(new Date(latestVersion.lastCacheUpdate))})`;
+
+        reloadButton.disabled = false;
+      } else {
+        reloadButton.disabled = false;
+        toast({
+          title: "Failed to update version check",
+          description: "Please try again later.",
+          type: "danger",
+        });
       }
     });
   }

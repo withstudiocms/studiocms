@@ -348,6 +348,7 @@ export const studiocms = (): AstroIntegration => {
 						'studiocms:client-scripts/StorageFileBrowser': ambientScripts([
 							'./virtuals/scripts/StorageFileBrowser.js',
 						]),
+						'studiocms:client/apiClients': dynamicVirtual(['./client/apiClient.js']),
 					},
 				});
 

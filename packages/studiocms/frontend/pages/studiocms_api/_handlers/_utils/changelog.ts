@@ -1,6 +1,6 @@
-import { Effect, genLogger, HTTPClient, Platform, readAPIContextJson } from '@withstudiocms/effect';
+import { HTTPClient, Platform, readAPIContextJson } from '@withstudiocms/effect';
 import { loadChangelog, semverCategories } from '@withstudiocms/internal_helpers/utils';
-import { Data, pipe } from 'effect';
+import { Data, Effect, pipe } from 'effect';
 import { AstroAPIContext } from 'effectify/astro/context';
 import type { List, Root } from 'mdast';
 import { toMarkdown } from 'mdast-util-to-markdown';
@@ -16,14 +16,14 @@ export class ChangelogError extends Data.TaggedError('ChangelogError')<{ message
  * This service fetches the raw changelog from the GitHub repository, processes it to extract relevant information, and renders it using a partial endpoint.
  */
 export class ProcessChangelog extends Effect.Service<ProcessChangelog>()('ProcessChangelog', {
-	effect: genLogger('routes/sdk/utils/changelog/ProcessChangelog/effect')(function* () {
+	effect: Effect.gen(function* () {
 		const httpClient = yield* HTTPClient;
 
 		/**
 		 * Fetches the raw changelog markdown from the GitHub repository. If the fetch fails, it returns a ChangelogError with details about the failure.
 		 */
 		const getRawChangelog = () =>
-			genLogger('routes/sdk/utils/changelog/ProcessChangelog/effect.getRawChangelog')(function* () {
+			Effect.gen(function* () {
 				const data = yield* httpClient.get(
 					'https://raw.githubusercontent.com/withstudiocms/studiocms/refs/heads/main/packages/studiocms/CHANGELOG.md'
 				);
@@ -45,60 +45,58 @@ export class ProcessChangelog extends Effect.Service<ProcessChangelog>()('Proces
 		 *
 		 */
 		const generateChangelog = (raw: string) =>
-			genLogger('routes/sdk/utils/changelog/ProcessChangelog/effect.generateChangelog')(
-				function* () {
-					const ToProcess = yield* Effect.try(() => loadChangelog({ raw }));
+			Effect.gen(function* () {
+				const ToProcess = yield* Effect.try(() => loadChangelog({ raw }));
 
-					const output: string[] = [];
+				const output: string[] = [];
 
-					const astEnd: Root = {
-						type: 'root',
-						children: [],
-					};
+				const astEnd: Root = {
+					type: 'root',
+					children: [],
+				};
 
-					for (const version of ToProcess.versions) {
-						const versionChanges: List = { type: 'list', children: [] };
+				for (const version of ToProcess.versions) {
+					const versionChanges: List = { type: 'list', children: [] };
 
-						for (const semverCategory of semverCategories) {
-							for (const listItem of version.changes[semverCategory].children) {
-								versionChanges.children.push(listItem);
-							}
+					for (const semverCategory of semverCategories) {
+						for (const listItem of version.changes[semverCategory].children) {
+							versionChanges.children.push(listItem);
 						}
-
-						if (version.includes.size) {
-							versionChanges.children.push({
-								type: 'listItem',
-								children: [
-									{
-										type: 'paragraph',
-										children: [
-											{ type: 'text', value: `Includes: ${[...version.includes].join(', ')} ` },
-										],
-									},
-								],
-							});
-						}
-
-						if (!versionChanges.children.length) continue;
-
-						astEnd.children.push({
-							type: 'heading',
-							depth: 2,
-							children: [{ type: 'text', value: version.version }],
-						});
-
-						astEnd.children.push(versionChanges);
 					}
 
-					const outputData = yield* Effect.try(() => toMarkdown(astEnd, { bullet: '-' }));
+					if (version.includes.size) {
+						versionChanges.children.push({
+							type: 'listItem',
+							children: [
+								{
+									type: 'paragraph',
+									children: [
+										{ type: 'text', value: `Includes: ${[...version.includes].join(', ')} ` },
+									],
+								},
+							],
+						});
+					}
 
-					output.push(outputData);
+					if (!versionChanges.children.length) continue;
 
-					const markdownString = output.join('\n');
+					astEnd.children.push({
+						type: 'heading',
+						depth: 2,
+						children: [{ type: 'text', value: version.version }],
+					});
 
-					return markdownString;
+					astEnd.children.push(versionChanges);
 				}
-			);
+
+				const outputData = yield* Effect.try(() => toMarkdown(astEnd, { bullet: '-' }));
+
+				output.push(outputData);
+
+				const markdownString = output.join('\n');
+
+				return markdownString;
+			});
 
 		/**
 		 * Renders the processed changelog markdown by sending it to a partial endpoint. If the rendering fails, it returns a ChangelogError with details about the failure.
@@ -107,7 +105,7 @@ export class ProcessChangelog extends Effect.Service<ProcessChangelog>()('Proces
 		 * @returns The rendered changelog content as returned by the partial endpoint.
 		 */
 		const renderChangelog = (content: string) =>
-			genLogger('routes/sdk/utils/changelog/ProcessChangelog/effect.renderChangelog')(function* () {
+			Effect.gen(function* () {
 				const ctx = yield* AstroAPIContext;
 				const currentRequestJson = yield* readAPIContextJson<{
 					currentURLOrigin: string;
