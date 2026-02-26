@@ -1,25 +1,11 @@
 ---
 export const partial = true;
 
-import type { AvailablePermissionRanks } from '@withstudiocms/auth-kit/types';
+import type { CombinedUserData } from 'studiocms:sdk/types';
 import UserListItem from '../../../components/dashboard/user-mgmt/UserListItem.astro';
 
-type PermissionsData = {
-	user: string;
-	rank: AvailablePermissionRanks;
-};
-
-type Users = {
-	id: string;
-	name: string;
-	email: string | null;
-	avatar: string | null;
-	username: string;
-	permissionsData: PermissionsData | undefined;
-};
-
 type FullJsonData = {
-	users: Users[];
+	users: CombinedUserData[];
 	searchQuery?: string;
 };
 
