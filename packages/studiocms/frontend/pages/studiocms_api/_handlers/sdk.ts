@@ -30,13 +30,22 @@ export const SDKAPIHandler = HttpApiBuilder.group(StudioCMSSDKApiSpec, 'sdk', (h
 		.handle('listPages', () =>
 			SDKCore.pipe(
 				Effect.flatMap((sdk) => sdk.GET.pages()),
-				Effect.map((pages) => ({ lastUpdated: new Date().toISOString(), pages }))
+				Effect.map((pages) => ({ lastUpdated: new Date().toISOString(), pages })),
+				Effect.catchAll(
+					(err) => new SDKAPIError({ error: err.message || 'Failed to list SDK pages' })
+				)
 			)
 		)
 		.handle('updateLatestVersionCache', () =>
 			SDKCore.pipe(
 				Effect.flatMap((sdk) => sdk.UPDATE.latestVersion()),
-				Effect.map((latestVersion) => ({ success: true, latestVersion }))
+				Effect.map((latestVersion) => ({ success: true, latestVersion })),
+				Effect.catchAll(
+					(err) =>
+						new SDKAPIError({
+							error: err.message || 'Failed to update latest version cache',
+						})
+				)
 			)
 		)
 );

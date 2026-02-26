@@ -1,4 +1,4 @@
-import { developerConfig } from 'studiocms:config';
+import config, { developerConfig } from 'studiocms:config';
 import APIServiceModule from 'studiocms:storage-manager/module';
 import { HttpApiBuilder, type HttpServerResponse } from '@effect/platform';
 import { Unauthorized } from '@effect/platform/HttpApiError';
@@ -6,7 +6,7 @@ import type { HttpBodyError } from '@effect/platform/HttpBody';
 import { StudioCMSIntegrationsApiSpec } from '@withstudiocms/api-spec';
 import { CurrentUser } from '@withstudiocms/api-spec/astro-context';
 import { DbStudioQueryError, IntegrationsAPIError } from '@withstudiocms/api-spec/integrations';
-// import { CMSLogger } from '@withstudiocms/effect';
+import { CMSLogger } from '@withstudiocms/effect';
 import type { APIContext } from 'astro';
 import { Effect, Layer } from 'effect';
 import { AstroAPIContext } from 'effectify/astro/context';
@@ -17,8 +17,7 @@ import EffectifyAstroContextDriver from '#storage-manager/core/effectify-astro-c
 import UrlMappingService from '#storage-manager/core/url-mapping';
 import { AstroLocalsAuthLive } from '../_middleware/astroLocals.js';
 import { getDriverInstance } from './_utils/db-studio-driver.js';
-
-// import { parseLogLevel } from './_utils/parseLogLevel.js';
+import { parseLogLevel } from './_utils/parseLogLevel.js';
 
 /**
  * Custom error class used for quick escaping from deep error handling in the Effect chain.
@@ -42,9 +41,9 @@ export const DbStudioAPIHandler = HttpApiBuilder.group(
 			Effect.fn(function* ({ payload }) {
 				const isDev = import.meta.env.DEV;
 
-				// const logLevel = parseLogLevel(config.logLevel);
+				const logLevel = parseLogLevel(config.logLevel);
 
-				// const log = new CMSLogger({ level: logLevel }, 'studiocms:database/studio');
+				const log = new CMSLogger({ level: logLevel }, 'studiocms:database/studio');
 
 				// Check if demo mode is enabled
 				if (developerConfig.demoMode !== false) {
@@ -71,7 +70,7 @@ export const DbStudioAPIHandler = HttpApiBuilder.group(
 					)
 				);
 
-				// log.debug(`Received ${payload.type} request`);
+				log.debug(`Received ${payload.type} request`);
 
 				return yield* Effect.tryPromise({
 					try: async () => {
@@ -84,7 +83,7 @@ export const DbStudioAPIHandler = HttpApiBuilder.group(
 							};
 						}
 						const r = await driver.batch(payload.statements as string[]);
-						// log.debug(`${payload.type} executed with ${r.length} results`);
+						log.debug(`${payload.type} executed with ${r.length} results`);
 						return {
 							type: payload.type,
 							id: payload.id,
