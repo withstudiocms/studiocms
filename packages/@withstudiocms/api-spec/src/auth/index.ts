@@ -23,7 +23,7 @@ export * from './schemas.js';
  * @public
  */
 export class AuthApi extends HttpApiGroup.make('auth')
-	.annotate(Title, 'Authentication API')
+	.annotate(Title, 'Primary Auth API Group')
 	.annotate(
 		Description,
 		'API endpoints for handling authentication processes including OAuth flows and session management.'
@@ -37,6 +37,23 @@ export class AuthApi extends HttpApiGroup.make('auth')
 	.add(loginPost)
 	.add(logoutPost)
 	.add(registerPost)
+	.addError(AuthAPIError, { status: 500 })
+	.prefix('/auth') {}
+
+/**
+ * OAuth API group for handling OAuth authentication flows.
+ *
+ * This group includes endpoints for initiating OAuth flows and handling OAuth callbacks.
+ * It is nested within the main AuthApi group and shares the same metadata and error handling.
+ */
+export class OAuthAPI extends HttpApiGroup.make('oauth')
+	.annotate(Title, 'OAuth API Group')
+	.annotate(Description, 'API endpoints for handling OAuth authentication flows.')
+	.annotate(Version, pkg.version)
+	.annotate(License, {
+		name: 'MIT',
+		url: 'https://github.com/withstudiocms/studiocms/blob/main/packages/%40withstudiocms/api-spec/LICENSE',
+	})
 	.add(oAuthIndexGet)
 	.add(oAuthCallbackGet)
 	.addError(AuthAPIError, { status: 500 })
@@ -81,4 +98,5 @@ export class StudioCMSAuthApi extends HttpApi.make('StudioCMSAuthApi')
 		},
 	}))
 	.add(AuthApi)
+	.add(OAuthAPI)
 	.prefix('/studiocms_api') {}

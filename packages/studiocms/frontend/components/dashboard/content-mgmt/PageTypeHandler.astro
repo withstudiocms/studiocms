@@ -3,8 +3,8 @@ import type { SettingsField } from 'studiocms:plugin-helpers';
 
 interface Props {
 	pluginFields: {
-		identifier: string;
-		fields?: SettingsField[];
+		readonly identifier: string;
+		readonly fields?: readonly SettingsField[];
 	}[];
 }
 

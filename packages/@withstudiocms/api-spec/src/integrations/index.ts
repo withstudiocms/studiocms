@@ -16,11 +16,11 @@ export * from './schemas.js';
  * description, version, and license information. It also specifies the error schema
  * used by the API.
  */
-export class IntegrationsApi extends HttpApiGroup.make('integrations')
-	.annotate(Title, 'Integrations API')
+export class DBStudioApi extends HttpApiGroup.make('dbStudio')
+	.annotate(Title, 'DB Studio API')
 	.annotate(
 		Description,
-		"API endpoints and utilities for interacting with StudioCMS's internal integrations."
+		"API endpoints and utilities for interacting with StudioCMS's internal DB Studio integrations."
 	)
 	.annotate(Version, pkg.version)
 	.annotate(License, {
@@ -30,6 +30,29 @@ export class IntegrationsApi extends HttpApiGroup.make('integrations')
 
 	// Db Studio Endpoints
 	.add(DbStudioQueryPost)
+
+	.addError(IntegrationsAPIError, { status: 500 })
+	.prefix('/integrations') {}
+
+/**
+ * Integrations API group for StudioCMS.
+ *
+ * @remarks
+ * This class defines the Integrations API group, including metadata such as title,
+ * description, version, and license information. It also specifies the error schema
+ * used by the API.
+ */
+export class StorageManagerApi extends HttpApiGroup.make('storageManager')
+	.annotate(Title, 'Storage Manager API')
+	.annotate(
+		Description,
+		"API endpoints and utilities for interacting with StudioCMS's internal storage manager integrations."
+	)
+	.annotate(Version, pkg.version)
+	.annotate(License, {
+		name: 'MIT',
+		url: 'https://github.com/withstudiocms/studiocms/blob/main/packages/%40withstudiocms/api-spec/LICENSE',
+	})
 
 	// Storage Manager Endpoints
 	.add(storageManagerPost)
@@ -72,5 +95,6 @@ export class StudioCMSIntegrationsApiSpec extends HttpApi.make('StudioCMSIntegra
 			description: 'StudioCMS Documentation',
 		},
 	}))
-	.add(IntegrationsApi)
+	.add(DBStudioApi)
+	.add(StorageManagerApi)
 	.prefix('/studiocms_api') {}

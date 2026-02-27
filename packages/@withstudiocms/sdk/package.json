@@ -68,5 +68,8 @@
     "@withstudiocms/effect": "workspace:^",
     "@withstudiocms/kysely": "workspace:^",
     "tsx": "^4.21.0"
+  },
+  "peerDependencies": {
+    "effect": "catalog:effect"
   }
 }

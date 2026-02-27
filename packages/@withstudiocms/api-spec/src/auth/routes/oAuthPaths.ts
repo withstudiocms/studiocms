@@ -1,4 +1,5 @@
 import { HttpApiEndpoint } from '@effect/platform';
+import { NotFound } from '@effect/platform/HttpApiError';
 import { Description, Summary, Title } from '@effect/platform/OpenApi';
 import * as Schema from 'effect/Schema';
 import { AuthAPIError } from '../errors.js';
@@ -30,6 +31,7 @@ export const oAuthIndexGet = HttpApiEndpoint.get('oAuthInit', '/:provider')
 		}),
 		{ status: 302 } // Astro Redirects default to 302
 	)
+	.addError(NotFound, { status: 404 })
 	.addError(AuthAPIError, { status: 400 })
 	.addError(AuthAPIError, { status: 403 })
 	.addError(AuthAPIError, { status: 500 });
@@ -63,6 +65,7 @@ export const oAuthCallbackGet = HttpApiEndpoint.get('oAuthCallback', '/:provider
 		}),
 		{ status: 302 } // Astro Redirects default to 302
 	)
+	.addError(NotFound, { status: 404 })
 	.addError(AuthAPIError, { status: 400 })
 	.addError(AuthAPIError, { status: 403 })
 	.addError(AuthAPIError, { status: 500 });

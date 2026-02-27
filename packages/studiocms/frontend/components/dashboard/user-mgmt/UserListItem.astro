@@ -1,24 +1,12 @@
 ---
 import { useTranslations } from 'studiocms:i18n';
+import type { CombinedUserData } from 'studiocms:sdk/types';
 import { Divider } from 'studiocms:ui/components/divider';
 import { Icon } from 'studiocms:ui/components/icon';
-import type { AvailablePermissionRanks } from '@withstudiocms/auth-kit/types';
 import User from '../../shared/SSRUser.astro';
 
 interface Props {
-	user: {
-		id: string;
-		name: string;
-		email: string | null | undefined;
-		avatar: string | null | undefined;
-		username: string;
-		permissionsData:
-			| {
-					user: string;
-					rank: AvailablePermissionRanks;
-			  }
-			| undefined;
-	};
+	user: CombinedUserData;
 	searchQuery?: string;
 }
 

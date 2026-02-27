@@ -70,14 +70,15 @@ export const setupRoutes: InjectedRoute[] = [
 		pattern: '/studiocms_api/dashboard/step-2',
 		entrypoint: 'setup-pages/studiocms_api/dashboard/step-2.ts',
 	},
-	{
-		pattern: '/studiocms_api/integrations/[type]/[...id]',
-		entrypoint: 'pages/studiocms_api/integrations/[type]/[...id].ts',
-	},
 	// Renderer service routes
 	{
 		pattern: '/studiocms_api/partials/render',
 		entrypoint: 'pages/studiocms_api/partials/render.astro',
+	},
+	// Integration routes
+	{
+		pattern: '/studiocms_api/integrations/[...all]',
+		entrypoint: 'pages/studiocms_api/integrations/[...all].ts',
 	},
 ];
 
@@ -87,11 +88,6 @@ export const setupRoutes: InjectedRoute[] = [
  * These routes include SDK API endpoints and the renderer service.
  */
 export const noDbSetupRoutes: InjectedRoute[] = [
-	// SDK API routes
-	{
-		pattern: '/studiocms_api/sdk/[...path]',
-		entrypoint: 'pages/studiocms_api/sdk/[...path].ts',
-	},
 	// Renderer service routes
 	{
 		pattern: '/studiocms_api/partials/render',
@@ -99,9 +95,21 @@ export const noDbSetupRoutes: InjectedRoute[] = [
 	},
 	// Integration routes
 	{
-		pattern: '/studiocms_api/integrations/[type]/[...id]',
-		entrypoint: 'pages/studiocms_api/integrations/[type]/[...id].ts',
+		pattern: '/studiocms_api/integrations/[...all]',
+		entrypoint: 'pages/studiocms_api/integrations/[...all].ts',
 	},
+	// SDK API routes
+	{
+		// TODO Flagged for replacement by combined API route
+		pattern: '/studiocms_api/sdk/[...path]',
+		entrypoint: 'pages/studiocms_api/sdk/[...path].ts',
+	},
+	// TODO: Implement the combined API route that serves all API specs and documentation in one place
+	// StudioCMS Primary API routes
+	// {
+	// 	pattern: '/studiocms_api/[...all]',
+	// 	entrypoint: 'pages/studiocms_api/[...all].ts',
+	// },
 ];
 
 /**
@@ -111,10 +119,12 @@ export const noDbSetupRoutes: InjectedRoute[] = [
  */
 export const restRoutes: InjectedRoute[] = [
 	{
+		// TODO Flagged for replacement by combined API route
 		pattern: '/studiocms_api/rest/v1/[type]/[...id]',
 		entrypoint: 'pages/studiocms_api/rest/v1/[type]/[...id].ts',
 	},
 	{
+		// TODO Flagged for replacement by combined API route
 		pattern: '/studiocms_api/rest/v1/public/[type]/[...id]',
 		entrypoint: 'pages/studiocms_api/rest/v1/public/[type]/[...id].ts',
 	},
@@ -127,6 +137,7 @@ export const restRoutes: InjectedRoute[] = [
  */
 export const oAuthEnabledRoutes: InjectedRoute[] = [
 	{
+		// TODO Flagged for replacement by combined API route
 		pattern: '/studiocms_api/auth/[provider]/[...id]',
 		entrypoint: 'pages/studiocms_api/auth/[provider]/[...id].ts',
 	},
@@ -156,22 +167,27 @@ export const dashboardEnabledRoutes = (
 ): InjectedRoute[] => [
 	// Dashboard API Routes
 	{
+		// TODO Flagged for replacement by combined API route
 		pattern: '/studiocms_api/dashboard/templates',
 		entrypoint: 'pages/studiocms_api/dashboard/templates.ts',
 	},
 	{
+		// TODO Flagged for replacement by combined API route
 		pattern: '/studiocms_api/partials/editor',
 		entrypoint: 'pages/studiocms_api/partials/editor.astro',
 	},
 	{
+		// TODO Flagged for replacement by combined API route
 		pattern: '/studiocms_api/partials/user-list-items',
 		entrypoint: 'pages/studiocms_api/partials/user-list-items.astro',
 	},
 	{
+		// TODO Flagged for replacement by combined API route
 		pattern: '/studiocms_api/dashboard/search-list',
 		entrypoint: 'pages/studiocms_api/dashboard/search-list.ts',
 	},
 	{
+		// TODO Flagged for replacement by combined API route
 		pattern: '/studiocms_api/auth/[path]',
 		entrypoint: 'pages/studiocms_api/auth/[path].ts',
 	},
@@ -279,6 +295,7 @@ export const dashboardAPIEnabledRoutes = (
 		entrypoint: 'pages/[dashboard]/password-reset.astro',
 	},
 
+	// TODO Flagged for replacement by combined API route
 	// API Routes
 	{
 		pattern: '/studiocms_api/dashboard/config',
@@ -452,3 +469,8 @@ export const getAstroProject = Effect.gen(function* () {
 		Effect.flatMap(injectMiddleware(config))
 	);
 });
+
+/**
+ * Get route configuration for StudioCMS.
+ */
+export const getRouteConfig = StudioCMSRouteConfig.pipe(Effect.flatMap(processedConfig));

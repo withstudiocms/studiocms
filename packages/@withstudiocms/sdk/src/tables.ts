@@ -1,4 +1,3 @@
-import { Schema } from '@withstudiocms/effect';
 import {
 	BooleanFromNumber,
 	ColumnType,
@@ -12,6 +11,7 @@ import {
 	StringArrayFromString,
 	Table,
 } from '@withstudiocms/kysely/core/schema';
+import * as Schema from 'effect/Schema';
 
 /**
  * StudioCMS Users Table Definition

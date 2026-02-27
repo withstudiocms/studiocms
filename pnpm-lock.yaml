@@ -1157,6 +1157,9 @@ importers:
       diff2html:
         specifier: ^3.4.56
         version: 3.4.56
+      effect:
+        specifier: catalog:effect
+        version: 3.19.18
       zod:
         specifier: ^3.25.76
         version: 3.25.76
@@ -1228,6 +1231,9 @@ importers:
 
   packages/studiocms:
     dependencies:
+      '@effect/platform':
+        specifier: catalog:effect
+        version: 0.94.5(effect@3.19.18)
       '@iconify-json/circle-flags':
         specifier: ^1.2.10
         version: 1.2.10
@@ -1255,6 +1261,9 @@ importers:
       '@studiocms/ui':
         specifier: catalog:studiocms
         version: 1.1.2(astro@5.17.3(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))(vite@6.4.1(@types/node@22.19.6)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.2))
+      '@withstudiocms/api-spec':
+        specifier: workspace:^
+        version: link:../@withstudiocms/api-spec
       '@withstudiocms/auth-kit':
         specifier: workspace:^
         version: link:../@withstudiocms/auth-kit

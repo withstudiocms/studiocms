@@ -1,5 +1,6 @@
 import { HttpApiEndpoint } from '@effect/platform';
 import { Description, Summary, Title } from '@effect/platform/OpenApi';
+import { Schema } from 'effect';
 import { SDKAPIError } from '../errors.js';
 import {
 	FullChangelogResponseSchema,
@@ -33,6 +34,15 @@ export const fullChangelogPost = HttpApiEndpoint.post('fullChangelog', '/full-ch
 	.annotate(Title, 'Get Full Changelog')
 	.annotate(Summary, 'Retrieve the full changelog in JSON format.')
 	.annotate(Description, 'Retrieves the complete changelog for the StudioCMS SDK in JSON format.')
+	.setPayload(
+		Schema.Struct({
+			currentURLOrigin: Schema.String,
+		}).annotations({
+			title: 'Full Changelog Request Payload',
+			description:
+				'The payload for requesting the full changelog, containing the current URL origin.',
+		})
+	)
 	.addSuccess(FullChangelogResponseSchema)
 	.addError(SDKAPIError, { status: 500 });
 
@@ -53,6 +63,7 @@ export const fullChangelogPost = HttpApiEndpoint.post('fullChangelog', '/full-ch
  *
  * @throws {SDKAPIError} Returns a 500 status code on server error
  */
+// TODO: This endpoint is unused and should be removed
 export const listPagesGet = HttpApiEndpoint.get('listPages', '/list-pages')
 	.annotate(Title, 'List Pages')
 	.annotate(Summary, 'Retrieve a list of pages.')

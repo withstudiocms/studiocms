@@ -1,4 +1,4 @@
-import { HttpApiMiddleware, HttpApiSchema } from '@effect/platform';
+import { HttpApiMiddleware, HttpApiSchema, HttpApiSecurity, OpenApi } from '@effect/platform';
 import { StudioCMSUsersTable } from '@withstudiocms/sdk/tables';
 import * as Context from 'effect/Context';
 import * as Schema from 'effect/Schema';
@@ -11,7 +11,7 @@ export { AstroAPIContext };
  */
 export class LocalsSessionData extends Schema.Class<LocalsSessionData>('LocalsSessionData')({
 	isLoggedIn: Schema.Boolean,
-	permissionLevel: Schema.Literal('owner', 'admin', 'editor', 'viewer', 'unknown'),
+	permissionLevel: Schema.Literal('owner', 'admin', 'editor', 'visitor', 'unknown'),
 	user: Schema.NullOr(StudioCMSUsersTable.Select),
 }) {}
 
@@ -50,5 +50,13 @@ export class AstroLocalsMiddleware extends HttpApiMiddleware.Tag<AstroLocalsMidd
 		failure: AstroLocalsMissing,
 		provides: CurrentUser,
 		optional: false,
+		security: {
+			localUser: HttpApiSecurity.apiKey({ key: 'AstroLocalUser' }).pipe(
+				HttpApiSecurity.annotate(
+					OpenApi.Description,
+					"Astro Locals User Authentication (Uses Astro's Middleware provided locals)"
+				)
+			),
+		},
 	}
 ) {}

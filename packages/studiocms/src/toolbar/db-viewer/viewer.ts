@@ -1,4 +1,5 @@
-import type { DbQueryRequest } from './db-shared-types.js';
+import { integrationsClient } from 'studiocms:client/apiClients';
+import * as Effect from 'effect/Effect';
 
 type SupportedDialect = 'sqlite' | 'postgres' | 'mysql' | 'turso';
 
@@ -59,12 +60,12 @@ export class DbStudioElement extends HTMLElement {
 		if (event.origin !== 'https://studio.outerbase.com') {
 			return;
 		}
-		const data = event.data;
-		switch (data?.type) {
+		const payload = event.data;
+		switch (payload?.type) {
 			case 'transaction':
 			case 'query': {
-				console.debug('Executing %s:', data.type, data);
-				const result = await this.#executeQuery(data);
+				console.debug('Executing %s:', payload.type, payload);
+				const result = await this.#effectExecuteQuery({ payload });
 				this.#iframe?.contentWindow?.postMessage(result, '*');
 				break;
 			}
@@ -72,23 +73,38 @@ export class DbStudioElement extends HTMLElement {
 	}
 
 	/**
-	 * Executes a SQL request and returns the result.
+	 * Executes a SQL query or transaction
 	 */
-	async #executeQuery(request: DbQueryRequest) {
-		const response = await fetch('/studiocms_api/integrations/db-studio/query', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify(request),
-		});
-		if (response.ok) {
-			const result = await response.json();
-			console.debug('Query result:', result);
-			return result;
-		}
-		const error = await response.text();
-		console.error('Error executing query:', error);
-		return { type: request.type, id: request.id, error };
+	async #effectExecuteQuery(
+		request:
+			| {
+					readonly payload: {
+						readonly id: number;
+						readonly type: 'query';
+						readonly statement: string;
+					};
+					readonly withResponse?: false | undefined;
+			  }
+			| {
+					readonly payload: {
+						readonly id: number;
+						readonly type: 'transaction';
+						readonly statements: readonly string[];
+					};
+					readonly withResponse?: false | undefined;
+			  }
+	) {
+		return await integrationsClient.pipe(
+			Effect.flatMap((client) => client.dbStudio.dbStudioQuery(request)),
+			Effect.catchAll((error) => {
+				console.error('Error executing query:', error);
+				return Effect.succeed({
+					type: request.payload.type,
+					id: request.payload.id,
+					error: error instanceof Error ? error.message : String(error),
+				});
+			}),
+			Effect.runPromise
+		);
 	}
 }
