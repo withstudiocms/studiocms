@@ -62,6 +62,7 @@ const testIntegration: AstroIntegration = {
 					'studiocms:plugins/imageService': `export const imageServiceKeys = ${JSON.stringify([])}`,
 					'virtual:studiocms/plugins/renderers': `${pluginRenderers ? pluginRenderers.map(({ content }) => content).join('\n') : ''}`,
 					'studiocms:plugins/renderers': `export const pluginRenderers = ${JSON.stringify(pluginRenderers.map(({ pageType, safePageType }) => ({ pageType, safePageType })) || [])};`,
+					'studiocms:plugins/post-processors': 'export const renderPostProcessors = [];',
 					'studiocms:component-registry/runtime':
 						// Test-only identity renderer: mirrors API shape but skips sanitization on purpose.
 						'export const createRenderer = (result, sanitize, preRenderer) => (content) => content;',
