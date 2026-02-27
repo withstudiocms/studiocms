@@ -1,6 +1,6 @@
 ---
 import { renderAugments, renderPostProcessorAugments } from 'studiocms:plugins/augments';
-import { pluginPostProcessors } from 'studiocms:plugins/post-processors';
+import { renderPostProcessors } from 'studiocms:plugins/post-processors';
 import { pluginRenderers } from 'studiocms:plugins/renderers';
 import * as renderers from 'virtual:studiocms/plugins/renderers';
 import type { SSRResult } from 'astro';
@@ -57,7 +57,7 @@ const renderedContent = await renderFn({
 	content: data.defaultContent?.content || '<h1>Error: No content found</h1>',
 	augments,
 	postProcessorAugments,
-	postProcessors: pluginPostProcessors,
+	postProcessors: renderPostProcessors,
 	renderOpts: {
 		// @ts-expect-error - $$result is a global variable injected by Astro during compilation and not a editor-known variable
 		result: $$result as SSRResult,

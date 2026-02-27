@@ -79,7 +79,7 @@ declare module 'studiocms:plugins/augments' {
 }
 
 declare module 'studiocms:plugins/post-processors' {
-	export const pluginPostProcessors: import('./types.js').PluginPostProcessor[];
+	export const renderPostProcessors: import('./types.js').PluginPostProcessor[];
 }
 
 declare module 'studiocms:plugins/list' {
