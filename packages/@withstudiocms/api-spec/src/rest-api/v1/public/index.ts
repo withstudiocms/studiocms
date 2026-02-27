@@ -1,5 +1,6 @@
 import { HttpApiGroup } from '@effect/platform';
 import { Description, ExternalDocs, License, Title, Version } from '@effect/platform/OpenApi';
+import { restApiV1VersionAnnotation, StudioCMSLicenseAnnotation } from '../../../consts.js';
 import { RestAPIError } from '../../errors.js';
 import { CategoryByIdGet, CategoryIndexGet } from './categories.js';
 import { FolderByIdGet, FoldersIndexGet } from './folders.js';
@@ -42,11 +43,8 @@ export class RestApiV1PublicSpec extends HttpApiGroup.make('restV1Public')
 		url: 'https://docs.studiocms.dev/en/how-it-works/restapi/',
 		description: 'StudioCMS REST API Documentation',
 	})
-	.annotate(Version, '1.0.0')
-	.annotate(License, {
-		name: 'MIT',
-		url: 'https://github.com/withstudiocms/studiocms/blob/main/packages/%40withstudiocms/api-spec/LICENSE',
-	})
+	.annotate(Version, restApiV1VersionAnnotation)
+	.annotate(License, StudioCMSLicenseAnnotation)
 	.add(CategoryIndexGet)
 	.add(CategoryByIdGet)
 	.add(FoldersIndexGet)

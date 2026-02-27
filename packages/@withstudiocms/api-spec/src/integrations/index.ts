@@ -1,6 +1,7 @@
 import { HttpApi, HttpApiGroup } from '@effect/platform';
 import { Description, License, Title, Transform, Version } from '@effect/platform/OpenApi';
 import pkg from '../../package.json';
+import { StudioCMSLicenseAnnotation, StudioCMSTransformAnnotation } from '../consts.js';
 import { IntegrationsAPIError } from './errors.js';
 import { DbStudioQueryPost } from './routes/db-studio.js';
 import { storageManagerPost, storageManagerPut } from './routes/storage.js';
@@ -23,10 +24,7 @@ export class DBStudioApi extends HttpApiGroup.make('dbStudio')
 		"API endpoints and utilities for interacting with StudioCMS's internal DB Studio integrations."
 	)
 	.annotate(Version, pkg.version)
-	.annotate(License, {
-		name: 'MIT',
-		url: 'https://github.com/withstudiocms/studiocms/blob/main/packages/%40withstudiocms/api-spec/LICENSE',
-	})
+	.annotate(License, StudioCMSLicenseAnnotation)
 
 	// Db Studio Endpoints
 	.add(DbStudioQueryPost)
@@ -49,10 +47,7 @@ export class StorageManagerApi extends HttpApiGroup.make('storageManager')
 		"API endpoints and utilities for interacting with StudioCMS's internal storage manager integrations."
 	)
 	.annotate(Version, pkg.version)
-	.annotate(License, {
-		name: 'MIT',
-		url: 'https://github.com/withstudiocms/studiocms/blob/main/packages/%40withstudiocms/api-spec/LICENSE',
-	})
+	.annotate(License, StudioCMSLicenseAnnotation)
 
 	// Storage Manager Endpoints
 	.add(storageManagerPost)
@@ -75,26 +70,9 @@ export class StudioCMSIntegrationsApiSpec extends HttpApi.make('StudioCMSIntegra
 		Description,
 		'API specification for the StudioCMS Integrations API, providing endpoints and utilities for integrations interactions.\n\n## External Resources\n\n- [Main Website](https://studiocms.dev)\n- [StudioCMS GitHub Repository](https://github.com/withstudiocms/studiocms)\n- [Discord Community](https://chat.studiocms.dev)\n- [API Source definitions](https://github.com/withstudiocms/studiocms/blob/main/packages/%40withstudiocms/api-spec/)\n\n---\n\n_This API specification is automatically generated and maintained by the StudioCMS team._'
 	)
-	.annotate(License, {
-		name: 'MIT',
-		url: 'https://github.com/withstudiocms/studiocms/blob/main/packages/%40withstudiocms/api-spec/LICENSE',
-	})
+	.annotate(License, StudioCMSLicenseAnnotation)
 	.annotate(Version, pkg.version)
-	.annotate(Transform, (data) => ({
-		...data,
-		info: {
-			...data.info,
-			contact: {
-				name: 'StudioCMS Team',
-				url: 'https://chat.studiocms.dev',
-				email: 'support@studiocms.dev',
-			},
-		},
-		externalDocs: {
-			url: 'https://docs.studiocms.dev/en/',
-			description: 'StudioCMS Documentation',
-		},
-	}))
+	.annotate(Transform, StudioCMSTransformAnnotation)
 	.add(DBStudioApi)
 	.add(StorageManagerApi)
 	.prefix('/studiocms_api') {}

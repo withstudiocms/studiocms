@@ -13,13 +13,24 @@ export const AstroLocalsAuthLive = Layer.effect(
 	AstroLocalsMiddleware,
 	Effect.gen(function* () {
 		return {
-			localUser: (_localUser) =>
-				AstroAPIContext.pipe(
-					Effect.map(({ locals }) => locals.StudioCMS?.security?.userSessionData),
-					Effect.flatMap((user) =>
-						user ? Effect.succeed(CurrentUser.of(user)) : Effect.fail(new AstroLocalsMissing())
-					)
-				),
+			localUser: (_) =>
+				Effect.gen(function* () {
+					const { locals } = yield* AstroAPIContext;
+					const user = locals.StudioCMS?.security?.userSessionData;
+					const userPermissionLevel = locals.StudioCMS.security?.userPermissionLevel || {
+						isVisitor: false,
+						isEditor: false,
+						isAdmin: false,
+						isOwner: false,
+					};
+					if (user) {
+						return CurrentUser.of({
+							...user,
+							userPermissionLevel,
+						});
+					}
+					return yield* new AstroLocalsMissing();
+				}),
 		};
 	})
 );

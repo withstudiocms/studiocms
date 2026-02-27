@@ -1,3 +1,7 @@
+/**
+ * This module defines the Astro context for the StudioCMS API specifications. It includes the data structures and middleware necessary to extract user session information from Astro's locals and provide it in the context for API routes. This allows API routes to access user session data and enforce authentication and authorization based on that data.
+ */
+
 import { HttpApiMiddleware, HttpApiSchema, HttpApiSecurity, OpenApi } from '@effect/platform';
 import { StudioCMSUsersTable } from '@withstudiocms/sdk/tables';
 import * as Context from 'effect/Context';
@@ -13,6 +17,12 @@ export class LocalsSessionData extends Schema.Class<LocalsSessionData>('LocalsSe
 	isLoggedIn: Schema.Boolean,
 	permissionLevel: Schema.Literal('owner', 'admin', 'editor', 'visitor', 'unknown'),
 	user: Schema.NullOr(StudioCMSUsersTable.Select),
+	userPermissionLevel: Schema.Struct({
+		isVisitor: Schema.Boolean,
+		isEditor: Schema.Boolean,
+		isAdmin: Schema.Boolean,
+		isOwner: Schema.Boolean,
+	}),
 }) {}
 
 /**

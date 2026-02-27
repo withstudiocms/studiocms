@@ -1,6 +1,7 @@
 import { HttpApi, HttpApiGroup } from '@effect/platform';
 import { Description, License, Title, Transform, Version } from '@effect/platform/OpenApi';
 import pkg from '../../package.json';
+import { StudioCMSLicenseAnnotation, StudioCMSTransformAnnotation } from '../consts.js';
 import { SDKAPIError } from './errors.js';
 import { fullChangelogPost, listPagesGet, updateLatestVersionCacheGet } from './routes/index.js';
 
@@ -28,10 +29,7 @@ export class SDKApi extends HttpApiGroup.make('sdk')
 		'Utilities and tools for interacting with the StudioCMS SDK. These endpoints are publicly accessible as they do not expose any sensitive data.\n\nThese endpoints allow users to retrieve SDK-related information such as the full changelog, list of public non-draft pages, and update the latest version cache.'
 	)
 	.annotate(Version, pkg.version)
-	.annotate(License, {
-		name: 'MIT',
-		url: 'https://github.com/withstudiocms/studiocms/blob/main/packages/%40withstudiocms/api-spec/LICENSE',
-	})
+	.annotate(License, StudioCMSLicenseAnnotation)
 	.add(fullChangelogPost)
 	.add(listPagesGet)
 	.add(updateLatestVersionCacheGet)
@@ -67,25 +65,8 @@ export class StudioCMSSDKApiSpec extends HttpApi.make('StudioCMSSDKApiSpec')
 		Description,
 		'API specification for the StudioCMS SDK, providing endpoints and utilities for SDK interactions.\n\n## External Resources\n\n- [Main Website](https://studiocms.dev)\n- [StudioCMS GitHub Repository](https://github.com/withstudiocms/studiocms)\n- [Discord Community](https://chat.studiocms.dev)\n- [API Source definitions](https://github.com/withstudiocms/studiocms/blob/main/packages/%40withstudiocms/api-spec/)\n\n---\n\n_This API specification is automatically generated and maintained by the StudioCMS team._'
 	)
-	.annotate(License, {
-		name: 'MIT',
-		url: 'https://github.com/withstudiocms/studiocms/blob/main/packages/%40withstudiocms/api-spec/LICENSE',
-	})
+	.annotate(License, StudioCMSLicenseAnnotation)
 	.annotate(Version, pkg.version)
-	.annotate(Transform, (data) => ({
-		...data,
-		info: {
-			...data.info,
-			contact: {
-				name: 'StudioCMS Team',
-				url: 'https://chat.studiocms.dev',
-				email: 'support@studiocms.dev',
-			},
-		},
-		externalDocs: {
-			url: 'https://docs.studiocms.dev/en/',
-			description: 'StudioCMS Documentation',
-		},
-	}))
+	.annotate(Transform, StudioCMSTransformAnnotation)
 	.add(SDKApi)
 	.prefix('/studiocms_api') {}
