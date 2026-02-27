@@ -87,7 +87,7 @@
   "type": "module",
   "dependencies": {
     "astro-integration-kit": "catalog:",
-    "mdast-util-from-markdown": "^2.0.2",
+    "mdast-util-from-markdown": "^2.0.3",
     "mdast-util-to-string": "^4.0.0",
     "unist-util-visit": "^5.1.0",
     "tinyexec": "^1.0.2"
