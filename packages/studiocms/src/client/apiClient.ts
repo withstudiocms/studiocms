@@ -12,7 +12,7 @@ import {
 import * as Effect from 'effect/Effect';
 
 // Get the base URL from the Astro client config, or default to localhost if not set.
-const baseUrl = site || 'http://localhost:4321';
+const baseUrl = site ?? 'http://localhost:4321';
 
 /**
  * Utility function to create an HTTP API client for a given API specification. This function takes an API specification as input and returns a configured HTTP client that can be used to make requests to the corresponding API endpoints. The client is set up with the base URL and uses the FetchHttpClient for making requests to the backend.

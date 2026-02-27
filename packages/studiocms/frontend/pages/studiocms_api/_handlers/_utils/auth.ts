@@ -1,5 +1,5 @@
 import { AuthAPIError } from '@withstudiocms/api-spec/auth';
-import { Effect, genLogger } from '@withstudiocms/effect';
+import { Effect } from 'effect';
 import { isValidEmail } from '#schemas/external-schemas';
 
 /**
@@ -8,7 +8,7 @@ import { isValidEmail } from '#schemas/external-schemas';
 export class AuthAPIUtils extends Effect.Service<AuthAPIUtils>()(
 	'studiocms/routes/api/auth/shared/AuthAPIUtils',
 	{
-		effect: genLogger('studiocms/routes/api/auth/shared/AuthAPIUtils.effect')(function* () {
+		effect: Effect.gen(function* () {
 			return {
 				validateEmail: (email: string) =>
 					Effect.try({

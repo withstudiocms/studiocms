@@ -14,6 +14,9 @@ const { link, changelog } = Astro.props;
 </frame-button>
 
 <script>
+    import * as Effect from 'effect/Effect';
+    import { sdkClient } from 'studiocms:client/apiClients';
+
     if (!customElements.get('frame-button')) {
         
         class FrameButton extends HTMLElement {
@@ -81,15 +84,20 @@ const { link, changelog } = Astro.props;
                 });
                 
                 slot.addEventListener('click', async () => {
+                    const { changelog } = await Effect.orElse(
+                        sdkClient.pipe(Effect.flatMap((client) => 
+                            client.sdk.fullChangelog({ 
+                                payload: { currentURLOrigin: window.location.origin },
+                            })
+                        )),
+                        () => Effect.succeed({ 
+                            success: false, 
+                            changelog: 'Failed to load changelog. Please try again later.'
+                        })
+                    ).pipe(
+                        Effect.runPromise
+                    );
                     const changelogLink = this.getAttribute('data-changelog')!;
-                    const link = this.getAttribute('data-link')!;
-                    const { changelog } = await (await fetch(link, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({ currentURLOrigin: window.location.origin }),
-                    })).json();
                     const styles = this.getAttribute('data-styles')!;
 
                     frameContent.innerHTML = `

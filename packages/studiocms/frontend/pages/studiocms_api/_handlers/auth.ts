@@ -95,7 +95,11 @@ export const AuthAPIHandler = HttpApiBuilder.group(StudioCMSAuthApi, 'auth', (ha
 					}
 
 					// If the email is invalid, return an error
-					const checkEmail = yield* validateEmail(email);
+					const checkEmail = yield* validateEmail(email).pipe(
+						Effect.catchAll(
+							(err) => new AuthAPIError({ error: `Email validation failed: ${String(err)}` })
+						)
+					);
 
 					// If the email provided is not a valid email address, return an error. We do this to prevent abuse of the forgot password functionality which could lead to spamming users with password reset emails.
 					if (!checkEmail.success) {
@@ -136,7 +140,12 @@ export const AuthAPIHandler = HttpApiBuilder.group(StudioCMSAuthApi, 'auth', (ha
 					}
 
 					// Send an admin notification that the user has been updated
-					yield* sendAdminNotification('user_updated', user.username);
+					yield* sendAdminNotification('user_updated', user.username).pipe(
+						Effect.catchAll(
+							(err) =>
+								new AuthAPIError({ error: `Failed to send admin notification: ${err.toString()}` })
+						)
+					);
 
 					// Generate the reset link using the token and context
 					const resetLink = generateResetLink(token);
@@ -167,7 +176,14 @@ export const AuthAPIHandler = HttpApiBuilder.group(StudioCMSAuthApi, 'auth', (ha
 						to: user.email,
 						subject: 'Password Reset',
 						html: passwordResetTemplate,
-					});
+					}).pipe(
+						Effect.catchAll(
+							(err) =>
+								new AuthAPIError({
+									error: `Failed to send password reset email: ${err.toString()}`,
+								})
+						)
+					);
 
 					// If sending the email failed, return an error
 					if (!mailRes) {
@@ -191,7 +207,17 @@ export const AuthAPIHandler = HttpApiBuilder.group(StudioCMSAuthApi, 'auth', (ha
 				// Provide the necessary dependencies for the forgot password handler
 				Effect.provide(forgotPasswordDependencies),
 				// Catch any errors that occur during the forgot password process and return a generic error message to prevent exposing sensitive information about the failure.
-				Effect.catchTags(sharedCatchTags)
+				Effect.catchTags({
+					...sharedCatchTags,
+					ConfigError: () => new AuthAPIError({ error: 'Site configuration is invalid' }),
+					DBCallbackFailure: () => new AuthAPIError({ error: 'Database callback failed' }),
+					QueryParseError: () => new AuthAPIError({ error: 'Database query failed' }),
+					QueryError: () => new AuthAPIError({ error: 'Database query failed' }),
+					NotFoundError: () => new AuthAPIError({ error: 'User not found' }),
+					UnknownException: () => new AuthAPIError({ error: 'An unknown error occurred' }),
+					SMTPError: () => new AuthAPIError({ error: 'Failed to send email due to SMTP error' }),
+					TemplateEngineError: () => new AuthAPIError({ error: 'Failed to render email template' }),
+				})
 			)
 		)
 		.handle(

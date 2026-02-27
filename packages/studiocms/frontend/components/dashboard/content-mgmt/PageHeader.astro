@@ -93,7 +93,7 @@ const currentMode = getCurrentMode();
     <Button color='primary' id='nav-open' class='mobile-btn'>
       <Icon name="heroicons:bars-3" height={24} width={24} slot="start-content" />
     </Button>
-    <h1 class="page-title" data-link={Astro.locals.StudioCMS.routeMap.sdk.pages}>
+    <h1 class="page-title">
       {currentMode === 'none' ? (
         <t-content-header key="title">
           {pageTitle}

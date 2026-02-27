@@ -34,54 +34,81 @@ if (usernameAndPassword && SHOW_OAUTH) {
 	paragraph = 'sub-header-noprovider';
 }
 ---
-<AuthLayout 
-    title={t('title')} 
-    description={t('description')} 
-    {lang} 
-    checkLogin
-    >
-    
+
+<AuthLayout title={t("title")} description={t("description")} {lang} checkLogin>
     <div slot="header" class="form-header">
         <h1>
-            <t-signup key="header">{t('header')}</t-signup>
+            <t-signup key="header">{t("header")}</t-signup>
         </h1>
         <p>
             <t-signup key={paragraph}>{t(paragraph)}</t-signup>
         </p>
     </div>
 
-    { usernameAndPassword && (
-        <form class="form" id="sign-up-form" method="post" action={Astro.locals.StudioCMS.routeMap.authLinks.registerAPI}>
+    {
+        usernameAndPassword && (
+            <form
+                class="form"
+                id="sign-up-form"
+                method="post"
+                action={Astro.locals.StudioCMS.routeMap.authLinks.registerAPI}
+            >
+                <Input
+                    label={t("username-label")}
+                    name="username"
+                    type="text"
+                />
+                <Input label={t("email-label")} name="email" type="email" />
+                <Input
+                    label={t("displayname-label")}
+                    name="displayname"
+                    type="text"
+                />
+                <Input
+                    label={t("password-label")}
+                    name="password"
+                    type="password"
+                />
+                <Input
+                    label={t("confirm-password-label")}
+                    name="confirm-password"
+                    type="password"
+                />
 
-            <Input label={t('username-label')} name="username" type="text" />
-            <Input label={t('email-label')} name="email" type="email" />
-            <Input label={t('displayname-label')} name="displayname" type="text" />
-            <Input label={t('password-label')} name="password" type="password" />
-            <Input label={t('confirm-password-label')} name="confirm-password" type="password" />
+                <Button
+                    fullWidth
+                    type="submit"
+                    as="button"
+                    type="submit"
+                    color="primary"
+                    variant="solid"
+                >
+                    <t-signup key="create-account-button">
+                        {t("create-account-button")}
+                    </t-signup>
+                </Button>
+            </form>
+        )
+    }
 
-            <Button fullWidth type="submit" as="button" type="submit" color='primary' variant='solid'>
-                <t-signup key="create-account-button">{t('create-account-button')}</t-signup>
-            </Button>
-        </form>
-    )}
-
-    { allowUserRegistration && (
-        <p slot="footer">
-            <t-signup key="allow-login-haveaccount">
-                {t('allow-login-haveaccount')}
-            </t-signup> 
-            <a href={Astro.locals.StudioCMS.routeMap.authLinks.loginURL}>
-                <t-signup key="allow-login-login">
-                    {t('allow-login-login')}
+    {
+        allowUserRegistration && (
+            <p slot="footer">
+                <t-signup key="allow-login-haveaccount">
+                    {t("allow-login-haveaccount")}
                 </t-signup>
-            </a>
-        </p>
-    )}
-
+                <a href={Astro.locals.StudioCMS.routeMap.authLinks.loginURL}>
+                    <t-signup key="allow-login-login">
+                        {t("allow-login-login")}
+                    </t-signup>
+                </a>
+            </p>
+        )
+    }
 </AuthLayout>
 
 <script>
-    import { 
+    import {
         $i18n,
         $localeSettings,
         baseTranslation,
@@ -89,9 +116,9 @@ if (usernameAndPassword && SHOW_OAUTH) {
         documentUpdater,
         makeTranslation,
         updateElmLabel,
-    } from 'studiocms:i18n/client';
+    } from "studiocms:i18n/client";
 
-    const currentPage = '@studiocms/auth:signup';
+    const currentPage = "@studiocms/auth:signup";
 
     let lang = defaultLang;
 
@@ -100,24 +127,129 @@ if (usernameAndPassword && SHOW_OAUTH) {
     $localeSettings.subscribe((locale) => {
         lang = locale || defaultLang;
     });
-    
-    i18n.subscribe(comp => {
-        documentUpdater(comp, lang)
-        updateElmLabel('username', comp['username-label']);
-        updateElmLabel('email', comp['email-label']);
-        updateElmLabel('displayname', comp['displayname-label']);
-        updateElmLabel('password', comp['password-label']);
-        updateElmLabel('confirm-password', comp['confirm-password-label']);
+
+    i18n.subscribe((comp) => {
+        documentUpdater(comp, lang);
+        updateElmLabel("username", comp["username-label"]);
+        updateElmLabel("email", comp["email-label"]);
+        updateElmLabel("displayname", comp["displayname-label"]);
+        updateElmLabel("password", comp["password-label"]);
+        updateElmLabel("confirm-password", comp["confirm-password-label"]);
     });
 
-    if (!customElements.get('t-signup')) {
-        customElements.define('t-signup', makeTranslation(currentPage, i18n));
+    if (!customElements.get("t-signup")) {
+        customElements.define("t-signup", makeTranslation(currentPage, i18n));
     }
 </script>
 
 <script>
-    import { formListener } from '../../scripts/auth/formListener.js';
-    const signUpForm = document.getElementById('sign-up-form') as HTMLFormElement;
+    import { toast } from "studiocms:ui/components/toaster/client";
+    import * as Effect from "effect/Effect";
+    import * as Schema from "effect/Schema";
+    import { authClient } from "studiocms:client/apiClients";
 
-    signUpForm.addEventListener('submit', async (event) => formListener(event, signUpForm, 'register'));
+    class AuthError extends Schema.TaggedError<AuthError>()("AuthError", {
+        title: Schema.String,
+        description: Schema.String,
+    }) {}
+
+    const sharedErrors = {
+        HttpApiDecodeError: () =>
+            new AuthError({
+                title: "Error",
+                description: "Failed to decode server response",
+            }),
+        NotFound: () =>
+            new AuthError({
+                title: "Error",
+                description: "Login endpoint not found",
+            }),
+        ParseError: () =>
+            new AuthError({
+                title: "Error",
+                description: "Failed to parse server response",
+            }),
+        RequestError: () =>
+            new AuthError({
+                title: "Error",
+                description: "Network error occurred",
+            }),
+        ResponseError: (err: { message: string }) =>
+            new AuthError({
+                title: "Error",
+                description: `Server responded with error: ${err.message}`,
+            }),
+        AuthAPIError: (err: { error?: string }) =>
+            new AuthError({
+                title: "Error",
+                description: err.error || "Authentication failed",
+            }),
+    };
+
+    const signUpForm = document.getElementById(
+        "sign-up-form",
+    ) as HTMLFormElement | null;
+
+    signUpForm?.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        const formData = new FormData(signUpForm);
+
+        const password = formData.get("password") as string;
+        const confirmPassword = formData.get("confirm-password") as string;
+
+        if (password !== confirmPassword) {
+            toast({
+                title: "Error",
+                description: "Passwords do not match",
+                type: "danger",
+            });
+            return;
+        }
+
+        const response = await authClient.pipe(
+            Effect.flatMap((client) =>
+                client.auth.register({
+                    payload: formData,
+                }),
+            ),
+            Effect.catchTags(sharedErrors),
+            Effect.catchTag("AuthError", (err) =>
+                Effect.succeed({
+                    ok: false as const,
+                    error: {
+                        title: err.title,
+                        description: err.description,
+                    },
+                }),
+            ),
+            Effect.runPromise,
+        );
+
+        if (response.ok) {
+            toast({
+                title: "Registration successful",
+                description: "Redirecting...",
+                type: "success",
+            });
+            if (typeof window !== "undefined") {
+                window.location.reload();
+            }
+            return;
+        } else if ("error" in response) {
+            toast({
+                title: response.error.title,
+                description: response.error.description,
+                type: "danger",
+            });
+            return;
+        } else {
+            toast({
+                title: "Error",
+                description: "An unknown error occurred",
+                type: "danger",
+            });
+            return;
+        }
+    });
 </script>

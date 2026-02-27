@@ -1,13 +1,13 @@
 export type QueryRequest = {
-	type: 'query';
-	id: number;
-	statement: string;
+	readonly type: 'query';
+	readonly id: number;
+	readonly statement: string;
 };
 
 export type TransactionRequest = {
-	type: 'transaction';
-	id: number;
-	statements: string[];
+	readonly type: 'transaction';
+	readonly id: number;
+	readonly statements: readonly string[];
 };
 
 export type DbQueryRequest = QueryRequest | TransactionRequest;
