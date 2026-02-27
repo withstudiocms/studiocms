@@ -19,6 +19,17 @@ export type {
 } from './shared.js';
 
 /**
+ * Post Processor Schema for validating the structure of post-processors that plugins can implement to modify the rendered content within the StudioCMS system.
+ *
+ * - id: A unique identifier for the post-processor, allowing it to be referenced and applied to the rendered content.
+ * - postProcessor: A string with the path to the post-processor module, which should export a function that takes the rendered content as input and returns the modified content. This allows plugins to implement custom logic for modifying the rendered output, such as adding additional HTML, transforming the content in specific ways, or integrating with other systems to enhance the rendering process.
+ */
+export class PostProcessorSchema extends Schema.Class<PostProcessorSchema>('PostProcessorSchema')({
+	id: Schema.String,
+	postProcessor: Schema.String,
+}) {}
+
+/**
  * This module defines schemas for rendering augmentations in the StudioCMS plugin system.
  */
 export class RenderAugmentBaseSchema extends Schema.Class<RenderAugmentBaseSchema>(
@@ -61,15 +72,26 @@ export class SuffixRenderAugmentSchema extends RenderAugmentBaseSchema.extend<Su
 }) {}
 
 /**
+ * Represents an augmentation to the rendering process that applies a post-processing function to the rendered content.
+ */
+export class PostProcessorAugmentSchema extends PostProcessorSchema.extend<PostProcessorAugmentSchema>(
+	'PostProcessorAugmentSchema'
+)({
+	type: Schema.Literal('post-processor'),
+}) {}
+
+/**
  * Represents an augmentation to the rendering process, which can be of three types:
  * - Component: Augments the rendering by adding a component with specified properties.
  * - Prefix: Augments the rendering by adding HTML content before the main content.
  * - Suffix: Augments the rendering by adding HTML content after the main content.
+ * - Post-Processor: Augments the rendering by applying a post-processing function to the rendered content.
  */
 export const RenderAugmentSchema = Schema.Union(
 	ComponentRenderAugmentSchema,
 	PrefixRenderAugmentSchema,
-	SuffixRenderAugmentSchema
+	SuffixRenderAugmentSchema,
+	PostProcessorAugmentSchema
 );
 
 /**
@@ -171,6 +193,7 @@ export const RenderingConfigSchema = Schema.mutable(
 	Schema.Struct({
 		pageTypes: PageTypesSchema,
 		augments: Schema.optional(RenderAugmentsSchema),
+		postProcessor: Schema.optional(PostProcessorSchema),
 	})
 );
 

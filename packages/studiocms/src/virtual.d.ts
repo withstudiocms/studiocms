@@ -74,6 +74,12 @@ declare module 'studiocms:plugins/renderers' {
 
 declare module 'studiocms:plugins/augments' {
 	export const renderAugments: import('./types.js').RenderAugment[];
+	export const renderPostProcessorAugments: import('./types.js').PostProcessorRenderAugment[];
+	export const renderAugmentsList: import('./types.js').AugmentListItem[];
+}
+
+declare module 'studiocms:plugins/post-processors' {
+	export const pluginPostProcessors: import('./types.js').PluginPostProcessor[];
 }
 
 declare module 'studiocms:plugins/list' {

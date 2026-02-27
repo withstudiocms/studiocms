@@ -315,6 +315,7 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 			content: string;
 		}[] = [];
 
+		// Define the plugin augments
 		const pluginAugments: (
 			| {
 					type: 'component';
@@ -337,6 +338,21 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 					html: string;
 			  }
 		)[] = [];
+
+		// Define the plugin post-processors augments
+		const postProcessorAugments: {
+			type: 'post-processor';
+			id: string;
+			safeId: string;
+			postProcessor: string;
+		}[] = [];
+
+		// Define the plugin post-processors
+		const pluginPostProcessors: {
+			id: string;
+			safeId: string;
+			postProcessor: string;
+		}[] = [];
 
 		// Define the Safe Plugin List
 		const safePluginList: SafePluginListType = [];
@@ -685,10 +701,23 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 
 			const components: Record<string, string> = {};
 
-			if (augment.components) {
+			if ('components' in augment && augment.components) {
 				for (const [key, value] of Object.entries(augment.components)) {
 					components[key] = rendererComponentFilter(value, convertToSafeString(safeId + key));
 				}
+			}
+
+			if (type === 'post-processor') {
+				return {
+					id,
+					safeId,
+					type,
+					components,
+					postProcessor: rendererComponentFilter(
+						augment.postProcessor,
+						convertToSafeString(`${safeId}postProcessor`)
+					),
+				};
 			}
 
 			if (type === 'component') {
@@ -954,7 +983,7 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 				});
 
 				await hookRunner('studiocms:rendering', {
-					async setRendering({ pageTypes, augments }) {
+					async setRendering({ pageTypes, augments, postProcessor }) {
 						for (const { apiEndpoint, identifier, rendererComponent } of pageTypes || []) {
 							if (apiEndpoint) {
 								pluginEndpoints.push({
@@ -988,7 +1017,23 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 						// Handle Augments
 						for (const augment of augments || []) {
 							const runtimeAugment = convertToRuntimeAugment(augment);
-							pluginAugments.push(runtimeAugment);
+							if (runtimeAugment.type === 'post-processor') {
+								postProcessorAugments.push(runtimeAugment);
+							} else {
+								pluginAugments.push(runtimeAugment);
+							}
+						}
+
+						// Handle Post-Processors
+						if (postProcessor) {
+							pluginPostProcessors.push({
+								id: postProcessor.id,
+								safeId: convertToSafeString(postProcessor.id),
+								postProcessor: rendererComponentFilter(
+									postProcessor.postProcessor,
+									convertToSafeString(`${postProcessor.id}postProcessor`)
+								),
+							});
 						}
 					},
 				});
@@ -1285,6 +1330,24 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 					`,
 				},
 				{
+					id: 'virtual:studiocms/plugins/post-processors',
+					content: pluginPostProcessors.map(({ postProcessor }) => postProcessor).join('\n'),
+				},
+				{
+					id: 'studiocms:plugins/post-processors',
+					content: `
+						import * as postProcessors from 'virtual:studiocms/plugins/post-processors';
+
+						const pluginPostProcessors = ${JSON.stringify(pluginPostProcessors.map(({ id, safeId }) => ({ id, safeId })) || [])};
+
+						export const renderPostProcessors = pluginPostProcessors.map(({ id, safeId }) => ({
+							id,
+							safeId,
+							postProcessor: postProcessors[safeId + 'postProcessor'],
+						}));
+					`,
+				},
+				{
 					id: 'virtual:studiocms/plugins/augments',
 					content: [...pluginAugments]
 						.map(({ components }) =>
@@ -1296,12 +1359,20 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 						.join('\n'),
 				},
 				{
+					id: 'virtual:studiocms/plugins/post-processor-augments',
+					content: postProcessorAugments.map(({ postProcessor }) => postProcessor).join('\n'),
+				},
+				{
 					id: 'studiocms:plugins/augments',
 					content: `
 						import * as augments from 'virtual:studiocms/plugins/augments';
+						import * as postProcessorAugments from 'virtual:studiocms/plugins/post-processor-augments';
 						import { convertToSafeString } from '${resolve('../utils/safeString.js')}';
 
 						const pluginAugments = ${JSON.stringify(pluginAugments || [])};
+						const postProcessorPluginAugments = ${JSON.stringify(postProcessorAugments || [])};
+
+						export const renderAugmentsList = [...pluginAugments, ...postProcessorPluginAugments].map(({ id, safeId }) => ({ id, safeId }));
 
 						export const renderAugments = pluginAugments.map((entry) => {
 							const { id, safeId, type, components } = entry;
@@ -1323,6 +1394,15 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 									...acc,
 									[key]: augments[convertToSafeString(safeId + key)],
 								}), {}),
+							};
+						});
+
+						export const renderPostProcessorAugments = postProcessorPluginAugments.map((entry) => {
+							const { id, safeId, type, postProcessor } = entry;
+							return {
+								id,
+								type,
+								postProcessor: postProcessorAugments[convertToSafeString(safeId + 'postProcessor')],
 							};
 						});
 					`,
