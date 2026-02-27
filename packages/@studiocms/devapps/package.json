@@ -59,7 +59,7 @@
     "astro-integration-kit": "catalog:",
     "cheerio": "^1.2.0",
     "turndown": "^7.2.2",
-    "sanitize-html": "^2.17.0"
+    "sanitize-html": "^2.17.1"
   },
   "devDependencies": {
     "@types/turndown": "^5.0.6",
