@@ -62,6 +62,7 @@ const testIntegration: AstroIntegration = {
 					'studiocms:plugins/imageService': `export const imageServiceKeys = ${JSON.stringify([])}`,
 					'virtual:studiocms/plugins/renderers': `${pluginRenderers ? pluginRenderers.map(({ content }) => content).join('\n') : ''}`,
 					'studiocms:plugins/renderers': `export const pluginRenderers = ${JSON.stringify(pluginRenderers.map(({ pageType, safePageType }) => ({ pageType, safePageType })) || [])};`,
+					'studiocms:plugins/post-processors': 'export const renderPostProcessors = [];',
 					'studiocms:component-registry/runtime':
 						// Test-only identity renderer: mirrors API shape but skips sanitization on purpose.
 						'export const createRenderer = (result, sanitize, preRenderer) => (content) => content;',
@@ -84,7 +85,8 @@ const testIntegration: AstroIntegration = {
 					])};`,
 					'virtual:studiocms/sitemaps': `export const sitemaps = ['./sitemap-blog.xml', './sitemap-shop.xml'];`,
 					'studiocms:components': `export { default as Generator } from '${resolve('./test/fixtures/Generator.astro')}';`,
-					'studiocms:plugins/augments': 'export const renderAugments = [];',
+					'studiocms:plugins/augments':
+						'export const renderAugments = []; export const renderPostProcessorAugments = [];',
 				},
 			});
 		},

@@ -6,6 +6,8 @@ import type { SanitizeOptions } from 'ultrahtml/transformers/sanitize';
 import type {
 	GenericAsyncFn,
 	Internal_SCMS_AstroComponent,
+	PluginPostProcessor,
+	PostProcessorRenderAugment,
 	PrefixSuffixAugment,
 	RenderAugment,
 } from '../../types.js';
@@ -45,6 +47,8 @@ interface CreateRenderOptions {
 export interface RenderFnOptions {
 	renderOpts: CreateRenderOptions;
 	augments?: RenderAugment[];
+	postProcessorAugments?: PostProcessorRenderAugment[];
+	postProcessors?: PluginPostProcessor[];
 	content: string;
 }
 
@@ -102,6 +106,28 @@ export const renderFn = async (args: RenderFnOptions) => {
 	// Running this last to ensure any StorageInput/StorageImage components
 	// added via augments are also transformed correctly preserving any needed storage-file:// URLs
 	renderedContent = await transformHTML(renderedContent, {}, {}, [transformStorageAPI({ site })]);
+
+	// Run Augment Post-Processors in order, passing the rendered content through each
+	if (args.postProcessorAugments && args.postProcessorAugments.length > 0) {
+		for (const postProcessorAugment of args.postProcessorAugments) {
+			try {
+				renderedContent = await postProcessorAugment.postProcessor(renderedContent);
+			} catch (error) {
+				console.error(`Error in post-processor augment ${postProcessorAugment.id}:`, error);
+			}
+		}
+	}
+
+	// Run Plugin Post-Processors in order, passing the rendered content through each
+	if (args.postProcessors && args.postProcessors.length > 0) {
+		for (const postProcessor of args.postProcessors) {
+			try {
+				renderedContent = await postProcessor.postProcessor(renderedContent);
+			} catch (error) {
+				console.error(`Error in plugin post-processor ${postProcessor.id}:`, error);
+			}
+		}
+	}
 
 	// Return the final rendered content
 	return renderedContent;
