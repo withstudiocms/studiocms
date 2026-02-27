@@ -58,6 +58,10 @@
 			"types": "./dist/auth/index.d.mts",
 			"default": "./dist/auth/index.mjs"
 		},
+		"./consts": {
+			"types": "./dist/consts.d.mts",
+			"default": "./dist/consts.mjs"
+		},
 		"./dashboard": {
 			"types": "./dist/dashboard/index.d.mts",
 			"default": "./dist/dashboard/index.mjs"

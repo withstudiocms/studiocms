@@ -1,6 +1,7 @@
 import { HttpApi, HttpApiGroup } from '@effect/platform';
 import { Description, License, Title, Transform, Version } from '@effect/platform/OpenApi';
 import pkg from '../../package.json';
+import { StudioCMSLicenseAnnotation, StudioCMSTransformAnnotation } from '../consts.js';
 import { DashboardAPIError } from './errors.js';
 import { apiTokensDelete, apiTokensPost } from './routes/api-tokens.js';
 import { configPost } from './routes/config.js';
@@ -40,10 +41,7 @@ export class DashboardApiTokensGroup extends HttpApiGroup.make('apiTokens')
 	.annotate(Title, 'API Tokens Endpoints')
 	.annotate(Description, 'Endpoints for managing API tokens in the StudioCMS Dashboard.')
 	.annotate(Version, pkg.version)
-	.annotate(License, {
-		name: 'MIT',
-		url: 'https://github.com/withstudiocms/studiocms/blob/main/packages/%40withstudiocms/api-spec/LICENSE',
-	})
+	.annotate(License, StudioCMSLicenseAnnotation)
 	.add(apiTokensPost)
 	.add(apiTokensDelete)
 	.addError(DashboardAPIError, { status: 500 })
@@ -56,10 +54,7 @@ export class DashboardConfigApi extends HttpApiGroup.make('dashboardConfig')
 	.annotate(Title, 'Dashboard Config API')
 	.annotate(Description, 'Endpoints for managing StudioCMS Dashboard configuration settings.')
 	.annotate(Version, pkg.version)
-	.annotate(License, {
-		name: 'MIT',
-		url: 'https://github.com/withstudiocms/studiocms/blob/main/packages/%40withstudiocms/api-spec/LICENSE',
-	})
+	.annotate(License, StudioCMSLicenseAnnotation)
 	.add(configPost)
 	.addError(DashboardAPIError, { status: 500 })
 	.prefix('/dashboard') {}
@@ -74,10 +69,7 @@ export class DashboardContentApi extends HttpApiGroup.make('dashboardContent')
 		'Endpoints for managing content within the StudioCMS Dashboard, including pages and folders.'
 	)
 	.annotate(Version, pkg.version)
-	.annotate(License, {
-		name: 'MIT',
-		url: 'https://github.com/withstudiocms/studiocms/blob/main/packages/%40withstudiocms/api-spec/LICENSE',
-	})
+	.annotate(License, StudioCMSLicenseAnnotation)
 	.add(contentPagePost)
 	.add(contentPagePatch)
 	.add(contentPageDelete)
@@ -98,10 +90,7 @@ export class DashboardMailerApi extends HttpApiGroup.make('dashboardMailer')
 		'Endpoints for managing mailer configuration and email checks within the StudioCMS Dashboard.'
 	)
 	.annotate(Version, pkg.version)
-	.annotate(License, {
-		name: 'MIT',
-		url: 'https://github.com/withstudiocms/studiocms/blob/main/packages/%40withstudiocms/api-spec/LICENSE',
-	})
+	.annotate(License, StudioCMSLicenseAnnotation)
 	.add(mailerCheckEmailPost)
 	.add(mailerConfigPost)
 	.add(mailerConfigPatch)
@@ -118,10 +107,7 @@ export class DashboardCreateApi extends HttpApiGroup.make('dashboardCreate')
 		'Endpoints for creating users, invites, and reset links within the StudioCMS Dashboard.'
 	)
 	.annotate(Version, pkg.version)
-	.annotate(License, {
-		name: 'MIT',
-		url: 'https://github.com/withstudiocms/studiocms/blob/main/packages/%40withstudiocms/api-spec/LICENSE',
-	})
+	.annotate(License, StudioCMSLicenseAnnotation)
 	.add(createResetLinkPost)
 	.add(createUserInvitePost)
 	.add(createUserPost)
@@ -138,10 +124,7 @@ export class DashboardEmailNotificationsApi extends HttpApiGroup.make('dashboard
 		'Endpoints for managing email notification settings within the StudioCMS Dashboard.'
 	)
 	.annotate(Version, pkg.version)
-	.annotate(License, {
-		name: 'MIT',
-		url: 'https://github.com/withstudiocms/studiocms/blob/main/packages/%40withstudiocms/api-spec/LICENSE',
-	})
+	.annotate(License, StudioCMSLicenseAnnotation)
 	.add(emailNotificationsSettingsPost)
 	.addError(DashboardAPIError, { status: 500 })
 	.prefix('/dashboard') {}
@@ -153,10 +136,7 @@ export class DashboardPluginsApi extends HttpApiGroup.make('dashboardPlugins')
 	.annotate(Title, 'Dashboard Plugins API')
 	.annotate(Description, 'Endpoints for managing plugin settings within the StudioCMS Dashboard.')
 	.annotate(Version, pkg.version)
-	.annotate(License, {
-		name: 'MIT',
-		url: 'https://github.com/withstudiocms/studiocms/blob/main/packages/%40withstudiocms/api-spec/LICENSE',
-	})
+	.annotate(License, StudioCMSLicenseAnnotation)
 	.add(pluginsSettingsPost)
 	.addError(DashboardAPIError, { status: 500 })
 	.prefix('/dashboard') {}
@@ -168,10 +148,7 @@ export class DashboardProfileApi extends HttpApiGroup.make('dashboardProfile')
 	.annotate(Title, 'Dashboard Profile API')
 	.annotate(Description, 'Endpoints for managing user profiles within the StudioCMS Dashboard.')
 	.annotate(Version, pkg.version)
-	.annotate(License, {
-		name: 'MIT',
-		url: 'https://github.com/withstudiocms/studiocms/blob/main/packages/%40withstudiocms/api-spec/LICENSE',
-	})
+	.annotate(License, StudioCMSLicenseAnnotation)
 	.add(profilePost)
 	.addError(DashboardAPIError, { status: 500 })
 	.prefix('/dashboard') {}
@@ -183,10 +160,7 @@ export class DashboardResetPasswordApi extends HttpApiGroup.make('dashboardReset
 	.annotate(Title, 'Dashboard Reset Password API')
 	.annotate(Description, 'Endpoints for managing password resets within the StudioCMS Dashboard.')
 	.annotate(Version, pkg.version)
-	.annotate(License, {
-		name: 'MIT',
-		url: 'https://github.com/withstudiocms/studiocms/blob/main/packages/%40withstudiocms/api-spec/LICENSE',
-	})
+	.annotate(License, StudioCMSLicenseAnnotation)
 	.add(resetPasswordPost)
 	.addError(DashboardAPIError, { status: 500 })
 	.prefix('/dashboard') {}
@@ -201,10 +175,7 @@ export class DashboardSearchApi extends HttpApiGroup.make('dashboardSearch')
 		'Endpoints for searching content and taxonomy within the StudioCMS Dashboard.'
 	)
 	.annotate(Version, pkg.version)
-	.annotate(License, {
-		name: 'MIT',
-		url: 'https://github.com/withstudiocms/studiocms/blob/main/packages/%40withstudiocms/api-spec/LICENSE',
-	})
+	.annotate(License, StudioCMSLicenseAnnotation)
 	.add(searchListGet)
 	.addError(DashboardAPIError, { status: 500 })
 	.prefix('/dashboard') {}
@@ -216,10 +187,7 @@ export class DashboardTaxonomyApi extends HttpApiGroup.make('dashboardTaxonomy')
 	.annotate(Title, 'Dashboard Taxonomy API')
 	.annotate(Description, 'Endpoints for managing taxonomy within the StudioCMS Dashboard.')
 	.annotate(Version, pkg.version)
-	.annotate(License, {
-		name: 'MIT',
-		url: 'https://github.com/withstudiocms/studiocms/blob/main/packages/%40withstudiocms/api-spec/LICENSE',
-	})
+	.annotate(License, StudioCMSLicenseAnnotation)
 	.add(taxonomyPost)
 	.add(taxonomyDelete)
 	.add(taxonomySearchGet)
@@ -233,10 +201,7 @@ export class DashboardTemplatesApi extends HttpApiGroup.make('dashboardTemplates
 	.annotate(Title, 'Dashboard Templates API')
 	.annotate(Description, 'Endpoints for managing templates within the StudioCMS Dashboard.')
 	.annotate(Version, pkg.version)
-	.annotate(License, {
-		name: 'MIT',
-		url: 'https://github.com/withstudiocms/studiocms/blob/main/packages/%40withstudiocms/api-spec/LICENSE',
-	})
+	.annotate(License, StudioCMSLicenseAnnotation)
 	.add(templatesPost)
 	.addError(DashboardAPIError, { status: 500 })
 	.prefix('/dashboard') {}
@@ -248,10 +213,7 @@ export class DashboardUsersApi extends HttpApiGroup.make('dashboardUsers')
 	.annotate(Title, 'Dashboard Users API')
 	.annotate(Description, 'Endpoints for managing users within the StudioCMS Dashboard.')
 	.annotate(Version, pkg.version)
-	.annotate(License, {
-		name: 'MIT',
-		url: 'https://github.com/withstudiocms/studiocms/blob/main/packages/%40withstudiocms/api-spec/LICENSE',
-	})
+	.annotate(License, StudioCMSLicenseAnnotation)
 	.add(updateUserNotificationsPost)
 	.add(usersPost)
 	.add(usersDelete)
@@ -268,10 +230,7 @@ export class DashboardVerifyEndpointsApi extends HttpApiGroup.make('dashboardVer
 		'Endpoints for verifying email and session within the StudioCMS Dashboard.'
 	)
 	.annotate(Version, pkg.version)
-	.annotate(License, {
-		name: 'MIT',
-		url: 'https://github.com/withstudiocms/studiocms/blob/main/packages/%40withstudiocms/api-spec/LICENSE',
-	})
+	.annotate(License, StudioCMSLicenseAnnotation)
 	.add(verifyEmailGet)
 	.add(resendVerifyEmailPost)
 	.add(verifySessionPost)
@@ -307,26 +266,9 @@ export class StudioCMSDashboardApiSpec extends HttpApi.make('StudioCMSDashboardA
 		Description,
 		'Main API specification for the StudioCMS Dashboard, providing endpoints for managing and interacting with the StudioCMS Dashboard. This specification includes comprehensive metadata such as licensing, versioning, and contact information.\n\n## External Resources\n\n- [Main Website](https://studiocms.dev)\n- [StudioCMS GitHub Repository](https://github.com/withstudiocms/studiocms)\n- [Discord Community](https://chat.studiocms.dev)\n- [API Source definitions](https://github.com/withstudiocms/studiocms/blob/main/packages/%40withstudiocms/api-spec/)\n\n---\n\n_This API specification is automatically generated and maintained by the StudioCMS team._'
 	)
-	.annotate(License, {
-		name: 'MIT',
-		url: 'https://github.com/withstudiocms/studiocms/blob/main/packages/%40withstudiocms/api-spec/LICENSE',
-	})
+	.annotate(License, StudioCMSLicenseAnnotation)
 	.annotate(Version, pkg.version)
-	.annotate(Transform, (data) => ({
-		...data,
-		info: {
-			...data.info,
-			contact: {
-				name: 'StudioCMS Team',
-				url: 'https://chat.studiocms.dev',
-				email: 'support@studiocms.dev',
-			},
-		},
-		externalDocs: {
-			url: 'https://docs.studiocms.dev/en/',
-			description: 'StudioCMS Documentation',
-		},
-	}))
+	.annotate(Transform, StudioCMSTransformAnnotation)
 	.add(DashboardApiTokensGroup)
 	.add(DashboardConfigApi)
 	.add(DashboardContentApi)

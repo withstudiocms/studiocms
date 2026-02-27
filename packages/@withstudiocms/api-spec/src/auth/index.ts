@@ -1,6 +1,7 @@
 import { HttpApi, HttpApiGroup } from '@effect/platform';
 import { Description, License, Title, Transform, Version } from '@effect/platform/OpenApi';
 import pkg from '../../package.json';
+import { StudioCMSLicenseAnnotation, StudioCMSTransformAnnotation } from '../consts.js';
 import { AuthAPIError } from './errors.js';
 import { forgotPasswordPost, loginPost, logoutPost, registerPost } from './routes/basePaths.js';
 import { oAuthCallbackGet, oAuthIndexGet } from './routes/oAuthPaths.js';
@@ -29,10 +30,7 @@ export class AuthApi extends HttpApiGroup.make('auth')
 		'API endpoints for handling authentication processes including OAuth flows and session management.'
 	)
 	.annotate(Version, pkg.version)
-	.annotate(License, {
-		name: 'MIT',
-		url: 'https://github.com/withstudiocms/studiocms/blob/main/packages/%40withstudiocms/api-spec/LICENSE',
-	})
+	.annotate(License, StudioCMSLicenseAnnotation)
 	.add(forgotPasswordPost)
 	.add(loginPost)
 	.add(logoutPost)
@@ -50,10 +48,7 @@ export class OAuthAPI extends HttpApiGroup.make('oauth')
 	.annotate(Title, 'OAuth API Group')
 	.annotate(Description, 'API endpoints for handling OAuth authentication flows.')
 	.annotate(Version, pkg.version)
-	.annotate(License, {
-		name: 'MIT',
-		url: 'https://github.com/withstudiocms/studiocms/blob/main/packages/%40withstudiocms/api-spec/LICENSE',
-	})
+	.annotate(License, StudioCMSLicenseAnnotation)
 	.add(oAuthIndexGet)
 	.add(oAuthCallbackGet)
 	.addError(AuthAPIError, { status: 500 })
@@ -78,25 +73,8 @@ export class StudioCMSAuthApi extends HttpApi.make('StudioCMSAuthApi')
 		'HTTP API specification for StudioCMS Authentication, providing endpoints for OAuth flows and session management.\n\n## External Resources\n\n- [Main Website](https://studiocms.dev)\n- [StudioCMS GitHub Repository](https://github.com/withstudiocms/studiocms)\n- [Discord Community](https://chat.studiocms.dev)\n- [API Source definitions](https://github.com/withstudiocms/studiocms/blob/main/packages/%40withstudiocms/api-spec/)\n\n---\n\n_This API specification is automatically generated and maintained by the StudioCMS team._'
 	)
 	.annotate(Version, pkg.version)
-	.annotate(License, {
-		name: 'MIT',
-		url: 'https://github.com/withstudiocms/studiocms/blob/main/packages/%40withstudiocms/api-spec/LICENSE',
-	})
-	.annotate(Transform, (data) => ({
-		...data,
-		info: {
-			...data.info,
-			contact: {
-				name: 'StudioCMS Team',
-				url: 'https://chat.studiocms.dev',
-				email: 'support@studiocms.dev',
-			},
-		},
-		externalDocs: {
-			url: 'https://docs.studiocms.dev/en/',
-			description: 'StudioCMS Documentation',
-		},
-	}))
+	.annotate(License, StudioCMSLicenseAnnotation)
+	.annotate(Transform, StudioCMSTransformAnnotation)
 	.add(AuthApi)
 	.add(OAuthAPI)
 	.prefix('/studiocms_api') {}
