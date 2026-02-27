@@ -162,3 +162,37 @@ export type PrefixSuffixAugment = PrefixRenderAugment | SuffixRenderAugment;
  * Represents a union type for different kinds of render augmentations.
  */
 export type RenderAugment = PrefixSuffixAugment | ComponentRenderAugment;
+
+/**
+ * Represents a Post-Processor function used in the rendering process, which takes a string input and returns a Promise that resolves to a string output.
+ *
+ * @param input - The string input to be processed by the post-processor.
+ * @returns A Promise that resolves to the processed string output.
+ *
+ * @remarks Post-processors can be used in site-wide plugins, or augment plugins, and are executed after the main rendering process to allow for modifications to the rendered content before it is sent to the client.
+ */
+export type StudioCMSPostProcessor = GenericAsyncFn<string>;
+
+/**
+ * Represents an augmentation for rendering with a post-processor.
+ */
+export interface PluginPostProcessor {
+	id: string;
+	safeId: string;
+	postProcessor: StudioCMSPostProcessor;
+}
+
+/**
+ * Represents an augmentation for post-processing rendered content.
+ */
+export interface PostProcessorRenderAugment extends PluginPostProcessor {
+	type: 'post-processor';
+}
+
+/**
+ * Represents a safe plugin list item with an identifier and a safe string version of the identifier.
+ */
+export interface AugmentListItem {
+	id: string;
+	safeId: string;
+}
