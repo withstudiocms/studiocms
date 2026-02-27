@@ -598,7 +598,7 @@ importers:
         specifier: ^3.0.1
         version: 3.0.1
       hastscript:
-        specifier: ^9.0.0
+        specifier: ^9.0.1
         version: 9.0.1
       html-escaper:
         specifier: ^3.0.3
@@ -646,7 +646,7 @@ importers:
         specifier: ^11.0.5
         version: 11.0.5
       unist-util-visit:
-        specifier: ^5.0.0
+        specifier: ^5.1.0
         version: 5.1.0
       vfile:
         specifier: ^6.0.3
