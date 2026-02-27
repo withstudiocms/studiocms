@@ -1,4 +1,5 @@
 import { HttpApiEndpoint } from '@effect/platform';
+import { Unauthorized } from '@effect/platform/HttpApiError';
 import { Description, Summary, Title } from '@effect/platform/OpenApi';
 import { AstroLocalsMiddleware } from '../../astro-context.js';
 import { IntegrationsAPIError } from '../errors.js';
@@ -21,5 +22,6 @@ export const DbStudioQueryPost = HttpApiEndpoint.post('dbStudioQuery', '/db-stud
 	.middleware(AstroLocalsMiddleware)
 	.setPayload(DbStudioQueryRequestPayload)
 	.addSuccess(DbStudioQueryResponsePayload)
-	.addError(DbStudioQueryError, { status: 500 })
+	.addSuccess(DbStudioQueryError)
+	.addError(Unauthorized, { status: 401 })
 	.addError(IntegrationsAPIError, { status: 500 });

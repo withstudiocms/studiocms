@@ -1,4 +1,5 @@
 import { HttpApiEndpoint, HttpApiSchema } from '@effect/platform';
+import { NotFound } from '@effect/platform/HttpApiError';
 import { Description, Summary, Title } from '@effect/platform/OpenApi';
 import * as Schema from 'effect/Schema';
 import { AuthAPIError } from '../errors.js';
@@ -26,6 +27,7 @@ export const forgotPasswordPost = HttpApiEndpoint.post('forgotPassword', '/forgo
 	.annotate(Description, 'Sends a password reset email to the user if the email is registered.')
 	.setPayload(JsonEmailPayload)
 	.addSuccess(AuthAPISuccess)
+	.addError(NotFound, { status: 404 })
 	.addError(AuthAPIError, { status: 400 })
 	.addError(AuthAPIError, { status: 403 })
 	.addError(AuthAPIError, { status: 500 });
@@ -52,12 +54,13 @@ export const loginPost = HttpApiEndpoint.post('login', '/login')
 	.annotate(Description, 'Authenticates the user with provided credentials and creates a session.')
 	.setPayload(HttpApiSchema.Multipart(JsonUserPasswordPayload))
 	.addSuccess(
-		HttpApiSchema.NoContent.annotations({
+		Schema.Struct({ ok: Schema.Boolean }).annotations({
 			description: 'Returns an empty response on successful login for frontend to handle.',
 		}),
 		{ status: 200 }
 	)
 	.addError(AuthAPIError, { status: 400 })
+	.addError(NotFound, { status: 404 })
 	.addError(AuthAPIError, { status: 403 })
 	.addError(AuthAPIError, { status: 500 });
 
@@ -80,6 +83,7 @@ export const logoutPost = HttpApiEndpoint.post('logout', '/logout')
 		}),
 		{ status: 302 } // Astro Redirects default to 302
 	)
+	.addError(NotFound, { status: 404 })
 	.addError(AuthAPIError, { status: 500 });
 
 // TODO: Convert register to use JSON payload instead of multipart/form-data
@@ -103,10 +107,11 @@ export const registerPost = HttpApiEndpoint.post('register', '/register')
 	.annotate(Description, 'Registers a new user account with the provided details.')
 	.setPayload(HttpApiSchema.Multipart(JsonRegisterPayload))
 	.addSuccess(
-		HttpApiSchema.NoContent.annotations({
+		Schema.Struct({ ok: Schema.Boolean }).annotations({
 			description: 'Returns an empty response on successful registration for frontend to handle.',
 		}),
 		{ status: 200 }
 	)
+	.addError(NotFound, { status: 404 })
 	.addError(AuthAPIError, { status: 400 })
 	.addError(AuthAPIError, { status: 500 });
