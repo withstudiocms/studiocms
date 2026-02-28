@@ -94,8 +94,8 @@ catalogs:
       specifier: ^0.1.1
       version: 0.1.1
     mysql2:
-      specifier: ^3.17.3
-      version: 3.17.3
+      specifier: ^3.18.0
+      version: 3.18.0
     pg:
       specifier: ^8.18.0
       version: 8.18.0
@@ -785,7 +785,7 @@ importers:
         version: 17.3.1
       drizzle-orm:
         specifier: ^0.42.0
-        version: 0.42.0(@libsql/client@0.15.15)(@types/pg@8.16.0)(kysely@0.28.11)(mysql2@3.17.3)(pg@8.18.0)
+        version: 0.42.0(@libsql/client@0.15.15)(@types/pg@8.16.0)(kysely@0.28.11)(mysql2@3.18.0(@types/node@22.19.6))(pg@8.18.0)
       sharp:
         specifier: 'catalog:'
         version: 0.34.5
@@ -1137,7 +1137,7 @@ importers:
         version: 0.1.1(@libsql/client@0.15.15)(kysely@0.28.11)
       mysql2:
         specifier: catalog:kysely
-        version: 3.17.3
+        version: 3.18.0(@types/node@22.19.6)
       pg:
         specifier: catalog:kysely
         version: 8.18.0
@@ -1341,7 +1341,7 @@ importers:
         version: 2.0.1
       mysql2:
         specifier: catalog:kysely
-        version: 3.17.3
+        version: 3.18.0(@types/node@22.19.6)
       nanostores:
         specifier: ^1.1.0
         version: 1.1.0
@@ -1482,7 +1482,7 @@ importers:
         version: 5.17.3(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
       mysql2:
         specifier: ^3.17.3
-        version: 3.17.3
+        version: 3.18.0(@types/node@22.19.6)
       sharp:
         specifier: ^0.34.3
         version: 0.34.5
@@ -1584,7 +1584,7 @@ importers:
         version: 5.17.3(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
       mysql2:
         specifier: ^3.17.3
-        version: 3.17.3
+        version: 3.18.0(@types/node@22.19.6)
       sharp:
         specifier: ^0.34.3
         version: 0.34.5
@@ -5789,9 +5789,11 @@ packages:
   multipasta@0.2.7:
     resolution: {integrity: sha512-KPA58d68KgGil15oDqXjkUBEBYc00XvbPj5/X+dyzeo/lWm9Nc25pQRlf1D+gv4OpK7NM0J1odrbu9JNNGvynA==}
 
-  mysql2@3.17.3:
-    resolution: {integrity: sha512-uCLmQMe1l96Sb6J3Ii8YJTOWJkhRmxlLJFdOfhD68jPpGTzK2fxEkFMpf5gewyHgUB0FJKzuAuPhYS+oPB0/vA==}
+  mysql2@3.18.0:
+    resolution: {integrity: sha512-3rupyOFks7Vq0jcjBpmg1gtgfGuCcmgrRJPEfpGzzrB/ydutupbjKkoDJGsGkrJRU6j44o2tb0McduL03/v/dQ==}
     engines: {node: '>= 8.0'}
+    peerDependencies:
+      '@types/node': '>= 8'
 
   named-placeholders@1.1.6:
     resolution: {integrity: sha512-Tz09sEL2EEuv5fFowm419c1+a/jSMiBjI9gHxVLrVdbUkkNUUfjsVYs9pVZu5oCon/kmRh9TfLEObFtkVxmY0w==}
@@ -10589,12 +10591,12 @@ snapshots:
 
   dotenv@8.6.0: {}
 
-  drizzle-orm@0.42.0(@libsql/client@0.15.15)(@types/pg@8.16.0)(kysely@0.28.11)(mysql2@3.17.3)(pg@8.18.0):
+  drizzle-orm@0.42.0(@libsql/client@0.15.15)(@types/pg@8.16.0)(kysely@0.28.11)(mysql2@3.18.0(@types/node@22.19.6))(pg@8.18.0):
     optionalDependencies:
       '@libsql/client': 0.15.15
       '@types/pg': 8.16.0
       kysely: 0.28.11
-      mysql2: 3.17.3
+      mysql2: 3.18.0(@types/node@22.19.6)
       pg: 8.18.0
 
   dset@3.1.4: {}
@@ -12262,8 +12264,9 @@ snapshots:
 
   multipasta@0.2.7: {}
 
-  mysql2@3.17.3:
+  mysql2@3.18.0(@types/node@22.19.6):
     dependencies:
+      '@types/node': 22.19.6
       aws-ssl-profiles: 1.1.2
       denque: 2.1.0
       generate-function: 2.3.1
