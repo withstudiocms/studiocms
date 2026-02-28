@@ -68,7 +68,6 @@ const atStudioCMSPackages = [
 	'md',
 	'html',
 	'wysiwyg',
-	'migrator',
 	's3-storage',
 	'upgrade',
 ] as const;
@@ -170,9 +169,6 @@ const extras = (pkg: string) => {
 		kysely: {
 			ignore: ['**/node_modules/**', '**/dist/**', '**/scratchpad/**', '**/migrations/**'],
 			ignoreDependencies: ['@libsql/client'],
-		},
-		migrator: {
-			ignoreDependencies: ['sharp'],
 		},
 		'api-spec': {
 			ignoreBinaries: ['tsx'],
