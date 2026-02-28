@@ -979,8 +979,8 @@ importers:
         specifier: ^1.0.2
         version: 1.0.2
       wrap-ansi:
-        specifier: ^9.0.2
-        version: 9.0.2
+        specifier: ^10.0.0
+        version: 10.0.0
 
   packages/@withstudiocms/component-registry:
     dependencies:
@@ -4953,8 +4953,8 @@ packages:
   generate-function@2.3.1:
     resolution: {integrity: sha512-eeB5GfMNeevm/GRYq20ShmsaGcmI81kIX2K9XQx5miC8KdHaC6Jm0qQ8ZNeGOi7wYB8OsdxKs+Y2oVuTFuVwKQ==}
 
-  get-east-asian-width@1.4.0:
-    resolution: {integrity: sha512-QZjmEOC+IT1uk6Rx0sX22V6uHWVwbdbxf1faPqJ1QhLdGgsRGCZoyaQBm/piRdJy/D2um6hM1UP7ZEeQ4EkP+Q==}
+  get-east-asian-width@1.5.0:
+    resolution: {integrity: sha512-CQ+bEO+Tva/qlmw24dCejulK5pMzVnUOFOijVogd3KQs07HnRIgp8TGipvCCRT06xeYEbpbgwaCxglFyiuIcmA==}
     engines: {node: '>=18'}
 
   get-intrinsic@1.3.0:
@@ -6573,6 +6573,10 @@ packages:
     resolution: {integrity: sha512-tsaTIkKW9b4N+AEj+SVA+WhJzV7/zMhcSu78mLKWSk7cXMOSHsBKFWUs0fWwq8QyK3MgJBQRX6Gbi4kYbdvGkQ==}
     engines: {node: '>=18'}
 
+  string-width@8.2.0:
+    resolution: {integrity: sha512-6hJPQ8N0V0P3SNmP6h2J99RLuzrWz2gvT7VnK5tKvrNqJoyS9W4/Fb8mo31UiPvy00z7DQXkP2hnKBVav76thw==}
+    engines: {node: '>=20'}
+
   string_decoder@1.3.0:
     resolution: {integrity: sha512-hkRX8U1WjJFd8LsDJ2yQ/wWWxaopEsABU1XfkM8A+j0+85JAGppt16cr1Whg6KIbb4okU6Mql6BOj+uup/wKeA==}
 
@@ -7201,6 +7205,10 @@ packages:
   word-wrap@1.2.5:
     resolution: {integrity: sha512-BN22B5eaMMI9UMtjrGd5g5eCYPpCPDUy0FJXbYsaT5zYxjFOckS53SQDE3pWkVoWpHXVb3BrYcEN4Twa55B5cA==}
     engines: {node: '>=0.10.0'}
+
+  wrap-ansi@10.0.0:
+    resolution: {integrity: sha512-SGcvg80f0wUy2/fXES19feHMz8E0JoXv2uNgHOu4Dgi2OrCy1lqwFYEJz1BLbDI0exjPMe/ZdzZ/YpGECBG/aQ==}
+    engines: {node: '>=20'}
 
   wrap-ansi@7.0.0:
     resolution: {integrity: sha512-YVGIj2kamLSTxw6NsZjoBxfSwsn0ycdesmc4p+Q21c5zPuZ1pl+NfxVdxPtdHvmNVOQ6XSYG4AUtyt/Fi7D16Q==}
@@ -10999,7 +11007,7 @@ snapshots:
     dependencies:
       is-property: 1.0.2
 
-  get-east-asian-width@1.4.0: {}
+  get-east-asian-width@1.5.0: {}
 
   get-intrinsic@1.3.0:
     dependencies:
@@ -11411,7 +11419,7 @@ snapshots:
 
   is-fullwidth-code-point@5.1.0:
     dependencies:
-      get-east-asian-width: 1.4.0
+      get-east-asian-width: 1.5.0
 
   is-glob@4.0.3:
     dependencies:
@@ -13221,7 +13229,12 @@ snapshots:
   string-width@7.2.0:
     dependencies:
       emoji-regex: 10.6.0
-      get-east-asian-width: 1.4.0
+      get-east-asian-width: 1.5.0
+      strip-ansi: 7.1.2
+
+  string-width@8.2.0:
+    dependencies:
+      get-east-asian-width: 1.5.0
       strip-ansi: 7.1.2
 
   string_decoder@1.3.0:
@@ -13808,6 +13821,12 @@ snapshots:
 
   word-wrap@1.2.5:
     optional: true
+
+  wrap-ansi@10.0.0:
+    dependencies:
+      ansi-styles: 6.2.3
+      string-width: 8.2.0
+      strip-ansi: 7.1.2
 
   wrap-ansi@7.0.0:
     dependencies:
