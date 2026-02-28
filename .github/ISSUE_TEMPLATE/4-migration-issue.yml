@@ -35,7 +35,6 @@ body:
       description: Which package is the migration issue report for?
       options:
         - "studiocms"
-        - "@studiocms/migrator"
       default: 0
     validations:
       required: true

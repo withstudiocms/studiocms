@@ -50,9 +50,6 @@ packages/
 ├── @studiocms/auth0/             # Auth0 OAuth plugin
 ├── @studiocms/cloudinary-image-service/
 ├── @studiocms/s3-storage/
-├── @studiocms/migrator/          # Database migration utility
-├── @studiocms/upgrade/           # Package upgrade utility
-├── @studiocms/devapps/           # Development applications
 ├── @studiocms/html/              # Content renderer plugins
 ├── @studiocms/markdoc/
 ├── @studiocms/md/
