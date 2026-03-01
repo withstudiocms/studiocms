@@ -120,13 +120,8 @@ export const noDbSetupRoutes: InjectedRoute[] = [
 export const restRoutes: InjectedRoute[] = [
 	{
 		// TODO Flagged for replacement by combined API route
-		pattern: '/studiocms_api/rest/v1/[type]/[...id]',
-		entrypoint: 'pages/studiocms_api/rest/v1/[type]/[...id].ts',
-	},
-	{
-		// TODO Flagged for replacement by combined API route
-		pattern: '/studiocms_api/rest/v1/public/[type]/[...id]',
-		entrypoint: 'pages/studiocms_api/rest/v1/public/[type]/[...id].ts',
+		pattern: '/studiocms_api/rest/[...path]',
+		entrypoint: 'pages/studiocms_api/rest/[...path].ts',
 	},
 ];
 

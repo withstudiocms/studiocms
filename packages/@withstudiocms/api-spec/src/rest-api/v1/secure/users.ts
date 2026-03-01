@@ -5,7 +5,6 @@ import { RestAPIError } from '../../errors.js';
 import { RestAPIAuthorization } from '../../middleware.js';
 import {
 	APISafeUserFields,
-	CombinedUserDataSchema,
 	IdParamString,
 	RestUsersIdJSONData,
 	RestUsersIndexJSONData,
@@ -26,7 +25,7 @@ export const UsersIndexGet = HttpApiEndpoint.get('getUsers', '/users')
 	)
 	.setUrlParams(UsersV1GetSearchParams)
 	.middleware(RestAPIAuthorization)
-	.addSuccess(Schema.Array(CombinedUserDataSchema))
+	.addSuccess(Schema.Array(APISafeUserFields))
 	.addError(RestAPIError, { status: 404 })
 	.addError(RestAPIError, { status: 500 });
 
@@ -40,7 +39,7 @@ export const UsersIndexPost = HttpApiEndpoint.post('createUser', '/users')
 	.annotate(Description, 'Creates a new user.')
 	.setPayload(RestUsersIndexJSONData)
 	.middleware(RestAPIAuthorization)
-	.addSuccess(CombinedUserDataSchema)
+	.addSuccess(APISafeUserFields)
 	.addError(RestAPIError, { status: 400 })
 	.addError(RestAPIError, { status: 403 })
 	.addError(RestAPIError, { status: 500 });

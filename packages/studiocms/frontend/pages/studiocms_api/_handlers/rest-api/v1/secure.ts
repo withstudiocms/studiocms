@@ -1,9 +1,15 @@
+import { Password, User } from 'studiocms:auth/lib';
 import { Notifications } from 'studiocms:notifier';
 import { SDKCore } from 'studiocms:sdk';
 import type { tsPageContentSelect, tsPageData, tsPageDataSelect } from 'studiocms:sdk/types';
 import { HttpApiBuilder } from '@effect/platform';
 import { StudioCMSRestApiV1Spec } from '@withstudiocms/api-spec';
-import { CurrentRestAPIUser, RestAPIError } from '@withstudiocms/api-spec/rest-api';
+import {
+	APISafeUserFields,
+	CurrentRestAPIUser,
+	RestAPIError,
+} from '@withstudiocms/api-spec/rest-api';
+import type { AvailablePermissionRanks } from '@withstudiocms/auth-kit/types';
 import {
 	StudioCMSPageData,
 	StudioCMSPageDataCategories,
@@ -11,16 +17,34 @@ import {
 	StudioCMSPageFolderStructure,
 } from '@withstudiocms/sdk/tables';
 import { Effect, Layer, Schema } from 'effect';
+import { isValidEmail } from '#schemas';
 import { RestAPIAuthorizationLive } from '../../../_middleware/restApi.js';
 import { sharedDBErrors, sharedNotifierErrors, sharedPageCollectionErrors } from './_shared.js';
 
+/**
+ * Utility schema for encoding Arrays of Strings
+ */
 const StringArrayCodec = Schema.transform(Schema.String, Schema.Array(Schema.String), {
 	strict: true,
 	decode: (data) => JSON.parse(data),
 	encode: (data) => JSON.stringify(data),
 });
 
+/**
+ * Function that uses the String Array Schema to create a JSON.stringify like function for string arrays
+ */
 const encodeStringArray = Schema.encode(StringArrayCodec);
+
+/**
+ * Array of available permission levels for the REST API. This is used to check user permissions when accessing secure endpoints, ensuring that only users with the appropriate rank can perform certain actions. The ranks are defined in ascending order of permissions, with 'unknown' having the least permissions and 'owner' having the most.
+ */
+const permissionLevels: AvailablePermissionRanks[] = [
+	'unknown',
+	'visitor',
+	'editor',
+	'admin',
+	'owner',
+];
 
 /**
  * REST API v1 Secure Handler
@@ -1244,9 +1268,377 @@ export const RestApiSecureHandler = HttpApiBuilder.group(
 			)
 
 			// User Endpoints
-			.handle('createUser', () => Effect.void)
-			.handle('deleteUser', () => Effect.void)
-			.handle('updateUser', () => Effect.void)
-			.handle('getUsers', () => Effect.void)
-			.handle('getUser', () => Effect.void)
+			.handle(
+				'createUser',
+				Effect.fn(
+					function* ({ payload: { username, password, email, displayname, rank: newUserRank } }) {
+						const [sdk, user, userUtils, passwordUtils, notifier] = yield* Effect.all([
+							SDKCore,
+							CurrentRestAPIUser,
+							User,
+							Password,
+							Notifications,
+						]);
+
+						const { rank } = user;
+
+						if (rank !== 'owner' && rank !== 'admin') {
+							return yield* new RestAPIError({ error: 'Unauthorized' });
+						}
+
+						if (!username || !email || !displayname || !newUserRank) {
+							return yield* new RestAPIError({
+								error: 'Missing required fields: username, email, displayname',
+							});
+						}
+
+						if (newUserRank === 'owner' && rank !== 'owner') {
+							return yield* new RestAPIError({
+								error: 'Unauthorized to create user with owner rank',
+							});
+						}
+
+						if (!password) {
+							password = yield* sdk.UTIL.Generators.generateRandomPassword(12);
+						}
+
+						if (rank === 'admin' && newUserRank === 'owner') {
+							return yield* new RestAPIError({
+								error: 'Unauthorized to create user with owner rank',
+							});
+						}
+
+						const checkEmail = isValidEmail(email);
+
+						if (!checkEmail.success) {
+							return yield* new RestAPIError({
+								error: `Invalid email format: ${checkEmail.error.message}`,
+							});
+						}
+
+						const [
+							verifyUsernameResponse,
+							verifyPasswordResponse,
+							{ usernameSearch, emailSearch },
+						] = yield* Effect.all([
+							userUtils.verifyUsernameInput(username),
+							passwordUtils.verifyPasswordStrength(password),
+							sdk.AUTH.user.searchUsersForUsernameOrEmail(username, checkEmail.data),
+						]);
+
+						if (verifyUsernameResponse !== true) {
+							return yield* new RestAPIError({ error: verifyUsernameResponse });
+						}
+
+						if (verifyPasswordResponse !== true) {
+							return yield* new RestAPIError({ error: verifyPasswordResponse });
+						}
+
+						if (usernameSearch.length > 0) {
+							return yield* new RestAPIError({ error: 'Username already exists' });
+						}
+						if (emailSearch.length > 0) {
+							return yield* new RestAPIError({ error: 'Email already exists' });
+						}
+
+						// Create a new user
+						const newUser = yield* userUtils.createLocalUser(
+							displayname,
+							username,
+							checkEmail.data,
+							password
+						);
+						yield* sdk.UPDATE.permissions({
+							user: newUser.id,
+							rank: newUserRank,
+						});
+						yield* notifier
+							.sendAdminNotification('new_user', newUser.username)
+							.pipe(
+								Effect.catchAll(
+									() => new RestAPIError({ error: 'Failed to send notification for new user' })
+								)
+							);
+
+						return APISafeUserFields.make({
+							username,
+							email: checkEmail.data,
+							name: displayname,
+							createdAt: newUser.createdAt,
+							updatedAt: newUser.updatedAt,
+							avatar: newUser.avatar,
+							url: newUser.url,
+							id: newUser.id,
+						});
+					},
+					Notifications.Provide,
+					Effect.catchTags({
+						...sharedDBErrors,
+						...sharedNotifierErrors,
+					})
+				)
+			)
+			.handle(
+				'deleteUser',
+				Effect.fn(
+					function* ({ path: { id } }) {
+						const [sdk, user, notifier] = yield* Effect.all([
+							SDKCore,
+							CurrentRestAPIUser,
+							Notifications,
+						]);
+
+						const { rank } = user;
+
+						if (rank !== 'owner' && rank !== 'admin') {
+							return yield* new RestAPIError({ error: 'Unauthorized' });
+						}
+
+						if (user.userId === id) {
+							return yield* new RestAPIError({ error: 'Users cannot delete themselves' });
+						}
+
+						const existingUser = yield* sdk.GET.users.byId(id);
+
+						if (!existingUser) {
+							return yield* new RestAPIError({ error: 'User not found' });
+						}
+
+						const { permissionsData } = existingUser;
+
+						const existingUserRank = permissionsData?.rank ?? 'unknown';
+						const existingUserRankIndex = permissionLevels.indexOf(existingUserRank);
+						const loggedInUserRankIndex = permissionLevels.indexOf(user.rank);
+
+						if (loggedInUserRankIndex <= existingUserRankIndex) {
+							return yield* new RestAPIError({
+								error: 'Unauthorized to delete user with equal or higher rank',
+							});
+						}
+
+						const response = yield* sdk.DELETE.user(id);
+
+						if (!response) {
+							return yield* new RestAPIError({ error: 'Failed to delete user' });
+						}
+
+						if (response.status === 'error') {
+							return yield* new RestAPIError({
+								error: response.message || 'Failed to delete user',
+							});
+						}
+
+						yield* notifier
+							.sendAdminNotification('user_deleted', existingUser.username)
+							.pipe(
+								Effect.catchAll(
+									() => new RestAPIError({ error: 'Failed to send notification for user deletion' })
+								)
+							);
+
+						return {
+							message: response.message || 'User deleted successfully',
+						};
+					},
+					Notifications.Provide,
+					Effect.catchTags({
+						...sharedDBErrors,
+						...sharedNotifierErrors,
+					})
+				)
+			)
+			.handle(
+				'updateUser',
+				Effect.fn(
+					function* ({ path: { id }, payload }) {
+						const [sdk, user, notifier] = yield* Effect.all([
+							SDKCore,
+							CurrentRestAPIUser,
+							Notifications,
+						]);
+
+						const { rank } = user;
+
+						if (rank !== 'owner' && rank !== 'admin') {
+							return yield* new RestAPIError({ error: 'Unauthorized' });
+						}
+
+						const existingUser = yield* sdk.GET.users.byId(id);
+
+						if (!existingUser) {
+							return yield* new RestAPIError({ error: 'User not found' });
+						}
+
+						const { permissionsData } = existingUser;
+
+						const existingUserRank = permissionsData?.rank ?? 'unknown';
+						const existingUserRankIndex = permissionLevels.indexOf(existingUserRank);
+						const loggedInUserRankIndex = permissionLevels.indexOf(user.rank);
+
+						if (loggedInUserRankIndex < existingUserRankIndex) {
+							return yield* new RestAPIError({
+								error: 'Unauthorized to update user with higher rank',
+							});
+						}
+
+						if (payload.rank) {
+							const payloadRankIndex = permissionLevels.indexOf(payload.rank);
+
+							if (loggedInUserRankIndex <= payloadRankIndex) {
+								return yield* new RestAPIError({
+									error: 'Unauthorized to set user rank higher than your own',
+								});
+							}
+						}
+
+						const updatedRank = yield* sdk.UPDATE.permissions({
+							user: id,
+							rank: payload.rank,
+						});
+
+						if (!updatedRank) {
+							return yield* new RestAPIError({ error: 'Failed to update user rank' });
+						}
+
+						const updatedUser = yield* sdk.GET.users.byId(id);
+
+						if (!updatedUser) {
+							return yield* new RestAPIError({ error: 'Failed to retrieve updated user data' });
+						}
+
+						yield* Effect.all([
+							notifier.sendUserNotification('account_updated', updatedUser.id),
+							notifier.sendAdminNotification('user_updated', updatedUser.username),
+						]).pipe(
+							Effect.catchAll(
+								() => new RestAPIError({ error: 'Failed to send notification for user update' })
+							)
+						);
+
+						return APISafeUserFields.make(updatedUser);
+					},
+					Notifications.Provide,
+					Effect.catchTags({
+						...sharedDBErrors,
+						...sharedNotifierErrors,
+					})
+				)
+			)
+			.handle(
+				'getUsers',
+				Effect.fn(
+					function* ({ urlParams: { name, rank, username } }) {
+						const [sdk, user] = yield* Effect.all([SDKCore, CurrentRestAPIUser]);
+
+						if (user.rank !== 'owner' && user.rank !== 'admin') {
+							return yield* new RestAPIError({ error: 'Unauthorized' });
+						}
+
+						const allUsers = yield* sdk.GET.users.all();
+
+						let data = allUsers.map(
+							({
+								avatar,
+								createdAt,
+								email,
+								id,
+								name,
+								permissionsData,
+								updatedAt,
+								url,
+								username,
+							}) => ({
+								avatar,
+								createdAt,
+								email,
+								id,
+								name,
+								rank: permissionsData?.rank ?? 'unknown',
+								updatedAt,
+								url,
+								username,
+							})
+						);
+
+						if (rank !== 'owner') {
+							data = data.filter((user) => user.rank !== 'owner');
+						}
+
+						if (name) {
+							data = data.filter((user) => user.name.toLowerCase().includes(name.toLowerCase()));
+						}
+						if (rank) {
+							data = data.filter((user) => user.rank === rank);
+						}
+						if (username) {
+							data = data.filter((user) =>
+								user.username.toLowerCase().includes(username.toLowerCase())
+							);
+						}
+
+						return data;
+					},
+					Effect.catchTags({
+						...sharedDBErrors,
+						NotFoundError: () => new RestAPIError({ error: 'No users found' }),
+						QueryError: () => new RestAPIError({ error: 'Failed to query user data' }),
+						QueryParseError: () => new RestAPIError({ error: 'Failed to parse user data' }),
+					})
+				)
+			)
+			.handle(
+				'getUser',
+				Effect.fn(
+					function* ({ path: { id } }) {
+						const [sdk, user] = yield* Effect.all([SDKCore, CurrentRestAPIUser]);
+
+						const { rank } = user;
+
+						if (rank !== 'owner' && rank !== 'admin') {
+							return yield* new RestAPIError({ error: 'Unauthorized' });
+						}
+
+						const existingUser = yield* sdk.GET.users.byId(id);
+
+						if (!existingUser) {
+							return yield* new RestAPIError({ error: 'User not found' });
+						}
+
+						const { avatar, createdAt, email, name, permissionsData, updatedAt, url, username } =
+							existingUser;
+
+						const existingUserRank = (permissionsData?.rank ??
+							'visitor') as AvailablePermissionRanks;
+
+						const data = {
+							avatar,
+							createdAt,
+							email,
+							id,
+							name,
+							rank: existingUserRank,
+							updatedAt,
+							url,
+							username,
+						};
+
+						const existingUserRankIndex = permissionLevels.indexOf(existingUserRank);
+						const loggedInUserRankIndex = permissionLevels.indexOf(user.rank);
+
+						if (loggedInUserRankIndex < existingUserRankIndex) {
+							return yield* new RestAPIError({
+								error: 'Unauthorized to view user with higher rank',
+							});
+						}
+
+						return data;
+					},
+					Effect.catchTags({
+						...sharedDBErrors,
+						QueryError: () => new RestAPIError({ error: 'Failed to query user data' }),
+						QueryParseError: () => new RestAPIError({ error: 'Failed to parse user data' }),
+						NotFoundError: () => new RestAPIError({ error: 'User not found' }),
+					})
+				)
+			)
 ).pipe(Layer.provide(RestAPIAuthorizationLive));

@@ -60,7 +60,6 @@ const DocsRouteLive = Scalar.layer({
 			httpApi: StudioCMSIntegrationsApiSpec,
 		},
 		{
-			// TODO: Implement handlers
 			title: 'REST API v1',
 			httpApi: StudioCMSRestApiV1Spec,
 		},
