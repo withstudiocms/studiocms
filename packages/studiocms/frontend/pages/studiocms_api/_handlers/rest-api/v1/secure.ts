@@ -7,6 +7,7 @@ import { CurrentRestAPIUser, RestAPIError } from '@withstudiocms/api-spec/rest-a
 import {
 	StudioCMSPageData,
 	StudioCMSPageDataCategories,
+	StudioCMSPageDataTags,
 	StudioCMSPageFolderStructure,
 } from '@withstudiocms/sdk/tables';
 import { Effect, Layer, Schema } from 'effect';
@@ -1027,11 +1028,220 @@ export const RestApiSecureHandler = HttpApiBuilder.group(
 			)
 
 			// Tag Endpoints
-			.handle('createTag', () => Effect.void)
-			.handle('deleteTag', () => Effect.void)
-			.handle('updateTag', () => Effect.void)
-			.handle('getTags', () => Effect.void)
-			.handle('getTag', () => Effect.void)
+			.handle(
+				'createTag',
+				Effect.fn(
+					function* ({ payload }) {
+						const [sdk, user, notifier] = yield* Effect.all([
+							SDKCore,
+							CurrentRestAPIUser,
+							Notifications,
+						]);
+
+						const { rank } = user;
+
+						if (rank !== 'owner' && rank !== 'admin' && rank !== 'editor') {
+							return yield* new RestAPIError({ error: 'Unauthorized' });
+						}
+
+						const newId = yield* sdk.UTIL.Generators.generateRandomIDNumber(9).pipe(
+							Effect.catchAll(
+								() =>
+									new RestAPIError({
+										error: 'Failed to generate unique ID for new tag',
+									})
+							)
+						);
+
+						const newTag = {
+							id: newId,
+							...payload,
+						};
+
+						yield* sdk.POST.databaseEntry.tags(newTag);
+
+						yield* notifier
+							.sendEditorNotification('new_tag', newTag.name)
+							.pipe(
+								Effect.catchAll(
+									() => new RestAPIError({ error: 'Failed to send notification for new tag' })
+								)
+							);
+
+						const inserted = yield* sdk.GET.tags.byId(newId);
+
+						if (!inserted) {
+							return yield* new RestAPIError({ error: 'Failed to retrieve newly created tag' });
+						}
+
+						return inserted;
+					},
+					Notifications.Provide,
+					Effect.catchTags({
+						...sharedDBErrors,
+						...sharedNotifierErrors,
+						GeneratorError: () =>
+							new RestAPIError({ error: 'Failed to generate unique ID for new tag' }),
+					})
+				)
+			)
+			.handle(
+				'deleteTag',
+				Effect.fn(
+					function* ({ path: { id } }) {
+						const [sdk, user, notifier] = yield* Effect.all([
+							SDKCore,
+							CurrentRestAPIUser,
+							Notifications,
+						]);
+
+						const { rank } = user;
+
+						if (rank !== 'owner' && rank !== 'admin' && rank !== 'editor') {
+							return yield* new RestAPIError({ error: 'Unauthorized' });
+						}
+
+						const getPageList = sdk.GET.pages(true, true);
+
+						const flattenAndCount = <T extends { id: number }>(arrays: T[][]): boolean => {
+							return arrays.flat().filter((data) => data.id === id).length > 0;
+						};
+
+						const checkForChildrenPagesTags = () =>
+							getPageList.pipe(
+								Effect.map((data) => data.map(({ tags }) => tags)),
+								Effect.map(flattenAndCount)
+							);
+
+						const existingTag = yield* sdk.GET.tags.byId(id);
+
+						if (!existingTag) {
+							return yield* new RestAPIError({ error: 'Tag not found' });
+						}
+
+						const hasChildrenPages = yield* checkForChildrenPagesTags();
+
+						if (hasChildrenPages) {
+							return yield* new RestAPIError({ error: 'Cannot delete tag assigned to pages' });
+						}
+
+						yield* sdk.DELETE.tags(id);
+
+						yield* notifier
+							.sendEditorNotification('delete_tag', existingTag.name)
+							.pipe(
+								Effect.catchAll(
+									() => new RestAPIError({ error: 'Failed to send notification for tag deletion' })
+								)
+							);
+
+						return { success: true };
+					},
+					Notifications.Provide,
+					Effect.catchTags({
+						...sharedDBErrors,
+						...sharedNotifierErrors,
+						...sharedPageCollectionErrors,
+					})
+				)
+			)
+			.handle(
+				'updateTag',
+				Effect.fn(
+					function* ({ path: { id }, payload }) {
+						const [sdk, user, notifier] = yield* Effect.all([
+							SDKCore,
+							CurrentRestAPIUser,
+							Notifications,
+						]);
+
+						const { rank } = user;
+
+						if (rank !== 'owner' && rank !== 'admin' && rank !== 'editor') {
+							return yield* new RestAPIError({ error: 'Unauthorized' });
+						}
+
+						const updateTag = sdk.dbService.withCodec({
+							encoder: Schema.partial(StudioCMSPageDataTags.Select),
+							decoder: StudioCMSPageDataTags.Select,
+							callbackFn: (db, data) =>
+								db((client) =>
+									client.transaction().execute(async (trx) => {
+										await trx
+											.updateTable('StudioCMSPageDataTags')
+											.set(data)
+											.where('id', '=', id)
+											.executeTakeFirstOrThrow();
+
+										return await trx
+											.selectFrom('StudioCMSPageDataTags')
+											.selectAll()
+											.where('id', '=', id)
+											.executeTakeFirstOrThrow();
+									})
+								),
+						});
+
+						if (payload.id && payload.id !== id) {
+							return yield* new RestAPIError({
+								error: "ID in payload does not match ID in path, ID's must match to update.",
+							});
+						}
+
+						const data = yield* updateTag(payload);
+						yield* notifier
+							.sendEditorNotification('update_tag', data.name)
+							.pipe(
+								Effect.catchAll(
+									() => new RestAPIError({ error: 'Failed to send notification for tag update' })
+								)
+							);
+
+						return data;
+					},
+					Notifications.Provide,
+					Effect.catchTags({
+						...sharedDBErrors,
+						...sharedNotifierErrors,
+					})
+				)
+			)
+			.handle(
+				'getTags',
+				Effect.fn(function* ({ urlParams: { name } }) {
+					const [sdk, user] = yield* Effect.all([SDKCore, CurrentRestAPIUser]);
+
+					if (user.rank !== 'owner' && user.rank !== 'admin' && user.rank !== 'editor') {
+						return yield* new RestAPIError({ error: 'Unauthorized' });
+					}
+
+					let tags = yield* sdk.GET.tags.getAll();
+
+					if (name) {
+						tags = tags.filter((tag) => tag.name.includes(name));
+					}
+
+					return tags;
+				}, Effect.catchTags(sharedDBErrors))
+			)
+			.handle(
+				'getTag',
+				Effect.fn(function* ({ path: { id } }) {
+					const [sdk, user] = yield* Effect.all([SDKCore, CurrentRestAPIUser]);
+
+					if (user.rank !== 'owner' && user.rank !== 'admin' && user.rank !== 'editor') {
+						return yield* new RestAPIError({ error: 'Unauthorized' });
+					}
+
+					const tag = yield* sdk.GET.tags.byId(id);
+
+					if (!tag) {
+						return yield* new RestAPIError({ error: 'Tag not found' });
+					}
+
+					return tag;
+				}, Effect.catchTags(sharedDBErrors))
+			)
 
 			// User Endpoints
 			.handle('createUser', () => Effect.void)
