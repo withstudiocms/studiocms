@@ -44,7 +44,7 @@ export const RestAPIAuthorizationLive = Layer.effect(
 						new RestAPIError({ error: 'Database error during token verification' }),
 					SDKInitializationError: () =>
 						new RestAPIError({ error: 'SDK initialization error during token verification' }),
-					NotFoundError: () => new RestAPIError({ error: 'Token not found during verification' }),
+					NotFoundError: () => new RestAPIError({ error: 'Token error during verification' }),
 					QueryError: () =>
 						new RestAPIError({ error: 'Database query error during token verification' }),
 					QueryParseError: () =>
