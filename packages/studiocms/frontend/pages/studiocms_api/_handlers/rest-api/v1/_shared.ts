@@ -12,3 +12,10 @@ export const sharedDBErrors = {
 	QueryParseError: () => new RestAPIError({ error: 'Database query parsing failed' }),
 	SDKInitializationError: () => new RestAPIError({ error: 'SDK initialization failed' }),
 };
+
+export const sharedNotifierErrors = {
+	ConfigError: () => new RestAPIError({ error: 'Configuration error during notification sending' }),
+	SMTPError: () => new RestAPIError({ error: 'SMTP error during notification sending' }),
+	UnknownException: () =>
+		new RestAPIError({ error: 'An unknown error occurred during notification sending' }),
+};
