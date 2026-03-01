@@ -17,7 +17,7 @@ export const AstroLocalsAuthLive = Layer.effect(
 				Effect.gen(function* () {
 					const { locals } = yield* AstroAPIContext;
 					const user = locals.StudioCMS?.security?.userSessionData;
-					const userPermissionLevel = locals.StudioCMS.security?.userPermissionLevel || {
+					const userPermissionLevel = locals.StudioCMS?.security?.userPermissionLevel || {
 						isVisitor: false,
 						isEditor: false,
 						isAdmin: false,
