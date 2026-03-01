@@ -172,21 +172,19 @@ export class FolderBase extends Schema.Class<FolderBase>('FolderBase')({
 /**
  * Schema for dynamic site configuration data.
  */
-export const StudioCMSDynamicSiteConfigData = Schema.mutable(
-	Schema.Struct({
-		_config_version: Schema.String,
-		title: Schema.String,
-		description: Schema.String,
-		defaultOgImage: Schema.optional(Schema.NullishOr(Schema.String)),
-		siteIcon: Schema.optional(Schema.NullishOr(Schema.String)),
-		loginPageBackground: Schema.optional(Schema.UndefinedOr(Schema.String)),
-		loginPageCustomImage: Schema.optional(Schema.NullishOr(Schema.String)),
-		enableDiffs: Schema.optional(Schema.UndefinedOr(Schema.Boolean)),
-		diffPerPage: Schema.optional(Schema.UndefinedOr(Schema.Number)),
-		gridItems: Schema.optional(Schema.mutable(Schema.Array(Schema.String))),
-		enableMailer: Schema.optional(Schema.UndefinedOr(Schema.Boolean)),
-	})
-);
+export const StudioCMSDynamicSiteConfigData = Schema.Struct({
+	_config_version: Schema.String,
+	title: Schema.String,
+	description: Schema.String,
+	defaultOgImage: Schema.optional(Schema.NullishOr(Schema.String)),
+	siteIcon: Schema.optional(Schema.NullishOr(Schema.String)),
+	loginPageBackground: Schema.optional(Schema.UndefinedOr(Schema.String)),
+	loginPageCustomImage: Schema.optional(Schema.NullishOr(Schema.String)),
+	enableDiffs: Schema.optional(Schema.UndefinedOr(Schema.Boolean)),
+	diffPerPage: Schema.optional(Schema.UndefinedOr(Schema.Number)),
+	gridItems: Schema.optional(Schema.mutable(Schema.Array(Schema.String))),
+	enableMailer: Schema.optional(Schema.UndefinedOr(Schema.Boolean)),
+});
 
 /**
  * Schema for dynamic site configuration.
