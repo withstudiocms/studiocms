@@ -6,7 +6,7 @@ import { CurrentRestAPIUser, RestAPIError } from '@withstudiocms/api-spec/rest-a
 import { StudioCMSPageDataCategories } from '@withstudiocms/sdk/tables';
 import { Effect, Layer, Schema } from 'effect';
 import { RestAPIAuthorizationLive } from '../../../_middleware/restApi.js';
-import { sharedDBErrors, sharedNotifierErrors } from './_shared.js';
+import { sharedDBErrors, sharedNotifierErrors, sharedPageCollectionErrors } from './_shared.js';
 
 /**
  * REST API v1 Secure Handler
@@ -147,18 +147,7 @@ export const RestApiSecureHandler = HttpApiBuilder.group(
 					Effect.catchTags({
 						...sharedDBErrors,
 						...sharedNotifierErrors,
-						ParseError: () =>
-							new RestAPIError({ error: 'Failed to parse data during category deletion' }),
-						FolderTreeError: () =>
-							new RestAPIError({
-								error: 'Failed to retrieve folder tree during category deletion',
-							}),
-						CollectorError: () =>
-							new RestAPIError({
-								error: 'Failed to collect necessary data during category deletion',
-							}),
-						PaginateError: () =>
-							new RestAPIError({ error: 'Failed to paginate data during category deletion' }),
+						...sharedPageCollectionErrors,
 					})
 				)
 			)
