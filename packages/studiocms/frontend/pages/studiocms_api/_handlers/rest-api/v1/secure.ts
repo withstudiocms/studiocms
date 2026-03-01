@@ -528,8 +528,75 @@ export const RestApiSecureHandler = HttpApiBuilder.group(
 			.handle('getPageHistoryEntry', () => Effect.void)
 
 			// Settings Endpoints
-			.handle('getSettings', () => Effect.void)
-			.handle('updateSettings', () => Effect.void)
+			.handle(
+				'getSettings',
+				Effect.fn(
+					function* () {
+						const [sdk, user] = yield* Effect.all([SDKCore, CurrentRestAPIUser]);
+
+						if (user.rank !== 'owner') {
+							return yield* new RestAPIError({ error: 'Unauthorized' });
+						}
+
+						const siteConfig = yield* sdk.GET.siteConfig();
+
+						if (!siteConfig) {
+							return yield* new RestAPIError({ error: 'Site configuration not found' });
+						}
+
+						return siteConfig;
+					},
+					Effect.catchTags({
+						...sharedDBErrors,
+						UnknownException: () =>
+							new RestAPIError({
+								error: 'An unknown error occurred while retrieving site configuration',
+							}),
+					})
+				)
+			)
+			.handle(
+				'updateSettings',
+				Effect.fn(function* ({ payload }) {
+					const [sdk, user] = yield* Effect.all([SDKCore, CurrentRestAPIUser]);
+
+					if (user.rank !== 'owner') {
+						return yield* new RestAPIError({ error: 'Unauthorized' });
+					}
+
+					if (!payload.title || payload.title.trim() === '') {
+						return yield* new RestAPIError({ error: 'Invalid form data, title is required' });
+					}
+
+					if (!payload.description || payload.description.trim() === '') {
+						return yield* new RestAPIError({
+							error: 'Invalid form data, description is required',
+						});
+					}
+
+					if (!payload.loginPageBackground || payload.loginPageBackground.trim() === '') {
+						return yield* new RestAPIError({
+							error: 'Invalid form data, loginPageBackground is required',
+						});
+					}
+
+					if (
+						payload.loginPageBackground === 'custom' &&
+						(!payload.loginPageCustomImage || payload.loginPageCustomImage.trim() === '')
+					) {
+						return yield* new RestAPIError({
+							error:
+								'Invalid form data, loginPageCustomImage is required when loginPageBackground is set to custom',
+						});
+					}
+
+					yield* sdk.UPDATE.siteConfig(payload);
+
+					return {
+						message: 'Site configuration updated successfully',
+					};
+				}, Effect.catchTags(sharedDBErrors))
+			)
 
 			// Tag Endpoints
 			.handle('createTag', () => Effect.void)
