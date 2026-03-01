@@ -21,6 +21,10 @@ export const errorResponseSchema = Schema.Struct({
 	error: Schema.String,
 });
 
+export const successResponseSchema = Schema.Struct({
+	message: Schema.String,
+});
+
 /**
  * Select schema for category data.
  */

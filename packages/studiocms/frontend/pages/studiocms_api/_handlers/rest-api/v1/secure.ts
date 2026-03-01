@@ -3,7 +3,11 @@ import { SDKCore } from 'studiocms:sdk';
 import { HttpApiBuilder } from '@effect/platform';
 import { StudioCMSRestApiV1Spec } from '@withstudiocms/api-spec';
 import { CurrentRestAPIUser, RestAPIError } from '@withstudiocms/api-spec/rest-api';
-import { StudioCMSPageDataCategories } from '@withstudiocms/sdk/tables';
+import {
+	StudioCMSPageData,
+	StudioCMSPageDataCategories,
+	StudioCMSPageFolderStructure,
+} from '@withstudiocms/sdk/tables';
 import { Effect, Layer, Schema } from 'effect';
 import { RestAPIAuthorizationLive } from '../../../_middleware/restApi.js';
 import { sharedDBErrors, sharedNotifierErrors, sharedPageCollectionErrors } from './_shared.js';
@@ -268,11 +272,251 @@ export const RestApiSecureHandler = HttpApiBuilder.group(
 			)
 
 			// Folder Endpoints
-			.handle('createFolder', () => Effect.void)
-			.handle('deleteFolder', () => Effect.void)
-			.handle('updateFolder', () => Effect.void)
-			.handle('getFolders', () => Effect.void)
-			.handle('getFolder', () => Effect.void)
+			.handle(
+				'createFolder',
+				Effect.fn(
+					function* ({ payload }) {
+						const [sdk, user, notifier] = yield* Effect.all([
+							SDKCore,
+							CurrentRestAPIUser,
+							Notifications,
+						]);
+
+						const { rank } = user;
+
+						if (rank !== 'owner' && rank !== 'admin' && rank !== 'editor') {
+							return yield* new RestAPIError({ error: 'Unauthorized' });
+						}
+
+						const newFolderData = { ...payload, id: crypto.randomUUID() };
+
+						yield* sdk.POST.databaseEntry.folder(newFolderData);
+
+						yield* notifier
+							.sendEditorNotification('new_folder', newFolderData.name)
+							.pipe(
+								Effect.catchAll(
+									() => new RestAPIError({ error: 'Failed to send notification for new folder' })
+								)
+							);
+
+						yield* Effect.all([sdk.UPDATE.folderList, sdk.UPDATE.folderTree]);
+
+						return {
+							message: `Folder created successfully with id: ${newFolderData.id}`,
+						};
+					},
+					Notifications.Provide,
+					Effect.catchTags({
+						...sharedDBErrors,
+						...sharedNotifierErrors,
+						FolderTreeError: () =>
+							new RestAPIError({ error: 'Failed to update folder tree after creating folder' }),
+					})
+				)
+			)
+			.handle(
+				'deleteFolder',
+				Effect.fn(
+					function* ({ path: { id } }) {
+						const [sdk, user, notifier] = yield* Effect.all([
+							SDKCore,
+							CurrentRestAPIUser,
+							Notifications,
+						]);
+
+						/**
+						 * Check for child folders before deletion
+						 */
+						const checkForChildrenFolders = sdk.dbService.withCodec({
+							encoder: Schema.String,
+							decoder: Schema.Array(StudioCMSPageFolderStructure),
+							callbackFn: (client, id) =>
+								client((db) =>
+									db
+										.selectFrom('StudioCMSPageFolderStructure')
+										.where('parent', '=', id)
+										.selectAll()
+										.execute()
+								),
+						});
+
+						/**
+						 * Check for child pages before deletion
+						 */
+						const checkForChildrenPages = sdk.dbService.withCodec({
+							encoder: Schema.String,
+							decoder: Schema.Array(StudioCMSPageData),
+							callbackFn: (client, id) =>
+								client((db) =>
+									db
+										.selectFrom('StudioCMSPageData')
+										.where('parentFolder', '=', id)
+										.selectAll()
+										.execute()
+								),
+						});
+
+						/**
+						 * Check for any children (folders or pages) before deletion
+						 */
+						const checkForChildren = Effect.fn((id: string) =>
+							Effect.all({
+								folders: checkForChildrenFolders(id),
+								pages: checkForChildrenPages(id),
+							}).pipe(
+								Effect.map(({ folders, pages }) => {
+									return { hasChildren: folders.length > 0 || pages.length > 0 };
+								})
+							)
+						);
+
+						const { rank } = user;
+
+						if (rank !== 'owner' && rank !== 'admin' && rank !== 'editor') {
+							return yield* new RestAPIError({ error: 'Unauthorized' });
+						}
+
+						const existingFolder = yield* sdk.GET.folder(id);
+
+						if (!existingFolder) {
+							return yield* new RestAPIError({ error: 'Folder not found' });
+						}
+
+						const { hasChildren } = yield* checkForChildren(id);
+
+						if (hasChildren) {
+							return yield* new RestAPIError({
+								error: 'Cannot delete folder with child folders or pages',
+							});
+						}
+
+						yield* Effect.all([
+							sdk.DELETE.folder(id),
+							sdk.UPDATE.folderList,
+							sdk.UPDATE.folderTree,
+						]);
+
+						yield* notifier
+							.sendEditorNotification('folder_deleted', existingFolder.name)
+							.pipe(
+								Effect.catchAll(
+									() =>
+										new RestAPIError({ error: 'Failed to send notification for folder deletion' })
+								)
+							);
+
+						return {
+							success: true,
+						};
+					},
+					Notifications.Provide,
+					Effect.catchTags({
+						...sharedDBErrors,
+						...sharedNotifierErrors,
+						FolderTreeError: () =>
+							new RestAPIError({ error: 'Failed to update folder tree after deleting folder' }),
+					})
+				)
+			)
+			.handle(
+				'updateFolder',
+				Effect.fn(
+					function* ({ path: { id }, payload }) {
+						const [sdk, user, notifier] = yield* Effect.all([
+							SDKCore,
+							CurrentRestAPIUser,
+							Notifications,
+						]);
+
+						const { rank } = user;
+
+						if (rank !== 'owner' && rank !== 'admin' && rank !== 'editor') {
+							return yield* new RestAPIError({ error: 'Unauthorized' });
+						}
+
+						const { folderName, parentFolder } = payload;
+
+						if (parentFolder && parentFolder === id) {
+							return yield* new RestAPIError({ error: 'Folder cannot be its own parent' });
+						}
+
+						const existingFolder = yield* sdk.GET.folder(id);
+
+						if (!existingFolder) {
+							return yield* new RestAPIError({ error: 'Folder not found' });
+						}
+
+						const folderData = yield* sdk.UPDATE.folder({
+							id,
+							name: folderName,
+							parent: parentFolder || null,
+						});
+
+						yield* notifier
+							.sendEditorNotification('folder_updated', folderData.name)
+							.pipe(
+								Effect.catchAll(
+									() => new RestAPIError({ error: 'Failed to send notification for folder update' })
+								)
+							);
+
+						yield* Effect.all([sdk.UPDATE.folderList, sdk.UPDATE.folderTree]);
+
+						return {
+							message: 'Folder updated successfully',
+						};
+					},
+					Notifications.Provide,
+					Effect.catchTags({
+						...sharedDBErrors,
+						...sharedNotifierErrors,
+						FolderTreeError: () =>
+							new RestAPIError({ error: 'Failed to update folder tree after creating folder' }),
+					})
+				)
+			)
+			.handle(
+				'getFolders',
+				Effect.fn(function* ({ urlParams: { name, parent } }) {
+					const [sdk, user] = yield* Effect.all([SDKCore, CurrentRestAPIUser]);
+
+					const { rank } = user;
+
+					if (rank !== 'owner' && rank !== 'admin' && rank !== 'editor') {
+						return yield* new RestAPIError({ error: 'Unauthorized' });
+					}
+
+					let folders = yield* sdk.GET.folderList();
+
+					if (name) {
+						folders = folders.filter((folder) => folder.name.includes(name));
+					}
+					if (parent) {
+						folders = folders.filter((folder) => folder.parent === parent);
+					}
+
+					return folders;
+				}, Effect.catchTags(sharedDBErrors))
+			)
+			.handle(
+				'getFolder',
+				Effect.fn(function* ({ path: { id } }) {
+					const [sdk, user] = yield* Effect.all([SDKCore, CurrentRestAPIUser]);
+
+					if (user.rank !== 'owner' && user.rank !== 'admin' && user.rank !== 'editor') {
+						return yield* new RestAPIError({ error: 'Unauthorized' });
+					}
+
+					return yield* sdk.GET.folder(id).pipe(
+						Effect.flatMap((folder) =>
+							folder
+								? Effect.succeed(folder)
+								: Effect.fail(new RestAPIError({ error: 'Folder not found' }))
+						)
+					);
+				}, Effect.catchTags(sharedDBErrors))
+			)
 
 			// Page Endpoints
 			.handle('createPage', () => Effect.void)
