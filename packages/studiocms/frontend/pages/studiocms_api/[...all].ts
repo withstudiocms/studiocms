@@ -10,7 +10,7 @@ import type { APIRoute } from 'astro';
 import { Layer } from 'effect';
 import { HttpApiToAstroRoute } from 'effectify/astro/HttpApi';
 import * as Scalar from 'effectify/scalar';
-import { AuthAPILive } from './_handlers/auth.js';
+import { AuthAPILive } from './_handlers/auth/index.js';
 import { SDKAPILive } from './_handlers/sdk.js';
 
 // TODO: Make this a user config option

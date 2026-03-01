@@ -1,107 +1,17 @@
-import config, { developerConfig } from 'studiocms:config';
 import APIServiceModule from 'studiocms:storage-manager/module';
 import { HttpApiBuilder, type HttpServerResponse } from '@effect/platform';
-import { Unauthorized } from '@effect/platform/HttpApiError';
 import type { HttpBodyError } from '@effect/platform/HttpBody';
 import { StudioCMSIntegrationsApiSpec } from '@withstudiocms/api-spec';
-import { CurrentUser } from '@withstudiocms/api-spec/astro-context';
-import { DbStudioQueryError, IntegrationsAPIError } from '@withstudiocms/api-spec/integrations';
-import { CMSLogger } from '@withstudiocms/effect';
+import { AstroAPIContext } from '@withstudiocms/api-spec/astro-context';
+import { IntegrationsAPIError } from '@withstudiocms/api-spec/integrations';
 import type { APIContext } from 'astro';
 import { Effect, Layer } from 'effect';
-import { AstroAPIContext } from 'effectify/astro/context';
 import type { StorageAPIEndpointFn } from '#storage-api';
 import APICore from '#storage-manager/core/api-core';
 import UrlMappingDatabase from '#storage-manager/core/database';
 import EffectifyAstroContextDriver from '#storage-manager/core/effectify-astro-context';
 import UrlMappingService from '#storage-manager/core/url-mapping';
-import { AstroLocalsAuthLive } from '../_middleware/astroLocals.js';
-import { getDriverInstance } from './_utils/db-studio-driver.js';
-import { parseLogLevel } from './_utils/parseLogLevel.js';
-
-/**
- * Custom error class used for quick escaping from deep error handling in the Effect chain.
- */
-class QuickEscapeError {
-	readonly _tag = 'QuickEscapeError';
-	constructor(public data: typeof DbStudioQueryError.Type) {}
-}
-
-/**
- * DB Studio API Handler.
- *
- * This handler manages the API routes for the DB Studio, including database queries and storage management.
- */
-export const DbStudioAPIHandler = HttpApiBuilder.group(
-	StudioCMSIntegrationsApiSpec,
-	'dbStudio',
-	(handlers) =>
-		handlers.handle(
-			'dbStudioQuery',
-			Effect.fn(function* ({ payload }) {
-				const isDev = import.meta.env.DEV;
-
-				const logLevel = parseLogLevel(config.logLevel);
-
-				const log = new CMSLogger({ level: logLevel }, 'studiocms:database/studio');
-
-				// Check if demo mode is enabled
-				if (developerConfig.demoMode !== false) {
-					return yield* new Unauthorized();
-				}
-
-				const currentUser = yield* CurrentUser;
-
-				// Security check: only allow access in the following cases
-				// 1. In development mode
-				// 2. In production, only if the user is an owner
-				if (!isDev && currentUser.permissionLevel !== 'owner') {
-					return yield* new Unauthorized();
-				}
-
-				// Get the database driver instance
-				const driver = yield* getDriverInstance().pipe(
-					Effect.catchTag(
-						'DriverError',
-						(error) =>
-							new IntegrationsAPIError({
-								error: `Failed to get database driver: ${error.message}`,
-							})
-					)
-				);
-
-				log.debug(`Received ${payload.type} request`);
-
-				return yield* Effect.tryPromise({
-					try: async () => {
-						if (payload.type === 'query') {
-							const r = await driver.query(payload.statement);
-							return {
-								type: payload.type,
-								id: payload.id,
-								data: r,
-							};
-						}
-						const r = await driver.batch(payload.statements as string[]);
-						log.debug(`${payload.type} executed with ${r.length} results`);
-						return {
-							type: payload.type,
-							id: payload.id,
-							data: r,
-						};
-					},
-					catch: (cause) =>
-						new QuickEscapeError(
-							DbStudioQueryError.make({
-								id: payload.id,
-								type: payload.type,
-								error: cause instanceof Error ? cause.message : String(cause),
-							})
-						),
-				}).pipe(Effect.catchTag('QuickEscapeError', ({ data }) => Effect.succeed(data)));
-			})
-		)
-).pipe(Layer.provide(AstroLocalsAuthLive));
+import { AstroLocalsAuthLive } from '../../_middleware/astroLocals.js';
 
 // Singleton instance of the API core
 let apiCore: APICore<
@@ -195,15 +105,3 @@ export const StorageManagerAPIHandler = HttpApiBuilder.group(
 				makeStorageManagerHandler(getAPICore().getPUT('locals'))
 			)
 ).pipe(Layer.provide(AstroLocalsAuthLive));
-
-/**
- * Combined Integrations API Handler.
- */
-export const IntegrationsAPIHandler = Layer.merge(DbStudioAPIHandler, StorageManagerAPIHandler);
-
-/**
- * Live implementation of the Integrations API Handler.
- */
-export const IntegrationsAPILive = HttpApiBuilder.api(StudioCMSIntegrationsApiSpec).pipe(
-	Layer.provide(IntegrationsAPIHandler)
-);
