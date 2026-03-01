@@ -74,7 +74,6 @@ export const PublicV1TagsSelect = StudioCMSPageDataTags.Select;
  */
 export const PublicV1TagsGetSearchParams = Schema.Struct({
 	name: Schema.optional(Schema.String),
-	parent: Schema.optional(Schema.NumberFromString),
 });
 
 /**
