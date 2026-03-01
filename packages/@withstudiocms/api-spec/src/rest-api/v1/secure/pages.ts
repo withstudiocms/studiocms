@@ -84,6 +84,7 @@ export const PagesByIdDelete = HttpApiEndpoint.del('deletePage', '/pages/:id')
 	.annotate(Summary, 'Delete Page by ID')
 	.annotate(Description, 'Deletes a page by its ID.')
 	.middleware(RestAPIAuthorization)
+	.setPayload(Schema.Struct({ slug: Schema.String }))
 	.addSuccess(SuccessResponse)
 	.addError(RestAPIError, { status: 404 })
 	.addError(RestAPIError, { status: 500 });
