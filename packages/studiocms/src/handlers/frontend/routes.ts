@@ -77,6 +77,7 @@ export const setupRoutes: InjectedRoute[] = [
 	},
 	// Integration routes
 	{
+		// This will also be joining the combined API route, but will also remain it's own dedicated route for the db setup stage.
 		pattern: '/studiocms_api/integrations/[...all]',
 		entrypoint: 'pages/studiocms_api/integrations/[...all].ts',
 	},
