@@ -10,7 +10,9 @@ import type { APIRoute } from 'astro';
 import { Layer } from 'effect';
 import { HttpApiToAstroRoute } from 'effectify/astro/HttpApi';
 import * as Scalar from 'effectify/scalar';
-import { AuthAPILive } from './_handlers/auth.js';
+import { AuthAPILive } from './_handlers/auth/index.js';
+import { IntegrationsAPILive } from './_handlers/integration/index.js';
+import { RestAPILive } from './_handlers/rest-api/index.js';
 import { SDKAPILive } from './_handlers/sdk.js';
 
 // TODO: Make this a user config option
@@ -59,7 +61,6 @@ const DocsRouteLive = Scalar.layer({
 			httpApi: StudioCMSIntegrationsApiSpec,
 		},
 		{
-			// TODO: Implement handlers
 			title: 'REST API v1',
 			httpApi: StudioCMSRestApiV1Spec,
 		},
@@ -73,7 +74,7 @@ const DocsRouteLive = Scalar.layer({
 /**
  * Collection of API handlers for the new Effect HttpApi handlers
  */
-const APICollection = Layer.mergeAll(SDKAPILive, AuthAPILive);
+const APICollection = Layer.mergeAll(AuthAPILive, IntegrationsAPILive, RestAPILive, SDKAPILive);
 
 /**
  * Combined API Layer - Merges the documentation route layer with the main API collection layer.

@@ -21,6 +21,10 @@ export const errorResponseSchema = Schema.Struct({
 	error: Schema.String,
 });
 
+export const successResponseSchema = Schema.Struct({
+	message: Schema.String,
+});
+
 /**
  * Select schema for category data.
  */
@@ -74,7 +78,6 @@ export const PublicV1TagsSelect = StudioCMSPageDataTags.Select;
  */
 export const PublicV1TagsGetSearchParams = Schema.Struct({
 	name: Schema.optional(Schema.String),
-	parent: Schema.optional(Schema.NumberFromString),
 });
 
 /**
@@ -179,7 +182,7 @@ export const StudioCMSDynamicSiteConfigData = Schema.Struct({
 	loginPageCustomImage: Schema.optional(Schema.NullishOr(Schema.String)),
 	enableDiffs: Schema.optional(Schema.UndefinedOr(Schema.Boolean)),
 	diffPerPage: Schema.optional(Schema.UndefinedOr(Schema.Number)),
-	gridItems: Schema.optional(Schema.Array(Schema.String)),
+	gridItems: Schema.optional(Schema.mutable(Schema.Array(Schema.String))),
 	enableMailer: Schema.optional(Schema.UndefinedOr(Schema.Boolean)),
 });
 

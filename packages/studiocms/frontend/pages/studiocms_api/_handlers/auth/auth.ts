@@ -4,7 +4,6 @@ import { authConfig, developerConfig } from 'studiocms:config';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import { Mailer } from 'studiocms:mailer';
 import { Notifications } from 'studiocms:notifier';
-import { oAuthProviders } from 'studiocms:plugins/auth/providers';
 import { SDKCore } from 'studiocms:sdk';
 import templateEngine from 'studiocms:template-engine';
 import routeConfig from 'virtual:studiocms/route-config';
@@ -15,9 +14,8 @@ import { AuthAPIError } from '@withstudiocms/api-spec/auth';
 import { appendSearchParamsToUrl } from '@withstudiocms/effect';
 import { Effect, Layer, pipe } from 'effect';
 import { AstroAPIContext } from 'effectify/astro/context';
-import { ResponseToHttpServerResponse } from 'effectify/webHandler';
 import { AuthSessionCookieName } from '#consts';
-import { AuthAPIUtils } from './_utils/auth.js';
+import { AuthAPIUtils } from '../_utils/auth.js';
 
 const loginRegisterDependencies = Layer.mergeAll(AuthAPIUtils.Default, VerifyEmail.Default);
 const forgotPasswordDependencies = Layer.mergeAll(
@@ -27,7 +25,6 @@ const forgotPasswordDependencies = Layer.mergeAll(
 );
 
 const authEnabled = routeConfig.dashboardEnabled;
-const oAuthEnabled = routeConfig.oAuthEnabled;
 
 const usernameAndPasswordRoutesEnabled =
 	authConfig.enabled && authConfig.providers.usernameAndPassword;
@@ -459,95 +456,4 @@ export const AuthAPIHandler = HttpApiBuilder.group(StudioCMSAuthApi, 'auth', (ha
 				})
 			)
 		)
-);
-
-/**
- * OAuth API Handler for managing OAuth authentication flows, including initiating OAuth sessions and handling OAuth callbacks.
- */
-export const OAuthAPIHandler = HttpApiBuilder.group(StudioCMSAuthApi, 'oauth', (handlers) =>
-	handlers
-		.handle(
-			'oAuthInit',
-			Effect.fn(function* ({ path: { provider } }) {
-				// If auth or oAuth is not enabled, return a 404 to avoid exposing the existence of the endpoint
-				if (!authEnabled || !oAuthEnabled) {
-					return yield* new NotFound();
-				}
-
-				// Find the provider configuration based on the provider name in the path parameters.
-				const matchedProvider = oAuthProviders.find((p) => p.safeName === provider);
-
-				// If the provider is not found, not enabled, or does not have an initSession handler, return a 404 to avoid exposing the existence of the endpoint or the provider.
-				if (!matchedProvider || !matchedProvider.enabled || !matchedProvider.initSession) {
-					return yield* new NotFound();
-				}
-
-				// Get the API context to pass to the provider handler, which may need it to access request information, cookies, etc.
-				const ctx = yield* AstroAPIContext;
-
-				// Call the provider's initSession handler to start the OAuth flow. This will typically redirect the user to the provider's authentication page. We wrap this in a try-catch to handle any errors that may occur during the provider handler execution and return a generic error message to prevent exposing sensitive information about the failure.
-				const res = yield* Effect.tryPromise(async () => matchedProvider.initSession?.(ctx)).pipe(
-					Effect.catchAll((error) => {
-						console.error('API Error:', error);
-						return new AuthAPIError({ error: 'Internal Server Error' });
-					})
-				);
-
-				// If the provider handler did not return a response, return an error indicating that the OAuth session initialization failed.
-				if (!res) {
-					return yield* new AuthAPIError({ error: 'Failed to initialize OAuth session' });
-				}
-
-				// Convert the provider handler's response to an HTTP server response that can be returned to the client. This will typically be a redirect response to the provider's authentication page.
-				return yield* ResponseToHttpServerResponse(res);
-			})
-		)
-		.handle(
-			'oAuthCallback',
-			Effect.fn(function* ({ path: { provider } }) {
-				// If auth or oAuth is not enabled, return a 404 to avoid exposing the existence of the endpoint
-				if (!authEnabled || !oAuthEnabled) {
-					return yield* new NotFound();
-				}
-
-				// Find the provider configuration based on the provider name in the path parameters.
-				const matchedProvider = oAuthProviders.find((p) => p.safeName === provider);
-
-				// If the provider is not found, not enabled, or does not have an initCallback handler, return a 404 to avoid exposing the existence of the endpoint or the provider.
-				if (!matchedProvider || !matchedProvider.enabled || !matchedProvider.initCallback) {
-					return yield* new NotFound();
-				}
-
-				// Get the API context to pass to the provider handler, which may need it to access request information, cookies, etc.
-				const ctx = yield* AstroAPIContext;
-
-				// Call the provider's initCallback handler to complete the OAuth flow. This will typically handle the callback from the provider after the user has authenticated and create a session for the user in the system. We wrap this in a try-catch to handle any errors that may occur during the provider handler execution and return a generic error message to prevent exposing sensitive information about the failure.
-				const res = yield* Effect.tryPromise(async () => matchedProvider.initCallback?.(ctx)).pipe(
-					Effect.catchAll((error) => {
-						console.error('API Error:', error);
-						return new AuthAPIError({ error: 'Internal Server Error' });
-					})
-				);
-
-				// If the provider handler did not return a response, return an error indicating that the OAuth callback initialization failed.
-				if (!res) {
-					return yield* new AuthAPIError({ error: 'Failed to initialize OAuth callback' });
-				}
-
-				// Convert the provider handler's response to an HTTP server response that can be returned to the client. This will typically be a redirect response to the main site or dashboard after successful authentication.
-				return yield* ResponseToHttpServerResponse(res);
-			})
-		)
-);
-
-/**
- * Combined API Handler for all authentication-related endpoints, including both primary auth handlers and OAuth handlers.
- */
-const AuthApiHandlersGroup = Layer.merge(AuthAPIHandler, OAuthAPIHandler);
-
-/**
- * Live implementation of the authentication API, providing handlers for login, logout, and forgot password functionality.
- */
-export const AuthAPILive = HttpApiBuilder.api(StudioCMSAuthApi).pipe(
-	Layer.provide(AuthApiHandlersGroup)
 );

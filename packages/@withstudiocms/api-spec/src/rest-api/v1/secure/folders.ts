@@ -10,6 +10,7 @@ import {
 	IdParamString,
 	PublicV1FolderGetSearchParams,
 	PublicV1FolderSelect,
+	successResponseSchema,
 } from '../../schemas.js';
 
 /**
@@ -39,7 +40,7 @@ export const FolderIndexPost = HttpApiEndpoint.post('createFolder', '/folders')
 	.annotate(Description, 'Creates a new folder.')
 	.setPayload(StudioCMSPageFolderStructure.Insert.omit('id'))
 	.middleware(RestAPIAuthorization)
-	.addSuccess(PublicV1FolderSelect)
+	.addSuccess(successResponseSchema)
 	.addError(RestAPIError, { status: 400 })
 	.addError(RestAPIError, { status: 500 });
 
@@ -68,7 +69,7 @@ export const FolderByIdPatch = HttpApiEndpoint.patch('updateFolder', '/folders/:
 	.annotate(Description, 'Updates a folder by its ID.')
 	.setPayload(FolderBase)
 	.middleware(RestAPIAuthorization)
-	.addSuccess(PublicV1FolderSelect)
+	.addSuccess(successResponseSchema)
 	.addError(RestAPIError, { status: 400 })
 	.addError(RestAPIError, { status: 404 })
 	.addError(RestAPIError, { status: 500 });

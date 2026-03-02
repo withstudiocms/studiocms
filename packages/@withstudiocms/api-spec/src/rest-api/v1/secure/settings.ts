@@ -1,5 +1,6 @@
 import { HttpApiEndpoint } from '@effect/platform';
 import { Description, Summary, Title } from '@effect/platform/OpenApi';
+import { Schema } from 'effect';
 import { RestAPIError } from '../../errors.js';
 import { RestAPIAuthorization } from '../../middleware.js';
 import {
@@ -28,7 +29,7 @@ export const SettingsIndexPatch = HttpApiEndpoint.patch('updateSettings', '/sett
 	.annotate(Title, 'Update Settings')
 	.annotate(Summary, 'Update Settings')
 	.annotate(Description, 'Updates the current settings.')
-	.setPayload(StudioCMSDynamicSiteConfigData)
+	.setPayload(Schema.mutable(StudioCMSDynamicSiteConfigData))
 	.middleware(RestAPIAuthorization)
 	.addSuccess(SuccessResponse)
 	.addError(RestAPIError, { status: 400 })

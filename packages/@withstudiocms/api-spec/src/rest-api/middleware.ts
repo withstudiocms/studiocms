@@ -1,6 +1,7 @@
 import { HttpApiMiddleware, HttpApiSchema, HttpApiSecurity, OpenApi } from '@effect/platform';
 import * as Context from 'effect/Context';
 import * as Schema from 'effect/Schema';
+import { RestAPIError } from './errors';
 
 /**
  * Represents an HTTP 401 Unauthorized error.
@@ -92,7 +93,7 @@ export class CurrentRestAPIUser extends Context.Tag('CurrentRestAPIUser')<
 export class RestAPIAuthorization extends HttpApiMiddleware.Tag<RestAPIAuthorization>()(
 	'RestAPIAuthorization',
 	{
-		failure: Unauthorized,
+		failure: Schema.Union(Unauthorized, RestAPIError),
 		provides: CurrentRestAPIUser,
 		security: {
 			restApiToken: HttpApiSecurity.bearer.pipe(
