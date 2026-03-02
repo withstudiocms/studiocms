@@ -68,7 +68,7 @@ jobs:
     with:
       build-cmd: "pnpm ci:build"
 
-  tangle-mirror:
+  tangled-mirror:
     name: Mirror to Tangled
     runs-on: ubuntu-latest
     steps:
