@@ -69,6 +69,7 @@
     "codemirror",
     "vite",
     "vitest",
-    "zod"
+    "zod",
+    "mysql2"
   ]
 }
