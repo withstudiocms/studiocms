@@ -265,7 +265,7 @@
 		"magicast": "^0.5.2",
 		"mdast-util-to-markdown": "^2.1.2",
 		"mrmime": "^2.0.1",
-		"nanostores": "^1.1.0",
+		"nanostores": "^1.1.1",
 		"package-manager-detector": "catalog:",
 		"semver": "catalog:",
 		"three": "0.170.0",
