@@ -25,7 +25,7 @@
     "@libsql/client": "^0.15.15",
     "@studiocms/blog": "^0.2.0",
     "@studiocms/md": "^0.2.0",
-    "astro": "^5.17.3",
+    "astro": "^5.18.0",
     "kysely-turso": "^0.1.1",
     "sharp": "^0.34.3",
     "studiocms": "^0.3.0"
