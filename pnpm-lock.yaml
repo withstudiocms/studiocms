@@ -171,7 +171,7 @@ importers:
         version: 0.27.0(effect@3.19.19)(vitest@3.2.4(@types/debug@4.1.12)(@types/node@22.19.6)(jiti@2.6.1)(jsdom@28.1.0(@noble/hashes@1.8.0))(tsx@4.21.0)(yaml@2.8.2))
       '@inox-tools/astro-tests':
         specifier: ^0.9.1
-        version: 0.9.1(astro@5.17.3(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))(nanostores@1.1.0)
+        version: 0.9.1(astro@5.17.3(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))(nanostores@1.1.1)
       '@types/node':
         specifier: 'catalog:'
         version: 22.19.6
@@ -1196,16 +1196,16 @@ importers:
         version: 1.2.71
       '@inox-tools/runtime-logger':
         specifier: ^0.8.1
-        version: 0.8.1(astro@5.17.3(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))(nanostores@1.1.0)
+        version: 0.8.1(astro@5.17.3(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))(nanostores@1.1.1)
       '@libsql/client':
         specifier: catalog:kysely
         version: 0.15.15
       '@nanostores/i18n':
         specifier: ^1.2.2
-        version: 1.2.2(nanostores@1.1.0)
+        version: 1.2.2(nanostores@1.1.1)
       '@nanostores/persistent':
         specifier: ^1.3.3
-        version: 1.3.3(nanostores@1.1.0)
+        version: 1.3.3(nanostores@1.1.1)
       '@outerbase/sdk-transform':
         specifier: ^1.0.8
         version: 1.0.8
@@ -1294,8 +1294,8 @@ importers:
         specifier: catalog:kysely
         version: 3.18.0(@types/node@22.19.6)
       nanostores:
-        specifier: ^1.1.0
-        version: 1.1.0
+        specifier: ^1.1.1
+        version: 1.1.1
       package-manager-detector:
         specifier: 'catalog:'
         version: 1.6.0
@@ -5669,8 +5669,8 @@ packages:
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
-  nanostores@1.1.0:
-    resolution: {integrity: sha512-yJBmDJr18xy47dbNVlHcgdPrulSn1nhSE6Ns9vTG+Nx9VPT6iV1MD6aQFp/t52zpf82FhLLTXAXr30NuCnxvwA==}
+  nanostores@1.1.1:
+    resolution: {integrity: sha512-EYJqS25r2iBeTtGQCHidXl1VfZ1jXM7Q04zXJOrMlxVVmD0ptxJaNux92n1mJ7c5lN3zTq12MhH/8x59nP+qmg==}
     engines: {node: ^20.0.0 || >=22.0.0}
 
   neotraverse@0.6.18:
@@ -8537,11 +8537,11 @@ snapshots:
   '@img/sharp-win32-x64@0.34.5':
     optional: true
 
-  '@inox-tools/astro-tests@0.9.1(astro@5.17.3(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))(nanostores@1.1.0)':
+  '@inox-tools/astro-tests@0.9.1(astro@5.17.3(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))(nanostores@1.1.1)':
     dependencies:
       '@astrojs/internal-helpers': 0.7.5
       '@astrojs/markdown-remark': 6.3.10
-      '@inox-tools/utils': 1.0.0(nanostores@1.1.0)
+      '@inox-tools/utils': 1.0.0(nanostores@1.1.1)
       astro: 5.17.3(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
       debug: 4.4.3
       fast-glob: 3.3.3
@@ -8553,9 +8553,9 @@ snapshots:
       - nanostores
       - supports-color
 
-  '@inox-tools/modular-station@0.8.1(astro@5.17.3(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))(nanostores@1.1.0)':
+  '@inox-tools/modular-station@0.8.1(astro@5.17.3(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))(nanostores@1.1.1)':
     dependencies:
-      '@inox-tools/utils': 1.0.0(nanostores@1.1.0)
+      '@inox-tools/utils': 1.0.0(nanostores@1.1.1)
       astro: 5.17.3(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
       astro-integration-kit: 0.19.1(astro@5.17.3(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
       debug: 4.4.3
@@ -8563,19 +8563,19 @@ snapshots:
       - nanostores
       - supports-color
 
-  '@inox-tools/runtime-logger@0.8.1(astro@5.17.3(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))(nanostores@1.1.0)':
+  '@inox-tools/runtime-logger@0.8.1(astro@5.17.3(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))(nanostores@1.1.1)':
     dependencies:
-      '@inox-tools/modular-station': 0.8.1(astro@5.17.3(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))(nanostores@1.1.0)
-      '@inox-tools/utils': 1.0.0(nanostores@1.1.0)
+      '@inox-tools/modular-station': 0.8.1(astro@5.17.3(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))(nanostores@1.1.1)
+      '@inox-tools/utils': 1.0.0(nanostores@1.1.1)
       astro: 5.17.3(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
       astro-integration-kit: 0.19.1(astro@5.17.3(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
     transitivePeerDependencies:
       - nanostores
       - supports-color
 
-  '@inox-tools/utils@1.0.0(nanostores@1.1.0)':
+  '@inox-tools/utils@1.0.0(nanostores@1.1.1)':
     optionalDependencies:
-      nanostores: 1.1.0
+      nanostores: 1.1.1
 
   '@inquirer/external-editor@1.0.3(@types/node@22.19.6)':
     dependencies:
@@ -8773,13 +8773,13 @@ snapshots:
   '@msgpackr-extract/msgpackr-extract-win32-x64@3.0.3':
     optional: true
 
-  '@nanostores/i18n@1.2.2(nanostores@1.1.0)':
+  '@nanostores/i18n@1.2.2(nanostores@1.1.1)':
     dependencies:
-      nanostores: 1.1.0
+      nanostores: 1.1.1
 
-  '@nanostores/persistent@1.3.3(nanostores@1.1.0)':
+  '@nanostores/persistent@1.3.3(nanostores@1.1.1)':
     dependencies:
-      nanostores: 1.1.0
+      nanostores: 1.1.1
 
   '@napi-rs/wasm-runtime@1.1.1':
     dependencies:
@@ -12139,7 +12139,7 @@ snapshots:
 
   nanoid@3.3.11: {}
 
-  nanostores@1.1.0: {}
+  nanostores@1.1.1: {}
 
   neotraverse@0.6.18: {}
 
