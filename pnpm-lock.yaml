@@ -172,9 +172,6 @@ importers:
       '@inox-tools/astro-tests':
         specifier: ^0.9.1
         version: 0.9.1(astro@5.17.3(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))(nanostores@1.1.0)
-      '@studiocms/migrator':
-        specifier: workspace:^
-        version: link:packages/@studiocms/migrator
       '@types/node':
         specifier: 'catalog:'
         version: 22.19.6
@@ -753,52 +750,6 @@ importers:
       vite:
         specifier: catalog:min
         version: 6.4.1(@types/node@22.19.6)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.2)
-
-  packages/@studiocms/migrator:
-    dependencies:
-      '@astrojs/node':
-        specifier: catalog:astrojs
-        version: 9.5.4(astro@5.17.3(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
-      '@libsql/client':
-        specifier: catalog:kysely
-        version: 0.15.15
-      '@studiocms/ui':
-        specifier: catalog:studiocms
-        version: 1.1.2(astro@5.17.3(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))(vite@6.4.1(@types/node@22.19.6)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.2))
-      '@withstudiocms/config-utils':
-        specifier: workspace:^
-        version: link:../../@withstudiocms/config-utils
-      '@withstudiocms/effect':
-        specifier: workspace:^
-        version: link:../../@withstudiocms/effect
-      '@withstudiocms/kysely':
-        specifier: workspace:^
-        version: link:../../@withstudiocms/kysely
-      '@withstudiocms/sdk':
-        specifier: workspace:^
-        version: link:../../@withstudiocms/sdk
-      astro:
-        specifier: catalog:astrojs
-        version: 5.17.3(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
-      dotenv:
-        specifier: 'catalog:'
-        version: 17.3.1
-      drizzle-orm:
-        specifier: ^0.42.0
-        version: 0.42.0(@libsql/client@0.15.15)(@types/pg@8.16.0)(kysely@0.28.11)(mysql2@3.18.0(@types/node@22.19.6))(pg@8.18.0)
-      sharp:
-        specifier: 'catalog:'
-        version: 0.34.5
-      studiocms:
-        specifier: workspace:^
-        version: link:../../studiocms
-    devDependencies:
-      '@types/node':
-        specifier: 'catalog:'
-        version: 22.19.6
-      typescript:
-        specifier: 'catalog:'
-        version: 5.9.3
 
   packages/@studiocms/s3-storage:
     dependencies:
@@ -4524,95 +4475,6 @@ packages:
   dotenv@8.6.0:
     resolution: {integrity: sha512-IrPdXQsk2BbzvCBGBOTmmSH5SodmqZNt4ERAZDmW4CT+tL8VtvinqywuANaFu4bOMWki16nqf0e4oC0QIaDr/g==}
     engines: {node: '>=10'}
-
-  drizzle-orm@0.42.0:
-    resolution: {integrity: sha512-pS8nNJm2kBNZwrOjTHJfdKkaU+KuUQmV/vk5D57NojDq4FG+0uAYGMulXtYT///HfgsMF0hnFFvu1ezI3OwOkg==}
-    peerDependencies:
-      '@aws-sdk/client-rds-data': '>=3'
-      '@cloudflare/workers-types': '>=4'
-      '@electric-sql/pglite': '>=0.2.0'
-      '@libsql/client': '>=0.10.0'
-      '@libsql/client-wasm': '>=0.10.0'
-      '@neondatabase/serverless': '>=0.10.0'
-      '@op-engineering/op-sqlite': '>=2'
-      '@opentelemetry/api': ^1.4.1
-      '@planetscale/database': '>=1.13'
-      '@prisma/client': '*'
-      '@tidbcloud/serverless': '*'
-      '@types/better-sqlite3': '*'
-      '@types/pg': '*'
-      '@types/sql.js': '*'
-      '@vercel/postgres': '>=0.8.0'
-      '@xata.io/client': '*'
-      better-sqlite3: '>=7'
-      bun-types: '*'
-      expo-sqlite: '>=14.0.0'
-      gel: '>=2'
-      knex: '*'
-      kysely: '*'
-      mysql2: '>=2'
-      pg: '>=8'
-      postgres: '>=3'
-      prisma: '*'
-      sql.js: '>=1'
-      sqlite3: '>=5'
-    peerDependenciesMeta:
-      '@aws-sdk/client-rds-data':
-        optional: true
-      '@cloudflare/workers-types':
-        optional: true
-      '@electric-sql/pglite':
-        optional: true
-      '@libsql/client':
-        optional: true
-      '@libsql/client-wasm':
-        optional: true
-      '@neondatabase/serverless':
-        optional: true
-      '@op-engineering/op-sqlite':
-        optional: true
-      '@opentelemetry/api':
-        optional: true
-      '@planetscale/database':
-        optional: true
-      '@prisma/client':
-        optional: true
-      '@tidbcloud/serverless':
-        optional: true
-      '@types/better-sqlite3':
-        optional: true
-      '@types/pg':
-        optional: true
-      '@types/sql.js':
-        optional: true
-      '@vercel/postgres':
-        optional: true
-      '@xata.io/client':
-        optional: true
-      better-sqlite3:
-        optional: true
-      bun-types:
-        optional: true
-      expo-sqlite:
-        optional: true
-      gel:
-        optional: true
-      knex:
-        optional: true
-      kysely:
-        optional: true
-      mysql2:
-        optional: true
-      pg:
-        optional: true
-      postgres:
-        optional: true
-      prisma:
-        optional: true
-      sql.js:
-        optional: true
-      sqlite3:
-        optional: true
 
   dset@3.1.4:
     resolution: {integrity: sha512-2QF/g9/zTaPDc3BjNcVTGoBbXBgYfMTTceLaYcFJ/W9kggFUkhxD/hMEeuLKbugyef9SqAx8cpgwlIP/jinUTA==}
@@ -10590,14 +10452,6 @@ snapshots:
   dotenv@17.3.1: {}
 
   dotenv@8.6.0: {}
-
-  drizzle-orm@0.42.0(@libsql/client@0.15.15)(@types/pg@8.16.0)(kysely@0.28.11)(mysql2@3.18.0(@types/node@22.19.6))(pg@8.18.0):
-    optionalDependencies:
-      '@libsql/client': 0.15.15
-      '@types/pg': 8.16.0
-      kysely: 0.28.11
-      mysql2: 3.18.0(@types/node@22.19.6)
-      pg: 8.18.0
 
   dset@3.1.4: {}
 

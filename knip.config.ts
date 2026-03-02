@@ -68,7 +68,6 @@ const atStudioCMSPackages = [
 	'md',
 	'html',
 	'wysiwyg',
-	'migrator',
 	's3-storage',
 	'upgrade',
 ] as const;
@@ -171,9 +170,6 @@ const extras = (pkg: string) => {
 			ignore: ['**/node_modules/**', '**/dist/**', '**/scratchpad/**', '**/migrations/**'],
 			ignoreDependencies: ['@libsql/client'],
 		},
-		migrator: {
-			ignoreDependencies: ['sharp'],
-		},
 		'api-spec': {
 			ignoreBinaries: ['tsx'],
 		},
@@ -187,13 +183,7 @@ const config: KnipConfig = {
 	exclude: ['duplicates', 'optionalPeerDependencies'],
 	workspaces: {
 		'.': {
-			ignoreDependencies: [
-				'@changesets/config',
-				'studiocms',
-				'vite',
-				'allure-js-commons',
-				'@studiocms/migrator',
-			],
+			ignoreDependencies: ['@changesets/config', 'studiocms', 'vite', 'allure-js-commons'],
 			ignoreBinaries: [/ci:.*$/, /bundle-test:.*$/],
 			entry: ['.github/workflows/*.yml', '.github/scripts/**/*.mjs', 'scripts/**/*.mjs'],
 			project: ['.github/scripts/**/*.mjs', 'scripts/**/*.mjs'],

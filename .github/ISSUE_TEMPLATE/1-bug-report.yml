@@ -35,7 +35,6 @@ body:
         - "@studiocms/markdoc"
         - "@studiocms/md"
         - "@studiocms/mdx"
-        - "@studiocms/migrator"
         - "@studiocms/s3-storage"
         - "@studiocms/wysiwyg"
         - "@withstudiocms/auth-kit"
