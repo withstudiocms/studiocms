@@ -67,3 +67,14 @@ jobs:
     uses: withstudiocms/automations/.github/workflows/preview.yml@c2dfd186eab9d163cbd535984b82cda1ff8e4689 # main
     with:
       build-cmd: "pnpm ci:build"
+
+  tangle-mirror:
+    name: Mirror to Tangled
+    runs-on: ubuntu-latest
+    steps:
+      - name: Mirror
+        uses: gwennlbh/to-tangled@v0.3
+        with:
+          repo: studiocms.dev/studiocms
+          knot: tangled.org
+          ssh-key: ${{ secrets.STUDIOCMS_TANGLED_KEY }}
