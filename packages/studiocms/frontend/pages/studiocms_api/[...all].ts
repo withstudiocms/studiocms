@@ -1,3 +1,4 @@
+import { HttpApiBuilder, HttpServerResponse } from '@effect/platform';
 import type { Api } from '@effect/platform/HttpApi';
 import {
 	StudioCMSAuthApi,
@@ -72,9 +73,24 @@ const DocsRouteLive = Scalar.layer({
 });
 
 /**
+ * Catch-All Route Layer - Provides a catch-all route that redirects any unmatched requests to a 404 page.
+ *
+ * This is needed to ensure that any requests that are passed to the Effect API handlers return an Astro 404 page instead of the Effect 404 response.
+ */
+export const CatchAllGroup = HttpApiBuilder.Router.use((router) =>
+	router.get('*', HttpServerResponse.redirect('/404'))
+);
+
+/**
  * Collection of API handlers for the new Effect HttpApi handlers
  */
-const APICollection = Layer.mergeAll(AuthAPILive, IntegrationsAPILive, RestAPILive, SDKAPILive);
+const APICollection = Layer.mergeAll(
+	AuthAPILive,
+	IntegrationsAPILive,
+	RestAPILive,
+	SDKAPILive,
+	CatchAllGroup
+);
 
 /**
  * Combined API Layer - Merges the documentation route layer with the main API collection layer.
