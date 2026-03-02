@@ -35,6 +35,6 @@
     "tinyglobby": "catalog:"
   },
   "devDependencies": {
-    "strip-ansi": "^7.1.2"
+    "strip-ansi": "^7.2.0"
   }
 }
