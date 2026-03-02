@@ -73,8 +73,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Mirror
-        uses: gwennlbh/to-tangled@v0.3
+        uses: Adammatthiesen/to-tangled@06cfdb0dd09a8ff3fe1879c09b72c6a6bc14a797 # main
         with:
           repo: studiocms.dev/studiocms
-          knot: tangled.org
           ssh-key: ${{ secrets.STUDIOCMS_TANGLED_KEY }}
