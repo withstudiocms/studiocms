@@ -43,7 +43,7 @@
 		}
 	},
 	"dependencies": {
-		"strip-ansi": "^7.1.2",
+		"strip-ansi": "^7.2.0",
 		"wrap-ansi": "^10.0.0",
 		"boxen": "^8.0.1",
 		"ansi-escapes": "^7.3.0",
