@@ -1429,7 +1429,7 @@ importers:
         specifier: ^0.2.0
         version: link:../../packages/@studiocms/md
       astro:
-        specifier: ^5.17.3
+        specifier: ^5.18.0
         version: 5.18.0(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
       mysql2:
         specifier: ^3.18.0
