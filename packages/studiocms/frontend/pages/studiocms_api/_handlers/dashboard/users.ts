@@ -282,6 +282,7 @@ export const UsersHandlers = HttpApiBuilder.group(StudioCMSDashboardApiSpec, 'us
 
 				const [sdk, userData] = yield* Effect.all([SDKCore, CurrentUser]);
 
+				// TODO: Verify this endpoint should be Admin only or if users should be able to update their own notification preferences
 				if (!userData.isLoggedIn || !userData.userPermissionLevel.isAdmin) {
 					return yield* new DashboardAPIError({
 						error: 'Unauthorized',
