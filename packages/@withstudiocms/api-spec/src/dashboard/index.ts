@@ -50,7 +50,7 @@ export class DashboardApiTokensGroup extends HttpApiGroup.make('apiTokens')
 /**
  * Dashboard Config API group for managing configuration settings within the StudioCMS Dashboard.
  */
-export class DashboardConfigApi extends HttpApiGroup.make('dashboardConfig')
+export class DashboardConfigApi extends HttpApiGroup.make('config')
 	.annotate(Title, 'Dashboard Config API')
 	.annotate(Description, 'Endpoints for managing StudioCMS Dashboard configuration settings.')
 	.annotate(Version, pkg.version)
@@ -62,7 +62,7 @@ export class DashboardConfigApi extends HttpApiGroup.make('dashboardConfig')
 /**
  * Dashboard Content API group for managing content within the StudioCMS Dashboard, including pages and folders.
  */
-export class DashboardContentApi extends HttpApiGroup.make('dashboardContent')
+export class DashboardContentApi extends HttpApiGroup.make('content')
 	.annotate(Title, 'Dashboard Content API')
 	.annotate(
 		Description,
@@ -83,7 +83,7 @@ export class DashboardContentApi extends HttpApiGroup.make('dashboardContent')
 /**
  * Dashboard Mailer API group for managing mailer configuration and email checks within the StudioCMS Dashboard.
  */
-export class DashboardMailerApi extends HttpApiGroup.make('dashboardMailer')
+export class DashboardMailerApi extends HttpApiGroup.make('mailer')
 	.annotate(Title, 'Dashboard Mailer API')
 	.annotate(
 		Description,
@@ -100,7 +100,7 @@ export class DashboardMailerApi extends HttpApiGroup.make('dashboardMailer')
 /**
  * Dashboard Create API group for managing creation-related endpoints within the StudioCMS Dashboard, including user creation, invite creation, and reset link creation.
  */
-export class DashboardCreateApi extends HttpApiGroup.make('dashboardCreate')
+export class DashboardCreateApi extends HttpApiGroup.make('create')
 	.annotate(Title, 'Dashboard Create API')
 	.annotate(
 		Description,
@@ -117,7 +117,7 @@ export class DashboardCreateApi extends HttpApiGroup.make('dashboardCreate')
 /**
  * Dashboard Email Notifications API group for managing email notification settings within the StudioCMS Dashboard.
  */
-export class DashboardEmailNotificationsApi extends HttpApiGroup.make('dashboardEmailNotifications')
+export class DashboardEmailNotificationsApi extends HttpApiGroup.make('emailNotifications')
 	.annotate(Title, 'Dashboard Email Notifications API')
 	.annotate(
 		Description,
@@ -132,7 +132,7 @@ export class DashboardEmailNotificationsApi extends HttpApiGroup.make('dashboard
 /**
  * Dashboard Plugins API group for managing plugin-related endpoints within the StudioCMS Dashboard, including updating plugin settings.
  */
-export class DashboardPluginsApi extends HttpApiGroup.make('dashboardPlugins')
+export class DashboardPluginsApi extends HttpApiGroup.make('plugins')
 	.annotate(Title, 'Dashboard Plugins API')
 	.annotate(Description, 'Endpoints for managing plugin settings within the StudioCMS Dashboard.')
 	.annotate(Version, pkg.version)
@@ -144,7 +144,7 @@ export class DashboardPluginsApi extends HttpApiGroup.make('dashboardPlugins')
 /**
  * Dashboard Profile API group for managing user profile-related endpoints within the StudioCMS Dashboard, including updating user profile information.
  */
-export class DashboardProfileApi extends HttpApiGroup.make('dashboardProfile')
+export class DashboardProfileApi extends HttpApiGroup.make('profile')
 	.annotate(Title, 'Dashboard Profile API')
 	.annotate(Description, 'Endpoints for managing user profiles within the StudioCMS Dashboard.')
 	.annotate(Version, pkg.version)
@@ -156,7 +156,7 @@ export class DashboardProfileApi extends HttpApiGroup.make('dashboardProfile')
 /**
  * Dashboard Reset Password API group for managing password reset-related endpoints within the StudioCMS Dashboard, including creating reset links and handling password resets.
  */
-export class DashboardResetPasswordApi extends HttpApiGroup.make('dashboardResetPassword')
+export class DashboardResetPasswordApi extends HttpApiGroup.make('resetPassword')
 	.annotate(Title, 'Dashboard Reset Password API')
 	.annotate(Description, 'Endpoints for managing password resets within the StudioCMS Dashboard.')
 	.annotate(Version, pkg.version)
@@ -168,7 +168,7 @@ export class DashboardResetPasswordApi extends HttpApiGroup.make('dashboardReset
 /**
  * Dashboard Search API group for managing search-related endpoints within the StudioCMS Dashboard, including searching for content and taxonomy terms.
  */
-export class DashboardSearchApi extends HttpApiGroup.make('dashboardSearch')
+export class DashboardSearchApi extends HttpApiGroup.make('search')
 	.annotate(Title, 'Dashboard Search API')
 	.annotate(
 		Description,
@@ -183,7 +183,7 @@ export class DashboardSearchApi extends HttpApiGroup.make('dashboardSearch')
 /**
  * Dashboard Taxonomy API group for managing taxonomy-related endpoints within the StudioCMS Dashboard, including creating, deleting, and searching taxonomy terms.
  */
-export class DashboardTaxonomyApi extends HttpApiGroup.make('dashboardTaxonomy')
+export class DashboardTaxonomyApi extends HttpApiGroup.make('taxonomy')
 	.annotate(Title, 'Dashboard Taxonomy API')
 	.annotate(Description, 'Endpoints for managing taxonomy within the StudioCMS Dashboard.')
 	.annotate(Version, pkg.version)
@@ -197,7 +197,7 @@ export class DashboardTaxonomyApi extends HttpApiGroup.make('dashboardTaxonomy')
 /**
  * Dashboard Templates API group for managing template-related endpoints within the StudioCMS Dashboard, including creating and updating templates.
  */
-export class DashboardTemplatesApi extends HttpApiGroup.make('dashboardTemplates')
+export class DashboardTemplatesApi extends HttpApiGroup.make('templates')
 	.annotate(Title, 'Dashboard Templates API')
 	.annotate(Description, 'Endpoints for managing templates within the StudioCMS Dashboard.')
 	.annotate(Version, pkg.version)
@@ -209,7 +209,7 @@ export class DashboardTemplatesApi extends HttpApiGroup.make('dashboardTemplates
 /**
  * Dashboard Users API group for managing user-related endpoints within the StudioCMS Dashboard, including user creation, deletion, and notification settings.
  */
-export class DashboardUsersApi extends HttpApiGroup.make('dashboardUsers')
+export class DashboardUsersApi extends HttpApiGroup.make('users')
 	.annotate(Title, 'Dashboard Users API')
 	.annotate(Description, 'Endpoints for managing users within the StudioCMS Dashboard.')
 	.annotate(Version, pkg.version)
@@ -223,7 +223,7 @@ export class DashboardUsersApi extends HttpApiGroup.make('dashboardUsers')
 /**
  * Dashboard Verify Endpoints API group for managing verification-related endpoints within the StudioCMS Dashboard, including email verification and session verification.
  */
-export class DashboardVerifyEndpointsApi extends HttpApiGroup.make('dashboardVerifyEndpoints')
+export class DashboardVerifyEndpointsApi extends HttpApiGroup.make('verifyEndpoints')
 	.annotate(Title, 'Dashboard Verify Endpoints API')
 	.annotate(
 		Description,
