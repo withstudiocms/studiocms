@@ -6,6 +6,7 @@ import { ApiTokensHandler } from './apiTokens.js';
 import { ConfigHandlers } from './config.js';
 import { ContentHandlers } from './content.js';
 import { CreateHandlers } from './create.js';
+import { EmailNotificationHandlers } from './emailNotifications.js';
 
 /**
  * Combined Dashboard API Handlers.
@@ -14,7 +15,8 @@ export const DashboardAPIHandlers = Layer.mergeAll(
 	ApiTokensHandler,
 	ConfigHandlers,
 	ContentHandlers,
-	CreateHandlers
+	CreateHandlers,
+	EmailNotificationHandlers
 ).pipe(Layer.provide(AstroLocalsAuthLive));
 
 /**

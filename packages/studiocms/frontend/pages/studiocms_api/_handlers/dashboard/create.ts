@@ -15,7 +15,7 @@ import type { APIContext } from 'astro';
 import { Effect, pipe } from 'effect';
 import { ValidRanks } from '#consts';
 import { isValidEmail } from '#schemas';
-import { sharedDBErrors, sharedNotifierErrors } from './_shared';
+import { sharedDBErrors, sharedNotifierErrors } from './_shared.js';
 
 /**
  * Check if the Dashboard API is enabled in the route configuration.
