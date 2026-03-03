@@ -7,6 +7,7 @@ import { ConfigHandlers } from './config.js';
 import { ContentHandlers } from './content.js';
 import { CreateHandlers } from './create.js';
 import { EmailNotificationHandlers } from './emailNotifications.js';
+import { MailerHandlers } from './mailer.js';
 
 /**
  * Combined Dashboard API Handlers.
@@ -16,7 +17,8 @@ export const DashboardAPIHandlers = Layer.mergeAll(
 	ConfigHandlers,
 	ContentHandlers,
 	CreateHandlers,
-	EmailNotificationHandlers
+	EmailNotificationHandlers,
+	MailerHandlers
 ).pipe(Layer.provide(AstroLocalsAuthLive));
 
 /**
