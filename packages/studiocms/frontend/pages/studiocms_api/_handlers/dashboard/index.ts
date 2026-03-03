@@ -14,6 +14,7 @@ import { ResetPasswordHandlers } from './resetPassword.js';
 import { SearchHandlers } from './search.js';
 import { TaxonomyHandlers } from './taxonomy.js';
 import { TemplatesHandlers } from './templates.js';
+import { UsersHandlers } from './users.js';
 
 /**
  * Combined Dashboard API Handlers.
@@ -30,7 +31,8 @@ export const DashboardAPIHandlers = Layer.mergeAll(
 	ResetPasswordHandlers,
 	SearchHandlers,
 	TaxonomyHandlers,
-	TemplatesHandlers
+	TemplatesHandlers,
+	UsersHandlers
 ).pipe(Layer.provide(AstroLocalsAuthLive));
 
 /**
