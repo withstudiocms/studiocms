@@ -1,4 +1,5 @@
 import { DashboardAPIError } from '@withstudiocms/api-spec/dashboard';
+import { Schema } from 'effect';
 
 /**
  * Shared database error handlers for the Dashboard API. These handlers convert common database-related errors into consistent DashboardAPIError responses, allowing for cleaner and more maintainable error handling across all endpoints that interact with the database.
@@ -40,3 +41,17 @@ export const sharedPageCollectionErrors = {
 	PaginateError: () =>
 		new DashboardAPIError({ error: 'Failed to paginate data during page collection' }),
 };
+
+/**
+ * Utility schema for encoding Arrays of Strings
+ */
+export const StringArrayCodec = Schema.transform(Schema.String, Schema.Array(Schema.String), {
+	strict: true,
+	decode: (data) => JSON.parse(data),
+	encode: (data) => JSON.stringify(data),
+});
+
+/**
+ * Function that uses the String Array Schema to create a JSON.stringify like function for string arrays
+ */
+export const encodeStringArray = Schema.encode(StringArrayCodec);

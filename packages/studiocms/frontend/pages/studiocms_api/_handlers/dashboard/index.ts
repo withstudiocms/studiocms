@@ -4,13 +4,16 @@ import { Layer } from 'effect';
 import { AstroLocalsAuthLive } from '../../_middleware/astroLocals.js';
 import { ApiTokensHandler } from './apiTokens.js';
 import { ConfigHandlers } from './config.js';
+import { ContentHandlers } from './content.js';
 
 /**
  * Combined Dashboard API Handlers.
  */
-export const DashboardAPIHandlers = Layer.mergeAll(ApiTokensHandler, ConfigHandlers).pipe(
-	Layer.provide(AstroLocalsAuthLive)
-);
+export const DashboardAPIHandlers = Layer.mergeAll(
+	ApiTokensHandler,
+	ConfigHandlers,
+	ContentHandlers
+).pipe(Layer.provide(AstroLocalsAuthLive));
 
 /**
  * Live implementation of the Dashboard API Handlers.
