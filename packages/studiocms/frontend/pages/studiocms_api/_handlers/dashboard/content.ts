@@ -1,3 +1,4 @@
+import { developerConfig } from 'studiocms:config';
 import { Notifications } from 'studiocms:notifier';
 import plugins from 'studiocms:plugins';
 import { apiEndpoints } from 'studiocms:plugins/endpoints';
@@ -28,12 +29,18 @@ import {
  */
 const dashboardAPIEnabled = routeConfig.dashboardAPIEnabled;
 
+/**
+ * API Endpoints types for plugins
+ */
 type ApiEndpoints = {
 	onCreate?: PluginAPIRoute<'onCreate'> | null;
 	onEdit?: PluginAPIRoute<'onEdit'> | null;
 	onDelete?: PluginAPIRoute<'onDelete'> | null;
 };
 
+/**
+ * Type definition for the page types provided by plugins. This includes the identifier, label, description, and any associated API endpoints for creating, editing, or deleting pages of that type. This type is used to structure the information about different page types that can be managed through the dashboard, allowing for dynamic handling of various content types based on the plugins installed in the system.
+ */
 type PageTypeOutput = {
 	identifier: string;
 	label: string;
@@ -43,8 +50,14 @@ type PageTypeOutput = {
 	apiEndpoints?: ApiEndpoints | undefined;
 };
 
+/**
+ * Type definition for the API response when creating or updating page content. This type includes the necessary fields for the page content, such as the content ID, the associated page ID, the content itself, and the language of the content. This structured type ensures that the API responses for content creation and updates are consistent and can be properly handled by the frontend components that consume this API.
+ */
 type UpdatePageContent = Partial<tsPageContentSelect>;
 
+/**
+ * Type definition for the structure of the page data used in the dashboard API. This type includes all the relevant fields for a page, such as the title, slug, description, author ID, categories, tags, augments, contributor IDs, and timestamps for when the page was updated and published. This comprehensive type definition allows for strong typing and validation of page data when creating or updating pages through the dashboard API.
+ */
 const pageTypeOptions = plugins.flatMap(({ pageTypes }) => {
 	const pageTypeOutput: PageTypeOutput[] = [];
 
@@ -60,6 +73,9 @@ const pageTypeOptions = plugins.flatMap(({ pageTypes }) => {
 	return pageTypeOutput;
 });
 
+/**
+ * Utility function to retrieve the API endpoints for a given page type and action (create, edit, delete). This function takes the package identifier and the type of action as parameters and returns the corresponding API endpoint if it exists. This allows the content handlers to dynamically determine which API routes to call for different page types based on the plugins installed in the system, enabling extensibility and customization of content management through the dashboard API.
+ */
 function getPageTypeEndpoints<T extends 'onCreate' | 'onEdit' | 'onDelete'>(pkg: string, type: T) {
 	const currentPageType = pageTypeOptions.find((pageType) => pageType.identifier === pkg);
 
@@ -68,6 +84,9 @@ function getPageTypeEndpoints<T extends 'onCreate' | 'onEdit' | 'onDelete'>(pkg:
 	return currentPageType.apiEndpoints?.[type];
 }
 
+/**
+ * Content Handlers for the Dashboard API - This group of handlers includes endpoints for managing content in the dashboard, such as creating, updating, and deleting folders and pages. Each handler checks if the Dashboard API is enabled, verifies user permissions, validates input data, and interacts with the SDK to perform the necessary actions. The handlers also include error handling to return appropriate error messages for various failure scenarios, such as unauthorized access, invalid input, or internal server errors. Additionally, notifications are sent for certain actions, such as when a new folder or page is created or updated.
+ */
 export const ContentHandlers = HttpApiBuilder.group(
 	StudioCMSDashboardApiSpec,
 	'content',
@@ -81,6 +100,13 @@ export const ContentHandlers = HttpApiBuilder.group(
 					function* ({ payload: { folderName, parentFolder } }) {
 						if (!dashboardAPIEnabled) {
 							return yield* new DashboardAPIError({ error: 'Dashboard API is disabled' });
+						}
+
+						// Check if demo mode is enabled
+						if (developerConfig.demoMode !== false) {
+							return yield* new DashboardAPIError({
+								error: 'Demo mode is enabled, this action is not allowed.',
+							});
 						}
 
 						const [sdk, userData, notifier] = yield* Effect.all([
@@ -128,6 +154,13 @@ export const ContentHandlers = HttpApiBuilder.group(
 					function* ({ payload: { id, folderName, parentFolder } }) {
 						if (!dashboardAPIEnabled) {
 							return yield* new DashboardAPIError({ error: 'Dashboard API is disabled' });
+						}
+
+						// Check if demo mode is enabled
+						if (developerConfig.demoMode !== false) {
+							return yield* new DashboardAPIError({
+								error: 'Demo mode is enabled, this action is not allowed.',
+							});
 						}
 
 						const [sdk, userData, notifier] = yield* Effect.all([
@@ -179,6 +212,13 @@ export const ContentHandlers = HttpApiBuilder.group(
 					function* ({ payload: { id } }) {
 						if (!dashboardAPIEnabled) {
 							return yield* new DashboardAPIError({ error: 'Dashboard API is disabled' });
+						}
+
+						// Check if demo mode is enabled
+						if (developerConfig.demoMode !== false) {
+							return yield* new DashboardAPIError({
+								error: 'Demo mode is enabled, this action is not allowed.',
+							});
 						}
 
 						const [sdk, userData, notifier] = yield* Effect.all([
@@ -284,6 +324,13 @@ export const ContentHandlers = HttpApiBuilder.group(
 					function* ({ payload }) {
 						if (!dashboardAPIEnabled) {
 							return yield* new DashboardAPIError({ error: 'Dashboard API is disabled' });
+						}
+
+						// Check if demo mode is enabled
+						if (developerConfig.demoMode !== false) {
+							return yield* new DashboardAPIError({
+								error: 'Demo mode is enabled, this action is not allowed.',
+							});
 						}
 
 						const [sdk, userData, notifier, ctx] = yield* Effect.all([
@@ -393,6 +440,13 @@ export const ContentHandlers = HttpApiBuilder.group(
 					function* ({ payload }) {
 						if (!dashboardAPIEnabled) {
 							return yield* new DashboardAPIError({ error: 'Dashboard API is disabled' });
+						}
+
+						// Check if demo mode is enabled
+						if (developerConfig.demoMode !== false) {
+							return yield* new DashboardAPIError({
+								error: 'Demo mode is enabled, this action is not allowed.',
+							});
 						}
 
 						const [sdk, userData, notifier, ctx] = yield* Effect.all([
@@ -555,6 +609,13 @@ export const ContentHandlers = HttpApiBuilder.group(
 							return yield* new DashboardAPIError({ error: 'Dashboard API is disabled' });
 						}
 
+						// Check if demo mode is enabled
+						if (developerConfig.demoMode !== false) {
+							return yield* new DashboardAPIError({
+								error: 'Demo mode is enabled, this action is not allowed.',
+							});
+						}
+
 						const [sdk, userData, notifier, ctx] = yield* Effect.all([
 							SDKCore,
 							CurrentUser,
@@ -621,6 +682,13 @@ export const ContentHandlers = HttpApiBuilder.group(
 					function* ({ payload: { id, type } }) {
 						if (!dashboardAPIEnabled) {
 							return yield* new DashboardAPIError({ error: 'Dashboard API is disabled' });
+						}
+
+						// Check if demo mode is enabled
+						if (developerConfig.demoMode !== false) {
+							return yield* new DashboardAPIError({
+								error: 'Demo mode is enabled, this action is not allowed.',
+							});
 						}
 
 						const [sdk, userData, notifier] = yield* Effect.all([

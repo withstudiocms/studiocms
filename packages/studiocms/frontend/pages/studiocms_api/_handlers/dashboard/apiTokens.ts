@@ -29,13 +29,13 @@ export const ApiTokensHandler = HttpApiBuilder.group(
 							return yield* new DashboardAPIError({ error: 'Dashboard API is disabled' });
 						}
 
-						const [sdk, userData] = yield* Effect.all([SDKCore, CurrentUser]);
-
 						if (developerConfig.demoMode !== false) {
 							return yield* new DashboardAPIError({
 								error: 'Demo mode is enabled, this action is not allowed.',
 							});
 						}
+
+						const [sdk, userData] = yield* Effect.all([SDKCore, CurrentUser]);
 
 						const isAuthorized = userData.userPermissionLevel.isEditor;
 
@@ -60,13 +60,13 @@ export const ApiTokensHandler = HttpApiBuilder.group(
 						return yield* new DashboardAPIError({ error: 'Dashboard API is disabled' });
 					}
 
-					const [sdk, userData] = yield* Effect.all([SDKCore, CurrentUser]);
-
 					if (developerConfig.demoMode !== false) {
 						return yield* new DashboardAPIError({
 							error: 'Demo mode is enabled, this action is not allowed.',
 						});
 					}
+
+					const [sdk, userData] = yield* Effect.all([SDKCore, CurrentUser]);
 
 					const isAuthorized = userData.userPermissionLevel.isEditor;
 

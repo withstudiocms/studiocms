@@ -325,6 +325,19 @@ export const CreateResetLinkPayload = Schema.Struct({
 });
 
 /**
+ * Response schema for successfully creating a password reset link in the StudioCMS Dashboard API.
+ */
+export const CreateResetLinkSuccessResponse = Schema.Struct({
+	id: Schema.String,
+	userId: Schema.String,
+	token: Schema.String,
+}).annotations({
+	title: 'Create Password Reset Link Success Response',
+	description:
+		'Response schema for successfully creating a password reset link for a user in the StudioCMS Dashboard API.',
+});
+
+/**
  * Base schema for creating a user or user invite in the StudioCMS Dashboard API.
  */
 export const CreateUserBaseSchema = Schema.Struct({
@@ -352,7 +365,10 @@ export const CreateUserInvitePayload = CreateUserBaseSchema.annotations({
  * @remarks
  * This schema is used as the request payload when creating a new user.
  */
-export const CreateUserPayload = CreateUserBaseSchema.annotations({
+export const CreateUserPayload = Schema.Struct({
+	...CreateUserBaseSchema.fields,
+	password: Schema.optional(Schema.String),
+}).annotations({
 	title: 'Create User Payload',
 	description: 'Payload schema for creating a user in the StudioCMS Dashboard API.',
 });

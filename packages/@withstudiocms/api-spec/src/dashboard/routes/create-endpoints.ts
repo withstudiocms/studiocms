@@ -4,6 +4,7 @@ import { AstroLocalsMiddleware } from '../../astro-context.js';
 import { DashboardAPIError } from '../errors.js';
 import {
 	CreateResetLinkPayload,
+	CreateResetLinkSuccessResponse,
 	CreateUserInvitePayload,
 	CreateUserPayload,
 	successResponseSchema,
@@ -30,7 +31,7 @@ export const createResetLinkPost = HttpApiEndpoint.post(
 	)
 	.middleware(AstroLocalsMiddleware)
 	.setPayload(CreateResetLinkPayload)
-	.addSuccess(successResponseSchema)
+	.addSuccess(CreateResetLinkSuccessResponse)
 	.addError(DashboardAPIError, { status: 400 })
 	.addError(DashboardAPIError, { status: 403 })
 	.addError(DashboardAPIError, { status: 500 });
