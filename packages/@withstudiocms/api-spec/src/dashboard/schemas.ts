@@ -262,7 +262,7 @@ export const PluginSettingsPayload = Schema.Record({
  * This schema is used as the request payload when creating a new API token.
  */
 export const CreateApiTokenPayload = Schema.Struct({
-	name: Schema.String,
+	user: Schema.String,
 	description: Schema.String,
 }).annotations({
 	title: 'Create API Token Payload',

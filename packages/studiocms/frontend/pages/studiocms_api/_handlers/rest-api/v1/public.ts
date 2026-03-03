@@ -1,9 +1,12 @@
 import { SDKCore } from 'studiocms:sdk';
+import routeConfig from 'virtual:studiocms/route-config';
 import { HttpApiBuilder } from '@effect/platform';
 import { StudioCMSRestApiV1Spec } from '@withstudiocms/api-spec';
 import { RestAPIError } from '@withstudiocms/api-spec/rest-api';
 import { Effect } from 'effect';
 import { sharedDBErrors } from './_shared.js';
+
+const restAPIEnabled = routeConfig.restAPIEnabled;
 
 /**
  * Helper function to convert undefined values into a failed Effect with a RestAPIError. This is useful for handling cases where a resource is not found, allowing us to return a consistent error response.
@@ -37,18 +40,24 @@ export const RestApiPublicHandler = HttpApiBuilder.group(
 		handlers
 			.handle(
 				'getCategory',
-				Effect.fn(({ path: { id } }) =>
-					SDKCore.pipe(
+				Effect.fn(({ path: { id } }) => {
+					if (!restAPIEnabled) {
+						return Effect.fail(new RestAPIError({ error: 'Endpoint not found' }));
+					}
+					return SDKCore.pipe(
 						Effect.flatMap((sdk) => sdk.GET.categories.byId(id)),
 						Effect.flatMap(undefinedMeansFail('Category not found')),
 						Effect.catchTags(sharedDBErrors)
-					)
-				)
+					);
+				})
 			)
 			.handle(
 				'getCategories',
-				Effect.fn(({ urlParams: { name, parent } }) =>
-					SDKCore.pipe(
+				Effect.fn(({ urlParams: { name, parent } }) => {
+					if (!restAPIEnabled) {
+						return Effect.fail(new RestAPIError({ error: 'Endpoint not found' }));
+					}
+					return SDKCore.pipe(
 						Effect.flatMap((sdk) => sdk.GET.categories.getAll()),
 						Effect.map((categories) => {
 							let filteredCategories = categories;
@@ -65,23 +74,29 @@ export const RestApiPublicHandler = HttpApiBuilder.group(
 							return filteredCategories;
 						}),
 						Effect.catchTags(sharedDBErrors)
-					)
-				)
+					);
+				})
 			)
 			.handle(
 				'getFolder',
-				Effect.fn(({ path: { id } }) =>
-					SDKCore.pipe(
+				Effect.fn(({ path: { id } }) => {
+					if (!restAPIEnabled) {
+						return Effect.fail(new RestAPIError({ error: 'Endpoint not found' }));
+					}
+					return SDKCore.pipe(
 						Effect.flatMap((sdk) => sdk.GET.folder(id)),
 						Effect.flatMap(undefinedMeansFail('Folder not found')),
 						Effect.catchTags(sharedDBErrors)
-					)
-				)
+					);
+				})
 			)
 			.handle(
 				'getFolders',
-				Effect.fn(({ urlParams: { name, parent } }) =>
-					SDKCore.pipe(
+				Effect.fn(({ urlParams: { name, parent } }) => {
+					if (!restAPIEnabled) {
+						return Effect.fail(new RestAPIError({ error: 'Endpoint not found' }));
+					}
+					return SDKCore.pipe(
 						Effect.flatMap((sdk) => sdk.GET.folderList()),
 						Effect.map((folders) => {
 							let filteredFolders = folders;
@@ -94,13 +109,16 @@ export const RestApiPublicHandler = HttpApiBuilder.group(
 							return filteredFolders;
 						}),
 						Effect.catchTags(sharedDBErrors)
-					)
-				)
+					);
+				})
 			)
 			.handle(
 				'getPage',
-				Effect.fn(({ path: { id } }) =>
-					SDKCore.pipe(
+				Effect.fn(({ path: { id } }) => {
+					if (!restAPIEnabled) {
+						return Effect.fail(new RestAPIError({ error: 'Endpoint not found' }));
+					}
+					return SDKCore.pipe(
 						Effect.flatMap((sdk) => sdk.GET.page.byId(id)),
 						Effect.flatMap(undefinedMeansFail('Page not found')),
 						Effect.flatMap(draftMeansFail('Page not found')),
@@ -111,13 +129,16 @@ export const RestApiPublicHandler = HttpApiBuilder.group(
 							FolderTreeError: () => new RestAPIError({ error: 'Failed to retrieve folder tree' }),
 							PaginateError: () => new RestAPIError({ error: 'Failed to paginate page data' }),
 						})
-					)
-				)
+					);
+				})
 			)
 			.handle(
 				'getPages',
-				Effect.fn(({ urlParams: { author, parentFolder, slug, title } }) =>
-					SDKCore.pipe(
+				Effect.fn(({ urlParams: { author, parentFolder, slug, title } }) => {
+					if (!restAPIEnabled) {
+						return Effect.fail(new RestAPIError({ error: 'Endpoint not found' }));
+					}
+					return SDKCore.pipe(
 						Effect.flatMap((sdk) => sdk.GET.pages()),
 						Effect.map((pages) => {
 							let filteredPages = pages;
@@ -142,23 +163,29 @@ export const RestApiPublicHandler = HttpApiBuilder.group(
 							FolderTreeError: () => new RestAPIError({ error: 'Failed to retrieve folder tree' }),
 							PaginateError: () => new RestAPIError({ error: 'Failed to paginate pages data' }),
 						})
-					)
-				)
+					);
+				})
 			)
 			.handle(
 				'getTag',
-				Effect.fn(({ path: { id } }) =>
-					SDKCore.pipe(
+				Effect.fn(({ path: { id } }) => {
+					if (!restAPIEnabled) {
+						return Effect.fail(new RestAPIError({ error: 'Endpoint not found' }));
+					}
+					return SDKCore.pipe(
 						Effect.flatMap((sdk) => sdk.GET.tags.byId(id)),
 						Effect.flatMap(undefinedMeansFail('Tag not found')),
 						Effect.catchTags(sharedDBErrors)
-					)
-				)
+					);
+				})
 			)
 			.handle(
 				'getTags',
-				Effect.fn(({ urlParams: { name } }) =>
-					SDKCore.pipe(
+				Effect.fn(({ urlParams: { name } }) => {
+					if (!restAPIEnabled) {
+						return Effect.fail(new RestAPIError({ error: 'Endpoint not found' }));
+					}
+					return SDKCore.pipe(
 						Effect.flatMap((sdk) => sdk.GET.tags.getAll()),
 						Effect.map((tags) => {
 							let filteredTags = tags;
@@ -168,7 +195,7 @@ export const RestApiPublicHandler = HttpApiBuilder.group(
 							return filteredTags;
 						}),
 						Effect.catchTags(sharedDBErrors)
-					)
-				)
+					);
+				})
 			)
 );
