@@ -6,7 +6,7 @@ import { StudioCMSDashboardApiSpec } from '@withstudiocms/api-spec';
 import { CurrentUser } from '@withstudiocms/api-spec/astro-context';
 import { DashboardAPIError } from '@withstudiocms/api-spec/dashboard';
 import { Effect } from 'effect';
-import { sharedDBErrors } from './_shared';
+import { sharedDBErrors } from './_shared.js';
 
 /**
  * Check if the Dashboard API is enabled in the route configuration.

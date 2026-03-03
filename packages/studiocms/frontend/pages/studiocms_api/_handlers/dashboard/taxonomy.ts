@@ -10,8 +10,8 @@ import { Effect, Schema } from 'effect';
 import {
 	categoriesToTaxonomyNodes,
 	tagsToTaxonomyNodes,
-} from '#frontend/components/shared/taxonomy/shared.ts';
-import { sharedDBErrors, sharedNotifierErrors } from './_shared';
+} from '#frontend/components/shared/taxonomy/shared.js';
+import { sharedDBErrors, sharedNotifierErrors } from './_shared.js';
 
 /**
  * Check if the Dashboard API is enabled in the route configuration.
