@@ -15,6 +15,7 @@ import { SearchHandlers } from './search.js';
 import { TaxonomyHandlers } from './taxonomy.js';
 import { TemplatesHandlers } from './templates.js';
 import { UsersHandlers } from './users.js';
+import { VerifyEndpointsHandlers } from './verifyEndpoints.js';
 
 /**
  * Combined Dashboard API Handlers.
@@ -32,7 +33,8 @@ export const DashboardAPIHandlers = Layer.mergeAll(
 	SearchHandlers,
 	TaxonomyHandlers,
 	TemplatesHandlers,
-	UsersHandlers
+	UsersHandlers,
+	VerifyEndpointsHandlers
 ).pipe(Layer.provide(AstroLocalsAuthLive));
 
 /**

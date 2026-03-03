@@ -12,6 +12,7 @@ import { Layer } from 'effect';
 import { HttpApiToAstroRoute } from 'effectify/astro/HttpApi';
 import * as Scalar from 'effectify/scalar';
 import { AuthAPILive } from './_handlers/auth/index.js';
+import { DashboardAPILive } from './_handlers/dashboard/index.js';
 import { IntegrationsAPILive } from './_handlers/integration/index.js';
 import { RestAPILive } from './_handlers/rest-api/index.js';
 import { SDKAPILive } from './_handlers/sdk.js';
@@ -53,7 +54,6 @@ const DocsRouteLive = Scalar.layer({
 			httpApi: StudioCMSAuthApi,
 		},
 		{
-			// TODO: Implement handlers
 			title: 'Dashboard API',
 			httpApi: StudioCMSDashboardApiSpec,
 		},
@@ -89,6 +89,7 @@ const APICollection = Layer.mergeAll(
 	IntegrationsAPILive,
 	RestAPILive,
 	SDKAPILive,
+	DashboardAPILive,
 	CatchAllGroup
 );
 

@@ -6,8 +6,6 @@ import {
 	error404Route,
 	middleware,
 	noDbSetupRoutes,
-	oAuthEnabledRoutes,
-	restRoutes,
 	setupRoutes,
 	userRegistrationEnabledRoutes,
 } from './routes.js';
@@ -71,8 +69,6 @@ export const mapProcessedConfig = Effect.fn(
 		dashboardAPIEnabled,
 		dashboardEnabled,
 		dbStartPage,
-		oAuthEnabled,
-		restAPIEnabled,
 		shouldInject404Route,
 		userRegistrationEnabled,
 		dashboardRoute,
@@ -89,14 +85,6 @@ export const mapProcessedConfig = Effect.fn(
 			{
 				enabled: shouldInject404Route,
 				routes: setPrerenderFalse(error404Route),
-			},
-			{
-				enabled: restAPIEnabled,
-				routes: setPrerenderFalse(restRoutes),
-			},
-			{
-				enabled: oAuthEnabled,
-				routes: setPrerenderFalse(oAuthEnabledRoutes),
 			},
 			{
 				enabled: userRegistrationEnabled,

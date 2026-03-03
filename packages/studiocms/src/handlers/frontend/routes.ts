@@ -99,43 +99,10 @@ export const noDbSetupRoutes: InjectedRoute[] = [
 		pattern: '/studiocms_api/integrations/[...all]',
 		entrypoint: 'pages/studiocms_api/integrations/[...all].ts',
 	},
-	// SDK API routes
-	{
-		// TODO Flagged for replacement by combined API route
-		pattern: '/studiocms_api/sdk/[...path]',
-		entrypoint: 'pages/studiocms_api/sdk/[...path].ts',
-	},
-	// TODO: Implement the combined API route that serves all API specs and documentation in one place
 	// StudioCMS Primary API routes
-	// {
-	// 	pattern: '/studiocms_api/[...all]',
-	// 	entrypoint: 'pages/studiocms_api/[...all].ts',
-	// },
-];
-
-/**
- * REST API routes for StudioCMS.
- *
- * These routes cover folders, pages, settings, users, and public access.
- */
-export const restRoutes: InjectedRoute[] = [
 	{
-		// TODO Flagged for replacement by combined API route
-		pattern: '/studiocms_api/rest/[...path]',
-		entrypoint: 'pages/studiocms_api/rest/[...path].ts',
-	},
-];
-
-/**
- * OAuth Enabled Routes
- *
- * Injected when oAuthEnabled is true.
- */
-export const oAuthEnabledRoutes: InjectedRoute[] = [
-	{
-		// TODO Flagged for replacement by combined API route
-		pattern: '/studiocms_api/auth/[provider]/[...id]',
-		entrypoint: 'pages/studiocms_api/auth/[provider]/[...id].ts',
+		pattern: '/studiocms_api/[...all]',
+		entrypoint: 'pages/studiocms_api/[...all].ts',
 	},
 ];
 
@@ -161,31 +128,13 @@ export const userRegistrationEnabledRoutes = (
 export const dashboardEnabledRoutes = (
 	dashboardRoute: (path: string) => string
 ): InjectedRoute[] => [
-	// Dashboard API Routes
 	{
-		// TODO Flagged for replacement by combined API route
-		pattern: '/studiocms_api/dashboard/templates',
-		entrypoint: 'pages/studiocms_api/dashboard/templates.ts',
-	},
-	{
-		// TODO Flagged for replacement by combined API route
 		pattern: '/studiocms_api/partials/editor',
 		entrypoint: 'pages/studiocms_api/partials/editor.astro',
 	},
 	{
-		// TODO Flagged for replacement by combined API route
 		pattern: '/studiocms_api/partials/user-list-items',
 		entrypoint: 'pages/studiocms_api/partials/user-list-items.astro',
-	},
-	{
-		// TODO Flagged for replacement by combined API route
-		pattern: '/studiocms_api/dashboard/search-list',
-		entrypoint: 'pages/studiocms_api/dashboard/search-list.ts',
-	},
-	{
-		// TODO Flagged for replacement by combined API route
-		pattern: '/studiocms_api/auth/[path]',
-		entrypoint: 'pages/studiocms_api/auth/[path].ts',
 	},
 
 	// Dashboard Frontend Route
@@ -289,93 +238,6 @@ export const dashboardAPIEnabledRoutes = (
 	{
 		pattern: dashboardRoute('password-reset'),
 		entrypoint: 'pages/[dashboard]/password-reset.astro',
-	},
-
-	// TODO Flagged for replacement by combined API route
-	// API Routes
-	{
-		pattern: '/studiocms_api/dashboard/config',
-		entrypoint: 'pages/studiocms_api/dashboard/config.ts',
-	},
-	{
-		pattern: '/studiocms_api/dashboard/profile',
-		entrypoint: 'pages/studiocms_api/dashboard/profile.ts',
-	},
-	{
-		pattern: '/studiocms_api/dashboard/users',
-		entrypoint: 'pages/studiocms_api/dashboard/users.ts',
-	},
-	{
-		pattern: '/studiocms_api/dashboard/content/page',
-		entrypoint: 'pages/studiocms_api/dashboard/content/page.ts',
-	},
-	{
-		pattern: '/studiocms_api/dashboard/content/folder',
-		entrypoint: 'pages/studiocms_api/dashboard/content/folder.ts',
-	},
-	{
-		pattern: '/studiocms_api/dashboard/content/diff',
-		entrypoint: 'pages/studiocms_api/dashboard/content/diff.ts',
-	},
-	{
-		pattern: '/studiocms_api/dashboard/taxonomy',
-		entrypoint: 'pages/studiocms_api/dashboard/taxonomy.ts',
-	},
-	{
-		pattern: '/studiocms_api/dashboard/taxonomy-search',
-		entrypoint: 'pages/studiocms_api/dashboard/taxonomy-search.ts',
-	},
-	{
-		pattern: '/studiocms_api/dashboard/create-reset-link',
-		entrypoint: 'pages/studiocms_api/dashboard/create-reset-link.ts',
-	},
-	{
-		pattern: '/studiocms_api/dashboard/reset-password',
-		entrypoint: 'pages/studiocms_api/dashboard/reset-password.ts',
-	},
-	{
-		pattern: '/studiocms_api/dashboard/plugins/[plugin]',
-		entrypoint: 'pages/studiocms_api/dashboard/plugins/[plugin].ts',
-	},
-	{
-		pattern: '/studiocms_api/dashboard/create-user',
-		entrypoint: 'pages/studiocms_api/dashboard/create-user.ts',
-	},
-	{
-		pattern: '/studiocms_api/dashboard/create-user-invite',
-		entrypoint: 'pages/studiocms_api/dashboard/create-user-invite.ts',
-	},
-	{
-		pattern: '/studiocms_api/dashboard/api-tokens',
-		entrypoint: 'pages/studiocms_api/dashboard/api-tokens.ts',
-	},
-	{
-		pattern: '/studiocms_api/dashboard/verify-session',
-		entrypoint: 'pages/studiocms_api/dashboard/verify-session.ts',
-	},
-	{
-		pattern: '/studiocms_api/dashboard/mailer/config',
-		entrypoint: 'pages/studiocms_api/dashboard/mailer/config.ts',
-	},
-	{
-		pattern: '/studiocms_api/dashboard/mailer/test-email',
-		entrypoint: 'pages/studiocms_api/dashboard/mailer/check-email.ts',
-	},
-	{
-		pattern: '/studiocms_api/dashboard/verify-email',
-		entrypoint: 'pages/studiocms_api/dashboard/verify-email.ts',
-	},
-	{
-		pattern: '/studiocms_api/dashboard/email-notification-settings-site',
-		entrypoint: 'pages/studiocms_api/dashboard/email-notification-settings-site.ts',
-	},
-	{
-		pattern: '/studiocms_api/dashboard/resend-verify-email',
-		entrypoint: 'pages/studiocms_api/dashboard/resend-verify-email.ts',
-	},
-	{
-		pattern: '/studiocms_api/dashboard/update-user-notifications',
-		entrypoint: 'pages/studiocms_api/dashboard/update-user-notifications.ts',
 	},
 ];
 
