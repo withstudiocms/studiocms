@@ -227,6 +227,8 @@ export const AuthAPIHandler = HttpApiBuilder.group(StudioCMSAuthApi, 'auth', (ha
 						return yield* new NotFound();
 					}
 
+					yield* Effect.log(`Login attempt for username: ${username}`); // Log the login attempt with the provided username
+
 					// Get the necessary dependencies for the login handler and run them in parallel
 					const [sdk, { verifyPasswordHash }, { createUserSession }, { isEmailVerified }, ctx] =
 						yield* Effect.all([
@@ -278,6 +280,8 @@ export const AuthAPIHandler = HttpApiBuilder.group(StudioCMSAuthApi, 'auth', (ha
 
 					// Create a new session for the user
 					yield* createUserSession(existingUser.id, ctx);
+
+					yield* Effect.log(`User ${existingUser.username} logged in successfully.`);
 
 					// Return a success message indicating that the login was successful. The frontend can then handle the response and redirect the user to the appropriate page.
 					return {

@@ -195,6 +195,9 @@ if (usernameAndPassword && SHOW_OAUTH) {
 
         const formData = new FormData(signUpForm);
 
+        const username = formData.get("username") as string;
+        const email = formData.get("email") as string;
+        const displayname = formData.get("displayname") as string;
         const password = formData.get("password") as string;
         const confirmPassword = formData.get("confirm-password") as string;
 
@@ -210,7 +213,12 @@ if (usernameAndPassword && SHOW_OAUTH) {
         const response = await authClient.pipe(
             Effect.flatMap((client) =>
                 client.auth.register({
-                    payload: formData,
+                    payload: {
+                        username,
+                        displayname,
+                        email,
+                        password
+                    },
                 }),
             ),
             Effect.catchTags(sharedErrors),
