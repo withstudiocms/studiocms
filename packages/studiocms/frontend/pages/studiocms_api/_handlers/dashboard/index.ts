@@ -10,6 +10,8 @@ import { EmailNotificationHandlers } from './emailNotifications.js';
 import { MailerHandlers } from './mailer.js';
 import { PluginHandlers } from './plugins.js';
 import { ProfileHandlers } from './profile.js';
+import { ResetPasswordHandlers } from './resetPassword.js';
+import { SearchHandlers } from './search.js';
 
 /**
  * Combined Dashboard API Handlers.
@@ -22,7 +24,9 @@ export const DashboardAPIHandlers = Layer.mergeAll(
 	EmailNotificationHandlers,
 	MailerHandlers,
 	PluginHandlers,
-	ProfileHandlers
+	ProfileHandlers,
+	ResetPasswordHandlers,
+	SearchHandlers
 ).pipe(Layer.provide(AstroLocalsAuthLive));
 
 /**
