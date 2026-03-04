@@ -10,7 +10,7 @@ runs:
   using: "composite"
   steps:
     - name: Install Tools & Dependencies
-      uses: withstudiocms/automations/.github/actions/install@c2dfd186eab9d163cbd535984b82cda1ff8e4689 # main
+      uses: withstudiocms/automations/.github/actions/install@e8ab1d958f7a32e610f9d96fe36eedd8ee6a0d73 # main
 
     - name: run Build for Bundle Analysis
       shell: bash
