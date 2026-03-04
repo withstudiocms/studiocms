@@ -3,6 +3,7 @@ import { RobotsTXTConfigSchema } from '../../integrations/robots/schema.js';
 import { BooleanDefaultFalse, BooleanDefaultTrue, OptionalWithDefaults } from '../custom.js';
 import { DateTimeFormatOptions, I18nKeySchema } from '../external-schemas.js';
 import { StudioCMSPluginSchema, StudioCMSStorageManagerSchema } from '../plugins/index.js';
+import { ApiConfigSchema } from './api.js';
 import { AuthConfigSchema } from './auth.js';
 import { DashboardConfigSchema } from './dashboard.js';
 import { DbConfigSchema } from './db.js';
@@ -93,6 +94,10 @@ export const FeaturesConfigSchema = Schema.Struct({
 	webVitals: BooleanDefaultFalse.annotations({
 		description:
 			'Web Vitals - Enable or disable the collection of web vitals metrics for performance monitoring and optimization.',
+	}),
+	api: OptionalWithDefaults(ApiConfigSchema, {}).annotations({
+		description:
+			'API Configuration - Configure the API settings for the dashboard, such as enabling/disabling the API documentation.',
 	}),
 }).annotations({
 	title: 'Features Configuration',

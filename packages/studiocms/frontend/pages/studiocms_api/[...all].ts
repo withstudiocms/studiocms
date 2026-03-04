@@ -1,3 +1,4 @@
+import config from 'studiocms:config';
 import { HttpApiBuilder, HttpServerResponse } from '@effect/platform';
 import type { Api } from '@effect/platform/HttpApi';
 import {
@@ -16,9 +17,6 @@ import { DashboardAPILive } from './_handlers/dashboard/index.js';
 import { IntegrationsAPILive } from './_handlers/integration/index.js';
 import { RestAPILive } from './_handlers/rest-api/index.js';
 import { SDKAPILive } from './_handlers/sdk.js';
-
-// TODO: Make this a user config option
-const withDocs: boolean = true; // Toggle this to enable/disable the documentation route
 
 /**
  * Scalar layer for the StudioCMS API Documentation route, providing a custom header and linking to the documentation for all API specifications.
@@ -94,15 +92,11 @@ const APICollection = Layer.mergeAll(
 );
 
 /**
- * Combined API Layer - Merges the documentation route layer with the main API collection layer.
+ * Combined API Layer - Combines the API handlers with the documentation route if enabled in the configuration.
  *
- * This layer combines the API documentation route (if enabled) with the main API handlers, allowing both to be served from the same Astro route. The documentation route provides a user-friendly interface for exploring the API specifications, while the API collection layer includes all the actual API endpoints.
- *
- * The `withDocs` flag can be toggled to enable or disable the documentation route as needed, allowing for flexibility in different deployment scenarios (e.g., development vs. production).
- *
- * @returns A Layer that includes both the documentation route and the API handlers, or just the API handlers if documentation is disabled.
+ * If the API documentation is enabled, it merges the DocsRouteLive layer with the APICollection layer to serve both the API endpoints and the documentation. If the documentation is disabled, it only serves the API endpoints.
  */
-const APILive: Layer.Layer<Api, never, never> = withDocs
+const APILive: Layer.Layer<Api, never, never> = config.features.api.apiDocs
 	? Layer.merge(DocsRouteLive, APICollection)
 	: APICollection;
 
