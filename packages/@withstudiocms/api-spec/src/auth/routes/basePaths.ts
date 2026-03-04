@@ -1,4 +1,4 @@
-import { HttpApiEndpoint, HttpApiSchema } from '@effect/platform';
+import { HttpApiEndpoint } from '@effect/platform';
 import { NotFound } from '@effect/platform/HttpApiError';
 import { Description, Summary, Title } from '@effect/platform/OpenApi';
 import * as Schema from 'effect/Schema';
@@ -32,10 +32,6 @@ export const forgotPasswordPost = HttpApiEndpoint.post('forgotPassword', '/forgo
 	.addError(AuthAPIError, { status: 403 })
 	.addError(AuthAPIError, { status: 500 });
 
-// TODO: Convert login to use JSON payload instead of multipart/form-data
-// This is kept in the current spec as this is how it's currently implemented
-// We should consider changing this in future versions as it's more standard to use JSON
-
 /**
  * Endpoint for user login.
  *
@@ -52,7 +48,7 @@ export const loginPost = HttpApiEndpoint.post('login', '/login')
 	.annotate(Title, 'Login')
 	.annotate(Summary, 'Authenticate user and create a session')
 	.annotate(Description, 'Authenticates the user with provided credentials and creates a session.')
-	.setPayload(HttpApiSchema.Multipart(JsonUserPasswordPayload))
+	.setPayload(JsonUserPasswordPayload)
 	.addSuccess(
 		Schema.Struct({ ok: Schema.Boolean }).annotations({
 			description: 'Returns an empty response on successful login for frontend to handle.',
@@ -86,10 +82,6 @@ export const logoutPost = HttpApiEndpoint.post('logout', '/logout')
 	.addError(NotFound, { status: 404 })
 	.addError(AuthAPIError, { status: 500 });
 
-// TODO: Convert register to use JSON payload instead of multipart/form-data
-// This is kept in the current spec as this is how it's currently implemented
-// We should consider changing this in future versions as it's more standard to use JSON
-
 /**
  * Endpoint for user registration.
  *
@@ -105,7 +97,7 @@ export const registerPost = HttpApiEndpoint.post('register', '/register')
 	.annotate(Title, 'Register')
 	.annotate(Summary, 'Create a new user account')
 	.annotate(Description, 'Registers a new user account with the provided details.')
-	.setPayload(HttpApiSchema.Multipart(JsonRegisterPayload))
+	.setPayload(JsonRegisterPayload)
 	.addSuccess(
 		Schema.Struct({ ok: Schema.Boolean }).annotations({
 			description: 'Returns an empty response on successful registration for frontend to handle.',

@@ -2,6 +2,7 @@ import { Password, User } from 'studiocms:auth/lib';
 import { Notifications } from 'studiocms:notifier';
 import { SDKCore } from 'studiocms:sdk';
 import type { tsPageContentSelect, tsPageData, tsPageDataSelect } from 'studiocms:sdk/types';
+import routeConfig from 'virtual:studiocms/route-config';
 import { HttpApiBuilder } from '@effect/platform';
 import { StudioCMSRestApiV1Spec } from '@withstudiocms/api-spec';
 import {
@@ -20,6 +21,8 @@ import { Effect, Layer, Schema } from 'effect';
 import { isValidEmail } from '#schemas';
 import { RestAPIAuthorizationLive } from '../../../_middleware/restApi.js';
 import { sharedDBErrors, sharedNotifierErrors, sharedPageCollectionErrors } from './_shared.js';
+
+const restAPIEnabled = routeConfig.restAPIEnabled;
 
 /**
  * Utility schema for encoding Arrays of Strings
@@ -61,6 +64,9 @@ export const RestApiSecureHandler = HttpApiBuilder.group(
 				'createCategory',
 				Effect.fn(
 					function* ({ payload }) {
+						if (!restAPIEnabled) {
+							return yield* new RestAPIError({ error: 'Endpoint not found' });
+						}
 						const [sdk, user, notifier] = yield* Effect.all([
 							SDKCore,
 							CurrentRestAPIUser,
@@ -110,6 +116,9 @@ export const RestApiSecureHandler = HttpApiBuilder.group(
 				'deleteCategory',
 				Effect.fn(
 					function* ({ path: { id } }) {
+						if (!restAPIEnabled) {
+							return yield* new RestAPIError({ error: 'Endpoint not found' });
+						}
 						const [sdk, user, notifier] = yield* Effect.all([
 							SDKCore,
 							CurrentRestAPIUser,
@@ -193,6 +202,9 @@ export const RestApiSecureHandler = HttpApiBuilder.group(
 				'updateCategory',
 				Effect.fn(
 					function* ({ path: { id }, payload }) {
+						if (!restAPIEnabled) {
+							return yield* new RestAPIError({ error: 'Endpoint not found' });
+						}
 						const [sdk, user, notifier] = yield* Effect.all([
 							SDKCore,
 							CurrentRestAPIUser,
@@ -262,6 +274,9 @@ export const RestApiSecureHandler = HttpApiBuilder.group(
 			.handle(
 				'getCategories',
 				Effect.fn(function* ({ urlParams: { name, parent } }) {
+					if (!restAPIEnabled) {
+						return yield* new RestAPIError({ error: 'Endpoint not found' });
+					}
 					const [sdk, user] = yield* Effect.all([SDKCore, CurrentRestAPIUser]);
 
 					const { rank } = user;
@@ -285,6 +300,9 @@ export const RestApiSecureHandler = HttpApiBuilder.group(
 			.handle(
 				'getCategory',
 				Effect.fn(function* ({ path: { id } }) {
+					if (!restAPIEnabled) {
+						return yield* new RestAPIError({ error: 'Endpoint not found' });
+					}
 					const [sdk, user] = yield* Effect.all([SDKCore, CurrentRestAPIUser]);
 
 					const { rank } = user;
@@ -310,6 +328,9 @@ export const RestApiSecureHandler = HttpApiBuilder.group(
 				'createFolder',
 				Effect.fn(
 					function* ({ payload }) {
+						if (!restAPIEnabled) {
+							return yield* new RestAPIError({ error: 'Endpoint not found' });
+						}
 						const [sdk, user, notifier] = yield* Effect.all([
 							SDKCore,
 							CurrentRestAPIUser,
@@ -353,6 +374,9 @@ export const RestApiSecureHandler = HttpApiBuilder.group(
 				'deleteFolder',
 				Effect.fn(
 					function* ({ path: { id } }) {
+						if (!restAPIEnabled) {
+							return yield* new RestAPIError({ error: 'Endpoint not found' });
+						}
 						const [sdk, user, notifier] = yield* Effect.all([
 							SDKCore,
 							CurrentRestAPIUser,
@@ -457,6 +481,9 @@ export const RestApiSecureHandler = HttpApiBuilder.group(
 				'updateFolder',
 				Effect.fn(
 					function* ({ path: { id }, payload }) {
+						if (!restAPIEnabled) {
+							return yield* new RestAPIError({ error: 'Endpoint not found' });
+						}
 						const [sdk, user, notifier] = yield* Effect.all([
 							SDKCore,
 							CurrentRestAPIUser,
@@ -513,6 +540,9 @@ export const RestApiSecureHandler = HttpApiBuilder.group(
 			.handle(
 				'getFolders',
 				Effect.fn(function* ({ urlParams: { name, parent } }) {
+					if (!restAPIEnabled) {
+						return yield* new RestAPIError({ error: 'Endpoint not found' });
+					}
 					const [sdk, user] = yield* Effect.all([SDKCore, CurrentRestAPIUser]);
 
 					const { rank } = user;
@@ -536,6 +566,9 @@ export const RestApiSecureHandler = HttpApiBuilder.group(
 			.handle(
 				'getFolder',
 				Effect.fn(function* ({ path: { id } }) {
+					if (!restAPIEnabled) {
+						return yield* new RestAPIError({ error: 'Endpoint not found' });
+					}
 					const [sdk, user] = yield* Effect.all([SDKCore, CurrentRestAPIUser]);
 
 					if (user.rank !== 'owner' && user.rank !== 'admin' && user.rank !== 'editor') {
@@ -557,6 +590,9 @@ export const RestApiSecureHandler = HttpApiBuilder.group(
 				'createPage',
 				Effect.fn(
 					function* ({ payload: { data, content } }) {
+						if (!restAPIEnabled) {
+							return yield* new RestAPIError({ error: 'Endpoint not found' });
+						}
 						const [sdk, user, notifier] = yield* Effect.all([
 							SDKCore,
 							CurrentRestAPIUser,
@@ -663,6 +699,9 @@ export const RestApiSecureHandler = HttpApiBuilder.group(
 				'deletePage',
 				Effect.fn(
 					function* ({ path: { id }, payload: { slug } }) {
+						if (!restAPIEnabled) {
+							return yield* new RestAPIError({ error: 'Endpoint not found' });
+						}
 						const [sdk, user, notifier] = yield* Effect.all([
 							SDKCore,
 							CurrentRestAPIUser,
@@ -714,6 +753,9 @@ export const RestApiSecureHandler = HttpApiBuilder.group(
 				'updatePage',
 				Effect.fn(
 					function* ({ path: { id }, payload }) {
+						if (!restAPIEnabled) {
+							return yield* new RestAPIError({ error: 'Endpoint not found' });
+						}
 						const [sdk, user, notifier] = yield* Effect.all([
 							SDKCore,
 							CurrentRestAPIUser,
@@ -857,6 +899,9 @@ export const RestApiSecureHandler = HttpApiBuilder.group(
 				'getPages',
 				Effect.fn(
 					function* ({ urlParams: { author, draft, parentFolder, published, slug, title } }) {
+						if (!restAPIEnabled) {
+							return yield* new RestAPIError({ error: 'Endpoint not found' });
+						}
 						const [sdk, user] = yield* Effect.all([SDKCore, CurrentRestAPIUser]);
 
 						if (user.rank !== 'owner' && user.rank !== 'admin' && user.rank !== 'editor') {
@@ -898,6 +943,9 @@ export const RestApiSecureHandler = HttpApiBuilder.group(
 				'getPage',
 				Effect.fn(
 					function* ({ path: { id } }) {
+						if (!restAPIEnabled) {
+							return yield* new RestAPIError({ error: 'Endpoint not found' });
+						}
 						const [sdk, user] = yield* Effect.all([SDKCore, CurrentRestAPIUser]);
 
 						if (user.rank !== 'owner' && user.rank !== 'admin' && user.rank !== 'editor') {
@@ -922,6 +970,9 @@ export const RestApiSecureHandler = HttpApiBuilder.group(
 				'getPageHistory',
 				Effect.fn(
 					function* ({ path: { id }, urlParams: { limit: _limit } }) {
+						if (!restAPIEnabled) {
+							return yield* new RestAPIError({ error: 'Endpoint not found' });
+						}
 						const [sdk, user] = yield* Effect.all([SDKCore, CurrentRestAPIUser]);
 
 						if (user.rank !== 'owner' && user.rank !== 'admin' && user.rank !== 'editor') {
@@ -953,6 +1004,9 @@ export const RestApiSecureHandler = HttpApiBuilder.group(
 				'getPageHistoryEntry',
 				Effect.fn(
 					function* ({ path: { id, diffId } }) {
+						if (!restAPIEnabled) {
+							return yield* new RestAPIError({ error: 'Endpoint not found' });
+						}
 						const [sdk, user] = yield* Effect.all([SDKCore, CurrentRestAPIUser]);
 
 						if (user.rank !== 'owner' && user.rank !== 'admin' && user.rank !== 'editor') {
@@ -985,6 +1039,9 @@ export const RestApiSecureHandler = HttpApiBuilder.group(
 				'getSettings',
 				Effect.fn(
 					function* () {
+						if (!restAPIEnabled) {
+							return yield* new RestAPIError({ error: 'Endpoint not found' });
+						}
 						const [sdk, user] = yield* Effect.all([SDKCore, CurrentRestAPIUser]);
 
 						if (user.rank !== 'owner') {
@@ -1011,6 +1068,9 @@ export const RestApiSecureHandler = HttpApiBuilder.group(
 			.handle(
 				'updateSettings',
 				Effect.fn(function* ({ payload }) {
+					if (!restAPIEnabled) {
+						return yield* new RestAPIError({ error: 'Endpoint not found' });
+					}
 					const [sdk, user] = yield* Effect.all([SDKCore, CurrentRestAPIUser]);
 
 					if (user.rank !== 'owner') {
@@ -1056,6 +1116,9 @@ export const RestApiSecureHandler = HttpApiBuilder.group(
 				'createTag',
 				Effect.fn(
 					function* ({ payload }) {
+						if (!restAPIEnabled) {
+							return yield* new RestAPIError({ error: 'Endpoint not found' });
+						}
 						const [sdk, user, notifier] = yield* Effect.all([
 							SDKCore,
 							CurrentRestAPIUser,
@@ -1113,6 +1176,9 @@ export const RestApiSecureHandler = HttpApiBuilder.group(
 				'deleteTag',
 				Effect.fn(
 					function* ({ path: { id } }) {
+						if (!restAPIEnabled) {
+							return yield* new RestAPIError({ error: 'Endpoint not found' });
+						}
 						const [sdk, user, notifier] = yield* Effect.all([
 							SDKCore,
 							CurrentRestAPIUser,
@@ -1173,6 +1239,9 @@ export const RestApiSecureHandler = HttpApiBuilder.group(
 				'updateTag',
 				Effect.fn(
 					function* ({ path: { id }, payload }) {
+						if (!restAPIEnabled) {
+							return yield* new RestAPIError({ error: 'Endpoint not found' });
+						}
 						const [sdk, user, notifier] = yield* Effect.all([
 							SDKCore,
 							CurrentRestAPIUser,
@@ -1233,6 +1302,9 @@ export const RestApiSecureHandler = HttpApiBuilder.group(
 			.handle(
 				'getTags',
 				Effect.fn(function* ({ urlParams: { name } }) {
+					if (!restAPIEnabled) {
+						return yield* new RestAPIError({ error: 'Endpoint not found' });
+					}
 					const [sdk, user] = yield* Effect.all([SDKCore, CurrentRestAPIUser]);
 
 					if (user.rank !== 'owner' && user.rank !== 'admin' && user.rank !== 'editor') {
@@ -1251,6 +1323,9 @@ export const RestApiSecureHandler = HttpApiBuilder.group(
 			.handle(
 				'getTag',
 				Effect.fn(function* ({ path: { id } }) {
+					if (!restAPIEnabled) {
+						return yield* new RestAPIError({ error: 'Endpoint not found' });
+					}
 					const [sdk, user] = yield* Effect.all([SDKCore, CurrentRestAPIUser]);
 
 					if (user.rank !== 'owner' && user.rank !== 'admin' && user.rank !== 'editor') {
@@ -1272,6 +1347,9 @@ export const RestApiSecureHandler = HttpApiBuilder.group(
 				'createUser',
 				Effect.fn(
 					function* ({ payload: { username, password, email, displayname, rank: newUserRank } }) {
+						if (!restAPIEnabled) {
+							return yield* new RestAPIError({ error: 'Endpoint not found' });
+						}
 						const [sdk, user, userUtils, passwordUtils, notifier] = yield* Effect.all([
 							SDKCore,
 							CurrentRestAPIUser,
@@ -1382,6 +1460,9 @@ export const RestApiSecureHandler = HttpApiBuilder.group(
 				'deleteUser',
 				Effect.fn(
 					function* ({ path: { id } }) {
+						if (!restAPIEnabled) {
+							return yield* new RestAPIError({ error: 'Endpoint not found' });
+						}
 						const [sdk, user, notifier] = yield* Effect.all([
 							SDKCore,
 							CurrentRestAPIUser,
@@ -1451,6 +1532,9 @@ export const RestApiSecureHandler = HttpApiBuilder.group(
 				'updateUser',
 				Effect.fn(
 					function* ({ path: { id }, payload }) {
+						if (!restAPIEnabled) {
+							return yield* new RestAPIError({ error: 'Endpoint not found' });
+						}
 						const [sdk, user, notifier] = yield* Effect.all([
 							SDKCore,
 							CurrentRestAPIUser,
@@ -1528,6 +1612,9 @@ export const RestApiSecureHandler = HttpApiBuilder.group(
 				'getUsers',
 				Effect.fn(
 					function* ({ urlParams: { name, rank, username } }) {
+						if (!restAPIEnabled) {
+							return yield* new RestAPIError({ error: 'Endpoint not found' });
+						}
 						const [sdk, user] = yield* Effect.all([SDKCore, CurrentRestAPIUser]);
 
 						if (user.rank !== 'owner' && user.rank !== 'admin') {
@@ -1590,6 +1677,9 @@ export const RestApiSecureHandler = HttpApiBuilder.group(
 				'getUser',
 				Effect.fn(
 					function* ({ path: { id } }) {
+						if (!restAPIEnabled) {
+							return yield* new RestAPIError({ error: 'Endpoint not found' });
+						}
 						const [sdk, user] = yield* Effect.all([SDKCore, CurrentRestAPIUser]);
 
 						const { rank } = user;

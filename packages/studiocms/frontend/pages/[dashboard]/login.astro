@@ -246,9 +246,15 @@ if (usernameAndPassword && SHOW_OAUTH) {
 
             const formData = new FormData(loginForm);
 
+            const username = formData.get('username')?.toString();
+            const password = formData.get('password')?.toString();
+
             const response = await authClient.pipe(
                 Effect.flatMap((client) => client.auth.login({
-                    payload: formData,
+                    payload: {
+                        username: username || '',
+                        password: password || '',
+                    }
                 })),
                 Effect.catchTags(sharedErrors),
                 Effect.catchTag('AuthError', (err) => Effect.succeed({
