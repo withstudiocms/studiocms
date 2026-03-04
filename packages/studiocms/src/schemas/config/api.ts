@@ -7,7 +7,7 @@ import { BooleanDefaultTrue } from '../custom.js';
 export const ApiConfigSchema = Schema.Struct({
 	apiDocs: BooleanDefaultTrue.annotations({
 		description:
-			'API Documentation - Allows enabling or disabling of the API documentation. These docs will be available at the /studiocms_api/docs route and provide an interactive interface for exploring the API specifications and endpoints. Disabling this option will hide the documentation route, which can be useful in production environments for security reasons.',
+			'API Documentation - Allows enabling or disabling of the API documentation. These docs will be available at the /studiocms_api/docs route and provide an interactive interface for exploring the API specifications and endpoints. Disabling this option will hide the documentation route, which is recommended in production environments for security reasons.',
 	}),
 }).annotations({
 	title: 'API Configuration',
