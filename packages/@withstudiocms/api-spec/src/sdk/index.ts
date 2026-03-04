@@ -3,7 +3,7 @@ import { Description, License, Title, Transform, Version } from '@effect/platfor
 import pkg from '../../package.json';
 import { StudioCMSLicenseAnnotation, StudioCMSTransformAnnotation } from '../consts.js';
 import { SDKAPIError } from './errors.js';
-import { fullChangelogPost, listPagesGet, updateLatestVersionCacheGet } from './routes/index.js';
+import { fullChangelogPost, updateLatestVersionCacheGet } from './routes/index.js';
 
 export * from './errors.js';
 export * from './schemas.js';
@@ -31,7 +31,6 @@ export class SDKApi extends HttpApiGroup.make('sdk')
 	.annotate(Version, pkg.version)
 	.annotate(License, StudioCMSLicenseAnnotation)
 	.add(fullChangelogPost)
-	.add(listPagesGet)
 	.add(updateLatestVersionCacheGet)
 	.addError(SDKAPIError, { status: 500 })
 	.prefix('/sdk') {}

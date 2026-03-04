@@ -2,16 +2,7 @@ import { HttpApiEndpoint } from '@effect/platform';
 import { Description, Summary, Title } from '@effect/platform/OpenApi';
 import { Schema } from 'effect';
 import { SDKAPIError } from '../errors.js';
-import {
-	FullChangelogResponseSchema,
-	ListPagesResponseSchema,
-	UpdateLatestVersionCacheResponseSchema,
-} from '../schemas.js';
-
-// TODO: Full changelog endpoint should ideally not use .json in the path
-// This is kept in the current spec as this is how it's currently implemented
-// We should consider changing this in future versions as it's one of the only
-// endpoints using this pattern.
+import { FullChangelogResponseSchema, UpdateLatestVersionCacheResponseSchema } from '../schemas.js';
 
 /**
  * HTTP API endpoint for retrieving the full changelog.
@@ -30,7 +21,7 @@ import {
  *
  * @throws {SDKAPIError} Returns a 500 status code on server error
  */
-export const fullChangelogPost = HttpApiEndpoint.post('fullChangelog', '/full-changelog.json')
+export const fullChangelogPost = HttpApiEndpoint.post('fullChangelog', '/full-changelog')
 	.annotate(Title, 'Get Full Changelog')
 	.annotate(Summary, 'Retrieve the full changelog in JSON format.')
 	.annotate(Description, 'Retrieves the complete changelog for the StudioCMS SDK in JSON format.')
@@ -44,34 +35,6 @@ export const fullChangelogPost = HttpApiEndpoint.post('fullChangelog', '/full-ch
 		})
 	)
 	.addSuccess(FullChangelogResponseSchema)
-	.addError(SDKAPIError, { status: 500 });
-
-/**
- * HTTP API endpoint for listing pages.
- *
- * @remarks
- * This endpoint provides a list of pages available in the StudioCMS SDK.
- * It is a GET endpoint that returns the last updated timestamp and an array of pages.
- *
- * @endpoint GET /list-pages
- * @title List Pages
- * @summary Retrieve a list of pages.
- *
- * @returns A response object containing:
- * - `lastUpdated` - A string timestamp of the last update
- * - `pages` - An array of page objects
- *
- * @throws {SDKAPIError} Returns a 500 status code on server error
- */
-// TODO: This endpoint is unused and should be removed
-export const listPagesGet = HttpApiEndpoint.get('listPages', '/list-pages')
-	.annotate(Title, 'List Pages')
-	.annotate(Summary, 'Retrieve a list of pages.')
-	.annotate(
-		Description,
-		'Retrieves a list of pages available in the StudioCMS SDK. (Does not show draft pages)'
-	)
-	.addSuccess(ListPagesResponseSchema)
 	.addError(SDKAPIError, { status: 500 });
 
 /**
