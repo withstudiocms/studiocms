@@ -161,7 +161,9 @@ type TKey = Parameters<typeof t>[0];
 
 <script>
     import { toast } from 'studiocms:ui/components/toaster/client';
-    import { getEnabledNotificationCheckboxes, formatNotificationOptions } from 'studiocms:notifier/client'
+    import { getEnabledNotificationCheckboxes, formatNotificationOptions } from 'studiocms:notifier/client';
+    import { dashboardClient } from 'studiocms:client/apiClients';
+    import * as Effect from 'effect/Effect';
 
     const form = document.getElementById('notifications-form') as HTMLFormElement;
 
@@ -174,31 +176,57 @@ type TKey = Parameters<typeof t>[0];
 
         const formattedOptions = formatNotificationOptions(enabledCheckboxes);
 
-        const data = {
-            userId: formData.get('user_id'),
-            notifications: formattedOptions
-        };
+        const userId = formData.get('user_id')?.toString();
 
-        const response = await fetch(form.action, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        });
+        if (!userId) {
+            toast({
+                title: 'Error',
+                description: 'User ID is missing. Please refresh the page and try again.',
+                type: 'danger',
+            });
+            return;
+        }
 
-        const result = await response.json();
+        const response = await dashboardClient.pipe(
+            Effect.flatMap((client) => client.users.updateUserNotifications({
+                payload: {
+                    id: userId,
+                    notifications: formattedOptions
+                }
+            })),
+            Effect.catchTags({
+                AstroLocalsMissing: () => Effect.succeed({
+                    error: 'Failed to update notifications: Missing necessary authentication data. Please refresh the page and try again.'
+                }),
+                DashboardAPIError: (err) => Effect.succeed({
+                    error: `Failed to update notifications: ${err.message}`
+                }),
+                HttpApiDecodeError: () => Effect.succeed({
+                    error: 'Failed to update notifications: Unable to decode server response.'
+                }),
+                ParseError: () => Effect.succeed({
+                    error: 'Failed to update notifications: Unable to parse server response.'
+                }),
+                RequestError: () => Effect.succeed({
+                    error: 'Failed to update notifications: Network error occurred.'
+                }),
+                ResponseError: (err) => Effect.succeed({
+                    error: `Failed to update notifications: Server responded with error - ${err.message}`
+                }),
+            }),
+            Effect.runPromise
+        );
 
-        if (response.ok) {
+        if ('message' in response) {
             toast({
                 title: 'Notifications Updated',
-                description: result.message,
+                description: response.message,
                 type: 'success',
             })
         } else {
             toast({
                 title: 'Error',
-                description: result.error,
+                description: response.error,
                 type: 'danger',
             })
         }
