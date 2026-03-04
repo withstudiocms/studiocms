@@ -94,11 +94,6 @@ export const noDbSetupRoutes: InjectedRoute[] = [
 		pattern: '/studiocms_api/partials/render',
 		entrypoint: 'pages/studiocms_api/partials/render.astro',
 	},
-	// Integration routes
-	{
-		pattern: '/studiocms_api/integrations/[...all]',
-		entrypoint: 'pages/studiocms_api/integrations/[...all].ts',
-	},
 	// StudioCMS Primary API routes
 	{
 		pattern: '/studiocms_api/[...all]',
