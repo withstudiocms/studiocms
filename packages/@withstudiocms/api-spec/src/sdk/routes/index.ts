@@ -11,7 +11,7 @@ import { FullChangelogResponseSchema, UpdateLatestVersionCacheResponseSchema } f
  * This endpoint provides access to the complete changelog for the StudioCMS SDK in JSON format.
  * It is a POST endpoint that returns the changelog data along with a success status indicator.
  *
- * @endpoint POST /full-changelog.json
+ * @endpoint POST /full-changelog
  * @title Get Full Changelog
  * @summary Retrieve the full changelog in JSON format.
  *

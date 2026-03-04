@@ -26,7 +26,7 @@ export class SDKApi extends HttpApiGroup.make('sdk')
 	.annotate(Title, 'SDK API')
 	.annotate(
 		Description,
-		'Utilities and tools for interacting with the StudioCMS SDK. These endpoints are publicly accessible as they do not expose any sensitive data.\n\nThese endpoints allow users to retrieve SDK-related information such as the full changelog, list of public non-draft pages, and update the latest version cache.'
+		'Utilities and tools for interacting with the StudioCMS SDK. These endpoints are publicly accessible as they do not expose any sensitive data.\n\nThese endpoints allow users to retrieve SDK-related information such as the full changelog and update the latest version cache.'
 	)
 	.annotate(Version, pkg.version)
 	.annotate(License, StudioCMSLicenseAnnotation)
