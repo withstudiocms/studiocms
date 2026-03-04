@@ -1,5 +1,4 @@
 import * as Schema from 'effect/Schema';
-import { PublicV1GetPagesSelect } from '../rest-api/schemas.js';
 
 /**
  * Standard error response schema for the StudioCMS APIs.
@@ -28,23 +27,6 @@ export const FullChangelogResponseSchema = Schema.Struct({
 }).annotations({
 	title: 'FullChangelogResponse',
 	description: 'Response schema for the full changelog endpoint.',
-});
-
-/**
- * Response schema for the list pages endpoint.
- *
- * @remarks
- * This schema defines the structure of the response returned by the list pages endpoint.
- * It includes two properties:
- * - `lastUpdated`: A string timestamp indicating when the pages were last updated.
- * - `pages`: An array of page objects as defined by the PublicV1GetPagesSelect schema.
- */
-export const ListPagesResponseSchema = Schema.Struct({
-	lastUpdated: Schema.String,
-	pages: Schema.Array(PublicV1GetPagesSelect),
-}).annotations({
-	title: 'ListPagesResponse',
-	description: 'Response schema for the list pages endpoint.',
 });
 
 /**

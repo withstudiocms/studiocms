@@ -1,5 +1,4 @@
 import { SDKCore } from 'studiocms:sdk';
-import type { CombinedPageData } from 'studiocms:sdk/types';
 import { HttpApiBuilder } from '@effect/platform';
 import { StudioCMSSDKApiSpec } from '@withstudiocms/api-spec';
 import { SDKAPIError } from '@withstudiocms/api-spec/sdk';
@@ -16,14 +15,6 @@ const catchError = (message: string) =>
  * Utility function to create a response object for the changelog endpoint.
  */
 const makeChangelogResponse = (changelog: string) => ({ success: true, changelog });
-
-/**
- * Utility function to create a response object for the list pages endpoint.
- */
-const makePagesResponse = (pages: CombinedPageData[]) => ({
-	lastUpdated: new Date().toISOString(),
-	pages,
-});
 
 /**
  * Utility function to create a response object for the latest version cache update endpoint.
@@ -58,14 +49,6 @@ export const SDKAPIHandler = HttpApiBuilder.group(StudioCMSSDKApiSpec, 'sdk', (h
 				Effect.flatMap((sdk) => sdk.UPDATE.latestVersion()),
 				Effect.map(makeVersionResponse),
 				catchError('Failed to update latest version cache')
-			)
-		)
-		// TODO: This endpoint is unused and should be removed
-		.handle('listPages', () =>
-			SDKCore.pipe(
-				Effect.flatMap((sdk) => sdk.GET.pages()),
-				Effect.map(makePagesResponse),
-				catchError('Failed to list SDK pages')
 			)
 		)
 );

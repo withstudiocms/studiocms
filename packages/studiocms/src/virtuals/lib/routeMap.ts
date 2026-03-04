@@ -370,7 +370,7 @@ export const StudioCMSRoutes = {
 		/**
 		 * SDK route for the full changelog JSON.
 		 */
-		changelog: sdkRoute('full-changelog.json'),
+		changelog: sdkRoute('full-changelog'),
 	},
 	fts: {
 		/**
