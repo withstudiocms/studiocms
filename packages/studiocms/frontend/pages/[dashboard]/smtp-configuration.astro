@@ -400,7 +400,9 @@ setDataContext(Astro, {
 
 <script>
   import { toast } from "studiocms:ui/components/toaster/client";
-  import { DbStudioElement } from '#db-studio/viewer'
+  import { DbStudioElement } from '#db-studio/viewer';
+  import { dashboardClient } from 'studiocms:client/apiClients';
+  import * as Effect from 'effect/Effect';
 
 	// Define the custom element if not already defined
 	if (!customElements.get('db-studio')) {
@@ -416,6 +418,27 @@ setDataContext(Astro, {
   const notificationSettingsForm = document.getElementById(
     "notification-settings-form",
   ) as HTMLFormElement;
+
+  const sharedTags = {
+    AstroLocalsMissing: (err: { message?: string }) => Effect.succeed({
+      error: err.message || 'Missing necessary data to save SMTP configuration.',
+    }),
+    DashboardAPIError: (err: { message?: string }) => Effect.succeed({
+      error: err.message || 'An error occurred while saving SMTP configuration.',
+    }),
+    HttpApiDecodeError: (err: { message?: string }) => Effect.succeed({
+      error: err.message || 'Failed to decode the response from the server.',
+    }),
+    ParseError: (err: { message?: string }) => Effect.succeed({
+      error: err.message || 'An error occurred while parsing the response from the server.',
+    }),
+    RequestError: (err: { message?: string }) => Effect.succeed({
+      error: err.message || 'A network error occurred while trying to save SMTP configuration.',
+    }),
+    ResponseError: (err: { message?: string }) => Effect.succeed({
+      error: err.message || 'The server responded with an error while trying to save SMTP configuration.',
+    }),
+  };
 
   smtpConfigForm.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -447,40 +470,45 @@ setDataContext(Astro, {
 
     const createNewConfig = formData.get("create-new-config") as string;
 
-    const response = await fetch(smtpConfigForm.action, {
-      method: createNewConfig ? "POST" : "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
+    const createEffect = dashboardClient.pipe(
+      Effect.flatMap((client) =>
+        client.mailer.setupMailerConfig({
+          payload: data,
+        })
+      )
+    );
 
-    if (!response.ok) {
+    const updateEffect = dashboardClient.pipe(
+      Effect.flatMap((client) =>
+        client.mailer.updateMailerConfig({
+          payload: data,
+        })
+      )
+    );
+
+    const effectToRun = createNewConfig === "true" ? createEffect : updateEffect;
+
+    const response = await effectToRun.pipe(
+      Effect.catchTags(sharedTags),
+      Effect.runPromise
+    );
+
+    if ('error' in response) {
       toast({
-        title: "Error",
-        description: "Failed to save SMTP configuration",
-        type: "danger",
+        title: 'Error',
+        description: response.error,
+        type: 'danger',
       });
       return;
-    }
-
-    const result = await response.json();
-
-    if (result.message) {
+    } else {
       toast({
-        title: "Success",
-        description: result.message,
-        type: "success",
+        title: 'Success',
+        description: response.message || 'SMTP configuration saved successfully.',
+        type: 'success',
       });
       setTimeout(() => {
         window.location.reload();
       }, 1000);
-    } else {
-      toast({
-        title: "Error",
-        description: result.error,
-        type: "danger",
-      });
     }
   });
 
@@ -493,37 +521,30 @@ setDataContext(Astro, {
       test_email: formData.get("test_email") as string,
     };
 
-    const response = await fetch(testSmtpForm.action, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
+    const response = await dashboardClient.pipe(
+      Effect.flatMap((client) =>
+        client.mailer.testEmailService({
+          payload: data,
+        })
+      ),
+      Effect.catchTags(sharedTags),
+      Effect.runPromise
+    );
 
-    if (!response.ok) {
+    if ('error' in response) {
       toast({
-        title: "Error",
-        description: "Failed to send test email",
-        type: "danger",
+        title: 'Error',
+        description: response.error,
+        type: 'danger',
       });
       return;
-    }
-
-    const result = await response.json();
-
-    if (result.message) {
-      toast({
-        title: "Success",
-        description: result.message,
-        type: "success",
-      });
     } else {
       toast({
-        title: "Error",
-        description: result.error,
-        type: "danger",
+        title: 'Success',
+        description: response.message || 'Test email sent successfully.',
+        type: 'success',
       });
+      return;
     }
   });
 
@@ -541,37 +562,30 @@ setDataContext(Astro, {
       oAuthBypassVerification: formData.get("oAuthBypassVerification") === "on",
     };
 
-    const response = await fetch(notificationSettingsForm.action, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
+    const response = await dashboardClient.pipe(
+      Effect.flatMap((client) =>
+        client.emailNotifications.updateEmailNotificationsSettings({
+          payload: data,
+        })
+      ),
+      Effect.catchTags(sharedTags),
+      Effect.runPromise
+    );
 
-    if (!response.ok) {
+    if ('error' in response) {
       toast({
-        title: "Error",
-        description: "Failed to save notification settings",
-        type: "danger",
+        title: 'Error',
+        description: response.error,
+        type: 'danger',
       });
       return;
-    }
-
-    const result = await response.json();
-
-    if (result.message) {
-      toast({
-        title: "Success",
-        description: result.message,
-        type: "success",
-      });
     } else {
       toast({
-        title: "Error",
-        description: result.error,
-        type: "danger",
+        title: 'Success',
+        description: response.message || 'Email notification settings updated successfully.',
+        type: 'success',
       });
+      return;
     }
   });
 </script>
