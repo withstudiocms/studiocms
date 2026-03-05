@@ -190,6 +190,8 @@ setDataContext(Astro, {
 
 <script>
   import { toast } from "studiocms:ui/components/toaster/client";
+  import { dashboardClient } from "studiocms:client/apiClients";
+  import * as Effect from "effect/Effect";
 
   const revertMetaData = document.getElementById(
     "revert-metadata",
@@ -216,29 +218,62 @@ setDataContext(Astro, {
       return;
     }
 
-    const response = await fetch(url, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-      method: "POST",
-      body: JSON.stringify({ id, type }),
-    });
+    function isAllowedType(type: string): type is "data" | "content" | "both" {
+      return ["data", "content", "both"].includes(type);
+    }
 
-    const res = await response.json();
-
-    if (response.status !== 200) {
+    if (!isAllowedType(type)) {
       toast({
         title: "Error",
-        description: res.error,
+        description: "Invalid revert type.",
         type: "danger",
       });
       return;
     }
 
-    if (response.status === 200) {
+    const response = await dashboardClient.pipe(
+      Effect.flatMap((client) => 
+        client.content.revertToDiff({
+          payload: {
+            id,
+            type,
+          }
+        })
+      ),
+      Effect.catchTags({
+        AstroLocalsMissing: (err) => Effect.succeed({
+          error: err.message || "Required data is missing. Please refresh and try again."
+        }),
+        DashboardAPIError: (err) => Effect.succeed({
+          error: err.message || "An error occurred while processing your request. Please try again."
+        }),
+        HttpApiDecodeError: (err) => Effect.succeed({
+          error: err.message || "Failed to decode server response. Please try again."
+        }),
+        ParseError: (err) => Effect.succeed({
+          error: err.message || "An error occurred while preparing your request. Please try again."
+        }),
+        RequestError: (err) => Effect.succeed({
+          error: err.message || "A network error occurred. Please check your connection and try again."
+        }),
+        ResponseError: (err) => Effect.succeed({
+          error: err.message || "The server responded with an error. Please try again."
+        }),
+      }),
+      Effect.runPromise
+    );
+
+    if ("error" in response) {
+      toast({
+        title: "Error",
+        description: response.error,
+        type: "danger",
+      });
+      return;
+    } else {
       toast({
         title: "Success",
-        description: res.message,
+        description: "Changes have been reverted successfully.",
         type: "success",
       });
       return;
