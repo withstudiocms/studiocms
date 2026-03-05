@@ -421,10 +421,10 @@ setDataContext(Astro, {
 
   const sharedTags = {
     AstroLocalsMissing: (err: { message?: string }) => Effect.succeed({
-      error: err.message || 'Missing necessary data to save SMTP configuration.',
+      error: err.message || 'Missing necessary data to perform this action.',
     }),
     DashboardAPIError: (err: { message?: string }) => Effect.succeed({
-      error: err.message || 'An error occurred while saving SMTP configuration.',
+      error: err.message || 'An error occurred while performing this action.',
     }),
     HttpApiDecodeError: (err: { message?: string }) => Effect.succeed({
       error: err.message || 'Failed to decode the response from the server.',
@@ -433,10 +433,10 @@ setDataContext(Astro, {
       error: err.message || 'An error occurred while parsing the response from the server.',
     }),
     RequestError: (err: { message?: string }) => Effect.succeed({
-      error: err.message || 'A network error occurred while trying to save SMTP configuration.',
+      error: err.message || 'A network error occurred while trying to perform this action.',
     }),
     ResponseError: (err: { message?: string }) => Effect.succeed({
-      error: err.message || 'The server responded with an error while trying to save SMTP configuration.',
+      error: err.message || 'The server responded with an error while trying to perform this action.',
     }),
   };
 
