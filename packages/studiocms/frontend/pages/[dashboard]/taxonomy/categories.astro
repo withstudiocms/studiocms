@@ -127,6 +127,8 @@ setDataContext(Astro, {
         parseFormDataToJson,
     } from "./shared-client.js";
     import { toast } from "studiocms:ui/components/toaster/client";
+    import { dashboardClient } from 'studiocms:client/apiClients';
+    import * as Effect from 'effect/Effect';
 
     const $ = <E extends HTMLElement>(
         selector: string,
@@ -212,56 +214,52 @@ setDataContext(Astro, {
             const formData = new FormData(form);
             const jsonData = parseFormDataToJson(formData, 'categories');
 
-            let response: Response;
+            const response = await dashboardClient.pipe(
+                Effect.flatMap((client) =>
+                    client.taxonomy.taxonomy({
+                        payload: jsonData,
+                    })
+                ),
+                Effect.catchTags({
+                    AstroLocalsMissing: (err) => Effect.succeed({
+                        error: err.message || 'Missing necessary data to save the category.',
+                    }),
+                    DashboardAPIError: (err) => Effect.succeed({
+                        error: err.message || 'An error occurred while saving the category.',
+                    }),
+                    HttpApiDecodeError: (err) => Effect.succeed({
+                        error: err.message || 'Failed to decode the response from the server.',
+                    }),
+                    ParseError: (err) => Effect.succeed({
+                        error: err.message || 'An error occurred while parsing the response from the server.',
+                    }),
+                    RequestError: (err) => Effect.succeed({
+                        error: err.message || 'A network error occurred while trying to save the category.',
+                    }),
+                    ResponseError: (err) => Effect.succeed({
+                        error: err.message || 'The server responded with an error while trying to save the category.',
+                    }),
+                }),
+                Effect.runPromise
+            );
 
-            try {
-                response = await fetch(form.action, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(jsonData),
-                });
-            } catch (error) {
+            if ("error" in response) {
                 toast({
                     title: "Error",
-                    description:
-                        "An error occurred while saving the category",
+                    description: response.error,
                     type: "danger",
                 });
                 return;
-            }
-
-            if (response.ok) {
-                const result: { message: string } =
-                    await response.json();
-                if (response.status === 200) {
-                    toast({
-                        title: "Success",
-                        description:
-                            result.message || "Category saved successfully",
-                        type: "success",
-                    });
-
-                    if (redirectUrl) {
-                        window.location.href = redirectUrl;
-                    }
-                } else {
-                    toast({
-                        title: "Error",
-                        description:
-                            result.message ||
-                            "An error occurred while saving the category",
-                        type: "danger",
-                    });
-                }
             } else {
                 toast({
-                    title: "Error",
-                    description:
-                        "An error occurred while saving the category",
-                    type: "danger",
+                    title: "Success",
+                    description: response.message || "Category saved successfully",
+                    type: "success",
                 });
+
+                if (redirectUrl) {
+                    window.location.href = redirectUrl;
+                }
             }
         });
     }

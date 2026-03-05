@@ -335,27 +335,22 @@ setDataContext(Astro, {
   <script>
     import { toast } from 'studiocms:ui/components/toaster/client';
     import { ModalHelper } from 'studiocms:ui/components/modal/client';
+    import { dashboardClient } from 'studiocms:client/apiClients';
+    import * as Effect from 'effect/Effect';
+    import { availablePermissionRanks, type AvailablePermissionRanks } from '@withstudiocms/auth-kit/types';
 
     const resetLinkModal = new ModalHelper('password-reset-link-modal');
 
     const deleteButtons = document.querySelectorAll('[data-token]') as NodeListOf<HTMLButtonElement>;
 
-    const tokenAPILinks = document.getElementById('token-api-links') as HTMLDivElement;
-
-    const tokenAPI = tokenAPILinks.dataset.token_api!;
-
     const editUserForm = document.getElementById('edit-user-form') as HTMLFormElement;
-
-    const deleteUserAction = (document.getElementById('delete-user-modal-trigger') as HTMLButtonElement).dataset.action;
 
     const userDeleteModal = new ModalHelper('delete-user-modal', 'delete-user-modal-trigger');
 
     const passwordResetLinkTrigger = document.getElementById('password-reset-link-trigger') as HTMLButtonElement;
     const resetLinkPlaceholder = document.getElementById('reset-link-placeholder') as HTMLElement;
 
-    const resetLinkAPI = (document.getElementById('reset-link-selector') as HTMLDivElement).dataset.link;
     const userId = (document.getElementById('reset-link-selector') as HTMLDivElement).dataset.userid;
-    const dashboardIndex = (document.getElementById('reset-link-selector') as HTMLDivElement).dataset.dashboard;
 
     const passwordResetUrl = (document.getElementById('reset-link-selector') as HTMLDivElement).dataset.reseturl;
 
@@ -367,30 +362,68 @@ setDataContext(Astro, {
       return `${window.location.origin}${passwordResetUrl}?userid=${token.userId}&token=${token.token}&id=${token.id}`;
     }
 
+    const sharedTags = {
+      AstroLocalsMissing: (err: { message?: string }) => Effect.succeed({
+        error: err.message || 'Missing necessary data to perform this action.',
+      }),
+      DashboardAPIError: (err: { message?: string }) => Effect.succeed({
+        error: err.message || 'An error occurred while performing this action.',
+      }),
+      HttpApiDecodeError: (err: { message?: string }) => Effect.succeed({
+        error: err.message || 'Failed to decode the response from the server.',
+      }),
+      ParseError: (err: { message?: string }) => Effect.succeed({
+        error: err.message || 'An error occurred while parsing the response from the server.',
+      }),
+      RequestError: (err: { message?: string }) => Effect.succeed({
+        error: err.message || 'A network error occurred while trying to perform this action.',
+      }),
+      ResponseError: (err: { message?: string }) => Effect.succeed({
+        error: err.message || 'The server responded with an error while trying to perform this action.',
+      }),
+    }
+
     passwordResetLinkTrigger.addEventListener('click', async (e) => {
       e.preventDefault();
 
-      const apiRes = await fetch(resetLinkAPI!, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ userId: userId })
-      });
-
-      const token = await apiRes.json();
-
-      if (!apiRes.ok) {
-        console.error('Failed to create reset link');
+      if (!userId) {
         toast({
           title: 'Error',
-          description: token.error,
+          description: 'User ID is missing. Cannot generate password reset link.',
           type: 'danger'
         })
         return;
       }
 
-      resetLinkPlaceholder.innerText = generateResetLink(token);
+      const response = await dashboardClient.pipe(
+        Effect.flatMap((client) => 
+          client.create.createPasswordResetLink({
+            payload: {
+              userId
+            }
+          })
+        ),
+        Effect.catchTags(sharedTags),
+        Effect.runPromise
+      )
+
+      if ('error' in response) {
+        toast({
+          title: 'Error',
+          description: response.error,
+          type: 'danger',
+        });
+        return;
+      } else if (!response) {
+        toast({
+          title: 'Error',
+          description: 'Failed to generate password reset link.',
+          type: 'danger',
+        });
+        return;
+      }
+
+      resetLinkPlaceholder.innerText = generateResetLink(response);
 
       resetLinkModal.show();
     })
@@ -401,36 +434,55 @@ setDataContext(Astro, {
         return
       };
 
-      const data = {
-        userId: formData.get('user-id')?.toString(),
-        username: formData.get('user-username')?.toString(),
-        usernameConfirm: formData.get('confirm-user-username')?.toString()
-      }
+      const userId = formData.get('user-id')?.toString();
+      const username = formData.get('user-username')?.toString();
+      const usernameConfirm = formData.get('confirm-user-username')?.toString();
 
-      const response = await fetch(deleteUserAction!, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data)
-      })
-
-      const res = await response.json();
-
-      if (response.status !== 200) {
+      if (!userId || !username || !usernameConfirm) {
         toast({
           title: 'Error',
-          description: res.error,
+          description: 'Missing necessary data to delete user.',
           type: 'danger'
         })
+        return;
       }
 
-      if (response.status === 200) {
+      if (username !== usernameConfirm) {
+        toast({
+          title: 'Error',
+          description: 'Username confirmation does not match.',
+          type: 'danger'
+        })
+        return;
+      }
+
+      const response = await dashboardClient.pipe(
+        Effect.flatMap((client) =>
+          client.users.deleteUser({
+            payload: {
+              userId,
+              username,
+              usernameConfirm
+            }
+          })
+        ),
+        Effect.catchTags(sharedTags),
+        Effect.runPromise
+      );
+
+      if ('error' in response) {
+        toast({
+          title: 'Error',
+          description: response.error,
+          type: 'danger',
+        });
+        return;
+      } else {
         toast({
           title: 'Success',
-          description: res.message,
-          type: 'success'
-        })
+          description: response.message || 'User deleted successfully.',
+          type: 'success',
+        });
       }
     })
 
@@ -439,36 +491,59 @@ setDataContext(Astro, {
 
       const formData = new FormData(editUserForm);
 
-      const data = {
-        id: formData.get('user-id')?.toString(),
-        rank: formData.get('rank')?.toString(),
-        emailVerified: formData.get('email-verified') === 'true'
-      }
+      const id = formData.get('user-id')?.toString();
+      let rank = formData.get('rank')?.toString();
+      const emailVerified = formData.get('email-verified')?.toString() === 'true';
 
-      const response = await fetch(editUserForm.action, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data)
-      })
-
-      const res = await response.json();
-
-      if (response.status !== 200) {
+      if (!id || !rank || emailVerified === undefined) {
         toast({
           title: 'Error',
-          description: res.error,
+          description: 'Missing necessary data to update user.',
           type: 'danger'
         })
+        return;
       }
 
-      if (response.status === 200) {
+      function isAvailableRank(rank: string): rank is AvailablePermissionRanks {
+        return availablePermissionRanks.includes(rank as AvailablePermissionRanks);
+      }
+
+      if (!isAvailableRank(rank)) {
+        toast({
+          title: 'Error',
+          description: 'Invalid rank value.',
+          type: 'danger'
+        })
+        return;
+      }
+
+      const response = await dashboardClient.pipe(
+        Effect.flatMap((client) =>
+          client.users.updateUser({
+            payload: {
+              id,
+              emailVerified,
+              rank
+            }
+          })
+        ),
+        Effect.catchTags(sharedTags),
+        Effect.runPromise
+      );
+
+      if ('error' in response) {
+        toast({
+          title: 'Error',
+          description: response.error,
+          type: 'danger',
+        });
+        return;
+      } else {
         toast({
           title: 'Success',
-          description: res.message,
-          type: 'success'
-        })
+          description: response.message || 'User updated successfully.',
+          type: 'success',
+        });
       }
     })
 
@@ -478,39 +553,48 @@ setDataContext(Astro, {
             const tokenID = button.getAttribute('data-token');
             const userID = button.getAttribute('data-user');
 
-            const response = await fetch(tokenAPI, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    tokenID,
-                    userID
-                })
-            });
-
-            const res = await response.json();
-
-            if (!response.ok) {
+            if (!tokenID || !userID) {
                 toast({
                     title: 'Error',
-                    description: res.error,
+                    description: 'Missing necessary data to revoke API token.',
                     type: 'danger',
                     duration: 5000
                 })
                 return;
             }
 
-            toast({
+            const response = await dashboardClient.pipe(
+              Effect.flatMap((client) =>
+                client.apiTokens.revokeApiToken({
+                  payload: {
+                    tokenID,
+                    userID
+                  }
+                })
+              ),
+              Effect.catchTags(sharedTags),
+              Effect.runPromise
+            );
+
+            if ('error' in response) {
+              toast({
+                title: 'Error',
+                description: response.error,
+                type: 'danger',
+                duration: 5000
+              })
+              return;
+            } else {
+              toast({
                 title: 'Success',
-                description: res.message,
+                description: response.message || 'API token revoked successfully.',
                 type: 'success',
                 duration: 5000
-            })
-
-            setTimeout(() => {
-              window.location.reload();
-            }, 1000);
+              })
+              setTimeout(() => {
+                window.location.reload();
+              }, 1000);
+            }
         });
     });
   </script>
