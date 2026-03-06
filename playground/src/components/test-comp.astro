@@ -1,5 +1,6 @@
 ---
-import { Debug } from 'astro:components';
+// import { Debug } from 'astro:components';
+import Code from './Code.astro';
 
 interface Props {
 	/**
@@ -26,6 +27,6 @@ interface Props {
 <div>
 	<h1>Test Component</h1>
 	<p>This is a test Astro component for the WYSIWYG editor.</p>
-	<Debug props={Astro.props} />
+	<Code code={JSON.stringify(Astro.props, null, 2)} />
 	<slot />
 </div>
