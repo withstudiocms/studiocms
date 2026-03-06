@@ -5,6 +5,8 @@ import { SDKAPIError } from '@withstudiocms/api-spec/sdk';
 import { experimental_AstroContainer as AstroContainer } from 'astro/container';
 import { Effect, Layer } from 'effect';
 import { parseMarkdown } from '#utils/tinyMDParser';
+// biome-ignore lint/suspicious/noTsIgnore: Typechecker override for Astro component imports
+// @ts-ignore - This is an Astro component, so we ignore TypeScript errors for this import
 import UserListItems from '../../../components/dashboard/user-mgmt/UserListItems.astro';
 import { ProcessChangelog } from './_utils/changelog.js';
 
