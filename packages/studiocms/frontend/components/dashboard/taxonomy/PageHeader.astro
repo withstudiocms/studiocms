@@ -180,8 +180,10 @@ const replaceNameParam = (str: string) => str.replace('{name}', pageTitle);
 ></div>
 
 <script>
+    import { dashboardClient, dashboardSharedCatchTags } from 'studiocms:client/apiClients';
     import { ModalHelper } from 'studiocms:ui/components/modal/client';
     import { toast } from "studiocms:ui/components/toaster/client";
+    import * as Effect from "effect/Effect";
 
     function setup() {
         const modeSelectorEl = document.getElementById('current-mode-selector') as HTMLDivElement;
@@ -232,10 +234,10 @@ const replaceNameParam = (str: string) => str.replace('{name}', pageTitle);
 
                         const { actionRoute, slug, confirmSlug, ...jsonData } = {
                             type: type,
-                            id: formData.get('id'),
-                            actionRoute: formData.get('action-route'),
-                            slug: formData.get('slug'),
-                            confirmSlug: formData.get('confirm-slug'),
+                            id: formData.get('id')?.toString() || '',
+                            actionRoute: formData.get('action-route')?.toString(),
+                            slug: formData.get('slug')?.toString(),
+                            confirmSlug: formData.get('confirm-slug')?.toString(),
                         }
 
                         if (!actionRoute || typeof actionRoute !== 'string') {
@@ -288,25 +290,22 @@ const replaceNameParam = (str: string) => str.replace('{name}', pageTitle);
                             id: Number.parseInt(jsonData.id, 10),
                         }
 
-                        const response = await fetch(actionRoute, {
-                            method: 'DELETE',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify(parsedJsonData),
-                        });
+                        const response = await dashboardClient.pipe(
+                            Effect.flatMap((client) => client.taxonomy.taxonomyDelete({
+                                payload: parsedJsonData,
+                            })),
+                            Effect.catchTags(dashboardSharedCatchTags),
+                            Effect.runPromise
+                        );
 
-                        if (!response.ok) {
-                            const errorData = await response.json();
+                        if ('error' in response) {
                             toast({
                                 title: 'Error',
-                                description: errorData.message || `Failed to delete ${type === 'categories' ? 'category' : 'tag'}.`,
+                                description: response.error,
                                 type: 'danger',
                             });
                             return;
-                        }
-
-                        if (response.ok) {
+                        } else {
                             toast({
                                 title: 'Success',
                                 description: `Deleted ${type === 'categories' ? 'category' : 'tag'} successfully.`,
@@ -317,13 +316,6 @@ const replaceNameParam = (str: string) => str.replace('{name}', pageTitle);
                             window.location.href = indexPage;
                             return;
                         }
-
-                        toast({
-                            title: 'Error',
-                            description: 'An unexpected error occurred during deletion.',
-                            type: 'danger',
-                        });
-                        return;
                     })
                     break;
                 }
