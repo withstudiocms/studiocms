@@ -134,8 +134,18 @@ export const userListItems = HttpApiEndpoint.post('userListItems', '/user-list-i
 	.annotate(Description, 'Retrieves a list of user items that can be used in the SDK.')
 	.setPayload(
 		Schema.Struct({
-			users: Schema.Array(CombinedUserDataSchema),
-			searchQuery: Schema.optional(Schema.String),
+			users: Schema.Array(CombinedUserDataSchema).annotations({
+				description: 'An array of user data objects to be rendered as list items.',
+			}),
+			searchQuery: Schema.optional(Schema.String).annotations({
+				description:
+					'An optional search query string that can be used to filter the user list items based on the search term.',
+				example: 'john',
+			}),
+		}).annotations({
+			title: 'User List Items Request Payload',
+			description:
+				'The payload for requesting user list items, containing an array of user data objects and an optional search query.',
 		})
 	)
 	.addSuccess(
@@ -143,6 +153,13 @@ export const userListItems = HttpApiEndpoint.post('userListItems', '/user-list-i
 			html: Schema.String.annotations({
 				description: 'The rendered HTML content for the user list items.',
 			}),
+		}).annotations({
+			title: 'User List Items Response',
+			description:
+				'The response schema for the user list items endpoint, containing the rendered HTML for the user list items.',
+			example: {
+				html: '<div class="user-list-item">John Doe</div>',
+			},
 		})
 	)
 	.addError(SDKAPIError, { status: 500 });
