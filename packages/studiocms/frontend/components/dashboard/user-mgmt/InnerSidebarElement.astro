@@ -145,6 +145,9 @@ const t = useTranslations(lang, '@studiocms/dashboard:user-mngmt-sidebar');
     import { DropdownHelper } from 'studiocms:ui/components/dropdown/client';
     import { ModalHelper } from 'studiocms:ui/components/modal/client';
     import { toast } from 'studiocms:ui/components/toaster/client';
+    import { dashboardClient, dashboardSharedCatchTags } from "studiocms:client/apiClients";
+    import * as Effect from "effect/Effect";
+    import { availablePermissionRanks, type AvailablePermissionRanks } from '@withstudiocms/auth-kit/types';
 
     const createNewDropdown = new DropdownHelper('create-user-dropdown');
     const createNewUserModal = new ModalHelper('create-new-user-modal');
@@ -154,10 +157,9 @@ const t = useTranslations(lang, '@studiocms/dashboard:user-mngmt-sidebar');
 
     const inviteResponsePlaceholder = document.getElementById('invite-response-placeholder') as HTMLElement;
 
-    const newUsersLinks = document.getElementById('new-users-links') as HTMLDivElement;
-
-    const createNewUserLink = newUsersLinks.dataset.create_user as string;
-    const createUserInviteLink = newUsersLinks.dataset.create_invite as string;
+    const isValidRank = (rank: string): rank is AvailablePermissionRanks => {
+        return availablePermissionRanks.includes(rank as AvailablePermissionRanks);
+    }
     
     createNewDropdown.registerClickCallback((value) => {
         if (value === 'new-user') {
@@ -168,85 +170,111 @@ const t = useTranslations(lang, '@studiocms/dashboard:user-mngmt-sidebar');
     });
 
     createNewUserModal.registerConfirmCallback(async (formData) => {
-        const username = formData?.get('create-new-username');
-        const email = formData?.get('create-new-email');
-        const password = formData?.get('create-new-password');
-        const displayname = formData?.get('create-new-display_name');
-        const rank = formData?.get('create-new-rank');
+        const username = formData?.get('create-new-username')?.toString() as string | null;
+        const email = formData?.get('create-new-email')?.toString() as string | null;
+        const password = formData?.get('create-new-password')?.toString() as string | null;
+        const displayname = formData?.get('create-new-display_name')?.toString() as string | null;
+        const rank = formData?.get('create-new-rank')?.toString() as string | null;
 
-        const data = {
-            username,
-            email,
-            password,
-            displayname, 
-            rank
-        };
+        if (!username || !email || !password || !displayname || !rank) {
+            toast({
+                title: 'Please fill out all fields.',
+                type: 'warning',
+            });
+            return;
+        }
 
-        const apiResponse = await fetch(createNewUserLink, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data),
-        });
+        if (!isValidRank(rank)) {
+            toast({
+                title: 'Invalid rank provided.',
+                type: 'danger',
+            });
+            return;
+        }
 
-        const response = await apiResponse.json();
+        const response = await dashboardClient.pipe(
+            Effect.flatMap((client) => client.create.createUser({
+                payload: {
+                    username,
+                    email,
+                    password,
+                    displayname, 
+                    rank,
+                    originalUrl: window.location.origin
+                }
+            })),
+            Effect.catchTags(dashboardSharedCatchTags),
+            Effect.runPromise
+        );
 
-        if (!apiResponse.ok) {
-            console.error('Failed to create new user');
+        if ('error' in response) {
+            console.error('Failed to create new user', response.error);
             toast({
                 title: 'Failed to create new user',
                 description: response.error,
                 type: 'danger',
             })
             return;
+        } else {
+            createNewUserModal.hide();
+            toast({
+                title: 'User created successfully.',
+                type: 'success',
+            });
+            return;
         }
-
-        createNewUserModal.hide();
-        toast({
-            title: 'User created successfully.',
-            type: 'success',
-        });
     });
 
     createUserInviteModal.registerConfirmCallback(async (formData) => {
-        const username = formData?.get('create-user-invite-username');
-        const email = formData?.get('create-user-invite-email');
-        const displayname = formData?.get('create-user-invite-display_name');
-        const rank = formData?.get('create-user-invite-rank');
+        const username = formData?.get('create-user-invite-username')?.toString() as string | null;
+        const email = formData?.get('create-user-invite-email')?.toString() as string | null;
+        const displayname = formData?.get('create-user-invite-display_name')?.toString() as string | null;
+        const rank = formData?.get('create-user-invite-rank')?.toString() as string | null;
 
-        const data = {
-            username,
-            email,
-            displayname, 
-            rank,
-            originalUrl: window.location.origin
-        };
+        if (!username || !email || !displayname || !rank) {
+            toast({
+                title: 'Please fill out all fields.',
+                type: 'warning',
+            });
+            return;
+        }
 
-        const apiResponse = await fetch(createUserInviteLink, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data),
-        });
+        if (!isValidRank(rank)) {
+            toast({
+                title: 'Invalid rank provided.',
+                type: 'danger',
+            });
+            return;
+        }
 
-        const response = await apiResponse.json();
+        const response = await dashboardClient.pipe(
+            Effect.flatMap((client) => client.create.createUserInvite({
+                payload: {
+                    username,
+                    email,
+                    displayname, 
+                    rank,
+                    originalUrl: window.location.origin
+                }
+            })),
+            Effect.catchTags(dashboardSharedCatchTags),
+            Effect.runPromise
+        );
 
-        if (!apiResponse.ok) {
-            console.error('Failed to create new user invite');
+        if ('error' in response) {
+            console.error('Failed to create new user invite', response.error);
             toast({
                 title: 'Failed to create new user invite',
                 description: response.error,
                 type: 'danger',
             })
             return;
+        } else {
+            inviteResponsePlaceholder.innerText = response.message;
+            createUserInviteModal.hide();
+            inviteResponseModal.show();
+            return;
         }
-
-        inviteResponsePlaceholder.innerText = response.message;
-
-        createUserInviteModal.hide();
-        inviteResponseModal.show();
     });
 </script>
 

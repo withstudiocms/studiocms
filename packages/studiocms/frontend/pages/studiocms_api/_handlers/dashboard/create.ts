@@ -273,9 +273,7 @@ export const CreateHandlers = HttpApiBuilder.group(
 							);
 
 						return {
-							// TODO: Why are we returning a stringified object instead of the actual object?
-							// @effect-diagnostics-next-line preferSchemaOverJson:off
-							message: JSON.stringify({ username, email, displayname, rank, password }),
+							message: 'User created successfully.',
 						};
 					},
 					Notifications.Provide,

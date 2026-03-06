@@ -33,6 +33,8 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-sidebar');
         baseTranslation,
         updateElmPlaceholder,
     } from "studiocms:i18n/client";
+    import { dashboardClient } from "studiocms:client/apiClients";
+    import * as Effect from "effect/Effect";
 
     const currentPage = "@studiocms/dashboard:content-sidebar";
 
@@ -53,19 +55,19 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-sidebar');
     const searchOutputEl = $<HTMLDivElement>(`#${searchOutputElId}`);
     
     interface TaxonomyNode {
-        id: number;
-        name: string;
-        slug: string;
-        description: string;
-        meta: {
+        readonly id: number;
+        readonly name: string;
+        readonly slug: string;
+        readonly description: string;
+        readonly meta: {
             readonly [x: string]: unknown;
         };
-        parent: number | null | undefined;
-        children: TaxonomyNode[];
-        type: 'category' | 'tag';
+        readonly parent: number | null | undefined;
+        readonly children: readonly TaxonomyNode[];
+        readonly type: 'category' | 'tag';
     }
 
-    type SearchList = TaxonomyNode[];
+    type SearchList = readonly TaxonomyNode[];
 
     function getIcons(item: TaxonomyNode) {
         switch (item.type) {
@@ -85,24 +87,18 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-sidebar');
         }
     }
 
-    async function getSearchList(searchItems: HTMLDivElement) {
-        const response = await fetch(
-            searchItems.dataset.searchlist as string,
-            {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            },
+    async function getSearchList(): Promise<SearchList> {
+        return await Effect.runPromise(
+            Effect.orElse(
+                dashboardClient.pipe(
+                    Effect.flatMap((client) => client.taxonomy.taxonomySearch({})),
+                    Effect.tapError(Effect.logError)
+                    ),
+                    () => Effect.log("Failed to fetch search list, returning empty array").pipe(
+                        Effect.as([] as SearchList)
+                    )
+            )
         );
-
-        if (response.ok) {
-            const data: SearchList = await response.json();
-            return data;
-        } else {
-            console.error("Failed to fetch search list");
-            return [];
-        }
     }
 
     function clearSearchParams(innerSidebarItemsSearch: HTMLDivElement) {
@@ -176,7 +172,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-sidebar');
         currentUrl.searchParams.set("search", searchTerm);
         window.history.pushState({}, "", currentUrl);
 
-        const searchList = await getSearchList(searchItems);
+        const searchList = await getSearchList();
 
         const fuse = new Fuse(searchList, {
             keys: ["name", "slug"],

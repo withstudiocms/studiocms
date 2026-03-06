@@ -204,8 +204,8 @@ export const EditPageDataFromFormDataObjectSchema = Schema.mutable(
 	Schema.Struct({
 		...CreatePageDataFromFormDataObjectSchema.fields,
 		id: FromKeyProperty(Schema.String, 'page-id'),
-		content: OptionalFromKeyProperty(Schema.String, 'page-content'),
-		contentId: OptionalFromKeyProperty(Schema.String, 'page-content-id'),
+		content: FromKeyProperty(Schema.String, 'page-content'),
+		contentId: FromKeyProperty(Schema.String, 'page-content-id'),
 		pluginFields: Schema.optionalWith(
 			Schema.Record({
 				key: Schema.String,
