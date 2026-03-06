@@ -181,11 +181,9 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
                   label={t("select-page-categories")}
                   name="categories"
                   fullWidth
-                  placeholder={
-                    categories.length === 0
-                      ? 'No categories available'
-                      : 'Select'
-                  }
+                  placeholder={categories.length === 0
+                    ? "No categories available"
+                    : "Select"}
                   options={createSelectOptions(
                     categories.map(({ id: value, name: label }) => ({
                       label,
@@ -194,24 +192,22 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
                   )}
                   disabled={categories.length === 0}
                   multiple
-                  defaultValue={
-                    (() => {
-                      const categories = pageData.categories.map(({id}) => String(id));
+                  defaultValue={(() => {
+                    const categories = pageData.categories.map(({ id }) =>
+                      String(id),
+                    );
 
-                      if (categories.length > 0) return categories;
-                      return undefined;
-                    })()
-                  }
+                    if (categories.length > 0) return categories;
+                    return undefined;
+                  })()}
                 />
                 <Select
                   label={t("select-page-tags")}
                   name="tags"
                   fullWidth
-                  placeholder={
-                    tags.length === 0
-                      ? 'No tags available'
-                      : 'Select'
-                  }
+                  placeholder={tags.length === 0
+                    ? "No tags available"
+                    : "Select"}
                   options={createSelectOptions(
                     tags.map(({ id: value, name: label }) => ({
                       label,
@@ -220,14 +216,12 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
                   )}
                   disabled={tags.length === 0}
                   multiple
-                  defaultValue={
-                    (() => {
-                      const tags = pageData.tags.map(({id}) => String(id));
+                  defaultValue={(() => {
+                    const tags = pageData.tags.map(({ id }) => String(id));
 
-                      if (tags.length > 0) return tags;
-                      return undefined;
-                    })()
-                  }
+                    if (tags.length > 0) return tags;
+                    return undefined;
+                  })()}
                 />
               </div>
 
@@ -501,7 +495,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
     updateTrueFalseSelectOptions("draft", trueFalseOptions);
     updateTrueFalseSelectOptions("show-in-nav", trueFalseOptions);
     updateSelectOptions("cms-plugin-augments", {
-      'no-augments': comp["no-augments"],
+      "no-augments": comp["no-augments"],
     });
   });
 
@@ -527,16 +521,18 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
 
 <script>
   import { toast } from "studiocms:ui/components/toaster/client";
-  import * as Schema from 'effect/Schema';
-  import { EditPageDataFromFormDataObjectSchema, ObjectFromFormData } from "../../../scripts/formdata.js";
+  import * as Schema from "effect/Schema";
+  import {
+    EditPageDataFromFormDataObjectSchema,
+    ObjectFromFormData,
+  } from "../../../scripts/formdata.js";
+  import { dashboardClient } from "studiocms:client/apiClients";
+  import * as Effect from "effect/Effect";
 
   // get the elements
   const editPageForm = document.getElementById(
     "edit-page-form",
   ) as HTMLFormElement;
-  const createContainer = document.getElementById(
-    "edit-page-container",
-  ) as HTMLDivElement;
 
   const knownFormDataKeys = [
     "page-title",
@@ -578,8 +574,6 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
 
   type KnownDataKeys = (typeof knownDataKeys)[number];
 
-  const { contentManagementUrl } = createContainer.dataset;
-
   editPageForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     const formData = new FormData(editPageForm);
@@ -588,79 +582,93 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
       (a) => a !== "no-augments",
     ) as string[];
 
-    const decodedFormDataObject = Schema.decodeEither(ObjectFromFormData)(formData);
+    const response = await Schema.decode(ObjectFromFormData)(formData).pipe(
+      Effect.map((data) => {
+        const pluginFields = Object.entries(data).reduce(
+          (acc, [key, value]) => {
+            // if the key is not in the knownFormDataKeys or knownDataKeys, it's a plugin field
+            if (
+              !knownFormDataKeys.includes(key as KnownFormDataKeys) &&
+              !knownDataKeys.includes(key as KnownDataKeys)
+            ) {
+              acc[key] = value;
+              delete data[key];
+            }
+            return acc;
+          },
+          {} as Record<string, FormDataEntryValue>,
+        );
 
-    if (decodedFormDataObject._tag === "Left") {
-      console.error(decodedFormDataObject.left);
-      toast({
-        title: "Error",
-        description:
-          "There was an error with the form data. Please check the console for details.",
-        type: "danger",
-      });
-      return;
-    }
-
-    const formDataObject = decodedFormDataObject.right;
-
-    const pluginsFormData = Object.entries(formDataObject).reduce(
-      (acc, [key, value]) => {
-        // if the key is not in the knownFormDataKeys or knownDataKeys, it's a plugin field
-        if (
-          !knownFormDataKeys.includes(key as KnownFormDataKeys) &&
-          !knownDataKeys.includes(key as KnownDataKeys)
-        ) {
-          acc[key] = value;
-          delete formDataObject[key];
-        }
-        return acc;
-      },
-      {} as Record<string, FormDataEntryValue>,
+        return {
+          ...data,
+          augments,
+          pluginFields,
+        };
+      }),
+      Schema.decodeUnknown(EditPageDataFromFormDataObjectSchema),
+      Effect.flatMap((payload) =>
+        dashboardClient.pipe(
+          Effect.flatMap((client) =>
+            client.content.updatePage({
+              payload,
+            }),
+          ),
+        ),
+      ),
+      Effect.catchTags({
+        AstroLocalsMissing: (err) =>
+          Effect.succeed({
+            error:
+              err.message ||
+              "Missing required data for page creation. Please try again.",
+          }),
+        DashboardAPIError: (err) =>
+          Effect.succeed({
+            error:
+              err.message ||
+              "An error occurred while creating the page. Please try again.",
+          }),
+        HttpApiDecodeError: (err) =>
+          Effect.succeed({
+            error:
+              err.message ||
+              "Failed to decode the server response. Please try again.",
+          }),
+        ParseError: (err) =>
+          Effect.succeed({
+            error:
+              err.message ||
+              "Failed to parse the server response. Please try again.",
+          }),
+        RequestError: (err) =>
+          Effect.succeed({
+            error:
+              err.message ||
+              "An error occurred while making the request. Please try again.",
+          }),
+        ResponseError: (err) =>
+          Effect.succeed({
+            error:
+              err.message ||
+              "An error occurred with the server response. Please try again.",
+          }),
+      }),
+      Effect.runPromise,
     );
 
-    const decodedFormData = Schema.decodeUnknownEither(EditPageDataFromFormDataObjectSchema)({
-      ...formDataObject,
-      augments,
-      pluginFields: pluginsFormData,
-    })
-
-    if (decodedFormData._tag === "Left") {
-      console.error(decodedFormData.left);
+    if ("error" in response) {
       toast({
         title: "Error",
-        description:
-          "There was an error with the form data. Please check the console for details.",
+        description: response.error,
         type: "danger",
       });
       return;
-    }
-
-    const response = await fetch(editPageForm.action, {
-      method: "PATCH",
-      body: decodedFormData.right
-        ? JSON.stringify({ ...decodedFormData.right, pluginFields: pluginsFormData })
-        : undefined,
-    });
-
-    const res = await response.json();
-
-    if (response.status !== 200) {
-      toast({
-        title: "Error",
-        description: res.error,
-        type: "danger",
-      });
-      return;
-    }
-
-    if (response.status === 200) {
+    } else {
       toast({
         title: "Success",
-        description: res.message,
+        description: response.message || "Page updated successfully",
         type: "success",
       });
-      if (contentManagementUrl) window.location.href = contentManagementUrl;
-      return;
     }
   });
 </script>
@@ -684,29 +692,29 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
     height: 100%;
 
     > .sui-tabs-container {
-    	height: 100%;
-     	display: flex;
+      height: 100%;
+      display: flex;
       flex-direction: column;
 
       .sui-tab-header.active::after {
-				bottom: 1px;
-			}
+        bottom: 1px;
+      }
 
       > .sui-tabs-list {
-      	overflow-y: hidden;
+        overflow-y: hidden;
       }
 
       > .sui-tabs-content {
-      	height: 100%;
+        height: 100%;
 
-      	> sui-tab-item {
-     			height: 100%;
-        	flex-direction: column;
+        > sui-tab-item {
+          height: 100%;
+          flex-direction: column;
 
-					&.active {
-     				display: flex;
-					}
-       	}
+          &.active {
+            display: flex;
+          }
+        }
       }
     }
   }
@@ -731,13 +739,13 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
   }
 
   .form-row-booleans {
-	  display: flex;
-	  flex-direction: row;
+    display: flex;
+    flex-direction: row;
     flex-wrap: wrap;
     gap: 0.75rem;
 
     > * {
-   		flex-grow: 1;
+      flex-grow: 1;
     }
   }
 
@@ -771,7 +779,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
   }
 
   .page-content-editor {
-		height: 100%;
+    height: 100%;
     margin-bottom: 2rem;
 
     .editor-container {
