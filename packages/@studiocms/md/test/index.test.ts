@@ -164,7 +164,6 @@ describe(parentSuiteName, () => {
 			'Should store resolved options in shared context on astro:config:done',
 			async (ctx) => {
 				const customOptions = {
-					flavor: 'studiocms' as const,
 					callouts: 'vitepress' as const,
 					autoLinkHeadings: false,
 					discordSubtext: false,
