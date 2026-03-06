@@ -3,10 +3,32 @@ import { Description, License, Title, Transform, Version } from '@effect/platfor
 import pkg from '../../package.json';
 import { StudioCMSLicenseAnnotation, StudioCMSTransformAnnotation } from '../consts.js';
 import { SDKAPIError } from './errors.js';
-import { fullChangelogPost, updateLatestVersionCacheGet } from './routes/index.js';
+import {
+	fullChangelogPost,
+	renderMarkdown,
+	updateLatestVersionCacheGet,
+	userListItems,
+} from './routes/index.js';
 
 export * from './errors.js';
 export * from './schemas.js';
+
+/**
+ * SDK Utilities API specification group for StudioCMS.
+ *
+ * This class defines utility endpoints for the StudioCMS SDK, such as retrieving the full changelog
+ * and updating the latest version cache. It extends HttpApiGroup and is configured with metadata
+ * including title, description, version, and license information.
+ */
+export class SDKUtils extends HttpApiGroup.make('utils')
+	.annotate(Title, 'SDK Utilities')
+	.annotate(Description, 'Utilities and tools for interacting with the StudioCMS SDK.')
+	.annotate(Version, pkg.version)
+	.annotate(License, StudioCMSLicenseAnnotation)
+	.add(renderMarkdown)
+	.add(userListItems)
+	.addError(SDKAPIError, { status: 500 })
+	.prefix('/sdk') {}
 
 /**
  * SDK API specification group for StudioCMS.
@@ -68,4 +90,5 @@ export class StudioCMSSDKApiSpec extends HttpApi.make('StudioCMSSDKApiSpec')
 	.annotate(Version, pkg.version)
 	.annotate(Transform, StudioCMSTransformAnnotation)
 	.add(SDKApi)
+	.add(SDKUtils)
 	.prefix('/studiocms_api') {}

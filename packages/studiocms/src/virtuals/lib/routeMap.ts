@@ -243,11 +243,6 @@ export const StudioCMSRoutes = {
 
 		partials: {
 			/**
-			 * API route for live preview box rendering.
-			 */
-			livePreviewBox: partialsAPIRoute('render'),
-
-			/**
 			 * API route for fetching user list items.
 			 */
 			userListItems: partialsAPIRoute('user-list-items'),
@@ -256,11 +251,6 @@ export const StudioCMSRoutes = {
 			 * API route for rendering content.
 			 */
 			render: partialsAPIRoute('render'),
-
-			/**
-			 * API route for the editor.
-			 */
-			editor: partialsAPIRoute('editor'),
 		},
 
 		/**

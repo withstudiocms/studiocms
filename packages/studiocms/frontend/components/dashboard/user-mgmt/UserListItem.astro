@@ -1,29 +1,28 @@
 ---
+import config from 'studiocms:config';
 import { useTranslations } from 'studiocms:i18n';
+import { StudioCMSRoutes } from 'studiocms:lib';
 import type { CombinedUserData } from 'studiocms:sdk/types';
 import { Divider } from 'studiocms:ui/components/divider';
 import { Icon } from 'studiocms:ui/components/icon';
 import User from '../../shared/SSRUser.astro';
 
 interface Props {
-	user: CombinedUserData;
+	user: Pick<CombinedUserData, 'id' | 'name' | 'email' | 'avatar' | 'username' | 'permissionsData'>;
 	searchQuery?: string;
 }
 
 const { user, searchQuery } = Astro.props;
 
-const lang = Astro.locals.StudioCMS.defaultLang;
+const lang = Astro.locals?.StudioCMS?.defaultLang || config.locale.i18n.defaultLocale;
 const t = useTranslations(lang, '@studiocms/dashboard:user-component');
 
-const userListItemHref = new URL(
-	Astro.locals.StudioCMS.routeMap.mainLinks.userManagementEdit,
-	Astro.url.origin
-);
-userListItemHref.searchParams.set('user', user.id);
+const userListItemSearch = new URLSearchParams({ user: user.id });
+
 if (searchQuery) {
-	userListItemHref.searchParams.set('search', searchQuery);
+	userListItemSearch.set('search', searchQuery);
 }
-const userListItemHrefString = userListItemHref.toString();
+const userListItemHrefString = `${StudioCMSRoutes.mainLinks.userManagementEdit}?${userListItemSearch.toString()}`;
 
 const id = `user-mngmt-user-account-${user.id || 'unknown'}`;
 

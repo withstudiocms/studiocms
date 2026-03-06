@@ -1,7 +1,6 @@
 import { Context, Effect, Layer } from '@withstudiocms/effect';
 import type { InjectedRoute } from 'astro';
 import {
-	dashboardAPIEnabledRoutes,
 	dashboardEnabledRoutes,
 	error404Route,
 	middleware,
@@ -66,7 +65,6 @@ export const setPrerenderFalse = (items: InjectedRoute[] | InjectedRoute) => {
  */
 export const mapProcessedConfig = Effect.fn(
 	({
-		dashboardAPIEnabled,
 		dashboardEnabled,
 		dbStartPage,
 		shouldInject404Route,
@@ -93,10 +91,6 @@ export const mapProcessedConfig = Effect.fn(
 			{
 				enabled: dashboardEnabled,
 				routes: setPrerenderFalse(dashboardEnabledRoutes(dashboardRoute)),
-			},
-			{
-				enabled: dashboardAPIEnabled,
-				routes: setPrerenderFalse(dashboardAPIEnabledRoutes(dashboardRoute)),
 			},
 		])
 );

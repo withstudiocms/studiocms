@@ -2,7 +2,12 @@ import { SDKCore } from 'studiocms:sdk';
 import { HttpApiBuilder } from '@effect/platform';
 import { StudioCMSSDKApiSpec } from '@withstudiocms/api-spec';
 import { SDKAPIError } from '@withstudiocms/api-spec/sdk';
+import { experimental_AstroContainer as AstroContainer } from 'astro/container';
 import { Effect, Layer } from 'effect';
+import { parseMarkdown } from '#utils/tinyMDParser';
+// biome-ignore lint/suspicious/noTsIgnore: Typechecker override for Astro component imports
+// @ts-ignore - This is an Astro component, so we ignore TypeScript errors for this import
+import UserListItems from '../../../components/dashboard/user-mgmt/UserListItems.astro';
 import { ProcessChangelog } from './_utils/changelog.js';
 
 /**
@@ -36,9 +41,9 @@ const makeVersionResponse = (latestVersion: { version: string; lastCacheUpdate: 
  */
 export const SDKAPIHandler = HttpApiBuilder.group(StudioCMSSDKApiSpec, 'sdk', (handlers) =>
 	handlers
-		.handle('fullChangelog', ({ payload: { currentURLOrigin } }) =>
+		.handle('fullChangelog', () =>
 			ProcessChangelog.pipe(
-				Effect.flatMap(({ runPipeline }) => runPipeline(currentURLOrigin)),
+				Effect.flatMap(({ runPipeline }) => runPipeline()),
 				Effect.map(makeChangelogResponse),
 				ProcessChangelog.Provide,
 				catchError('Failed to generate changelog')
@@ -54,8 +59,74 @@ export const SDKAPIHandler = HttpApiBuilder.group(StudioCMSSDKApiSpec, 'sdk', (h
 );
 
 /**
+ * SDK Utilities Handler - Handles utility API routes related to the StudioCMS SDK, such as rendering markdown content.
+ */
+export const SDKUtilsHandler = HttpApiBuilder.group(StudioCMSSDKApiSpec, 'utils', (handlers) =>
+	handlers
+		.handle(
+			'renderMarkdown',
+			Effect.fn(
+				({
+					urlParams: { content: queryParamContent, 'preload-content': preloadContent },
+					payload: { content: payloadContent },
+				}) =>
+					Effect.try({
+						try: () => {
+							let markdownContent: string | undefined;
+
+							if (payloadContent) {
+								markdownContent = payloadContent;
+							} else if (queryParamContent && queryParamContent !== 'null') {
+								markdownContent = queryParamContent;
+							} else if (preloadContent && preloadContent !== 'null') {
+								markdownContent = preloadContent;
+							} else {
+								markdownContent = 'No content provided';
+							}
+
+							const html = parseMarkdown(markdownContent);
+
+							return { html };
+						},
+						catch: () => new SDKAPIError({ error: 'Failed to render markdown' }),
+					})
+			)
+		)
+		.handle(
+			'userListItems',
+			Effect.fn(({ payload: { users, searchQuery } }) =>
+				Effect.tryPromise({
+					try: async () => {
+						const container = await AstroContainer.create();
+
+						let html = 'fail';
+
+						try {
+							html = await container.renderToString(UserListItems, {
+								props: {
+									users,
+									searchQuery,
+								},
+							});
+						} catch (error) {
+							console.error('Error rendering UserListItems:', error);
+							throw new SDKAPIError({ error: 'Failed to render user list items' });
+						}
+
+						return {
+							html,
+						};
+					},
+					catch: () => new SDKAPIError({ error: 'Failed to render user list items' }),
+				})
+			)
+		)
+);
+
+/**
  * Live SDK API Handler Layer - Provides the SDKAPIHandler with all necessary dependencies for live operation.
  */
 export const SDKAPILive = HttpApiBuilder.api(StudioCMSSDKApiSpec).pipe(
-	Layer.provide(SDKAPIHandler)
+	Layer.provide(SDKAPIHandler),
+	Layer.provide(SDKUtilsHandler)
 );

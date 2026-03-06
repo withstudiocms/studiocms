@@ -1,6 +1,7 @@
 import { HttpApiEndpoint } from '@effect/platform';
 import { Description, Summary, Title } from '@effect/platform/OpenApi';
 import { Schema } from 'effect';
+import { CombinedUserDataSchema } from '../../rest-api/schemas.js';
 import { SDKAPIError } from '../errors.js';
 import { FullChangelogResponseSchema, UpdateLatestVersionCacheResponseSchema } from '../schemas.js';
 
@@ -62,4 +63,105 @@ export const updateLatestVersionCacheGet = HttpApiEndpoint.get(
 	.annotate(Summary, 'Update the latest version cache.')
 	.annotate(Description, 'Triggers an update of the latest version cache for the StudioCMS SDK.')
 	.addSuccess(UpdateLatestVersionCacheResponseSchema)
+	.addError(SDKAPIError, { status: 500 });
+
+/**
+ * HTTP API endpoint for rendering Markdown to HTML.
+ *
+ * @endpoint POST /render
+ * @title Render Markdown
+ * @summary Render Markdown to HTML.
+ *
+ * @returns A response object containing:
+ * - `html` - A string containing the rendered HTML
+ *
+ * @throws {SDKAPIError} Returns a 500 status code on server error
+ */
+export const renderMarkdown = HttpApiEndpoint.post('renderMarkdown', '/render')
+	.annotate(Title, 'Render Markdown')
+	.annotate(Summary, 'Render Markdown to HTML.')
+	.annotate(Description, 'Renders the provided Markdown content to HTML format.')
+	.setUrlParams(
+		Schema.Struct({
+			content: Schema.optional(Schema.String).annotations({
+				description:
+					'The Markdown content to be rendered. This can also be provided in the request payload.',
+			}),
+			'preload-content': Schema.optional(Schema.String).annotations({
+				description:
+					'Optional preloaded Markdown content that can be used for rendering. This is useful for cases where the content is too large to be sent as a URL parameter and can be included in the request payload instead.',
+			}),
+		}).annotations({
+			title: 'Render Markdown URL Parameters',
+			description:
+				'The URL parameters for the render Markdown endpoint, including the Markdown content to be rendered and optional preloaded content.',
+		})
+	)
+	.setPayload(
+		Schema.Struct({
+			content: Schema.optional(Schema.String).annotations({
+				description:
+					'The Markdown content to be rendered. This can also be provided as a URL parameter.',
+			}),
+		}).annotations({
+			title: 'Render Markdown Request Payload',
+			description:
+				'The payload for the render Markdown endpoint, containing the Markdown content to be rendered. This can also be provided as a URL parameter.',
+		})
+	)
+	.addSuccess(
+		Schema.Struct({
+			html: Schema.String.annotations({
+				description: 'The rendered HTML content resulting from the Markdown input.',
+			}),
+		}).annotations({
+			title: 'Render Markdown Response',
+			description:
+				'The response schema for the render Markdown endpoint, containing the rendered HTML.',
+			example: {
+				html: '<p>This is the rendered HTML content.</p>',
+			},
+		})
+	)
+	.addError(SDKAPIError, { status: 500 });
+
+/**
+ * HTTP API endpoint for retrieving user list items for the SDK.
+ */
+export const userListItems = HttpApiEndpoint.post('userListItems', '/user-list-items')
+	.annotate(Title, 'Get User List Items')
+	.annotate(Summary, 'Retrieve a list of user items for the SDK.')
+	.annotate(Description, 'Retrieves a list of user items that can be used in the SDK.')
+	.setPayload(
+		Schema.Struct({
+			users: Schema.Array(
+				CombinedUserDataSchema.pick('id', 'name', 'email', 'avatar', 'username', 'permissionsData')
+			).annotations({
+				description: 'An array of user data objects to be rendered as list items.',
+			}),
+			searchQuery: Schema.optional(Schema.String).annotations({
+				description:
+					'An optional search query string that can be used to filter the user list items based on the search term.',
+				example: 'john',
+			}),
+		}).annotations({
+			title: 'User List Items Request Payload',
+			description:
+				'The payload for requesting user list items, containing an array of user data objects and an optional search query.',
+		})
+	)
+	.addSuccess(
+		Schema.Struct({
+			html: Schema.String.annotations({
+				description: 'The rendered HTML content for the user list items.',
+			}),
+		}).annotations({
+			title: 'User List Items Response',
+			description:
+				'The response schema for the user list items endpoint, containing the rendered HTML for the user list items.',
+			example: {
+				html: '<div class="user-list-item">John Doe</div>',
+			},
+		})
+	)
 	.addError(SDKAPIError, { status: 500 });
