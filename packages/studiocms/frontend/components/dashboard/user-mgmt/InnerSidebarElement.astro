@@ -281,21 +281,9 @@ const t = useTranslations(lang, '@studiocms/dashboard:user-mngmt-sidebar');
     import Fuse from "fuse.js";
     import { sdkClient } from "studiocms:client/apiClients";
     import * as Effect from "effect/Effect";
-    import type { AvailablePermissionRanks } from "@withstudiocms/auth-kit/types";
+    import type { CombinedUserData } from "studiocms:sdk/types";
 
-    type Users = {
-        id: string;
-        name: string;
-        email: string | null | undefined;
-        avatar: string | null | undefined;
-        username: string;
-        permissionsData:
-            | {
-                    user: string;
-                    rank: AvailablePermissionRanks;
-            }
-            | undefined;
-    }[];
+    type Users = Pick<CombinedUserData, 'id' | 'name' | 'email' | 'avatar' | 'username' | 'permissionsData'>[];
 
     function clearSearchParams(userListElm: HTMLDivElement, ActualList: HTMLDivElement) {
         const url = new URL(window.location.href);
