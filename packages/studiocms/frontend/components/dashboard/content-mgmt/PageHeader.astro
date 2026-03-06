@@ -268,8 +268,43 @@ const currentMode = getCurrentMode();
 <script>
     import { ModalHelper } from 'studiocms:ui/components/modal/client';
     import { toast } from "studiocms:ui/components/toaster/client";
+    import { dashboardClient } from "studiocms:client/apiClients";
+    import * as Effect from "effect/Effect";
 
     const mode = (document.getElementById('current-mode-selector') as HTMLDivElement).dataset.mode;
+
+    const sharedCatchTags = {
+        AstroLocalsMissing: (err: { message?: string }) => Effect.succeed({
+            error:
+                err.message ||
+                "An error occurred while processing your request",
+        }),
+        DashboardAPIError: (err: { message?: string }) => Effect.succeed({
+            error:
+                err.message ||
+                "An error occurred while processing your request",
+        }),
+        HttpApiDecodeError: (err: { message?: string }) => Effect.succeed({
+            error:
+                err.message ||
+                "An error occurred while processing your request",
+        }),
+        ParseError: (err: { message?: string }) => Effect.succeed({
+            error:
+                err.message ||
+                "An error occurred while processing your request",
+        }),
+        RequestError: (err: { message?: string }) => Effect.succeed({
+            error:
+                err.message ||
+                "An error occurred while processing your request",
+        }),
+        ResponseError: (err: { message?: string }) => Effect.succeed({
+            error:
+                err.message ||
+                "An error occurred while processing your request",
+        }),
+    }
 
     switch (mode) {
       case "edit-page": {
@@ -285,15 +320,11 @@ const currentMode = getCurrentMode();
               return;
             }
 
+            const id = formData?.get('page-id')?.toString();
+            const slug = formData?.get('page-slug')?.toString();
             const slugConfirm = formData?.get('slug-confirm')?.toString();
-            const action = formData.get('action-route') as string;
 
-            const data = {
-              id: formData?.get('page-id')?.toString(),
-              slug: formData?.get('page-slug')?.toString(),
-            }
-
-            if (!slugConfirm) {
+            if (!id || !slug || !slugConfirm) {
               toast({
                   title: 'Error',
                   description: 'Something went wrong',
@@ -302,16 +333,7 @@ const currentMode = getCurrentMode();
               return;
             }
 
-            if (!data.id || !data.slug) {
-              toast({
-                  title: 'Error',
-                  description: 'Something went wrong',
-                  type: 'danger'
-              })
-              return;
-            }
-
-            if (slugConfirm !== data.slug) {
+            if (slugConfirm !== slug) {
               toast({
                   title: 'Error',
                   description: 'Slug does not match',
@@ -320,29 +342,28 @@ const currentMode = getCurrentMode();
               return;
             }
 
-            const response = await fetch(action, {
-              method: 'DELETE',
-              headers: {
-                  'Content-Type': 'application/json',
-              },
-              body: JSON.stringify(data),
-            });
+            const response = await dashboardClient.pipe(
+              Effect.flatMap((client) => client.content.deletePage({
+                payload: {
+                  id,
+                  slug
+                }
+              })),
+              Effect.catchTags(sharedCatchTags),
+              Effect.runPromise
+            );
 
-            const res = await response.json();
-
-            if (response.status !== 200) {
+            if ("error" in response) {
               toast({
                   title: 'Error',
-                  description: res.error,
+                  description: response.error,
                   type: 'danger'
               })
               return;
-            }
-
-            if (response.status === 200) {
+            } else {
               toast({
                   title: 'Success',
-                  description: res.message,
+                  description: "Page deleted successfully",
                   type: 'success'
               })
               return;
@@ -372,7 +393,6 @@ const currentMode = getCurrentMode();
             const folderName = formData.get('folder-name') as string;
             const id = formData.get('folder-id') as string;
             const confirmFolderName = formData?.get('confirm-folder-name');
-            const action = formData.get('action-route') as string;
 
             if (!folderName || !confirmFolderName) {
               toast({
@@ -398,29 +418,25 @@ const currentMode = getCurrentMode();
               parentFolder: null,
             };
 
-            const response = await fetch(action, {
-              method: 'DELETE',
-              headers: {
-                  'Content-Type': 'application/json',
-              },
-              body: JSON.stringify(data),
-            });
+            const response = await dashboardClient.pipe(
+              Effect.flatMap((client) => client.content.deleteFolder({
+                payload: data,
+              })),
+              Effect.catchTags(sharedCatchTags),
+              Effect.runPromise
+            );
 
-            const res = await response.json();
-
-            if (response.status !== 200) {
+            if ("error" in response) {
               toast({
                   title: 'Error',
-                  description: res.error,
+                  description: response.error,
                   type: 'danger'
               })
               return;
-            }
-
-            if (response.status === 200) {
+            } else {
               toast({
                   title: 'Success',
-                  description: res.message,
+                  description: "Folder deleted successfully",
                   type: 'success'
               })
               return;
