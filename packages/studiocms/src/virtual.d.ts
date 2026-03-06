@@ -21,6 +21,7 @@ declare module 'studiocms:client/apiClients' {
 	export const apiClients: typeof import('./client/apiClient').apiClients;
 
 	export const dashboardSharedCatchTags: typeof import('./client/apiClient').dashboardSharedCatchTags;
+	export const sharedAuthCatchTags: typeof import('./client/apiClient').sharedAuthCatchTags;
 }
 
 declare module 'virtual:studiocms/route-config' {

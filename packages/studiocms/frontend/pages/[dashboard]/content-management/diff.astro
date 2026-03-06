@@ -190,7 +190,7 @@ setDataContext(Astro, {
 
 <script>
   import { toast } from "studiocms:ui/components/toaster/client";
-  import { dashboardClient } from "studiocms:client/apiClients";
+  import { dashboardClient, dashboardSharedCatchTags } from "studiocms:client/apiClients";
   import * as Effect from "effect/Effect";
 
   const revertMetaData = document.getElementById(
@@ -240,26 +240,7 @@ setDataContext(Astro, {
           }
         })
       ),
-      Effect.catchTags({
-        AstroLocalsMissing: (err) => Effect.succeed({
-          error: err.message || "Required data is missing. Please refresh and try again."
-        }),
-        DashboardAPIError: (err) => Effect.succeed({
-          error: err.message || "An error occurred while processing your request. Please try again."
-        }),
-        HttpApiDecodeError: (err) => Effect.succeed({
-          error: err.message || "Failed to decode server response. Please try again."
-        }),
-        ParseError: (err) => Effect.succeed({
-          error: err.message || "An error occurred while preparing your request. Please try again."
-        }),
-        RequestError: (err) => Effect.succeed({
-          error: err.message || "A network error occurred. Please check your connection and try again."
-        }),
-        ResponseError: (err) => Effect.succeed({
-          error: err.message || "The server responded with an error. Please try again."
-        }),
-      }),
+      Effect.catchTags(dashboardSharedCatchTags),
       Effect.runPromise
     );
 

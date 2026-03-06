@@ -9,6 +9,7 @@ import {
 	StudioCMSRestApiV1Spec,
 	StudioCMSSDKApiSpec,
 } from '@withstudiocms/api-spec';
+import { AuthAPIError } from '@withstudiocms/api-spec/auth';
 import * as Effect from 'effect/Effect';
 
 // Get the base URL from the Astro client config, or default to localhost if not set.
@@ -84,5 +85,31 @@ export const dashboardSharedCatchTags = {
 	ResponseError: (err: { message?: string }) =>
 		Effect.succeed({
 			error: err.message || 'An error occurred. Please try again.',
+		}),
+};
+
+/**
+ * A set of common error handling functions for the authentication API. These functions take an error object as input and return a standardized error response that can be used throughout the authentication components to display error messages to the user. Each function corresponds to a specific type of error that may occur during API interactions, allowing for consistent and centralized error handling across the application.
+ */
+export const sharedAuthCatchTags = {
+	HttpApiDecodeError: (err?: { message?: string }) =>
+		new AuthAPIError({
+			error: err?.message || 'An error occurred. Please try again.',
+		}),
+	NotFound: () =>
+		new AuthAPIError({
+			error: 'An error occurred. Please try again.',
+		}),
+	ParseError: (err?: { message?: string }) =>
+		new AuthAPIError({
+			error: err?.message || 'An error occurred. Please try again.',
+		}),
+	RequestError: (err?: { message?: string }) =>
+		new AuthAPIError({
+			error: err?.message || 'An error occurred. Please try again.',
+		}),
+	ResponseError: (err?: { message?: string }) =>
+		new AuthAPIError({
+			error: err?.message || 'An error occurred. Please try again.',
 		}),
 };

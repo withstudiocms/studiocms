@@ -219,25 +219,7 @@ if (usernameAndPassword && SHOW_OAUTH) {
     import { ModalHelper } from 'studiocms:ui/components/modal/client';
     import { toast } from 'studiocms:ui/components/toaster/client';
     import * as Effect from 'effect/Effect';
-    import * as Schema from 'effect/Schema';
-    import { authClient } from 'studiocms:client/apiClients';
-
-    class AuthError extends Schema.TaggedError<AuthError>()(
-        'AuthError',
-        {
-            title: Schema.String,
-            description: Schema.String,
-        }
-    ) {}
-
-    const sharedErrors = {
-        HttpApiDecodeError: () => new AuthError({ title: 'Error', description: 'Failed to decode server response' }),
-        NotFound: () => new AuthError({ title: 'Error', description: 'Login endpoint not found' }),
-        ParseError: () => new AuthError({ title: 'Error', description: 'Failed to parse server response' }),
-        RequestError: () => new AuthError({ title: 'Error', description: 'Network error occurred' }),
-        ResponseError: (err: { message: string }) => new AuthError({ title: 'Error', description: `Server responded with error: ${err.message}` }),
-        AuthAPIError: (err: { error?: string }) => new AuthError({ title: 'Error', description: err.error || 'Authentication failed' }),
-    }
+    import { authClient, sharedAuthCatchTags } from 'studiocms:client/apiClients';
     
     const loginForm = document.getElementById('login-form') as HTMLFormElement | null;
     if (loginForm) {
@@ -256,12 +238,12 @@ if (usernameAndPassword && SHOW_OAUTH) {
                         password: password || '',
                     }
                 })),
-                Effect.catchTags(sharedErrors),
-                Effect.catchTag('AuthError', (err) => Effect.succeed({
+                Effect.catchTags(sharedAuthCatchTags),
+                Effect.catchTag('AuthAPIError', (err) => Effect.succeed({
                     ok: false as const,
                     error: {
-                        title: err.title,
-                        description: err.description,
+                        title: err._tag,
+                        description: err.message,
                     },
                 })),
                 Effect.runPromise
@@ -318,11 +300,11 @@ if (usernameAndPassword && SHOW_OAUTH) {
                 Effect.flatMap((client) => client.auth.forgotPassword({
                     payload: { email },
                 })),
-                Effect.catchTags(sharedErrors),
-                Effect.catchTag('AuthError', (err) => Effect.succeed({
+                Effect.catchTags(sharedAuthCatchTags),
+                Effect.catchTag('AuthAPIError', (err) => Effect.succeed({
                     error: {
-                        title: err.title,
-                        description: err.description,
+                        title: err._tag,
+                        description: err.message,
                     },
                 })),
                 Effect.runPromise
