@@ -71,7 +71,6 @@ const t = useTranslations(lang, '@studiocms/dashboard:user-mngmt-sidebar');
 
 <div id="user-list"
     class="inner-sidebar-users scrollbar" 
-    data-userpartial={Astro.locals.StudioCMS.routeMap.endpointLinks.partials.userListItems}
     data-users={JSON.stringify(safeUsers)}
     >
     { Users.map((user) => <UserListItem user={user} />) }
@@ -80,7 +79,6 @@ const t = useTranslations(lang, '@studiocms/dashboard:user-mngmt-sidebar');
 <div id="search-list"
     class="inner-sidebar-users scrollbar" 
     style="display: none;"
-    data-userpartial={Astro.locals.StudioCMS.routeMap.endpointLinks.partials.userListItems}
     data-users={JSON.stringify(safeUsers)}
     >
 </div>
@@ -281,22 +279,24 @@ const t = useTranslations(lang, '@studiocms/dashboard:user-mngmt-sidebar');
 <script>
     import DOMPurify from "dompurify";
     import Fuse from "fuse.js";
+    import { sdkClient } from "studiocms:client/apiClients";
+    import * as Effect from "effect/Effect";
+    import type { CombinedUserData } from "studiocms:sdk/types";
+    import type { AvailablePermissionRanks } from "@withstudiocms/auth-kit/types";
 
-    type User = {
-            id: string;
-            name: string;
-            email: string | null;
-            avatar: string | null;
-            username: string;
-            permissionsData:
-                | {
-                        user: string;
-                        rank: string;
-                }
-                | undefined;
-        };
-
-    type Users = User[];
+    type Users = {
+        id: string;
+        name: string;
+        email: string | null | undefined;
+        avatar: string | null | undefined;
+        username: string;
+        permissionsData:
+            | {
+                    user: string;
+                    rank: AvailablePermissionRanks;
+            }
+            | undefined;
+    }[];
 
     function clearSearchParams(userListElm: HTMLDivElement, ActualList: HTMLDivElement) {
         const url = new URL(window.location.href);
@@ -306,7 +306,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:user-mngmt-sidebar');
         ActualList.style.display = 'flex';
     }
 
-    async function runSearch(form: HTMLFormElement, userListElm: HTMLDivElement, users: Users, userListItemsPartial: string, ActualList: HTMLDivElement) {
+    async function runSearch(form: HTMLFormElement, userListElm: HTMLDivElement, users: Users, ActualList: HTMLDivElement) {
         const formData = new FormData(form);
         
         const searchTerm = DOMPurify.sanitize(formData.get('search')?.toString() || '');
@@ -327,20 +327,24 @@ const t = useTranslations(lang, '@studiocms/dashboard:user-mngmt-sidebar');
 
         const results = fuse.search(searchTerm);
 
-        const res = await fetch(userListItemsPartial, {
-            method: 'POST',
-            body: JSON.stringify({ users: results.map((item) => item.item), searchQuery: searchTerm }),
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        });
-
-        if (!res.ok) {
-            console.error('Failed to fetch search list');
-            return [];
-        }
-
-        const html = await res.text();
+        const html = await sdkClient.pipe(
+            Effect.flatMap((client) =>
+                client.utils.userListItems({
+                    payload: {
+                        users: results.map((item) => ({
+                            ...item.item,
+                            createdAt: new Date(),
+                            updatedAt: new Date(),
+                            oAuthData: undefined,
+                        })),
+                        searchQuery: searchTerm,
+                    }
+                })
+            ),
+            Effect.tapError(Effect.logError),
+            Effect.map((res) => res.html),
+            Effect.runPromise
+        );
 
         userListElm.innerHTML = html;
         userListElm.style.display = 'flex';
@@ -355,7 +359,6 @@ const t = useTranslations(lang, '@studiocms/dashboard:user-mngmt-sidebar');
         
         const userListElm = document.querySelector('#search-list') as HTMLDivElement;
         const users: Users = JSON.parse(userListElm.dataset.users!);
-        const userListItemsPartial = userListElm.dataset.userpartial!;
 
         const url = new URL(window.location.href);
 
@@ -364,18 +367,18 @@ const t = useTranslations(lang, '@studiocms/dashboard:user-mngmt-sidebar');
         if (searchTerm) {
             const input = searchInput;
             input.value = searchTerm;
-            await runSearch(searchForm, userListElm, users, userListItemsPartial, ActualUserList);
+            await runSearch(searchForm, userListElm, users, ActualUserList);
         }
 
         searchForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            await runSearch(searchForm, userListElm, users, userListItemsPartial, ActualUserList);
+            await runSearch(searchForm, userListElm, users, ActualUserList);
         });
 
         let timeout: NodeJS.Timeout;
         searchInput.addEventListener('input', () => {
             clearTimeout(timeout);
-            timeout = setTimeout(async () => await runSearch(searchForm, userListElm, users, userListItemsPartial, ActualUserList), 500);
+            timeout = setTimeout(async () => await runSearch(searchForm, userListElm, users, ActualUserList), 500);
         });
 
         searchInput.addEventListener('search', () => {

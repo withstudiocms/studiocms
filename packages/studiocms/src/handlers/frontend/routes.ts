@@ -70,11 +70,6 @@ export const setupRoutes: InjectedRoute[] = [
 		pattern: '/studiocms_api/dashboard/step-2',
 		entrypoint: 'setup-pages/studiocms_api/dashboard/step-2.ts',
 	},
-	// Renderer service routes
-	{
-		pattern: '/studiocms_api/partials/render',
-		entrypoint: 'pages/studiocms_api/partials/render.astro',
-	},
 	// Integration routes
 	{
 		// This will also be joining the combined API route, but will also remain it's own dedicated route for the db setup stage.
@@ -89,11 +84,6 @@ export const setupRoutes: InjectedRoute[] = [
  * These routes include SDK API endpoints and the renderer service.
  */
 export const noDbSetupRoutes: InjectedRoute[] = [
-	// Renderer service routes
-	{
-		pattern: '/studiocms_api/partials/render',
-		entrypoint: 'pages/studiocms_api/partials/render.astro',
-	},
 	// StudioCMS Primary API routes
 	{
 		pattern: '/studiocms_api/[...all]',
@@ -123,15 +113,6 @@ export const userRegistrationEnabledRoutes = (
 export const dashboardEnabledRoutes = (
 	dashboardRoute: (path: string) => string
 ): InjectedRoute[] => [
-	{
-		pattern: '/studiocms_api/partials/editor',
-		entrypoint: 'pages/studiocms_api/partials/editor.astro',
-	},
-	{
-		pattern: '/studiocms_api/partials/user-list-items',
-		entrypoint: 'pages/studiocms_api/partials/user-list-items.astro',
-	},
-
 	// Dashboard Frontend Route
 	...[
 		{
@@ -214,26 +195,15 @@ export const dashboardEnabledRoutes = (
 			pattern: 'system-management',
 			entrypoint: 'pages/[dashboard]/system-management.astro',
 		},
+		{
+			pattern: 'password-reset',
+			entrypoint: 'pages/[dashboard]/password-reset.astro',
+		},
 	].map(({ entrypoint, pattern }) => ({
 		// Remap pattern to include dashboard base path
 		pattern: dashboardRoute(pattern),
 		entrypoint,
 	})),
-];
-
-/**
- * Dashboard API Enabled Routes
- *
- * Injected when dashboardAPIEnabled is true.
- */
-export const dashboardAPIEnabledRoutes = (
-	dashboardRoute: (path: string) => string
-): InjectedRoute[] => [
-	// Dashboard page routes
-	{
-		pattern: dashboardRoute('password-reset'),
-		entrypoint: 'pages/[dashboard]/password-reset.astro',
-	},
 ];
 
 /**

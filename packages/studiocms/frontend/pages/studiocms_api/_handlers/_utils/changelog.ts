@@ -1,7 +1,7 @@
-import { HTTPClient, Platform } from '@withstudiocms/effect';
+import { sdkClient } from 'studiocms:client/apiClients';
+import { HTTPClient } from '@withstudiocms/effect';
 import { loadChangelog, semverCategories } from '@withstudiocms/internal_helpers/utils';
 import { Data, Effect, pipe } from 'effect';
-import { AstroAPIContext } from 'effectify/astro/context';
 import type { List, Root } from 'mdast';
 import { toMarkdown } from 'mdast-util-to-markdown';
 
@@ -104,35 +104,28 @@ export class ProcessChangelog extends Effect.Service<ProcessChangelog>()('Proces
 		 * @param content The processed changelog markdown content to be rendered.
 		 * @returns The rendered changelog content as returned by the partial endpoint.
 		 */
-		const renderChangelog = (currentURLOrigin: string) => (content: string) =>
+		const renderChangelog = (content: string) =>
 			Effect.gen(function* () {
-				const ctx = yield* AstroAPIContext;
+				const client = yield* sdkClient;
 
-				const partialUrl = new URL(
-					ctx.locals.StudioCMS?.routeMap.endpointLinks.partials.render,
-					currentURLOrigin
-				);
-
-				return yield* Platform.HttpClientRequest.post(partialUrl).pipe(
-					Platform.HttpClientRequest.setHeaders({
-						'Content-Type': 'application/json',
-					}),
-					Platform.HttpClientRequest.bodyJson({
-						content,
-					}),
-					Effect.flatMap(httpClient.execute),
-					Effect.flatMap((response) => response.text)
-				);
+				return yield* client.utils
+					.renderMarkdown({
+						payload: {
+							content,
+						},
+						urlParams: {},
+					})
+					.pipe(Effect.map((response) => response.html));
 			});
 
 		/**
 		 * Runs the entire changelog processing pipeline, which includes fetching the raw changelog, generating the processed markdown, and rendering it. If any step in the pipeline fails, it returns a ChangelogError with details about the failure.
 		 */
-		const runPipeline = (currentURLOrigin: string) =>
+		const runPipeline = () =>
 			pipe(
 				getRawChangelog(),
 				Effect.flatMap(generateChangelog),
-				Effect.flatMap(renderChangelog(currentURLOrigin)),
+				Effect.flatMap(renderChangelog),
 				Effect.catchAll(
 					(error) =>
 						new ChangelogError({

@@ -1,5 +1,8 @@
 ---
+import { site } from 'astro:config/server';
+import config from 'studiocms:config';
 import { useTranslations } from 'studiocms:i18n';
+import { StudioCMSRoutes } from 'studiocms:lib';
 import type { CombinedUserData } from 'studiocms:sdk/types';
 import { Divider } from 'studiocms:ui/components/divider';
 import { Icon } from 'studiocms:ui/components/icon';
@@ -12,13 +15,11 @@ interface Props {
 
 const { user, searchQuery } = Astro.props;
 
-const lang = Astro.locals.StudioCMS.defaultLang;
+const lang = Astro.locals?.StudioCMS?.defaultLang || config.locale.i18n.defaultLocale;
 const t = useTranslations(lang, '@studiocms/dashboard:user-component');
 
-const userListItemHref = new URL(
-	Astro.locals.StudioCMS.routeMap.mainLinks.userManagementEdit,
-	Astro.url.origin
-);
+const userListItemHref = new URL(StudioCMSRoutes.mainLinks.userManagementEdit, site);
+
 userListItemHref.searchParams.set('user', user.id);
 if (searchQuery) {
 	userListItemHref.searchParams.set('search', searchQuery);
