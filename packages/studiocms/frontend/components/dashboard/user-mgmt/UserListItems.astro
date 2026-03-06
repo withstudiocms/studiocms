@@ -2,18 +2,17 @@
 import type { CombinedUserData } from 'studiocms:sdk/types';
 import UserListItem from './UserListItem.astro';
 
-type Props = {
-	users: CombinedUserData[];
+interface Props {
+	users: Pick<
+		CombinedUserData,
+		'id' | 'name' | 'email' | 'avatar' | 'username' | 'permissionsData'
+	>[];
 	searchQuery?: string;
-};
+}
 
 const { users, searchQuery } = Astro.props;
 ---
 
-{
-	typeof users !== "string"
-		? users.map((user) => (
-				<UserListItem user={user} searchQuery={searchQuery} />
-			))
-		: users
-}
+{users.map((user) => (
+	<UserListItem user={user} searchQuery={searchQuery} />
+))}

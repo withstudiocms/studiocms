@@ -281,7 +281,6 @@ const t = useTranslations(lang, '@studiocms/dashboard:user-mngmt-sidebar');
     import Fuse from "fuse.js";
     import { sdkClient } from "studiocms:client/apiClients";
     import * as Effect from "effect/Effect";
-    import type { CombinedUserData } from "studiocms:sdk/types";
     import type { AvailablePermissionRanks } from "@withstudiocms/auth-kit/types";
 
     type Users = {
@@ -331,12 +330,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:user-mngmt-sidebar');
             Effect.flatMap((client) =>
                 client.utils.userListItems({
                     payload: {
-                        users: results.map((item) => ({
-                            ...item.item,
-                            createdAt: new Date(),
-                            updatedAt: new Date(),
-                            oAuthData: undefined,
-                        })),
+                        users: results.map(({ item }) => item),
                         searchQuery: searchTerm,
                     }
                 })

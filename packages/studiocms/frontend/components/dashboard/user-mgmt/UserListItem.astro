@@ -1,5 +1,4 @@
 ---
-import { site } from 'astro:config/server';
 import config from 'studiocms:config';
 import { useTranslations } from 'studiocms:i18n';
 import { StudioCMSRoutes } from 'studiocms:lib';
@@ -9,7 +8,7 @@ import { Icon } from 'studiocms:ui/components/icon';
 import User from '../../shared/SSRUser.astro';
 
 interface Props {
-	user: CombinedUserData;
+	user: Pick<CombinedUserData, 'id' | 'name' | 'email' | 'avatar' | 'username' | 'permissionsData'>;
 	searchQuery?: string;
 }
 

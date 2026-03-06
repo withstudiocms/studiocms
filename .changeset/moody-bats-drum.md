@@ -3,4 +3,5 @@
 "studiocms": minor
 ---
 
-Implements new SDK routes to take over page partial routes
+Adds SDK utility endpoints for markdown rendering and user-list HTML, replacing legacy page partial routes.
+Consumers now go through the SDK utilities for these renders, and the markdown render route is POST-based.

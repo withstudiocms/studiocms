@@ -134,7 +134,9 @@ export const userListItems = HttpApiEndpoint.post('userListItems', '/user-list-i
 	.annotate(Description, 'Retrieves a list of user items that can be used in the SDK.')
 	.setPayload(
 		Schema.Struct({
-			users: Schema.Array(CombinedUserDataSchema).annotations({
+			users: Schema.Array(
+				CombinedUserDataSchema.pick('id', 'name', 'email', 'avatar', 'username', 'permissionsData')
+			).annotations({
 				description: 'An array of user data objects to be rendered as list items.',
 			}),
 			searchQuery: Schema.optional(Schema.String).annotations({
