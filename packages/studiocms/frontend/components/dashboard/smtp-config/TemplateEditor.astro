@@ -83,6 +83,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 import { $i18n, baseTranslation, updateSelectOptions } from 'studiocms:i18n/client';
 import { ModalHelper } from 'studiocms:ui/components/modal/client';
 import { toast } from 'studiocms:ui/components/toaster/client';
+import { dashboardClient, dashboardSharedCatchTags } from "studiocms:client/apiClients";
+import * as Effect from "effect/Effect";
 import 'ace-builds/src-noconflict/ace';
 import 'ace-builds/src-noconflict/mode-handlebars';
 import 'ace-builds/src-noconflict/theme-cloud_editor';
@@ -243,16 +245,18 @@ async function saveTemplate(templateKey: string, content: string) {
 	const allTemplates = { ...templates, [templateKey]: content };
 
 	try {
-		const response = await fetch(saveEndpoint, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify({ templates: allTemplates }),
-		});
+		const response = await dashboardClient.pipe(
+			Effect.flatMap((client) => 
+				client.templates.updateEmailTemplates({
+					payload: allTemplates,
+				})
+			),
+			Effect.catchTags(dashboardSharedCatchTags),
+			Effect.runPromise,
+		);
 
-		if (!response.ok) {
-			throw new Error(`${t['template-editor-save-failed']}: ${response.statusText}`);
+		if ('error' in response) {
+			throw new Error(`${t['template-editor-save-failed']}: ${response.error}`);
 		}
 
 		displaySuccessToastThenReload(t['template-editor-save-success']);
