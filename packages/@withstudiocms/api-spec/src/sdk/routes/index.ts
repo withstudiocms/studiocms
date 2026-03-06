@@ -77,7 +77,7 @@ export const updateLatestVersionCacheGet = HttpApiEndpoint.get(
  *
  * @throws {SDKAPIError} Returns a 500 status code on server error
  */
-export const renderMarkdown = HttpApiEndpoint.get('renderMarkdown', '/render')
+export const renderMarkdown = HttpApiEndpoint.post('renderMarkdown', '/render')
 	.annotate(Title, 'Render Markdown')
 	.annotate(Summary, 'Render Markdown to HTML.')
 	.annotate(Description, 'Renders the provided Markdown content to HTML format.')
