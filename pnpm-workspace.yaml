@@ -3,7 +3,6 @@ packages:
   - packages/@withstudiocms/*
   - packages/@withstudiocms/*/test/fixtures/*
   - packages/*
-  - bundle-tests/*
   - playground
   - templates/*
 

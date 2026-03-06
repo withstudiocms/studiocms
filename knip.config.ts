@@ -97,8 +97,6 @@ const atWithStudioCMSPackages = [
 	'cli-kit',
 ] as const;
 
-const bundleTestPackages = ['studiocms-blog', 'studiocms-headless'] as const;
-
 const studiocmsVirtualIgnore = [
 	'auth0',
 	'blog',
@@ -222,29 +220,6 @@ const config: KnipConfig = {
 				acc[`packages/@withstudiocms/${pkg}`] = {
 					...baseWithStudioCMSConfig,
 					...extras(pkg),
-				};
-				return acc;
-			},
-			// biome-ignore lint/suspicious/noExplicitAny: This is a dynamic object construction
-			{} as Record<string, any>
-		),
-		...bundleTestPackages.reduce(
-			(acc, pkg) => {
-				acc[`bundle-tests/${pkg}`] = {
-					ignoreDependencies: ['sharp', '@libsql/client', 'kysely-turso'],
-					astro: {
-						entry: [
-							'studiocms.config.{js,cjs,mjs,ts,mts}',
-							'astro.config.{js,cjs,mjs,ts,mts}',
-							'src/content/config.ts',
-							'src/content.config.ts',
-							'src/components/**/*.{astro,js,ts}',
-							'src/pages/**/*.{astro,mdx,js,ts}',
-							'src/content/**/*.mdx',
-							'src/middleware.{js,ts}',
-							'src/actions/index.{js,ts}',
-						],
-					},
 				};
 				return acc;
 			},
