@@ -68,7 +68,7 @@ export const updateLatestVersionCacheGet = HttpApiEndpoint.get(
 /**
  * HTTP API endpoint for rendering Markdown to HTML.
  *
- * @endpoint GET /render
+ * @endpoint POST /render
  * @title Render Markdown
  * @summary Render Markdown to HTML.
  *
