@@ -49,16 +49,16 @@ export function internalMarkdownIntegration(options: MarkdownSchemaOptions = {})
 					name: packageIdentifier,
 					imports: {
 						'studiocms:md/config': `
-										export const config = ${JSON.stringify(resolvedOptions)};
-										export default config;
-									`,
+							export const config = ${JSON.stringify(resolvedOptions)};
+							export default config;
+						`,
 						'studiocms:md/pre-render': `
-										export { preRender } from '${internalRenderer}';
-									`,
+							export { preRender } from '${internalRenderer}';
+						`,
 						'studiocms:md/styles': `
-										import '${resolve('./styles/md-remark-headings.css')}';
-										${resolvedCalloutTheme ? `import '${resolvedCalloutTheme}';` : ''}
-									`,
+							import '${resolve('./styles/md-remark-headings.css')}';
+							${resolvedCalloutTheme ? `import '${resolvedCalloutTheme}';` : ''}
+						`,
 					},
 				});
 
