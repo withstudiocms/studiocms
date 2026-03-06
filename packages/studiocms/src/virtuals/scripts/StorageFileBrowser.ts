@@ -1,4 +1,8 @@
 // Storage File Browser Web Component
+import { integrationsClient } from 'studiocms:client/apiClients';
+import { IntegrationsAPIError } from '@withstudiocms/api-spec/integrations';
+import * as Cause from 'effect/Cause';
+import * as Effect from 'effect/Effect';
 
 interface StorageFile {
 	key: string;
@@ -620,13 +624,29 @@ class StorageFileBrowser extends HTMLElement {
 			let value = '';
 
 			if (this.returnType === 'url') {
-				const response = await fetch(this.apiEndpoint, {
-					method: 'POST',
-					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify({ action: 'publicUrl', key: this.selectedFile.key }),
-				});
-				const data = await response.json();
-				value = data.url;
+				const response = await integrationsClient.pipe(
+					Effect.flatMap((client) =>
+						client.storageManager.storageManager({
+							payload: {
+								action: 'publicUrl',
+								// biome-ignore lint/style/noNonNullAssertion: We check for selectedFile above, so this is safe
+								key: this.selectedFile!.key,
+							},
+						})
+					),
+					Effect.flatMap((res) =>
+						'url' in res
+							? Effect.succeed(res.url)
+							: Effect.fail(
+									new IntegrationsAPIError({
+										error: 'Invalid response from server: missing url field',
+									})
+								)
+					),
+					Effect.tapError(Effect.logError),
+					Effect.runPromise
+				);
+				value = response;
 			} else if (this.returnType === 'identifier') {
 				value = `storage-file://${this.selectedFile.key}`;
 			} else {
@@ -652,43 +672,51 @@ class StorageFileBrowser extends HTMLElement {
 		content.innerHTML = `<div class="storage-browser-loading" role="status">${this.t('testingConnection')}</div>`;
 
 		try {
-			const response = await fetch(this.apiEndpoint, {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ action: 'test' }),
-			});
+			const response = await integrationsClient.pipe(
+				Effect.flatMap((client) =>
+					client.storageManager.storageManager({
+						payload: { action: 'test' },
+					})
+				),
+				Effect.flatMap((res) =>
+					'success' in res
+						? Effect.succeed({ success: res.success })
+						: Effect.fail(
+								new IntegrationsAPIError({
+									error: 'Invalid response from server: missing success field',
+								})
+							)
+				),
+				Effect.tapError(Effect.logError),
+				Effect.runPromiseExit
+			);
 
-			const data = await response.json();
-
-			// Handle 501 from no-op storage provider
-			if (response.status === 501 && data.error) {
+			if (response._tag === 'Failure') {
+				const errors = Cause.prettyErrors(response.cause)
+					.map((e) => e.message)
+					.join('; ');
 				this.connectionEstablished = false;
+				this.connectionTestResponse = {
+					status: 500,
+					message: errors || 'Unknown error',
+				};
 				content.innerHTML = `
                     <div class="storage-browser-error" role="alert">
                         <svg width="48" height="48" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
-                        <p>${this.t(data.error)}</p>
+                        <p>${this.t('failedConnection')}</p>
+                        <p style="font-size: 0.875rem; opacity: 0.7;">${errors || this.t('unknownError')}</p>
                     </div>
                 `;
 
-				this.connectionTestResponse = {
-					status: response.status,
-					message: data.error || 'No error message provided',
-				};
-
 				return false;
 			}
-
-			if (!response.ok) {
-				this.connectionTestResponse = {
-					status: response.status,
-					message: data.error || 'No error message provided',
-				};
-				throw new Error(data.error || 'Connection test failed');
-			}
-
-			this.connectionEstablished = data.success === true;
+			this.connectionEstablished = response.value.success === true;
+			this.connectionTestResponse = {
+				status: 200,
+				message: 'Connection successful',
+			};
 
 			if (!this.connectionEstablished) {
 				content.innerHTML = `
@@ -730,13 +758,27 @@ class StorageFileBrowser extends HTMLElement {
 		content.innerHTML = `<div class="storage-browser-loading">${this.t('loadingFiles')}</div>`;
 
 		try {
-			const response = await fetch(this.apiEndpoint, {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ action: 'list', prefix: this.currentPath }),
-			});
-			const data = await response.json();
-			const files: StorageFile[] = data.files;
+			const files = await integrationsClient.pipe(
+				Effect.flatMap((client) =>
+					client.storageManager.storageManager({
+						payload: {
+							action: 'list',
+							prefix: this.currentPath,
+						},
+					})
+				),
+				Effect.flatMap((returnedData) =>
+					'files' in returnedData
+						? Effect.succeed(returnedData.files as StorageFile[])
+						: Effect.fail(
+								new IntegrationsAPIError({
+									error: 'Invalid response from server: missing files field',
+								})
+							)
+				),
+				Effect.tapError(Effect.logError),
+				Effect.runPromise
+			);
 
 			this.updateBreadcrumb();
 
@@ -1442,16 +1484,18 @@ class StorageFileBrowser extends HTMLElement {
 		content.innerHTML = `<div class="storage-browser-loading" role="status">${this.t('deletingFile')}</div>`;
 
 		try {
-			const response = await fetch(this.apiEndpoint, {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ action: 'delete', key: file.key }),
-			});
-
-			if (!response.ok) {
-				throw new Error('Delete failed');
-			}
-
+			await integrationsClient.pipe(
+				Effect.flatMap((client) =>
+					client.storageManager.storageManager({
+						payload: {
+							action: 'delete',
+							key: file.key,
+						},
+					})
+				),
+				Effect.tapError(Effect.logError),
+				Effect.runPromise
+			);
 			// Reload files
 			await this.loadFiles();
 		} catch (error) {
@@ -1487,36 +1531,51 @@ class StorageFileBrowser extends HTMLElement {
 			const newPrefix = `${this.currentPath + sanitized}/`;
 
 			// Get all files in the folder
-			const response = await fetch(this.apiEndpoint, {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ action: 'list', prefix: oldPrefix }),
-			});
-
-			if (!response.ok) throw new Error('Failed to list folder contents');
-
-			const result = await response.json();
-
-			// Check both possible response structures
-			const files = result.files || result.data?.files || [];
+			const files = await integrationsClient.pipe(
+				Effect.flatMap((client) =>
+					client.storageManager.storageManager({
+						payload: {
+							action: 'list',
+							prefix: oldPrefix,
+						},
+					})
+				),
+				Effect.flatMap((returnedData) =>
+					'files' in returnedData
+						? Effect.succeed(returnedData.files as StorageFile[])
+						: Effect.fail(
+								new IntegrationsAPIError({
+									error: 'Unexpected response structure',
+								})
+							)
+				),
+				Effect.tapError(Effect.logError),
+				Effect.runPromise
+			);
 
 			// Rename each file in the folder
 			for (const file of files) {
 				const relativePath = file.key.substring(oldPrefix.length);
 				const newKey = newPrefix + relativePath;
 
-				const renameResponse = await fetch(this.apiEndpoint, {
-					method: 'POST',
-					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify({
-						action: 'rename',
-						key: file.key,
-						newKey: newKey,
-					}),
-				});
+				const response = await integrationsClient.pipe(
+					Effect.flatMap((client) =>
+						client.storageManager.storageManager({
+							payload: {
+								action: 'rename',
+								key: file.key,
+								newKey,
+							},
+						})
+					),
+					Effect.tapError(Effect.logError),
+					Effect.runPromiseExit
+				);
 
-				if (!renameResponse.ok) {
-					const error = await renameResponse.json();
+				if (response._tag === 'Failure') {
+					const error = Cause.prettyErrors(response.cause)
+						.map((e) => e.message)
+						.join('; ');
 					console.error('Failed to rename file:', file.key, error);
 				}
 			}
@@ -1551,29 +1610,47 @@ class StorageFileBrowser extends HTMLElement {
 			const prefix = `${this.currentPath + folderName}/`;
 
 			// Get all files in the folder
-			const response = await fetch(this.apiEndpoint, {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ action: 'list', prefix: prefix }),
-			});
-
-			if (!response.ok) throw new Error('Failed to list folder contents');
-
-			const result = await response.json();
-
-			// Check both possible response structures
-			const files = result.files || result.data?.files || [];
+			const files = await integrationsClient.pipe(
+				Effect.flatMap((client) =>
+					client.storageManager.storageManager({
+						payload: {
+							action: 'list',
+							prefix,
+						},
+					})
+				),
+				Effect.flatMap((returnedData) =>
+					'files' in returnedData
+						? Effect.succeed(returnedData.files as StorageFile[])
+						: Effect.fail(
+								new IntegrationsAPIError({
+									error: 'Unexpected response structure',
+								})
+							)
+				),
+				Effect.tapError(Effect.logError),
+				Effect.runPromise
+			);
 
 			// Delete each file in the folder
 			for (const file of files) {
-				const deleteResponse = await fetch(this.apiEndpoint, {
-					method: 'POST',
-					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify({ action: 'delete', key: file.key }),
-				});
+				const response = await integrationsClient.pipe(
+					Effect.flatMap((client) =>
+						client.storageManager.storageManager({
+							payload: {
+								action: 'delete',
+								key: file.key,
+							},
+						})
+					),
+					Effect.tapError(Effect.logError),
+					Effect.runPromiseExit
+				);
 
-				if (!deleteResponse.ok) {
-					const error = await deleteResponse.json();
+				if (response._tag === 'Failure') {
+					const error = Cause.prettyErrors(response.cause)
+						.map((e) => e.message)
+						.join('; ');
 					console.error('Failed to delete file:', file.key, error);
 				}
 			}
@@ -1616,17 +1693,24 @@ class StorageFileBrowser extends HTMLElement {
 			const folderKey = `${this.currentPath}${sanitized}/.folder`;
 
 			// Create a placeholder file to establish the folder (same as index.astro)
-			const response = await fetch(this.apiEndpoint, {
-				method: 'PUT',
-				headers: {
-					'Content-Type': 'text/plain',
-					'x-storage-key': folderKey,
-				},
-				body: '',
-			});
+			const response = await integrationsClient.pipe(
+				Effect.flatMap((client) =>
+					client.storageManager.storageManagerUpload({
+						headers: {
+							'x-storage-key': folderKey,
+						},
+						payload: Buffer.from(''),
+					})
+				),
+				Effect.tapError(Effect.logError),
+				Effect.runPromiseExit
+			);
 
-			if (!response.ok) {
-				throw new Error('Create folder failed');
+			if (response._tag === 'Failure') {
+				const error = Cause.prettyErrors(response.cause)
+					.map((e) => e.message)
+					.join('; ');
+				throw new Error(error);
 			}
 
 			// Reload files
@@ -1760,19 +1844,27 @@ class StorageFileBrowser extends HTMLElement {
 		const fileName = customName || `${Date.now()}-${file.name}`;
 		const key = this.currentPath ? `${this.currentPath}${fileName}` : fileName;
 
-		// Upload directly using PUT endpoint
-		const response = await fetch(this.apiEndpoint, {
-			method: 'PUT',
-			headers: {
-				'Content-Type': file.type || 'application/octet-stream',
-				'x-storage-key': key,
-			},
-			body: file,
-		});
+		const payload = Buffer.from(await file.arrayBuffer());
 
-		if (!response.ok) {
-			const error = await response.json();
-			throw new Error(error.error || 'Upload failed');
+		// Upload directly using PUT endpoint
+		const response = await integrationsClient.pipe(
+			Effect.flatMap((client) =>
+				client.storageManager.storageManagerUpload({
+					headers: {
+						'x-storage-key': key,
+					},
+					payload,
+				})
+			),
+			Effect.tapError(Effect.logError),
+			Effect.runPromiseExit
+		);
+
+		if (response._tag === 'Failure') {
+			const error = Cause.prettyErrors(response.cause)
+				.map((e) => e.message)
+				.join('; ');
+			throw new Error(error);
 		}
 	}
 
@@ -1942,21 +2034,26 @@ class StorageFileBrowser extends HTMLElement {
 				action: 'rename',
 			});
 
-			const response = await fetch(this.apiEndpoint, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify({
-					action: 'rename',
-					key: this.fileToRename.key,
-					newKey: newKey,
-				}),
-			});
+			const response = await integrationsClient.pipe(
+				Effect.flatMap((client) =>
+					client.storageManager.storageManager({
+						payload: {
+							action: 'rename',
+							// biome-ignore lint/style/noNonNullAssertion: We check fileToRename at the beginning of this function
+							key: this.fileToRename!.key,
+							newKey,
+						},
+					})
+				),
+				Effect.tapError(Effect.logError),
+				Effect.runPromiseExit
+			);
 
-			if (!response.ok) {
-				const errorData = await response.json();
-				throw new Error(errorData.error || 'Rename failed');
+			if (response._tag === 'Failure') {
+				const error = Cause.prettyErrors(response.cause)
+					.map((e) => e.message)
+					.join('; ');
+				throw new Error(error);
 			}
 
 			// Reload files
@@ -2071,16 +2168,24 @@ class StorageFileBrowser extends HTMLElement {
 		);
 
 		try {
-			const response = await fetch(this.apiEndpoint, {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ action: 'publicUrl', key: file.key }),
-			});
-
-			if (!response.ok) throw new Error('Failed to get file URL');
-
-			const result = await response.json();
-			const fileUrl = result.url;
+			const fileUrl = await integrationsClient.pipe(
+				Effect.flatMap((client) =>
+					client.storageManager.storageManager({
+						payload: { action: 'publicUrl', key: file.key },
+					})
+				),
+				Effect.flatMap((returnedData) =>
+					'url' in returnedData
+						? Effect.succeed(returnedData.url as string)
+						: Effect.fail(
+								new IntegrationsAPIError({
+									error: 'Unexpected response structure',
+								})
+							)
+				),
+				Effect.tapError(Effect.logError),
+				Effect.runPromise
+			);
 
 			if (!fileUrl) {
 				throw new Error('No URL returned from API');
