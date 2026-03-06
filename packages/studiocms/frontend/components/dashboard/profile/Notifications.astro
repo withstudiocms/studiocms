@@ -162,7 +162,7 @@ type TKey = Parameters<typeof t>[0];
 <script>
     import { toast } from 'studiocms:ui/components/toaster/client';
     import { getEnabledNotificationCheckboxes, formatNotificationOptions } from 'studiocms:notifier/client';
-    import { dashboardClient } from 'studiocms:client/apiClients';
+    import { dashboardClient, dashboardSharedCatchTags } from 'studiocms:client/apiClients';
     import * as Effect from 'effect/Effect';
 
     const form = document.getElementById('notifications-form') as HTMLFormElement;
@@ -194,26 +194,7 @@ type TKey = Parameters<typeof t>[0];
                     notifications: formattedOptions
                 }
             })),
-            Effect.catchTags({
-                AstroLocalsMissing: () => Effect.succeed({
-                    error: 'Failed to update notifications: Missing necessary authentication data. Please refresh the page and try again.'
-                }),
-                DashboardAPIError: (err) => Effect.succeed({
-                    error: `Failed to update notifications: ${err.message}`
-                }),
-                HttpApiDecodeError: () => Effect.succeed({
-                    error: 'Failed to update notifications: Unable to decode server response.'
-                }),
-                ParseError: () => Effect.succeed({
-                    error: 'Failed to update notifications: Unable to parse server response.'
-                }),
-                RequestError: () => Effect.succeed({
-                    error: 'Failed to update notifications: Network error occurred.'
-                }),
-                ResponseError: (err) => Effect.succeed({
-                    error: `Failed to update notifications: Server responded with error - ${err.message}`
-                }),
-            }),
+            Effect.catchTags(dashboardSharedCatchTags),
             Effect.runPromise
         );
 

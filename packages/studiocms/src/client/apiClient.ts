@@ -56,3 +56,33 @@ export const apiClients = {
 	rest: restClient,
 	sdk: sdkClient,
 };
+
+/**
+ * A set of common error handling functions for the dashboard API. These functions take an error object as input and return a standardized error response that can be used throughout the dashboard components to display error messages to the user. Each function corresponds to a specific type of error that may occur during API interactions, allowing for consistent and centralized error handling across the application.
+ */
+export const dashboardSharedCatchTags = {
+	AstroLocalsMissing: (err: { message?: string }) =>
+		Effect.succeed({
+			error: err.message || 'An error occurred. Please try again.',
+		}),
+	DashboardAPIError: (err: { message?: string }) =>
+		Effect.succeed({
+			error: err.message || 'An error occurred. Please try again.',
+		}),
+	HttpApiDecodeError: (err: { message?: string }) =>
+		Effect.succeed({
+			error: err.message || 'An error occurred. Please try again.',
+		}),
+	ParseError: (err: { message?: string }) =>
+		Effect.succeed({
+			error: err.message || 'An error occurred. Please try again.',
+		}),
+	RequestError: (err: { message?: string }) =>
+		Effect.succeed({
+			error: err.message || 'An error occurred. Please try again.',
+		}),
+	ResponseError: (err: { message?: string }) =>
+		Effect.succeed({
+			error: err.message || 'An error occurred. Please try again.',
+		}),
+};

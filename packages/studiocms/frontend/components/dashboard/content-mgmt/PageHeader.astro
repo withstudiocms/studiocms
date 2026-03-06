@@ -268,43 +268,10 @@ const currentMode = getCurrentMode();
 <script>
     import { ModalHelper } from 'studiocms:ui/components/modal/client';
     import { toast } from "studiocms:ui/components/toaster/client";
-    import { dashboardClient } from "studiocms:client/apiClients";
+    import { dashboardClient, dashboardSharedCatchTags } from "studiocms:client/apiClients";
     import * as Effect from "effect/Effect";
 
     const mode = (document.getElementById('current-mode-selector') as HTMLDivElement).dataset.mode;
-
-    const sharedCatchTags = {
-        AstroLocalsMissing: (err: { message?: string }) => Effect.succeed({
-            error:
-                err.message ||
-                "An error occurred while processing your request",
-        }),
-        DashboardAPIError: (err: { message?: string }) => Effect.succeed({
-            error:
-                err.message ||
-                "An error occurred while processing your request",
-        }),
-        HttpApiDecodeError: (err: { message?: string }) => Effect.succeed({
-            error:
-                err.message ||
-                "An error occurred while processing your request",
-        }),
-        ParseError: (err: { message?: string }) => Effect.succeed({
-            error:
-                err.message ||
-                "An error occurred while processing your request",
-        }),
-        RequestError: (err: { message?: string }) => Effect.succeed({
-            error:
-                err.message ||
-                "An error occurred while processing your request",
-        }),
-        ResponseError: (err: { message?: string }) => Effect.succeed({
-            error:
-                err.message ||
-                "An error occurred while processing your request",
-        }),
-    }
 
     switch (mode) {
       case "edit-page": {
@@ -349,7 +316,7 @@ const currentMode = getCurrentMode();
                   slug
                 }
               })),
-              Effect.catchTags(sharedCatchTags),
+              Effect.catchTags(dashboardSharedCatchTags),
               Effect.runPromise
             );
 
@@ -422,7 +389,7 @@ const currentMode = getCurrentMode();
               Effect.flatMap((client) => client.content.deleteFolder({
                 payload: data,
               })),
-              Effect.catchTags(sharedCatchTags),
+              Effect.catchTags(dashboardSharedCatchTags),
               Effect.runPromise
             );
 

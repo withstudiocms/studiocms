@@ -68,7 +68,7 @@ const filteredParentFolderOptions = [
 
 <script>
     import { toast } from "studiocms:ui/components/toaster/client";
-    import { dashboardClient } from "studiocms:client/apiClients";
+    import { dashboardClient, dashboardSharedCatchTags } from "studiocms:client/apiClients";
     import * as Effect from "effect/Effect";
 
     const form = document.getElementById("edit-folder-form") as HTMLFormElement;
@@ -106,44 +106,7 @@ const filteredParentFolderOptions = [
                     payload: data,
                 }),
             ),
-            Effect.catchTags({
-                AstroLocalsMissing: (err) =>
-                    Effect.succeed({
-                        error:
-                            err.message ||
-                            "An error occurred while updating the folder",
-                    }),
-                DashboardAPIError: (err) =>
-                    Effect.succeed({
-                        error:
-                            err.message ||
-                            "An error occurred while updating the folder",
-                    }),
-                HttpApiDecodeError: (err) =>
-                    Effect.succeed({
-                        error:
-                            err.message ||
-                            "An error occurred while updating the folder",
-                    }),
-                ParseError: (err) =>
-                    Effect.succeed({
-                        error:
-                            err.message ||
-                            "An error occurred while updating the folder",
-                    }),
-                RequestError: (err) =>
-                    Effect.succeed({
-                        error:
-                            err.message ||
-                            "An error occurred while updating the folder",
-                    }),
-                ResponseError: (err) =>
-                    Effect.succeed({
-                        error:
-                            err.message ||
-                            "An error occurred while updating the folder",
-                    }),
-            }),
+            Effect.catchTags(dashboardSharedCatchTags),
             Effect.runPromise,
         );
 

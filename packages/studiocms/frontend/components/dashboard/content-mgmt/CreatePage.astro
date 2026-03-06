@@ -332,7 +332,7 @@ const preselectedParentFolder = searchParams.get('parent-folder') ?? 'null';
     CreatePageDataFromFormDataObjectSchema,
     ObjectFromFormData,
   } from "../../../scripts/formdata.js";
-  import { dashboardClient } from "studiocms:client/apiClients";
+  import { dashboardClient, dashboardSharedCatchTags } from "studiocms:client/apiClients";
   import * as Effect from "effect/Effect";
 
   // get the elements
@@ -382,44 +382,7 @@ const preselectedParentFolder = searchParams.get('parent-folder') ?? 'null';
           Effect.flatMap((client) => client.content.createPage({ payload })),
         ),
       ),
-      Effect.catchTags({
-        AstroLocalsMissing: (err) =>
-          Effect.succeed({
-            error:
-              err.message ||
-              "Missing required data for page creation. Please try again.",
-          }),
-        DashboardAPIError: (err) =>
-          Effect.succeed({
-            error:
-              err.message ||
-              "An error occurred while creating the page. Please try again.",
-          }),
-        HttpApiDecodeError: (err) =>
-          Effect.succeed({
-            error:
-              err.message ||
-              "Failed to decode the server response. Please try again.",
-          }),
-        ParseError: (err) =>
-          Effect.succeed({
-            error:
-              err.message ||
-              "Failed to parse the server response. Please try again.",
-          }),
-        RequestError: (err) =>
-          Effect.succeed({
-            error:
-              err.message ||
-              "An error occurred while making the request. Please try again.",
-          }),
-        ResponseError: (err) =>
-          Effect.succeed({
-            error:
-              err.message ||
-              "An error occurred with the server response. Please try again.",
-          }),
-      }),
+      Effect.catchTags(dashboardSharedCatchTags),
       Effect.runPromise,
     );
 

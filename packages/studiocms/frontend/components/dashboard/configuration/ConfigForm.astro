@@ -285,7 +285,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:configuration');
 
 <script>
     import { toast } from "studiocms:ui/components/toaster/client";
-    import { dashboardClient } from 'studiocms:client/apiClients';
+    import { dashboardClient, dashboardSharedCatchTags } from 'studiocms:client/apiClients';
     import * as Effect from 'effect/Effect';
 
     const configForm = document.querySelector(
@@ -337,26 +337,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:configuration');
                     payload: data
                 })
             ),
-            Effect.catchTags({
-                AstroLocalsMissing: (err) => Effect.succeed({
-                    error: err.message || "Missing necessary context for the request"
-                }),
-                DashboardAPIError: (err) => Effect.succeed({
-                    error: err.message || "Failed to update configuration"
-                }),
-                HttpApiDecodeError: (err) => Effect.succeed({
-                    error: err.message || "Received invalid response from server"
-                }),
-                ParseError: (err) => Effect.succeed({
-                    error: err.message || "Failed to parse response from server"
-                }),
-                RequestError: (err) => Effect.succeed({
-                    error: err.message || "Network error while making request"
-                }),
-                ResponseError: (err) => Effect.succeed({
-                    error: err.message || "Server responded with an error"
-                }),
-            }),
+            Effect.catchTags(dashboardSharedCatchTags),
             Effect.runPromise
         );
 

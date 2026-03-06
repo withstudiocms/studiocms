@@ -143,35 +143,8 @@ const t = useTranslations(lang, '@studiocms/dashboard:profile');
 
 <script>
     import { toast } from "studiocms:ui/components/toaster/client";
-    import { dashboardClient } from "studiocms:client/apiClients";
+    import { dashboardClient, dashboardSharedCatchTags } from "studiocms:client/apiClients";
     import * as Effect from "effect/Effect";
-
-    const sharedCatchTags = {
-        AstroLocalsMissing: (err: { message?: string }) =>
-            Effect.succeed({
-                error: err.message || "An error occurred. Please try again.",
-            }),
-        DashboardAPIError: (err: { message?: string }) =>
-            Effect.succeed({
-                error: err.message || "An error occurred. Please try again.",
-            }),
-        HttpApiDecodeError: (err: { message?: string }) =>
-            Effect.succeed({
-                error: err.message || "An error occurred. Please try again.",
-            }),
-        ParseError: (err: { message?: string }) =>
-            Effect.succeed({
-                error: err.message || "An error occurred. Please try again.",
-            }),
-        RequestError: (err: { message?: string }) =>
-            Effect.succeed({
-                error: err.message || "An error occurred. Please try again.",
-            }),
-        ResponseError: (err: { message?: string }) =>
-            Effect.succeed({
-                error: err.message || "An error occurred. Please try again.",
-            }),
-    };
 
     const syncAvatar = document.getElementById(
         "refresh-avatar",
@@ -188,7 +161,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:profile');
                     },
                 }),
             ),
-            Effect.catchTags(sharedCatchTags),
+            Effect.catchTags(dashboardSharedCatchTags),
             Effect.runPromise,
         );
 
@@ -235,7 +208,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:profile');
                     },
                 }),
             ),
-            Effect.catchTags(sharedCatchTags),
+            Effect.catchTags(dashboardSharedCatchTags),
             Effect.runPromise,
         );
 

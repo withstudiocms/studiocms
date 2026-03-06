@@ -65,7 +65,7 @@ const preselectedParentFolder = searchParams.get('parent-folder') ?? 'null';
 
 <script>
     import { toast } from "studiocms:ui/components/toaster/client";
-    import { dashboardClient } from "studiocms:client/apiClients";
+    import { dashboardClient, dashboardSharedCatchTags } from "studiocms:client/apiClients";
     import * as Effect from "effect/Effect";
 
     const form = document.getElementById(
@@ -108,26 +108,7 @@ const preselectedParentFolder = searchParams.get('parent-folder') ?? 'null';
                     payload: data,
                 })
             ),
-            Effect.catchTags({
-                AstroLocalsMissing: (err) => Effect.succeed({
-                    error: err.message || "Missing required data for folder creation. Please try again.",
-                }),
-                DashboardAPIError: (err) => Effect.succeed({
-                    error: err.message || "An error occurred while creating the folder. Please try again.",
-                }),
-                HttpApiDecodeError: (err) => Effect.succeed({
-                    error: err.message || "Failed to decode the server response. Please try again.",
-                }),
-                ParseError: (err) => Effect.succeed({
-                    error: err.message || "Failed to parse the server response. Please try again.",
-                }),
-                RequestError: (err) => Effect.succeed({
-                    error: err.message || "Network error occurred while creating the folder. Please check your connection and try again.",
-                }),
-                ResponseError: (err) => Effect.succeed({
-                    error: err.message || "Server responded with an error. Please try again later.",
-                }),
-            }),
+            Effect.catchTags(dashboardSharedCatchTags),
             Effect.runPromise,
         );
 
