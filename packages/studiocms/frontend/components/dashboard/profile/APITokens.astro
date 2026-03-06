@@ -27,223 +27,332 @@ const userTokens = await runSDK(SDKCoreJs.REST_API.tokens.get(user.id));
 const lang = Astro.locals.StudioCMS.defaultLang;
 const t = useTranslations(lang, '@studiocms/dashboard:profile');
 ---
+
 <Card fullWidth class="api-tokens">
     <div slot="header">
         <h2>
-            <t-profile-tokens key="api-tokens-header">{t('api-tokens-header')}</t-profile-tokens>
+            <t-profile-tokens key="api-tokens-header"
+                >{t("api-tokens-header")}</t-profile-tokens
+            >
         </h2>
-    
+
         <div class="form-header">
-            <Button 
-                type='submit' 
+            <Button
+                type="submit"
                 id="create-api-token"
-                variant='solid' 
-                color='primary'
-                size='sm'
-                >
-                <Icon slot="start-content" name="heroicons:plus" width={24} height={24} />
+                variant="solid"
+                color="primary"
+                size="sm"
+            >
+                <Icon
+                    slot="start-content"
+                    name="heroicons:plus"
+                    width={24}
+                    height={24}
+                />
                 <t-profile-tokens key="api-tokens-create">
-                    {t('api-tokens-create')}
+                    {t("api-tokens-create")}
                 </t-profile-tokens>
-            </Button> 
+            </Button>
         </div>
     </div>
     <div class="api-tokens-content">
         <span class="description">
-            <t-profile-tokens key="api-tokens-description">{t('api-tokens-description')}</t-profile-tokens>
+            <t-profile-tokens key="api-tokens-description"
+                >{t("api-tokens-description")}</t-profile-tokens
+            >
         </span>
 
-        { userTokens.length > 0 ? userTokens.map((token) => (
-            <Card fullWidth class="token-list-item">
-                <div slot="header" class="token-list-item-header">
-                    <div class="token-list-item-header-row">
-                        <h4>
-                            <Icon name="heroicons:key" width={24} height={24} />
-                            {token.description}
-                        </h4>
-                        <Button type="submit" variant="solid" color="danger" size="sm" data-token={token.id} data-user={user.id} disabled>
-                            <Icon slot="start-content" name="heroicons:trash" width={24} height={24} />
-                            <t-profile-tokens key="api-tokens-delete-button">{t('api-tokens-delete-button')}</t-profile-tokens>
-                        </Button>
-                    </div>
-                </div>
+        {
+            userTokens.length > 0 ? (
+                userTokens.map((token) => (
+                    <Card fullWidth class="token-list-item">
+                        <div slot="header" class="token-list-item-header">
+                            <div class="token-list-item-header-row">
+                                <h4>
+                                    <Icon
+                                        name="heroicons:key"
+                                        width={24}
+                                        height={24}
+                                    />
+                                    {token.description}
+                                </h4>
+                                <Button
+                                    type="submit"
+                                    variant="solid"
+                                    color="danger"
+                                    size="sm"
+                                    data-token={token.id}
+                                    data-user={user.id}
+                                    disabled
+                                >
+                                    <Icon
+                                        slot="start-content"
+                                        name="heroicons:trash"
+                                        width={24}
+                                        height={24}
+                                    />
+                                    <t-profile-tokens key="api-tokens-delete-button">
+                                        {t("api-tokens-delete-button")}
+                                    </t-profile-tokens>
+                                </Button>
+                            </div>
+                        </div>
 
-                <div class="token-list-item-content">
-                    <div class="token-list-item-content-row">
-                        <span class="created-at"><t-profile-tokens key="api-tokens-created">{t('api-tokens-created')}</t-profile-tokens> - <FormattedDate date={token.creationDate} /></span>
-                    </div>
-                </div>
-            </Card>
-        )) : (
-            <Card fullWidth class="token-list-item">
-                <Center>
-                    <p class="description">
-                        <t-profile-tokens key="api-tokens-no-tokens">{t('api-tokens-no-tokens')}</t-profile-tokens>
-                    </p>
-                </Center>
-            </Card>
-        ) }
+                        <div class="token-list-item-content">
+                            <div class="token-list-item-content-row">
+                                <span class="created-at">
+                                    <t-profile-tokens key="api-tokens-created">
+                                        {t("api-tokens-created")}
+                                    </t-profile-tokens>{" "}
+                                    -{" "}
+                                    <FormattedDate date={token.creationDate} />
+                                </span>
+                            </div>
+                        </div>
+                    </Card>
+                ))
+            ) : (
+                <Card fullWidth class="token-list-item">
+                    <Center>
+                        <p class="description">
+                            <t-profile-tokens key="api-tokens-no-tokens">
+                                {t("api-tokens-no-tokens")}
+                            </t-profile-tokens>
+                        </p>
+                    </Center>
+                </Card>
+            )
+        }
     </div>
-    
 </Card>
 <Modal
-  id='create-api-token-modal'
-  cancelButton={{ label: 'Cancel', color: 'default' }}
-  actionButton={{ label: 'Confirm', color: 'primary' }}
-  isForm
+    id="create-api-token-modal"
+    cancelButton={{ label: "Cancel", color: "default" }}
+    actionButton={{ label: "Confirm", color: "primary" }}
+    isForm
 >
-  <h2 slot='header'>
-    <t-profile-tokens key="api-tokens-modal-header">{t('api-tokens-modal-header')}</t-profile-tokens>
-  </h2>
-  <div class="modal-body">
-    <Input label="Description" name="description" type="text" isRequired />
-    <input type="hidden" name="user" value={user.id} />
-  </div>
-</Modal>
-
-<Modal id='create-token-response-modal'>
-  <h2 slot="header">
-    <t-profile-tokens key="api-tokens-modal-response-header">{t('api-tokens-modal-response-header')}</t-profile-tokens>
-  </h2>
-  <Center>
+    <h2 slot="header">
+        <t-profile-tokens key="api-tokens-modal-header"
+            >{t("api-tokens-modal-header")}</t-profile-tokens
+        >
+    </h2>
     <div class="modal-body">
-        <span>
-            <t-profile-tokens key="api-tokens-modal-response-description">{t('api-tokens-modal-response-description')}</t-profile-tokens>
-        </span>
-      <code id="create-token-response-placeholder"></code>
+        <Input label="Description" name="description" type="text" isRequired />
+        <input type="hidden" name="user" value={user.id} />
     </div>
-  </Center>
 </Modal>
 
-<div 
-    id="token-api-links" style="display: none;"
+<Modal id="create-token-response-modal">
+    <h2 slot="header">
+        <t-profile-tokens key="api-tokens-modal-response-header"
+            >{t("api-tokens-modal-response-header")}</t-profile-tokens
+        >
+    </h2>
+    <Center>
+        <div class="modal-body">
+            <span>
+                <t-profile-tokens key="api-tokens-modal-response-description"
+                    >{
+                        t("api-tokens-modal-response-description")
+                    }</t-profile-tokens
+                >
+            </span>
+            <code id="create-token-response-placeholder"></code>
+        </div>
+    </Center>
+</Modal>
+
+<div
+    id="token-api-links"
+    style="display: none;"
     data-token_api={Astro.locals.StudioCMS.routeMap.endpointLinks.apiTokens}
-></div>
+>
+</div>
 
 <script>
-    import { 
+    import {
         $i18n,
         baseTranslation,
         makeTranslation,
         updateElmLabel,
-    } from 'studiocms:i18n/client';
+    } from "studiocms:i18n/client";
 
-    const currentPage = '@studiocms/dashboard:profile';
+    const currentPage = "@studiocms/dashboard:profile";
 
     const i18n = $i18n(currentPage, baseTranslation[currentPage]);
-    
-    i18n.subscribe(comp => {
-        updateElmLabel('description', comp['api-tokens-modal-description']);
+
+    i18n.subscribe((comp) => {
+        updateElmLabel("description", comp["api-tokens-modal-description"]);
     });
 
-    if (!customElements.get('t-profile-tokens')) {
-        customElements.define('t-profile-tokens', makeTranslation(currentPage, i18n));
+    if (!customElements.get("t-profile-tokens")) {
+        customElements.define(
+            "t-profile-tokens",
+            makeTranslation(currentPage, i18n),
+        );
     }
 </script>
 
 <script>
-    import { ModalHelper } from 'studiocms:ui/components/modal/client';
-    import { toast } from 'studiocms:ui/components/toaster/client';
+    import { ModalHelper } from "studiocms:ui/components/modal/client";
+    import { toast } from "studiocms:ui/components/toaster/client";
+    import { dashboardClient } from "studiocms:client/apiClients";
+    import * as Effect from "effect/Effect";
 
-    const createAPITokenModal = new ModalHelper('create-api-token-modal', 'create-api-token');
-    const createTokenResponseModal = new ModalHelper('create-token-response-modal');
-    const deleteButtons = document.querySelectorAll('[data-token]') as NodeListOf<HTMLButtonElement>;
+    const sharedCatchTags = {
+        AstroLocalsMissing: (err: { message?: string }) =>
+            Effect.succeed({
+                error:
+                    err.message ||
+                    "An error occurred. Please try again.",
+            }),
+        DashboardAPIError: (err: { message?: string }) =>
+            Effect.succeed({
+                error:
+                    err.message ||
+                    "An error occurred. Please try again.",
+            }),
+        HttpApiDecodeError: (err: { message?: string }) =>
+            Effect.succeed({
+                error:
+                    err.message ||
+                    "An error occurred. Please try again.",
+            }),
+        ParseError: (err: { message?: string }) =>
+            Effect.succeed({
+                error:
+                    err.message ||
+                    "An error occurred. Please try again.",
+            }),
+        RequestError: (err: { message?: string }) =>
+            Effect.succeed({
+                error:
+                    err.message ||
+                    "An error occurred. Please try again.",
+            }),
+        ResponseError: (err: { message?: string }) =>
+            Effect.succeed({
+                error:
+                    err.message ||
+                    "An error occurred. Please try again.",
+            }),
+    };
 
-    const tokenAPILinks = document.getElementById('token-api-links') as HTMLDivElement;
-
-    const tokenAPI = tokenAPILinks.dataset.token_api!;
+    const createAPITokenModal = new ModalHelper(
+        "create-api-token-modal",
+        "create-api-token",
+    );
+    const createTokenResponseModal = new ModalHelper(
+        "create-token-response-modal",
+    );
+    const deleteButtons = document.querySelectorAll(
+        "[data-token]",
+    ) as NodeListOf<HTMLButtonElement>;
 
     createAPITokenModal.registerConfirmCallback(async (formData) => {
-        const description = formData?.get('description');
-        const user = formData?.get('user');
+        const description = formData?.get("description")?.toString();
+        const user = formData?.get("user")?.toString();
 
         if (!description) {
             toast({
-                title: 'Error',
-                description: 'Description is required',
-                type: 'danger',
-                duration: 5000
-            })
+                title: "Error",
+                description: "Description is required",
+                type: "danger",
+                duration: 5000,
+            });
             return;
         }
 
         if (!user) {
             toast({
-                title: 'Error',
-                description: 'User ID not found',
-                type: 'danger',
-                duration: 5000
-            })
+                title: "Error",
+                description: "User ID not found",
+                type: "danger",
+                duration: 5000,
+            });
             return;
         }
 
-        const response = await fetch(tokenAPI, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                description,
-                user
-            })
-        });
+        const response = await dashboardClient.pipe(
+            Effect.flatMap((client) =>
+                client.apiTokens.createApiToken({
+                    payload: {
+                        description,
+                        user,
+                    },
+                }),
+            ),
+            Effect.catchTags(sharedCatchTags),
+            Effect.runPromise,
+        );
 
-        const res = await response.json();
-
-        if (!response.ok) {
+        if ("error" in response) {
             toast({
-                title: 'Error',
-                description: res.error,
-                type: 'danger',
-                duration: 5000
-            })
+                title: "Error",
+                description: response.error,
+                type: "danger",
+                duration: 5000,
+            });
+            return;
+        } else {
+            createTokenResponseModal.show();
+            document.getElementById(
+                "create-token-response-placeholder",
+            )!.innerText = response.token;
             return;
         }
-
-        createTokenResponseModal.show();
-        document.getElementById('create-token-response-placeholder')!.innerText = res.token;
-
-    })
+    });
 
     deleteButtons.forEach((button) => {
-        button.addEventListener('click', async (event) => {
+        button.addEventListener("click", async (event) => {
             event.preventDefault();
-            const tokenID = button.getAttribute('data-token');
-            const userID = button.getAttribute('data-user');
+            const tokenID = button.getAttribute("data-token");
+            const userID = button.getAttribute("data-user");
 
-            const response = await fetch(tokenAPI, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    tokenID,
-                    userID
-                })
-            });
-
-            const res = await response.json();
-
-            if (!response.ok) {
+            if (!tokenID || !userID) {
                 toast({
-                    title: 'Error',
-                    description: res.error,
-                    type: 'danger',
-                    duration: 5000
-                })
+                    title: "Error",
+                    description: "Token ID or User ID not found",
+                    type: "danger",
+                    duration: 5000,
+                });
                 return;
             }
 
-            toast({
-                title: 'Success',
-                description: res.message,
-                type: 'success',
-                duration: 5000
-            })
+            const response = await dashboardClient.pipe(
+                Effect.flatMap((client) => 
+                    client.apiTokens.revokeApiToken({
+                        payload: {
+                            tokenID,
+                            userID
+                        }
+                    })
+                ),
+                Effect.catchTags(sharedCatchTags),
+                Effect.runPromise,
+            );
 
-            setTimeout(() => {
-                window.location.reload();
-            }, 1000);
+            if ("error" in response) {
+                toast({
+                    title: "Error",
+                    description: response.error,
+                    type: "danger",
+                    duration: 5000,
+                });
+                return;
+            } else {
+                toast({
+                    title: "Success",
+                    description: response.message || "API token revoked successfully",
+                    type: "success",
+                    duration: 5000,
+                });
+
+                setTimeout(() => {
+                    window.location.reload();
+                }, 2000);
+            }
         });
     });
 </script>
@@ -263,7 +372,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:profile');
     .api-tokens-content {
         display: flex;
         flex-direction: column;
-        gap: .5rem;
+        gap: 0.5rem;
 
         .description {
             color: var(--text-muted);
