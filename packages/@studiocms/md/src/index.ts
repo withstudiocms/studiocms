@@ -16,9 +16,7 @@ import { MarkdownOptionsSchema, type MarkdownSchemaOptions } from './types.js';
 
 const packageIdentifier = '@studiocms/md';
 
-export function internalMarkdownIntegration(
-	options: MarkdownSchemaOptions = { flavor: 'studiocms' }
-): AstroIntegration {
+export function internalMarkdownIntegration(options: MarkdownSchemaOptions = {}): AstroIntegration {
 	// Resolve the path to the current file
 	const { resolve } = createResolver(import.meta.url);
 	// Resolve the path to the internal renderer
@@ -37,7 +35,7 @@ export function internalMarkdownIntegration(
 	let resolvedCalloutTheme: string | undefined;
 
 	// Resolve the callout theme based on the user's configuration
-	if (resolvedOptions?.flavor === 'studiocms' && typeof resolvedOptions.callouts === 'string') {
+	if (typeof resolvedOptions.callouts === 'string') {
 		resolvedCalloutTheme = resolve(`./styles/md-remark-callouts/${resolvedOptions.callouts}.css`);
 	} else {
 		resolvedCalloutTheme = undefined;
@@ -64,10 +62,8 @@ export function internalMarkdownIntegration(
 					},
 				});
 
-				if (resolvedOptions?.flavor === 'studiocms') {
-					// Inject the StudioCMS-specific styles for the markdown renderer
-					params.injectScript('page-ssr', `import "studiocms:md/styles";`);
-				}
+				// Inject the StudioCMS-specific styles for the markdown renderer
+				params.injectScript('page-ssr', `import "studiocms:md/styles";`);
 			},
 			'astro:config:done': ({ config }) => {
 				// Store the resolved options in the shared context for the renderer
@@ -99,9 +95,7 @@ export function internalMarkdownIntegration(
  * const plugin = studiocmsMD({ flavor: 'studiocms', callouts: 'obsidian' });
  * ```
  */
-export function studiocmsMD(
-	options: MarkdownSchemaOptions = { flavor: 'studiocms' }
-): StudioCMSPluginDef {
+export function studiocmsMD(options: MarkdownSchemaOptions = {}): StudioCMSPluginDef {
 	// Resolve the path to the current file
 	const { resolve } = createResolver(import.meta.url);
 

@@ -1,5 +1,5 @@
 import { symbol as mdSymbol } from '../src/lib/shared.js';
-import type { AstroMarkdownOptions, StudioCMSMarkdownOptions } from '../src/types.js';
+import type { StudioCMSMarkdownOptions } from '../src/types.js';
 
 export const parentSuiteName = '@studiocms/md Package Tests';
 export const sharedTags = ['package:@studiocms/md', 'type:unit', 'scope:studiocms'];
@@ -10,24 +10,9 @@ export const sharedTags = ['package:@studiocms/md', 'type:unit', 'scope:studiocm
 export const createMockMarkdownOptions = (
 	overrides: Partial<StudioCMSMarkdownOptions> = {}
 ): StudioCMSMarkdownOptions => ({
-	flavor: 'studiocms',
 	callouts: 'obsidian',
 	autoLinkHeadings: true,
 	discordSubtext: true,
-	sanitize: {
-		allowElements: [],
-		allowAttributes: {},
-	},
-	...overrides,
-});
-
-/**
- * Mock Astro-flavored Markdown options for testing
- */
-export const createMockAstroMarkdownOptions = (
-	overrides: Partial<AstroMarkdownOptions> = {}
-): AstroMarkdownOptions => ({
-	flavor: 'astro',
 	sanitize: {
 		allowElements: [],
 		allowAttributes: {},
