@@ -7,6 +7,8 @@ import {
 import * as Schema from 'effect/Schema';
 import { StudioCMSDynamicSiteConfigData } from '../rest-api/schemas.js';
 
+// TODO: Implement Admin level API token revocation that allows revoking any token, not just tokens owned by the user. This will require additional permission checks to ensure only Admin users can revoke tokens that they do not own.
+
 /**
  * Standard error response schema for the StudioCMS Dashboard API.
  *
@@ -262,7 +264,6 @@ export const PluginSettingsPayload = Schema.Record({
  * This schema is used as the request payload when creating a new API token.
  */
 export const CreateApiTokenPayload = Schema.Struct({
-	user: Schema.String,
 	description: Schema.String,
 }).annotations({
 	title: 'Create API Token Payload',
@@ -290,7 +291,6 @@ export const CreateApiTokenResponse = Schema.Struct({
  */
 export const DeleteApiTokenPayload = Schema.Struct({
 	tokenID: Schema.String,
-	userID: Schema.String,
 }).annotations({
 	title: 'Delete API Token Payload',
 	description: 'Payload schema for deleting an existing API token in the StudioCMS Dashboard API.',

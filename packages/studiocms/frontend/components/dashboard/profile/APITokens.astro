@@ -240,7 +240,6 @@ const t = useTranslations(lang, '@studiocms/dashboard:profile');
                 client.apiTokens.createApiToken({
                     payload: {
                         description,
-                        user,
                     },
                 }),
             ),
@@ -285,8 +284,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:profile');
                 Effect.flatMap((client) => 
                     client.apiTokens.revokeApiToken({
                         payload: {
-                            tokenID,
-                            userID
+                            tokenID
                         }
                     })
                 ),
