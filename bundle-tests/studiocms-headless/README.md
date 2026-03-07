@@ -1,1 +1,0 @@
-# StudioCMS - Headless Template

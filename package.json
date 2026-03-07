@@ -78,10 +78,7 @@
 
     "ci:effect-check:studiocms": "pnpm --filter studiocms ci:effect-check",
     "ci:effect-check:studiocms-packages": "pnpm --filter @studiocms/* --filter create-studiocms -r --workspace-concurrency=1 ci:effect-check",
-    "ci:effect-check:withstudiocms": "pnpm --filter @withstudiocms/* --filter effectify -r --workspace-concurrency=1 ci:effect-check",
-
-    "bundle-test:blog": "pnpm --filter @bundletests/studiocms-blog build",
-    "bundle-test:headless": "pnpm --filter @bundletests/studiocms-headless build"
+    "ci:effect-check:withstudiocms": "pnpm --filter @withstudiocms/* --filter effectify -r --workspace-concurrency=1 ci:effect-check"
   },
   "devDependencies": {
     "@actions/core": "^3.0.0",

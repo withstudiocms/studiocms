@@ -1,1 +1,0 @@
-# StudioCMS - Blog Template
