@@ -46,10 +46,7 @@ const preselectedParentFolder = searchParams.get('parent-folder') ?? 'null';
     data-content-management-url={Astro.locals.StudioCMS.routeMap.mainLinks
       .contentManagement}
   >
-    <form
-      id="page-create-form"
-      action={Astro.locals.StudioCMS.routeMap.endpointLinks.content.page}
-    >
+    <form id="page-create-form">
       <Tabs variant={"starlight"}>
         <TabItem
           id="tab-label-basic-info"

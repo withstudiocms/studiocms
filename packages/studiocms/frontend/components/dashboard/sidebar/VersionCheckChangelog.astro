@@ -2,14 +2,13 @@
 import css from '@studiocms/ui/css/prose.css?raw';
 
 interface Props {
-	link: string;
 	changelog: string;
 }
 
-const { link, changelog } = Astro.props;
+const { changelog } = Astro.props;
 ---
 
-<frame-button data-link={link} data-changelog={changelog} data-styles={css}>
+<frame-button data-changelog={changelog} data-styles={css}>
     <slot />
 </frame-button>
 

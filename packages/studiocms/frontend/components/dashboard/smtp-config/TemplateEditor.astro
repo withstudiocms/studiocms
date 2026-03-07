@@ -11,8 +11,6 @@ interface Props {
 }
 
 const { templateKeys, templates, defaultTemplates, t } = Astro.props;
-
-const templateSaveAPIEndpoint = Astro.locals.StudioCMS.routeMap.endpointLinks.templates;
 ---
 
 <Modal id='template-editor-preview-modal' size='lg'>
@@ -44,7 +42,6 @@ const templateSaveAPIEndpoint = Astro.locals.StudioCMS.routeMap.endpointLinks.te
     data-templates={JSON.stringify(templates)}
     data-template-keys={JSON.stringify(templateKeys)}
     data-default-templates={JSON.stringify(defaultTemplates)}
-    data-save-endpoint={templateSaveAPIEndpoint}
 ></div>
 
 <script>
@@ -153,7 +150,6 @@ const defaultTemplates = JSON.parse(templateEditor.dataset.defaultTemplates || '
 	string,
 	string
 >;
-const saveEndpoint = templateEditor.dataset.saveEndpoint as string;
 
 // --- INTERNATIONALIZATION SETUP ---
 const i18n = $i18n(i18nCurrentPage, baseTranslation[i18nCurrentPage]);

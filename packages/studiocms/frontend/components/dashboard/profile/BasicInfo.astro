@@ -22,7 +22,6 @@ const t = useTranslations(lang, '@studiocms/dashboard:profile');
     as="form"
     id="basic-info-form"
     class="basic-info-form"
-    action={Astro.locals.StudioCMS.routeMap.endpointLinks.profile}
 >
     <div slot="header">
         <h2>
@@ -38,8 +37,6 @@ const t = useTranslations(lang, '@studiocms/dashboard:profile');
                     size="sm"
                     variant={"outlined"}
                     color={"info"}
-                    data-url={Astro.locals.StudioCMS.routeMap.endpointLinks
-                        .profile}
                 >
                     <Icon
                         slot="start-content"

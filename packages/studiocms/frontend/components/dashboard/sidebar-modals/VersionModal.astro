@@ -25,7 +25,7 @@ const lastChecked = new Date(Astro.locals.StudioCMS.latestVersion.lastCacheUpdat
 
     <h2 slot="header" class="inline-title">
       <span><t-vcm key="header-title">{t('header-title')}</t-vcm></span>
-        <button data-link={Astro.locals.StudioCMS.routeMap.sdk.updateLatestVersionCache}
+        <button
             id="version-modal-reload"
             class="reload-button"
             title="Check for updates"
@@ -58,7 +58,7 @@ const lastChecked = new Date(Astro.locals.StudioCMS.latestVersion.lastCacheUpdat
         <div class="version-modal-release-notes">
             <div class="prose"><Fragment set:html={parseMarkdown(changelog)} /></div>
             <span class="release-notes-read-more">
-                <VersionCheckChangelog changelog={studioCMSSocials.changelog} link={Astro.locals.StudioCMS.routeMap.sdk.changelog}><span class="read-more-text"><t-vcm key="full-changelog">{t('full-changelog')}</t-vcm></span></VersionCheckChangelog>
+                <VersionCheckChangelog changelog={studioCMSSocials.changelog}><span class="read-more-text"><t-vcm key="full-changelog">{t('full-changelog')}</t-vcm></span></VersionCheckChangelog>
             </span>
         </div>
 
