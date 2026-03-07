@@ -76,19 +76,9 @@ export const ApiTokensHandler = HttpApiBuilder.group(
 						return yield* new DashboardAPIError({ error: 'Unauthorized' });
 					}
 
-					const tokenData = yield* sdk.REST_API.tokens.get(userData.user.id);
+					const tokenData = yield* sdk.REST_API.tokens.verify(tokenID);
 
-					if (!tokenData || tokenData.length === 0) {
-						return yield* new DashboardAPIError({ error: 'Token not found' });
-					}
-
-					const tokenExists = tokenData.some((token) => token.id === tokenID);
-					const tokenBelongsToUser = tokenData.some(
-						// biome-ignore lint/style/noNonNullAssertion: we check for userData.user above, so this is safe to do
-						(token) => token.id === tokenID && token.userId === userData.user!.id
-					);
-
-					if (!tokenExists || !tokenBelongsToUser) {
+					if (!tokenData || tokenData.userId !== userData.user.id) {
 						return yield* new DashboardAPIError({ error: 'Unauthorized' });
 					}
 
