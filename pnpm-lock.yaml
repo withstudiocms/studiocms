@@ -82,8 +82,8 @@ catalogs:
       specifier: ^0.15.15
       version: 0.15.15
     '@types/pg':
-      specifier: ^8.16.0
-      version: 8.16.0
+      specifier: ^8.18.0
+      version: 8.18.0
     kysely:
       specifier: ^0.28.11
       version: 0.28.11
@@ -1012,7 +1012,7 @@ importers:
         version: 22.19.6
       '@types/pg':
         specifier: catalog:kysely
-        version: 8.16.0
+        version: 8.18.0
 
   packages/@withstudiocms/sdk:
     dependencies:
@@ -1240,7 +1240,7 @@ importers:
         version: 22.19.6
       '@types/pg':
         specifier: catalog:kysely
-        version: 8.16.0
+        version: 8.18.0
       '@types/semver':
         specifier: 'catalog:'
         version: 7.7.1
@@ -3649,8 +3649,8 @@ packages:
   '@types/nodemailer@7.0.11':
     resolution: {integrity: sha512-E+U4RzR2dKrx+u3N4DlsmLaDC6mMZOM/TPROxA0UAPiTgI0y4CEFBmZE+coGWTjakDriRsXG368lNk1u9Q0a2g==}
 
-  '@types/pg@8.16.0':
-    resolution: {integrity: sha512-RmhMd/wD+CF8Dfo+cVIy3RR5cl8CyfXQ0tGgW6XBL8L4LM/UTEbNXYRbLwU6w+CgrKBNbrQWt4FUtTfaU5jSYQ==}
+  '@types/pg@8.18.0':
+    resolution: {integrity: sha512-gT+oueVQkqnj6ajGJXblFR4iavIXWsGAFCk3dP4Kki5+a9R4NMt0JARdk6s8cUKcfUoqP5dAtDSLU8xYUTFV+Q==}
 
   '@types/react-dom@19.2.3':
     resolution: {integrity: sha512-jp2L/eY6fn+KgVVQAOqYItbF0VY/YApe5Mz2F0aykSO8gx31bYCZyvSeYxCHKvzHG5eZjc+zyaS5BrBWya2+kQ==}
@@ -9423,7 +9423,7 @@ snapshots:
     dependencies:
       '@types/node': 22.19.6
 
-  '@types/pg@8.16.0':
+  '@types/pg@8.18.0':
     dependencies:
       '@types/node': 22.19.6
       pg-protocol: 1.12.0

@@ -65,7 +65,7 @@ catalogs:
     effect: ^3.19.19
   kysely:
     "@libsql/client": ^0.15.15
-    "@types/pg": ^8.16.0
+    "@types/pg": ^8.18.0
     kysely: ^0.28.11
     kysely-turso: ^0.1.1
     pg: ^8.19.0
