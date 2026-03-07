@@ -80,7 +80,7 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"@clack/prompts": "^1.0.1",
+		"@clack/prompts": "^1.1.0",
 		"deepmerge-ts": "catalog:",
 		"effectify": "workspace:^",
 		"micromatch": "^4.0.8",
