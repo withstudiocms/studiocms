@@ -103,9 +103,6 @@ catalogs:
     '@astrojs/internal-helpers':
       specifier: ^0.7.5
       version: 0.7.5
-    '@astrojs/markdown-remark':
-      specifier: ^6.3.3
-      version: 6.3.10
     astro:
       specifier: ^5.12.9
       version: 5.18.0
@@ -686,9 +683,6 @@ importers:
         specifier: catalog:effect
         version: 3.19.19
     devDependencies:
-      '@astrojs/markdown-remark':
-        specifier: catalog:min
-        version: 6.3.10
       '@types/node':
         specifier: 'catalog:'
         version: 22.19.6

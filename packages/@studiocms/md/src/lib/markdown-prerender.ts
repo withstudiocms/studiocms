@@ -1,5 +1,3 @@
-import rendererConfig from 'studiocms:md/config';
-import { createMarkdownProcessor as createAstroMD } from '@astrojs/markdown-remark';
 import { createMarkdownProcessor as createStudioCMSMD } from '@studiocms/markdown-remark/core';
 import type { StudioCMSMarkdownProcessorOptions } from '@studiocms/markdown-remark/types';
 import { shared } from './shared.js';
@@ -13,24 +11,13 @@ export function parseCallouts(opt: false | 'obsidian' | 'github' | 'vitepress' |
 }
 
 const parseStudioCMSMDOpts = (): StudioCMSMarkdownProcessorOptions['studiocms'] => {
-	/* v8 ignore start */
-	if (shared.mdConfig?.flavor === 'studiocms') {
-		return {
-			autolink: shared.mdConfig?.autoLinkHeadings,
-			discordSubtext: shared.mdConfig?.discordSubtext,
-			callouts: parseCallouts(shared.mdConfig?.callouts),
-		};
-	}
-	/* v8 ignore stop */
-
 	return {
-		autolink: false,
-		discordSubtext: false,
-		callouts: undefined,
+		autolink: shared.mdConfig?.autoLinkHeadings,
+		discordSubtext: shared.mdConfig?.discordSubtext,
+		callouts: parseCallouts(shared.mdConfig?.callouts),
 	};
 };
 
-let astroMDPromise: Promise<Awaited<ReturnType<typeof createAstroMD>>> | undefined;
 let studioCMSMDPromise: Promise<Awaited<ReturnType<typeof createStudioCMSMD>>> | undefined;
 
 /**
@@ -44,11 +31,6 @@ let studioCMSMDPromise: Promise<Awaited<ReturnType<typeof createStudioCMSMD>>> |
  */
 export function preRender(): (content: string) => Promise<string> {
 	return async (content: string) => {
-		if (rendererConfig.flavor === 'astro') {
-			if (!astroMDPromise) astroMDPromise = createAstroMD(shared.astroMDRemark);
-			const astroMD = await astroMDPromise;
-			return (await astroMD.render(content)).code;
-		}
 		if (!studioCMSMDPromise) {
 			// Recompute options at first use to reflect shared state
 			studioCMSMDPromise = createStudioCMSMD({

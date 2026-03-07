@@ -1,8 +1,7 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`studiocms Package Tests > Components Container tests - Code component 1`] = `
-"<pre class="code-container scrollbar">  <code id="test-id" class="custom-code"><span class="line">export const hello = &quot;hello world!&quot;;</span></code>
-</pre> <script>(function(){const id = "test-id";
+"<pre class="code-container scrollbar"><code id="test-id" class="custom-code"><span class="line">export const hello = &quot;hello world!&quot;;</span></code></pre> <script>(function(){const id = "test-id";
 
 	const codesWithDiff = document.getElementById(id);
 

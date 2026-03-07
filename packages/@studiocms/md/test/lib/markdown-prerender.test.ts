@@ -6,16 +6,6 @@ import { parentSuiteName, sharedTags } from '../test-utils.js';
 const localSuiteName = 'markdown-prerender Module Tests';
 
 // Mock dependencies
-vi.mock('studiocms:md/config', () => ({
-	default: { flavor: 'studiocms' },
-}));
-vi.mock('@astrojs/markdown-remark', () => ({
-	createMarkdownProcessor: vi.fn(() =>
-		Promise.resolve({
-			render: vi.fn(async (content: string) => ({ code: `<astro>${content}</astro>` })),
-		})
-	),
-}));
 vi.mock('@studiocms/markdown-remark/core', () => ({
 	createMarkdownProcessor: vi.fn(() =>
 		Promise.resolve({
@@ -27,7 +17,6 @@ vi.mock('./shared.js', () => ({
 	shared: {
 		astroMDRemark: {},
 		mdConfig: {
-			flavor: 'studiocms',
 			autoLinkHeadings: false,
 			discordSubtext: false,
 			callouts: undefined,
@@ -44,38 +33,21 @@ describe(parentSuiteName, () => {
 
 	[
 		{
-			flavor: 'studiocms',
 			input: 'Hello **world**',
 			expect: '<studiocms>Hello **world**</studiocms>',
 		},
-		{
-			flavor: 'astro',
-			input: 'Hello **astro**',
-			expect: '<astro>Hello **astro**</astro>',
-		},
-		{
-			flavor: 'unknown',
-			input: 'Hello **unknown**',
-			expect: '<studiocms>Hello **unknown**</studiocms>',
-		},
-	].forEach(({ flavor, input, expect: expected }) => {
-		test(`renders markdown correctly for flavor: ${flavor}`, async () => {
+	].forEach(({ input, expect: expected }) => {
+		test('renders markdown correctly', async () => {
 			await allure.parentSuite(parentSuiteName);
 			await allure.suite(localSuiteName);
 			await allure.subSuite('Markdown Rendering Tests');
 			await allure.tags(...sharedTags);
-
-			// Mock the config flavor
-			vi.doMock('studiocms:md/config', () => ({
-				default: { flavor },
-			}));
 			// Re-import to apply new mock
 			const { preRender } = await import('../../src/lib/markdown-prerender.js');
 			const render = preRender();
 			const result = await render(input);
 
-			await allure.step(`Should render markdown for flavor: ${flavor}`, async (ctx) => {
-				await ctx.parameter('flavor', flavor);
+			await allure.step('Should render markdown correctly', async (ctx) => {
 				await ctx.parameter('input', input);
 				await ctx.parameter('expectedOutput', expected);
 				expect(result).toBe(expected);

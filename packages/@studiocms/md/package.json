@@ -72,7 +72,6 @@
     "astro-integration-kit": "catalog:"
   },
   "devDependencies": {
-    "@astrojs/markdown-remark": "catalog:min",
     "@types/node": "catalog:",
     "astro": "catalog:min",
     "studiocms": "workspace:^",

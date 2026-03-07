@@ -3,7 +3,6 @@ import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { studiocmsMD } from '../src/index.js';
 import {
 	cleanupGlobalThis,
-	createMockAstroMarkdownOptions,
 	createMockMarkdownOptions,
 	parentSuiteName,
 	sharedTags,
@@ -54,7 +53,6 @@ describe(parentSuiteName, () => {
 
 		await allure.step('Should create plugin with StudioCMS flavor options', async (ctx) => {
 			const options = createMockMarkdownOptions({
-				flavor: 'studiocms',
 				callouts: 'github',
 				autoLinkHeadings: false,
 				discordSubtext: false,
@@ -69,29 +67,8 @@ describe(parentSuiteName, () => {
 			expect(plugin.name).toBe('StudioCMS Markdown');
 		});
 
-		await allure.step('Should create plugin with Astro flavor options', async (ctx) => {
-			const options = createMockAstroMarkdownOptions({
-				flavor: 'astro',
-				sanitize: {
-					allowElements: ['p', 'br'],
-					allowAttributes: {
-						p: ['class'],
-					},
-				},
-			});
-
-			const plugin = studiocmsMD(options);
-			await ctx.parameter('pluginIdentifier', plugin.identifier);
-			await ctx.parameter('pluginName', plugin.name);
-
-			expect(plugin).toBeDefined();
-			expect(plugin.identifier).toBe('@studiocms/md');
-			expect(plugin.name).toBe('StudioCMS Markdown');
-		});
-
 		await allure.step('Should handle StudioCMS flavor with callouts disabled', async (ctx) => {
 			const options = createMockMarkdownOptions({
-				flavor: 'studiocms',
 				callouts: false,
 			});
 
@@ -113,7 +90,6 @@ describe(parentSuiteName, () => {
 			await allure.step(`Creating plugin with callout theme: ${theme}`, async (ctx) => {
 				await ctx.parameter('calloutTheme', theme);
 				const options = createMockMarkdownOptions({
-					flavor: 'studiocms',
 					callouts: theme,
 				});
 
@@ -188,7 +164,6 @@ describe(parentSuiteName, () => {
 			'Should store resolved options in shared context on astro:config:done',
 			async (ctx) => {
 				const customOptions = {
-					flavor: 'studiocms' as const,
 					callouts: 'vitepress' as const,
 					autoLinkHeadings: false,
 					discordSubtext: false,
