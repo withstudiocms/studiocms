@@ -11,11 +11,10 @@ const { resolve } = createPathResolver(import.meta.url);
  * @param version - The minimum StudioCMS version required for this storage manager.
  * @returns A StudioCMSStorageManager plugin definition.
  */
-export const NoOpStorageManager = (version: string): StudioCMSStorageManagerDef =>
+export const NoOpStorageManager = (): StudioCMSStorageManagerDef =>
 	defineStorageManager({
 		identifier: 'studiocms',
 		name: 'Core No-Op Storage (built-in)',
-		studiocmsMinimumVersion: version,
 		hooks: {
 			'studiocms:storage-manager': async ({ setStorageManager, logger }) => {
 				logger.info('No-Op Storage initialized.');

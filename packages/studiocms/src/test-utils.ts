@@ -270,14 +270,10 @@ export class StudioCMSPluginTester {
 	 *
 	 * @returns An object containing the plugin's identifier, name, minimum required StudioCMS version, and dependencies.
 	 */
-	public getPluginInfo(): Pick<
-		StudioCMSPlugin,
-		'identifier' | 'name' | 'studiocmsMinimumVersion' | 'requires'
-	> {
+	public getPluginInfo(): Pick<StudioCMSPlugin, 'identifier' | 'name' | 'requires'> {
 		return {
 			identifier: this.plugin.identifier,
 			name: this.plugin.name,
-			studiocmsMinimumVersion: this.plugin.studiocmsMinimumVersion,
 			requires: this.plugin.requires,
 		};
 	}

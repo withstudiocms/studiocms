@@ -424,7 +424,10 @@ export class StudioCMSPluginBaseSchema extends Schema.Class<StudioCMSPluginBaseS
 )({
 	identifier: Schema.String,
 	name: Schema.String,
-	studiocmsMinimumVersion: Schema.String,
+	/**
+	 * @deprecated The `studiocmsMinimumVersion` property is deprecated and will be removed in a future release. Please ensure that your plugin is compatible with the latest version of StudioCMS and remove this property from your plugin configuration. It is recommended to use `peerDependencies` in your plugin's package.json to specify the compatible versions of StudioCMS instead of relying on this property for version compatibility checks.
+	 */
+	studiocmsMinimumVersion: Schema.optional(Schema.String),
 	requires: Schema.optional(Schema.Array(Schema.String)),
 }) {}
 

@@ -2,10 +2,10 @@ import { runEffect } from '@withstudiocms/effect';
 import createPathResolver from '@withstudiocms/internal_helpers/pathResolver';
 import type { AstroIntegration } from 'astro';
 import { addVirtualImports } from 'astro-integration-kit';
-import type { DbDialectType } from '#db/index';
-import { KyselyTableManager } from '#db/plugins';
-import { buildTranslations, loadJsTranslations } from '#plugins';
-import { definePlugin } from '#schemas';
+import type { DbDialectType } from '../../db/index';
+import { KyselyTableManager } from '../../db/plugins';
+import { buildTranslations, loadJsTranslations } from '../../plugins';
+import { definePlugin } from '../../schemas';
 import { WEB_VITALS_ENDPOINT_PATH } from './consts.js';
 import { getAnalyticsDbClient } from './db-client.js';
 import { StudioCMSMetricTableDefinition } from './table.js';
@@ -80,11 +80,10 @@ const webVitalsIntegration = (): AstroIntegration => {
  * @param driverDialect - The database dialect to use for the analytics database client.
  * @returns A StudioCMSPlugin configured for Web Vitals analytics.
  */
-export const studioCMSAnalyticsPlugin = (opts: { driverDialect: DbDialectType; version: string }) =>
+export const studioCMSAnalyticsPlugin = (opts: { driverDialect: DbDialectType }) =>
 	definePlugin({
 		name: 'Web Vitals (built-in)',
 		identifier: pkgName,
-		studiocmsMinimumVersion: opts.version,
 		hooks: {
 			'studiocms:astro-config': async ({ addIntegrations }) => {
 				// Get the database client for the specified dialect.

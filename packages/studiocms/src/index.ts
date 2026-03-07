@@ -226,7 +226,6 @@ export const studiocms = (): AstroIntegration => {
 					dashboardRoute,
 					dbStartPage,
 					name,
-					pkgVersion,
 					plugins,
 					robotsTXTConfig,
 					verbose,
