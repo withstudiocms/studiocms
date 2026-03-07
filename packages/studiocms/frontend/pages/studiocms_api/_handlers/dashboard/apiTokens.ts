@@ -76,6 +76,16 @@ export const ApiTokensHandler = HttpApiBuilder.group(
 						return yield* new DashboardAPIError({ error: 'Unauthorized' });
 					}
 
+					const tokenData = yield* sdk.REST_API.tokens.get(tokenID);
+
+					if (!tokenData || tokenData.length === 0) {
+						return yield* new DashboardAPIError({ error: 'Token not found' });
+					}
+
+					if (tokenData[0].userId !== userData.user.id) {
+						return yield* new DashboardAPIError({ error: 'Unauthorized' });
+					}
+
 					yield* sdk.REST_API.tokens.delete({ tokenId: tokenID, userId: userData.user.id });
 
 					return {
