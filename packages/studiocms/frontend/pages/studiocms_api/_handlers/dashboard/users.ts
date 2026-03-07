@@ -7,7 +7,7 @@ import { HttpApiBuilder } from '@effect/platform';
 import { StudioCMSDashboardApiSpec } from '@withstudiocms/api-spec';
 import { CurrentUser } from '@withstudiocms/api-spec/astro-context';
 import { DashboardAPIError } from '@withstudiocms/api-spec/dashboard';
-import type { AvailablePermissionRanks } from '@withstudiocms/auth-kit/types';
+import { availablePermissionRanks } from '@withstudiocms/auth-kit/types';
 import { Effect } from 'effect';
 import { ValidRanks } from '#consts';
 import { sharedDBErrors, sharedNotifierErrors } from './_shared.js';
@@ -16,17 +16,6 @@ import { sharedDBErrors, sharedNotifierErrors } from './_shared.js';
  * Check if the Dashboard API is enabled in the route configuration.
  */
 const dashboardAPIEnabled = routeConfig.dashboardAPIEnabled;
-
-/**
- * Array of available permission levels for the REST API. This is used to check user permissions when accessing secure endpoints, ensuring that only users with the appropriate rank can perform certain actions. The ranks are defined in ascending order of permissions, with 'unknown' having the least permissions and 'owner' having the most.
- */
-const permissionLevels: AvailablePermissionRanks[] = [
-	'unknown',
-	'visitor',
-	'editor',
-	'admin',
-	'owner',
-];
 
 /**
  * Users Handlers for the Dashboard API
@@ -80,11 +69,11 @@ export const UsersHandlers = HttpApiBuilder.group(StudioCMSDashboardApiSpec, 'us
 						});
 					}
 
-					const userPerms = permissionLevels.indexOf(userData.permissionLevel);
-					const targetCurrentLevel = permissionLevels.indexOf(
+					const userPerms = availablePermissionRanks.indexOf(userData.permissionLevel);
+					const targetCurrentLevel = availablePermissionRanks.indexOf(
 						user.permissionsData?.rank || 'unknown'
 					);
-					const targetNewLevel = permissionLevels.indexOf(rank);
+					const targetNewLevel = availablePermissionRanks.indexOf(rank);
 
 					if (userPerms === -1 || targetCurrentLevel === -1 || targetNewLevel === -1) {
 						return yield* new DashboardAPIError({
@@ -203,8 +192,8 @@ export const UsersHandlers = HttpApiBuilder.group(StudioCMSDashboardApiSpec, 'us
 						});
 					}
 
-					const actorPerms = permissionLevels.indexOf(userData.permissionLevel);
-					const targetPerms = permissionLevels.indexOf(
+					const actorPerms = availablePermissionRanks.indexOf(userData.permissionLevel);
+					const targetPerms = availablePermissionRanks.indexOf(
 						targetUser.permissionsData?.rank || 'unknown'
 					);
 

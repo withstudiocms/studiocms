@@ -92,7 +92,7 @@ export interface OAuthData {
  * - 'visitor': A low-level permission, for users who can view content but not modify it.
  * - 'unknown': A default or fallback permission rank for users with undefined roles.
  */
-export const availablePermissionRanks = ['owner', 'admin', 'editor', 'visitor', 'unknown'] as const;
+export const availablePermissionRanks = ['unknown', 'visitor', 'editor', 'admin', 'owner'] as const;
 
 /**
  * Represents the available permission ranks for a user.

@@ -10,7 +10,10 @@ import {
 	CurrentRestAPIUser,
 	RestAPIError,
 } from '@withstudiocms/api-spec/rest-api';
-import type { AvailablePermissionRanks } from '@withstudiocms/auth-kit/types';
+import {
+	type AvailablePermissionRanks,
+	availablePermissionRanks,
+} from '@withstudiocms/auth-kit/types';
 import {
 	StudioCMSPageData,
 	StudioCMSPageDataCategories,
@@ -37,17 +40,6 @@ const StringArrayCodec = Schema.transform(Schema.String, Schema.Array(Schema.Str
  * Function that uses the String Array Schema to create a JSON.stringify like function for string arrays
  */
 const encodeStringArray = Schema.encode(StringArrayCodec);
-
-/**
- * Array of available permission levels for the REST API. This is used to check user permissions when accessing secure endpoints, ensuring that only users with the appropriate rank can perform certain actions. The ranks are defined in ascending order of permissions, with 'unknown' having the least permissions and 'owner' having the most.
- */
-const permissionLevels: AvailablePermissionRanks[] = [
-	'unknown',
-	'visitor',
-	'editor',
-	'admin',
-	'owner',
-];
 
 /**
  * REST API v1 Secure Handler
@@ -1488,8 +1480,8 @@ export const RestApiSecureHandler = HttpApiBuilder.group(
 						const { permissionsData } = existingUser;
 
 						const existingUserRank = permissionsData?.rank ?? 'unknown';
-						const existingUserRankIndex = permissionLevels.indexOf(existingUserRank);
-						const loggedInUserRankIndex = permissionLevels.indexOf(user.rank);
+						const existingUserRankIndex = availablePermissionRanks.indexOf(existingUserRank);
+						const loggedInUserRankIndex = availablePermissionRanks.indexOf(user.rank);
 
 						if (loggedInUserRankIndex <= existingUserRankIndex) {
 							return yield* new RestAPIError({
@@ -1556,17 +1548,17 @@ export const RestApiSecureHandler = HttpApiBuilder.group(
 						const { permissionsData } = existingUser;
 
 						const existingUserRank = permissionsData?.rank ?? 'unknown';
-						const existingUserRankIndex = permissionLevels.indexOf(existingUserRank);
-						const loggedInUserRankIndex = permissionLevels.indexOf(user.rank);
+						const existingUserRankIndex = availablePermissionRanks.indexOf(existingUserRank);
+						const loggedInUserRankIndex = availablePermissionRanks.indexOf(user.rank);
 
-						if (loggedInUserRankIndex < existingUserRankIndex) {
+						if (loggedInUserRankIndex <= existingUserRankIndex) {
 							return yield* new RestAPIError({
 								error: 'Unauthorized to update user with higher rank',
 							});
 						}
 
 						if (payload.rank) {
-							const payloadRankIndex = permissionLevels.indexOf(payload.rank);
+							const payloadRankIndex = availablePermissionRanks.indexOf(payload.rank);
 
 							if (loggedInUserRankIndex <= payloadRankIndex) {
 								return yield* new RestAPIError({
@@ -1712,10 +1704,10 @@ export const RestApiSecureHandler = HttpApiBuilder.group(
 							username,
 						};
 
-						const existingUserRankIndex = permissionLevels.indexOf(existingUserRank);
-						const loggedInUserRankIndex = permissionLevels.indexOf(user.rank);
+						const existingUserRankIndex = availablePermissionRanks.indexOf(existingUserRank);
+						const loggedInUserRankIndex = availablePermissionRanks.indexOf(user.rank);
 
-						if (loggedInUserRankIndex < existingUserRankIndex) {
+						if (loggedInUserRankIndex <= existingUserRankIndex) {
 							return yield* new RestAPIError({
 								error: 'Unauthorized to view user with higher rank',
 							});

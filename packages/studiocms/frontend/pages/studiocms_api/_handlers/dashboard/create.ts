@@ -9,7 +9,7 @@ import { HttpApiBuilder } from '@effect/platform';
 import { StudioCMSDashboardApiSpec } from '@withstudiocms/api-spec';
 import { AstroAPIContext, CurrentUser } from '@withstudiocms/api-spec/astro-context';
 import { DashboardAPIError } from '@withstudiocms/api-spec/dashboard';
-import type { AvailablePermissionRanks } from '@withstudiocms/auth-kit/types';
+import { availablePermissionRanks } from '@withstudiocms/auth-kit/types';
 import { appendSearchParamsToUrl } from '@withstudiocms/effect/effect';
 import type { APIContext } from 'astro';
 import { Effect, pipe } from 'effect';
@@ -21,17 +21,6 @@ import { sharedDBErrors, sharedNotifierErrors } from './_shared.js';
  * Check if the Dashboard API is enabled in the route configuration.
  */
 const dashboardAPIEnabled = routeConfig.dashboardAPIEnabled;
-
-/**
- * Array of available permission levels for the REST API. This is used to check user permissions when accessing secure endpoints, ensuring that only users with the appropriate rank can perform certain actions. The ranks are defined in ascending order of permissions, with 'unknown' having the least permissions and 'owner' having the most.
- */
-const permissionLevels: AvailablePermissionRanks[] = [
-	'unknown',
-	'visitor',
-	'editor',
-	'admin',
-	'owner',
-];
 
 /**
  * Type definition for the token object returned when creating a password reset link. This includes the token ID, the user ID it is associated with, and the token string itself. This type is used to ensure that the correct data structure is returned and handled when generating password reset links for users.
@@ -188,8 +177,8 @@ export const CreateHandlers = HttpApiBuilder.group(
 							return yield* new DashboardAPIError({ error: 'Invalid rank' });
 						}
 
-						const callerPerm = permissionLevels.indexOf(userData.permissionLevel);
-						const targetPerm = permissionLevels.indexOf(rank);
+						const callerPerm = availablePermissionRanks.indexOf(userData.permissionLevel);
+						const targetPerm = availablePermissionRanks.indexOf(rank);
 
 						if (targetPerm >= callerPerm) {
 							return yield* new DashboardAPIError({
@@ -325,9 +314,14 @@ export const CreateHandlers = HttpApiBuilder.group(
 
 						const { username, email, displayname, rank, originalUrl } = payload;
 
-						const userPerms = userData.userPermissionLevel;
+						if (!ValidRanks.has(rank) || rank === 'unknown') {
+							return yield* new DashboardAPIError({ error: 'Invalid rank' });
+						}
 
-						if (rank === 'owner' && !userPerms?.isOwner) {
+						const callerPerm = availablePermissionRanks.indexOf(userData.permissionLevel);
+						const targetPerm = availablePermissionRanks.indexOf(rank);
+
+						if (targetPerm >= callerPerm) {
 							return yield* new DashboardAPIError({
 								error: 'Unauthorized: insufficient permissions to assign target rank',
 							});

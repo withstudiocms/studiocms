@@ -5,10 +5,9 @@ import { HttpApiBuilder } from '@effect/platform';
 import { StudioCMSDashboardApiSpec } from '@withstudiocms/api-spec';
 import { CurrentUser } from '@withstudiocms/api-spec/astro-context';
 import { DashboardAPIError } from '@withstudiocms/api-spec/dashboard';
+import { availablePermissionRanks } from '@withstudiocms/auth-kit/types';
 import { Effect } from 'effect';
 import { sharedDBErrors } from './_shared.js';
-
-// TODO: Implement Admin level API token revocation that allows revoking any token, not just tokens owned by the user. This will require additional permission checks to ensure only Admin users can revoke tokens that they do not own.
 
 /**
  * Check if the Dashboard API is enabled in the route configuration.
@@ -83,6 +82,49 @@ export const ApiTokensHandler = HttpApiBuilder.group(
 					}
 
 					yield* sdk.REST_API.tokens.delete({ tokenId: tokenID, userId: userData.user.id });
+
+					return {
+						message: 'Token deleted',
+					};
+				}, Effect.catchTags(sharedDBErrors))
+			)
+			.handle(
+				'adminRevokeUserApiToken',
+				Effect.fn(function* ({ payload: { tokenID, userID } }) {
+					if (!dashboardAPIEnabled) {
+						return yield* new DashboardAPIError({ error: 'Dashboard API is disabled' });
+					}
+
+					if (developerConfig.demoMode !== false) {
+						return yield* new DashboardAPIError({
+							error: 'Demo mode is enabled, this action is not allowed.',
+						});
+					}
+
+					const [sdk, userData] = yield* Effect.all([SDKCore, CurrentUser]);
+
+					const isAuthorized = userData.userPermissionLevel.isAdmin;
+
+					if (!userData.isLoggedIn || !isAuthorized) {
+						return yield* new DashboardAPIError({ error: 'Unauthorized' });
+					}
+
+					const tokenData = yield* sdk.REST_API.tokens.verify(tokenID);
+
+					if (!tokenData) {
+						return yield* new DashboardAPIError({ error: 'Token not found' });
+					}
+
+					const targetPerms = availablePermissionRanks.indexOf(tokenData.rank);
+					const userPerms = availablePermissionRanks.indexOf(userData.permissionLevel);
+
+					if (targetPerms >= userPerms) {
+						return yield* new DashboardAPIError({
+							error: 'Unauthorized - insufficient permissions to revoke this token',
+						});
+					}
+
+					yield* sdk.REST_API.tokens.delete({ tokenId: tokenID, userId: userID });
 
 					return {
 						message: 'Token deleted',
