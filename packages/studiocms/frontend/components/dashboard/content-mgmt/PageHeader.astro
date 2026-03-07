@@ -149,7 +149,6 @@ const currentMode = getCurrentMode();
           <div class="modal-body">
             <input type="hidden" name="page-id" value={currentId} />
             <input type="hidden" name="page-slug" value={pageSlug} />
-            <input type="hidden" name="action-route" value={Astro.locals.StudioCMS.routeMap.endpointLinks.content.page} />
                     
             <span><t-content-header key="delete-modal-desc-1">
             {t('delete-modal-desc-1')}
@@ -197,7 +196,6 @@ const currentMode = getCurrentMode();
           <div class="modal-body">
             <input type="hidden" name="folder-id" value={currentId} />
             <input type="hidden" name="folder-name" value={folderName} />
-            <input type="hidden" name="action-route" value={Astro.locals.StudioCMS.routeMap.endpointLinks.content.folder} />
 
             <span><t-content-header key="delete-folder-modal-desc-1">
             {t('delete-folder-modal-desc-1')}

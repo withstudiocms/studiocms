@@ -29,10 +29,7 @@ const preselectedParentFolder = searchParams.get('parent-folder') ?? 'null';
     data-content-management-url={Astro.locals.StudioCMS.routeMap.mainLinks
         .contentManagement}
 >
-    <form
-        id="create-folder-form"
-        action={Astro.locals.StudioCMS.routeMap.endpointLinks.content.folder}
-    >
+    <form id="create-folder-form">
         <Input label={t("input-folder-name")} name="folder-name" isRequired />
 
         <Select

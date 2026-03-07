@@ -100,10 +100,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
       data-content-management-url={Astro.locals.StudioCMS.routeMap.mainLinks
         .contentManagement}
     >
-      <form
-        id="edit-page-form"
-        action={Astro.locals.StudioCMS.routeMap.endpointLinks.content.page}
-      >
+      <form id="edit-page-form">
         <Tabs variant={"starlight"}>
           <TabItem
             id="tab-label-basic-info"

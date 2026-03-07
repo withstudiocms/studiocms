@@ -53,7 +53,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:profile-notifications');
 
 type TKey = Parameters<typeof t>[0];
 ---
-<Card fullWidth as="form" id="notifications-form" class="notifications-update-form" action={Astro.locals.StudioCMS.routeMap.endpointLinks.updateUserNotifications}>
+<Card fullWidth as="form" id="notifications-form" class="notifications-update-form">
 
     <div slot="header">
       <h2><t-notifications key="header-title">{t('header-title')}</t-notifications></h2>

@@ -94,7 +94,7 @@ export const SDKUtilsHandler = HttpApiBuilder.group(StudioCMSSDKApiSpec, 'utils'
 		)
 		.handle(
 			'userListItems',
-			Effect.fn(({ payload: { users, searchQuery } }) =>
+			Effect.fn(({ payload }) =>
 				Effect.tryPromise({
 					try: async () => {
 						const container = await AstroContainer.create();
@@ -103,10 +103,7 @@ export const SDKUtilsHandler = HttpApiBuilder.group(StudioCMSSDKApiSpec, 'utils'
 
 						try {
 							html = await container.renderToString(UserListItems, {
-								props: {
-									users,
-									searchQuery,
-								},
+								props: payload,
 							});
 						} catch (error) {
 							console.error('Error rendering UserListItems:', error);

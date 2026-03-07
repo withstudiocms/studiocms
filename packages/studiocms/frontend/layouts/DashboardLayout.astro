@@ -4,12 +4,10 @@ import '../styles/dashboard-base.css';
 import '../styles/dashboard-diff.css';
 import type { UserSessionData } from 'studiocms:auth/lib/types';
 import { defaultLang } from 'studiocms:i18n';
-import type { AvailablePermissionRanks } from '@withstudiocms/auth-kit/types';
 import type { DynamicConfigEntry, StudioCMSSiteConfig } from '@withstudiocms/sdk/types';
 import type { ComponentProps } from 'astro/types';
 import Ambients from '../components/Ambients.astro';
 import DoubleSidebar from '../components/dashboard/DoubleSidebar.astro';
-import LoginChecker from '../components/dashboard/LoginChecker.astro';
 import SidebarModals from '../components/dashboard/SidebarModals.astro';
 import SingleSidebar from '../components/dashboard/SingleSidebar.astro';
 import BaseLayout from './BaseLayout.astro';
@@ -29,7 +27,6 @@ const makePageTitle = (
 interface Props extends ComponentProps<typeof BaseLayout> {
 	config: DynamicConfigEntry<Pick<StudioCMSSiteConfig, 'title' | 'description'>>;
 	sidebar?: false | 'single' | 'double';
-	requiredPermission?: AvailablePermissionRanks | 'none';
 	currentUser: UserSessionData | null;
 }
 
@@ -38,7 +35,6 @@ const {
 	title: propTitle,
 	description: propDescription,
 	lang = defaultLang,
-	requiredPermission = 'unknown',
 	sidebar = 'single',
 	currentUser,
 } = Astro.props;
@@ -50,11 +46,6 @@ const description = propDescription ?? config.data.description;
 <BaseLayout {lang} {title} {description}>
   <Ambients />
   <SidebarModals {lang} />
-  {
-    requiredPermission !== 'none' && (
-      <LoginChecker {requiredPermission} {currentUser} />
-    )
-  }
   {
     sidebar === 'single' && (
       <SingleSidebar {currentUser} />

@@ -1,4 +1,5 @@
 ---
+import { User } from 'studiocms:auth/lib';
 import { FormattedDate } from 'studiocms:components';
 import { useTranslations } from 'studiocms:i18n';
 import { SDKCore } from 'studiocms:sdk';
@@ -14,7 +15,6 @@ import { Effect, genLogger, runEffect } from '@withstudiocms/effect';
 import { setDataContext } from '@withstudiocms/effect/astro/data-middleware';
 import PageHeader from '../../../components/dashboard/PageHeader.astro';
 import InnerSidebarElement from '../../../components/dashboard/user-mgmt/InnerSidebarElement.astro';
-import RankCheck from '../../../components/dashboard/user-mgmt/RankCheck.astro';
 import SocialSignin from '../../../components/dashboard/user-mgmt/SocialSignin.astro';
 import { providerData, showOAuth } from '../../../components/shared/oAuthButtonProviders.js';
 import Layout from '../../../layouts/DashboardLayout.astro';
@@ -64,6 +64,17 @@ if (isOwner) allowedRanks.unshift({ label: 'Owner', value: 'owner' });
 
 if (isAdmin) allowedRanks.unshift({ label: 'Administrator', value: 'admin' });
 
+const isAuthorized = await Effect.runPromise(
+	Effect.gen(function* () {
+		const { isUserAllowed } = yield* User;
+		return yield* isUserAllowed(userSession, user?.permissionsData?.rank ?? 'unknown');
+	})
+);
+
+if (!isAuthorized) {
+	return Astro.redirect(Astro.locals.StudioCMS.routeMap.mainLinks.userManagement);
+}
+
 setDataContext(Astro, {
 	key: 'x-required-role',
 	value: 'admin',
@@ -76,16 +87,11 @@ setDataContext(Astro, {
 <Layout
   title={t('title')}
   description={t('description')}
-  requiredPermission='admin'
   sidebar='double'
   {lang}
   {config}
   currentUser={userSession}
   >
-  {/*
-    Check if the user has the required permission to manage the user's rank level
-  */}
-  <RankCheck requiredPermission={user?.permissionsData?.rank} />
 
   <div slot="double-sidebar" class="inner-sidebar-container">
     <div class="sidebar-user-links-container">

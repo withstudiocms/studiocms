@@ -25,10 +25,7 @@ const filteredParentFolderOptions = [
     data-content-management-url={Astro.locals.StudioCMS.routeMap.mainLinks
         .contentManagement}
 >
-    <form
-        id="edit-folder-form"
-        action={Astro.locals.StudioCMS.routeMap.endpointLinks.content.folder}
-    >
+    <form id="edit-folder-form">
         <input type="hidden" name="folder-id" value={currentFolder.id} />
 
         <Input

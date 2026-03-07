@@ -90,7 +90,6 @@ const {
 			const avatarUrl = this.dataset.avatarUrl;
 			const timeoutDelay = parseInt(this.dataset.avatarTimeout || '3000', 10);
 			const fallbackDataUri = this.dataset.avatarFallback;
-			const avatarName = this.dataset.avatarName || 'User';
 
 			if (!avatarUrl) return;
 			if (!fallbackDataUri) return;
@@ -98,7 +97,7 @@ const {
 			const img = this.querySelector('img');
 			if (!img) return;
 
-			this.loadAvatar(img, avatarUrl, timeoutDelay, fallbackDataUri, avatarName);
+			this.loadAvatar(img, avatarUrl, timeoutDelay, fallbackDataUri);
 		}
 
 		isValidAvatarUrl(url: string): boolean {
@@ -153,8 +152,7 @@ const {
 			img: HTMLImageElement,
 			url: string,
 			timeoutMs: number,
-			fallbackDataUri: string,
-			name: string
+			fallbackDataUri: string
 		): Promise<void> {
 			if (!this.isValidAvatarUrl(url)) {
 				this.showFallbackIcon(img, fallbackDataUri);
