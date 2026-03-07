@@ -3,7 +3,7 @@ import { Description, License, Title, Transform, Version } from '@effect/platfor
 import pkg from '../../package.json';
 import { StudioCMSLicenseAnnotation, StudioCMSTransformAnnotation } from '../consts.js';
 import { DashboardAPIError } from './errors.js';
-import { apiTokensDelete, apiTokensPost } from './routes/api-tokens.js';
+import { adminApiTokensDelete, apiTokensDelete, apiTokensPost } from './routes/api-tokens.js';
 import { configPost } from './routes/config.js';
 import {
 	contentDiffPost,
@@ -44,6 +44,7 @@ export class DashboardApiTokensGroup extends HttpApiGroup.make('apiTokens')
 	.annotate(License, StudioCMSLicenseAnnotation)
 	.add(apiTokensPost)
 	.add(apiTokensDelete)
+	.add(adminApiTokensDelete)
 	.addError(DashboardAPIError, { status: 500 })
 	.prefix('/dashboard') {}
 
