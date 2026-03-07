@@ -529,51 +529,62 @@ setDataContext(Astro, {
     deleteButtons.forEach((button) => {
         button.addEventListener('click', async (event) => {
             event.preventDefault();
-            const tokenID = button.getAttribute('data-token');
-            const userID = button.getAttribute('data-user');
 
-            if (!tokenID || !userID) {
-                toast({
-                    title: 'Error',
-                    description: 'Missing necessary data to revoke API token.',
-                    type: 'danger',
-                    duration: 5000
-                })
-                return;
-            }
+            // TODO: Implement Admin level API token revocation that allows revoking any token, not just tokens owned by the user. This will require additional permission checks to ensure only Admin users can revoke tokens that they do not own.
 
-            const response = await dashboardClient.pipe(
-              Effect.flatMap((client) =>
-                client.apiTokens.revokeApiToken({
-                  payload: {
-                    tokenID,
-                    userID
-                  }
-                })
-              ),
-              Effect.catchTags(dashboardSharedCatchTags),
-              Effect.runPromise
-            );
+            toast({
+              title: 'Error',
+              description: 'Not Currently implemented',
+              type: 'danger',
+              duration: 5000,
+            });
+            return;
 
-            if ('error' in response) {
-              toast({
-                title: 'Error',
-                description: response.error,
-                type: 'danger',
-                duration: 5000
-              })
-              return;
-            } else {
-              toast({
-                title: 'Success',
-                description: response.message || 'API token revoked successfully.',
-                type: 'success',
-                duration: 5000
-              })
-              setTimeout(() => {
-                window.location.reload();
-              }, 1000);
-            }
+            // const tokenID = button.getAttribute('data-token');
+            // const userID = button.getAttribute('data-user');
+            
+            // if (!tokenID || !userID) {
+            //     toast({
+            //         title: 'Error',
+            //         description: 'Missing necessary data to revoke API token.',
+            //         type: 'danger',
+            //         duration: 5000
+            //     })
+            //     return;
+            // }
+
+            // const response = await dashboardClient.pipe(
+            //   Effect.flatMap((client) =>
+            //     client.apiTokens.revokeApiToken({
+            //       payload: {
+            //         tokenID,
+            //         userID
+            //       }
+            //     })
+            //   ),
+            //   Effect.catchTags(dashboardSharedCatchTags),
+            //   Effect.runPromise
+            // );
+
+            // if ('error' in response) {
+            //   toast({
+            //     title: 'Error',
+            //     description: response.error,
+            //     type: 'danger',
+            //     duration: 5000
+            //   })
+            //   return;
+            // } else {
+            //   toast({
+            //     title: 'Success',
+            //     description: response.message || 'API token revoked successfully.',
+            //     type: 'success',
+            //     duration: 5000
+            //   })
+            //   setTimeout(() => {
+            //     window.location.reload();
+            //   }, 1000);
+            // }
         });
     });
   </script>

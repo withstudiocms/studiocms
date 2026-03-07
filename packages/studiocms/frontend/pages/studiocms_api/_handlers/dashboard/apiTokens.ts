@@ -8,6 +8,8 @@ import { DashboardAPIError } from '@withstudiocms/api-spec/dashboard';
 import { Effect } from 'effect';
 import { sharedDBErrors } from './_shared.js';
 
+// TODO: Implement Admin level API token revocation that allows revoking any token, not just tokens owned by the user. This will require additional permission checks to ensure only Admin users can revoke tokens that they do not own.
+
 /**
  * Check if the Dashboard API is enabled in the route configuration.
  */
@@ -24,7 +26,7 @@ export const ApiTokensHandler = HttpApiBuilder.group(
 			.handle(
 				'createApiToken',
 				Effect.fn(
-					function* ({ payload: { user, description } }) {
+					function* ({ payload: { description } }) {
 						if (!dashboardAPIEnabled) {
 							return yield* new DashboardAPIError({ error: 'Dashboard API is disabled' });
 						}
@@ -39,11 +41,11 @@ export const ApiTokensHandler = HttpApiBuilder.group(
 
 						const isAuthorized = userData.userPermissionLevel.isEditor;
 
-						if (!userData.isLoggedIn || !isAuthorized) {
+						if (!userData.isLoggedIn || !userData.user || !isAuthorized) {
 							return yield* new DashboardAPIError({ error: 'Unauthorized' });
 						}
 
-						const newToken = yield* sdk.REST_API.tokens.new(user, description);
+						const newToken = yield* sdk.REST_API.tokens.new(userData.user.id, description);
 
 						return { token: newToken.key };
 					},
@@ -55,7 +57,7 @@ export const ApiTokensHandler = HttpApiBuilder.group(
 			)
 			.handle(
 				'revokeApiToken',
-				Effect.fn(function* ({ payload: { tokenID, userID } }) {
+				Effect.fn(function* ({ payload: { tokenID } }) {
 					if (!dashboardAPIEnabled) {
 						return yield* new DashboardAPIError({ error: 'Dashboard API is disabled' });
 					}
@@ -70,11 +72,11 @@ export const ApiTokensHandler = HttpApiBuilder.group(
 
 					const isAuthorized = userData.userPermissionLevel.isEditor;
 
-					if (!userData.isLoggedIn || !isAuthorized) {
+					if (!userData.isLoggedIn || !userData.user || !isAuthorized) {
 						return yield* new DashboardAPIError({ error: 'Unauthorized' });
 					}
 
-					yield* sdk.REST_API.tokens.delete({ tokenId: tokenID, userId: userID });
+					yield* sdk.REST_API.tokens.delete({ tokenId: tokenID, userId: userData.user.id });
 
 					return {
 						message: 'Token deleted',

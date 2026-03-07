@@ -4,14 +4,66 @@ import routeConfig from 'virtual:studiocms/route-config';
 import { HttpApiBuilder } from '@effect/platform';
 import { StudioCMSDashboardApiSpec } from '@withstudiocms/api-spec';
 import { CurrentUser } from '@withstudiocms/api-spec/astro-context';
-import { DashboardAPIError } from '@withstudiocms/api-spec/dashboard';
+import { DashboardAPIError, type MailerSmtpConfigPayload } from '@withstudiocms/api-spec/dashboard';
 import { Effect } from 'effect';
+import type { DynamicHttpApiHandlerParams } from 'effectify/httpApi';
 import { sharedDBErrors, sharedNotifierErrors } from './_shared.js';
 
 /**
  * Check if the Dashboard API is enabled in the route configuration.
  */
 const dashboardAPIEnabled = routeConfig.dashboardAPIEnabled;
+
+/**
+ * Shared effect for handling both setup and update mailer configuration endpoints since they have the same logic and requirements.
+ */
+const mailerEffect = (type: 'setup' | 'update') =>
+	Effect.fn(
+		function* ({
+			payload,
+		}: DynamicHttpApiHandlerParams<{
+			payloadSchema: typeof MailerSmtpConfigPayload.Type;
+		}>) {
+			if (!dashboardAPIEnabled) {
+				return yield* new DashboardAPIError({
+					error: 'Dashboard API is disabled',
+				});
+			}
+
+			if (developerConfig.demoMode !== false) {
+				return yield* new DashboardAPIError({
+					error: 'Demo mode is enabled, this action is not allowed.',
+				});
+			}
+
+			const [mailer, userData] = yield* Effect.all([Mailer, CurrentUser]);
+
+			if (!userData.isLoggedIn || !userData.userPermissionLevel.isOwner) {
+				return yield* new DashboardAPIError({ error: 'Unauthorized' });
+			}
+
+			if (payload.port && (payload.port < 1 || payload.port > 65535)) {
+				return yield* new DashboardAPIError({ error: 'Invalid port number' });
+			}
+
+			const config = yield* mailer.createMailerConfigTable(payload);
+
+			if (!config) {
+				return yield* new DashboardAPIError({
+					error: `Failed to ${type} mailer configuration`,
+				});
+			}
+
+			return {
+				message: `Mailer configuration ${type}d successfully`,
+			};
+		},
+		Mailer.Provide,
+		Effect.catchTags({
+			...sharedDBErrors,
+			...sharedNotifierErrors,
+		})
+	);
 
 /**
  * Mailer Handlers for the Dashboard API
@@ -21,96 +73,8 @@ export const MailerHandlers = HttpApiBuilder.group(
 	'mailer',
 	(handlers) =>
 		handlers
-			.handle(
-				'setupMailerConfig',
-				Effect.fn(
-					function* ({ payload }) {
-						if (!dashboardAPIEnabled) {
-							return yield* new DashboardAPIError({
-								error: 'Dashboard API is disabled',
-							});
-						}
-
-						if (developerConfig.demoMode !== false) {
-							return yield* new DashboardAPIError({
-								error: 'Demo mode is enabled, this action is not allowed.',
-							});
-						}
-
-						const [mailer, userData] = yield* Effect.all([Mailer, CurrentUser]);
-
-						if (!userData.isLoggedIn || !userData.userPermissionLevel.isOwner) {
-							return yield* new DashboardAPIError({ error: 'Unauthorized' });
-						}
-
-						if (payload.port && (payload.port < 1 || payload.port > 65535)) {
-							return yield* new DashboardAPIError({ error: 'Invalid port number' });
-						}
-
-						const config = yield* mailer.createMailerConfigTable(payload);
-
-						if (!config) {
-							return yield* new DashboardAPIError({
-								error: 'Failed to create mailer configuration',
-							});
-						}
-
-						return {
-							message: 'Mailer configuration updated successfully',
-						};
-					},
-					Mailer.Provide,
-					Effect.catchTags({
-						...sharedDBErrors,
-						...sharedNotifierErrors,
-					})
-				)
-			)
-			.handle(
-				'updateMailerConfig',
-				Effect.fn(
-					function* ({ payload }) {
-						if (!dashboardAPIEnabled) {
-							return yield* new DashboardAPIError({
-								error: 'Dashboard API is disabled',
-							});
-						}
-
-						if (developerConfig.demoMode !== false) {
-							return yield* new DashboardAPIError({
-								error: 'Demo mode is enabled, this action is not allowed.',
-							});
-						}
-
-						const [mailer, userData] = yield* Effect.all([Mailer, CurrentUser]);
-
-						if (!userData.isLoggedIn || !userData.userPermissionLevel.isOwner) {
-							return yield* new DashboardAPIError({ error: 'Unauthorized' });
-						}
-
-						if (payload.port && (payload.port < 1 || payload.port > 65535)) {
-							return yield* new DashboardAPIError({ error: 'Invalid port number' });
-						}
-
-						const config = yield* mailer.updateMailerConfigTable(payload);
-
-						if (!config) {
-							return yield* new DashboardAPIError({
-								error: 'Failed to update mailer configuration',
-							});
-						}
-
-						return {
-							message: 'Mailer configuration updated successfully',
-						};
-					},
-					Mailer.Provide,
-					Effect.catchTags({
-						...sharedDBErrors,
-						...sharedNotifierErrors,
-					})
-				)
-			)
+			.handle('setupMailerConfig', mailerEffect('setup'))
+			.handle('updateMailerConfig', mailerEffect('update'))
 			.handle(
 				'testEmailService',
 				Effect.fn(

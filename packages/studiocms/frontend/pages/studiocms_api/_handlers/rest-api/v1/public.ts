@@ -4,7 +4,7 @@ import { HttpApiBuilder } from '@effect/platform';
 import { StudioCMSRestApiV1Spec } from '@withstudiocms/api-spec';
 import { RestAPIError } from '@withstudiocms/api-spec/rest-api';
 import { Effect } from 'effect';
-import { sharedDBErrors } from './_shared.js';
+import { sharedDBErrors, sharedPageCollectionErrors } from './_shared.js';
 
 const restAPIEnabled = routeConfig.restAPIEnabled;
 
@@ -124,10 +124,7 @@ export const RestApiPublicHandler = HttpApiBuilder.group(
 						Effect.flatMap(draftMeansFail('Page not found')),
 						Effect.catchTags({
 							...sharedDBErrors,
-							ParseError: () => new RestAPIError({ error: 'Failed to parse page data' }),
-							CollectorError: () => new RestAPIError({ error: 'Failed to collect page data' }),
-							FolderTreeError: () => new RestAPIError({ error: 'Failed to retrieve folder tree' }),
-							PaginateError: () => new RestAPIError({ error: 'Failed to paginate page data' }),
+							...sharedPageCollectionErrors,
 						})
 					);
 				})
@@ -158,10 +155,7 @@ export const RestApiPublicHandler = HttpApiBuilder.group(
 						}),
 						Effect.catchTags({
 							...sharedDBErrors,
-							ParseError: () => new RestAPIError({ error: 'Failed to parse pages data' }),
-							CollectorError: () => new RestAPIError({ error: 'Failed to collect pages data' }),
-							FolderTreeError: () => new RestAPIError({ error: 'Failed to retrieve folder tree' }),
-							PaginateError: () => new RestAPIError({ error: 'Failed to paginate pages data' }),
+							...sharedPageCollectionErrors,
 						})
 					);
 				})
