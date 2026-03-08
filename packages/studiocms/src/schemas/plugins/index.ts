@@ -416,6 +416,8 @@ export const StorageManagerPluginHooksSchema = Schema.mutable(
  */
 export type StorageManagerPluginHooks = typeof StorageManagerPluginHooksSchema.Type;
 
+// TODO: Remove `studiocmsMinimumVersion` in a future release.
+
 /**
  * Schema for validating the structure of the base plugin configuration, including essential metadata such as identifier, name, minimum required version of StudioCMS, and dependencies on other plugins. This schema ensures that the basic information about the plugin is correctly structured, allowing for seamless integration of plugins into the StudioCMS system while providing necessary information about the plugin and its functionality.
  */
