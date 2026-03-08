@@ -1,10 +1,6 @@
 import type { AstroIntegration } from 'astro';
 import { beforeEach, describe, expect, vi } from 'vitest';
-import {
-	definePlugin,
-	type StudioCMSPlugin,
-	type StudioCMSPluginDef,
-} from '../src/schemas/index.js';
+import { definePlugin, type StudioCMSPluginDef } from '../src/schemas/index.js';
 import { StudioCMSPluginTester } from '../src/test-utils.js';
 import { allureTester } from './fixtures/allureTester.js';
 import { parentSuiteName, sharedTags } from './test-utils.js';
@@ -15,7 +11,6 @@ function makePluginWithHooks(hooks: StudioCMSPluginDef['hooks']): StudioCMSPlugi
 	return definePlugin({
 		identifier: 'test-plugin',
 		name: 'Test Plugin',
-		studiocmsMinimumVersion: '1.0.0',
 		requires: [],
 		hooks: hooks,
 	});
@@ -54,7 +49,6 @@ describe(parentSuiteName, () => {
 			expect(info).toEqual({
 				identifier: 'test-plugin',
 				name: 'Test Plugin',
-				studiocmsMinimumVersion: '1.0.0',
 				requires: [],
 			});
 		});

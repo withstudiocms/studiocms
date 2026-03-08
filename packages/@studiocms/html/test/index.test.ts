@@ -41,12 +41,10 @@ describe(parentSuiteName, () => {
 			const plugin = studiocmsHTML();
 			await ctx.parameter('pluginIdentifier', plugin.identifier);
 			await ctx.parameter('pluginName', plugin.name);
-			await ctx.parameter('studiocmsMinimumVersion', plugin.studiocmsMinimumVersion);
 
 			expect(plugin).toBeDefined();
 			expect(plugin.identifier).toBe('@studiocms/html');
 			expect(plugin.name).toBe('StudioCMS HTML');
-			expect(plugin.studiocmsMinimumVersion).toBe('0.3.0');
 			expect(plugin.hooks).toBeDefined();
 		});
 	});
@@ -71,13 +69,11 @@ describe(parentSuiteName, () => {
 				const plugin = studiocmsHTML(options);
 				await ctx.parameter('pluginIdentifier', plugin.identifier);
 				await ctx.parameter('pluginName', plugin.name);
-				await ctx.parameter('studiocmsMinimumVersion', plugin.studiocmsMinimumVersion);
 				await ctx.parameter('customOptions', JSON.stringify(options, null, 2));
 
 				expect(plugin).toBeDefined();
 				expect(plugin.identifier).toBe('@studiocms/html');
 				expect(plugin.name).toBe('StudioCMS HTML');
-				expect(plugin.studiocmsMinimumVersion).toBe('0.3.0');
 				expect(plugin.hooks).toBeDefined();
 			}
 		);

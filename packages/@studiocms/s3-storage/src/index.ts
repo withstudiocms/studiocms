@@ -42,7 +42,6 @@ export function studiocmsS3Storage(): StudioCMSStorageManagerDef {
 	return defineStorageManager({
 		identifier: packageIdentifier,
 		name: 'StudioCMS S3 Storage',
-		studiocmsMinimumVersion: '0.3.0',
 		hooks: {
 			'studiocms:storage-manager': async ({ setStorageManager, logger }) => {
 				logger.info('StudioCMS S3 Storage initialized.');

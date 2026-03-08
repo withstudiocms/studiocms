@@ -114,12 +114,10 @@ describe(parentSuiteName, () => {
 			const plugin = definePlugin({
 				identifier: '@studiocms/sample-plugin',
 				name: 'Sample Plugin',
-				studiocmsMinimumVersion: '1.0.0',
 				hooks: {},
 			});
 			expect(plugin).toHaveProperty('identifier', '@studiocms/sample-plugin');
 			expect(plugin).toHaveProperty('name', 'Sample Plugin');
-			expect(plugin).toHaveProperty('studiocmsMinimumVersion', '1.0.0');
 			expect(plugin).toHaveProperty('hooks', {});
 		});
 	});

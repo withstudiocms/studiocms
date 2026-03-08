@@ -8,14 +8,12 @@ import createPathResolver from '@withstudiocms/internal_helpers/pathResolver';
 import {
 	convertToSafeString,
 	pageContentComponentFilter,
-	readJson,
 	rendererComponentFilter,
 } from '@withstudiocms/internal_helpers/utils';
 import type { AstroIntegration, InjectedRoute } from 'astro';
 import { AstroError } from 'astro/errors';
 import { addVirtualImports, defineUtility } from 'astro-integration-kit';
 import boxen from 'boxen';
-import { compare as semCompare } from 'semver';
 import { loadEnv } from 'vite';
 import { StudioCMSDefaultRobotsConfig } from '../consts.js';
 import { StudioCMSError } from '../errors.js';
@@ -48,11 +46,6 @@ import { NoOpStorageManager } from './storage-manager/no-op.js';
 // Resolver Function
 const { resolve } = createPathResolver(import.meta.url);
 
-// Read the package.json file for the package name and version
-const { version: pkgVersion } = readJson<{ name: string; version: string }>(
-	resolve('../../package.json')
-);
-
 type VirtualImport = {
 	id: string;
 	content: string;
@@ -75,7 +68,6 @@ const t = await buildTranslations(translations);
 export const defaultPlugin: StudioCMSPlugin = {
 	name: 'Core (built-in)',
 	identifier: 'studiocms',
-	studiocmsMinimumVersion: pkgVersion,
 	hooks: {
 		'studiocms:dashboard': async ({ setDashboard }) => {
 			setDashboard({
@@ -218,7 +210,6 @@ type Options = {
 	dbStartPage: boolean;
 	verbose: boolean;
 	name: string;
-	pkgVersion: string;
 	plugins: StudioCMSPlugin[] | undefined;
 	storageManager: StudioCMSStorageManager | undefined;
 	robotsTXTConfig: boolean | StudioCMSConfig['features']['robotsTXT'];
@@ -258,7 +249,6 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 			dbStartPage,
 			verbose,
 			name,
-			pkgVersion,
 			plugins,
 			storageManager,
 			robotsTXTConfig,
@@ -512,7 +502,6 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 					Schema.decodeSync(StudioCMSPluginSchema)(
 						studioCMSAnalyticsPlugin({
 							driverDialect: dialect,
-							version: pkgVersion,
 						})
 					)
 				);
@@ -525,14 +514,13 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 		}
 
 		function splitStorageManager(manager: StudioCMSStorageManager) {
-			const { hooks, studiocmsMinimumVersion, requires, ...shared } = manager;
+			const { hooks, requires, ...shared } = manager;
 
 			const { 'studiocms:storage-manager': storageManagerHook, ...pluginHooks } = hooks;
 
 			const plugin: StudioCMSPlugin = {
 				...shared,
 				hooks: pluginHooks,
-				studiocmsMinimumVersion,
 				requires,
 			};
 
@@ -553,7 +541,7 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 				manager = storageManager;
 			} else {
 				// If no storage manager is defined, use the No-Op Storage Manager
-				manager = Schema.decodeSync(StudioCMSStorageManagerSchema)(NoOpStorageManager(pkgVersion));
+				manager = Schema.decodeSync(StudioCMSStorageManagerSchema)(NoOpStorageManager());
 			}
 
 			const { smManager, smPlugin } = splitStorageManager(manager);
@@ -571,22 +559,7 @@ export const pluginHandler = defineUtility('astro:config:setup')(
 		 * @throws {StudioCMSError} If the plugin's minimum version requirement is not met.
 		 */
 		function getPluginData(plugin: StudioCMSPlugin) {
-			const { studiocmsMinimumVersion = '0.0.0', hooks = {}, requires, ...safeData } = plugin;
-			let comparison: number;
-			try {
-				comparison = semCompare(studiocmsMinimumVersion, pkgVersion);
-			} catch (_error) {
-				throw new StudioCMSError(
-					`Plugin ${safeData.name} has invalid version requirement: ${studiocmsMinimumVersion}`,
-					'The minimum version requirement must be a valid semver string.'
-				);
-			}
-			if (comparison === 1) {
-				throw new StudioCMSError(
-					`Plugin ${safeData.name} requires StudioCMS version ${studiocmsMinimumVersion} or higher.`,
-					`Plugin ${safeData.name} requires StudioCMS version ${studiocmsMinimumVersion} or higher. Please update StudioCMS to the required version, contact the plugin author to update the minimum version requirement or remove the plugin from the StudioCMS config.`
-				);
-			}
+			const { hooks = {}, requires, ...safeData } = plugin;
 
 			return {
 				hooks,

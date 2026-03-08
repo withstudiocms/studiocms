@@ -106,7 +106,6 @@ export function studiocmsMDX(options?: MDXPluginOptions): StudioCMSPluginDef {
 	return definePlugin({
 		identifier: packageIdentifier,
 		name: 'StudioCMS MDX',
-		studiocmsMinimumVersion: '0.3.0',
 		requires: ['@studiocms/md'],
 		hooks: {
 			'studiocms:astro-config': async ({ addIntegrations }) => {
