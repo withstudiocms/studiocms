@@ -42,7 +42,6 @@ export function studiocmsAuth0(): StudioCMSPluginDef {
 	return definePlugin({
 		identifier: packageIdentifier,
 		name: 'StudioCMS Auth0 Provider Plugin',
-		studiocmsMinimumVersion: '0.3.0',
 		hooks: {
 			'studiocms:auth': async ({ setAuthService }) => {
 				setAuthService({

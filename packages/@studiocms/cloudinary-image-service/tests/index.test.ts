@@ -28,7 +28,6 @@ vi.mock('astro-integration-kit', () => ({
 vi.mock('../src/utils/readJson.js', () => ({
 	readJson: vi.fn().mockReturnValue({
 		name: '@studiocms/cloudinary-image-service',
-		version: '0.3.0',
 	}),
 }));
 
@@ -73,7 +72,6 @@ describe(parentSuiteName, () => {
 
 			expect(plugin.name).toBe('Cloudinary JS Image Service (cloudinary-js)');
 			expect(plugin.identifier).toBe('@studiocms/cloudinary-image-service');
-			expect(plugin.studiocmsMinimumVersion).toBe('0.3.0');
 			expect(plugin.hooks).toBeDefined();
 		});
 	});
@@ -91,7 +89,6 @@ describe(parentSuiteName, () => {
 				expect.objectContaining({
 					name: 'Cloudinary JS Image Service (cloudinary-js)',
 					identifier: '@studiocms/cloudinary-image-service',
-					studiocmsMinimumVersion: '0.3.0',
 					hooks: expect.any(Object),
 				})
 			);

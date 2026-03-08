@@ -86,7 +86,6 @@ export function studiocmsMarkDoc(options?: MarkDocPluginOptions): StudioCMSPlugi
 	return definePlugin({
 		identifier: packageIdentifier,
 		name: 'StudioCMS MarkDoc',
-		studiocmsMinimumVersion: '0.3.0',
 		requires: ['@studiocms/md'],
 		hooks: {
 			'studiocms:astro-config': async ({ addIntegrations }) => {

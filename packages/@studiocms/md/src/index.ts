@@ -126,7 +126,6 @@ export function studiocmsMD(options: MarkdownSchemaOptions = {}): StudioCMSPlugi
 	return definePlugin({
 		identifier: packageIdentifier,
 		name: 'StudioCMS Markdown',
-		studiocmsMinimumVersion: '0.3.0',
 		hooks: {
 			'studiocms:astro-config': async ({ addIntegrations }) => {
 				addIntegrations(internalMarkdownIntegration(resolvedOptions));

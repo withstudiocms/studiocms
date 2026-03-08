@@ -35,12 +35,10 @@ describe(parentSuiteName, () => {
 			const plugin = studiocmsMarkDoc();
 			await ctx.parameter('pluginIdentifier', plugin.identifier);
 			await ctx.parameter('pluginName', plugin.name);
-			await ctx.parameter('studiocmsMinimumVersion', plugin.studiocmsMinimumVersion);
 
 			expect(plugin).toBeDefined();
 			expect(plugin.identifier).toBe('@studiocms/markdoc');
 			expect(plugin.name).toBe('StudioCMS MarkDoc');
-			expect(plugin.studiocmsMinimumVersion).toBe('0.3.0');
 			expect(plugin.requires).toEqual(['@studiocms/md']);
 			expect(plugin.hooks).toBeDefined();
 		});

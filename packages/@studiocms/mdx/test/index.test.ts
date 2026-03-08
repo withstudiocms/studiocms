@@ -45,12 +45,10 @@ describe(parentSuiteName, () => {
 			const plugin = studiocmsMDX();
 			await ctx.parameter('pluginIdentifier', plugin.identifier);
 			await ctx.parameter('pluginName', plugin.name);
-			await ctx.parameter('studiocmsMinimumVersion', plugin.studiocmsMinimumVersion);
 
 			expect(plugin).toBeDefined();
 			expect(plugin.identifier).toBe('@studiocms/mdx');
 			expect(plugin.name).toBe('StudioCMS MDX');
-			expect(plugin.studiocmsMinimumVersion).toBe('0.3.0');
 			expect(plugin.requires).toContain('@studiocms/md');
 			expect(plugin.hooks).toBeDefined();
 		});

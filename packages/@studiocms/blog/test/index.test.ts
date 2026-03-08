@@ -35,7 +35,6 @@ describe(parentSuiteName, () => {
 			expect(pluginInfo).toBeDefined();
 			expect(pluginInfo.identifier).toBe('@studiocms/blog');
 			expect(pluginInfo.name).toBe('StudioCMS Blog');
-			expect(pluginInfo.studiocmsMinimumVersion).toBe('0.3.0');
 			expect(pluginInfo.requires).toContain('@studiocms/md');
 		});
 
