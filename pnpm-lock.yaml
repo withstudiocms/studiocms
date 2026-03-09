@@ -426,8 +426,8 @@ importers:
         specifier: catalog:effect
         version: 3.19.19
       katex:
-        specifier: ^0.16.33
-        version: 0.16.33
+        specifier: ^0.16.35
+        version: 0.16.35
       suneditor:
         specifier: ^2.47.8
         version: 2.47.8
@@ -5130,8 +5130,8 @@ packages:
     resolution: {integrity: sha512-P2bSOMAc/ciLz6DzgjVlGJP9+BrJWu5UDGK70C2iweC5QBIeFf0ZXRvGjEj2uYgrY2MkAAhsSWHDWlFtEroZWw==}
     engines: {node: '>=0.6.0'}
 
-  katex@0.16.33:
-    resolution: {integrity: sha512-q3N5u+1sY9Bu7T4nlXoiRBXWfwSefNGoKeOwekV+gw0cAXQlz2Ww6BLcmBxVDeXBMUDQv6fK5bcNaJLxob3ZQA==}
+  katex@0.16.35:
+    resolution: {integrity: sha512-S0+riEvy1CK4VKse1ivMff8gmabe/prY7sKB3njjhyoLLsNFDQYtKNgXrbWUggGDCJBz7Fctl5i8fLCESHXzSg==}
     hasBin: true
 
   kind-of@6.0.3:
@@ -11217,7 +11217,7 @@ snapshots:
       verror: 1.10.0
     optional: true
 
-  katex@0.16.33:
+  katex@0.16.35:
     dependencies:
       commander: 8.3.0
 
