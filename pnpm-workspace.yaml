@@ -48,7 +48,7 @@ catalog:
   diff: ^8.0.3
   dotenv: ^17.3.1
   semver: ^7.7.4
-  tsdown: ^0.20.3
+  tsdown: ^0.21.0
   package-manager-detector: ^1.6.0
 
 # Specific dependency catalogs for certain groups of packages
@@ -68,7 +68,7 @@ catalogs:
     "@types/pg": ^8.18.0
     kysely: ^0.28.11
     kysely-turso: ^0.1.1
-    pg: ^8.19.0
+    pg: ^8.20.0
     mysql2: ^3.18.0
   min:
     "@astrojs/internal-helpers": ^0.7.5
