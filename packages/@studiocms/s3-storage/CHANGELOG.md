@@ -1,5 +1,21 @@
 # @studiocms/s3-storage
 
+## 0.3.0
+
+### Minor Changes
+
+- [#1322](https://github.com/withstudiocms/studiocms/pull/1322) [`0ae47b0`](https://github.com/withstudiocms/studiocms/commit/0ae47b06a4ff03ed9cdf01b136e1a50f4c8c4add) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Update Plugin hooks to align with new schemas
+
+- [#1448](https://github.com/withstudiocms/studiocms/pull/1448) [`35a1984`](https://github.com/withstudiocms/studiocms/commit/35a19845b30b6eed5b1273a40d99d9b405eeab9f) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Removes deprecated studiocmsMinimumVersion variable from plugin config
+
+### Patch Changes
+
+- [#1297](https://github.com/withstudiocms/studiocms/pull/1297) [`a560f7b`](https://github.com/withstudiocms/studiocms/commit/a560f7b3821e762e5e2b3c361a50fa3c63d12345) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update aws s3 dependencies to ^3.985.0
+
+- [#1406](https://github.com/withstudiocms/studiocms/pull/1406) [`1d9f304`](https://github.com/withstudiocms/studiocms/commit/1d9f304658556f221838ae65bba432dfed998cb2) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update aws s3 dependencies to ^3.999.0
+
+- [#1455](https://github.com/withstudiocms/studiocms/pull/1455) [`af7d1c3`](https://github.com/withstudiocms/studiocms/commit/af7d1c3fdfc86981d0e4657cfc527de0f3078da9) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update aws s3 dependencies to ^3.1003.0
+
 ## 0.2.1
 
 ### Patch Changes

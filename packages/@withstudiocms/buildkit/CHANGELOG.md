@@ -1,5 +1,11 @@
 # @withstudiocms/buildkit
 
+## 0.2.1
+
+### Patch Changes
+
+- [#1404](https://github.com/withstudiocms/studiocms/pull/1404) [`bf4666b`](https://github.com/withstudiocms/studiocms/commit/bf4666b01123342062aa2a87a34855dc14c9f59e) Thanks [@renovate](https://github.com/apps/renovate)! - chore(deps): update dependency strip-ansi to ^7.2.0
+
 ## 0.2.0
 
 ### Minor Changes

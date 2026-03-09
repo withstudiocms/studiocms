@@ -1,5 +1,21 @@
 # @studiocms/html
 
+## 0.3.0
+
+### Minor Changes
+
+- [#1322](https://github.com/withstudiocms/studiocms/pull/1322) [`0ae47b0`](https://github.com/withstudiocms/studiocms/commit/0ae47b06a4ff03ed9cdf01b136e1a50f4c8c4add) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Migrate from Zod Schemas to Effect Schemas
+
+- [#1322](https://github.com/withstudiocms/studiocms/pull/1322) [`0ae47b0`](https://github.com/withstudiocms/studiocms/commit/0ae47b06a4ff03ed9cdf01b136e1a50f4c8c4add) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Update Plugin hooks to align with new schemas
+
+- [#1448](https://github.com/withstudiocms/studiocms/pull/1448) [`35a1984`](https://github.com/withstudiocms/studiocms/commit/35a19845b30b6eed5b1273a40d99d9b405eeab9f) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Removes deprecated studiocmsMinimumVersion variable from plugin config
+
+### Patch Changes
+
+- [#1386](https://github.com/withstudiocms/studiocms/pull/1386) [`dac6ed5`](https://github.com/withstudiocms/studiocms/commit/dac6ed569fe78195152732e03ee912466f57534b) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update dependency katex to ^0.16.33
+
+- [#1452](https://github.com/withstudiocms/studiocms/pull/1452) [`4dc56a4`](https://github.com/withstudiocms/studiocms/commit/4dc56a49e1470263b3080bd6c794a40c2cceec50) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update dependency katex to ^0.16.35
+
 ## 0.2.1
 
 ### Patch Changes

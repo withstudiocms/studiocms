@@ -1,5 +1,17 @@
 # @studiocms/markdoc
 
+## 0.3.0
+
+### Minor Changes
+
+- [#1322](https://github.com/withstudiocms/studiocms/pull/1322) [`0ae47b0`](https://github.com/withstudiocms/studiocms/commit/0ae47b06a4ff03ed9cdf01b136e1a50f4c8c4add) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Update Plugin hooks to align with new schemas
+
+- [#1448](https://github.com/withstudiocms/studiocms/pull/1448) [`35a1984`](https://github.com/withstudiocms/studiocms/commit/35a19845b30b6eed5b1273a40d99d9b405eeab9f) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Removes deprecated studiocmsMinimumVersion variable from plugin config
+
+### Patch Changes
+
+- [#1443](https://github.com/withstudiocms/studiocms/pull/1443) [`19d9784`](https://github.com/withstudiocms/studiocms/commit/19d978412baea34d6de443c8407209362764ddff) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update dependency @markdoc/markdoc to ^0.5.5
+
 ## 0.2.0
 
 ### Minor Changes

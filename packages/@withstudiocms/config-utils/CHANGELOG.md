@@ -1,5 +1,15 @@
 # @withstudiocms/config-utils
 
+## 0.2.0
+
+### Minor Changes
+
+- [#1322](https://github.com/withstudiocms/studiocms/pull/1322) [`0ae47b0`](https://github.com/withstudiocms/studiocms/commit/0ae47b06a4ff03ed9cdf01b136e1a50f4c8c4add) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Migrate from Zod Schemas to Effect Schemas
+
+- [#1322](https://github.com/withstudiocms/studiocms/pull/1322) [`0ae47b0`](https://github.com/withstudiocms/studiocms/commit/0ae47b06a4ff03ed9cdf01b136e1a50f4c8c4add) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Update Plugin hooks to align with new schemas
+
+- [#1308](https://github.com/withstudiocms/studiocms/pull/1308) [`5e56327`](https://github.com/withstudiocms/studiocms/commit/5e56327bf0084ab42eec8a59211a9f90a4611b81) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Adds new Effect Schema config resolver
+
 ## 0.1.0
 
 ## 0.1.0-beta.5

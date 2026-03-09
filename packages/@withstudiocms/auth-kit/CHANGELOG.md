@@ -1,5 +1,14 @@
 # @withstudiocms/auth-kit
 
+## 0.1.4
+
+### Patch Changes
+
+- [#1440](https://github.com/withstudiocms/studiocms/pull/1440) [`9eec9c3`](https://github.com/withstudiocms/studiocms/commit/9eec9c3b45523b635cfe16d55aa55afabacbebe3) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Corrects permission ranks order
+
+- Updated dependencies [[`a67bcc0`](https://github.com/withstudiocms/studiocms/commit/a67bcc0967c49d366552b76ce1f061472020ade6), [`48a5334`](https://github.com/withstudiocms/studiocms/commit/48a5334051252f4f1192faa9023d56a41f9fe95c), [`fbb5e47`](https://github.com/withstudiocms/studiocms/commit/fbb5e4749674ff4fd0593f37ae29614061d1f362), [`b7b76cb`](https://github.com/withstudiocms/studiocms/commit/b7b76cbb8e3b4ea4fe7f0d86e4f57acac47a94fe), [`26d0584`](https://github.com/withstudiocms/studiocms/commit/26d05848b444cb53a26c6e89baa83203bf0398cc), [`d0ef542`](https://github.com/withstudiocms/studiocms/commit/d0ef542490b45bc65e276c30ae422b3386ed9f88), [`1e13417`](https://github.com/withstudiocms/studiocms/commit/1e1341773ea163ae25529b14877078e965899a30), [`170adc4`](https://github.com/withstudiocms/studiocms/commit/170adc47216cefdce6b56e01973e3fa7812a1527), [`ae9ce1f`](https://github.com/withstudiocms/studiocms/commit/ae9ce1f73545a9db6b54b2bffc145a59ca598aaf), [`8743206`](https://github.com/withstudiocms/studiocms/commit/87432066bf8c6788f1af0840b9a793e03d119815)]:
+  - @withstudiocms/effect@0.4.0
+
 ## 0.1.3
 
 ### Patch Changes

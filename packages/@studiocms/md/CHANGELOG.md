@@ -1,5 +1,24 @@
 # @studiocms/md
 
+## 0.3.0
+
+### Minor Changes
+
+- [#1322](https://github.com/withstudiocms/studiocms/pull/1322) [`0ae47b0`](https://github.com/withstudiocms/studiocms/commit/0ae47b06a4ff03ed9cdf01b136e1a50f4c8c4add) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Migrate from Zod Schemas to Effect Schemas
+
+- [#1322](https://github.com/withstudiocms/studiocms/pull/1322) [`0ae47b0`](https://github.com/withstudiocms/studiocms/commit/0ae47b06a4ff03ed9cdf01b136e1a50f4c8c4add) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Update Plugin hooks to align with new schemas
+
+- [#1448](https://github.com/withstudiocms/studiocms/pull/1448) [`35a1984`](https://github.com/withstudiocms/studiocms/commit/35a19845b30b6eed5b1273a40d99d9b405eeab9f) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Removes deprecated studiocmsMinimumVersion variable from plugin config
+
+- [#1436](https://github.com/withstudiocms/studiocms/pull/1436) [`916c759`](https://github.com/withstudiocms/studiocms/commit/916c759623c821311743ff90df241116f4f0bc15) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Simplifies config schema and removes AstroMD flavor to help reduce overall bundle size issues with Shiki
+
+- [#1370](https://github.com/withstudiocms/studiocms/pull/1370) [`1e2d588`](https://github.com/withstudiocms/studiocms/commit/1e2d5888fd00471d0a7088dba5b972464ad47ac0) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Migrate from `@studiocms/markdown-remark-processor` packge to new `@studiocms/markdown-remark` package's `/core` module
+
+### Patch Changes
+
+- Updated dependencies [[`1350aed`](https://github.com/withstudiocms/studiocms/commit/1350aed02274cda292eb4c27623a9cb5d6dbdd44), [`262103e`](https://github.com/withstudiocms/studiocms/commit/262103ed60201c709582c97f8a7aae40fef24e32), [`1e2d588`](https://github.com/withstudiocms/studiocms/commit/1e2d5888fd00471d0a7088dba5b972464ad47ac0)]:
+  - @studiocms/markdown-remark@1.3.0
+
 ## 0.2.0
 
 ### Minor Changes

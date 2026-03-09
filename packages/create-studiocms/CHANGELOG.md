@@ -1,5 +1,11 @@
 # create-studiocms
 
+## 0.6.0
+
+### Minor Changes
+
+- [#1358](https://github.com/withstudiocms/studiocms/pull/1358) [`9d2bf80`](https://github.com/withstudiocms/studiocms/commit/9d2bf80e9aa5f94de3d2a20a6e2326c14077b987) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Implement latest version check in the verify step
+
 ## 0.5.0
 
 ### Minor Changes

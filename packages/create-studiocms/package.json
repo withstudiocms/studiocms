@@ -1,6 +1,6 @@
 {
 	"name": "create-studiocms",
-	"version": "0.5.0",
+	"version": "0.6.0",
 	"description": "StudioCMS Project Creation CLI",
 	"type": "module",
 	"author": "withstudiocms",

@@ -1,5 +1,88 @@
 # studiocms
 
+## 0.4.0
+
+### Minor Changes
+
+- [#1401](https://github.com/withstudiocms/studiocms/pull/1401) [`de6bb17`](https://github.com/withstudiocms/studiocms/commit/de6bb17d75f74d91776658cf1a608eebe94be495) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Migrates RestAPI to utilize new API-Spec package for better type safety
+
+- [#1421](https://github.com/withstudiocms/studiocms/pull/1421) [`d7a0217`](https://github.com/withstudiocms/studiocms/commit/d7a0217e5ece55eddfa34399075614bef2041052) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Removes deprecated and unused SDK listpages endpoint, and updates the changelog json endpoint to not use .json in the pathname
+
+- [#1433](https://github.com/withstudiocms/studiocms/pull/1433) [`64ff643`](https://github.com/withstudiocms/studiocms/commit/64ff64357f5e34960a2a044d427350bcba389304) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Migrates StorageFileBrowser script to utilize new API spec client for typesafe API interactions
+
+- [#1440](https://github.com/withstudiocms/studiocms/pull/1440) [`9eec9c3`](https://github.com/withstudiocms/studiocms/commit/9eec9c3b45523b635cfe16d55aa55afabacbebe3) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Introduces new admin level api token revocation endpoint
+
+- [#1438](https://github.com/withstudiocms/studiocms/pull/1438) [`f4a209f`](https://github.com/withstudiocms/studiocms/commit/f4a209fc090c90195e2419fff47b48a46eab7441) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Refactors and cleans up API spec handlers to remove un-needed variables and tighten security
+
+- [#1448](https://github.com/withstudiocms/studiocms/pull/1448) [`35a1984`](https://github.com/withstudiocms/studiocms/commit/35a19845b30b6eed5b1273a40d99d9b405eeab9f) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Deprecates the `studiocmsMinimumVersion` setting from the plugins API, it is recommended to rely on `peerDependencies` instead.
+
+- [#1322](https://github.com/withstudiocms/studiocms/pull/1322) [`0ae47b0`](https://github.com/withstudiocms/studiocms/commit/0ae47b06a4ff03ed9cdf01b136e1a50f4c8c4add) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Migrate from Zod Schemas to Effect Schemas
+
+- [#1342](https://github.com/withstudiocms/studiocms/pull/1342) [`7773e9c`](https://github.com/withstudiocms/studiocms/commit/7773e9c094802d678edb89540b82744db7a4dcbd) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Moves to new data-middleware system for being able to handle dynamic authentication checks.
+
+- [#1375](https://github.com/withstudiocms/studiocms/pull/1375) [`c9f32d0`](https://github.com/withstudiocms/studiocms/commit/c9f32d07ab88fdd11806ace656748494b5a782ec) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Extends rendering functionality to allow site-wide post-processors, or single page post-processors (augments)
+
+- [#1430](https://github.com/withstudiocms/studiocms/pull/1430) [`a78f6d5`](https://github.com/withstudiocms/studiocms/commit/a78f6d513b0fc2bd7aa83837624460452a38539e) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Migrates dashboard components to use new api spec clients
+
+- [#1434](https://github.com/withstudiocms/studiocms/pull/1434) [`ef7197e`](https://github.com/withstudiocms/studiocms/commit/ef7197ed9ca8dff757e9e791b0452279aa3791ad) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Adds SDK utility endpoints for markdown rendering and user-list HTML, replacing legacy page partial routes.
+  Consumers now go through the SDK utilities for these renders, and the markdown render route is POST-based.
+
+- [#1373](https://github.com/withstudiocms/studiocms/pull/1373) [`5d6ec77`](https://github.com/withstudiocms/studiocms/commit/5d6ec77bd7105118239fbd015f182e381dbfcb2c) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Reworks API handling and migrates to Effect HttpApi Spec
+
+- [#1429](https://github.com/withstudiocms/studiocms/pull/1429) [`1cc8957`](https://github.com/withstudiocms/studiocms/commit/1cc8957db3f1e3af2c5f4763103a0d7d46aa1c6d) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Migrates various frontend pages to utilize new dashboard API client
+
+- [#1374](https://github.com/withstudiocms/studiocms/pull/1374) [`33d3c2b`](https://github.com/withstudiocms/studiocms/commit/33d3c2bf91cf39abc15b5df136c9eeb01b1ba317) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Migrates frontend utils to use new API spec for SDK and Auth endpoints
+
+- [#1307](https://github.com/withstudiocms/studiocms/pull/1307) [`a855f94`](https://github.com/withstudiocms/studiocms/commit/a855f94e40b24c938dc09cdbacb72fee5a8a012a) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - New Effect Schema based validation for plugin schemas
+
+- [#1322](https://github.com/withstudiocms/studiocms/pull/1322) [`0ae47b0`](https://github.com/withstudiocms/studiocms/commit/0ae47b06a4ff03ed9cdf01b136e1a50f4c8c4add) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Update Plugin hooks to align with new schemas
+
+- [#1311](https://github.com/withstudiocms/studiocms/pull/1311) [`2d2ff4e`](https://github.com/withstudiocms/studiocms/commit/2d2ff4e180e23215dcd4f95aa850a1844e0569a8) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Implements new Effect-based config schemas
+
+### Patch Changes
+
+- [#1351](https://github.com/withstudiocms/studiocms/pull/1351) [`94b6d4f`](https://github.com/withstudiocms/studiocms/commit/94b6d4f53d40d95ae7238fb91839174d61f43c8b) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Fixes folder deletion schema calls that caused folder deletion to return a server error
+
+- [#1381](https://github.com/withstudiocms/studiocms/pull/1381) [`07b3508`](https://github.com/withstudiocms/studiocms/commit/07b35088c55a817a218b1568dd9d3f418b01a26d) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Deduplicates API spec definitions and expands LocalsSessionData middleware context data
+
+- [#1287](https://github.com/withstudiocms/studiocms/pull/1287) [`2ea1074`](https://github.com/withstudiocms/studiocms/commit/2ea107448571e1d42bf0d21dd832b1e71e464a51) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update studiocms dependencies
+
+- [#1336](https://github.com/withstudiocms/studiocms/pull/1336) [`e85f46b`](https://github.com/withstudiocms/studiocms/commit/e85f46b6453b7a8abfdda7d1046399a1dbc99df6) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update dependency @inox-tools/runtime-logger to ^0.8.1
+
+- [#1385](https://github.com/withstudiocms/studiocms/pull/1385) [`9ef4b85`](https://github.com/withstudiocms/studiocms/commit/9ef4b854ed5915d7653059154798adce4abca859) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update dependency @iconify-json/simple-icons to ^1.2.71
+
+- [#1402](https://github.com/withstudiocms/studiocms/pull/1402) [`2123645`](https://github.com/withstudiocms/studiocms/commit/2123645553911c3b1f97958e67f9c5f14c47d5f5) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update dependency nanostores to ^1.1.1
+
+- [#1442](https://github.com/withstudiocms/studiocms/pull/1442) [`ea2298e`](https://github.com/withstudiocms/studiocms/commit/ea2298e10a94a5334e75f9af806d9a03195206c8) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update dependency @iconify-json/simple-icons to ^1.2.72
+
+- [#1453](https://github.com/withstudiocms/studiocms/pull/1453) [`fb59e23`](https://github.com/withstudiocms/studiocms/commit/fb59e23b3d906b69b8c53430ae594a5d895180d5) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update studiocms dependencies
+
+- [#1352](https://github.com/withstudiocms/studiocms/pull/1352) [`27fd734`](https://github.com/withstudiocms/studiocms/commit/27fd73476ccd06f4e8ec6b8a64d86319f21b083a) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Fixes outdated done page instructions
+
+- [#1446](https://github.com/withstudiocms/studiocms/pull/1446) [`7d2ebfb`](https://github.com/withstudiocms/studiocms/commit/7d2ebfb35a77982b31a7edc95bce01223f77cf15) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Code cleanup and OCD, purges dead and unused code
+
+- [#1441](https://github.com/withstudiocms/studiocms/pull/1441) [`39e367d`](https://github.com/withstudiocms/studiocms/commit/39e367d1433ef577b018586b347216df92e21d20) Thanks [@renovate](https://github.com/apps/renovate)! - fixes CSS lint error with duplicate CSS variable
+
+- [#1422](https://github.com/withstudiocms/studiocms/pull/1422) [`de78276`](https://github.com/withstudiocms/studiocms/commit/de78276f1f940be413a1510aa57cc4caa2aac6fd) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Ensures proper permissions for API route, and updates client script to align with new API spec
+
+- [#1353](https://github.com/withstudiocms/studiocms/pull/1353) [`54d5a3e`](https://github.com/withstudiocms/studiocms/commit/54d5a3eaec5b6bf3d75c190cf31f80ca27ebd96e) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Fixes `studiocms init` optional option parsing
+
+- [#1281](https://github.com/withstudiocms/studiocms/pull/1281) [`b5d5719`](https://github.com/withstudiocms/studiocms/commit/b5d5719b612545622813f1a944313e61a08e50f8) Thanks [@renovate](https://github.com/apps/renovate)! - lint
+
+- [#1420](https://github.com/withstudiocms/studiocms/pull/1420) [`139b3a6`](https://github.com/withstudiocms/studiocms/commit/139b3a6820c848c9052e319f53a855172e023091) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Adds new config option for built-in API spec docs available in studiocms config as a boolean option `features.api.apiDocs`
+
+- Updated dependencies [[`a67bcc0`](https://github.com/withstudiocms/studiocms/commit/a67bcc0967c49d366552b76ce1f061472020ade6), [`d7a0217`](https://github.com/withstudiocms/studiocms/commit/d7a0217e5ece55eddfa34399075614bef2041052), [`48a5334`](https://github.com/withstudiocms/studiocms/commit/48a5334051252f4f1192faa9023d56a41f9fe95c), [`07b3508`](https://github.com/withstudiocms/studiocms/commit/07b35088c55a817a218b1568dd9d3f418b01a26d), [`6280e24`](https://github.com/withstudiocms/studiocms/commit/6280e246369fa9732978a335ea6ddc3178f75e71), [`9a1180c`](https://github.com/withstudiocms/studiocms/commit/9a1180c6fe1e09599aa63a323ffcc4ba081a6e16), [`fbb5e47`](https://github.com/withstudiocms/studiocms/commit/fbb5e4749674ff4fd0593f37ae29614061d1f362), [`b7b76cb`](https://github.com/withstudiocms/studiocms/commit/b7b76cbb8e3b4ea4fe7f0d86e4f57acac47a94fe), [`3cff26c`](https://github.com/withstudiocms/studiocms/commit/3cff26c53e7b8ec1781ec7c390666a0276f50c46), [`5c0c17b`](https://github.com/withstudiocms/studiocms/commit/5c0c17b17a65046bcb93654d8bd7b0bfdad4c773), [`ff4e543`](https://github.com/withstudiocms/studiocms/commit/ff4e543a516350cd4139827b925061d8355d4932), [`ba50598`](https://github.com/withstudiocms/studiocms/commit/ba50598168030af18ccea5fedb263379507d5112), [`26d0584`](https://github.com/withstudiocms/studiocms/commit/26d05848b444cb53a26c6e89baa83203bf0398cc), [`466d3c5`](https://github.com/withstudiocms/studiocms/commit/466d3c599fdf54b95788e377cd0c817a53bb6fd3), [`d0ef542`](https://github.com/withstudiocms/studiocms/commit/d0ef542490b45bc65e276c30ae422b3386ed9f88), [`9eec9c3`](https://github.com/withstudiocms/studiocms/commit/9eec9c3b45523b635cfe16d55aa55afabacbebe3), [`f4a209f`](https://github.com/withstudiocms/studiocms/commit/f4a209fc090c90195e2419fff47b48a46eab7441), [`d0ef542`](https://github.com/withstudiocms/studiocms/commit/d0ef542490b45bc65e276c30ae422b3386ed9f88), [`6c9497d`](https://github.com/withstudiocms/studiocms/commit/6c9497d29f2dd84edc3400c1f9dda98e2aaf1ec8), [`0ae47b0`](https://github.com/withstudiocms/studiocms/commit/0ae47b06a4ff03ed9cdf01b136e1a50f4c8c4add), [`0cafedf`](https://github.com/withstudiocms/studiocms/commit/0cafedf4dee4edae1a2e859e6066365c4bea9ed5), [`de6bb17`](https://github.com/withstudiocms/studiocms/commit/de6bb17d75f74d91776658cf1a608eebe94be495), [`1e13417`](https://github.com/withstudiocms/studiocms/commit/1e1341773ea163ae25529b14877078e965899a30), [`9ea0cc9`](https://github.com/withstudiocms/studiocms/commit/9ea0cc90e69e98eb89c793f178928a3cff3f34a5), [`3cc5cff`](https://github.com/withstudiocms/studiocms/commit/3cc5cfffff082d6eaa1b928c1370e661b8cbde07), [`ef7197e`](https://github.com/withstudiocms/studiocms/commit/ef7197ed9ca8dff757e9e791b0452279aa3791ad), [`5d6ec77`](https://github.com/withstudiocms/studiocms/commit/5d6ec77bd7105118239fbd015f182e381dbfcb2c), [`33d3c2b`](https://github.com/withstudiocms/studiocms/commit/33d3c2bf91cf39abc15b5df136c9eeb01b1ba317), [`170adc4`](https://github.com/withstudiocms/studiocms/commit/170adc47216cefdce6b56e01973e3fa7812a1527), [`5d6ec77`](https://github.com/withstudiocms/studiocms/commit/5d6ec77bd7105118239fbd015f182e381dbfcb2c), [`0ae47b0`](https://github.com/withstudiocms/studiocms/commit/0ae47b06a4ff03ed9cdf01b136e1a50f4c8c4add), [`ae9ce1f`](https://github.com/withstudiocms/studiocms/commit/ae9ce1f73545a9db6b54b2bffc145a59ca598aaf), [`9eec9c3`](https://github.com/withstudiocms/studiocms/commit/9eec9c3b45523b635cfe16d55aa55afabacbebe3), [`8743206`](https://github.com/withstudiocms/studiocms/commit/87432066bf8c6788f1af0840b9a793e03d119815), [`5e56327`](https://github.com/withstudiocms/studiocms/commit/5e56327bf0084ab42eec8a59211a9f90a4611b81), [`b5d5719`](https://github.com/withstudiocms/studiocms/commit/b5d5719b612545622813f1a944313e61a08e50f8)]:
+  - @withstudiocms/effect@0.4.0
+  - effectify@0.1.0
+  - @withstudiocms/api-spec@0.3.0
+  - @withstudiocms/sdk@0.3.0
+  - @withstudiocms/cli-kit@0.2.1
+  - @withstudiocms/internal_helpers@0.2.0
+  - @withstudiocms/kysely@0.2.1
+  - @withstudiocms/config-utils@0.2.0
+  - @withstudiocms/auth-kit@0.1.4
+  - @withstudiocms/component-registry@0.1.4
+
 ## 0.3.0
 
 ### Minor Changes
