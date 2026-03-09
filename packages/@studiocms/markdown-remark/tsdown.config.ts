@@ -9,6 +9,8 @@ export default defineConfig({
 		{ from: 'src/styles/**/*.css', to: 'dist', flatten: false },
 		{ from: 'src/**/*.d.ts', to: 'dist', flatten: false },
 	],
-	external: ['studiocms:markdown-remark', 'studiocms:markdown-remark/user-components'],
-	inlineOnly: ['@types/hast', '@types/mdast', '@types/unist'],
+	deps: {
+		neverBundle: ['studiocms:markdown-remark', 'studiocms:markdown-remark/user-components'],
+		onlyAllowBundle: ['@types/hast', '@types/mdast', '@types/unist'],
+	},
 });
