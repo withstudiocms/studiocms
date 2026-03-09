@@ -27,7 +27,7 @@
     "@studiocms/md": "^0.2.0",
     "@studiocms/html": "^0.2.1",
     "astro": "^5.18.0",
-    "pg": "^8.19.0",
+    "pg": "^8.20.0",
     "sharp": "^0.34.3",
     "studiocms": "^0.3.0"
   }
