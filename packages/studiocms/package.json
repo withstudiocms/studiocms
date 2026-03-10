@@ -284,6 +284,7 @@
 	},
 	"peerDependencies": {
 		"@effect/platform": "catalog:effect",
+		"@effect/platform-node": "catalog:effect",
 		"@libsql/client": "catalog:kysely",
 		"astro": "catalog:min",
 		"effect": "catalog:effect",
@@ -291,8 +292,20 @@
 		"mysql2": "catalog:kysely"
 	},
 	"peerDependenciesMeta": {
+		"@effect/platform": {
+			"optional": false
+		},
+		"@effect/platform-node": {
+			"optional": false
+		},
 		"@libsql/client": {
 			"optional": true
+		},
+		"astro": {
+			"optional": false
+		},
+		"effect": {
+			"optional": false
 		},
 		"pg": {
 			"optional": true
