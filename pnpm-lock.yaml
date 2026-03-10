@@ -1321,7 +1321,7 @@ importers:
         specifier: ^0.34.3
         version: 0.34.5
       studiocms:
-        specifier: ^0.4.0
+        specifier: ^0.4.1
         version: link:../../packages/studiocms
     devDependencies:
       '@types/node':
@@ -1352,7 +1352,7 @@ importers:
         specifier: ^0.34.3
         version: 0.34.5
       studiocms:
-        specifier: ^0.4.0
+        specifier: ^0.4.1
         version: link:../../packages/studiocms
     devDependencies:
       '@types/node':
@@ -1383,7 +1383,7 @@ importers:
         specifier: ^0.34.3
         version: 0.34.5
       studiocms:
-        specifier: ^0.4.0
+        specifier: ^0.4.1
         version: link:../../packages/studiocms
     devDependencies:
       '@types/node':
@@ -1420,7 +1420,7 @@ importers:
         specifier: ^0.34.3
         version: 0.34.5
       studiocms:
-        specifier: ^0.4.0
+        specifier: ^0.4.1
         version: link:../../packages/studiocms
     devDependencies:
       '@types/node':
@@ -1454,7 +1454,7 @@ importers:
         specifier: ^0.34.3
         version: 0.34.5
       studiocms:
-        specifier: ^0.4.0
+        specifier: ^0.4.1
         version: link:../../packages/studiocms
     devDependencies:
       '@types/node':
@@ -1488,7 +1488,7 @@ importers:
         specifier: ^0.34.3
         version: 0.34.5
       studiocms:
-        specifier: ^0.4.0
+        specifier: ^0.4.1
         version: link:../../packages/studiocms
     devDependencies:
       '@types/node':

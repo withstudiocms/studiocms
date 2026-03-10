@@ -1,5 +1,11 @@
 # studiocms
 
+## 0.4.1
+
+### Patch Changes
+
+- [#1461](https://github.com/withstudiocms/studiocms/pull/1461) [`af78a9c`](https://github.com/withstudiocms/studiocms/commit/af78a9cf31623f96b93e3731edeff7aba6ec401a) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Fixes imports in Analytics plugin
+
 ## 0.4.0
 
 ### Minor Changes
