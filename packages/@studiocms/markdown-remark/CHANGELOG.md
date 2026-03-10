@@ -1,5 +1,11 @@
 # @studiocms/markdown-remark
 
+## 1.3.1
+
+### Patch Changes
+
+- [#1463](https://github.com/withstudiocms/studiocms/pull/1463) [`d17d916`](https://github.com/withstudiocms/studiocms/commit/d17d9162c10d0d8acd628da00374983769f56828) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Fixes import paths, build scripts, and tweaks Astro config for StudioCMS installations
+
 ## 1.3.0
 
 ### Minor Changes

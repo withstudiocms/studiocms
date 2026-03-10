@@ -1,6 +1,6 @@
 {
 	"name": "effectify",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"description": "Utility library that bridges Effect-ts with various utilities and projects, such as Astro!",
 	"license": "MIT",
 	"author": {
