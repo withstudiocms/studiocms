@@ -6,7 +6,7 @@ import type {
 	ContextHandler,
 	ContextHandlerFn,
 	ParsedContext,
-} from '../definitions';
+} from '../definitions.js';
 
 /**
  * Astro Context Driver implementation.

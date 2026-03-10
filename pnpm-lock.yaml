@@ -1259,6 +1259,12 @@ importers:
       '@astrojs/node':
         specifier: catalog:astrojs
         version: 9.5.4(astro@5.18.0(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
+      '@effect/platform':
+        specifier: catalog:effect
+        version: 0.94.5(effect@3.19.19)
+      '@effect/platform-node':
+        specifier: catalog:effect
+        version: 0.104.1(@effect/cluster@0.56.1(@effect/platform@0.94.5(effect@3.19.19))(@effect/rpc@0.73.0(@effect/platform@0.94.5(effect@3.19.19))(effect@3.19.19))(@effect/sql@0.49.0(@effect/experimental@0.58.0(@effect/platform@0.94.5(effect@3.19.19))(effect@3.19.19))(@effect/platform@0.94.5(effect@3.19.19))(effect@3.19.19))(@effect/workflow@0.16.0(@effect/experimental@0.58.0(@effect/platform@0.94.5(effect@3.19.19))(effect@3.19.19))(@effect/platform@0.94.5(effect@3.19.19))(@effect/rpc@0.73.0(@effect/platform@0.94.5(effect@3.19.19))(effect@3.19.19))(effect@3.19.19))(effect@3.19.19))(@effect/platform@0.94.5(effect@3.19.19))(@effect/rpc@0.73.0(@effect/platform@0.94.5(effect@3.19.19))(effect@3.19.19))(@effect/sql@0.49.0(@effect/experimental@0.58.0(@effect/platform@0.94.5(effect@3.19.19))(effect@3.19.19))(@effect/platform@0.94.5(effect@3.19.19))(effect@3.19.19))(effect@3.19.19)
       '@libsql/client':
         specifier: catalog:kysely
         version: 0.15.15
@@ -1277,6 +1283,9 @@ importers:
       astro:
         specifier: catalog:astrojs
         version: 5.18.0(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
+      effect:
+        specifier: catalog:effect
+        version: 3.19.19
       kysely-turso:
         specifier: catalog:kysely
         version: 0.1.1(@libsql/client@0.15.15)(kysely@0.28.11)

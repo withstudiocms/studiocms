@@ -1,7 +1,7 @@
 import { runSDK, SDKCoreJs } from 'studiocms:sdk';
 import { StudioCMSStorageManagerUrlMappings } from '@withstudiocms/sdk/tables';
 import { Schema } from 'effect';
-import type { UrlMapping, UrlMappingDatabaseDefinition } from '../definitions';
+import type { UrlMapping, UrlMappingDatabaseDefinition } from '../definitions.js';
 
 const { withCodec, withDecoder, withEncoder } = SDKCoreJs.dbService;
 

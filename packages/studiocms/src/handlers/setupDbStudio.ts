@@ -1,6 +1,6 @@
 import createPathResolver from '@withstudiocms/internal_helpers/pathResolver';
 import { addVirtualImports, defineUtility } from 'astro-integration-kit';
-import type { StudioCMSConfig } from 'src/schemas';
+import type { StudioCMSConfig } from '../schemas/index.js';
 
 const { resolve } = createPathResolver(import.meta.url);
 
