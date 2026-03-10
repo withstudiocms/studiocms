@@ -275,6 +275,14 @@ export const AstroConfigViteSettings: Partial<AstroConfig['vite']> = {
 			external: ['@libsql/client', 'kysely-turso', 'pg', 'mysql2'],
 		},
 	},
+	optimizeDeps: {
+		include: ['effect', '@effect/platform', '@effect/platform-node'],
+	},
+	ssr: {
+		optimizeDeps: {
+			include: ['effect', '@effect/platform', '@effect/platform-node'],
+		},
+	},
 };
 
 /**

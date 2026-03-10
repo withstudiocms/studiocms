@@ -4,11 +4,24 @@ import { StudioCMSSDKApiSpec } from '@withstudiocms/api-spec';
 import { SDKAPIError } from '@withstudiocms/api-spec/sdk';
 import { experimental_AstroContainer as AstroContainer } from 'astro/container';
 import { Effect, Layer } from 'effect';
-import { parseMarkdown } from '#utils/tinyMDParser';
+import { micromark } from 'micromark';
+import { gfm, gfmHtml } from 'micromark-extension-gfm';
 // biome-ignore lint/suspicious/noTsIgnore: Typechecker override for Astro component imports
 // @ts-ignore - This is an Astro component, so we ignore TypeScript errors for this import
 import UserListItems from '../../../components/dashboard/user-mgmt/UserListItems.astro';
 import { ProcessChangelog } from './_utils/changelog.js';
+
+/**
+ * Parses a Markdown string and returns the rendered output to HTML.
+ *
+ * @param str - The Markdown string to parse.
+ * @returns The rendered output as a string.
+ */
+export const parseMarkdown = (str: string) =>
+	micromark(str, {
+		extensions: [gfm()],
+		htmlExtensions: [gfmHtml()],
+	});
 
 /**
  * Utility function to catch errors in the Effect chain and convert them into SDKAPIError instances with a provided message.

@@ -54,7 +54,7 @@
   "scripts": {
     "prepublish": "pnpm build",
     "build": "tsdown --config tsdown.config.ts --clean",
-    "dev": "tsdown --config tsdown.config.ts --watch --no-clean",
+    "dev": "tsdown --config tsdown.config.ts --no-clean",
     "test": "vitest"
   },
   "publishConfig": {
