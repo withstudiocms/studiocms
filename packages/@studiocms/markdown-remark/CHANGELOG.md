@@ -1,5 +1,20 @@
 # @studiocms/markdown-remark
 
+## 1.3.0
+
+### Minor Changes
+
+- [#1356](https://github.com/withstudiocms/studiocms/pull/1356) [`262103e`](https://github.com/withstudiocms/studiocms/commit/262103ed60201c709582c97f8a7aae40fef24e32) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Migrate to main withstudiocms/studiocms mono repo and refactor
+
+### Patch Changes
+
+- [#1384](https://github.com/withstudiocms/studiocms/pull/1384) [`1350aed`](https://github.com/withstudiocms/studiocms/commit/1350aed02274cda292eb4c27623a9cb5d6dbdd44) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update all non-major dependencies
+
+- [#1370](https://github.com/withstudiocms/studiocms/pull/1370) [`1e2d588`](https://github.com/withstudiocms/studiocms/commit/1e2d5888fd00471d0a7088dba5b972464ad47ac0) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Fix Vite dynamic import comment preservation
+
+- Updated dependencies [[`5c0c17b`](https://github.com/withstudiocms/studiocms/commit/5c0c17b17a65046bcb93654d8bd7b0bfdad4c773), [`0ae47b0`](https://github.com/withstudiocms/studiocms/commit/0ae47b06a4ff03ed9cdf01b136e1a50f4c8c4add), [`0ae47b0`](https://github.com/withstudiocms/studiocms/commit/0ae47b06a4ff03ed9cdf01b136e1a50f4c8c4add)]:
+  - @withstudiocms/internal_helpers@0.2.0
+
 ## 1.2.0
 
 ### Minor Changes

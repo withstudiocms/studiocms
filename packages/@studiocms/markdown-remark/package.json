@@ -1,6 +1,6 @@
 {
   "name": "@studiocms/markdown-remark",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "type": "module",
   "author": "studiocms",
   "license": "MIT",
@@ -64,7 +64,7 @@
     "dist"
   ],
   "dependencies": {
-		"@withstudiocms/internal_helpers": "workspace:^",
+    "@withstudiocms/internal_helpers": "workspace:^",
     "github-slugger": "^2.0.0",
     "hastscript": "^9.0.1",
     "hast-util-from-html": "^2.0.3",

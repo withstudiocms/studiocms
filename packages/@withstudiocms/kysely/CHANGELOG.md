@@ -1,5 +1,13 @@
 # @withstudiocms/kysely
 
+## 0.2.1
+
+### Patch Changes
+
+- [#1372](https://github.com/withstudiocms/studiocms/pull/1372) [`466d3c5`](https://github.com/withstudiocms/studiocms/commit/466d3c599fdf54b95788e377cd0c817a53bb6fd3) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Fixes an issue where it could be possible that multiple schema updates that ran too fast would cause errors
+
+- [#1281](https://github.com/withstudiocms/studiocms/pull/1281) [`b5d5719`](https://github.com/withstudiocms/studiocms/commit/b5d5719b612545622813f1a944313e61a08e50f8) Thanks [@renovate](https://github.com/apps/renovate)! - lint
+
 ## 0.2.0
 
 ### Minor Changes

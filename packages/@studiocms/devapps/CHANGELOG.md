@@ -1,5 +1,17 @@
 # @studiocms/devapps
 
+## 0.3.0
+
+### Minor Changes
+
+- [#1322](https://github.com/withstudiocms/studiocms/pull/1322) [`0ae47b0`](https://github.com/withstudiocms/studiocms/commit/0ae47b06a4ff03ed9cdf01b136e1a50f4c8c4add) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Migrate from Zod Schemas to Effect Schemas
+
+- [#1322](https://github.com/withstudiocms/studiocms/pull/1322) [`0ae47b0`](https://github.com/withstudiocms/studiocms/commit/0ae47b06a4ff03ed9cdf01b136e1a50f4c8c4add) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Update Plugin hooks to align with new schemas
+
+### Patch Changes
+
+- [#1388](https://github.com/withstudiocms/studiocms/pull/1388) [`79f5b86`](https://github.com/withstudiocms/studiocms/commit/79f5b8648ddcfea1006599d656bfa0966e04ddce) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update dependency sanitize-html to ^2.17.1
+
 ## 0.2.1
 
 ### Patch Changes

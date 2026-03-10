@@ -1,5 +1,17 @@
 # @withstudiocms/internal_helpers
 
+## 0.2.0
+
+### Minor Changes
+
+- [#1322](https://github.com/withstudiocms/studiocms/pull/1322) [`0ae47b0`](https://github.com/withstudiocms/studiocms/commit/0ae47b06a4ff03ed9cdf01b136e1a50f4c8c4add) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Migrate from Zod Schemas to Effect Schemas
+
+- [#1322](https://github.com/withstudiocms/studiocms/pull/1322) [`0ae47b0`](https://github.com/withstudiocms/studiocms/commit/0ae47b06a4ff03ed9cdf01b136e1a50f4c8c4add) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Update Plugin hooks to align with new schemas
+
+### Patch Changes
+
+- [#1387](https://github.com/withstudiocms/studiocms/pull/1387) [`5c0c17b`](https://github.com/withstudiocms/studiocms/commit/5c0c17b17a65046bcb93654d8bd7b0bfdad4c773) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update dependency mdast-util-from-markdown to ^2.0.3
+
 ## 0.1.1
 
 ### Patch Changes

@@ -1306,10 +1306,10 @@ importers:
         specifier: ^0.15.15
         version: 0.15.15
       '@studiocms/blog':
-        specifier: ^0.2.0
+        specifier: ^0.3.0
         version: link:../../packages/@studiocms/blog
       '@studiocms/md':
-        specifier: ^0.2.0
+        specifier: ^0.3.0
         version: link:../../packages/@studiocms/md
       astro:
         specifier: ^5.18.0
@@ -1321,7 +1321,7 @@ importers:
         specifier: ^0.34.3
         version: 0.34.5
       studiocms:
-        specifier: ^0.3.0
+        specifier: ^0.4.0
         version: link:../../packages/studiocms
     devDependencies:
       '@types/node':
@@ -1337,10 +1337,10 @@ importers:
         specifier: ^9.5.4
         version: 9.5.4(astro@5.18.0(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
       '@studiocms/blog':
-        specifier: ^0.2.0
+        specifier: ^0.3.0
         version: link:../../packages/@studiocms/blog
       '@studiocms/md':
-        specifier: ^0.2.0
+        specifier: ^0.3.0
         version: link:../../packages/@studiocms/md
       astro:
         specifier: ^5.18.0
@@ -1352,7 +1352,7 @@ importers:
         specifier: ^0.34.3
         version: 0.34.5
       studiocms:
-        specifier: ^0.3.0
+        specifier: ^0.4.0
         version: link:../../packages/studiocms
     devDependencies:
       '@types/node':
@@ -1368,10 +1368,10 @@ importers:
         specifier: ^9.5.4
         version: 9.5.4(astro@5.18.0(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
       '@studiocms/blog':
-        specifier: ^0.2.0
+        specifier: ^0.3.0
         version: link:../../packages/@studiocms/blog
       '@studiocms/md':
-        specifier: ^0.2.0
+        specifier: ^0.3.0
         version: link:../../packages/@studiocms/md
       astro:
         specifier: ^5.18.0
@@ -1383,7 +1383,7 @@ importers:
         specifier: ^0.34.3
         version: 0.34.5
       studiocms:
-        specifier: ^0.3.0
+        specifier: ^0.4.0
         version: link:../../packages/studiocms
     devDependencies:
       '@types/node':
@@ -1402,13 +1402,13 @@ importers:
         specifier: ^0.15.15
         version: 0.15.15
       '@studiocms/github':
-        specifier: ^0.2.0
+        specifier: ^0.3.0
         version: link:../../packages/@studiocms/github
       '@studiocms/html':
-        specifier: ^0.2.1
+        specifier: ^0.3.0
         version: link:../../packages/@studiocms/html
       '@studiocms/md':
-        specifier: ^0.2.0
+        specifier: ^0.3.0
         version: link:../../packages/@studiocms/md
       astro:
         specifier: ^5.18.0
@@ -1420,7 +1420,7 @@ importers:
         specifier: ^0.34.3
         version: 0.34.5
       studiocms:
-        specifier: ^0.3.0
+        specifier: ^0.4.0
         version: link:../../packages/studiocms
     devDependencies:
       '@types/node':
@@ -1436,13 +1436,13 @@ importers:
         specifier: ^9.5.4
         version: 9.5.4(astro@5.18.0(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
       '@studiocms/github':
-        specifier: ^0.2.0
+        specifier: ^0.3.0
         version: link:../../packages/@studiocms/github
       '@studiocms/html':
-        specifier: ^0.2.1
+        specifier: ^0.3.0
         version: link:../../packages/@studiocms/html
       '@studiocms/md':
-        specifier: ^0.2.0
+        specifier: ^0.3.0
         version: link:../../packages/@studiocms/md
       astro:
         specifier: ^5.18.0
@@ -1454,7 +1454,7 @@ importers:
         specifier: ^0.34.3
         version: 0.34.5
       studiocms:
-        specifier: ^0.3.0
+        specifier: ^0.4.0
         version: link:../../packages/studiocms
     devDependencies:
       '@types/node':
@@ -1470,13 +1470,13 @@ importers:
         specifier: ^9.5.4
         version: 9.5.4(astro@5.18.0(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
       '@studiocms/github':
-        specifier: ^0.2.0
+        specifier: ^0.3.0
         version: link:../../packages/@studiocms/github
       '@studiocms/html':
-        specifier: ^0.2.1
+        specifier: ^0.3.0
         version: link:../../packages/@studiocms/html
       '@studiocms/md':
-        specifier: ^0.2.0
+        specifier: ^0.3.0
         version: link:../../packages/@studiocms/md
       astro:
         specifier: ^5.18.0
@@ -1488,7 +1488,7 @@ importers:
         specifier: ^0.34.3
         version: 0.34.5
       studiocms:
-        specifier: ^0.3.0
+        specifier: ^0.4.0
         version: link:../../packages/studiocms
     devDependencies:
       '@types/node':

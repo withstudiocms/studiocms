@@ -1,5 +1,19 @@
 # @withstudiocms/sdk
 
+## 0.3.0
+
+### Minor Changes
+
+- [#1322](https://github.com/withstudiocms/studiocms/pull/1322) [`0ae47b0`](https://github.com/withstudiocms/studiocms/commit/0ae47b06a4ff03ed9cdf01b136e1a50f4c8c4add) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Migrate from Zod Schemas to Effect Schemas
+
+- [#1322](https://github.com/withstudiocms/studiocms/pull/1322) [`0ae47b0`](https://github.com/withstudiocms/studiocms/commit/0ae47b06a4ff03ed9cdf01b136e1a50f4c8c4add) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Update Plugin hooks to align with new schemas
+
+### Patch Changes
+
+- [#1289](https://github.com/withstudiocms/studiocms/pull/1289) [`6280e24`](https://github.com/withstudiocms/studiocms/commit/6280e246369fa9732978a335ea6ddc3178f75e71) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update dependency diff2html to ^3.4.56
+
+- [#1374](https://github.com/withstudiocms/studiocms/pull/1374) [`33d3c2b`](https://github.com/withstudiocms/studiocms/commit/33d3c2bf91cf39abc15b5df136c9eeb01b1ba317) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Fixes import that pointed to module with server-only code
+
 ## 0.2.0
 
 ### Minor Changes

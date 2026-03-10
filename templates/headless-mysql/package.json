@@ -23,12 +23,12 @@
   },
   "dependencies": {
     "@astrojs/node": "^9.5.4",
-    "@studiocms/github": "^0.2.0",
-    "@studiocms/md": "^0.2.0",
-    "@studiocms/html": "^0.2.1",
+    "@studiocms/github": "^0.3.0",
+    "@studiocms/md": "^0.3.0",
+    "@studiocms/html": "^0.3.0",
     "astro": "^5.18.0",
     "mysql2": "^3.18.0",
     "sharp": "^0.34.3",
-    "studiocms": "^0.3.0"
+    "studiocms": "^0.4.0"
   }
 }

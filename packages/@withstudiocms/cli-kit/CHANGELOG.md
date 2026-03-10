@@ -1,5 +1,17 @@
 # @withstudiocms/cli-kit
 
+## 0.2.1
+
+### Patch Changes
+
+- [#1290](https://github.com/withstudiocms/studiocms/pull/1290) [`9a1180c`](https://github.com/withstudiocms/studiocms/commit/9a1180c6fe1e09599aa63a323ffcc4ba081a6e16) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update dependency ansi-escapes to ^7.3.0
+
+- [#1321](https://github.com/withstudiocms/studiocms/pull/1321) [`3cff26c`](https://github.com/withstudiocms/studiocms/commit/3cff26c53e7b8ec1781ec7c390666a0276f50c46) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update dependency slice-ansi to v8
+
+- [#1392](https://github.com/withstudiocms/studiocms/pull/1392) [`ff4e543`](https://github.com/withstudiocms/studiocms/commit/ff4e543a516350cd4139827b925061d8355d4932) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update dependency wrap-ansi to v10
+
+- [#1410](https://github.com/withstudiocms/studiocms/pull/1410) [`ba50598`](https://github.com/withstudiocms/studiocms/commit/ba50598168030af18ccea5fedb263379507d5112) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update dependency strip-ansi to ^7.2.0
+
 ## 0.2.0
 
 ### Minor Changes
