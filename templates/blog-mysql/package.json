@@ -22,9 +22,12 @@
   },
   "dependencies": {
     "@astrojs/node": "^9.5.4",
+    "@effect/platform": "^0.94.5",
+    "@effect/platform-node": "^0.104.1",
     "@studiocms/blog": "^0.3.0",
     "@studiocms/md": "^0.3.0",
     "astro": "^5.18.0",
+		"effect": "^3.19.19",
     "mysql2": "^3.18.0",
     "sharp": "^0.34.3",
     "studiocms": "^0.4.2"

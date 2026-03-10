@@ -22,10 +22,13 @@
   },
   "dependencies": {
     "@astrojs/node": "^9.5.4",
+    "@effect/platform": "^0.94.5",
+    "@effect/platform-node": "^0.104.1",
     "@libsql/client": "^0.15.15",
     "@studiocms/blog": "^0.3.0",
     "@studiocms/md": "^0.3.0",
     "astro": "^5.18.0",
+		"effect": "^3.19.19",
     "kysely-turso": "^0.1.1",
     "sharp": "^0.34.3",
     "studiocms": "^0.4.2"
