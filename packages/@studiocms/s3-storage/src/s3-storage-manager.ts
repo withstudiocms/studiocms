@@ -197,7 +197,7 @@ export default class S3ApiService<C, R> implements StorageApiBuilderDefinition<C
 				'test',
 				'list',
 			];
-			if (authRequiredActions.includes(jsonBody.action) && !isAuthorized(type)) {
+			if (authRequiredActions.includes(jsonBody.action) && !(await isAuthorized(type))) {
 				return { data: { error: 'Unauthorized' }, status: 401 };
 			}
 
@@ -369,7 +369,7 @@ export default class S3ApiService<C, R> implements StorageApiBuilderDefinition<C
 
 	getPUT(type?: AuthorizationType): StorageAPIEndpointFn<C, R> {
 		return this.driver.handleEndpoint(async ({ getArrayBuffer, getHeader, isAuthorized }) => {
-			if (!isAuthorized(type)) {
+			if (!(await isAuthorized(type))) {
 				return { data: { error: 'Unauthorized' }, status: 401 };
 			}
 
