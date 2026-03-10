@@ -1,7 +1,7 @@
-import { globSync } from 'node:fs';
+// import { globSync } from 'node:fs';
 import node from '@astrojs/node';
 import { defineConfig } from 'astro/config';
-import { hmrIntegration } from 'astro-integration-kit/dev';
+// import { hmrIntegration } from 'astro-integration-kit/dev';
 import studioCMS from 'studiocms';
 
 const site =
@@ -11,27 +11,27 @@ const site =
 
 // console.log('Site URL:', site);
 
-const studiocmsScopedPackages = globSync('../packages/@studiocms/*').filter(
-	(v) => !v.endsWith('migrator')
-);
-const withstudiocmsScopedPackages = globSync('../packages/@withstudiocms/*').filter(
-	(v) => !v.endsWith('buildkit')
-);
+// const studiocmsScopedPackages = globSync('../packages/@studiocms/*').filter(
+// 	(v) => !v.endsWith('migrator')
+// );
+// const withstudiocmsScopedPackages = globSync('../packages/@withstudiocms/*').filter(
+// 	(v) => !v.endsWith('buildkit')
+// );
 
-function appendDistPath(paths: string[]) {
-	return paths.map((p) => `${p}/dist`);
-}
+// function appendDistPath(paths: string[]) {
+// 	return paths.map((p) => `${p}/dist`);
+// }
 
-function appendDistFrontendPaths(path: string): string[] {
-	const distPath = `${path}/dist`;
-	return [distPath];
-}
+// function appendDistFrontendPaths(path: string): string[] {
+// 	const distPath = `${path}/dist`;
+// 	return [distPath];
+// }
 
-const packagePaths = [
-	...appendDistPath(studiocmsScopedPackages),
-	...appendDistPath(withstudiocmsScopedPackages),
-	...appendDistFrontendPaths('../packages/studiocms'),
-];
+// const packagePaths = [
+// 	...appendDistPath(studiocmsScopedPackages),
+// 	...appendDistPath(withstudiocmsScopedPackages),
+// 	...appendDistFrontendPaths('../packages/studiocms'),
+// ];
 
 // https://astro.build/config
 export default defineConfig({
@@ -42,9 +42,9 @@ export default defineConfig({
 		checkOrigin: false,
 	},
 	integrations: [
-		hmrIntegration({
-			directories: packagePaths,
-		}),
+		// hmrIntegration({
+		// 	directories: packagePaths,
+		// }),
 		studioCMS(),
 	],
 

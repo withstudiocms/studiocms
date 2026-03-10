@@ -4,7 +4,7 @@ import type {
 	ContextDriverDefinition,
 	StorageApiBuilderDefinition,
 	UrlMappingServiceDefinition,
-} from '../definitions';
+} from '../definitions.js';
 
 /**
  * API Core implementation.

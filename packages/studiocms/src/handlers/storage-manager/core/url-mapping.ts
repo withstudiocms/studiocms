@@ -4,7 +4,7 @@ import type {
 	UrlMappingDatabaseDefinition,
 	UrlMappingServiceDefinition,
 	UrlMetadata,
-} from '../definitions';
+} from '../definitions.js';
 
 /**
  * URL Mapping Service implementation.
