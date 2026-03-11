@@ -1,5 +1,11 @@
 # @studiocms/s3-storage
 
+## 0.3.1
+
+### Patch Changes
+
+- [#1468](https://github.com/withstudiocms/studiocms/pull/1468) [`42c47d9`](https://github.com/withstudiocms/studiocms/commit/42c47d9dd3557c65fbbba632e630b10b9f6a5007) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Fixes missing awaits in the Storage Manager
+
 ## 0.3.0
 
 ### Minor Changes
