@@ -70,6 +70,11 @@
     "vite",
     "vitest",
     "zod",
-    "mysql2"
+    "mysql2",
+    "astro",
+    "@astrojs/node",
+    "@astrojs/rss",
+    "@astrojs/internal-helpers",
+    "@astrojs/markdown-remark"
   ]
 }
