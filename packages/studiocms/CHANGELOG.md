@@ -1,5 +1,17 @@
 # studiocms
 
+## 0.4.3
+
+### Patch Changes
+
+- [#1470](https://github.com/withstudiocms/studiocms/pull/1470) [`66b634c`](https://github.com/withstudiocms/studiocms/commit/66b634c0b0ecbf501c948cc6b7aa1f584ea2561d) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Fixes createResetLink endpoints rank check
+
+- [#1472](https://github.com/withstudiocms/studiocms/pull/1472) [`87f0239`](https://github.com/withstudiocms/studiocms/commit/87f02392152c83ec5796c0dc2b6d82a69d6d4641) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Improves permission checks for user ranks during user creation in the REST API endpoint
+
+- [#1466](https://github.com/withstudiocms/studiocms/pull/1466) [`d65992d`](https://github.com/withstudiocms/studiocms/commit/d65992d780dfefb63a9bec747357cef57075b3f4) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Fixes peerDependencies and associated metadata
+
+- [#1471](https://github.com/withstudiocms/studiocms/pull/1471) [`66b30b7`](https://github.com/withstudiocms/studiocms/commit/66b30b73e32af52ba4d72fbc994a073ae3397749) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Prevents unauthorized modification of user notification preferences
+
 ## 0.4.2
 
 ### Patch Changes
