@@ -1362,20 +1362,17 @@ export const RestApiSecureHandler = HttpApiBuilder.group(
 							});
 						}
 
-						if (newUserRank === 'owner' && rank !== 'owner') {
+						const callerPerm = availablePermissionRanks.indexOf(rank);
+						const targetPerm = availablePermissionRanks.indexOf(newUserRank);
+
+						if (targetPerm >= callerPerm) {
 							return yield* new RestAPIError({
-								error: 'Unauthorized to create user with owner rank',
+								error: 'Unauthorized: insufficient permissions to assign target rank',
 							});
 						}
 
 						if (!password) {
 							password = yield* sdk.UTIL.Generators.generateRandomPassword(12);
-						}
-
-						if (rank === 'admin' && newUserRank === 'owner') {
-							return yield* new RestAPIError({
-								error: 'Unauthorized to create user with owner rank',
-							});
 						}
 
 						const checkEmail = isValidEmail(email);
