@@ -90,13 +90,35 @@ export const CreateHandlers = HttpApiBuilder.group(
 							return yield* new DashboardAPIError({ error: 'Unauthorized' });
 						}
 
-						const [token, user] = yield* Effect.all([
-							sdk.resetTokenBucket.new(userId),
-							sdk.GET.users.byId(userId),
-						]);
+						const user = yield* sdk.GET.users.byId(userId);
 
-						if (!token || !user) {
+						if (!user) {
 							return yield* new DashboardAPIError({ error: 'User not found' });
+						}
+
+						const rank = user.permissionsData?.rank;
+
+						if (!rank) {
+							return yield* new DashboardAPIError({ error: 'User rank not found' });
+						}
+
+						if (!ValidRanks.has(rank) || rank === 'unknown') {
+							return yield* new DashboardAPIError({ error: 'Invalid rank' });
+						}
+
+						const callerPerm = availablePermissionRanks.indexOf(userData.permissionLevel);
+						const targetPerm = availablePermissionRanks.indexOf(rank);
+
+						if (targetPerm >= callerPerm) {
+							return yield* new DashboardAPIError({
+								error: 'Unauthorized: insufficient permissions to assign target rank',
+							});
+						}
+
+						const token = yield* sdk.resetTokenBucket.new(userId);
+
+						if (!token) {
+							return yield* new DashboardAPIError({ error: 'Failed to generate reset token' });
 						}
 
 						yield* notifier
