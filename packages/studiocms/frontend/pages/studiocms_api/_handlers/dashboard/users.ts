@@ -277,6 +277,12 @@ export const UsersHandlers = HttpApiBuilder.group(StudioCMSDashboardApiSpec, 'us
 					});
 				}
 
+				if (id !== userData.user?.id && !userData.userPermissionLevel.isAdmin) {
+					return yield* new DashboardAPIError({
+						error: "Unauthorized: cannot modify another user's notification preferences",
+					});
+				}
+
 				const existingUser = yield* sdk.GET.users.byId(id);
 
 				if (!existingUser) {
