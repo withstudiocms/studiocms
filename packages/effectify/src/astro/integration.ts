@@ -68,6 +68,9 @@ export const defineIntegration =
 						// biome-ignore lint/suspicious/noExplicitAny: Astro's hook parameters are complex and vary widely, so we use `any` here for simplicity.
 						Effect.runPromise(hookEffect(params as any)).catch((error) => {
 							console.error(`Error in hook "${hookName}" of integration "${name}":`, error);
+							if (error instanceof EffectifyIntegrationHookError) {
+								throw error; // Re-throw if it's already an EffectifyIntegrationHookError
+							}
 							throw new EffectifyIntegrationHookError({
 								hook: hookName as EffectifyIntegrationErrorOptions,
 								message: `Error in hook "${hookName}" of integration "${name}": ${error instanceof Error ? error.message : String(error)}`,
