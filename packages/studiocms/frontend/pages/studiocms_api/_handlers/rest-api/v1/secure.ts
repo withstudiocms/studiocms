@@ -1636,19 +1636,24 @@ export const RestApiSecureHandler = HttpApiBuilder.group(
 							})
 						);
 
-						if (rank !== 'owner') {
-							data = data.filter((user) => user.rank !== 'owner');
-						}
+						const loggedInUserRankIndex = availablePermissionRanks.indexOf(user.rank);
+
+						data = data.filter((candidate) => {
+							const candidateRankIndex = availablePermissionRanks.indexOf(candidate.rank);
+							return loggedInUserRankIndex > candidateRankIndex;
+						});
 
 						if (name) {
-							data = data.filter((user) => user.name.toLowerCase().includes(name.toLowerCase()));
+							data = data.filter((candidate) =>
+								candidate.name.toLowerCase().includes(name.toLowerCase())
+							);
 						}
 						if (rank) {
-							data = data.filter((user) => user.rank === rank);
+							data = data.filter((candidate) => candidate.rank === rank);
 						}
 						if (username) {
-							data = data.filter((user) =>
-								user.username.toLowerCase().includes(username.toLowerCase())
+							data = data.filter((candidate) =>
+								candidate.username.toLowerCase().includes(username.toLowerCase())
 							);
 						}
 
