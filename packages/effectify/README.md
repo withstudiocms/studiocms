@@ -119,7 +119,7 @@ export const myIntegration = defineIntegration({
 					logger.info(`${name} is enabled with API key: ${options.apiKey}`);
 				}
 			}),
-		'astro:config:done': ({ config }) =>
+		'astro:config:done': ({ logger }) =>
 			Effect.gen(function* () {
 				logger.info(`Configuration complete for ${name}`);
 			}),

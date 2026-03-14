@@ -74,19 +74,24 @@ export const defineIntegration =
 			name,
 			hooks: Object.entries(effectHooks).reduce(
 				(acc, [hookName, hookEffect]) => {
-					acc[hookName as keyof BaseIntegrationHooks] = async (params) =>
-						// biome-ignore lint/suspicious/noExplicitAny: Astro's hook parameters are complex and vary widely, so we use `any` here for simplicity.
-						Effect.runPromise(hookEffect(params as any)).catch((error) => {
+					if (typeof hookEffect !== 'function') return acc;
+					acc[hookName as keyof BaseIntegrationHooks] = async (params) => {
+						try {
+							// biome-ignore lint/suspicious/noExplicitAny: Astro's hook parameters are complex and vary widely, so we use `any` here for simplicity.
+							const effect = hookEffect(params as any);
+							await Effect.runPromise(effect);
+						} catch (error) {
 							console.error(`Error in hook "${hookName}" of integration "${name}":`, error);
 							if (error instanceof EffectifyIntegrationHookError) {
-								throw error; // Re-throw if it's already an EffectifyIntegrationHookError
+								throw error;
 							}
 							throw new EffectifyIntegrationHookError({
 								hook: hookName as EffectifyIntegrationErrorOptions,
 								message: `Error in hook "${hookName}" of integration "${name}": ${error instanceof Error ? error.message : String(error)}`,
 								cause: error,
 							});
-						});
+						}
+					};
 					return acc;
 				},
 				{} as AstroIntegration['hooks']
