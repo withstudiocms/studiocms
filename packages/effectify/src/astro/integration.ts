@@ -81,13 +81,14 @@ export const defineIntegration =
 							const effect = hookEffect(params as any);
 							await Effect.runPromise(effect);
 						} catch (error) {
-							console.error(`Error in hook "${hookName}" of integration "${name}":`, error);
+							const safeMessage = `Error in hook "${hookName}" of integration "${name}".`;
+							console.error(safeMessage);
 							if (error instanceof EffectifyIntegrationHookError) {
 								throw error;
 							}
 							throw new EffectifyIntegrationHookError({
 								hook: hookName as EffectifyIntegrationErrorOptions,
-								message: `Error in hook "${hookName}" of integration "${name}": ${error instanceof Error ? error.message : String(error)}`,
+								message: safeMessage,
 								cause: error,
 							});
 						}
