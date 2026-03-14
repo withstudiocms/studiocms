@@ -86,6 +86,83 @@ const MyApiLive = HttpApiBuilder.api(api).pipe(Layer.provide(groupLive));
 const ALL = HttpApiToAstroRoute(MyApiLive);
 ```
 
+#### `effectify/astro/integration`
+
+This module provides a `defineIntegration` utility for building Astro integrations with Effect-ts. The helper adds schema-validation for integration options and automatically wraps integration hooks to surface errors as `EffectifyIntegrationHookError` instances.
+
+##### Features
+
+- **Schema Validation** - Validate integration options using Effect Schema at initialization time
+- **Automatic Error Handling** - All Effect-based hooks are wrapped to catch and re-throw errors with proper context
+- **Type Safety** - Full TypeScript support with inferred types from schemas
+- **Effect Integration** - Native Effect-ts patterns for hooks
+
+##### Example
+
+```ts
+import { Effect, Schema } from 'effect';
+import { defineIntegration, EffectifyIntegrationHookError } from 'effectify/astro/integration';
+
+// Define an Astro integration with schema-validated options
+export const myIntegration = defineIntegration({
+	name: 'my-integration',
+	schema: Schema.Struct({
+		apiKey: Schema.String,
+		enabled: Schema.optionalWith(Schema.Boolean, {
+			default: () => true,
+		}),
+	}),
+	setup: ({ name, options }) => ({
+		'astro:config:setup': ({ logger }) =>
+			Effect.gen(function* () {
+				if (options.enabled) {
+					logger.info(`${name} is enabled with API key: ${options.apiKey}`);
+				}
+			}),
+		'astro:config:done': ({ config }) =>
+			Effect.gen(function* () {
+				logger.info(`Configuration complete for ${name}`);
+			}),
+	}),
+});
+
+// Use in astro.config.mjs
+export default defineConfig({
+	integrations: [
+		myIntegration({
+			apiKey: 'my-secret-key',
+			enabled: true,
+		}),
+	],
+});
+```
+
+##### Error Handling
+
+The `defineIntegration` utility automatically wraps all hooks to catch errors. You can also explicitly handle errors within your hooks:
+
+```ts
+export const myIntegration = defineIntegration({
+	name: 'my-integration',
+	setup: ({ name, options }) => ({
+		'astro:config:setup': ({ logger }) =>
+			Effect.gen(function* () {
+				// Your integration logic here
+			}).pipe(
+				Effect.catchAll((error) =>
+					Effect.fail(
+						new EffectifyIntegrationHookError({
+							hook: 'astro:config:setup',
+							message: 'Failed to setup integration',
+							cause: error,
+						})
+					)
+				)
+			),
+	}),
+});
+```
+
 ### `effectify/schemas`
 
 #### `FunctionSchema` / `SyncFunctionSchema`
