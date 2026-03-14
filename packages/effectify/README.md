@@ -116,7 +116,7 @@ export const myIntegration = defineIntegration({
 		'astro:config:setup': ({ logger }) =>
 			Effect.gen(function* () {
 				if (options.enabled) {
-					logger.info(`${name} is enabled with API key: ${options.apiKey}`);
+					logger.info(`${name} is enabled`);
 				}
 			}),
 		'astro:config:done': ({ logger }) =>
