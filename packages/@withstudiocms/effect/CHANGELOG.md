@@ -1,5 +1,12 @@
 # @withstudiocms/effect
 
+## 0.4.1
+
+### Patch Changes
+
+- Updated dependencies [[`3f7e6cf`](https://github.com/withstudiocms/studiocms/commit/3f7e6cf419781e714f6802117b8ead0e3ddd7f47)]:
+  - effectify@0.2.0
+
 ## 0.4.0
 
 ### Minor Changes
