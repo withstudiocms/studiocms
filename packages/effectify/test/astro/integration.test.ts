@@ -300,7 +300,7 @@ describe(parentSuiteName, () => {
 					expect(error).toBeInstanceOf(EffectifyIntegrationHookError);
 					if (error instanceof EffectifyIntegrationHookError) {
 						expect(error.hook).toBe('astro:config:setup');
-						expect(error.message).toContain('Custom hook error');
+						expect(error.message).toContain('test-hook-custom-error');
 					}
 				}
 			});
