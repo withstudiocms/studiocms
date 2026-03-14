@@ -237,24 +237,26 @@ describe(parentSuiteName, () => {
 
 		const integration = integrationFactory();
 
-		await allure.step('Execute hook that throws error', async (ctx) => {
-			const mockParams = {
-				config: {},
-				command: 'dev' as const,
-			} as HookParameters<'astro:config:setup'>;
+		try {
+			await allure.step('Execute hook that throws error', async (ctx) => {
+				const mockParams = {
+					config: {},
+					command: 'dev' as const,
+				} as HookParameters<'astro:config:setup'>;
 
-			await ctx.parameter('Test Error Message', testError.message);
+				await ctx.parameter('Test Error Message', testError.message);
 
-			await expect(integration.hooks['astro:config:setup']?.(mockParams)).rejects.toThrow();
+				await expect(integration.hooks['astro:config:setup']?.(mockParams)).rejects.toThrow();
 
-			try {
-				await integration.hooks['astro:config:setup']?.(mockParams);
-			} catch (error) {
-				expect(consoleErrorSpy).toHaveBeenCalled();
-			}
-		});
-
-		consoleErrorSpy.mockRestore();
+				try {
+					await integration.hooks['astro:config:setup']?.(mockParams);
+				} catch (error) {
+					expect(consoleErrorSpy).toHaveBeenCalled();
+				}
+			});
+		} finally {
+			consoleErrorSpy.mockRestore();
+		}
 	});
 
 	test('defineIntegration - should handle EffectifyIntegrationHookError in hooks', async () => {
@@ -279,30 +281,32 @@ describe(parentSuiteName, () => {
 
 		const integration = integrationFactory();
 
-		await allure.step('Execute hook that throws EffectifyIntegrationHookError', async (ctx) => {
-			const mockParams = {
-				config: {},
-				command: 'dev' as const,
-			} as HookParameters<'astro:config:setup'>;
+		try {
+			await allure.step('Execute hook that throws EffectifyIntegrationHookError', async (ctx) => {
+				const mockParams = {
+					config: {},
+					command: 'dev' as const,
+				} as HookParameters<'astro:config:setup'>;
 
-			await ctx.parameter('Hook Error Type', hookError._tag);
+				await ctx.parameter('Hook Error Type', hookError._tag);
 
-			await expect(integration.hooks['astro:config:setup']?.(mockParams)).rejects.toThrow(
-				EffectifyIntegrationHookError
-			);
+				await expect(integration.hooks['astro:config:setup']?.(mockParams)).rejects.toThrow(
+					EffectifyIntegrationHookError
+				);
 
-			try {
-				await integration.hooks['astro:config:setup']?.(mockParams);
-			} catch (error) {
-				expect(error).toBeInstanceOf(EffectifyIntegrationHookError);
-				if (error instanceof EffectifyIntegrationHookError) {
-					expect(error.hook).toBe('astro:config:setup');
-					expect(error.message).toContain('Custom hook error');
+				try {
+					await integration.hooks['astro:config:setup']?.(mockParams);
+				} catch (error) {
+					expect(error).toBeInstanceOf(EffectifyIntegrationHookError);
+					if (error instanceof EffectifyIntegrationHookError) {
+						expect(error.hook).toBe('astro:config:setup');
+						expect(error.message).toContain('Custom hook error');
+					}
 				}
-			}
-		});
-
-		consoleErrorSpy.mockRestore();
+			});
+		} finally {
+			consoleErrorSpy.mockRestore();
+		}
 	});
 
 	test('defineIntegration - should support multiple hooks', async () => {

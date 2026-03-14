@@ -43,7 +43,7 @@ export const defineIntegration =
 		setup: (params: { name: string; options: A }) => EffectifyAstroIntegrationHooks;
 	}): ((options?: I) => AstroIntegration) =>
 	(options) => {
-		let finalOptions: A | undefined;
+		let finalOptions = options as A;
 
 		if (schema) {
 			const decoder = Schema.decodeUnknownEither(schema);
@@ -53,12 +53,22 @@ export const defineIntegration =
 			} else {
 				throw new EffectifyIntegrationHookError({
 					hook: 'integration:options',
-					message: `Invalid options provided for integration "${name}": ${JSON.stringify(decodedOptions.left)}`,
+					message: `Invalid options provided for integration "${name}".`,
+					cause: decodedOptions.left,
 				});
 			}
 		}
 
-		const effectHooks = setup({ name, options: finalOptions as A });
+		let effectHooks: EffectifyAstroIntegrationHooks;
+		try {
+			effectHooks = setup({ name, options: finalOptions as A });
+		} catch (error) {
+			throw new EffectifyIntegrationHookError({
+				hook: 'integration:options',
+				message: `Error setting up integration "${name}": ${error instanceof Error ? error.message : String(error)}`,
+				cause: error,
+			});
+		}
 
 		return {
 			name,
