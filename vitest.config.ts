@@ -117,6 +117,7 @@ export default defineConfig({
 				'playground/**',
 				'archive/**',
 				'knip.config.ts',
+				'tsdown.config.ts',
 				'.github/**',
 				'vitest.config.ts',
 				'**/**/vitest.config.ts',
