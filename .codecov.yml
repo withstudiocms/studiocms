@@ -67,6 +67,7 @@ flags:
     carryforward: false
     paths:
       - packages/@withstudiocms/**
+      - packages/effectify/**
 
 component_management:
   individual_components:
