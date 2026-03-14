@@ -1,0 +1,15 @@
+---
+// Get the site config
+const config = Astro.locals.StudioCMS.siteConfig;
+const { loginPageBackground, loginPageCustomImage } = config.data;
+---
+<div 
+    style="display: none;" 
+    id="auth-pages-config" 
+    data-config_background={loginPageBackground} 
+    data-config_custom_image={loginPageCustomImage}
+    />
+
+<script>
+import "studiocms:auth/scripts/three";
+</script>

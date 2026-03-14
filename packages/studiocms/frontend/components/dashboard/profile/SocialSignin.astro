@@ -1,0 +1,190 @@
+---
+import type { UserSessionData } from 'studiocms:auth/lib/types';
+import { useTranslations } from 'studiocms:i18n';
+import { runSDK, SDKCoreJs } from 'studiocms:sdk';
+import type { CombinedUserData } from 'studiocms:sdk/types';
+import { Button } from 'studiocms:ui/components/button';
+import { Card } from 'studiocms:ui/components/card';
+import { Center } from 'studiocms:ui/components/center';
+import { Icon } from 'studiocms:ui/components/icon';
+import { providerData } from '../../shared/oAuthButtonProviders.js';
+
+interface Props {
+	currentUser: UserSessionData | null;
+}
+
+const { currentUser: data } = Astro.props as Props;
+
+const user = data?.user ?? null;
+
+let userOAuthData: CombinedUserData['oAuthData'] | undefined;
+
+if (user) {
+	const userFullData = await runSDK(SDKCoreJs.GET.users.byId(user.id));
+
+	if (userFullData) {
+		userOAuthData = userFullData.oAuthData;
+	}
+}
+
+const hasOAuthData = userOAuthData && userOAuthData.length > 0;
+
+const connectedAccounts: { provider: string }[] = [];
+
+if (hasOAuthData) {
+	for (const provider in userOAuthData) {
+		connectedAccounts.push({ provider });
+	}
+}
+
+const socialProviders = providerData.map((providerData) => ({
+	...providerData,
+	connected: connectedAccounts.some(
+		({ provider }) => provider === providerData.label.toLowerCase()
+	),
+}));
+
+const connectedProviders = socialProviders.filter(({ connected }) => connected);
+const unconnectedProviders = socialProviders.filter(({ connected }) => !connected);
+
+const lang = Astro.locals.StudioCMS.defaultLang;
+const t = useTranslations(lang, '@studiocms/dashboard:profile');
+---
+<Card fullWidth class="social-signin-options">
+
+    <div slot="header">
+        <h2>
+            <t-profile-socials key="social-accounts-header">{t('social-accounts-header')}</t-profile-socials>
+        </h2>
+    </div>
+
+    <div class="social-signin-cards">
+
+        <Card fullWidth class="social-signin-bg">
+    
+            <div slot="header">
+                <h3>
+                    <t-profile-socials key="social-accounts-connected">{t('social-accounts-connected')}</t-profile-socials>
+                </h3>
+            </div>
+
+            <div class="button-holder">
+                {
+                    connectedProviders.map(({ enabled, href, image, label }) => enabled && (
+                        <Button as="a" href={href} variant="solid" size="md" fullWidth class="oauth-button">
+                            <div class="icon-and-label">
+                                <Fragment set:html={image} />
+                                <span>{label}</span>
+                            </div>
+                            <Icon name="heroicons:minus-circle" width={24} height={24} />
+                        </Button>
+                    ))
+                }
+
+                {
+                    connectedProviders.length === 0 && (
+                        <Center><div>
+                            <t-profile-socials key="social-accounts-no-connected">{t('social-accounts-no-connected')}</t-profile-socials>    
+                        </div></Center>
+                    )
+                }
+            </div>
+    
+        </Card>
+    
+        <Card fullWidth class="social-signin-bg">
+    
+            <div slot="header">
+                <h3>
+                    <t-profile-socials key="social-accounts-other">{t('social-accounts-other')}</t-profile-socials>
+                </h3>
+            </div>
+
+            <div class="button-holder">
+                {
+                    unconnectedProviders.map(({ enabled, href, image, label }) => enabled && (
+                        <Button as="a" href={href} variant="solid" size="md" fullWidth class="oauth-button">
+                            <div class="icon-and-label">
+                                <Fragment set:html={image} />
+                                <span>{label}</span>
+                            </div>
+                            <Icon name="heroicons:plus-circle" width={24} height={24} />
+                        </Button>
+                    ))
+                }
+
+                {
+                    unconnectedProviders.length === 0 && (
+                        <Center><div>
+                            <t-profile-socials key="social-accounts-no-other">{t('social-accounts-no-other')}</t-profile-socials>    
+                        </div></Center>
+                    )
+                }
+            </div>
+    
+        </Card>
+    
+    </div>
+
+</Card>
+
+<script>
+    import { 
+        $i18n,
+        baseTranslation,
+        makeTranslation,
+    } from 'studiocms:i18n/client';
+
+    const currentPage = '@studiocms/dashboard:profile';
+
+    const i18n = $i18n(currentPage, baseTranslation[currentPage]);
+
+    if (!customElements.get('t-profile-socials')) {
+        customElements.define('t-profile-socials', makeTranslation(currentPage, i18n));
+    }
+</script>
+
+<style>
+    .social-signin-options {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .social-signin-cards {
+        display: flex;
+        flex-direction: row;
+        gap: 1rem;
+        height: 100%;
+    }
+
+    @media screen and (max-width: 768px) {
+        .social-signin-cards {
+            flex-direction: column;
+        }
+    }
+
+    .social-signin-bg {
+        background-color: var(--background-step-1);
+        height: auto;
+    }
+
+    .oauth-button {
+        display: flex;
+        align-items: stretch;
+        justify-content: space-between !important;
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+
+    .icon-and-label {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .button-holder {
+        display: flex;
+        flex-direction: column;
+        gap: .5rem;
+    }
+</style>

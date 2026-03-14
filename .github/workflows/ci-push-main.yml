@@ -1,0 +1,79 @@
+name: CI - Push to Main
+
+on:
+  push:
+    branches:
+      - main
+
+concurrency: 
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions: {}
+
+env:
+  FORCE_COLOR: true
+  # 7 GiB by default on GitHub, setting to 6 GiB
+  # https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners#supported-runners-and-hardware-resources
+  NODE_OPTIONS: --max-old-space-size=6144
+
+jobs:
+  format:
+    name: Format
+    permissions:
+      contents: write
+      id-token: write
+      issues: write
+      pull-requests: write
+    secrets: inherit
+    uses: withstudiocms/automations/.github/workflows/format.yml@958f6e6d5867be8ddba0a3132544c93293cc5cf8 # main
+
+  todo:
+    name: TODOs
+    permissions:
+      contents: write
+      issues: write
+    secrets: inherit
+    uses: withstudiocms/automations/.github/workflows/todo.yml@958f6e6d5867be8ddba0a3132544c93293cc5cf8 # main
+
+  release:
+    name: Release
+    permissions:
+      contents: write
+      pull-requests: write
+      id-token: write
+    secrets: inherit
+    uses: withstudiocms/automations/.github/workflows/release.yml@958f6e6d5867be8ddba0a3132544c93293cc5cf8 # main
+    with:
+      build-cmd: "pnpm ci:build"
+      changeset-version: 'pnpm ci:version'
+      RoleMentionId: '1309310416362537020'
+
+  mergebot:
+    name: CI - Merge Bot
+    if: github.repository_owner == 'withstudiocms' && github.event.head_commit.message != '[ci] lint'
+    uses: withstudiocms/automations/.github/workflows/mergebot.yml@958f6e6d5867be8ddba0a3132544c93293cc5cf8 # main
+    secrets:
+      DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_MERGEBOT }}
+
+  preview-main:
+    name: Continuous Deployment Snapshot
+    permissions:
+      contents: read
+      id-token: write
+      issues: write
+      pull-requests: write
+    secrets: inherit
+    uses: withstudiocms/automations/.github/workflows/preview.yml@958f6e6d5867be8ddba0a3132544c93293cc5cf8 # main
+    with:
+      build-cmd: "pnpm ci:build"
+
+  tangled-mirror:
+    name: Mirror to Tangled
+    runs-on: ubuntu-latest
+    steps:
+      - name: Mirror
+        uses: Adammatthiesen/to-tangled@06cfdb0dd09a8ff3fe1879c09b72c6a6bc14a797 # main
+        with:
+          repo: studiocms.dev/studiocms
+          ssh-key: ${{ secrets.STUDIOCMS_TANGLED_KEY }}

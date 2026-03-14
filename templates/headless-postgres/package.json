@@ -1,0 +1,37 @@
+{
+  "$schema": "../../packages/create-studiocms/templates-pkg.schema.json",
+  "name": "studiocms-headless-template-postgres",
+  "type": "module",
+  "version": "0.0.1",
+  "private": true,
+  "studiocms_template": {
+    "value": "headless-postgres",
+    "label": "StudioCMS Headless (PostgreSQL)",
+    "hint": "Bring your own frontend"
+  },
+  "scripts": {
+    "astro": "astro",
+    "studiocms": "studiocms",
+    "migrate": "studiocms migrate",
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.5",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "@astrojs/node": "^9.5.4",
+    "@effect/platform": "^0.94.5",
+    "@effect/platform-node": "^0.104.1",
+    "@studiocms/github": "^0.3.0",
+    "@studiocms/md": "^0.3.0",
+    "@studiocms/html": "^0.3.0",
+    "astro": "^5.18.0",
+    "effect": "^3.19.19",
+    "pg": "^8.20.0",
+    "sharp": "^0.34.3",
+    "studiocms": "^0.4.4"
+  }
+}

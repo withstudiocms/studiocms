@@ -1,0 +1,250 @@
+---
+import type { UserSessionData } from 'studiocms:auth/lib/types';
+import { useTranslations } from 'studiocms:i18n';
+import { Button } from 'studiocms:ui/components/button';
+import { Card } from 'studiocms:ui/components/card';
+import { Group } from 'studiocms:ui/components/group';
+import { Icon } from 'studiocms:ui/components/icon';
+import { Input } from 'studiocms:ui/components/input';
+
+interface Props {
+	currentUser: UserSessionData | null;
+}
+
+const { currentUser: data } = Astro.props as Props;
+
+const lang = Astro.locals.StudioCMS.defaultLang;
+const t = useTranslations(lang, '@studiocms/dashboard:profile');
+---
+
+<Card
+    fullWidth
+    as="form"
+    id="basic-info-form"
+    class="basic-info-form"
+>
+    <div slot="header">
+        <h2>
+            <t-profile-basic key="basic-info-header"
+                >{t("basic-info-header")}</t-profile-basic
+            >
+        </h2>
+
+        <div class="form-header">
+            <Group>
+                <Button
+                    id="refresh-avatar"
+                    size="sm"
+                    variant={"outlined"}
+                    color={"info"}
+                >
+                    <Icon
+                        slot="start-content"
+                        name="heroicons:user-circle"
+                        width={24}
+                        height={24}
+                    />
+                    <t-profile-basic key="sync-with-libravatar">
+                        {t("sync-with-libravatar")}
+                    </t-profile-basic>
+                </Button>
+                <Button
+                    type="submit"
+                    size="sm"
+                    variant={"solid"}
+                    color="primary"
+                >
+                    <Icon
+                        slot="start-content"
+                        name="heroicons:check"
+                        width={24}
+                        height={24}
+                    />
+                    <t-profile-basic key="basic-info-save-button">
+                        {t("basic-info-save-button")}
+                    </t-profile-basic>
+                </Button>
+            </Group>
+        </div>
+    </div>
+
+    <div class="form-inputs">
+        <Input
+            label={t("basic-info-display-name")}
+            placeholder="John Doe"
+            value={data?.user?.name}
+            isRequired
+            name="display-name"
+        />
+
+        <Input
+            label={t("basic-info-username")}
+            placeholder="johndoe"
+            value={data?.user?.username}
+            isRequired
+            name="username"
+        />
+
+        <Input
+            label={t("basic-info-email")}
+            placeholder="john@doe.com"
+            value={data?.user?.email}
+            isRequired
+            name="email"
+        />
+
+        <Input
+            label={t("basic-info-website")}
+            placeholder="https://doe.com"
+            value={data?.user?.url}
+            name="account-url"
+        />
+
+        <Input
+            label={t("basic-avatar-url")}
+            placeholder="https://seccdn.libravatar.org/avatar/..."
+            value={data?.user?.avatar}
+            name="avatar"
+        />
+
+        <input type="hidden" name="email-verified" value={data?.user?.emailVerified ? "true" : "false"} />
+    </div>
+</Card>
+
+<script>
+    import {
+        $i18n,
+        baseTranslation,
+        makeTranslation,
+        updateElmLabel,
+    } from "studiocms:i18n/client";
+
+    const currentPage = "@studiocms/dashboard:profile";
+
+    const i18n = $i18n(currentPage, baseTranslation[currentPage]);
+
+    i18n.subscribe((comp) => {
+        updateElmLabel("display-name", comp["basic-info-display-name"]);
+        updateElmLabel("username", comp["basic-info-username"]);
+        updateElmLabel("email", comp["basic-info-email"]);
+        updateElmLabel("account-url", comp["basic-info-website"]);
+    });
+
+    if (!customElements.get("t-profile-basic")) {
+        customElements.define(
+            "t-profile-basic",
+            makeTranslation(currentPage, i18n),
+        );
+    }
+</script>
+
+<script>
+    import { toast } from "studiocms:ui/components/toaster/client";
+    import { dashboardClient, dashboardSharedCatchTags } from "studiocms:client/apiClients";
+    import * as Effect from "effect/Effect";
+
+    const syncAvatar = document.getElementById(
+        "refresh-avatar",
+    ) as HTMLButtonElement;
+
+    syncAvatar.addEventListener("click", async (e) => {
+        e.preventDefault();
+
+        const response = await dashboardClient.pipe(
+            Effect.flatMap((client) =>
+                client.profile.updateUserProfile({
+                    payload: {
+                        mode: "avatar",
+                    },
+                }),
+            ),
+            Effect.catchTags(dashboardSharedCatchTags),
+            Effect.runPromise,
+        );
+
+        if ("error" in response) {
+            toast({
+                title: "Error",
+                description: response.error,
+                type: "danger",
+            });
+        } else {
+            toast({
+                title: "Success",
+                description:
+                    response.message || "Avatar synchronized successfully",
+                type: "success",
+            });
+        }
+    });
+
+    const basicInfoForm = document.getElementById(
+        "basic-info-form",
+    ) as HTMLFormElement;
+
+    basicInfoForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const formData = new FormData(basicInfoForm);
+
+        const response = await dashboardClient.pipe(
+            Effect.flatMap((client) =>
+                client.profile.updateUserProfile({
+                    payload: {
+                        mode: "basic",
+                        data: {
+                            name: formData.get("display-name") as string,
+                            username: formData.get("username") as string,
+                            email: formData.get("email") as string,
+                            url: (formData.get("account-url") ?? null) as string | null,
+                            avatar: (formData.get("avatar") ?? null) as string | null,
+                            emailVerified: formData.get("email-verified") === "true",
+                            createdAt: undefined,
+                            updatedAt: new Date().toISOString(),
+                        },
+                    },
+                }),
+            ),
+            Effect.catchTags(dashboardSharedCatchTags),
+            Effect.runPromise,
+        );
+
+        if ("error" in response) {
+            toast({
+                title: "Error",
+                description: response.error,
+                type: "danger",
+            });
+        } else {
+            toast({
+                title: "Success",
+                description:
+                    response.message || "Profile updated successfully",
+                type: "success",
+            });
+        }
+    });
+</script>
+
+<style>
+    .basic-info-form {
+        position: relative;
+    }
+
+    .basic-info-form .form-inputs {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+
+        @media screen and (max-width: 768px) {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .form-header {
+        display: block;
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+    }
+</style>

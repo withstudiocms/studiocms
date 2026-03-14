@@ -1,0 +1,10 @@
+rules:
+  secrets-inherit:
+    ignore:
+      - ci-checks.yml
+      - ci-pull-request.yml
+      - ci-push-main.yml
+      - ci-bot-changesets.yml
+  artipacked:
+    ignore:
+      - ci-template-sync.yml

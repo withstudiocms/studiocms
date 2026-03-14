@@ -1,0 +1,21 @@
+"project_id_env": "CROWDIN_PROJECT_ID"
+"api_token_env": "CROWDIN_PERSONAL_TOKEN"
+"base_path": "."
+
+"preserve_hierarchy": true
+
+"files":
+  [
+    {
+      "source": "/packages/studiocms/src/virtuals/i18n/translations/en.json",
+      "translation": "/packages/studiocms/src/virtuals/i18n/translations/%two_letters_code%.json",
+    },
+    {
+      "source": "/packages/studiocms/src/handlers/plugin-i18n/en.ts",
+      "translation": "/packages/studiocms/src/handlers/plugin-i18n/%two_letters_code%.ts",
+    },
+    {
+      "source": "/packages/studiocms/src/plugins/analytics/i18n/en.ts",
+      "translation": "/packages/studiocms/src/plugins/analytics/i18n/%two_letters_code%.ts",
+    },
+  ]

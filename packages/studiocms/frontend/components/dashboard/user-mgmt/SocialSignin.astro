@@ -1,0 +1,108 @@
+---
+import { type UiLanguageKeys, useTranslations } from 'studiocms:i18n';
+import { Button } from 'studiocms:ui/components/button';
+import { Card } from 'studiocms:ui/components/card';
+import { Center } from 'studiocms:ui/components/center';
+import type { OAuthData } from '@withstudiocms/auth-kit/types';
+import { providerData } from '../../shared/oAuthButtonProviders.js';
+
+interface Props {
+	lang: UiLanguageKeys;
+	oAuthData?: OAuthData[];
+}
+
+const { oAuthData, lang } = Astro.props;
+
+const hasOAuthData = oAuthData && oAuthData.length > 0;
+
+const connectedAccounts: { provider: string }[] = [];
+
+if (hasOAuthData) {
+	for (const { provider } of oAuthData ?? []) {
+		connectedAccounts.push({ provider: provider.toLowerCase() });
+	}
+}
+
+const socialProviders = providerData.map((providerData) => ({
+	...providerData,
+	connected: connectedAccounts.some(
+		({ provider }) => provider === providerData.label.toLowerCase()
+	),
+}));
+
+const connectedProviders = socialProviders.filter(({ connected }) => connected);
+const t = useTranslations(lang, '@studiocms/dashboard:user-mngmt-edit');
+---
+    
+<div class="text-h3">
+    <t-users-edit-socials key="social-accounts-header">{t('social-accounts-header')}</t-users-edit-socials>
+</div>
+
+<Card fullWidth class="social-signin-bg">
+
+
+    {
+        connectedProviders.length === 0 ? (
+            <Center><t-users-edit-socials key="social-accounts-non">{t('social-accounts-non')}</t-users-edit-socials></Center>
+        ) : (
+            <div class="button-holder">
+                {
+                    connectedProviders.map(({ enabled, image, label }) => enabled && (
+                        <Button variant="solid" size="md" fullWidth class="oauth-button">
+                            <div class="icon-and-label">
+                                <Fragment set:html={image} />
+                                <span>{label}</span>
+                            </div>
+                        </Button>
+                    ))
+                }
+            </div>
+        )
+    }
+
+</Card>
+
+<script>
+    import { 
+        $i18n,
+        baseTranslation,
+        makeTranslation,
+    } from 'studiocms:i18n/client';
+
+    const currentPage = '@studiocms/dashboard:user-mngmt-edit';
+
+    const i18n = $i18n(currentPage, baseTranslation[currentPage]);
+    
+    if (!customElements.get('t-users-edit-socials')) {
+        customElements.define('t-users-edit-socials', makeTranslation(currentPage, i18n));
+    }
+</script>
+
+<style>
+    .social-signin-bg {
+        background-color: var(--background-step-1);
+        height: auto;
+        width: auto;
+
+        & .button-holder {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: .5rem;
+        }
+
+        & .oauth-button {
+            display: flex;
+            align-items: stretch;
+            justify-content: space-between !important;
+            width: 100%;
+            margin-bottom: 1rem;
+            cursor: default;
+
+            & .icon-and-label {
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+            }
+        }
+    }
+</style>

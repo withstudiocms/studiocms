@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig.tspc.json",
+  "include": ["src"],
+  "exclude": ["dist"],
+  "compilerOptions": {
+    "allowImportingTsExtensions": true,
+    "outDir": "./dist",
+    "rootDir": "./src"
+  }
+}

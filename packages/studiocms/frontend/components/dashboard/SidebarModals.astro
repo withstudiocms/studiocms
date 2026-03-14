@@ -1,0 +1,13 @@
+---
+import type { UiLanguageKeys } from 'studiocms:i18n';
+import UserManagementModals from './sidebar-modals/UserManagementModals.astro';
+import VersionModal from './sidebar-modals/VersionModal.astro';
+
+interface Props {
+	lang: UiLanguageKeys;
+}
+
+const { lang } = Astro.props;
+---
+<VersionModal {lang} />
+<UserManagementModals />

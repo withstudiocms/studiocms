@@ -1,0 +1,33 @@
+---
+import type { UserSessionData } from 'studiocms:auth/lib/types';
+import { DoubleSidebar as SuiDoubleSidebar } from 'studiocms:ui/components/sidebar';
+import MainSidebarContent from './MainSidebarContent.astro';
+
+interface Props {
+	currentUser: UserSessionData | null;
+}
+
+const { currentUser } = Astro.props as Props;
+---
+
+<SuiDoubleSidebar class='sidebar'>
+  <div slot="outer" class="outer-sidebar-container">
+    <MainSidebarContent {currentUser} />
+  </div>
+  <div slot="inner">
+    <slot />
+  </div>
+</SuiDoubleSidebar>
+
+<script>
+  import { DoubleSidebarHelper } from "studiocms:ui/components/sidebar/client";
+
+  if (document.getElementById('sui-sidebars')) {
+    const sidebar = new DoubleSidebarHelper();
+
+    sidebar.showInnerOnClick('nav-open');
+    sidebar.showInnerOnClick('nav-close');
+    sidebar.showOuterOnClick('back-to-outer');
+    sidebar.hideSidebarOnClick('show-page');
+  }
+</script>

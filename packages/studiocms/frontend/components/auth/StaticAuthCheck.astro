@@ -1,0 +1,25 @@
+---
+import type { UserSessionData } from 'studiocms:auth/lib/types';
+
+interface Props {
+	userData?: UserSessionData | null;
+}
+
+const { userData } = Astro.props as Props;
+
+const isLoggedIn = userData?.isLoggedIn ?? false;
+---
+<div 
+  id="login-check" 
+  style="display: none;" 
+  data-is_logged_in={`${isLoggedIn}`}
+  data-redirect_route={Astro.locals.StudioCMS.routeMap.mainLinks.dashboardIndex}
+  ></div>
+
+<script is:inline>
+  const loginCheck = document.getElementById('login-check');
+
+  if (loginCheck.dataset.is_logged_in === 'true') {
+    window.location.href = loginCheck.dataset.redirect_route;
+  }
+</script>

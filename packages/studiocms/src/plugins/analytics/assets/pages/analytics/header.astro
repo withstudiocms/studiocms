@@ -1,0 +1,42 @@
+---
+---
+<header class="page-header">
+    <div class="page-title-container">
+      <h1 class="page-title">Analytics & Web Vital Metrics</h1>
+    </div>
+    <div class="page-actions-container">
+      <slot />
+    </div>
+  </header>
+  <style>
+  .page-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    width: 100%;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  
+    & .page-title-container {
+      display: flex;
+      flex-direction: column;
+      gap: .5rem;
+      width: fit-content;
+  
+      & .page-title {
+        display: block;
+        width: fit-content;
+        margin: 0;
+      }
+    }
+  
+    & .page-actions-container {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 1rem;
+    }
+  }
+  </style>

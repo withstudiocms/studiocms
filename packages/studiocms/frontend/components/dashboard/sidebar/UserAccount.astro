@@ -1,0 +1,61 @@
+---
+import type { UserSessionData } from 'studiocms:auth/lib/types';
+import { useTranslations } from 'studiocms:i18n';
+import type { ComponentProps } from 'astro/types';
+import User from '../../shared/SSRUser.astro';
+
+interface Props {
+	currentUser: UserSessionData | null;
+}
+
+const { currentUser } = Astro.props as Props;
+
+const lang = Astro.locals.StudioCMS.defaultLang;
+const t = useTranslations(lang, '@studiocms/dashboard:user-component');
+
+const permissionLevel = currentUser?.permissionLevel || 'unknown';
+
+const id = `sidebar-user-account-${currentUser?.user?.id || 'unknown'}`;
+
+const userProps: ComponentProps<typeof User> = {
+	id,
+	name: currentUser?.user?.name || 'Visitor',
+	description: t(permissionLevel),
+};
+
+if (currentUser?.user?.avatar) {
+	userProps.avatar = currentUser.user.avatar;
+}
+---
+<User {...userProps} />
+
+<div
+  id='logged-in-user-details'
+  style='display: none;'
+  data-permission-level={permissionLevel}
+  data-selector-id={id}
+></div>
+
+<script>
+  import {
+      $i18n,
+      baseTranslation,
+  } from 'studiocms:i18n/client';
+
+  const currentPage = '@studiocms/dashboard:user-component';
+
+  const i18n = $i18n(currentPage, baseTranslation[currentPage]);
+
+  const loggedInUserDetails = document.getElementById('logged-in-user-details') as HTMLDivElement;
+
+  const descriptionKey = loggedInUserDetails.dataset.permissionLevel as "admin" | "editor" | "owner" | "visitor" | "unknown";
+
+  const selectorId = loggedInUserDetails.dataset.selectorId as string;
+
+  i18n.subscribe(comp => {
+    const userContainer = document.getElementById(selectorId) as HTMLDivElement;
+    const userTextContent = userContainer.querySelector('.sui-text-content') as HTMLDivElement;
+    const userDescription = userTextContent.querySelector('.sui-description') as HTMLDivElement;
+    userDescription.textContent = comp[descriptionKey];
+  })
+</script>

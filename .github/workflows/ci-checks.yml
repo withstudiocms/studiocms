@@ -1,0 +1,50 @@
+name: CI - Checks
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["**"]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions: {}
+
+env:
+  FORCE_COLOR: true
+  # 7 GiB by default on GitHub, setting to 6 GiB
+  # https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners#supported-runners-and-hardware-resources
+  NODE_OPTIONS: --max-old-space-size=6144
+
+jobs:
+  # Knip Reporter only supports pull requests at the moment 
+  # (We are using a custom github action in the automation for github action alerts)
+  lint-knip:
+    name: Run Knip Linter and Report
+    if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+    permissions:
+      contents: read
+      issues: write
+      checks: write
+      pull-requests: write
+    uses: withstudiocms/automations/.github/workflows/knip.yml@958f6e6d5867be8ddba0a3132544c93293cc5cf8 # main
+    secrets: inherit
+    with:
+      pre-knip-cmd: "pnpm ci:build"
+
+  security-zizmor:
+    name: Run Zizmor Actions Security Analysis
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      - name: Run zizmor
+        uses: zizmorcore/zizmor-action@71321a20a9ded102f6e9ce5718a2fcec2c4f70d8 # v0.5.2

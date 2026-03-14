@@ -1,0 +1,44 @@
+---
+import '../styles/auth-layout.css';
+import type { ComponentProps } from 'astro/types';
+import FallbackCanvas from '../components/auth/FallbackCanvas.astro';
+import OAuthButtonStack from '../components/auth/OAuthButtonStack.astro';
+import StaticAuthCheck from '../components/auth/StaticAuthCheck.astro';
+import ThreeCanvasLoader from '../components/auth/ThreeCanvasLoader.astro';
+import BaseLayout from './BaseLayout.astro';
+
+const { siteConfig: config, security } = Astro.locals.StudioCMS;
+
+const userData = security?.userSessionData || null;
+
+interface Props extends ComponentProps<typeof BaseLayout> {
+	disableScreen?: boolean;
+	checkLogin?: boolean;
+}
+
+const { disableScreen, checkLogin, ...headProps } = Astro.props;
+---
+<BaseLayout {...headProps}>
+	<main>
+		<div id="canvas-container">
+			<FallbackCanvas {config} />
+		</div>
+		<div class="login-form-container">
+
+			<slot name="header" />
+
+			<slot />
+			
+			{ !disableScreen && <OAuthButtonStack /> }
+
+			<div class="form-footer">
+				<slot name="footer" />
+			</div>
+
+		</div>
+	</main>
+	{ checkLogin && (
+		<StaticAuthCheck {userData} />
+	)}
+	<ThreeCanvasLoader />
+</BaseLayout>

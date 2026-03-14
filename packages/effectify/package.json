@@ -1,0 +1,97 @@
+{
+	"name": "effectify",
+	"version": "0.2.0",
+	"description": "Utility library that bridges Effect-ts with various utilities and projects, such as Astro!",
+	"license": "MIT",
+	"author": {
+		"name": "withstudiocms",
+		"url": "https://studiocms.dev"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/withstudiocms/studiocms.git",
+		"directory": "packages/effectify"
+	},
+	"keywords": [
+		"effect-ts",
+		"effect",
+		"utilities",
+		"web",
+		"withstudiocms"
+	],
+	"homepage": "https://studiocms.dev",
+	"contributors": [
+		"Adammatthiesen",
+		"jdtjenkins",
+		"dreyfus92",
+		"code.spirit"
+	],
+	"type": "module",
+	"publishConfig": {
+		"access": "public",
+		"provenance": true
+	},
+	"sideEffects": false,
+	"files": [
+		"dist",
+		"LICENSE",
+		"CHANGELOG.md",
+		"README.md"
+	],
+	"scripts": {
+		"build": "tsdown --config tsdown.config.ts --clean",
+		"dev": "tsdown --config tsdown.config.ts --no-clean",
+		"test": "vitest",
+		"effect-check": "pnpm effect-language-service diagnostics --project tsconfig.tspc.json",
+		"ci:effect-check": "pnpm effect-check --format github-actions",
+		"typecheck": "tspc -p tsconfig.tspc.json",
+		"update-scalar": "tsx ./scripts/update-scalar.ts",
+		"scratch:fn": "tsx ./scratchpad/functionSchema.ts",
+		"scratch:static": "tsx ./scratchpad/static.ts"
+	},
+	"exports": {
+		"./astro/*": {
+			"types": "./dist/astro/*.d.mts",
+			"default": "./dist/astro/*.mjs"
+		},
+		"./httpApi": {
+			"types": "./dist/httpApi.d.mts",
+			"default": "./dist/httpApi.mjs"
+		},
+		"./scalar": {
+			"types": "./dist/scalar.d.mts",
+			"default": "./dist/scalar.mjs"
+		},
+		"./schemas": {
+			"types": "./dist/schemas.d.mts",
+			"default": "./dist/schemas.mjs"
+		},
+		"./scrypt": {
+			"types": "./dist/scrypt.d.mts",
+			"default": "./dist/scrypt.mjs"
+		},
+		"./static": {
+			"types": "./dist/static.d.mts",
+			"default": "./dist/static.mjs"
+		},
+		"./webHandler": {
+			"types": "./dist/webHandler.d.mts",
+			"default": "./dist/webHandler.mjs"
+		}
+	},
+	"dependencies": {},
+	"devDependencies": {
+		"tsdown": "catalog:"
+	},
+	"peerDependencies": {
+		"@effect/platform": "catalog:effect",
+		"@effect/platform-node": "catalog:effect",
+		"astro": "catalog:min",
+		"effect": "catalog:effect"
+	},
+	"peerDependenciesMeta": {
+		"astro": {
+			"optional": true
+		}
+	}
+}

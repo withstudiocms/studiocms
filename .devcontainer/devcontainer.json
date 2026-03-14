@@ -1,0 +1,58 @@
+{
+  "name": "StudioCMS Workspace",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "postCreateCommand": "pnpm config set store-dir /home/node/.pnpm-store && PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=1 pnpm install",
+  "waitFor": "postCreateCommand",
+  "forwardPorts": [4321],
+  "portsAttributes": {
+    "4321": {
+      "label": "Astro Playground"
+    }
+  },
+  "customizations": {
+    "codespaces": {
+      "openFiles": ["README.md"]
+    },
+    "vscode": {
+      "settings": {
+        "typescript.tsdk": "node_modules/typescript/lib",
+        "editor.codeActionsOnSave": {
+          "source.fixAll.biome": "explicit"
+        },
+        "editor.defaultFormatter": "biomejs.biome",
+        "editor.gotoLocation.multipleDefinitions": "goto",
+        "[typescript]": {
+          "editor.defaultFormatter": "biomejs.biome"
+        },
+        "[css]": {
+          "editor.defaultFormatter": "biomejs.biome"
+        },
+        "[astro]": {
+          "editor.defaultFormatter": "biomejs.biome"
+        },
+        "[json]": {
+          "editor.defaultFormatter": "biomejs.biome"
+        },
+        "[yaml]": {
+          "editor.defaultFormatter": "redhat.vscode-yaml"
+        },
+        "knip.requireConfig": true,
+        "knip.configFilePath": "./knip.config.ts",
+        "knip.editor.exports.hover.includeImportLocationSnippet": true
+      },
+      "extensions": [
+        "astro-build.astro-vscode",
+        "astro-build.houston",
+        "biomejs.biome",
+        "eamodio.gitlens",
+        "redhat.vscode-yaml",
+        "ms-vscode-remote.remote-containers",
+        "ms-azuretools.vscode-containers",
+        "docker.docker",
+        "webpro.vscode-knip"
+      ]
+    }
+  }
+}
