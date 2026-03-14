@@ -1,5 +1,16 @@
 # studiocms
 
+## 0.4.4
+
+### Patch Changes
+
+- [#1480](https://github.com/withstudiocms/studiocms/pull/1480) [`aebe8bc`](https://github.com/withstudiocms/studiocms/commit/aebe8bcb3618bb07c6753e3f5c982c1fe6adea64) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Fix user filtering logic in RestApiSecureHandler
+
+- Updated dependencies [[`3f7e6cf`](https://github.com/withstudiocms/studiocms/commit/3f7e6cf419781e714f6802117b8ead0e3ddd7f47)]:
+  - effectify@0.2.0
+  - @withstudiocms/api-spec@0.3.2
+  - @withstudiocms/effect@0.4.1
+
 ## 0.4.3
 
 ### Patch Changes
