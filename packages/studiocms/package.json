@@ -236,7 +236,6 @@
 		"@iconify-json/flat-color-icons": "^1.2.3",
 		"@iconify-json/simple-icons": "^1.2.72",
 		"@iconify-json/circle-flags": "^1.2.10",
-		"@inox-tools/runtime-logger": "^0.8.1",
 		"@nanostores/i18n": "^1.2.2",
 		"@nanostores/persistent": "^1.3.3",
 		"@outerbase/sdk-transform": "^1.0.8",

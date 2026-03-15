@@ -1,6 +1,5 @@
 // src/middleware.ts
 
-import logger from 'studiocms:logger';
 import type { MiddlewareHandler } from 'astro';
 import { renderErrorTemplate } from './templates/errors.js';
 
@@ -34,7 +33,7 @@ export const onRequest: MiddlewareHandler = async (_, next) => {
 		const response = await next();
 		return response;
 	} catch (error) {
-		logger.error(prettyPrintError('Server error caught in middleware', error));
+		console.error(prettyPrintError('Server error caught in middleware', error));
 
 		// Prepare error details for the template
 		const errorMessage = error instanceof Error ? error.message : 'Unknown error';

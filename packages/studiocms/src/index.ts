@@ -8,7 +8,6 @@
 /// <reference types="./theme.d.ts" preserve="true" />
 
 import { promises as fsP, writeFileSync } from 'node:fs';
-import { runtimeLogger } from '@inox-tools/runtime-logger';
 import studiocmsUi from '@studiocms/ui';
 import { componentRegistryHandler } from '@withstudiocms/component-registry';
 import {
@@ -180,12 +179,8 @@ export const studiocms = (): AstroIntegration => {
 				const logInfo = { logger, logLevel: 'info' as const, verbose };
 
 				const dashboardRoute = makeDashboardRoute(dashboardRouteOverride);
-				// Setup Logger
-				integrationLogger(logInfo, 'Setting up StudioCMS...');
 
-				runtimeLogger(params, {
-					name: 'studiocms-runtime',
-				});
+				integrationLogger(logInfo, 'Setting up StudioCMS...');
 
 				// Check Astro Config for required settings
 				checkAstroConfig(params);
@@ -263,7 +258,6 @@ export const studiocms = (): AstroIntegration => {
 					astroComponentVirtual,
 					dynamicWithAstroVirtual,
 					buildDefaultOnlyVirtual,
-					buildLoggerVirtual,
 					buildVirtualConfig,
 				} = VirtualModuleBuilder(resolve);
 
@@ -283,7 +277,6 @@ export const studiocms = (): AstroIntegration => {
 						'studiocms:config': buildVirtualConfig(options),
 						'studiocms:plugins': buildDefaultOnlyVirtual(safePluginList),
 						'studiocms:version': buildDefaultOnlyVirtual(pkgVersion),
-						'studiocms:logger': buildLoggerVirtual(verbose),
 						'studiocms:lib': dynamicVirtual([
 							'./virtuals/lib/head.js',
 							'./virtuals/lib/headDefaults.js',

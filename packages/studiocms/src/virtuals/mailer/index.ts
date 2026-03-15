@@ -1,4 +1,3 @@
-import { logger as _logger, isVerbose } from 'studiocms:logger';
 import { SDKCoreJs as sdk } from 'studiocms:sdk';
 import { Effect, genLogger, Layer, pipeLogger } from '../../effect.js';
 import { type Mail, SMTPMailer } from '../../utils/effects/smtp.js';
@@ -48,20 +47,8 @@ export interface MailerSuccessResponse {
  */
 export type MailerResponse = MailerSuccessResponse | MailerErrorResponse;
 
-const forked = _logger.fork('studiocms:runtime/mailer');
-export const makeLogger = Effect.succeed(forked);
-
-export class Logger extends Effect.Tag('studiocms/lib/mailer/Logger')<
-	Logger,
-	Effect.Effect.Success<typeof makeLogger>
->() {
-	static Live = makeLogger;
-	static Layer = Layer.scoped(this, this.Live);
-}
-
 export class Mailer extends Effect.Service<Mailer>()('studiocms/lib/mailer/Mailer', {
 	effect: genLogger('studiocms/lib/mailer/Mailer.effect')(function* () {
-		const logger = yield* Logger;
 		const SMTP = yield* SMTPMailer;
 
 		/**
@@ -72,10 +59,10 @@ export class Mailer extends Effect.Service<Mailer>()('studiocms/lib/mailer/Maile
 		 */
 		const mailerResponse = (data: MailerResponse) => {
 			if ('error' in data) {
-				logger.error(data.error);
+				console.error(data.error);
 				return data;
 			}
-			isVerbose && logger.info(data.message);
+			console.info(data.message);
 			return data;
 		};
 
@@ -208,7 +195,7 @@ export class Mailer extends Effect.Service<Mailer>()('studiocms/lib/mailer/Maile
 			isEnabled,
 		};
 	}),
-	dependencies: [Logger.Layer, SMTPMailer.Default],
+	dependencies: [SMTPMailer.Default],
 	accessors: true,
 }) {
 	static Provide = Effect.provide(this.Default);

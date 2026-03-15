@@ -2,7 +2,6 @@
 export const partial = true;
 
 import { getRendererComponents } from 'studiocms:component-registry/runtime';
-import { apiResponseLogger } from 'studiocms:logger';
 
 // Define the PropData type
 type PropData = {
@@ -20,12 +19,18 @@ let data: PropData;
 try {
 	data = await Astro.request.json();
 } catch (error) {
-	return apiResponseLogger(400, 'Invalid JSON in request body', error);
+	return new Response(JSON.stringify({ error: 'Invalid JSON in request body' }), {
+		status: 400,
+		headers: { 'Content-Type': 'application/json' },
+	});
 }
 
 // Validate the data
 if (!data || typeof data.componentKey !== 'string' || !data.componentKey.trim()) {
-	return apiResponseLogger(400, 'Missing or invalid componentKey');
+	return new Response(JSON.stringify({ error: 'Missing or invalid componentKey' }), {
+		status: 400,
+		headers: { 'Content-Type': 'application/json' },
+	});
 }
 
 // Destructure the componentKey, props, and slot from the data
@@ -36,7 +41,10 @@ const Component = componentRegistry[componentKey];
 
 // Handle case where component doesn't exist
 if (!Component) {
-	return apiResponseLogger(404, `Component "${componentKey}" not found`);
+	return new Response(JSON.stringify({ error: `Component with key "${componentKey}" not found` }), {
+		status: 404,
+		headers: { 'Content-Type': 'application/json' },
+	});
 }
 ---
 <Component {...props}>

@@ -1,17 +1,3 @@
-declare module 'studiocms:logger' {
-	export const logger: import('astro').AstroIntegrationLogger;
-	export default logger;
-
-	export const isVerbose: boolean;
-
-	export const apiResponseLogger: (
-		status: number,
-		message: string,
-		// biome-ignore lint/suspicious/noExplicitAny: This is a valid use case for explicit any
-		error?: Error | any
-	) => Response;
-}
-
 declare module 'studiocms:client/apiClients' {
 	export const authClient: typeof import('./client/apiClient').authClient;
 	export const dashboardClient: typeof import('./client/apiClient').dashboardClient;

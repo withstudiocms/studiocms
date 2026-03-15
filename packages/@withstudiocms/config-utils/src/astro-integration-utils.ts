@@ -1,70 +1,8 @@
-import type { z } from 'astro/zod';
 import { defineUtility } from 'astro-integration-kit';
 import { Schema } from 'effect';
 import { loadConfigFile } from './loader.js';
-import type {
-	ConfigResolverBuilderEffectOpts,
-	ConfigResolverBuilderOpts,
-	WatchConfigFileOptions,
-} from './types.js';
+import type { ConfigResolverBuilderEffectOpts, WatchConfigFileOptions } from './types.js';
 import { findConfig } from './watcher.js';
-import { parseAndMerge, parseConfig } from './zod-utils.js';
-
-// TODO: Deprecate the configResolverBuilder in favor of the effect-based config resolver
-// once StudioCMS has fully migrated to using effect-based schemas for configuration validation and processing.
-// The effect-based approach provides better support for asynchronous operations and more complex validation logic,
-// making it a more robust solution for handling configuration in Astro integrations.
-
-/* v8 ignore start */
-// This function is tested indirectly via the integration tests in this package
-/**
- * Builds a config resolver utility for Astro integrations.
- *
- * This function creates a utility that loads, validates, and merges configuration
- * from both inline options and config files, using a provided Zod schema for validation.
- * If both inline config and a config file are present, the config file takes precedence during merging.
- *
- * @template ConfigType - The shape of the configuration object.
- * @template Schema - The Zod schema type used for validation.
- * @param params - The configuration resolver options.
- * @param params.configPaths - Array of possible config file paths to search for.
- * @param params.label - A label used for logging.
- * @param params.zodSchema - The Zod schema used to validate and parse the config.
- * @returns A utility function to be used in the Astro config setup hook, which loads, validates, and merges configuration.
- *
- * @deprecated Use `configResolverBuilderEffect` instead, which provides better support for asynchronous operations and more complex validation logic through effect-based schemas.
- * This function will eventually be replaced by the effect-based config resolver, so it is recommended to migrate to the new approach for improved robustness and flexibility in handling configuration in Astro integrations.
- */
-export const configResolverBuilder = <S extends z.ZodTypeAny>({
-	configPaths,
-	label,
-	zodSchema,
-}: ConfigResolverBuilderOpts<S>) =>
-	defineUtility('astro:config:setup')(async ({ logger: l, config: { root: astroRoot } }) => {
-		// Generate a logger for the config resolver
-		const logger = l.fork(`${label}:config`);
-
-		// Load the config file
-		const loadedConfigFile = await loadConfigFile<S['_input']>(astroRoot, configPaths, label);
-
-		// If no config file was found, return the inline config if it exists
-		if (!loadedConfigFile) {
-			logger.info('No config file found. Using default configuration.');
-			return parseConfig(zodSchema, {});
-		}
-
-		// Parse and merge the inline config with the loaded config file
-		const mergedConfig = parseAndMerge(zodSchema, loadedConfigFile);
-
-		const logMessage = 'Config file loaded successfully.';
-
-		logger.info(logMessage);
-
-		// Return the merged configuration object
-		// This object will contain the final configuration, validated and merged from both sources
-		return mergedConfig;
-	});
-/* v8 ignore stop */
 
 /* v8 ignore start */
 /**
@@ -82,7 +20,7 @@ export const configResolverBuilder = <S extends z.ZodTypeAny>({
  * @param params.effectSchema - The schema for the effect that will produce the configuration object.
  * @returns A utility function to be used in the Astro config setup hook, which loads a config file and processes it through an effect-based schema.
  */
-export const configResolverBuilderEffect = <A, I>({
+export const configResolverBuilder = <A, I>({
 	configPaths,
 	label,
 	effectSchema,
@@ -109,6 +47,24 @@ export const configResolverBuilderEffect = <A, I>({
 		// Return the parsed configuration object
 		return parsedConfig;
 	});
+
+/**
+ * Builds an effect-based config resolver utility for Astro integrations.
+ *
+ * This function creates a utility that loads a configuration file and processes it through an effect-based schema.
+ * If a configuration file is found, it is loaded and passed to the provided effect schema for processing.
+ * If no configuration file is found, the effect schema is executed with an empty object as input.
+ *
+ * @template A - The type of the configuration object that will be produced by the effect.
+ * @template I - The type of the input to the effect that produces the configuration object.
+ * @param params - The configuration resolver options for effect-based processing.
+ * @param params.configPaths - Array of possible config file paths to search for.
+ * @param params.label - A label used for logging.
+ * @param params.effectSchema - The schema for the effect that will produce the configuration object.
+ * @returns A utility function to be used in the Astro config setup hook, which loads a config file and processes it through an effect-based schema.
+ * @deprecated This function is deprecated in favor of `configResolverBuilder`, which provides the same functionality without relying on effects. The effect-based approach is no longer necessary and has been removed to simplify the codebase.
+ */
+export const configResolverBuilderEffect = configResolverBuilder;
 /* v8 ignore stop */
 
 /* v8 ignore start */

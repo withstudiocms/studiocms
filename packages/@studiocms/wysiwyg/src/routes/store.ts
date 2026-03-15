@@ -1,4 +1,3 @@
-import { apiResponseLogger } from 'studiocms:logger';
 import type { APIContext } from 'astro';
 import {
 	AllResponse,
@@ -70,7 +69,10 @@ const handleCSRF = ({ request, cookies }: APIContext) =>
 
 		if (!submittedToken || !storedToken || submittedToken !== storedToken) {
 			console.warn('CSRF token validation failed');
-			return apiResponseLogger(403, 'CSRF token validation failed');
+			return new Response(JSON.stringify({ error: 'CSRF token validation failed' }), {
+				status: 403,
+				headers: { 'Content-Type': 'application/json' },
+			});
 		}
 	});
 
@@ -91,14 +93,20 @@ const handleUserSessionVerification = ({ locals }: APIContext) =>
 		// Check if user is logged in
 		if (!userData) {
 			console.warn('User is not logged in, returning 403 Unauthorized');
-			return apiResponseLogger(403, 'Unauthorized');
+			return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+				status: 403,
+				headers: { 'Content-Type': 'application/json' },
+			});
 		}
 
 		// Check if user has permission
 		const isAuthorized = locals.StudioCMS.security?.userPermissionLevel.isEditor;
 		if (!isAuthorized) {
 			console.warn('User does not have editor permissions, returning 403 Unauthorized');
-			return apiResponseLogger(403, 'Unauthorized');
+			return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+				status: 403,
+				headers: { 'Content-Type': 'application/json' },
+			});
 		}
 	});
 
@@ -145,7 +153,10 @@ export const { GET, POST, OPTIONS, ALL } = createEffectAPIRoutes(
 
 				// If no projectId is provided, return an error response
 				if (!projectId) {
-					return apiResponseLogger(400, 'Project ID is required');
+					return new Response(JSON.stringify({ error: 'Project ID is required' }), {
+						status: 400,
+						headers: { 'Content-Type': 'application/json' },
+					});
 				}
 
 				// Load the project data using the SDK
@@ -153,7 +164,10 @@ export const { GET, POST, OPTIONS, ALL } = createEffectAPIRoutes(
 
 				// If no project data is found, return a 404 error
 				if (!projectData) {
-					return apiResponseLogger(404, 'Project not found');
+					return new Response(JSON.stringify({ error: 'Project not found' }), {
+						status: 404,
+						headers: { 'Content-Type': 'application/json' },
+					});
 				}
 
 				// Return the project data as a JSON response
@@ -184,11 +198,17 @@ export const { GET, POST, OPTIONS, ALL } = createEffectAPIRoutes(
 
 				// If the result is null or undefined, return an error response
 				if (!result) {
-					return apiResponseLogger(500, 'Failed to store project data');
+					return new Response(JSON.stringify({ error: 'Failed to store project data' }), {
+						status: 500,
+						headers: { 'Content-Type': 'application/json' },
+					});
 				}
 
 				// Return a success response
-				return apiResponseLogger(200, 'Project data stored successfully');
+				return new Response(JSON.stringify({ message: 'Project data stored successfully' }), {
+					status: 200,
+					headers: { 'Content-Type': 'application/json' },
+				});
 			}),
 		OPTIONS: () => Effect.try(() => OptionsResponse({ allowedMethods: ['GET', 'POST'] })),
 		ALL: () => Effect.try(() => AllResponse()),
