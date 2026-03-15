@@ -30,11 +30,9 @@ export interface LoadAndBundleConfigFileArgs {
  * The result of loading and bundling a configuration file.
  *
  * @property mod - The loaded module, which may contain a `default` export of any type, or be undefined if loading failed.
- * @property dependencies - An array of file paths representing the dependencies of the loaded configuration file.
  */
 export interface LoadAndBundleConfigFileResult {
 	mod: { default?: unknown } | undefined;
-	dependencies: string[];
 }
 
 /**

@@ -55,7 +55,7 @@
   "type": "module",
   "dependencies": {
     "astro-integration-kit": "catalog:",
-    "esbuild": "catalog:"
+    "tsdown": "catalog:"
   },
   "devDependencies": {
     "@types/node": "catalog:"
