@@ -10,7 +10,7 @@ if (requiredMajorVersion < minimumMajorVersion) {
 	process.exit(1);
 }
 
-import('./dist/index.mjs')
+import('./dist/index.js')
 	.then(({ main }) => main())
 	.catch((error) => {
 		console.error('Failed to start `@studiocms/upgrade` CLI.');
