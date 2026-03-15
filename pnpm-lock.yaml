@@ -719,9 +719,6 @@ importers:
       terminal-link:
         specifier: ^5.0.0
         version: 5.0.0
-      tsdown:
-        specifier: 'catalog:'
-        version: 0.21.0(oxc-resolver@11.19.1)(publint@0.3.18)(typescript@5.9.3)
 
   packages/@studiocms/wysiwyg:
     dependencies:
@@ -777,10 +774,6 @@ importers:
       effectify:
         specifier: workspace:^
         version: link:../../effectify
-    devDependencies:
-      tsdown:
-        specifier: 'catalog:'
-        version: 0.21.0(oxc-resolver@11.19.1)(publint@0.3.18)(typescript@5.9.3)
 
   packages/@withstudiocms/auth-kit:
     dependencies:
@@ -1053,9 +1046,6 @@ importers:
       semver:
         specifier: 'catalog:'
         version: 7.7.4
-      tsdown:
-        specifier: 'catalog:'
-        version: 0.21.0(oxc-resolver@11.19.1)(publint@0.3.18)(typescript@5.9.3)
 
   packages/effectify:
     dependencies:
@@ -1071,10 +1061,6 @@ importers:
       effect:
         specifier: catalog:effect
         version: 3.19.19
-    devDependencies:
-      tsdown:
-        specifier: 'catalog:'
-        version: 0.21.0(oxc-resolver@11.19.1)(publint@0.3.18)(typescript@5.9.3)
 
   packages/studiocms:
     dependencies:
