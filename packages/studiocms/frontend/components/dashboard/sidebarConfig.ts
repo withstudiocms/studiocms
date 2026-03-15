@@ -1,6 +1,5 @@
 import { defaultLang, type UiLanguageKeys } from 'studiocms:i18n';
 import { makeDashboardRoute, StudioCMSRoutes } from 'studiocms:lib';
-import logger from 'studiocms:logger';
 import { type FinalDashboardPage, getPluginDashboardPages } from 'studiocms:plugin-helpers';
 import type { AvailableIcons } from 'studiocms:ui/icons';
 
@@ -25,19 +24,6 @@ interface GetSidebarLinksReturn {
 }
 
 /**
- * Generates a logger message indicating a mismatch between the page type and its array.
- *
- * @param title - The title of the plugin page.
- * @param slug - The slug of the plugin page.
- * @param admin - A boolean indicating if the page is an admin page.
- * @returns A string message indicating the mismatch and that the page will not be shown in the sidebar.
- */
-const loggerMessage = (title: string, slug: string, admin: boolean) =>
-	`Plugin page ${title} (${slug}) is not an ${
-		admin ? 'admin' : 'user'
-	} page but is part of the ${admin ? 'adminPages' : 'userPages'} array, this page will not be shown in the sidebar.`;
-
-/**
  * Filters and processes a list of dashboard pages based on the user's admin status and permissions.
  *
  * @param pages - An array of `FinalDashboardPage` objects representing the pages to be filtered and processed.
@@ -60,11 +46,9 @@ function filterAndProcessPages(
 
 		if (admin) {
 			if (requiredPermissions === undefined) {
-				logger.warn(loggerMessage(title, slug, admin));
 				continue;
 			}
 			if (requiredPermissions === 'none') {
-				logger.warn(loggerMessage(title, slug, admin));
 				continue;
 			}
 			if (requiredPermissions === 'visitor') {
@@ -77,11 +61,9 @@ function filterAndProcessPages(
 			}
 		} else {
 			if (requiredPermissions === 'admin') {
-				logger.warn(loggerMessage(title, slug, admin));
 				continue;
 			}
 			if (requiredPermissions === 'owner') {
-				logger.warn(loggerMessage(title, slug, admin));
 				continue;
 			}
 		}

@@ -1,4 +1,3 @@
-import _logger from 'studiocms:logger';
 import { Mailer } from 'studiocms:mailer';
 import { SDKCoreJs as sdk } from 'studiocms:sdk';
 import type { CombinedUserData } from 'studiocms:sdk/types';
@@ -125,15 +124,11 @@ const editorRanks = ['editor', 'admin', 'owner'];
  */
 const adminRanks = ['admin', 'owner'];
 
-const forked = _logger.fork('studiocms:runtime/notifier');
-export const makeLogger = Effect.succeed(forked);
-
 export class Notifications extends Effect.Service<Notifications>()(
 	'studiocms/lib/notifier/Notifications',
 	{
 		effect: genLogger('studiocms/lib/notifier/Notifications.effect')(function* () {
 			const MailService = yield* Mailer;
-			const logger = yield* makeLogger;
 
 			/**
 			 * Retrieves the configuration settings for StudioCMS.
@@ -246,7 +241,7 @@ export class Notifications extends Effect.Service<Notifications>()(
 					const testConnection = yield* MailService.verifyMailConnection;
 
 					if ('error' in testConnection) {
-						logger.error(`Error verifying mail connection: ${testConnection.error}`);
+						yield* Effect.logError(`Error verifying mail connection: ${testConnection.error}`);
 						return;
 					}
 
@@ -288,7 +283,7 @@ export class Notifications extends Effect.Service<Notifications>()(
 					const testConnection = yield* MailService.verifyMailConnection;
 
 					if ('error' in testConnection) {
-						logger.error(`Error verifying mail connection: ${testConnection.error}`);
+						yield* Effect.logError(`Error verifying mail connection: ${testConnection.error}`);
 						return;
 					}
 
@@ -326,7 +321,7 @@ export class Notifications extends Effect.Service<Notifications>()(
 					const testConnection = yield* MailService.verifyMailConnection;
 
 					if ('error' in testConnection) {
-						logger.error(`Error verifying mail connection: ${testConnection.error}`);
+						yield* Effect.logError(`Error verifying mail connection: ${testConnection.error}`);
 						return;
 					}
 

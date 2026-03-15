@@ -94,7 +94,6 @@
     "@types/node": "catalog:",
     "@vitest/coverage-v8": "^3.2.4",
     "@withstudiocms/buildkit": "workspace:^",
-    "@inox-tools/astro-tests": "^0.9.1",
     "allure-js-commons": "^3.6.0",
     "allure-vitest": "^3.6.0",
     "allure-commandline": "^2.37.0",

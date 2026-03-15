@@ -38,20 +38,6 @@ export interface LoadAndBundleConfigFileResult {
 }
 
 /**
- * Options for building a configuration resolver.
- *
- * @template Schema - The type of the Zod schema used for validation.
- * @property configPaths - An array of file paths to search for configuration files.
- * @property label - A human-readable label describing the configuration.
- * @property zodSchema - The Zod schema instance used to validate the configuration.
- */
-export interface ConfigResolverBuilderOpts<Schema> {
-	configPaths: string[];
-	label: string;
-	zodSchema: Schema;
-}
-
-/**
  * Options for building an effect-based configuration resolver.
  *
  * @template A - The type of the configuration object that will be produced by the effect.

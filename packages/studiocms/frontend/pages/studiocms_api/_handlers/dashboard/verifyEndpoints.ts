@@ -1,7 +1,6 @@
 import { Session, VerifyEmail } from 'studiocms:auth/lib';
 import type { SessionValidationResult, UserSessionData } from 'studiocms:auth/lib/types';
 import { developerConfig } from 'studiocms:config';
-import { logger as _logger } from 'studiocms:logger';
 import { SDKCore } from 'studiocms:sdk';
 import routeConfig from 'virtual:studiocms/route-config';
 import { HttpApiBuilder, HttpServerResponse } from '@effect/platform';
@@ -169,8 +168,6 @@ export const VerifyEndpointsHandlers = HttpApiBuilder.group(
 						AstroAPIContext,
 					]);
 
-					const logger = _logger.fork('studiocms:runtime:api:verify-session');
-
 					if (!dashboardAPIEnabled) {
 						return responseBuilder(ctx, false, null, 'unknown');
 					}
@@ -180,7 +177,7 @@ export const VerifyEndpointsHandlers = HttpApiBuilder.group(
 					const sessionToken = cookies.get(AuthSessionCookieName)?.value ?? null;
 
 					if (!sessionToken) {
-						logger.info(
+						yield* Effect.logInfo(
 							`No session token found in cookies, returning unknown session status. Origin: ${originPathname}`
 						);
 						return responseBuilder(ctx, false, null, 'unknown');
@@ -203,14 +200,14 @@ export const VerifyEndpointsHandlers = HttpApiBuilder.group(
 									})
 							)
 						);
-						logger.info(
+						yield* Effect.logInfo(
 							`Session token is invalid or expired, deleting cookie. Origin: ${originPathname}`
 						);
 						return responseBuilder(ctx, false, null, 'unknown');
 					}
 
 					if (!user || user === null) {
-						logger.info(
+						yield* Effect.logInfo(
 							`No user found for session token, returning unknown session status. Origin: ${originPathname}`
 						);
 						return responseBuilder(ctx, false, null, 'unknown');
@@ -219,7 +216,7 @@ export const VerifyEndpointsHandlers = HttpApiBuilder.group(
 					const result = yield* sdk.AUTH.permission.currentStatus(user.id);
 
 					if (!result) {
-						logger.error(
+						yield* Effect.logInfo(
 							`Failed to retrieve permission status for user ${user.id}, returning unknown session status. Origin: ${originPathname}`
 						);
 						return responseBuilder(ctx, true, user, 'unknown');

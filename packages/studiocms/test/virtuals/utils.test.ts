@@ -77,21 +77,6 @@ describe(parentSuiteName, () => {
 		});
 	});
 
-	test('buildLoggerVirtual - should inject verbose flag into logger stub', async ({
-		setupAllure,
-		step,
-	}) => {
-		await setupAllure({
-			subSuiteName: 'buildLoggerVirtual test',
-			tags: [...sharedTags, 'utils:virtuals', 'function:buildLoggerVirtual'],
-		});
-
-		await step('Testing buildLoggerVirtual function', async () => {
-			const result = utils.buildLoggerVirtual(true);
-			expect(result).toBe('const verbose = true;');
-		});
-	});
-
 	//
 	// Tests for VirtualModuleBuilder class
 	//
