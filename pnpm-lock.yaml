@@ -877,9 +877,6 @@ importers:
       astro-integration-kit:
         specifier: 'catalog:'
         version: 0.19.1(astro@5.18.0(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
-      deepmerge-ts:
-        specifier: 'catalog:'
-        version: 7.1.5
       effect:
         specifier: catalog:effect
         version: 3.19.19
