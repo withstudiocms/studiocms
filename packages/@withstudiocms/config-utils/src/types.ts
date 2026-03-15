@@ -34,7 +34,7 @@ export interface LoadAndBundleConfigFileArgs {
  */
 export interface LoadAndBundleConfigFileResult {
 	mod: { default?: unknown } | undefined;
-	dependencies: string[];
+	// dependencies: string[];
 }
 
 /**

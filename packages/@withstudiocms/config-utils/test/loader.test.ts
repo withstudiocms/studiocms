@@ -55,10 +55,8 @@ describe(parentSuiteName, () => {
 			});
 
 			await ctx.parameter('bundledCode', result.code);
-			await ctx.parameter('dependencies', JSON.stringify(result.dependencies));
 
 			expect(result.code).toBeTypeOf('string');
-			expect(Array.isArray(result.dependencies)).toBe(true);
 			expect(result.code).toContain('test-config');
 		});
 
@@ -88,7 +86,6 @@ describe(parentSuiteName, () => {
 			});
 
 			await ctx.parameter('bundledCode', result.code);
-			await ctx.parameter('dependencies', JSON.stringify(result.dependencies));
 
 			expect(result.code).toBeTypeOf('string');
 			expect(result.code).toContain('typescript-config');
@@ -114,10 +111,8 @@ describe(parentSuiteName, () => {
 			});
 
 			await ctx.parameter('bundledCode', result.code);
-			await ctx.parameter('dependencies', JSON.stringify(result.dependencies));
 
 			expect(result.code).toBeTypeOf('string');
-			expect(result.dependencies.length).toBeGreaterThan(0);
 			expect(result.code).toContain('external-config');
 		});
 	});
@@ -184,10 +179,8 @@ describe(parentSuiteName, () => {
 			});
 
 			await ctx.parameter('resultModule', JSON.stringify(result.mod));
-			await ctx.parameter('resultDependencies', JSON.stringify(result.dependencies));
 
 			expect(result.mod).toBeUndefined();
-			expect(result.dependencies).toEqual([]);
 		});
 
 		await allure.step('should load and bundle a config file', async (ctx) => {
@@ -206,14 +199,12 @@ describe(parentSuiteName, () => {
 			});
 
 			await ctx.parameter('resultModule', JSON.stringify(result.mod));
-			await ctx.parameter('resultDependencies', JSON.stringify(result.dependencies));
 
 			expect(result.mod).toBeTruthy();
 			// @ts-expect-error - Testing dynamic property
 			expect(result.mod.default.loaded).toBe(true);
 			// @ts-expect-error - Testing dynamic property
 			expect(result.mod.default.bundled).toBe(true);
-			expect(Array.isArray(result.dependencies)).toBe(true);
 		});
 	});
 

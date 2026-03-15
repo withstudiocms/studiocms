@@ -1,7 +1,7 @@
 import { constants } from 'node:fs';
 import { access, unlink, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
-import { build as esbuild } from 'esbuild';
+import { build as tsdown } from 'tsdown';
 import type {
 	ImportBundledFileArgs,
 	LoadAndBundleConfigFileArgs,
@@ -16,28 +16,30 @@ import { tryCatch } from './utils/tryCatch.js';
  * @see https://github.com/vitejs/vite/blob/main/packages/vite/src/node/config.ts#L961
  */
 export async function bundleConfigFile({ fileUrl }: { fileUrl: URL }) {
-	const result = await esbuild({
-		absWorkingDir: process.cwd(),
-		entryPoints: [fileURLToPath(fileUrl)],
-		outfile: 'out.js',
-		packages: 'external',
-		write: false,
-		target: ['node18'],
-		platform: 'node',
-		bundle: true,
+	const result = await tsdown({
+		cwd: process.cwd(),
+		entry: fileURLToPath(fileUrl),
 		format: 'esm',
-		sourcemap: 'inline',
-		metafile: true,
+		target: 'node18',
+		platform: 'node',
+		logLevel: 'silent',
+		write: false,
 	});
 
-	const file = result.outputFiles[0];
+	const chunks = result[0].chunks.filter((chunk) => chunk.type === 'chunk');
+
+	if (chunks.length === 0) {
+		throw new Error('No output chunks found after bundling config file');
+	}
+
+	const file = chunks.find((chunk) => chunk.fileName.endsWith('.mjs'))?.code;
+
 	if (!file) {
 		throw new Error('Unexpected: no output file');
 	}
 
 	return {
-		code: file.text,
-		dependencies: Object.keys(result.metafile.inputs),
+		code: file,
 	};
 }
 
@@ -81,18 +83,17 @@ export async function loadAndBundleConfigFile({
 }: LoadAndBundleConfigFileArgs): Promise<LoadAndBundleConfigFileResult> {
 	// If no file URL is provided, return an empty result
 	if (!fileUrl) {
-		return { mod: undefined, dependencies: [] };
+		return { mod: undefined };
 	}
 
 	// Bundle the configuration file and get its code and dependencies
-	const { code, dependencies } = await bundleConfigFile({
+	const { code } = await bundleConfigFile({
 		fileUrl,
 	});
 
 	// Import the bundled file using the provided root URL and optional label
 	return {
 		mod: await importBundledFile({ code, root, label }),
-		dependencies,
 	};
 }
 
