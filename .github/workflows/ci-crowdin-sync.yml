@@ -40,7 +40,7 @@ jobs:
     steps:
       - name: Setup Apollo Git Bot
         id: bot-token
-        uses: actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf # v2.2.1
+        uses: actions/create-github-app-token@fee1f7d63c2ff003460e3d139729b119787bc349 # v2.2.2
         with:
           app-id: ${{ secrets.STUDIOCMS_GIT_BOT_APP_ID }}
           private-key: ${{ secrets.STUDIOCMS_GIT_BOT_PRIVATE_KEY }}
@@ -52,7 +52,7 @@ jobs:
           token: ${{ steps.bot-token.outputs.token }}
 
       - name: Crowdin pull
-        uses: crowdin/github-action@8818ff65bfc4322384f983ea37e3926948c11745 # v2.15.0
+        uses: crowdin/github-action@ce33ce793a5cbc401d9cd748716e03fc90c001f1 # v2.15.2
         id: crowdin-pull
         with:
           upload_sources: false
@@ -87,7 +87,7 @@ jobs:
           persist-credentials: false
 
       - name: Crowdin push
-        uses: crowdin/github-action@8818ff65bfc4322384f983ea37e3926948c11745 # v2.15.0
+        uses: crowdin/github-action@ce33ce793a5cbc401d9cd748716e03fc90c001f1 # v2.15.2
         with:
           upload_sources: true
           download_translations: false
