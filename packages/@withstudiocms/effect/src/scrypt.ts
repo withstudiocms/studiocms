@@ -1,9 +1,9 @@
 import type { BinaryLike, ScryptOptions } from 'node:crypto';
+import { Brand, Context, Effect, Layer } from 'effect';
 import {
 	Scrypt as EffectifyScrypt,
 	ScryptConfigOptions as EffectifyScryptConfigOptions,
 } from 'effectify/scrypt';
-import { Brand, Context, Effect, Layer } from './effect.js';
 
 export { ScryptError } from 'effectify/scrypt';
 

@@ -34,15 +34,15 @@
     "dist"
   ],
   "scripts": {
-    "build": "buildkit build 'src/**/*.ts'",
-    "dev": "buildkit dev 'src/**/*.ts'",
+    "build": "tsdown --config tsdown.config.ts --clean",
+    "dev": "tsdown --config tsdown.config.ts --no-clean",
     "test": "vitest",
     "typecheck": "tspc -p tsconfig.tspc.json"
   },
   "exports": {
     ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
     }
   },
   "type": "module",

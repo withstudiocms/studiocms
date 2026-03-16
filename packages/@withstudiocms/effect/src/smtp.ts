@@ -1,8 +1,8 @@
+import { Brand, Context, Data, Effect, Layer } from 'effect';
 import _nodemailer from 'nodemailer';
 import type Mail from 'nodemailer/lib/mailer';
 import type SMTPTransport from 'nodemailer/lib/smtp-transport';
 import socks from 'socks';
-import { Brand, Context, Data, Effect, Layer } from './effect.js';
 
 export type { Mail, SMTPTransport };
 

@@ -24,8 +24,8 @@ import type {
 	TextOptions,
 } from '@clack/prompts';
 import * as ClackPrompts from '@clack/prompts';
+import { Data, Effect } from 'effect';
 import { deepmerge } from './deepmerge.js';
-import { Data, Effect } from './effect.js';
 
 export type {
 	AutocompleteMultiSelectOptions,

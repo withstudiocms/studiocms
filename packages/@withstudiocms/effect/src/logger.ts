@@ -1,6 +1,7 @@
 import { styleText } from 'node:util';
+import { Config, Effect, Layer, List, Logger, LogLevel, pipe, type Utils } from 'effect';
 import type { ConfigError } from 'effect/ConfigError';
-import { Config, dual, Effect, Layer, List, Logger, LogLevel, pipe, type Utils } from './effect.js';
+import { dual } from 'effect/Function';
 
 export function stripNameFromLabel(label: string): string {
 	const prefix = 'studiocms/';

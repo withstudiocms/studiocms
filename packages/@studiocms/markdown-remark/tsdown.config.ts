@@ -10,7 +10,7 @@ export default defineConfig({
 		{ from: 'src/**/*.d.ts', to: 'dist', flatten: false },
 	],
 	deps: {
-		neverBundle: ['studiocms:markdown-remark', 'studiocms:markdown-remark/user-components'],
+		neverBundle: [/^studiocms:markdown-remark/],
 		onlyAllowBundle: ['@types/hast', '@types/mdast', '@types/unist'],
 	},
 });

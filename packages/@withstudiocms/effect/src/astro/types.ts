@@ -1,5 +1,5 @@
 import type { APIContext, APIRoute, MiddlewareNext } from 'astro';
-import type { Effect } from '../effect.js';
+import type { Effect } from 'effect';
 
 /**
  * Represents a middleware handler function for processing API requests within the Effect system.

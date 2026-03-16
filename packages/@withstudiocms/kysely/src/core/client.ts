@@ -68,32 +68,11 @@ export class DBCallbackFailure extends Data.TaggedError('DBCallbackFailure')<{ c
  * - QueryError: Represents errors that occur during query execution.
  * - DBCallbackFailure: Represents failures that occur within the database callback function.
  */
-type DBCallback<Schema> = <T>(
+export type DBCallback<Schema> = <T>(
 	fn: (db: Kysely<Schema>) => Promise<T>
 ) => Effect.Effect.AsEffect<
 	Effect.Effect<T, NotFoundError | QueryError | DBCallbackFailure, never>
 >;
-
-/**
- * Type alias for a function that performs a database operation using a Kysely instance and input data.
- *
- * This type represents a higher-order function that takes a DBCallback and an input of type I,
- * and returns an Effect that, when executed, yields a result of type O or fails with one of the specified error types.
- *
- * Type Parameters:
- * - Schema: The Kysely schema type representing the database structure.
- * - I: The type of the input parameter accepted by the function.
- * - O: The type of the output value produced by the function.
- *
- * Error Types:
- * - NotFoundError: Indicates that a requested resource was not found in the database.
- * - QueryError: Represents errors that occur during query execution.
- * - DBCallbackFailure: Represents failures that occur within the database callback function.
- */
-type DBCallbackFn<Schema, I, O> = (
-	query: DBCallback<Schema>,
-	input: I
-) => Effect.Effect<O, NotFoundError | QueryError | DBCallbackFailure, never>;
 
 /**
  * Base interface for a database client providing access to the Kysely instance and effectful operations.
@@ -103,7 +82,11 @@ type DBCallbackFn<Schema, I, O> = (
  */
 interface DBClientBase<Schema> {
 	readonly db: Kysely<Schema>;
-	readonly effectDb: DBCallback<Schema>;
+	readonly effectDb: <T>(
+		fn: (db: Kysely<Schema>) => Promise<T>
+	) => Effect.Effect.AsEffect<
+		Effect.Effect<T, NotFoundError | QueryError | DBCallbackFailure, never>
+	>;
 }
 
 /**
@@ -124,11 +107,6 @@ interface DBCodecs<Schema> {
 	/**
 	 * Creates a function that encodes input data before executing a database operation.
 	 *
-	 * @typeParam IEncoded - The encoded representation produced by the encoder schema.
-	 * @typeParam IType - The input value type accepted by the encoder schema.
-	 * @typeParam O - The output type produced by the database operation.
-	 * @typeParam CIType - The cleaned input type with `never` properties stripped (optional).
-	 *
 	 * @param params.encoder - A schema capable of encoding IType to IEncoded.
 	 * @param params.callbackFn - A function that performs the database operation using the encoded input.
 	 *
@@ -139,16 +117,16 @@ interface DBCodecs<Schema> {
 		encoder,
 	}: {
 		encoder: Schema.Schema<IType, IEncoded>;
-		callbackFn: DBCallbackFn<Schema, IEncoded, O>;
+		callbackFn: (
+			query: DBCallback<Schema>,
+			input: IEncoded
+		) => Effect.Effect<O, NotFoundError | QueryError | DBCallbackFailure, never>;
 	}) => (
 		input: IType
 	) => Effect.Effect<O, DatabaseError | NotFoundError | QueryError | DBCallbackFailure, never>;
 
 	/**
 	 * Creates a function that decodes output data after executing a database operation.
-	 *
-	 * @typeParam OEncoded - The encoded/input representation accepted by the decoder schema.
-	 * @typeParam OType - The target/decoded output type produced by the decoder schema.
 	 *
 	 * @param params.decoder - A schema used to decode OEncoded into OType.
 	 * @param params.callbackFn - A function that performs the database operation and returns encoded output.
@@ -160,7 +138,10 @@ interface DBCodecs<Schema> {
 		callbackFn,
 	}: {
 		decoder: Schema.Schema<OType, OEncoded, never>;
-		callbackFn: DBCallbackFn<Schema, undefined, OEncoded>;
+		callbackFn: (
+			query: DBCallback<Schema>,
+			input: undefined
+		) => Effect.Effect<OEncoded, NotFoundError | QueryError | DBCallbackFailure, never>;
 	}) => () => Effect.Effect<
 		OType,
 		DatabaseError | NotFoundError | QueryError | DBCallbackFailure,
@@ -169,12 +150,6 @@ interface DBCodecs<Schema> {
 
 	/**
 	 * Creates a function that both encodes input data and decodes output data around a database operation.
-	 *
-	 * @typeParam IEncoded - The encoded representation produced by the encoder schema.
-	 * @typeParam IType - The input value type accepted by the encoder schema.
-	 * @typeParam OEncoded - The encoded/input representation accepted by the decoder schema.
-	 * @typeParam OType - The target/decoded output type produced by the decoder schema.
-	 * @typeParam CIType - The cleaned input type with `never` properties stripped (optional).
 	 *
 	 * @param params.encoder - A schema capable of encoding IType to IEncoded.
 	 * @param params.decoder - A schema used to decode OEncoded into OType.
@@ -189,7 +164,10 @@ interface DBCodecs<Schema> {
 	}: {
 		encoder: Schema.Schema<IType, IEncoded, never>;
 		decoder: Schema.Schema<OType, OEncoded, never>;
-		callbackFn: DBCallbackFn<Schema, IEncoded, OEncoded>;
+		callbackFn: (
+			query: DBCallback<Schema>,
+			input: IEncoded
+		) => Effect.Effect<OEncoded, NotFoundError | QueryError | DBCallbackFailure, never>;
 	}) => (
 		input: IType
 	) => Effect.Effect<OType, DatabaseError | NotFoundError | QueryError | DBCallbackFailure, never>;
@@ -413,9 +391,9 @@ const dbClient = <Schema>(): KyselyDBClientRaw<Schema> =>
 			}: {
 				encoder: Schema.Schema<IType, IEncoded>;
 				callbackFn: (
-					query: typeof effectDb,
+					query: DBCallback<Schema>,
 					input: IEncoded
-				) => Effect.Effect<O, DatabaseError | NotFoundError | QueryError | DBCallbackFailure>;
+				) => Effect.Effect<O, NotFoundError | QueryError | DBCallbackFailure, never>;
 			}) =>
 			(input: IType) =>
 				Effect.gen(function* () {
@@ -450,14 +428,11 @@ const dbClient = <Schema>(): KyselyDBClientRaw<Schema> =>
 				decoder,
 				callbackFn,
 			}: {
-				decoder: Schema.Schema<OType, OEncoded>;
+				decoder: Schema.Schema<OType, OEncoded, never>;
 				callbackFn: (
-					query: typeof effectDb,
+					query: DBCallback<Schema>,
 					input: undefined
-				) => Effect.Effect<
-					OEncoded,
-					DatabaseError | NotFoundError | QueryError | DBCallbackFailure
-				>;
+				) => Effect.Effect<OEncoded, NotFoundError | QueryError | DBCallbackFailure, never>;
 			}) =>
 			(): Effect.Effect<OType, DatabaseError | NotFoundError | QueryError | DBCallbackFailure> =>
 				Effect.gen(function* () {
@@ -501,15 +476,12 @@ const dbClient = <Schema>(): KyselyDBClientRaw<Schema> =>
 				decoder,
 				callbackFn,
 			}: {
-				encoder: Schema.Schema<IType, IEncoded>;
-				decoder: Schema.Schema<OType, OEncoded>;
+				encoder: Schema.Schema<IType, IEncoded, never>;
+				decoder: Schema.Schema<OType, OEncoded, never>;
 				callbackFn: (
-					query: typeof effectDb,
+					query: DBCallback<Schema>,
 					input: IEncoded
-				) => Effect.Effect<
-					OEncoded,
-					DatabaseError | NotFoundError | QueryError | DBCallbackFailure
-				>;
+				) => Effect.Effect<OEncoded, NotFoundError | QueryError | DBCallbackFailure, never>;
 			}) =>
 			(
 				input: IType

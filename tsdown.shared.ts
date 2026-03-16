@@ -8,9 +8,6 @@ export const sharedConfig: UserConfig = {
 	dts: {
 		build: true,
 	},
-	publint: {
-		level: 'error',
-	},
 	checks: {
 		pluginTimings: false,
 	},
