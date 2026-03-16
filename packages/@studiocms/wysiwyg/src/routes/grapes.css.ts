@@ -1,5 +1,3 @@
-import stylesheet from '../styles/grapes.css?raw';
-
 /**
  * Handles all HTTP methods for serving a CSS stylesheet.
  *
@@ -7,6 +5,7 @@ import stylesheet from '../styles/grapes.css?raw';
  * with appropriate headers for content type and CORS.
  */
 export async function ALL(): Promise<Response> {
+	const stylesheet = (await import('../styles/grapes.css?raw')).default;
 	return new Response(stylesheet, {
 		headers: {
 			'Content-Type': 'text/css',

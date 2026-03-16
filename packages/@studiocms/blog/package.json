@@ -45,8 +45,8 @@
     "dist"
   ],
   "scripts": {
-    "build": "buildkit build 'src/**/*.{ts,astro,css,json,png,d.ts}'",
-    "dev": "buildkit dev 'src/**/*.{ts,astro,css,json,png,d.ts}'",
+    "build": "tsdown --config tsdown.config.ts --clean",
+    "dev": "tsdown --config tsdown.config.ts --no-clean",
     "typecheck": "tspc -p tsconfig.tspc.json",
     "effect-check": "pnpm effect-language-service diagnostics --project tsconfig.tspc.json",
     "ci:effect-check": "pnpm effect-check --format github-actions",
@@ -72,6 +72,7 @@
     "vite": "catalog:min"
   },
   "peerDependencies": {
+    "@studiocms/md": "workspace:^",
     "effect": "catalog:effect"
   }
 }
