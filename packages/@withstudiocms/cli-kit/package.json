@@ -28,8 +28,8 @@
 		"withstudiocms"
 	],
 	"scripts": {
-		"build": "buildkit build 'src/**/*.ts'",
-		"dev": "buildkit dev 'src/**/*.ts'",
+    	"build": "tsdown --config tsdown.config.ts --clean",
+    	"dev": "tsdown --config tsdown.config.ts --no-clean",
 		"test": "vitest",
 		"typecheck": "tspc -p tsconfig.tspc.json"
 	},

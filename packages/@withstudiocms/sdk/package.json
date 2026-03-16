@@ -27,8 +27,8 @@
     "dist"
   ],
   "scripts": {
-    "build": "pnpm buildkit build 'src/**/*.{ts,json}'",
-    "dev": "pnpm buildkit dev 'src/**/*.{ts,json}'",
+    "build": "tsdown --config tsdown.config.ts --clean && tsc --emitDeclarationOnly --declaration",
+    "dev": "tsdown --config tsdown.config.ts --no-clean",
     "create-migration": "tsx scripts/create-migration.ts",
     "effect-check": "pnpm effect-language-service diagnostics --project tsconfig.tspc.json",
     "ci:effect-check": "pnpm effect-check --format github-actions",
@@ -70,6 +70,10 @@
     "tsx": "^4.21.0"
   },
   "peerDependencies": {
-    "effect": "catalog:effect"
+    "@withstudiocms/effect": "workspace:^",
+    "@withstudiocms/kysely": "workspace:^",
+    "effect": "catalog:effect",
+    "effectify": "workspace:^",
+    "kysely": "catalog:kysely"
   }
 }

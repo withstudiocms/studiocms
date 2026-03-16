@@ -1,5 +1,5 @@
-import { Context, Layer } from '@withstudiocms/effect';
 import type { DBClientInterface } from '@withstudiocms/kysely/client';
+import { Context, Layer } from 'effect';
 import type { CacheEntry } from './cache.js';
 import type { StudioCMSDatabaseSchema } from './tables.js';
 

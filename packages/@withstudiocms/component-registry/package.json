@@ -38,8 +38,8 @@
 		"README.md"
 	],
 	"scripts": {
-		"build": "buildkit build 'src/**/*.{ts,d.ts}'",
-		"dev": "buildkit dev 'src/**/*.{ts,d.ts}'",
+		"build": "tsdown --config tsdown.config.ts --clean",
+		"dev": "tsdown --config tsdown.config.ts --no-clean",
 		"test": "vitest",
 		"effect-check": "pnpm effect-language-service diagnostics --project tsconfig.tspc.json",
 		"ci:effect-check": "pnpm effect-check --format github-actions",
@@ -87,6 +87,7 @@
 		"typescript": "catalog:"
 	},
 	"peerDependencies": {
-		"astro": "catalog:min"
+		"astro": "catalog:min",
+		"effect": "catalog:effect"
 	}
 }

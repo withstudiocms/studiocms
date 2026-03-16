@@ -1,5 +1,5 @@
 import type { APIContext } from 'astro';
-import { Data, Effect, Schema } from '../effect.js';
+import { Data, Effect, Schema } from 'effect';
 
 /**
  * Error class for Astro API context related errors.

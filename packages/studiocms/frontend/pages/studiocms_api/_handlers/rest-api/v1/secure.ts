@@ -396,7 +396,7 @@ export const RestApiSecureHandler = HttpApiBuilder.group(
 						 */
 						const checkForChildrenPages = sdk.dbService.withCodec({
 							encoder: Schema.String,
-							decoder: Schema.Array(StudioCMSPageData),
+							decoder: Schema.Array(StudioCMSPageData.Select),
 							callbackFn: (client, id) =>
 								client((db) =>
 									db
@@ -1442,6 +1442,22 @@ export const RestApiSecureHandler = HttpApiBuilder.group(
 					Effect.catchTags({
 						...sharedDBErrors,
 						...sharedNotifierErrors,
+						'effectify/scrypt.ScryptError': () =>
+							new RestAPIError({ error: 'Failed to hash password for new user' }),
+						GeneratorError: () =>
+							new RestAPIError({ error: 'Failed to generate password for new user' }),
+						SessionError: () =>
+							new RestAPIError({ error: 'Failed to create session for new user' }),
+						UserError: (error) =>
+							new RestAPIError({ error: `User creation failed: ${error.message}` }),
+						CheckIfUnsafeError: (error) =>
+							new RestAPIError({
+								error: `Failed to check if password is unsafe: ${error.message}`,
+							}),
+						PasswordError: (error) =>
+							new RestAPIError({ error: `Password validation failed: ${error.message}` }),
+						ResponseError: (error) =>
+							new RestAPIError({ error: `Failed to send notification: ${error.message}` }),
 					})
 				)
 			)

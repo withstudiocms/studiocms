@@ -33,8 +33,8 @@
     "dist"
   ],
   "scripts": {
-    "build": "buildkit build 'src/**/*.{ts,astro,css,json,png}'",
-    "dev": "buildkit dev 'src/**/*.{ts,astro,css,json,png}'",
+    "build": "tsdown --config tsdown.config.ts --clean",
+    "dev": "tsdown --config tsdown.config.ts --no-clean",
     "test": "vitest",
     "typecheck": "tspc -p tsconfig.tspc.json"
   },

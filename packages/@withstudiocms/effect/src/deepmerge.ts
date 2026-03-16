@@ -4,7 +4,7 @@ import {
 	type DeepMergeBuiltInMetaData,
 	type DeepMergeOptions,
 } from 'deepmerge-ts';
-import { Data, Effect } from './effect.js';
+import { Data, Effect } from 'effect';
 
 export class DeepmergeError extends Data.TaggedError('DeepmergeError')<{
 	message: string;

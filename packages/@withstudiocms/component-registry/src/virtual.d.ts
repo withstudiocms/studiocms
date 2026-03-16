@@ -29,17 +29,6 @@ declare module 'virtual:component-registry-internal-proxy/runtime' {
 	export type ComponentRegistryEntry = import('./runtime.js').ComponentRegistryEntry;
 
 	/**
-	 * Imports components by their keys from the 'studiocms:markdown-remark/user-components' module.
-	 *
-	 * @param keys - An array of strings representing the keys of the components to import.
-	 * @returns A promise that resolves to an object containing the imported components.
-	 * @throws {MarkdownRemarkError} If any component fails to import, an error is thrown with a prefixed message.
-	 * @deprecated This function is deprecated and will be removed in future versions.
-	 * Use `getRendererComponents` instead for importing components from the component registry.
-	 */
-	export const importComponentsKeys: typeof import('./runtime.js').importComponentsKeys;
-
-	/**
 	 * @returns A promise that resolves to an object containing the imported components.
 	 */
 	export const getRendererComponents: typeof import('./runtime.js').getRendererComponents;

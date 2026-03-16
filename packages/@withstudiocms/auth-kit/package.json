@@ -36,8 +36,10 @@
     "update:username-list": "node ./scripts/update-usernames.js",
     "update:password-list": "node ./scripts/update-passwords.js",
     "update:lists": "pnpm update:username-list && pnpm update:password-list",
-    "build": "pnpm update:lists && pnpm buildkit build 'src/**/*.{ts,astro,css,json,png}'",
-    "dev": "pnpm update:lists && pnpm buildkit dev 'src/**/*.{ts,astro,css,json,png}'",
+    "prebuild": "pnpm update:lists",
+    "predev": "pnpm update:lists",
+    "build": "tsdown --config tsdown.config.ts --clean",
+    "dev": "tsdown --config tsdown.config.ts --no-clean",
     "test": "vitest",
     "effect-check": "pnpm effect-language-service diagnostics --project tsconfig.tspc.json",
     "ci:effect-check": "pnpm effect-check --format github-actions",
@@ -76,6 +78,9 @@
     "@types/node": "catalog:"
   },
   "peerDependencies": {
-    "astro": "catalog:min"
+		"@effect/platform": "catalog:effect",
+    "astro": "catalog:min",
+		"effect": "catalog:effect",
+    "effectify": "workspace:^"
   }
 }

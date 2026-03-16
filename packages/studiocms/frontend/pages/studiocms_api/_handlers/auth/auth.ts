@@ -291,7 +291,21 @@ export const AuthAPIHandler = HttpApiBuilder.group(StudioCMSAuthApi, 'auth', (ha
 				// Provide the necessary dependencies for the login handler
 				Effect.provide(loginRegisterDependencies),
 				// Catch any errors that occur during the login process and return a generic error message to prevent exposing sensitive information about the failure.
-				Effect.catchTags(sharedCatchTags)
+				Effect.catchTags({
+					...sharedCatchTags,
+					'effectify/scrypt.ScryptError': () =>
+						new AuthAPIError({ error: 'Invalid username or password' }),
+					NotFoundError: () => new AuthAPIError({ error: 'Invalid username or password' }),
+					UnknownException: () => new AuthAPIError({ error: 'An unknown error occurred' }),
+					ConfigError: () => new AuthAPIError({ error: 'Site configuration is invalid' }),
+					DBCallbackFailure: () => new AuthAPIError({ error: 'Database callback failed' }),
+					QueryParseError: () => new AuthAPIError({ error: 'Database query failed' }),
+					QueryError: () => new AuthAPIError({ error: 'Database query failed' }),
+					NotFound: () => new AuthAPIError({ error: 'User not found' }),
+					PasswordError: () => new AuthAPIError({ error: 'Password verification failed' }),
+					SessionError: () => new AuthAPIError({ error: 'Session creation failed' }),
+					SMTPError: () => new AuthAPIError({ error: 'Failed to send email due to SMTP error' }),
+				})
 			)
 		)
 		.handle(
@@ -453,7 +467,20 @@ export const AuthAPIHandler = HttpApiBuilder.group(StudioCMSAuthApi, 'auth', (ha
 				// Provide the necessary dependencies for the login handler
 				Effect.provide(loginRegisterDependencies),
 				// Catch any errors that occur during the login process and return a generic error message to prevent exposing sensitive information about the failure.
-				Effect.catchTags(sharedCatchTags)
+				Effect.catchTags({
+					...sharedCatchTags,
+					'effectify/scrypt.ScryptError': () =>
+						new AuthAPIError({ error: 'Invalid username or password' }),
+					ConfigError: () => new AuthAPIError({ error: 'Site configuration is invalid' }),
+					DBCallbackFailure: () => new AuthAPIError({ error: 'Database callback failed' }),
+					QueryParseError: () => new AuthAPIError({ error: 'Database query failed' }),
+					QueryError: () => new AuthAPIError({ error: 'Database query failed' }),
+					NotFound: () => new AuthAPIError({ error: 'User not found' }),
+					SMTPError: () => new AuthAPIError({ error: 'Failed to send email due to SMTP error' }),
+					UnknownException: () => new AuthAPIError({ error: 'An unknown error occurred' }),
+					UserError: (err) => new AuthAPIError({ error: `User creation failed: ${err.message}` }),
+					NotFoundError: () => new AuthAPIError({ error: 'User not found' }),
+				})
 			)
 		)
 );
