@@ -448,8 +448,8 @@ importers:
   packages/@studiocms/markdoc:
     dependencies:
       '@markdoc/markdoc':
-        specifier: ^0.5.5
-        version: 0.5.5(@types/react@19.2.14)(react@19.2.4)
+        specifier: ^0.5.6
+        version: 0.5.6(@types/react@19.2.14)(react@19.2.4)
       astro-integration-kit:
         specifier: 'catalog:'
         version: 0.19.1(astro@5.18.0(@types/node@22.19.6)(jiti@2.6.1)(rollup@4.55.1)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
@@ -2710,8 +2710,8 @@ packages:
     resolution: {integrity: sha512-Yhlar6v9WQgUp/He7BdgzOz8lqMQ8sU+jkCq7Wx8Myc5YFJLbEe7lgui/V7G1qB1DJykHSGwreceSaD60Y0PUQ==}
     hasBin: true
 
-  '@markdoc/markdoc@0.5.5':
-    resolution: {integrity: sha512-WvFMmSFHy3MQYagWhqkaE1hBl4h7z3YTNufhzQjBngweY52de6DcoYIwjVln/OtNw939SzpImj3ZQUF/4DWkdQ==}
+  '@markdoc/markdoc@0.5.6':
+    resolution: {integrity: sha512-Qs7L5YKYHADWhpOP1JthE3E5ut4Mby/UsJKsGla3g8OXBLWDImTsG5H+Mzq5h3J6a8CNnGtp+Kz9JcGtHRpoKA==}
     engines: {node: '>=14.7.0'}
     peerDependencies:
       '@types/react': '*'
@@ -8489,7 +8489,7 @@ snapshots:
       - supports-color
     optional: true
 
-  '@markdoc/markdoc@0.5.5(@types/react@19.2.14)(react@19.2.4)':
+  '@markdoc/markdoc@0.5.6(@types/react@19.2.14)(react@19.2.4)':
     optionalDependencies:
       '@types/linkify-it': 3.0.5
       '@types/markdown-it': 12.2.3
