@@ -51,37 +51,33 @@
 	},
 	"exports": {
 		"./astro/*": {
-			"types": "./dist/astro/*.d.mts",
-			"default": "./dist/astro/*.mjs"
+			"types": "./dist/astro/*.d.ts",
+			"default": "./dist/astro/*.js"
 		},
 		"./httpApi": {
-			"types": "./dist/httpApi.d.mts",
-			"default": "./dist/httpApi.mjs"
+			"types": "./dist/httpApi.d.ts",
+			"default": "./dist/httpApi.js"
 		},
 		"./scalar": {
-			"types": "./dist/scalar.d.mts",
-			"default": "./dist/scalar.mjs"
+			"types": "./dist/scalar.d.ts",
+			"default": "./dist/scalar.js"
 		},
 		"./schemas": {
-			"types": "./dist/schemas.d.mts",
-			"default": "./dist/schemas.mjs"
+			"types": "./dist/schemas.d.ts",
+			"default": "./dist/schemas.js"
 		},
 		"./scrypt": {
-			"types": "./dist/scrypt.d.mts",
-			"default": "./dist/scrypt.mjs"
+			"types": "./dist/scrypt.d.ts",
+			"default": "./dist/scrypt.js"
 		},
 		"./static": {
-			"types": "./dist/static.d.mts",
-			"default": "./dist/static.mjs"
+			"types": "./dist/static.d.ts",
+			"default": "./dist/static.js"
 		},
 		"./webHandler": {
-			"types": "./dist/webHandler.d.mts",
-			"default": "./dist/webHandler.mjs"
+			"types": "./dist/webHandler.d.ts",
+			"default": "./dist/webHandler.js"
 		}
-	},
-	"dependencies": {},
-	"devDependencies": {
-		"tsdown": "catalog:"
 	},
 	"peerDependencies": {
 		"@effect/platform": "catalog:effect",

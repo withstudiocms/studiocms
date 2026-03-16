@@ -1,9 +1,9 @@
 import { defineConfig } from 'tsdown';
+import { sharedConfig } from '../../tsdown.shared.ts';
 
 export default defineConfig({
+	...sharedConfig,
 	entry: 'src/index.ts',
-	clean: true,
-	treeshake: true,
 	deps: {
 		onlyAllowBundle: false,
 	},

@@ -1,13 +1,8 @@
 import { defineConfig } from 'tsdown';
+import { sharedConfig } from '../../tsdown.shared.ts';
 
 export default defineConfig({
+	...sharedConfig,
 	entry: 'src/**/*.ts',
-	clean: false,
-	treeshake: true,
 	unbundle: true,
-	format: ['esm'],
-	dts: true,
-	checks: {
-		pluginTimings: false,
-	},
 });

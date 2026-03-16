@@ -16,7 +16,7 @@
 		"create-studiocms": "./create-studiocms.mjs"
 	},
 	"scripts": {
-		"build": "tsdown",
+		"build": "tsdown --config tsdown.config.ts --clean",
 		"cli:test": "pnpm build && node ./create-studiocms.mjs",
 		"effect-check": "pnpm effect-language-service diagnostics --project tsconfig.tspc.json",
 		"ci:effect-check": "pnpm effect-check --format github-actions",
@@ -33,8 +33,7 @@
 		"@withstudiocms/effect": "workspace:^",
 		"effect": "catalog:effect",
 		"package-json": "^10.0.1",
-		"semver": "catalog:",
-		"tsdown": "catalog:"
+		"semver": "catalog:"
 	},
 	"engines": {
 		"node": "^20.3.0 || >=22.0.0"

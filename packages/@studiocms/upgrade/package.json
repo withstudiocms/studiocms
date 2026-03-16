@@ -13,7 +13,7 @@
 	"bugs": "https://github.com/withstudiocms/studiocms/issues",
 	"homepage": "https://studiocms.dev",
 	"scripts": {
-		"build": "tsdown",
+		"build": "tsdown --config tsdown.config.ts --clean",
 		"cli:test": "pnpm build && node ./upgrade.mjs",
 		"effect-check": "pnpm effect-language-service diagnostics --project tsconfig.tspc.json",
 		"ci:effect-check": "pnpm effect-check --format github-actions",
@@ -36,8 +36,7 @@
 		"effect": "catalog:effect",
 		"package-manager-detector": "catalog:",
 		"semver": "catalog:",
-		"terminal-link": "^5.0.0",
-		"tsdown": "catalog:"
+		"terminal-link": "^5.0.0"
 	},
 	"engines": {
 		"node": "^20.3.0 || >=22.0.0"
