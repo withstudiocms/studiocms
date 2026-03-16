@@ -7,6 +7,7 @@ export default defineConfig({
 	unbundle: true,
 	deps: {
 		neverBundle: [/^virtual:/],
+		skipNodeModulesBundle: true,
 	},
 	copy: [
 		{

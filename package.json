@@ -55,7 +55,8 @@
     "playground:cli": "pnpm --filter node-playground studiocms",
     "playground:migrate": "pnpm --filter node-playground migrate",
 
-    "dev": "pnpm --stream --filter studiocms --filter effectify --filter @studiocms/* --filter @withstudiocms/* --filter node-playground -r --parallel dev",
+    "predev": "pnpm --filter studiocms --filter effectify --filter @studiocms/* --filter @withstudiocms/* build",
+    "dev": "pnpm --filter node-playground dev",
 
     "ci:snapshot-templates": "node ./scripts/snapshot-templates.mjs",
     "ci:update-templates": "node ./scripts/update-templates.mjs",
