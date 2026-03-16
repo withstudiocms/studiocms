@@ -29,14 +29,29 @@ const getFromDb = withCodec({
  * This function inserts or updates a URL mapping in the database.
  */
 const setToDb = withEncoder({
-	encoder: StudioCMSStorageManagerUrlMappings.Insert,
+	encoder: Schema.Union(
+		StudioCMSStorageManagerUrlMappings.Insert,
+		StudioCMSStorageManagerUrlMappings.Update
+	),
 	callbackFn: (query, input) =>
 		query((db) =>
-			db
-				.insertInto('StudioCMSStorageManagerUrlMappings')
-				.values(input)
-				.onConflict((oc) => oc.column('identifier').doUpdateSet(input))
-				.execute()
+			db.transaction().execute(async (trx) => {
+				// First, we attempt to update the existing record
+				const updateResult = await trx
+					.updateTable('StudioCMSStorageManagerUrlMappings')
+					.set({
+						url: input.url,
+						expiresAt: input.expiresAt,
+						isPermanent: input.isPermanent,
+					})
+					.where('identifier', '=', input.identifier)
+					.executeTakeFirst();
+
+				// If no rows were updated, we insert a new record
+				if (updateResult.numUpdatedRows === 0n) {
+					await trx.insertInto('StudioCMSStorageManagerUrlMappings').values(input).execute();
+				}
+			})
 		),
 });
 

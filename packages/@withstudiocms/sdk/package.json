@@ -27,7 +27,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsdown --config tsdown.config.ts --clean",
+    "build": "tsdown --config tsdown.config.ts --clean && tsc --emitDeclarationOnly --declaration",
     "dev": "tsdown --config tsdown.config.ts --no-clean",
     "create-migration": "tsx scripts/create-migration.ts",
     "effect-check": "pnpm effect-language-service diagnostics --project tsconfig.tspc.json",
