@@ -63,7 +63,7 @@
   },
   "devDependencies": {
     "@types/turndown": "^5.0.6",
-    "@types/sanitize-html": "^2.16.0",
+    "@types/sanitize-html": "^2.16.1",
     "@withstudiocms/sdk": "workspace:^",
     "astro": "catalog:min",
     "studiocms": "workspace:^",
