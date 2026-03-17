@@ -186,10 +186,10 @@ const rehypeCallouts: Plugin<[UserOptions?], Root> = (options) => {
 	};
 };
 
-export { rehypeCallouts };
 export type {
 	CalloutConfig,
 	HtmlTagNamesConfig,
 	RehypeCalloutsOptions,
 	UserOptions,
 } from './types.ts';
+export { rehypeCallouts };

@@ -115,8 +115,8 @@ export const makeTranslation = <Body extends Translations>(
 	currentPage: BaseTranslationKeys,
 	i18n: Messages<Body>
 ) => {
-	const currentTranslations = currentPage;
-	type CurrentTranslations = typeof currentTranslations;
+	const _currentTranslations = currentPage;
+	type CurrentTranslations = typeof _currentTranslations;
 
 	return class Translation extends HTMLElement {
 		connectedCallback() {

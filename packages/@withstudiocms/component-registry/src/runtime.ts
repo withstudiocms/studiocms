@@ -10,10 +10,9 @@ import { transformHTML } from './transform-html.js';
 import type { ComponentRegistryEntry } from './types.js';
 import { convertUnderscoresToHyphens } from './utils.js';
 
-export * from './utils.js';
-
-export { componentProps };
 export type { ComponentRegistryEntry } from './types.js';
+export * from './utils.js';
+export { componentProps };
 
 /**
  * Returns the component registry entries.

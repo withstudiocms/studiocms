@@ -1,11 +1,7 @@
 import { Encryption, Password, Session, User } from './core.js';
 import { VerifyEmail } from './verify-email.js';
 
-export { Encryption };
-export { Password };
-export { Session };
-export { User };
-export { VerifyEmail };
+export { Encryption, Password, Session, User, VerifyEmail };
 
 /**
  * This is the types for the `studiocms:auth/lib` virtual module

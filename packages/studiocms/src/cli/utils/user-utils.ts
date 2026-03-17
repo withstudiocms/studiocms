@@ -48,4 +48,4 @@ const getCheckers = Effect.gen(function* () {
 	return mod;
 }).pipe(Effect.provide(CheckIfUnsafe.Default));
 
-export { hashPassword, verifyPasswordStrength, getCheckers };
+export { getCheckers, hashPassword, verifyPasswordStrength };
