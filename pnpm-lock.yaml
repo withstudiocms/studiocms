@@ -85,8 +85,8 @@ catalogs:
       specifier: ^8.18.0
       version: 8.18.0
     kysely:
-      specifier: ^0.28.11
-      version: 0.28.11
+      specifier: ^0.28.12
+      version: 0.28.12
     kysely-turso:
       specifier: ^0.1.1
       version: 0.1.1
@@ -1034,10 +1034,10 @@ importers:
         version: 3.19.19
       kysely:
         specifier: catalog:kysely
-        version: 0.28.11
+        version: 0.28.12
       kysely-turso:
         specifier: catalog:kysely
-        version: 0.1.1(@libsql/client@0.15.15)(kysely@0.28.11)
+        version: 0.1.1(@libsql/client@0.15.15)(kysely@0.28.12)
       mysql2:
         specifier: catalog:kysely
         version: 3.18.0(@types/node@22.19.6)
@@ -1068,7 +1068,7 @@ importers:
         version: link:../../effectify
       kysely:
         specifier: catalog:kysely
-        version: 0.28.11
+        version: 0.28.12
       zod:
         specifier: ^3.25.76
         version: 3.25.76
@@ -1325,7 +1325,7 @@ importers:
         version: 3.19.19
       kysely-turso:
         specifier: catalog:kysely
-        version: 0.1.1(@libsql/client@0.15.15)(kysely@0.28.11)
+        version: 0.1.1(@libsql/client@0.15.15)(kysely@0.28.12)
       sharp:
         specifier: 'catalog:'
         version: 0.34.5
@@ -1371,7 +1371,7 @@ importers:
         version: 3.19.19
       kysely-turso:
         specifier: ^0.1.1
-        version: 0.1.1(@libsql/client@0.15.15)(kysely@0.28.11)
+        version: 0.1.1(@libsql/client@0.15.15)(kysely@0.28.12)
       sharp:
         specifier: ^0.34.3
         version: 0.34.5
@@ -1497,7 +1497,7 @@ importers:
         version: 3.19.19
       kysely-turso:
         specifier: ^0.1.1
-        version: 0.1.1(@libsql/client@0.15.15)(kysely@0.28.11)
+        version: 0.1.1(@libsql/client@0.15.15)(kysely@0.28.12)
       sharp:
         specifier: ^0.34.3
         version: 0.34.5
@@ -5273,8 +5273,8 @@ packages:
       '@tursodatabase/serverless':
         optional: true
 
-  kysely@0.28.11:
-    resolution: {integrity: sha512-zpGIFg0HuoC893rIjYX1BETkVWdDnzTzF5e0kWXJFg5lE0k1/LfNWBejrcnOFu8Q2Rfq/hTDTU7XLUM8QOrpzg==}
+  kysely@0.28.12:
+    resolution: {integrity: sha512-kWiueDWXhbCchgiotwXkwdxZE/6h56IHAeFWg4euUfW0YsmO9sxbAxzx1KLLv2lox15EfuuxHQvgJ1qIfZuHGw==}
     engines: {node: '>=20.0.0'}
 
   levn@0.3.0:
@@ -11336,13 +11336,13 @@ snapshots:
 
   ky@1.14.2: {}
 
-  kysely-turso@0.1.1(@libsql/client@0.15.15)(kysely@0.28.11):
+  kysely-turso@0.1.1(@libsql/client@0.15.15)(kysely@0.28.12):
     dependencies:
-      kysely: 0.28.11
+      kysely: 0.28.12
     optionalDependencies:
       '@libsql/client': 0.15.15
 
-  kysely@0.28.11: {}
+  kysely@0.28.12: {}
 
   levn@0.3.0:
     dependencies:
