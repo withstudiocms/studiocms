@@ -70,7 +70,6 @@
     "vite",
     "vitest",
     "zod",
-    "mysql2",
     "astro",
     "@astrojs/node",
     "@astrojs/rss",
