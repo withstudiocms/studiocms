@@ -91,8 +91,8 @@ catalogs:
       specifier: ^0.1.1
       version: 0.1.1
     mysql2:
-      specifier: ^3.18.0
-      version: 3.18.0
+      specifier: ^3.19.1
+      version: 3.19.1
     pg:
       specifier: ^8.20.0
       version: 8.20.0
@@ -1040,7 +1040,7 @@ importers:
         version: 0.1.1(@libsql/client@0.15.15)(kysely@0.28.12)
       mysql2:
         specifier: catalog:kysely
-        version: 3.18.0(@types/node@22.19.6)
+        version: 3.19.1(@types/node@22.19.6)
       pg:
         specifier: catalog:kysely
         version: 8.20.0
@@ -1243,7 +1243,7 @@ importers:
         version: 2.0.1
       mysql2:
         specifier: catalog:kysely
-        version: 3.18.0(@types/node@22.19.6)
+        version: 3.19.1(@types/node@22.19.6)
       nanostores:
         specifier: ^1.1.1
         version: 1.1.1
@@ -1411,7 +1411,7 @@ importers:
         version: 3.19.19
       mysql2:
         specifier: ^3.18.0
-        version: 3.18.0(@types/node@22.19.6)
+        version: 3.19.1(@types/node@22.19.6)
       sharp:
         specifier: ^0.34.3
         version: 0.34.5
@@ -1540,7 +1540,7 @@ importers:
         version: 3.19.19
       mysql2:
         specifier: ^3.18.0
-        version: 3.18.0(@types/node@22.19.6)
+        version: 3.19.1(@types/node@22.19.6)
       sharp:
         specifier: ^0.34.3
         version: 0.34.5
@@ -5625,8 +5625,8 @@ packages:
   multipasta@0.2.7:
     resolution: {integrity: sha512-KPA58d68KgGil15oDqXjkUBEBYc00XvbPj5/X+dyzeo/lWm9Nc25pQRlf1D+gv4OpK7NM0J1odrbu9JNNGvynA==}
 
-  mysql2@3.18.0:
-    resolution: {integrity: sha512-3rupyOFks7Vq0jcjBpmg1gtgfGuCcmgrRJPEfpGzzrB/ydutupbjKkoDJGsGkrJRU6j44o2tb0McduL03/v/dQ==}
+  mysql2@3.19.1:
+    resolution: {integrity: sha512-yn4zh+Uxu5J3Zvi6Ao96lJ7BSBRkspHflWQAmOPND+htbpIKDQw99TTvPzgihKO/QyMickZopO4OsnixnpcUwA==}
     engines: {node: '>= 8.0'}
     peerDependencies:
       '@types/node': '>= 8'
@@ -11968,7 +11968,7 @@ snapshots:
 
   multipasta@0.2.7: {}
 
-  mysql2@3.18.0(@types/node@22.19.6):
+  mysql2@3.19.1(@types/node@22.19.6):
     dependencies:
       '@types/node': 22.19.6
       aws-ssl-profiles: 1.1.2
