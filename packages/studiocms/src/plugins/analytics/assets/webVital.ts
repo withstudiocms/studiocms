@@ -26,13 +26,13 @@ import { processWebVitalsRouteSummary } from './webVitalsRouteSummary.js';
 import { processWebVitalsSummary } from './webVitalsSummary.js';
 
 export type {
-	WebVitalsResponseItem,
+	GetWebVitalsData,
 	IntermediateWebVitalsRouteSummary,
 	MetricStats,
 	WebVitalsMetricSummary,
+	WebVitalsResponseItem,
 	WebVitalsRouteSummary,
 	WebVitalsSummary,
-	GetWebVitalsData,
 };
 
 /**

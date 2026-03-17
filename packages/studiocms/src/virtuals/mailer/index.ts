@@ -1,5 +1,5 @@
 import { SDKCoreJs as sdk } from 'studiocms:sdk';
-import { Effect, genLogger, Layer, pipeLogger } from '../../effect.js';
+import { Effect, genLogger, pipeLogger } from '../../effect.js';
 import { type Mail, SMTPMailer } from '../../utils/effects/smtp.js';
 import type { ConfigFinal, StudioCMSMailerConfig } from '../sdk/types.js';
 

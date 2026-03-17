@@ -11,6 +11,7 @@
     "includes": [
       "**",
       "!**/package.json",
+      "!**/*.d.ts",
       "!**/*.min.js",
       "!**/*.min.css",
       "!**/dashboard-code.css",

@@ -9,7 +9,7 @@ import {
 
 export type { Dialect } from 'kysely';
 
-export type { KyselyDBClientLive, DBClientInterface };
+export type { DBClientInterface, KyselyDBClientLive };
 
 export { DBCallbackFailure };
 
