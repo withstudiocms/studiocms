@@ -69,7 +69,7 @@ catalogs:
     kysely: ^0.28.12
     kysely-turso: ^0.1.1
     pg: ^8.20.0
-    mysql2: ^3.18.0
+    mysql2: ^3.19.1
   min:
     "@astrojs/internal-helpers": ^0.7.5
     "@astrojs/markdown-remark": ^6.3.3
