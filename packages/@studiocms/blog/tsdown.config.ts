@@ -6,10 +6,20 @@ export default defineConfig({
 	entry: 'src/**/*.ts',
 	unbundle: true,
 	deps: {
-		neverBundle: [/^virtual:/],
+		neverBundle: [/^astro:/, /^studiocms/],
 		skipNodeModulesBundle: true,
 	},
 	copy: [
+		{
+			from: 'src/**/*.astro',
+			to: 'dist',
+			flatten: false,
+		},
+		{
+			from: 'src/**/*.css',
+			to: 'dist',
+			flatten: false,
+		},
 		{
 			from: 'src/**/*.d.ts',
 			to: 'dist',

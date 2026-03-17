@@ -40,8 +40,8 @@
     "dist"
   ],
   "scripts": {
-    "build": "buildkit build 'src/**/*.{ts,astro,css,js}'",
-    "dev": "buildkit dev 'src/**/*.{ts,astro,css,js}'",
+    "build": "tsdown --config tsdown.config.ts --clean",
+    "dev": "tsdown --config tsdown.config.ts --no-clean",
     "test": "vitest",
     "effect-check": "pnpm effect-language-service diagnostics --project tsconfig.tspc.json",
     "ci:effect-check": "pnpm effect-check --format github-actions",
@@ -77,5 +77,12 @@
     "astro": "catalog:min",
     "studiocms": "workspace:^",
     "vite": "catalog:min"
+  },
+  "peerDependencies": {
+    "@withstudiocms/component-registry": "workspace:^",
+    "@withstudiocms/effect": "workspace:^",
+    "@withstudiocms/kysely": "workspace:^",
+    "@withstudiocms/sdk": "workspace:^",
+    "effect": "catalog:effect"
   }
 }
