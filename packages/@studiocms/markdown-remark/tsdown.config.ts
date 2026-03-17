@@ -11,6 +11,6 @@ export default defineConfig({
 	],
 	deps: {
 		neverBundle: [/^studiocms:markdown-remark/],
-		onlyAllowBundle: ['@types/hast', '@types/mdast', '@types/unist'],
+		onlyBundle: ['@types/hast', '@types/mdast', '@types/unist'],
 	},
 });

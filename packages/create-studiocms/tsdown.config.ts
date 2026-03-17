@@ -5,6 +5,6 @@ export default defineConfig({
 	...sharedConfig,
 	entry: 'src/index.ts',
 	deps: {
-		onlyAllowBundle: false,
+		onlyBundle: false,
 	},
 });
