@@ -267,7 +267,46 @@ export const AstroConfigImageSettings: Partial<AstroConfig['image']> = {
  *
  * @see https://docs.astro.build/en/reference/configuration-reference/#vite
  */
+/**
+ * Vite plugin that provides client-side fallbacks for Astro virtual modules
+ * that are only registered for the server/SSR environment in Astro 6.
+ *
+ * In Astro 6, `virtual:astro:routes`, `virtual:astro:pages`, and
+ * `virtual:astro:middleware` are not resolved in the client Vite environment.
+ * StudioCMS client-side code (dev toolbar, manifest) imports these transitively,
+ * causing build failures. This plugin provides no-op shims for the client only.
+ */
+function astro6ClientShimPlugin() {
+	const SHIMS: Record<string, string> = {
+		'virtual:astro:routes': 'export const routes = [];',
+		'virtual:astro:pages': 'export const pageMap = new Map();',
+		'virtual:astro:middleware': 'export const onRequest = (ctx, next) => next();',
+	};
+
+	const RESOLVED_PREFIX = '\0astro6-compat:';
+
+	return {
+		name: 'studiocms:astro6-client-shim',
+		resolveId(id: string, _source: string | undefined, options: Record<string, unknown>) {
+			if (id in SHIMS) {
+				const env = (options?.environment as Record<string, unknown> | undefined);
+				const isClient = env?.name === 'client' || options?.ssr === false;
+				if (isClient) {
+					return RESOLVED_PREFIX + id;
+				}
+			}
+			return null;
+		},
+		load(id: string) {
+			if (id.startsWith(RESOLVED_PREFIX)) {
+				return SHIMS[id.slice(RESOLVED_PREFIX.length)] || '';
+			}
+		},
+	};
+}
+
 export const AstroConfigViteSettings: Partial<AstroConfig['vite']> = {
+	plugins: [astro6ClientShimPlugin()],
 	build: {
 		chunkSizeWarningLimit: 1200, // Allow's increase to 1.2 kB for Plugins such as our WYSIWYG editor to not trigger warnings
 		rollupOptions: {
