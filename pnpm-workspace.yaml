@@ -56,7 +56,7 @@ catalogs:
   astrojs:
     "@astrojs/node": ^9.5.4
     "@astrojs/rss": ^4.0.15
-    astro: ^5.18.0
+    astro: ^5.18.0 || ^6.0.0
     vite: ^6.3.4
   effect:
     "@effect/cli": ^0.73.2
@@ -73,7 +73,7 @@ catalogs:
   min:
     "@astrojs/internal-helpers": ^0.7.5
     "@astrojs/markdown-remark": ^6.3.3
-    astro: ^5.12.9
+    astro: ^5.12.9 || ^6.0.0
     vite: ^6.3.4
   react:
     "@types/react": ^19.2.14
