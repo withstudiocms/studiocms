@@ -19,7 +19,7 @@ jobs:
       contents: write
       pull-requests: write
     secrets: inherit
-    uses: withstudiocms/automations/.github/workflows/renovate-changeset.yml@18ae9dbfa56fd5d58b71b3e196261eac79460518 # main
+    uses: withstudiocms/automations/.github/workflows/renovate-changeset.yml@65e8fc47c1a57b2f533bd9cd8a288fdf3b40bbc2 # main
 
   renovate-effect:
     name: Update Renovate Effect PR
@@ -44,7 +44,7 @@ jobs:
           token: ${{ steps.bot-token.outputs.token }}
 
       - name: Install Tools & Dependencies
-        uses: withstudiocms/automations/.github/actions/install@18ae9dbfa56fd5d58b71b3e196261eac79460518 # main
+        uses: withstudiocms/automations/.github/actions/install@65e8fc47c1a57b2f533bd9cd8a288fdf3b40bbc2 # main
         
       - name: Create Effect Changesets
         run: node .github/scripts/effect-changeset.mjs
@@ -83,7 +83,7 @@ jobs:
           token: ${{ steps.bot-token.outputs.token }}
 
       - name: Install Tools & Dependencies
-        uses: withstudiocms/automations/.github/actions/install@18ae9dbfa56fd5d58b71b3e196261eac79460518 # main
+        uses: withstudiocms/automations/.github/actions/install@65e8fc47c1a57b2f533bd9cd8a288fdf3b40bbc2 # main
 
       - name: Create Translation Changesets
         run: node .github/scripts/translation-changeset.mjs

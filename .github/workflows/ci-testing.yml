@@ -72,7 +72,7 @@ jobs:
           persist-credentials: true
 
       - name: Install Tools & Dependencies
-        uses: withstudiocms/automations/.github/actions/install@18ae9dbfa56fd5d58b71b3e196261eac79460518 # main
+        uses: withstudiocms/automations/.github/actions/install@65e8fc47c1a57b2f533bd9cd8a288fdf3b40bbc2 # main
 
       - name: Build packages
         run: pnpm ci:build
@@ -93,7 +93,7 @@ jobs:
           cname: tests.studiocms.dev
 
       - name: Upload coverage report to Codecov
-        uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de # v5.5.2
+        uses: codecov/codecov-action@1af58845a975a7985b0beb0cbe6fbbb71a41dbad # v5.5.3
         with:
           use_oidc: true
           slug: withstudiocms/studiocms
@@ -103,7 +103,7 @@ jobs:
           report_type: "coverage"
 
       - name: Upload test results to Codecov
-        uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de # v5.5.2
+        uses: codecov/codecov-action@1af58845a975a7985b0beb0cbe6fbbb71a41dbad # v5.5.3
         with:
           use_oidc: true
           slug: withstudiocms/studiocms
