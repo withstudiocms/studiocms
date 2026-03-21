@@ -59,10 +59,10 @@ catalogs:
     astro: ^5.18.0
     vite: ^6.3.4
   effect:
-    "@effect/cli": ^0.73.2
-    "@effect/platform": ^0.94.5
-    "@effect/platform-node": ^0.104.1
-    effect: ^3.19.19
+    "@effect/cli": ^0.74.0
+    "@effect/platform": ^0.95.0
+    "@effect/platform-node": ^0.105.0
+    effect: ^3.20.0
   kysely:
     "@libsql/client": ^0.15.15
     "@types/pg": ^8.18.0
