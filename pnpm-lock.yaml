@@ -1539,7 +1539,7 @@ importers:
         specifier: ^3.20.0
         version: 3.20.0
       mysql2:
-        specifier: ^3.19.1
+        specifier: ^3.20.0
         version: 3.20.0(@types/node@22.19.15)
       sharp:
         specifier: ^0.34.3
