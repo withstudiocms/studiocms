@@ -121,7 +121,7 @@ catalogs:
       version: 19.2.4
   studiocms:
     '@studiocms/ui':
-      specifier: ^1.1.2
+      specifier: ^1.2.0
       version: 1.2.0
 
 patchedDependencies:
