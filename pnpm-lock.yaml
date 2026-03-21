@@ -59,8 +59,8 @@ catalogs:
       specifier: ^0.2.15
       version: 0.2.15
     tsdown:
-      specifier: ^0.21.2
-      version: 0.21.2
+      specifier: ^0.21.4
+      version: 0.21.4
     typescript:
       specifier: ^5.9.3
       version: 5.9.3
@@ -91,8 +91,8 @@ catalogs:
       specifier: ^0.1.1
       version: 0.1.1
     mysql2:
-      specifier: ^3.19.1
-      version: 3.19.1
+      specifier: ^3.20.0
+      version: 3.20.0
     pg:
       specifier: ^8.20.0
       version: 8.20.0
@@ -207,7 +207,7 @@ importers:
         version: 3.3.0
       tsdown:
         specifier: 'catalog:'
-        version: 0.21.2(oxc-resolver@11.19.1)(publint@0.3.18)(typescript@5.9.3)
+        version: 0.21.4(oxc-resolver@11.19.1)(publint@0.3.18)(typescript@5.9.3)
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
@@ -938,7 +938,7 @@ importers:
         version: 3.19.19
       tsdown:
         specifier: 'catalog:'
-        version: 0.21.2(oxc-resolver@11.19.1)(publint@0.3.18)(typescript@5.9.3)
+        version: 0.21.4(oxc-resolver@11.19.1)(publint@0.3.18)(typescript@5.9.3)
     devDependencies:
       '@types/node':
         specifier: 'catalog:'
@@ -1040,7 +1040,7 @@ importers:
         version: 0.1.1(@libsql/client@0.15.15)(kysely@0.28.12)
       mysql2:
         specifier: catalog:kysely
-        version: 3.19.1(@types/node@22.19.6)
+        version: 3.20.0(@types/node@22.19.6)
       pg:
         specifier: catalog:kysely
         version: 8.20.0
@@ -1243,7 +1243,7 @@ importers:
         version: 2.0.1
       mysql2:
         specifier: catalog:kysely
-        version: 3.19.1(@types/node@22.19.6)
+        version: 3.20.0(@types/node@22.19.6)
       nanostores:
         specifier: ^1.1.1
         version: 1.1.1
@@ -1411,7 +1411,7 @@ importers:
         version: 3.19.19
       mysql2:
         specifier: ^3.19.1
-        version: 3.19.1(@types/node@22.19.6)
+        version: 3.20.0(@types/node@22.19.6)
       sharp:
         specifier: ^0.34.3
         version: 0.34.5
@@ -1540,7 +1540,7 @@ importers:
         version: 3.19.19
       mysql2:
         specifier: ^3.19.1
-        version: 3.19.1(@types/node@22.19.6)
+        version: 3.20.0(@types/node@22.19.6)
       sharp:
         specifier: ^0.34.3
         version: 0.34.5
@@ -4933,8 +4933,8 @@ packages:
     resolution: {integrity: sha512-Xwwo44whKBVCYoliBQwaPvtd/2tYFkRQtXDWj1nackaV2JPXx3L0+Jvd8/qCJ2p+ML0/XVkJ2q+Mr+UVdpJK5w==}
     engines: {node: '>=12.0.0'}
 
-  hookable@6.0.1:
-    resolution: {integrity: sha512-uKGyY8BuzN/a5gvzvA+3FVWo0+wUjgtfSdnmjtrOVwQCZPHpHDH2WRO3VZSOeluYrHoDCiXFffZXs8Dj1ULWtw==}
+  hookable@6.1.0:
+    resolution: {integrity: sha512-ZoKZSJgu8voGK2geJS+6YtYjvIzu9AOM/KZXsBxr83uhLL++e9pEv/dlgwgy3dvHg06kTz6JOh1hk3C8Ceiymw==}
 
   html-encoding-sniffer@1.0.2:
     resolution: {integrity: sha512-71lZziiDnsuabfdYiUeWdCVyKuqwWi23L8YeIgV9jSSZHCtb6wB1BKWooH7L3tn4/FuZJMVWyNaIDr4RGmaSYw==}
@@ -5625,8 +5625,8 @@ packages:
   multipasta@0.2.7:
     resolution: {integrity: sha512-KPA58d68KgGil15oDqXjkUBEBYc00XvbPj5/X+dyzeo/lWm9Nc25pQRlf1D+gv4OpK7NM0J1odrbu9JNNGvynA==}
 
-  mysql2@3.19.1:
-    resolution: {integrity: sha512-yn4zh+Uxu5J3Zvi6Ao96lJ7BSBRkspHflWQAmOPND+htbpIKDQw99TTvPzgihKO/QyMickZopO4OsnixnpcUwA==}
+  mysql2@3.20.0:
+    resolution: {integrity: sha512-eCLUs7BNbgA6nf/MZXsaBO1SfGs0LtLVrJD3WeWq+jPLDWkSufTD+aGMwykfUVPdZnblaUK1a8G/P63cl9FkKg==}
     engines: {node: '>= 8.0'}
     peerDependencies:
       '@types/node': '>= 8'
@@ -6604,14 +6604,14 @@ packages:
       typescript:
         optional: true
 
-  tsdown@0.21.2:
-    resolution: {integrity: sha512-pP8eAcd1XAWjl5gjosuJs0BAuVoheUe3V8VDHx31QK7YOgXjcCMsBSyFWO3CMh/CSUkjRUzR96JtGH3WJFTExQ==}
+  tsdown@0.21.4:
+    resolution: {integrity: sha512-Q/kBi8SXkr4X6JI/NAZKZY1UuiEcbuXtIskL4tZCsgpDiEPM/2W6lC+OonNA31S+V3KsWedFvbFDBs23hvt+Aw==}
     engines: {node: '>=20.19.0'}
     hasBin: true
     peerDependencies:
       '@arethetypeswrong/core': ^0.18.1
-      '@tsdown/css': 0.21.2
-      '@tsdown/exe': 0.21.2
+      '@tsdown/css': 0.21.4
+      '@tsdown/exe': 0.21.4
       '@vitejs/devtools': '*'
       publint: ^0.3.0
       typescript: ^5.0.0
@@ -10981,7 +10981,7 @@ snapshots:
 
   highlight.js@11.11.1: {}
 
-  hookable@6.0.1: {}
+  hookable@6.1.0: {}
 
   html-encoding-sniffer@1.0.2:
     dependencies:
@@ -11968,7 +11968,7 @@ snapshots:
 
   multipasta@0.2.7: {}
 
-  mysql2@3.19.1(@types/node@22.19.6):
+  mysql2@3.20.0(@types/node@22.19.6):
     dependencies:
       '@types/node': 22.19.6
       aws-ssl-profiles: 1.1.2
@@ -13125,13 +13125,13 @@ snapshots:
     optionalDependencies:
       typescript: 5.9.3
 
-  tsdown@0.21.2(oxc-resolver@11.19.1)(publint@0.3.18)(typescript@5.9.3):
+  tsdown@0.21.4(oxc-resolver@11.19.1)(publint@0.3.18)(typescript@5.9.3):
     dependencies:
       ansis: 4.2.0
       cac: 7.0.0
       defu: 6.1.4
       empathic: 2.0.0
-      hookable: 6.0.1
+      hookable: 6.1.0
       import-without-cache: 0.2.5
       obug: 2.1.1
       picomatch: 4.0.3
