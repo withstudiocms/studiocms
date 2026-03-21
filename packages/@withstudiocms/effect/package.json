@@ -84,7 +84,7 @@
 		"deepmerge-ts": "catalog:",
 		"effectify": "workspace:^",
 		"micromatch": "^4.0.8",
-		"nodemailer": "^8.0.2",
+		"nodemailer": "^8.0.3",
 		"socks": "^2.8.7"
 	},
 	"devDependencies": {
