@@ -10,7 +10,7 @@ runs:
   using: "composite"
   steps:
     - name: Install Tools & Dependencies
-      uses: withstudiocms/automations/.github/actions/install@65e8fc47c1a57b2f533bd9cd8a288fdf3b40bbc2 # main
+      uses: withstudiocms/automations/.github/actions/install@274ff117aae1034c6b4d37f545268c96a7604077 # main
 
     - name: run Build for Effect Diagnostics
       shell: bash
