@@ -24,7 +24,7 @@ jobs:
   renovate-effect:
     name: Update Renovate Effect PR
     runs-on: ubuntu-latest
-    if: contains(github.event.pull_request.labels.*.name, 'effect-deps')
+    if: contains(github.event.pull_request.labels.*.name, 'effect-deps') && !contains(github.event.pull_request.labels.*.name, 'templates')
     permissions:
       contents: write
       pull-requests: write
