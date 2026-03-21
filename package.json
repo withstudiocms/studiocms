@@ -109,6 +109,6 @@
     "tsdown": "catalog:",
     "vite": "catalog:astrojs",
     "vitest": "^3.2.4",
-    "jsdom": "^28.1.0"
+    "jsdom": "^29.0.0"
   }
 }
