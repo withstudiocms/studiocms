@@ -81,4 +81,4 @@ catalogs:
     react: ^19.2.4
     react-dom: ^19.2.4
   studiocms:
-    "@studiocms/ui": ^1.1.2
+    "@studiocms/ui": ^1.2.0
