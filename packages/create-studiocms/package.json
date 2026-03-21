@@ -27,7 +27,7 @@
 		"dist"
 	],
 	"devDependencies": {
-		"@bluwy/giget-core": "^0.1.6",
+		"@bluwy/giget-core": "^0.1.7",
 		"@types/semver": "catalog:",
 		"@withstudiocms/cli-kit": "workspace:^",
 		"@withstudiocms/effect": "workspace:^",
