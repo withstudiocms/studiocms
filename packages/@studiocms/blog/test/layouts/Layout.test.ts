@@ -3,7 +3,7 @@ import * as allure from 'allure-js-commons';
 import { experimental_AstroContainer as AstroContainer } from 'astro/container';
 import { describe, expect, test } from 'vitest';
 import Layout from '../../src/layouts/Layout.astro';
-import { MockAstroLocals, parentSuiteName, sharedTags } from '../test-utils';
+import { cleanAstroAttributes, MockAstroLocals, parentSuiteName, sharedTags } from '../test-utils';
 
 const localSuiteName = 'Layout Component Tests';
 
@@ -24,9 +24,11 @@ describe(parentSuiteName, () => {
 		});
 
 		await allure.step('Verifying rendered HTML structure and content', async (ctx) => {
-			await ctx.parameter('Rendered Output', result);
+			const cleaned = cleanAstroAttributes(result, '/mock/path/Layout.astro');
 
-			expect(result).toMatchSnapshot();
+			await ctx.parameter('Rendered Output', cleaned);
+
+			expect(cleaned).toMatchSnapshot();
 		});
 	});
 });
