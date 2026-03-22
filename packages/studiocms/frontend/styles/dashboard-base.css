@@ -1,5 +1,38 @@
 @import "../fonts/css/onest-variable.css";
 
+#studiocms-theme-toggle,
+#studiocms-theme-toggle * {
+	color: var(--text-normal);
+}
+
+#studiocms-theme-toggle #dark-content,
+#studiocms-theme-toggle #light-content {
+	display: none;
+	width: fit-content;
+	height: fit-content;
+	max-height: 100%;
+}
+
+#studiocms-theme-toggle #fallback-content {
+	display: block;
+	width: fit-content;
+	height: fit-content;
+	max-height: 100%;
+}
+
+[data-theme="dark"] #studiocms-theme-toggle #dark-content {
+	display: block;
+}
+
+[data-theme="light"] #studiocms-theme-toggle #light-content {
+	display: block;
+}
+
+[data-theme="dark"] #studiocms-theme-toggle #fallback-content,
+[data-theme="light"] #studiocms-theme-toggle #fallback-content {
+	display: none;
+}
+
 #dashboard-layout,
 #dashboard-layout body {
 	min-height: 100vh;
@@ -434,39 +467,6 @@
 
 	#sui-sidebar-inner > div:has(> .inner-sidebar-container) {
 		height: 100%;
-	}
-
-	#studiocms-theme-toggle,
-	#studiocms-theme-toggle * {
-		color: var(--text-normal);
-	}
-
-	#studiocms-theme-toggle #dark-content,
-	#studiocms-theme-toggle #light-content {
-		display: none;
-		width: fit-content;
-		height: fit-content;
-		max-height: 100%;
-	}
-
-	#studiocms-theme-toggle #fallback-content {
-		display: block;
-		width: fit-content;
-		height: fit-content;
-		max-height: 100%;
-	}
-
-	[data-theme="dark"] #studiocms-theme-toggle #dark-content {
-		display: block;
-	}
-
-	[data-theme="light"] #studiocms-theme-toggle #light-content {
-		display: block;
-	}
-
-	[data-theme="dark"] #studiocms-theme-toggle #fallback-content,
-	[data-theme="light"] #studiocms-theme-toggle #fallback-content {
-		display: none;
 	}
 
 	@media (max-width: 1200px) {
