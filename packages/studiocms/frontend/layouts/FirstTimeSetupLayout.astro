@@ -4,13 +4,14 @@ import 'studiocms:ui/global-css';
 import '../styles/dashboard-base.css';
 import type { ComponentProps } from 'astro/types';
 import BaseLayout from './BaseLayout.astro';
+import { LAYOUT_IDS } from '#frontend/consts.ts';
 
 interface Props extends ComponentProps<typeof BaseLayout> {}
 
 const headProps = Astro.props;
 ---
 
-<BaseLayout {...headProps} generators={false} id="dashboard-layout">
+<BaseLayout {...headProps} generators={false} id={LAYOUT_IDS.dashboard}>
   <main>
     <div class="container">
       <slot />

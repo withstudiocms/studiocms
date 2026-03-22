@@ -13,6 +13,7 @@ import DoubleSidebar from '../components/dashboard/DoubleSidebar.astro';
 import SidebarModals from '../components/dashboard/SidebarModals.astro';
 import SingleSidebar from '../components/dashboard/SingleSidebar.astro';
 import BaseLayout from './BaseLayout.astro';
+import { LAYOUT_IDS } from '#frontend/consts.ts';
 
 const makePageTitle = (
 	pageName: string,
@@ -45,7 +46,7 @@ const title = makePageTitle(propTitle, config.data);
 const description = propDescription ?? config.data.description;
 ---
 
-<BaseLayout {lang} {title} {description} id="dashboard-layout">
+<BaseLayout {lang} {title} {description} id={LAYOUT_IDS.dashboard}>
   <Ambients />
   <SidebarModals {lang} />
   {

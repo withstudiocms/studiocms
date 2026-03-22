@@ -1,6 +1,6 @@
 @import "../fonts/css/onest-variable.css";
 
-#auth-layout {
+#scms-auth-layout {
 	margin: 0;
 	padding: 0;
 	background: var(--background);
