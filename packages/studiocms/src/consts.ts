@@ -333,11 +333,6 @@ export const AstroConfigViteSettings: Partial<AstroConfig['vite']> = {
 	optimizeDeps: {
 		include: optimizeDepsInclude,
 	},
-	ssr: {
-		optimizeDeps: {
-			include: optimizeDepsInclude,
-		},
-	},
 };
 
 /**
