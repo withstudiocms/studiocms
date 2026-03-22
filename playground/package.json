@@ -30,6 +30,7 @@
     "astro": "catalog:astrojs-current",
     "kysely-turso": "catalog:kysely",
     "studiocms": "workspace:*",
-    "sharp": "catalog:"
+    "sharp": "catalog:",
+    "vite-plugin-inspect": "11.3.3"
   }
 }

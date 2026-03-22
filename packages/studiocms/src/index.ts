@@ -274,6 +274,7 @@ export const studiocms = (): AstroIntegration => {
 				addVirtualImports(params, {
 					name,
 					imports: {
+						'virtual:studiocms/site': `export const site = "${config.site || 'http://localhost:4321'}";`,
 						'studiocms:config': buildVirtualConfig(options),
 						'studiocms:plugins': buildDefaultOnlyVirtual(safePluginList),
 						'studiocms:version': buildDefaultOnlyVirtual(pkgVersion),

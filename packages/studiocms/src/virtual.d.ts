@@ -1,3 +1,9 @@
+declare module 'virtual:studiocms/site' {
+	// TODO: We should not need this... astro:config/client is importing server-side code that is extremely breaking. This is a temporary shim to get around that issue, but we should investigate the root cause and remove this.
+
+	export const site: string;
+}
+
 declare module 'studiocms:client/apiClients' {
 	export const authClient: typeof import('./client/apiClient').authClient;
 	export const dashboardClient: typeof import('./client/apiClient').dashboardClient;
