@@ -1077,8 +1077,8 @@ importers:
         specifier: catalog:kysely
         version: 0.28.12
       zod:
-        specifier: ^3.25.76
-        version: 3.25.76
+        specifier: ^4.3.6
+        version: 4.3.6
     devDependencies:
       '@types/node':
         specifier: 'catalog:'
