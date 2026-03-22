@@ -255,7 +255,6 @@ export const AstroConfigImageSettings: Partial<AstroConfig['image']> = {
 };
 
 const optimizeDepsInclude = [
-	'astro/toolbar',
 	'@effect/platform',
 	'@effect/platform/OpenApi',
 	'@effect/platform/HttpApi',
