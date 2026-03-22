@@ -21,13 +21,13 @@ catalogs:
   astrojs-min:
     '@astrojs/internal-helpers':
       specifier: ^0.7.5 || ^0.8.0
-      version: 0.7.6
+      version: 0.8.0
     astro:
       specifier: ^5.12.9 || ^6.0.0
       version: 5.18.1
     vite:
       specifier: ^6.3.4 || ^7.3.0
-      version: 6.4.1
+      version: 7.3.1
   default:
     '@types/mdast':
       specifier: ^4.0.4
@@ -535,7 +535,7 @@ importers:
     dependencies:
       '@astrojs/internal-helpers':
         specifier: catalog:astrojs-min
-        version: 0.7.6
+        version: 0.8.0
       '@withstudiocms/internal_helpers':
         specifier: workspace:^
         version: link:../../@withstudiocms/internal_helpers
@@ -610,7 +610,7 @@ importers:
         version: 6.0.3
       vite:
         specifier: catalog:astrojs-min
-        version: 6.4.1(@types/node@22.19.15)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.2)
+        version: 7.3.1(@types/node@22.19.15)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.2)
     devDependencies:
       '@types/estree':
         specifier: ^1.0.8
