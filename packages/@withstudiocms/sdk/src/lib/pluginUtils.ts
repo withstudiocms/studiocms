@@ -3,10 +3,6 @@ import type { z } from 'zod';
 import { StudioCMSSDKError } from '../errors.js';
 import type { StudioCMSPluginData } from '../tables.js';
 
-// TODO: Astro v6 Migration Task: Update zod usage for zod v4
-// When migrating to Astro v6, we will be required to update our zod usage to be compatible with zod v4, which includes changes to how schemas are defined and used. This will involve refactoring any code that uses zod for schema validation, ensuring that all schema definitions and validations are updated to match the new API and features of zod v4. Additionally, we will need to thoroughly test all functionality that relies on zod to ensure that it continues to work correctly after the migration.
-// see https://github.com/Adammatthiesen/zod-to-effect-example for an example of how we can refactor this validator code to still support zod v4, but transforms the schema into Effect Schemas automatically, allowing us to remove extra code from our codebase that is only used for zod validation.
-
 /**
  * Represents a plugin data entry with a strongly-typed `data` property.
  *
@@ -47,7 +43,7 @@ export interface EffectSchemaValidator<E extends Schema.Struct<any>> {
  * @property zodSchema - The Zod schema instance used for validation.
  */
 export interface ZodValidator<T> {
-	zodSchema: z.ZodSchema<T>;
+	zodSchema: z.ZodType<T>;
 }
 
 /**
@@ -288,6 +284,7 @@ export const parseData = Effect.fn('studiocms/sdk/effect/pluginUtils/parseData')
 	// Data from the db should already be a object, but we handle strings for flexibility
 	if (typeof rawData === 'string') {
 		parsedInput = yield* Effect.try({
+			// @effect-diagnostics-next-line preferSchemaOverJson:off
 			try: () => JSON.parse(rawData),
 			catch: (cause) => new StudioCMSSDKError({ message: `JSON parsing failed: ${cause}`, cause }),
 		});
