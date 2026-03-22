@@ -8,7 +8,6 @@ import {
 } from '@withstudiocms/auth-kit/types';
 import type { AstroConfig } from 'astro';
 import { Duration } from 'effect';
-import type { PluginOption } from 'vite';
 import type { RobotsConfig } from './integrations/robots/schema.js';
 import { stripIconify } from './utils/stripIconify.js';
 import { makeAPIRoute } from './virtuals/lib/makeAPIRoute.js';
@@ -255,34 +254,6 @@ export const AstroConfigImageSettings: Partial<AstroConfig['image']> = {
 	],
 };
 
-function astro6ClientShimPlugin() {
-	const SHIMS: Record<string, string> = {
-		'virtual:astro:routes': 'export const routes = [];',
-		'virtual:astro:pages': 'export const pageMap = new Map();',
-		'virtual:astro:middleware': 'export const onRequest = (ctx, next) => next();',
-	};
-
-	const RESOLVED_PREFIX = '\0astro6-compat:';
-
-	return {
-		name: 'studiocms:astro6-client-shim',
-		resolveId(id, _source, options) {
-			if (id in SHIMS) {
-				const isClient = options?.ssr === false;
-				if (isClient) {
-					return RESOLVED_PREFIX + id;
-				}
-			}
-			return null;
-		},
-		load(id) {
-			if (id.startsWith(RESOLVED_PREFIX)) {
-				return SHIMS[id.slice(RESOLVED_PREFIX.length)] || '';
-			}
-		},
-	} satisfies PluginOption;
-}
-
 const optimizeDepsInclude = [
 	'astro/toolbar',
 	'@effect/platform',
@@ -313,7 +284,6 @@ const optimizeDepsInclude = [
  * @see https://docs.astro.build/en/reference/configuration-reference/#vite
  */
 export const AstroConfigViteSettings: Partial<AstroConfig['vite']> = {
-	// plugins: [astro6ClientShimPlugin()],
 	build: {
 		chunkSizeWarningLimit: 1200, // Allow's increase to 1.2 kB for Plugins such as our WYSIWYG editor to not trigger warnings
 		rollupOptions: {
