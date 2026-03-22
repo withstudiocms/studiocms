@@ -86,7 +86,7 @@
 		"@effect/platform": "catalog:effect",
 		"@effect/platform-node": "catalog:effect",
 		"@withstudiocms/sdk": "workspace:^",
-		"astro": "catalog:min",
+		"astro": "catalog:studiocms-peerlock",
 		"effect": "catalog:effect"
 	}
 }

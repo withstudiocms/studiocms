@@ -74,9 +74,9 @@
     "@studiocms/ui": "catalog:studiocms",
     "@types/node": "catalog:",
     "@withstudiocms/component-registry": "workspace:^",
-    "astro": "catalog:min",
+    "astro": "catalog:studiocms-peerlock",
     "studiocms": "workspace:^",
-    "vite": "catalog:min"
+    "vite": "catalog:studiocms-peerlock"
   },
   "peerDependencies": {
     "@withstudiocms/component-registry": "workspace:^",

@@ -87,7 +87,7 @@
 		"typescript": "catalog:"
 	},
 	"peerDependencies": {
-		"astro": "catalog:min",
+		"astro": "catalog:astrojs-min",
 		"effect": "catalog:effect"
 	}
 }

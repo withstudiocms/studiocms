@@ -79,7 +79,7 @@
   },
   "peerDependencies": {
 		"@effect/platform": "catalog:effect",
-    "astro": "catalog:min",
+    "astro": "catalog:astrojs-min",
 		"effect": "catalog:effect",
     "effectify": "workspace:^"
   }

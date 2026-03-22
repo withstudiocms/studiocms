@@ -53,16 +53,30 @@ catalog:
 
 # Specific dependency catalogs for certain groups of packages
 catalogs:
-  astrojs:
-    "@astrojs/node": ^9.5.4
-    "@astrojs/rss": ^4.0.15
-    astro: ^5.18.0
-    vite: ^6.3.4
+  astrojs-current:
+    "@astrojs/node": ^10.0.0
+    "@astrojs/rss": ^4.0.17
+    astro: ^6.0.0
+    vite: ^7.3.1
+
+  astrojs-min:
+    "@astrojs/internal-helpers": ^0.7.5 || ^0.8.0
+    astro: ^5.12.9 || ^6.0.0
+    vite: ^6.3.4 || ^7.3.0
+
+  studiocms:
+    "@studiocms/ui": ^1.2.0
+
+  studiocms-peerlock:
+    astro: ^6.0.0
+    vite: ^7.3.0
+
   effect:
     "@effect/cli": ^0.74.0
     "@effect/platform": ^0.95.0
     "@effect/platform-node": ^0.105.0
     effect: ^3.20.0
+
   kysely:
     "@libsql/client": ^0.15.15
     "@types/pg": ^8.18.0
@@ -70,15 +84,9 @@ catalogs:
     kysely-turso: ^0.1.1
     pg: ^8.20.0
     mysql2: ^3.20.0
-  min:
-    "@astrojs/internal-helpers": ^0.7.5
-    "@astrojs/markdown-remark": ^6.3.3
-    astro: ^5.12.9
-    vite: ^6.3.4
+
   react:
     "@types/react": ^19.2.14
     "@types/react-dom": ^19.2.3
     react: ^19.2.4
     react-dom: ^19.2.4
-  studiocms:
-    "@studiocms/ui": ^1.2.0

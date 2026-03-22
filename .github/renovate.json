@@ -55,6 +55,10 @@
       "matchManagers": ["npm"],
       "matchFileNames": ["templates/*/package.json"],
       "labels": ["templates"]
+    },
+    {
+      "matchDepTypes": ["pnpm.catalog.astrojs-min", "pnpm.catalog:studiocms-peerlock"],
+      "enabled": false
     }
   ],
   "ignoreDeps": [

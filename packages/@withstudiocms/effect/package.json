@@ -97,7 +97,7 @@
 		"@effect/cli": "catalog:effect",
 		"@effect/platform": "catalog:effect",
 		"@effect/platform-node": "catalog:effect",
-		"astro": "catalog:min",
+		"astro": "catalog:astrojs-min",
 		"effect": "catalog:effect"
 	}
 }
