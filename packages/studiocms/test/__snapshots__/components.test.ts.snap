@@ -117,7 +117,7 @@ exports[`studiocms Package Tests > Components Container tests - ThemeManager com
         return { setTheme, getTheme, getSystemTheme, getDefaultTheme };
     })();
     theme.setTheme(theme.getTheme());
-</script> <script type="module" src="/mock/path/ThemeManager.astro?astro&type=script&index=0&lang.ts"></script>"
+</script> "
 `;
 
 exports[`studiocms Package Tests > Components Container tests - ThreeCanvasLoader component 1`] = `"<div style="display: none;" id="auth-pages-config" data-config_background="studiocms-curves"></div> <script type="module" src="/mock/path/ThreeCanvasLoader.astro?astro&type=script&index=0&lang.ts"></script>"`;
