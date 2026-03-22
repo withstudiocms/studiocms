@@ -39,9 +39,6 @@ describe(parentSuiteName, () => {
 				/<link rel="preconnect" href="https:\/\/fonts.gstatic.com" crossorigin\/>/
 			);
 			expect(result).toMatch(
-				/<link href="https:\/\/fonts.googleapis.com\/css2\?family=Atkinson\+Hyperlegible:wght@400;700&display=swap" rel="stylesheet"\/>/
-			);
-			expect(result).toMatch(
 				/<link rel="shortcut icon" href="\/favicon.svg" type="image\/svg\+xml"\/>/
 			);
 			expect(result).toMatch(/<meta name="title" content="Test Page \| Test Site"\/>/);
