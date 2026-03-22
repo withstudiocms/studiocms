@@ -39,7 +39,7 @@ if (ins) {
 const id = __test_mode ? 'test-id' : Math.random().toString(36).substring(2, 9);
 ---
 
-<pre class="code-container scrollbar"><code id={id} class:list={["custom-code", (del || ins) ? 'diff' : '']} {...props} set:html={htmlCode} /></pre>
+<pre class="scms-code-container scrollbar"><code id={id} class:list={["custom-code", (del || ins) ? 'diff' : '']} {...props} set:html={htmlCode} /></pre>
 <script is:inline define:vars={{ id: id }}>
 	const codesWithDiff = document.getElementById(id);
 

@@ -1,35 +1,22 @@
 @import "./syntax.css";
 
-.custom-code {
-	font-family: var(--scms-font-syntax);
-	font-palette: --github-dark;
-	font-size: 14px;
-	line-height: 1.6;
-}
-
-:root {
+pre.playground-code-container {
 	--background-step-2: #0d1117;
 	--border: #30363d;
 	--success-base: #238636;
 	--success-flat-hover: #2ea043;
 	--danger-base: #cf222e;
 	--danger-flat-hover: #f85149;
-}
 
-[data-theme="light"] {
-	--background-step-2: #f6f8fa;
-	--border: #d0d7de;
-	--success-base: #238636;
-	--success-flat-hover: #2ea043;
-	--danger-base: #cf222e;
-	--danger-flat-hover: #f85149;
-
-	.custom-code {
-		font-palette: --github-light;
+	&[data-theme="light"] {
+		--background-step-2: #f6f8fa;
+		--border: #d0d7de;
+		--success-base: #238636;
+		--success-flat-hover: #2ea043;
+		--danger-base: #cf222e;
+		--danger-flat-hover: #f85149;
 	}
-}
 
-.code-container {
 	min-width: 0;
 	padding: 16px;
 	margin-right: 1rem;
@@ -37,44 +24,56 @@
 	border: 1px solid var(--border) !important;
 	border-radius: 0.25rem;
 	overflow-x: auto;
-}
+	line-height: 1.6;
 
-.line.diff {
-	position: relative;
-	z-index: 2;
-	align-items: center;
-	display: inline flow-root;
-	width: 100%;
-}
+	.custom-code {
+		font-family: var(--scms-font-syntax);
+		font-palette: --github-dark;
+		font-size: 14px;
+		line-height: 1.6;
+	}
 
-.line.diff > span {
-	z-index: 2;
-	position: relative;
-}
+	&[data-theme="light"] .custom-code {
+		font-palette: --github-light;
+	}
 
-.line.diff::after {
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	z-index: 0;
-	padding-left: 0.25rem;
-	user-select: none;
-}
+	.custom-code .line.diff {
+		position: relative;
+		z-index: 2;
+		align-items: center;
+		display: inline flow-root;
+		width: 100%;
 
-.line.diff.ins::after {
-	content: "+";
-	background-color: var(--success-flat-hover);
-	color: var(--success-base) !important;
-	border-left: 2px solid var(--success-base);
-	font-family: monospace;
-}
+		&::after {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			z-index: 0;
+			padding-left: 0.25rem;
+			user-select: none;
+		}
 
-.line.diff.del::after {
-	content: "-";
-	background-color: var(--danger-flat-hover);
-	color: var(--danger-base) !important;
-	border-left: 2px solid var(--danger-base);
-	font-family: monospace;
+		& > span {
+			z-index: 2;
+			position: relative;
+		}
+
+		&.ins::after {
+			content: "+";
+			background-color: var(--success-flat-hover);
+			color: var(--success-base) !important;
+			border-left: 2px solid var(--success-base);
+			font-family: monospace;
+		}
+
+		&.del::after {
+			content: "-";
+			background-color: var(--danger-flat-hover);
+			color: var(--danger-base) !important;
+			border-left: 2px solid var(--danger-base);
+			font-family: monospace;
+		}
+	}
 }

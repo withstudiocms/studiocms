@@ -1,6 +1,5 @@
 ---
 import '../styles/dashboard-base.css';
-import '../styles/dashboard-diff.css';
 import type { ComponentProps } from 'astro/types';
 import BaseLayout from './BaseLayout.astro';
 
@@ -9,7 +8,7 @@ interface Props extends ComponentProps<typeof BaseLayout> {}
 const headProps = Astro.props;
 ---
 
-<BaseLayout {...headProps} generators={false}>
+<BaseLayout {...headProps} generators={false} id="dashboard-layout">
   <main>
     <div class="container">
       <slot />

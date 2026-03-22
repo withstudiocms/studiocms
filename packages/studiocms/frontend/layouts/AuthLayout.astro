@@ -18,7 +18,7 @@ interface Props extends ComponentProps<typeof BaseLayout> {
 
 const { disableScreen, checkLogin, ...headProps } = Astro.props;
 ---
-<BaseLayout {...headProps}>
+<BaseLayout {...headProps} id='auth-layout'>
 	<main class="auth-main">
 		<div id="canvas-container">
 			<FallbackCanvas {config} />
