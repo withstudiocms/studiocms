@@ -46,8 +46,9 @@
     theme.setTheme(theme.getTheme());
 </script>
 
-<script>
-    document.addEventListener("astro:after-swap", () =>
-        window.theme.setTheme(window.theme.getTheme()),
-    );
-</script>
+<!--script>
+    // Disabled since we are not using Astro's View Transitions.
+    // document.addEventListener("astro:after-swap", () =>
+    //     window.theme.setTheme(window.theme.getTheme()),
+    // );
+</script-->

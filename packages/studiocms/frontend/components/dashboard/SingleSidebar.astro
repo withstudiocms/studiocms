@@ -25,6 +25,5 @@ const { currentUser } = Astro.props as Props;
     sidebar.hideSidebarOnClick('nav-close');
   }
 
-  document.addEventListener('astro:page-load', setupSidebar);
   setupSidebar();
 </script>

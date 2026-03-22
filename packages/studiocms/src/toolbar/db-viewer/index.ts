@@ -42,7 +42,6 @@ export default defineToolbarApp({
 
 		createCanvas();
 		isInitialized = true;
-		document.addEventListener('astro:after-swap', createCanvas);
 		closeOnOutsideClick(eventTarget);
 	},
 });
