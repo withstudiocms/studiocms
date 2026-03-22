@@ -355,7 +355,7 @@ export const studiocms = (): AstroIntegration => {
 					image: AstroConfigImageSettings,
 					vite: AstroConfigViteSettings,
 					env: {
-						validateSecrets: true,
+						// validateSecrets: true,
 						schema: {
 							// Auth Encryption Key
 							CMS_ENCRYPTION_KEY: envField.string({

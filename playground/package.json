@@ -23,13 +23,13 @@
     "@effect/platform-node": "catalog:effect",
     "@astrojs/node": "catalog:astrojs-current",
     "@libsql/client": "catalog:kysely",
-    "@studiocms/blog": "workspace:^",
-    "@studiocms/md": "workspace:^",
-    "@studiocms/wysiwyg": "workspace:^",
-    "@studiocms/s3-storage": "workspace:^",
+    "@studiocms/blog": "workspace:*",
+    "@studiocms/md": "workspace:*",
+    "@studiocms/wysiwyg": "workspace:*",
+    "@studiocms/s3-storage": "workspace:*",
     "astro": "catalog:astrojs-current",
     "kysely-turso": "catalog:kysely",
-    "studiocms": "workspace:^",
+    "studiocms": "workspace:*",
     "sharp": "catalog:"
   }
 }

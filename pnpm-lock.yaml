@@ -13,8 +13,8 @@ catalogs:
       specifier: ^4.0.17
       version: 4.0.17
     astro:
-      specifier: ^6.0.0
-      version: 6.0.6
+      specifier: ^6.0.8
+      version: 6.0.8
     vite:
       specifier: ^7.3.1
       version: 7.3.1
@@ -126,7 +126,7 @@ catalogs:
   studiocms-peerlock:
     astro:
       specifier: ^6.0.0
-      version: 6.0.6
+      version: 6.0.8
     vite:
       specifier: ^7.3.0
       version: 7.3.1
@@ -241,7 +241,7 @@ importers:
         version: 3.7.0
       astro-integration-kit:
         specifier: 'catalog:'
-        version: 0.20.0(astro@6.0.6(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
+        version: 0.20.0(astro@6.0.8(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
       effect:
         specifier: catalog:effect
         version: 3.20.0
@@ -251,7 +251,7 @@ importers:
         version: 22.19.15
       astro:
         specifier: catalog:studiocms-peerlock
-        version: 6.0.6(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
+        version: 6.0.8(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
       studiocms:
         specifier: workspace:^
         version: link:../../studiocms
@@ -266,7 +266,7 @@ importers:
         version: 4.0.17
       astro-integration-kit:
         specifier: 'catalog:'
-        version: 0.20.0(astro@6.0.6(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
+        version: 0.20.0(astro@6.0.8(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
       effect:
         specifier: catalog:effect
         version: 3.20.0
@@ -279,7 +279,7 @@ importers:
         version: 22.19.15
       astro:
         specifier: catalog:studiocms-peerlock
-        version: 6.0.6(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
+        version: 6.0.8(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
       studiocms:
         specifier: workspace:^
         version: link:../../studiocms
@@ -294,7 +294,7 @@ importers:
         version: 1.22.0
       astro-integration-kit:
         specifier: 'catalog:'
-        version: 0.20.0(astro@6.0.6(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
+        version: 0.20.0(astro@6.0.8(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
       effect:
         specifier: catalog:effect
         version: 3.20.0
@@ -304,7 +304,7 @@ importers:
         version: 22.19.15
       astro:
         specifier: catalog:studiocms-peerlock
-        version: 6.0.6(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
+        version: 6.0.8(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
       studiocms:
         specifier: workspace:^
         version: link:../../studiocms
@@ -319,7 +319,7 @@ importers:
         version: link:../../@withstudiocms/kysely
       astro-integration-kit:
         specifier: 'catalog:'
-        version: 0.20.0(astro@6.0.6(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
+        version: 0.20.0(astro@6.0.8(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
       cheerio:
         specifier: ^1.2.0
         version: 1.2.0
@@ -344,7 +344,7 @@ importers:
         version: link:../../@withstudiocms/sdk
       astro:
         specifier: catalog:studiocms-peerlock
-        version: 6.0.6(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
+        version: 6.0.8(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
       studiocms:
         specifier: workspace:^
         version: link:../../studiocms
@@ -371,7 +371,7 @@ importers:
         version: 3.7.0
       astro-integration-kit:
         specifier: 'catalog:'
-        version: 0.20.0(astro@6.0.6(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
+        version: 0.20.0(astro@6.0.8(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
       effect:
         specifier: catalog:effect
         version: 3.20.0
@@ -381,7 +381,7 @@ importers:
         version: 22.19.15
       astro:
         specifier: catalog:studiocms-peerlock
-        version: 6.0.6(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
+        version: 6.0.8(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
       studiocms:
         specifier: workspace:^
         version: link:../../studiocms
@@ -405,7 +405,7 @@ importers:
         version: 3.7.0
       astro-integration-kit:
         specifier: 'catalog:'
-        version: 0.20.0(astro@6.0.6(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
+        version: 0.20.0(astro@6.0.8(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
       effect:
         specifier: catalog:effect
         version: 3.20.0
@@ -415,7 +415,7 @@ importers:
         version: 22.19.15
       astro:
         specifier: catalog:studiocms-peerlock
-        version: 6.0.6(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
+        version: 6.0.8(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
       studiocms:
         specifier: workspace:^
         version: link:../../studiocms
@@ -439,7 +439,7 @@ importers:
         version: 3.7.0
       astro-integration-kit:
         specifier: 'catalog:'
-        version: 0.20.0(astro@6.0.6(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
+        version: 0.20.0(astro@6.0.8(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
       effect:
         specifier: catalog:effect
         version: 3.20.0
@@ -449,7 +449,7 @@ importers:
         version: 22.19.15
       astro:
         specifier: catalog:studiocms-peerlock
-        version: 6.0.6(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
+        version: 6.0.8(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
       studiocms:
         specifier: workspace:^
         version: link:../../studiocms
@@ -461,7 +461,7 @@ importers:
     dependencies:
       astro-integration-kit:
         specifier: 'catalog:'
-        version: 0.20.0(astro@6.0.6(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
+        version: 0.20.0(astro@6.0.8(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
       codemirror:
         specifier: 5.65.19
         version: 5.65.19
@@ -483,7 +483,7 @@ importers:
         version: 22.19.15
       astro:
         specifier: catalog:studiocms-peerlock
-        version: 6.0.6(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
+        version: 6.0.8(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
       studiocms:
         specifier: workspace:^
         version: link:../../studiocms
@@ -498,7 +498,7 @@ importers:
         version: 0.5.6(@types/react@19.2.14)(react@19.2.4)
       astro-integration-kit:
         specifier: 'catalog:'
-        version: 0.20.0(astro@6.0.6(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
+        version: 0.20.0(astro@6.0.8(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
       effect:
         specifier: catalog:effect
         version: 3.20.0
@@ -523,7 +523,7 @@ importers:
         version: 19.2.3(@types/react@19.2.14)
       astro:
         specifier: catalog:studiocms-peerlock
-        version: 6.0.6(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
+        version: 6.0.8(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
       studiocms:
         specifier: workspace:^
         version: link:../../studiocms
@@ -641,7 +641,7 @@ importers:
         version: link:../markdown-remark
       astro-integration-kit:
         specifier: 'catalog:'
-        version: 0.20.0(astro@6.0.6(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
+        version: 0.20.0(astro@6.0.8(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
       effect:
         specifier: catalog:effect
         version: 3.20.0
@@ -651,7 +651,7 @@ importers:
         version: 22.19.15
       astro:
         specifier: catalog:studiocms-peerlock
-        version: 6.0.6(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
+        version: 6.0.8(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
       studiocms:
         specifier: workspace:^
         version: link:../../studiocms
@@ -666,7 +666,7 @@ importers:
         version: 3.1.1
       astro-integration-kit:
         specifier: 'catalog:'
-        version: 0.20.0(astro@6.0.6(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
+        version: 0.20.0(astro@6.0.8(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
       effect:
         specifier: catalog:effect
         version: 3.20.0
@@ -700,7 +700,7 @@ importers:
         version: 19.2.3(@types/react@19.2.14)
       astro:
         specifier: catalog:studiocms-peerlock
-        version: 6.0.6(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
+        version: 6.0.8(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
       studiocms:
         specifier: workspace:^
         version: link:../../studiocms
@@ -718,7 +718,7 @@ importers:
         version: 3.1012.0
       astro-integration-kit:
         specifier: 'catalog:'
-        version: 0.20.0(astro@6.0.6(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
+        version: 0.20.0(astro@6.0.8(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
       effect:
         specifier: catalog:effect
         version: 3.20.0
@@ -728,7 +728,7 @@ importers:
         version: 22.19.15
       astro:
         specifier: catalog:studiocms-peerlock
-        version: 6.0.6(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
+        version: 6.0.8(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
       studiocms:
         specifier: workspace:^
         version: link:../../studiocms
@@ -779,7 +779,7 @@ importers:
         version: link:../../@withstudiocms/sdk
       astro-integration-kit:
         specifier: 'catalog:'
-        version: 0.20.0(astro@6.0.6(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
+        version: 0.20.0(astro@6.0.8(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
       deepmerge-ts:
         specifier: 'catalog:'
         version: 7.1.5
@@ -795,7 +795,7 @@ importers:
     devDependencies:
       '@studiocms/ui':
         specifier: catalog:studiocms
-        version: 1.2.0(astro@6.0.6(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))(vite@7.3.1(@types/node@22.19.15)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.2))
+        version: 1.2.0(astro@6.0.8(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))(vite@7.3.1(@types/node@22.19.15)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.2))
       '@types/node':
         specifier: 'catalog:'
         version: 22.19.15
@@ -804,7 +804,7 @@ importers:
         version: link:../../@withstudiocms/component-registry
       astro:
         specifier: catalog:studiocms-peerlock
-        version: 6.0.6(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
+        version: 6.0.8(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
       studiocms:
         specifier: workspace:^
         version: link:../../studiocms
@@ -825,7 +825,7 @@ importers:
         version: link:../sdk
       astro:
         specifier: catalog:studiocms-peerlock
-        version: 6.0.6(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
+        version: 6.0.8(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
       effect:
         specifier: catalog:effect
         version: 3.20.0
@@ -862,7 +862,7 @@ importers:
         version: 22.19.15
       astro:
         specifier: catalog:astrojs-current
-        version: 6.0.6(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
+        version: 6.0.8(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
 
   packages/@withstudiocms/buildkit:
     dependencies:
@@ -911,7 +911,7 @@ importers:
         version: link:../effect
       astro-integration-kit:
         specifier: 'catalog:'
-        version: 0.20.0(astro@6.0.6(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
+        version: 0.20.0(astro@6.0.8(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
       effect:
         specifier: catalog:effect
         version: 3.20.0
@@ -927,7 +927,7 @@ importers:
         version: 22.19.15
       astro:
         specifier: catalog:astrojs-current
-        version: 6.0.6(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
+        version: 6.0.8(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
@@ -995,7 +995,7 @@ importers:
         version: 7.0.11
       astro:
         specifier: catalog:astrojs-current
-        version: 6.0.6(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
+        version: 6.0.8(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
@@ -1004,10 +1004,10 @@ importers:
     dependencies:
       astro:
         specifier: catalog:studiocms-peerlock
-        version: 6.0.6(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
+        version: 6.0.8(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
       astro-integration-kit:
         specifier: 'catalog:'
-        version: 0.20.0(astro@6.0.6(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
+        version: 0.20.0(astro@6.0.8(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
       effect:
         specifier: catalog:effect
         version: 3.20.0
@@ -1137,7 +1137,7 @@ importers:
     devDependencies:
       astro:
         specifier: catalog:astrojs-current
-        version: 6.0.6(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
+        version: 6.0.8(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
 
   packages/studiocms:
     dependencies:
@@ -1170,7 +1170,7 @@ importers:
         version: 1.0.8
       '@studiocms/ui':
         specifier: catalog:studiocms
-        version: 1.2.0(astro@6.0.6(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))(vite@7.3.1(@types/node@22.19.15)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.2))
+        version: 1.2.0(astro@6.0.8(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))(vite@7.3.1(@types/node@22.19.15)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.2))
       '@withstudiocms/api-spec':
         specifier: workspace:^
         version: link:../@withstudiocms/api-spec
@@ -1206,10 +1206,10 @@ importers:
         version: 1.43.6
       astro:
         specifier: catalog:studiocms-peerlock
-        version: 6.0.6(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
+        version: 6.0.8(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
       astro-integration-kit:
         specifier: 'catalog:'
-        version: 0.20.0(astro@6.0.6(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
+        version: 0.20.0(astro@6.0.8(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
       boxen:
         specifier: ^8.0.1
         version: 8.0.1
@@ -1303,7 +1303,7 @@ importers:
     dependencies:
       '@astrojs/node':
         specifier: catalog:astrojs-current
-        version: 10.0.2(astro@6.0.6(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
+        version: 10.0.2(astro@6.0.8(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
       '@effect/platform':
         specifier: catalog:effect
         version: 0.95.0(effect@3.20.0)
@@ -1314,20 +1314,20 @@ importers:
         specifier: catalog:kysely
         version: 0.15.15
       '@studiocms/blog':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../packages/@studiocms/blog
       '@studiocms/md':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../packages/@studiocms/md
       '@studiocms/s3-storage':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../packages/@studiocms/s3-storage
       '@studiocms/wysiwyg':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../packages/@studiocms/wysiwyg
       astro:
         specifier: catalog:astrojs-current
-        version: 6.0.6(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
+        version: 6.0.8(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
       effect:
         specifier: catalog:effect
         version: 3.20.0
@@ -1338,7 +1338,7 @@ importers:
         specifier: 'catalog:'
         version: 0.34.5
       studiocms:
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../packages/studiocms
     devDependencies:
       '@types/node':
@@ -1346,7 +1346,7 @@ importers:
         version: 22.19.15
       astro-integration-kit:
         specifier: 'catalog:'
-        version: 0.20.0(astro@6.0.6(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
+        version: 0.20.0(astro@6.0.8(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
@@ -4044,8 +4044,8 @@ packages:
     engines: {node: 18.20.8 || ^20.3.0 || >=22.0.0, npm: '>=9.6.5', pnpm: '>=7.1.0'}
     hasBin: true
 
-  astro@6.0.6:
-    resolution: {integrity: sha512-Fg25tok0RF+ToCcfdfNdtkv7MutTfbE0Lc4UhZpQyoc8/iiTdAaNw1nHPxPD6Nfa/ql3lGAp9uOWaTTnnFY2Zg==}
+  astro@6.0.8:
+    resolution: {integrity: sha512-DCPeb8GKOoFWh+8whB7Qi/kKWD/6NcQ9nd1QVNzJFxgHkea3WYrNroQRq4whmBdjhkYPTLS/1gmUAl2iA2Es2g==}
     engines: {node: '>=22.12.0', npm: '>=9.6.5', pnpm: '>=7.1.0'}
     hasBin: true
 
@@ -7366,10 +7366,10 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@astrojs/node@10.0.2(astro@6.0.6(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))':
+  '@astrojs/node@10.0.2(astro@6.0.8(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))':
     dependencies:
       '@astrojs/internal-helpers': 0.8.0
-      astro: 6.0.6(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
+      astro: 6.0.8(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
       send: 1.2.1
       server-destroy: 1.0.1
     transitivePeerDependencies:
@@ -9589,13 +9589,13 @@ snapshots:
 
   '@standard-schema/spec@1.1.0': {}
 
-  '@studiocms/ui@1.2.0(astro@6.0.6(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))(vite@7.3.1(@types/node@22.19.15)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.2))':
+  '@studiocms/ui@1.2.0(astro@6.0.8(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))(vite@7.3.1(@types/node@22.19.15)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.2))':
     dependencies:
       '@iconify-json/heroicons': 1.2.3
       '@iconify/types': 2.0.0
-      astro: 6.0.6(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
-      astro-integration-kit: 0.20.0(astro@6.0.6(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
-      astro-transition-event-polyfill: 1.2.1(astro@6.0.6(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
+      astro: 6.0.8(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
+      astro-integration-kit: 0.20.0(astro@6.0.8(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
+      astro-transition-event-polyfill: 1.2.1(astro@6.0.8(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
       vite: 7.3.1(@types/node@22.19.15)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.2)
 
   '@ts-morph/common@0.28.1':
@@ -9949,14 +9949,14 @@ snapshots:
       astro: 5.18.1(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
       pathe: 2.0.3
 
-  astro-integration-kit@0.20.0(astro@6.0.6(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)):
+  astro-integration-kit@0.20.0(astro@6.0.8(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)):
     dependencies:
-      astro: 6.0.6(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
+      astro: 6.0.8(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
       pathe: 2.0.3
 
-  astro-transition-event-polyfill@1.2.1(astro@6.0.6(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)):
+  astro-transition-event-polyfill@1.2.1(astro@6.0.8(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)):
     dependencies:
-      astro: 6.0.6(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
+      astro: 6.0.8(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
       pathe: 2.0.3
 
   astro@5.18.1(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2):
@@ -10061,7 +10061,7 @@ snapshots:
       - uploadthing
       - yaml
 
-  astro@6.0.6(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2):
+  astro@6.0.8(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2):
     dependencies:
       '@astrojs/compiler': 3.0.1
       '@astrojs/internal-helpers': 0.8.0

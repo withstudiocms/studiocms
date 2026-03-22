@@ -13,7 +13,7 @@ body {
 	font-family: var(--scms-font-onest);
 }
 
-main {
+.auth-main {
 	display: flex;
 	flex-direction: row;
 	height: 100dvh;
