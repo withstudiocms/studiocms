@@ -79,6 +79,9 @@
 			"default": "./dist/webHandler.js"
 		}
 	},
+	"devDependencies": {
+		"astro": "catalog:astrojs-current"
+	},
 	"peerDependencies": {
 		"@effect/platform": "catalog:effect",
 		"@effect/platform-node": "catalog:effect",

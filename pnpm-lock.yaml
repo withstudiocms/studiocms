@@ -850,9 +850,6 @@ importers:
       '@withstudiocms/effect':
         specifier: workspace:^
         version: link:../effect
-      astro:
-        specifier: catalog:astrojs-min
-        version: 5.18.1(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
       effect:
         specifier: catalog:effect
         version: 3.20.0
@@ -863,6 +860,9 @@ importers:
       '@types/node':
         specifier: 'catalog:'
         version: 22.19.15
+      astro:
+        specifier: catalog:astrojs-current
+        version: 6.0.6(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
 
   packages/@withstudiocms/buildkit:
     dependencies:
@@ -909,12 +909,9 @@ importers:
       '@withstudiocms/effect':
         specifier: workspace:^
         version: link:../effect
-      astro:
-        specifier: catalog:astrojs-min
-        version: 5.18.1(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
       astro-integration-kit:
         specifier: 'catalog:'
-        version: 0.20.0(astro@5.18.1(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
+        version: 0.20.0(astro@6.0.6(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
       effect:
         specifier: catalog:effect
         version: 3.20.0
@@ -928,6 +925,9 @@ importers:
       '@types/node':
         specifier: 'catalog:'
         version: 22.19.15
+      astro:
+        specifier: catalog:astrojs-current
+        version: 6.0.6(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
@@ -1131,12 +1131,13 @@ importers:
       '@effect/platform-node':
         specifier: catalog:effect
         version: 0.105.0(@effect/cluster@0.57.0(@effect/platform@0.95.0(effect@3.20.0))(@effect/rpc@0.74.0(@effect/platform@0.95.0(effect@3.20.0))(effect@3.20.0))(@effect/sql@0.50.0(@effect/experimental@0.59.0(@effect/platform@0.95.0(effect@3.20.0))(effect@3.20.0))(@effect/platform@0.95.0(effect@3.20.0))(effect@3.20.0))(@effect/workflow@0.17.0(@effect/experimental@0.59.0(@effect/platform@0.95.0(effect@3.20.0))(effect@3.20.0))(@effect/platform@0.95.0(effect@3.20.0))(@effect/rpc@0.74.0(@effect/platform@0.95.0(effect@3.20.0))(effect@3.20.0))(effect@3.20.0))(effect@3.20.0))(@effect/platform@0.95.0(effect@3.20.0))(@effect/rpc@0.74.0(@effect/platform@0.95.0(effect@3.20.0))(effect@3.20.0))(@effect/sql@0.50.0(@effect/experimental@0.59.0(@effect/platform@0.95.0(effect@3.20.0))(effect@3.20.0))(@effect/platform@0.95.0(effect@3.20.0))(effect@3.20.0))(effect@3.20.0)
-      astro:
-        specifier: catalog:astrojs-min
-        version: 5.18.1(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
       effect:
         specifier: catalog:effect
         version: 3.20.0
+    devDependencies:
+      astro:
+        specifier: catalog:astrojs-current
+        version: 6.0.6(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
 
   packages/studiocms:
     dependencies:

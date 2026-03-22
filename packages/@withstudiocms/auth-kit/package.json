@@ -75,7 +75,8 @@
     "@oslojs/encoding": "^1.1.0"
   },
   "devDependencies": {
-    "@types/node": "catalog:"
+    "@types/node": "catalog:",
+    "astro": "catalog:astrojs-current"
   },
   "peerDependencies": {
 		"@effect/platform": "catalog:effect",

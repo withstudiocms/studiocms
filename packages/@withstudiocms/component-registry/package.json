@@ -84,6 +84,7 @@
 	},
 	"devDependencies": {
 		"@types/node": "catalog:",
+		"astro": "catalog:astrojs-current",
 		"typescript": "catalog:"
 	},
 	"peerDependencies": {
