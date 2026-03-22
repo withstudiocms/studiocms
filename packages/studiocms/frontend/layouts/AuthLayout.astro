@@ -3,12 +3,12 @@ import 'studiocms:ui/reset-css';
 import 'studiocms:ui/global-css';
 import '../styles/auth-layout.css';
 import type { ComponentProps } from 'astro/types';
+import { LAYOUT_IDS } from '#frontend/consts.ts';
 import FallbackCanvas from '../components/auth/FallbackCanvas.astro';
 import OAuthButtonStack from '../components/auth/OAuthButtonStack.astro';
 import StaticAuthCheck from '../components/auth/StaticAuthCheck.astro';
 import ThreeCanvasLoader from '../components/auth/ThreeCanvasLoader.astro';
 import BaseLayout from './BaseLayout.astro';
-import { LAYOUT_IDS } from '#frontend/consts.ts';
 
 const { siteConfig: config, security } = Astro.locals.StudioCMS;
 

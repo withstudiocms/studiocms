@@ -8,12 +8,12 @@ import type { UserSessionData } from 'studiocms:auth/lib/types';
 import { defaultLang } from 'studiocms:i18n';
 import type { DynamicConfigEntry, StudioCMSSiteConfig } from '@withstudiocms/sdk/types';
 import type { ComponentProps } from 'astro/types';
+import { LAYOUT_IDS } from '#frontend/consts.ts';
 import Ambients from '../components/Ambients.astro';
 import DoubleSidebar from '../components/dashboard/DoubleSidebar.astro';
 import SidebarModals from '../components/dashboard/SidebarModals.astro';
 import SingleSidebar from '../components/dashboard/SingleSidebar.astro';
 import BaseLayout from './BaseLayout.astro';
-import { LAYOUT_IDS } from '#frontend/consts.ts';
 
 const makePageTitle = (
 	pageName: string,
