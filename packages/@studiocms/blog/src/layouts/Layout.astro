@@ -44,13 +44,16 @@ const pageTitle = `${title} ${pageTitleDelimiter} ${siteTitle}`;
 <!doctype html>
 <html {lang} id={LAYOUT_ID}>
 	<head>
-		<BaseHead title={pageTitle} description={pageDescription} image={heroImage} lang={lang}/>
+		<BaseHead
+			title={pageTitle}
+			description={pageDescription}
+			image={heroImage}
+			lang={lang}
+		/>
 	</head>
 	<body>
 		<Navigation />
-		
 		<slot />
-
 		<Footer {siteTitle} />
 	</body>
 </html>

@@ -33,8 +33,18 @@ const makeHeader = headDefaults(title, description, lang, Astro, favicon, ogImag
 
 const StudioCMSFrontEndHeads: HeadUserConfig = [
 	// Fonts
-	{ tag: 'link', attrs: { rel: 'preconnect', href: 'https://fonts.googleapis.com' } },
-	{ tag: 'link', attrs: { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' } },
+	{
+		tag: 'link',
+		attrs: { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
+	},
+	{
+		tag: 'link',
+		attrs: {
+			rel: 'preconnect',
+			href: 'https://fonts.gstatic.com',
+			crossorigin: '',
+		},
+	},
 	{
 		tag: 'link',
 		attrs: {
@@ -61,4 +71,8 @@ makeHeader.push(...StudioCMSFrontEndHeads);
 const head = createHead(makeHeader, htmlDefaultHead as HeadConfig);
 ---
 
-{head.map(({ tag: Tag, attrs, content }) => <Tag {...attrs} set:html={content} />)}
+{
+	head.map(({ tag: Tag, attrs, content }) => (
+		<Tag {...attrs} set:html={content} />
+	))
+}
