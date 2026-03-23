@@ -1,5 +1,6 @@
 declare module 'virtual:studiocms/site' {
-	// TODO: We should not need this... astro:config/client is importing server-side code that is extremely breaking. This is a temporary shim to get around that issue, but we should investigate the root cause and remove this.
+	// TODO: Migrate back to 'astro:config/client' once the upstream issue is resolved.
+	// We should not need this... astro:config/client is importing server-side code that is extremely breaking. This is a temporary shim to get around that issue, but we should investigate the root cause and remove this.
 
 	export const site: string;
 }
