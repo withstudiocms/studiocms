@@ -35,7 +35,11 @@ const sortedData = sortTree(data);
         ) : (
             <FolderTreeNode node={node} depth={depth} {...props}>
                 {node.children && node.children.length > 0 && (
-                    <Astro.self data={node.children} depth={depth + 1} {...props} />
+                    <Astro.self
+                        data={node.children}
+                        depth={depth + 1}
+                        {...props}
+                    />
                 )}
             </FolderTreeNode>
         ),

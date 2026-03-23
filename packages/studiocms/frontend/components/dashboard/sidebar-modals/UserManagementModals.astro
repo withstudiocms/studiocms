@@ -6,49 +6,87 @@ import { Input } from 'studiocms:ui/components/input';
 import { Modal } from 'studiocms:ui/components/modal';
 import { Select } from 'studiocms:ui/components/select';
 ---
+
 <Modal
-  id='create-new-user-modal'
-  cancelButton={{ label: 'Cancel', color: 'default' }}
-  actionButton={{ label: 'Confirm', color: 'danger' }}
+  id="create-new-user-modal"
+  cancelButton={{ label: "Cancel", color: "default" }}
+  actionButton={{ label: "Confirm", color: "danger" }}
   isForm
 >
-  <h2 slot='header'>Create New User</h2>
+  <h2 slot="header">Create New User</h2>
   <div class="modal-body">
     <p>Please save this information now. It will not be shown to you again.</p>
     <Input label="Username" name="create-new-username" type="text" isRequired />
-    <Input label="Email Address" name="create-new-email" type="email" isRequired />
-    <Input label="Display Name" name="create-new-display_name" type="text" isRequired />
+    <Input
+      label="Email Address"
+      name="create-new-email"
+      type="email"
+      isRequired
+    />
+    <Input
+      label="Display Name"
+      name="create-new-display_name"
+      type="text"
+      isRequired
+    />
     <Input label="Password" name="create-new-password" type="password" />
-    <Select fullWidth name='create-new-rank' label='User Rank' defaultValue='visitor' options={[
-      { label: 'Visitor', value: 'visitor' },
-      { label: 'Editor', value: 'editor' },
-      { label: 'Administrator', value: 'admin' },
-      { label: 'Owner', value: 'owner' },
-    ]} />
+    <Select
+      fullWidth
+      name="create-new-rank"
+      label="User Rank"
+      defaultValue="visitor"
+      options={[
+        { label: "Visitor", value: "visitor" },
+        { label: "Editor", value: "editor" },
+        { label: "Administrator", value: "admin" },
+        { label: "Owner", value: "owner" },
+      ]}
+    />
   </div>
 </Modal>
 
 <Modal
-  id='create-user-invite-modal'
-  cancelButton={{ label: 'Cancel', color: 'default' }}
-  actionButton={{ label: 'Confirm', color: 'danger' }}
+  id="create-user-invite-modal"
+  cancelButton={{ label: "Cancel", color: "default" }}
+  actionButton={{ label: "Confirm", color: "danger" }}
   isForm
 >
-  <h2 slot='header'>Create User Invite</h2>
+  <h2 slot="header">Create User Invite</h2>
   <div class="modal-body">
-    <Input label="Username" name="create-user-invite-username" type="text" isRequired />
-    <Input label="Email Address" name="create-user-invite-email" type="email" isRequired />
-    <Input label="Display Name" name="create-user-invite-display_name" type="text" isRequired />
-    <Select fullWidth name='create-user-invite-rank' label='User Rank' defaultValue='visitor' options={[
-      { label: 'Visitor', value: 'visitor' },
-      { label: 'Editor', value: 'editor' },
-      { label: 'Administrator', value: 'admin' },
-      { label: 'Owner', value: 'owner' },
-    ]} />
+    <Input
+      label="Username"
+      name="create-user-invite-username"
+      type="text"
+      isRequired
+    />
+    <Input
+      label="Email Address"
+      name="create-user-invite-email"
+      type="email"
+      isRequired
+    />
+    <Input
+      label="Display Name"
+      name="create-user-invite-display_name"
+      type="text"
+      isRequired
+    />
+    <Select
+      fullWidth
+      name="create-user-invite-rank"
+      label="User Rank"
+      defaultValue="visitor"
+      options={[
+        { label: "Visitor", value: "visitor" },
+        { label: "Editor", value: "editor" },
+        { label: "Administrator", value: "admin" },
+        { label: "Owner", value: "owner" },
+      ]}
+    />
   </div>
 </Modal>
 
-<Modal id='invite-response-modal'>
+<Modal id="invite-response-modal">
   <h2 slot="header">Invite Link</h2>
   <Center>
     <div class="modal-body">
@@ -56,7 +94,11 @@ import { Select } from 'studiocms:ui/components/select';
       <div class="link-container">
         <code id="invite-response-placeholder"></code>
         <Button color="primary" size="sm" class="copy-btn">
-          <Icon name="heroicons:document-duplicate-20-solid" width={20} height={20} />
+          <Icon
+            name="heroicons:document-duplicate-20-solid"
+            width={20}
+            height={20}
+          />
         </Button>
       </div>
     </div>
@@ -71,12 +113,12 @@ import { Select } from 'studiocms:ui/components/select';
     width: 100%;
 
     span {
-      font-size: .875rem;
+      font-size: 0.875rem;
     }
 
     code {
       background-color: var(--background-step-3);
-      padding: .25rem;
+      padding: 0.25rem;
       border-radius: 4px;
     }
 

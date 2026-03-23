@@ -62,7 +62,10 @@ const preselectedParentFolder = searchParams.get('parent-folder') ?? 'null';
 
 <script>
     import { toast } from "studiocms:ui/components/toaster/client";
-    import { dashboardClient, dashboardSharedCatchTags } from "studiocms:client/apiClients";
+    import {
+        dashboardClient,
+        dashboardSharedCatchTags,
+    } from "studiocms:client/apiClients";
     import * as Effect from "effect/Effect";
 
     const form = document.getElementById(
@@ -103,7 +106,7 @@ const preselectedParentFolder = searchParams.get('parent-folder') ?? 'null';
             Effect.flatMap((client) =>
                 client.content.createFolder({
                     payload: data,
-                })
+                }),
             ),
             Effect.catchTags(dashboardSharedCatchTags),
             Effect.runPromise,

@@ -38,74 +38,89 @@ setDataContext(Astro, {
 });
 ---
 
-<Layout 
-  title={t('title')}
-  description={t('description')}
+<Layout
+  title={t("title")}
+  description={t("description")}
   {lang}
   {config}
   {currentUser}
-  >
-
+>
   <div slot="header">
-    <PageHeader title={`${t('header')}: ${pluginData.name}`}>
-      <Button variant="solid" color="primary" size="sm" type="submit" form="plugin-settings-form">
-        <Icon slot="start-content" name="heroicons:check-20-solid" width={20} height={20} />
-        <t-plugins key="save-button">{t('save-button')}</t-plugins>
+    <PageHeader title={`${t("header")}: ${pluginData.name}`}>
+      <Button
+        variant="solid"
+        color="primary"
+        size="sm"
+        type="submit"
+        form="plugin-settings-form"
+      >
+        <Icon
+          slot="start-content"
+          name="heroicons:check-20-solid"
+          width={20}
+          height={20}
+        />
+        <t-plugins key="save-button">{t("save-button")}</t-plugins>
       </Button>
     </PageHeader>
   </div>
 
-  <form id="plugin-settings-form" action={Astro.locals.StudioCMS.routeMap.endpointLinks.plugins + pluginData.identifier} method="POST"> 
+  <form
+    id="plugin-settings-form"
+    action={Astro.locals.StudioCMS.routeMap.endpointLinks.plugins +
+      pluginData.identifier}
+    method="POST"
+  >
     <div class="form-settings">
-      
-    {
-      pluginData.settingsPage && (
-        <SettingsRenderer fields={pluginData.settingsPage.fields} />
-      )
-    }
-    
-    </div>    
+      {
+        pluginData.settingsPage && (
+          <SettingsRenderer fields={pluginData.settingsPage.fields} />
+        )
+      }
+    </div>
   </form>
 
-  <div style="display: none;" id="plugin-name" data-value={pluginData.name}></div>
+  <div style="display: none;" id="plugin-name" data-value={pluginData.name}>
+  </div>
 
   <script>
-      import { 
-          $i18n,
-          $localeSettings,
-          baseTranslation,
-          defaultLang,
-          documentUpdater,
-          makeTranslation,
-          pageHeaderUpdater,
-      } from 'studiocms:i18n/client';
-  
-      const currentPage = '@studiocms/dashboard:plugin-settings';
-  
-      let lang = defaultLang;
+    import {
+      $i18n,
+      $localeSettings,
+      baseTranslation,
+      defaultLang,
+      documentUpdater,
+      makeTranslation,
+      pageHeaderUpdater,
+    } from "studiocms:i18n/client";
 
-      const pluginName = (document.getElementById('plugin-name') as HTMLDivElement).getAttribute('data-value');
-  
-      const i18n = $i18n(currentPage, baseTranslation[currentPage]);
-  
-      $localeSettings.subscribe((locale) => {
-          lang = locale || defaultLang;
-      });
-      
-      i18n.subscribe(comp => {
+    const currentPage = "@studiocms/dashboard:plugin-settings";
 
-        const pluginComp = {
-          ...comp,
-          header: `${comp.header}: ${pluginName}`
-        }
+    let lang = defaultLang;
 
-        documentUpdater(pluginComp, lang)
-        pageHeaderUpdater(pluginComp.header)
-      });
-      
-      if (!customElements.get('t-plugins')) {
-          customElements.define('t-plugins', makeTranslation(currentPage, i18n));
-      }
+    const pluginName = (
+      document.getElementById("plugin-name") as HTMLDivElement
+    ).getAttribute("data-value");
+
+    const i18n = $i18n(currentPage, baseTranslation[currentPage]);
+
+    $localeSettings.subscribe((locale) => {
+      lang = locale || defaultLang;
+    });
+
+    i18n.subscribe((comp) => {
+      const pluginComp = {
+        ...comp,
+        header: `${comp.header}: ${pluginName}`,
+      };
+
+      documentUpdater(pluginComp, lang);
+      pageHeaderUpdater(pluginComp.header);
+    });
+
+    if (!customElements.get("t-plugins")) {
+      customElements.define("t-plugins", makeTranslation(currentPage, i18n));
+    }
   </script>
 
   <style>

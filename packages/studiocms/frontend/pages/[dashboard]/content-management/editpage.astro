@@ -43,22 +43,21 @@ setDataContext(Astro, {
 });
 ---
 
-<Layout 
-  title={t('title')}
-  description={t('description')}
-  sidebar='double'
+<Layout
+  title={t("title")}
+  description={t("description")}
+  sidebar="double"
   {lang}
   {config}
   {currentUser}
-  >
-
+>
   <div slot="external">
-    <BrowserInputArray triggerInputs={['page-hero-image']} />
-    <BrowserCopyOutput id='storage-file-copy-output' />
-    <ComponentRegistryUI 
-      registryData={registryData} 
-      triggerId='access-component-registry' 
-      />
+    <BrowserInputArray triggerInputs={["page-hero-image"]} />
+    <BrowserCopyOutput id="storage-file-copy-output" />
+    <ComponentRegistryUI
+      registryData={registryData}
+      triggerId="access-component-registry"
+    />
   </div>
 
   <div slot="double-sidebar" class="inner-sidebar-container">
@@ -71,36 +70,46 @@ setDataContext(Astro, {
     <PageHeader {lang} editPage />
   </div>
 
-  { pageData && <EditPage {lang} {config} {pageData} {users} {folderList} {categories} {tags} />}
-
+  {
+    pageData && (
+      <EditPage
+        {lang}
+        {config}
+        {pageData}
+        {users}
+        {folderList}
+        {categories}
+        {tags}
+      />
+    )
+  }
 </Layout>
 
 <script>
-    import { 
-        $i18n,
-        $localeSettings,
-        baseTranslation,
-        defaultLang,
-        documentUpdater,
-    } from 'studiocms:i18n/client';
-  
-    let lang = defaultLang;
+  import {
+    $i18n,
+    $localeSettings,
+    baseTranslation,
+    defaultLang,
+    documentUpdater,
+  } from "studiocms:i18n/client";
 
-    const currentPage = '@studiocms/dashboard:content-index';
+  let lang = defaultLang;
 
-    $localeSettings.subscribe((locale) => {
-      lang = locale || defaultLang;
-    });
+  const currentPage = "@studiocms/dashboard:content-index";
 
-    const i18n = $i18n(currentPage, baseTranslation[currentPage]);
-      
-    i18n.subscribe(comp => {
-      documentUpdater(comp, lang)
-    });
+  $localeSettings.subscribe((locale) => {
+    lang = locale || defaultLang;
+  });
+
+  const i18n = $i18n(currentPage, baseTranslation[currentPage]);
+
+  i18n.subscribe((comp) => {
+    documentUpdater(comp, lang);
+  });
 </script>
 
 <style>
-
   .sidebar-links-container {
     display: flex;
     flex-direction: column;

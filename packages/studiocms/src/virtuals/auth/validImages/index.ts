@@ -7,13 +7,22 @@ import studiocmsBlocksLight from './studiocms-blocks-light.webp';
 import studiocmsCurvesDark from './studiocms-curves-dark.webp';
 import studiocmsCurvesLight from './studiocms-curves-light.webp';
 
-interface ValidImage {
+interface ValidImageBase {
 	readonly name: string;
 	readonly label: string;
-	readonly format: 'local' | 'web';
-	readonly light: ImageMetadata | null;
-	readonly dark: ImageMetadata | null;
 }
+
+export interface ValidWebImage extends ValidImageBase {
+	readonly format: 'web';
+}
+
+export interface ValidLocalImage extends ValidImageBase {
+	readonly format: 'local';
+	readonly light: ImageMetadata;
+	readonly dark: ImageMetadata;
+}
+
+export type ValidImage = ValidWebImage | ValidLocalImage;
 
 /**
  * The valid images that can be used as a background for the StudioCMS Logo.
@@ -44,8 +53,6 @@ const validImages: ValidImage[] = [
 		name: 'custom',
 		label: 'Custom',
 		format: 'web',
-		light: null,
-		dark: null,
 	},
 ] as const;
 

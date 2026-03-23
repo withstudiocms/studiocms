@@ -24,24 +24,49 @@ const genericTranslationProps = {
 	component: 'recently-created-pages',
 };
 ---
+
 <div class="recently-created-page-container">
   {
     recentlyUpdatedPages.length > 0 ? (
-      recentlyUpdatedPages.map(page => (
-        <Card fullWidth class={'recently-created-page-card'} as='a' href={Astro.locals.StudioCMS.routeMap.mainLinks.contentManagementEdit + `?edit=${page.id}`}>
-            <div class="card-row">
-              <span class="card-title">{page.title} {page.draft && <Badge label="Draft" size="sm" variant="flat" rounding="semi" />}</span>
-              <span class="card-date"><p-translations {...genericTranslationProps} key="created">Created:</p-translations> <FormattedDate date={page.publishedAt} /></span>
-            </div>
+      recentlyUpdatedPages.map((page) => (
+        <Card
+          fullWidth
+          class={"recently-created-page-card"}
+          as="a"
+          href={
+            Astro.locals.StudioCMS.routeMap.mainLinks.contentManagementEdit +
+            `?edit=${page.id}`
+          }
+        >
+          <div class="card-row">
+            <span class="card-title">
+              {page.title}{" "}
+              {page.draft && (
+                <Badge label="Draft" size="sm" variant="flat" rounding="semi" />
+              )}
+            </span>
+            <span class="card-date">
+              <p-translations {...genericTranslationProps} key="created">
+                Created:
+              </p-translations>{" "}
+              <FormattedDate date={page.publishedAt} />
+            </span>
+          </div>
 
-            <div class="card-row">
-              <span class="card-description">{page.description}</span>
-            </div>
+          <div class="card-row">
+            <span class="card-description">{page.description}</span>
+          </div>
         </Card>
       ))
-  ) : (
+    ) : (
       <Card fullWidth style="background-color: var(--background-step-2);">
-        <Center><span style="color: var(--text-muted);"><p-translations {...genericTranslationProps} key="no-pages-found">No recently created pages found.</p-translations></span></Center>
+        <Center>
+          <span style="color: var(--text-muted);">
+            <p-translations {...genericTranslationProps} key="no-pages-found">
+              No recently created pages found.
+            </p-translations>
+          </span>
+        </Center>
       </Card>
     )
   }
@@ -51,9 +76,8 @@ const genericTranslationProps = {
   .recently-created-page-container {
     display: flex;
     flex-direction: column;
-    gap: .5rem;
+    gap: 0.5rem;
   }
-
 
   .recently-created-page-card {
     display: flex;
@@ -61,7 +85,7 @@ const genericTranslationProps = {
     background-color: var(--background-step-2);
     text-decoration: none;
     color: initial;
-    transition: all .15s ease;
+    transition: all 0.15s ease;
 
     & .card-row {
       display: flex;
@@ -78,7 +102,7 @@ const genericTranslationProps = {
 
       & .card-date {
         color: var(--text-muted);
-        font-size: .8rem;
+        font-size: 0.8rem;
       }
 
       & .card-description {

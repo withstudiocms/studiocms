@@ -9,6 +9,7 @@ interface Props {
 
 const { href, label, image } = Astro.props;
 ---
+
 <Button fullWidth as="a" href={href} variant="solid" size="lg">
     <Fragment set:html={image} />
     <span>{label}</span>

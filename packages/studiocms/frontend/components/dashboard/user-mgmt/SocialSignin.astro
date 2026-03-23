@@ -33,48 +33,60 @@ const socialProviders = providerData.map((providerData) => ({
 const connectedProviders = socialProviders.filter(({ connected }) => connected);
 const t = useTranslations(lang, '@studiocms/dashboard:user-mngmt-edit');
 ---
-    
+
 <div class="text-h3">
-    <t-users-edit-socials key="social-accounts-header">{t('social-accounts-header')}</t-users-edit-socials>
+    <t-users-edit-socials key="social-accounts-header"
+        >{t("social-accounts-header")}</t-users-edit-socials
+    >
 </div>
 
 <Card fullWidth class="social-signin-bg">
-
-
     {
         connectedProviders.length === 0 ? (
-            <Center><t-users-edit-socials key="social-accounts-non">{t('social-accounts-non')}</t-users-edit-socials></Center>
+            <Center>
+                <t-users-edit-socials key="social-accounts-non">
+                    {t("social-accounts-non")}
+                </t-users-edit-socials>
+            </Center>
         ) : (
             <div class="button-holder">
-                {
-                    connectedProviders.map(({ enabled, image, label }) => enabled && (
-                        <Button variant="solid" size="md" fullWidth class="oauth-button">
-                            <div class="icon-and-label">
-                                <Fragment set:html={image} />
-                                <span>{label}</span>
-                            </div>
-                        </Button>
-                    ))
-                }
+                {connectedProviders.map(
+                    ({ enabled, image, label }) =>
+                        enabled && (
+                            <Button
+                                variant="solid"
+                                size="md"
+                                fullWidth
+                                class="oauth-button"
+                            >
+                                <div class="icon-and-label">
+                                    <Fragment set:html={image} />
+                                    <span>{label}</span>
+                                </div>
+                            </Button>
+                        ),
+                )}
             </div>
         )
     }
-
 </Card>
 
 <script>
-    import { 
+    import {
         $i18n,
         baseTranslation,
         makeTranslation,
-    } from 'studiocms:i18n/client';
+    } from "studiocms:i18n/client";
 
-    const currentPage = '@studiocms/dashboard:user-mngmt-edit';
+    const currentPage = "@studiocms/dashboard:user-mngmt-edit";
 
     const i18n = $i18n(currentPage, baseTranslation[currentPage]);
-    
-    if (!customElements.get('t-users-edit-socials')) {
-        customElements.define('t-users-edit-socials', makeTranslation(currentPage, i18n));
+
+    if (!customElements.get("t-users-edit-socials")) {
+        customElements.define(
+            "t-users-edit-socials",
+            makeTranslation(currentPage, i18n),
+        );
     }
 </script>
 
@@ -87,7 +99,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:user-mngmt-edit');
         & .button-holder {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: .5rem;
+            gap: 0.5rem;
         }
 
         & .oauth-button {

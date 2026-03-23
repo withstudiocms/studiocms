@@ -50,97 +50,135 @@ const unconnectedProviders = socialProviders.filter(({ connected }) => !connecte
 const lang = Astro.locals.StudioCMS.defaultLang;
 const t = useTranslations(lang, '@studiocms/dashboard:profile');
 ---
-<Card fullWidth class="social-signin-options">
 
+<Card fullWidth class="social-signin-options">
     <div slot="header">
         <h2>
-            <t-profile-socials key="social-accounts-header">{t('social-accounts-header')}</t-profile-socials>
+            <t-profile-socials key="social-accounts-header"
+                >{t("social-accounts-header")}</t-profile-socials
+            >
         </h2>
     </div>
 
     <div class="social-signin-cards">
-
         <Card fullWidth class="social-signin-bg">
-    
             <div slot="header">
                 <h3>
-                    <t-profile-socials key="social-accounts-connected">{t('social-accounts-connected')}</t-profile-socials>
+                    <t-profile-socials key="social-accounts-connected"
+                        >{t("social-accounts-connected")}</t-profile-socials
+                    >
                 </h3>
             </div>
 
             <div class="button-holder">
                 {
-                    connectedProviders.map(({ enabled, href, image, label }) => enabled && (
-                        <Button as="a" href={href} variant="solid" size="md" fullWidth class="oauth-button">
-                            <div class="icon-and-label">
-                                <Fragment set:html={image} />
-                                <span>{label}</span>
-                            </div>
-                            <Icon name="heroicons:minus-circle" width={24} height={24} />
-                        </Button>
-                    ))
+                    connectedProviders.map(
+                        ({ enabled, href, image, label }) =>
+                            enabled && (
+                                <Button
+                                    as="a"
+                                    href={href}
+                                    variant="solid"
+                                    size="md"
+                                    fullWidth
+                                    class="oauth-button"
+                                >
+                                    <div class="icon-and-label">
+                                        <Fragment set:html={image} />
+                                        <span>{label}</span>
+                                    </div>
+                                    <Icon
+                                        name="heroicons:minus-circle"
+                                        width={24}
+                                        height={24}
+                                    />
+                                </Button>
+                            ),
+                    )
                 }
 
                 {
                     connectedProviders.length === 0 && (
-                        <Center><div>
-                            <t-profile-socials key="social-accounts-no-connected">{t('social-accounts-no-connected')}</t-profile-socials>    
-                        </div></Center>
+                        <Center>
+                            <div>
+                                <t-profile-socials key="social-accounts-no-connected">
+                                    {t("social-accounts-no-connected")}
+                                </t-profile-socials>
+                            </div>
+                        </Center>
                     )
                 }
             </div>
-    
         </Card>
-    
+
         <Card fullWidth class="social-signin-bg">
-    
             <div slot="header">
                 <h3>
-                    <t-profile-socials key="social-accounts-other">{t('social-accounts-other')}</t-profile-socials>
+                    <t-profile-socials key="social-accounts-other"
+                        >{t("social-accounts-other")}</t-profile-socials
+                    >
                 </h3>
             </div>
 
             <div class="button-holder">
                 {
-                    unconnectedProviders.map(({ enabled, href, image, label }) => enabled && (
-                        <Button as="a" href={href} variant="solid" size="md" fullWidth class="oauth-button">
-                            <div class="icon-and-label">
-                                <Fragment set:html={image} />
-                                <span>{label}</span>
-                            </div>
-                            <Icon name="heroicons:plus-circle" width={24} height={24} />
-                        </Button>
-                    ))
+                    unconnectedProviders.map(
+                        ({ enabled, href, image, label }) =>
+                            enabled && (
+                                <Button
+                                    as="a"
+                                    href={href}
+                                    variant="solid"
+                                    size="md"
+                                    fullWidth
+                                    class="oauth-button"
+                                >
+                                    <div class="icon-and-label">
+                                        <Fragment set:html={image} />
+                                        <span>{label}</span>
+                                    </div>
+                                    <Icon
+                                        name="heroicons:plus-circle"
+                                        width={24}
+                                        height={24}
+                                    />
+                                </Button>
+                            ),
+                    )
                 }
 
                 {
                     unconnectedProviders.length === 0 && (
-                        <Center><div>
-                            <t-profile-socials key="social-accounts-no-other">{t('social-accounts-no-other')}</t-profile-socials>    
-                        </div></Center>
+                        <Center>
+                            <div>
+                                <t-profile-socials key="social-accounts-no-other">
+                                    {t("social-accounts-no-other")}
+                                </t-profile-socials>
+                            </div>
+                        </Center>
                     )
                 }
             </div>
-    
         </Card>
-    
     </div>
-
 </Card>
 
 <script>
-    import { 
+    import {
         $i18n,
         baseTranslation,
         makeTranslation,
-    } from 'studiocms:i18n/client';
+    } from "studiocms:i18n/client";
 
-    const currentPage = '@studiocms/dashboard:profile';
+    const currentPage = "@studiocms/dashboard:profile";
 
     const i18n = $i18n(currentPage, baseTranslation[currentPage]);
 
-    if (!customElements.get('t-profile-socials')) {
-        customElements.define('t-profile-socials', makeTranslation(currentPage, i18n));
+    if (!customElements.get("t-profile-socials")) {
+        customElements.define(
+            "t-profile-socials",
+            makeTranslation(currentPage, i18n),
+        );
     }
 </script>
 
@@ -185,6 +223,6 @@ const t = useTranslations(lang, '@studiocms/dashboard:profile');
     .button-holder {
         display: flex;
         flex-direction: column;
-        gap: .5rem;
+        gap: 0.5rem;
     }
 </style>

@@ -17,6 +17,7 @@ const { id, lang = defaultLang, generators: genMeta = true, ...headProps } = Ast
 const hideGeneratorTags = dashboardConfig.security?.hideGeneratorTags ?? false;
 const generators = !hideGeneratorTags && genMeta;
 ---
+
 <html {lang} {id}>
     <BaseHead {...headProps} {generators} />
     <BaseBody>

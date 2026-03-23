@@ -190,7 +190,10 @@ const t = useTranslations(lang, '@studiocms/dashboard:profile');
 <script>
     import { ModalHelper } from "studiocms:ui/components/modal/client";
     import { toast } from "studiocms:ui/components/toaster/client";
-    import { dashboardClient, dashboardSharedCatchTags } from "studiocms:client/apiClients";
+    import {
+        dashboardClient,
+        dashboardSharedCatchTags,
+    } from "studiocms:client/apiClients";
     import * as Effect from "effect/Effect";
 
     const createAPITokenModal = new ModalHelper(
@@ -274,12 +277,12 @@ const t = useTranslations(lang, '@studiocms/dashboard:profile');
             }
 
             const response = await dashboardClient.pipe(
-                Effect.flatMap((client) => 
+                Effect.flatMap((client) =>
                     client.apiTokens.revokeApiToken({
                         payload: {
-                            tokenID
-                        }
-                    })
+                            tokenID,
+                        },
+                    }),
                 ),
                 Effect.catchTags(dashboardSharedCatchTags),
                 Effect.runPromise,
@@ -296,7 +299,8 @@ const t = useTranslations(lang, '@studiocms/dashboard:profile');
             } else {
                 toast({
                     title: "Success",
-                    description: response.message || "API token revoked successfully",
+                    description:
+                        response.message || "API token revoked successfully",
                     type: "success",
                     duration: 5000,
                 });

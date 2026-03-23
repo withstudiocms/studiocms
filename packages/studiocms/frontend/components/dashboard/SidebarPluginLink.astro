@@ -10,7 +10,8 @@ const href = Astro.locals.StudioCMS.routeMap.mainLinks.plugins + identifier;
 
 const isActive = Astro.url.pathname === href && 'active';
 ---
-<a class="sidebar-plugin-link" {href} class:list={[ isActive && 'active' ]}>
+
+<a class="sidebar-plugin-link" {href} class:list={[isActive && "active"]}>
   <span class="sidebar-plugin-name">{name}</span>
   <span class="sidebar-plugin-identifier">{identifier}</span>
 </a>
@@ -19,11 +20,11 @@ const isActive = Astro.url.pathname === href && 'active';
   .sidebar-plugin-link {
     display: flex;
     flex-direction: column;
-    gap: .25rem;
-    border-radius: .5rem;
-    transition: all .15s ease;
+    gap: 0.25rem;
+    border-radius: 0.5rem;
+    transition: all 0.15s ease;
     width: 100%;
-    padding: .375rem .5rem;
+    padding: 0.375rem 0.5rem;
     text-decoration: none;
     color: var(--text-muted);
   }
@@ -38,6 +39,6 @@ const isActive = Astro.url.pathname === href && 'active';
 
   .sidebar-plugin-identifier {
     font-weight: 300;
-    font-size: .875em;
+    font-size: 0.875em;
   }
 </style>

@@ -30,19 +30,32 @@ const genericTranslationProps = {
 	component: componentId,
 };
 ---
+
 <Card
     fullWidth
     variant={variant}
     class="grid-item"
     class:list={[span > 1 && `span-${span}`]}
-    id={name}>
-    {header && (
-        <div slot="header">
-            <span class="grid-item-title">
-                {header.icon && <Icon name={header.icon} width={24} height={24}/>}
-                <span><p-translations {...genericTranslationProps} key="title">{header.title}</p-translations></span>
-            </span>
-        </div>
-    )}
-    { html && <Fragment set:html={html} /> }
+    id={name}
+>
+    {
+        header && (
+            <div slot="header">
+                <span class="grid-item-title">
+                    {header.icon && (
+                        <Icon name={header.icon} width={24} height={24} />
+                    )}
+                    <span>
+                        <p-translations
+                            {...genericTranslationProps}
+                            key="title"
+                        >
+                            {header.title}
+                        </p-translations>
+                    </span>
+                </span>
+            </div>
+        )
+    }
+    {html && <Fragment set:html={html} />}
 </Card>

@@ -20,7 +20,15 @@ const buttonDisabled = isDefaultManager || disabled;
 
 <div class="storage-input-container">
     <Input {...inputProps} id={inputId} name={name} disabled={disabled} />
-    <Button variant='outlined' color={isDefaultManager ? "danger" : "info"} size="md" id={buttonId} type={'button'} disabled={buttonDisabled} aria-label='Browse Files'>
+    <Button
+        variant="outlined"
+        color={isDefaultManager ? "danger" : "info"}
+        size="md"
+        id={buttonId}
+        type={"button"}
+        disabled={buttonDisabled}
+        aria-label="Browse Files"
+    >
         <Icon name="heroicons:folder-open-20-solid" width={20} height={20} />
     </Button>
 </div>

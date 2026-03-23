@@ -29,7 +29,12 @@ const id = `user-mngmt-user-account-${user.id || 'unknown'}`;
 const permissionLevel = user.permissionsData?.rank ?? 'unknown';
 ---
 
-<user-list-item class="sidebar-user" href={userListItemHrefString} data-selector-id={id} data-permission-level={permissionLevel}>
+<user-list-item
+    class="sidebar-user"
+    href={userListItemHrefString}
+    data-selector-id={id}
+    data-permission-level={permissionLevel}
+>
     <User
         id={id}
         name={user.name}
@@ -41,14 +46,11 @@ const permissionLevel = user.permissionsData?.rank ?? 'unknown';
 <Divider background={"background-step-1"} />
 
 <script>
-  import {
-      $i18n,
-      baseTranslation,
-  } from 'studiocms:i18n/client';
+    import { $i18n, baseTranslation } from "studiocms:i18n/client";
 
-  const currentPage = '@studiocms/dashboard:user-component';
+    const currentPage = "@studiocms/dashboard:user-component";
 
-  const i18n = $i18n(currentPage, baseTranslation[currentPage]);
+    const i18n = $i18n(currentPage, baseTranslation[currentPage]);
 
     class UserListItem extends HTMLElement {
         href: string;
@@ -59,8 +61,16 @@ const permissionLevel = user.permissionsData?.rank ?? 'unknown';
             super();
             this.attachShadow({ mode: "open" });
             this.href = this.getAttribute("href") || "#";
-            this.permissionLevel = (this.getAttribute("data-permission-level") || "unknown") as "admin" | "editor" | "owner" | "visitor" | "unknown";
-            this.selectorId = this.getAttribute("data-selector-id") || "unknown";
+            this.permissionLevel = (this.getAttribute(
+                "data-permission-level",
+            ) || "unknown") as
+                | "admin"
+                | "editor"
+                | "owner"
+                | "visitor"
+                | "unknown";
+            this.selectorId =
+                this.getAttribute("data-selector-id") || "unknown";
         }
 
         connectedCallback() {
@@ -75,12 +85,18 @@ const permissionLevel = user.permissionsData?.rank ?? 'unknown';
             const slot = document.createElement("slot");
             this.shadowRoot.appendChild(slot);
 
-            i18n.subscribe(comp => {
-              const userContainer = this.querySelector(`#${this.selectorId}`) as HTMLDivElement;
-              const userTextContent = userContainer.querySelector('.sui-text-content') as HTMLDivElement;
-              const userDescription = userTextContent.querySelector('.sui-description') as HTMLDivElement;
-              userDescription.textContent = comp[this.permissionLevel];
-            })
+            i18n.subscribe((comp) => {
+                const userContainer = this.querySelector(
+                    `#${this.selectorId}`,
+                ) as HTMLDivElement;
+                const userTextContent = userContainer.querySelector(
+                    ".sui-text-content",
+                ) as HTMLDivElement;
+                const userDescription = userTextContent.querySelector(
+                    ".sui-description",
+                ) as HTMLDivElement;
+                userDescription.textContent = comp[this.permissionLevel];
+            });
         }
 
         private setSidebarActiveState() {
@@ -99,19 +115,24 @@ const permissionLevel = user.permissionsData?.rank ?? 'unknown';
         }
 
         private setupEventListeners() {
-            this.addEventListener('click', (event) => {
+            this.addEventListener("click", (event) => {
                 const e = event as MouseEvent;
                 const url = new URL(this.href, window.location.origin);
-                const isHttp = url.protocol === 'http:' || url.protocol === 'https:';
-                const target = this.getAttribute('target');
-                const openInNewTab = target === '_blank' || e.ctrlKey || e.metaKey || e.button === 1;
+                const isHttp =
+                    url.protocol === "http:" || url.protocol === "https:";
+                const target = this.getAttribute("target");
+                const openInNewTab =
+                    target === "_blank" ||
+                    e.ctrlKey ||
+                    e.metaKey ||
+                    e.button === 1;
 
                 if (!isHttp) return;
 
                 if (openInNewTab) {
                     // Preserve default middle-click behavior if this were a native link
                     e.preventDefault();
-                    window.open(url.href, '_blank', 'noopener,noreferrer');
+                    window.open(url.href, "_blank", "noopener,noreferrer");
                     return;
                 }
 

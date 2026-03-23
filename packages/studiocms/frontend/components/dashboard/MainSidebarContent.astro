@@ -204,7 +204,7 @@ const filteredPluginList = pluginList.filter((plugin) => !!plugin.settingsPage);
       for (const Elm of DropdownOptions) {
         const value = Elm.dataset.value;
 
-        const SelectedValue = Object.entries(userDropdownOptions).find(([key, val]) => val === value)?.[0] as 'settings' | 'viewSite' | 'logout';
+        const SelectedValue = Object.entries(userDropdownOptions).find(([_key, val]) => val === value)?.[0] as 'settings' | 'viewSite' | 'logout';
 
         if (!SelectedValue) {
           continue;

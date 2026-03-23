@@ -23,17 +23,16 @@ setDataContext(Astro, {
 });
 ---
 
-<Layout 
-  title={t('title')}
-  description={t('description')}
-  sidebar='double'
+<Layout
+  title={t("title")}
+  description={t("description")}
+  sidebar="double"
   {lang}
   {config}
   {currentUser}
-  >
-
+>
   <div slot="external">
-    <BrowserInputArray triggerInputs={['page-hero-image']} />
+    <BrowserInputArray triggerInputs={["page-hero-image"]} />
   </div>
 
   <div slot="double-sidebar" class="inner-sidebar-container">
@@ -47,35 +46,33 @@ setDataContext(Astro, {
   </div>
 
   <CreatePage {lang} />
-
 </Layout>
 
 <script>
-    import { 
-        $i18n,
-        $localeSettings,
-        baseTranslation,
-        defaultLang,
-        documentUpdater,
-    } from 'studiocms:i18n/client';
-  
-    let lang = defaultLang;
+  import {
+    $i18n,
+    $localeSettings,
+    baseTranslation,
+    defaultLang,
+    documentUpdater,
+  } from "studiocms:i18n/client";
 
-    const currentPage = '@studiocms/dashboard:content-index';
+  let lang = defaultLang;
 
-    $localeSettings.subscribe((locale) => {
-      lang = locale || defaultLang;
-    });
+  const currentPage = "@studiocms/dashboard:content-index";
 
-    const i18n = $i18n(currentPage, baseTranslation[currentPage]);
-      
-    i18n.subscribe(comp => {
-      documentUpdater(comp, lang)
-    });
+  $localeSettings.subscribe((locale) => {
+    lang = locale || defaultLang;
+  });
+
+  const i18n = $i18n(currentPage, baseTranslation[currentPage]);
+
+  i18n.subscribe((comp) => {
+    documentUpdater(comp, lang);
+  });
 </script>
 
 <style>
-
   .sidebar-links-container {
     display: flex;
     flex-direction: column;

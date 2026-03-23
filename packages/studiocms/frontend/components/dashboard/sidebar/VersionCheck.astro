@@ -37,9 +37,9 @@ const status: false | 'outdated' | 'latest' | 'future' = (() => {
   import { dateTimeListener } from "../../../scripts/dateTimeListener.js";
   import { dateWithTimeAndZone } from "../../../scripts/dateWithTimeAndZone.js";
   import { timeAgo } from "../../../scripts/timeAgo.js";
-  import * as Effect from 'effect/Effect';
-  import { sdkClient } from 'studiocms:client/apiClients';
-  import { toast } from 'studiocms:ui/components/toaster/client';
+  import * as Effect from "effect/Effect";
+  import { sdkClient } from "studiocms:client/apiClients";
+  import { toast } from "studiocms:ui/components/toaster/client";
 
   function setupVersionChecker() {
     const reloadButton = document.getElementById(
@@ -59,7 +59,7 @@ const status: false | 'outdated' | 'latest' | 'future' = (() => {
       "version-modal-trigger",
     ) as HTMLButtonElement;
 
-    const versionCheck = versionModalTrigger.dataset.versionCheck === 'true';
+    const versionCheck = versionModalTrigger.dataset.versionCheck === "true";
 
     if (!versionCheck) {
       return;
@@ -80,16 +80,24 @@ const status: false | 'outdated' | 'latest' | 'future' = (() => {
       };
 
       const { latestVersion, success } = await Effect.orElse(
-        sdkClient.pipe(Effect.flatMap((client) => 
-          client.sdk.updateLatestVersionCache()
-        )),
-        () => Effect.succeed({ success: false, latestVersion: null } as FailureVersionResponse)
+        sdkClient.pipe(
+          Effect.flatMap((client) => client.sdk.updateLatestVersionCache()),
+        ),
+        () =>
+          Effect.succeed({
+            success: false,
+            latestVersion: null,
+          } as FailureVersionResponse),
       ).pipe(Effect.runPromise);
 
       if (success) {
         latestVersionElem.textContent = `v${latestVersion.version}`;
-        timeElem.dateTime = new Date(latestVersion.lastCacheUpdate).toISOString();
-        timeElem.textContent = dateWithTimeAndZone(new Date(latestVersion.lastCacheUpdate));
+        timeElem.dateTime = new Date(
+          latestVersion.lastCacheUpdate,
+        ).toISOString();
+        timeElem.textContent = dateWithTimeAndZone(
+          new Date(latestVersion.lastCacheUpdate),
+        );
         latestUpdateCheck.textContent = `(${timeAgo(new Date(latestVersion.lastCacheUpdate))})`;
 
         reloadButton.disabled = false;

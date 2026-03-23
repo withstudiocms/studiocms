@@ -489,6 +489,9 @@ declare module 'studiocms:sdk/types' {
 
 declare module 'studiocms:auth/utils/validImages' {
 	export const validImages: typeof import('./virtuals/auth/validImages/index.js').validImages;
+	export type ValidImage = import('./virtuals/auth/validImages/index.js').ValidImage;
+	export type ValidWebImage = import('./virtuals/auth/validImages/index.js').ValidWebImage;
+	export type ValidLocalImage = import('./virtuals/auth/validImages/index.js').ValidLocalImage;
 }
 
 declare module 'studiocms:auth/scripts/three' {

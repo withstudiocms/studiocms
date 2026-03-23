@@ -45,6 +45,4 @@ const triggerConfigs: BrowserProps[] = baseTriggerConfigs.map((config) => ({
 }));
 ---
 
-{triggerConfigs.map((props) => (
-    <StorageFileBrowser {...props} />
-))}
+{triggerConfigs.map((props) => <StorageFileBrowser {...props} />)}

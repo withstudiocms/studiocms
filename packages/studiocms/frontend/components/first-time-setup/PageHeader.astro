@@ -12,50 +12,51 @@ interface Props {
 
 const { title, badge } = Astro.props;
 ---
+
 <header class="page-header">
   <div class="page-title-container">
     <h1 class="page-title">{title}</h1>
-    { badge && <Badge label={badge.label} size="lg" icon={badge.icon} /> }
+    {badge && <Badge label={badge.label} size="lg" icon={badge.icon} />}
   </div>
   <div class="page-actions-container">
     <slot />
   </div>
 </header>
 <style>
-.page-header {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
-  width: 100%;
-  margin-left: 20%;
-
-  & .page-title-container {
+  .page-header {
     display: flex;
     flex-direction: row;
+    justify-content: space-between;
     align-items: center;
-    gap: .5rem;
-    width: fit-content;
+    margin-bottom: 1rem;
+    width: 100%;
+    margin-left: 20%;
 
-    & .page-title {
+    & .page-title-container {
       display: flex;
-      margin: 0;
-      font-size: 3rem;
+      flex-direction: row;
+      align-items: center;
+      gap: 0.5rem;
+      width: fit-content;
+
+      & .page-title {
+        display: flex;
+        margin: 0;
+        font-size: 3rem;
+      }
+    }
+
+    & .page-actions-container {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 1rem;
     }
   }
 
-  & .page-actions-container {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 1rem;
+  @media screen and (max-width: 768px) {
+    .page-header {
+      margin-left: 0;
+    }
   }
-}
-
-@media screen and (max-width: 768px) {
-  .page-header {
-    margin-left: 0;
-  }
-}
 </style>

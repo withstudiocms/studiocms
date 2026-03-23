@@ -35,59 +35,55 @@ setDataContext(Astro, {
 });
 ---
 
-<Layout 
-  title={t('title')}
-  description={t('description')}
+<Layout
+  title={t("title")}
+  description={t("description")}
   {lang}
   {config}
   {currentUser}
-  >
-
+>
   <div slot="header">
-    <PageHeader title={t('header')} />
+    <PageHeader title={t("header")} />
   </div>
 
   <div class="page-content">
-
     <BasicInfo {currentUser} />
 
     <Notifications {currentUser} {config} />
 
-    { usernameAndPassword && <UpdatePassword {currentUser} /> }
+    {usernameAndPassword && <UpdatePassword {currentUser} />}
 
-    { shouldShowOAuth && <SocialSignin {currentUser} /> }
+    {shouldShowOAuth && <SocialSignin {currentUser} />}
 
-    { isAllowedAPITokens && <APITokens userSession={currentUser} /> }
-
+    {isAllowedAPITokens && <APITokens userSession={currentUser} />}
   </div>
 </Layout>
 
 <script>
-    import { 
-        $i18n,
-        $localeSettings,
-        baseTranslation,
-        defaultLang,
-        documentUpdater,
-        pageHeaderUpdater,
-    } from 'studiocms:i18n/client';
+  import {
+    $i18n,
+    $localeSettings,
+    baseTranslation,
+    defaultLang,
+    documentUpdater,
+    pageHeaderUpdater,
+  } from "studiocms:i18n/client";
 
-    const currentPage = '@studiocms/dashboard:profile';
+  const currentPage = "@studiocms/dashboard:profile";
 
-    let lang = defaultLang;
+  let lang = defaultLang;
 
-    const i18n = $i18n(currentPage, baseTranslation[currentPage]);
+  const i18n = $i18n(currentPage, baseTranslation[currentPage]);
 
-    $localeSettings.subscribe((locale) => {
-        lang = locale || defaultLang;
-    });
-    
-    i18n.subscribe(comp => {
-      documentUpdater(comp, lang)
-      pageHeaderUpdater(comp.header)
-    });
+  $localeSettings.subscribe((locale) => {
+    lang = locale || defaultLang;
+  });
+
+  i18n.subscribe((comp) => {
+    documentUpdater(comp, lang);
+    pageHeaderUpdater(comp.header);
+  });
 </script>
-
 
 <style>
   .page-content {

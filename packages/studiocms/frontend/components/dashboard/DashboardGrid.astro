@@ -40,7 +40,9 @@ const checkAllowed = (perm: 'owner' | 'admin' | 'editor' | 'visitor' | undefined
 		gridItems.length > 0 ? (
 			gridItems.map(async (item) => {
 				if (item.requiresPermission) {
-					const allowed = await Effect.runPromise(checkAllowed(item.requiresPermission));
+					const allowed = await Effect.runPromise(
+						checkAllowed(item.requiresPermission),
+					);
 					if (allowed) {
 						return <DashboardGridItem {...item} {lang} />;
 					}

@@ -12,25 +12,34 @@ const recentlyCreatedUsers = totalUsers
 	.sort((a, b) => sortByDate(a.createdAt, b.createdAt))
 	.slice(0, 3);
 ---
+
 <div class="recently-signed-up-users-container">
     {
         recentlyCreatedUsers.map((user) => (
-            <a href={`${Astro.locals.StudioCMS.routeMap.mainLinks.userManagementEdit}/?user=${user.id}`} class="recently-signed-up-user" data-astro-reload>
+            <a
+                href={`${Astro.locals.StudioCMS.routeMap.mainLinks.userManagementEdit}/?user=${user.id}`}
+                class="recently-signed-up-user"
+                data-astro-reload
+            >
                 <Card class="user-card" fullWidth>
                     <div class="user-flex">
                         <User
                             name={user.name}
                             avatar={user.avatar ?? undefined}
-                            description={new Date(user.createdAt!).toLocaleDateString(config.locale.dateLocale, config.locale.dateTimeFormat)}
+                            description={new Date(
+                                user.createdAt!,
+                            ).toLocaleDateString(
+                                config.locale.dateLocale,
+                                config.locale.dateTimeFormat,
+                            )}
                             id={`recent-user-${user.id}`}
-                            />
+                        />
                         <Icon name="heroicons:eye" width={24} height={24} />
                     </div>
                 </Card>
             </a>
         ))
     }
-
 </div>
 
 <style>
@@ -39,7 +48,7 @@ const recentlyCreatedUsers = totalUsers
         flex-direction: column;
         width: 100%;
         height: 100%;
-        gap: .5rem;
+        gap: 0.5rem;
     }
 
     .recently-signed-up-user {
@@ -51,7 +60,7 @@ const recentlyCreatedUsers = totalUsers
         background-color: var(--background-step-2);
         width: 100%;
         height: 100%;
-        transition: all .15s ease;
+        transition: all 0.15s ease;
     }
 
     .user-card:hover {
@@ -67,5 +76,4 @@ const recentlyCreatedUsers = totalUsers
     .user-card:hover {
         background-color: var(--background-step-3);
     }
-
 </style>

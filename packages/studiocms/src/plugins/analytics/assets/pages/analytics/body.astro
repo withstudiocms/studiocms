@@ -26,39 +26,108 @@ const ratingText = {
 	poor: 'Poor',
 };
 ---
-<div class="analytics-container">
 
-    <Tabs variant='starlight' syncKey='analytics'>
+<div class="analytics-container">
+    <Tabs variant="starlight" syncKey="analytics">
         <TabItem label="Core Web Vitals">
             <div class="flex-column">
                 <Card fullWidth>
-                    <div slot="header"><span>Core Web Vitals Summaries</span></div>
+                    <div slot="header">
+                        <span>Core Web Vitals Summaries</span>
+                    </div>
                     <div class="flex-wrap">
-                        {summaries.map(({ metric, summary }) => (
-                            <SummaryCard {metric} {summary} />
-                        ))}
+                        {
+                            summaries.map(({ metric, summary }) => (
+                                <SummaryCard {metric} {summary} />
+                            ))
+                        }
                     </div>
                 </Card>
-            
+
                 <Card fullWidth>
-                    <div slot="header"><span>Core Web Vitals by Route</span></div>
+                    <div slot="header">
+                        <span>Core Web Vitals by Route</span>
+                    </div>
                     <div>
                         <table>
                             <thead>
                                 <tr>
-                                    <th>Route</th> <th>Passing?</th> <th>LCP</th> <th>INP</th> <th>CLS</th>
+                                    <th>Route</th>
+                                    <th>Passing?</th>
+                                    <th>LCP</th>
+                                    <th>INP</th>
+                                    <th>CLS</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {routeSummary.map(({ route, metrics, passingCoreWebVitals }) => (
-                                    <tr>
-                                        <td>{route}</td>
-                                        <td><span class:list={[passingCoreWebVitals ? 'good' : 'needs-improvement']}>{passingCoreWebVitals ? 'Yes' : 'No'}</span></td>
-                                        <td><span class:list={[metrics.LCP.rating]}>{ratingText[metrics.LCP.rating]}</span></td>
-                                        <td><span class:list={[metrics.INP.rating]}>{ratingText[metrics.INP.rating]}</span></td>
-                                        <td><span class:list={[metrics.CLS.rating]}>{ratingText[metrics.CLS.rating]}</span></td>
-                                    </tr>
-                                ))}
+                                {
+                                    routeSummary.map(
+                                        ({
+                                            route,
+                                            metrics,
+                                            passingCoreWebVitals,
+                                        }) => (
+                                            <tr>
+                                                <td>{route}</td>
+                                                <td>
+                                                    <span
+                                                        class:list={[
+                                                            passingCoreWebVitals
+                                                                ? "good"
+                                                                : "needs-improvement",
+                                                        ]}
+                                                    >
+                                                        {passingCoreWebVitals
+                                                            ? "Yes"
+                                                            : "No"}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <span
+                                                        class:list={[
+                                                            metrics.LCP.rating,
+                                                        ]}
+                                                    >
+                                                        {
+                                                            ratingText[
+                                                                metrics.LCP
+                                                                    .rating
+                                                            ]
+                                                        }
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <span
+                                                        class:list={[
+                                                            metrics.INP.rating,
+                                                        ]}
+                                                    >
+                                                        {
+                                                            ratingText[
+                                                                metrics.INP
+                                                                    .rating
+                                                            ]
+                                                        }
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <span
+                                                        class:list={[
+                                                            metrics.CLS.rating,
+                                                        ]}
+                                                    >
+                                                        {
+                                                            ratingText[
+                                                                metrics.CLS
+                                                                    .rating
+                                                            ]
+                                                        }
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        ),
+                                    )
+                                }
                             </tbody>
                         </table>
                     </div>
@@ -72,7 +141,7 @@ const ratingText = {
                     <table>
                         <thead>
                             <tr>
-                                <th>Page Path</th> 
+                                <th>Page Path</th>
                                 <th>Views (24 Hours)</th>
                                 <th>Views (7 Days)</th>
                                 <th>Views (30 Days)</th>
@@ -80,22 +149,52 @@ const ratingText = {
                             </tr>
                         </thead>
                         <tbody>
-                            {analyticData.map(({ pagePathname, analyticData: { pageViews } }) => (
-                                <tr>
-                                    <td>{pagePathname}</td>
-                                    <td>{analytics24Hours.find((data) => data.pagePathname === pagePathname)?.analyticData.pageViews}</td>
-                                    <td>{analytics7Days.find((data) => data.pagePathname === pagePathname)?.analyticData.pageViews}</td>
-                                    <td>{analytics30Days.find((data) => data.pagePathname === pagePathname)?.analyticData.pageViews}</td>
-                                    <td>{pageViews}</td>
-                                </tr>
-                            ))}
+                            {
+                                analyticData.map(
+                                    ({
+                                        pagePathname,
+                                        analyticData: { pageViews },
+                                    }) => (
+                                        <tr>
+                                            <td>{pagePathname}</td>
+                                            <td>
+                                                {
+                                                    analytics24Hours.find(
+                                                        (data) =>
+                                                            data.pagePathname ===
+                                                            pagePathname,
+                                                    )?.analyticData.pageViews
+                                                }
+                                            </td>
+                                            <td>
+                                                {
+                                                    analytics7Days.find(
+                                                        (data) =>
+                                                            data.pagePathname ===
+                                                            pagePathname,
+                                                    )?.analyticData.pageViews
+                                                }
+                                            </td>
+                                            <td>
+                                                {
+                                                    analytics30Days.find(
+                                                        (data) =>
+                                                            data.pagePathname ===
+                                                            pagePathname,
+                                                    )?.analyticData.pageViews
+                                                }
+                                            </td>
+                                            <td>{pageViews}</td>
+                                        </tr>
+                                    ),
+                                )
+                            }
                         </tbody>
                     </table>
                 </div>
             </Card>
         </TabItem>
     </Tabs>
-
 </div>
 
 <style>
@@ -110,7 +209,7 @@ const ratingText = {
     .flex-wrap {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-        gap: .5rem;
+        gap: 0.5rem;
         margin-bottom: 1rem;
     }
 
@@ -123,7 +222,7 @@ const ratingText = {
     .flex-column-center {
         display: flex;
         flex-direction: column;
-        gap: .5rem;
+        gap: 0.5rem;
         align-items: center;
     }
 
@@ -140,12 +239,12 @@ const ratingText = {
 
     th {
         text-align: left;
-        padding: .5rem;
+        padding: 0.5rem;
         border-bottom: 1px solid var(--border);
     }
 
     td {
-        padding: .5rem;
+        padding: 0.5rem;
         border-bottom: 1px solid var(--border);
         background-color: inherit;
 
@@ -159,7 +258,7 @@ const ratingText = {
     }
 
     span.needs-improvement {
-        color: var(--warning-base); 
+        color: var(--warning-base);
     }
 
     span.poor {
@@ -169,7 +268,6 @@ const ratingText = {
     tr {
         border-bottom: 1px solid var(--border);
     }
-
 
     tr:last-child {
         border-bottom: none;
@@ -182,6 +280,4 @@ const ratingText = {
     tbody tr:nth-child(even) {
         background-color: var(--background-step-1);
     }
-
-
 </style>

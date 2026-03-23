@@ -46,25 +46,33 @@ const t = useTranslations(lang, '@studiocms/dashboard:file-tree-renderer');
     <Icon name={icon} class="leaf-icon default" width={20} height={20} />
     <Icon name={activeIcon} class="leaf-icon active" width={20} height={20} />
     <span class="tree-leaf-label">{node.name}</span>
-    {node.pageData?.draft && <span class="leaf-badge draft-badge">
-        <t-file-tree-renderer key="badge-draft">
-            {t('badge-draft')}
-        </t-file-tree-renderer>
-    </span>}
+    {
+        node.pageData?.draft && (
+            <span class="leaf-badge draft-badge">
+                <t-file-tree-renderer key="badge-draft">
+                    {t("badge-draft")}
+                </t-file-tree-renderer>
+            </span>
+        )
+    }
 </folder-tree-leaf>
 <div id={`${node.id}-context-menu`} class="context-menu" role="menu">
     <button class="context-menu-item" role="menuitem" data-action="edit">
         <Icon name="heroicons:pencil" width={16} height={16} />
         <span>
             <t-file-tree-renderer key="edit-page">
-                {t('edit-page')}
+                {t("edit-page")}
             </t-file-tree-renderer>
         </span>
     </button>
 </div>
 
 <script>
-    import { $i18n, baseTranslation, makeTranslation } from 'studiocms:i18n/client';
+    import {
+        $i18n,
+        baseTranslation,
+        makeTranslation,
+    } from "studiocms:i18n/client";
 
     const currentPage = "@studiocms/dashboard:file-tree-renderer";
 
@@ -84,11 +92,11 @@ const t = useTranslations(lang, '@studiocms/dashboard:file-tree-renderer');
         private contextMenu: HTMLElement | null = null;
         private boundDocumentClick = (e: MouseEvent) => {
             if (
-                    this.contextMenu &&
-                    !this.contextMenu.contains(e.target as Node)
-                ) {
-                    this.hideContextMenu();
-                }
+                this.contextMenu &&
+                !this.contextMenu.contains(e.target as Node)
+            ) {
+                this.hideContextMenu();
+            }
         };
         private boundDocumentKeydown = (e: KeyboardEvent) => {
             if (e.key === "Escape") this.hideContextMenu();
@@ -238,21 +246,33 @@ const t = useTranslations(lang, '@studiocms/dashboard:file-tree-renderer');
             requestAnimationFrame(() => {
                 if (!this.contextMenu) return;
                 const menuRect = this.contextMenu.getBoundingClientRect();
-                
+
                 // Calculate constrained position
                 let left = e.clientX;
                 let top = e.clientY;
 
                 // Check right boundary (viewport and container)
-                const maxRight = Math.min(window.innerWidth, containerRect.right);
+                const maxRight = Math.min(
+                    window.innerWidth,
+                    containerRect.right,
+                );
                 if (left + menuRect.width > maxRight) {
-                    left = Math.max(containerRect.left, maxRight - menuRect.width);
+                    left = Math.max(
+                        containerRect.left,
+                        maxRight - menuRect.width,
+                    );
                 }
 
                 // Check bottom boundary (viewport and container)
-                const maxBottom = Math.min(window.innerHeight, containerRect.bottom);
+                const maxBottom = Math.min(
+                    window.innerHeight,
+                    containerRect.bottom,
+                );
                 if (top + menuRect.height > maxBottom) {
-                    top = Math.max(containerRect.top, maxBottom - menuRect.height);
+                    top = Math.max(
+                        containerRect.top,
+                        maxBottom - menuRect.height,
+                    );
                 }
 
                 // Ensure menu doesn't go outside left/top of container

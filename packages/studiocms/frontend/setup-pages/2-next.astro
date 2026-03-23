@@ -46,133 +46,134 @@ const Providers = providerData
 	href: string;
 }[];
 ---
+
 <Layout {...sharedProps}>
+    <PageHeader title="Welcome to StudioCMS" badge={{ label: "Step 2" }} />
 
-    <PageHeader title="Welcome to StudioCMS" badge={{ label: 'Step 2' }} />
-
-    <Card class='card' style="background-color: var(--background-step-1)">
-
+    <Card class="card" style="background-color: var(--background-step-1)">
         <div slot="header">
             <h2>Create an Administrator</h2>
         </div>
 
-        <Tabs variant='starlight'>
-            <TabItem label='Username and Password'>
+        <Tabs variant="starlight">
+            <TabItem label="Username and Password">
                 <form id="setup-step-two" action={StudioCMSRoutes.fts.step2}>
                     <div class="form-content">
-                        
-                        <Input 
-                            label='Username' 
-                            name='username' 
-                            placeholder='john' 
-                            isRequired 
-                            />
-                        
-                        <Input 
-                            label='Display Name' 
-                            name='displayname' 
-                            placeholder='John Doe' 
-                            isRequired 
-                            />
-                        
-                        <Input 
-                            label='Email' 
-                            name='email' 
-                            placeholder='john@doe.com' 
-                            isRequired 
-                            />
+                        <Input
+                            label="Username"
+                            name="username"
+                            placeholder="john"
+                            isRequired
+                        />
 
-                        <Input 
-                            label='Password' 
-                            name='password' 
-                            placeholder='password' 
-                            type="password" 
-                            isRequired 
-                            />
+                        <Input
+                            label="Display Name"
+                            name="displayname"
+                            placeholder="John Doe"
+                            isRequired
+                        />
 
-                        <Input 
-                            label='Confirm Password' 
-                            name='confirm-password' 
-                            placeholder='password' 
-                            type="password" 
-                            isRequired 
-                            />
+                        <Input
+                            label="Email"
+                            name="email"
+                            placeholder="john@doe.com"
+                            isRequired
+                        />
 
+                        <Input
+                            label="Password"
+                            name="password"
+                            placeholder="password"
+                            type="password"
+                            isRequired
+                        />
+
+                        <Input
+                            label="Confirm Password"
+                            name="confirm-password"
+                            placeholder="password"
+                            type="password"
+                            isRequired
+                        />
                     </div>
                 </form>
             </TabItem>
 
             {
-                showOAuth && Providers.map(({ href, icon, label }) => {
-                    return (
-                        <TabItem label={label} icon={icon}>
-                            <Center>
-                                <Button 
-                                    color="primary" 
-                                    as="a" 
-                                    href={href} 
-                                    aria-label={`Connect to ${label}`}
-                                    >Connect to {label}
-                                </Button>
-                            </Center>
-                        </TabItem>
-                    )
-                })
+                showOAuth &&
+                    Providers.map(({ href, icon, label }) => {
+                        return (
+                            <TabItem label={label} icon={icon}>
+                                <Center>
+                                    <Button
+                                        color="primary"
+                                        as="a"
+                                        href={href}
+                                        aria-label={`Connect to ${label}`}
+                                    >
+                                        Connect to {label}
+                                    </Button>
+                                </Center>
+                            </TabItem>
+                        );
+                    })
             }
-
         </Tabs>
 
         <div slot="footer">
             <div class="card-actions">
-                <Button type="submit" form="setup-step-two" color="primary">Continue</Button> 
+                <Button type="submit" form="setup-step-two" color="primary"
+                    >Continue</Button
+                >
             </div>
         </div>
-
     </Card>
 
     <script>
-        import { toast } from 'studiocms:ui/components/toaster/client';
+        import { toast } from "studiocms:ui/components/toaster/client";
 
-        const form = document.querySelector('#setup-step-two') as HTMLFormElement;
+        const form = document.querySelector(
+            "#setup-step-two",
+        ) as HTMLFormElement;
 
-        form.addEventListener('submit', async (e) => {
+        form.addEventListener("submit", async (e) => {
             e.preventDefault();
 
             const formData = new FormData(form);
 
             const data = {
-                username: formData.get('username') as string,
-                displayname: formData.get('displayname') as string,
-                email: formData.get('email') as string,
-                password: formData.get('password') as string,
-                confirmPassword: formData.get('confirm-password') as string,
-            }
+                username: formData.get("username") as string,
+                displayname: formData.get("displayname") as string,
+                email: formData.get("email") as string,
+                password: formData.get("password") as string,
+                confirmPassword: formData.get("confirm-password") as string,
+            };
 
             if (data.password !== data.confirmPassword) {
                 toast({
-                    title: 'Passwords do not match',
-                    description: 'Please make sure the passwords match',
-                    type: 'danger'
+                    title: "Passwords do not match",
+                    description: "Please make sure the passwords match",
+                    type: "danger",
                 });
                 return;
             }
 
             const response = await fetch(form.action, {
-                method: 'POST',
+                method: "POST",
                 headers: {
-                    'Content-Type': 'application/json',
+                    "Content-Type": "application/json",
                 },
                 body: JSON.stringify(data),
             });
 
             if (response.ok) {
-                window.location.assign('/done');
+                window.location.assign("/done");
             } else {
                 const error = await response.json();
                 toast({
-                    title: 'Error',
+                    title: "Error",
                     description: error.error,
-                    type: 'danger',
+                    type: "danger",
                 });
             }
         });
@@ -184,18 +185,18 @@ const Providers = providerData
             flex-direction: column;
             gap: 1rem;
         }
-    
+
         .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 1rem;
         }
-    
+
         .login-preview-container {
             width: min-content;
             height: min-content;
         }
-    
+
         @media screen and (max-width: 768px) {
             .form-row {
                 grid-template-columns: 1fr;
@@ -222,5 +223,4 @@ const Providers = providerData
             gap: 1rem;
         }
     </style>
-
 </Layout>

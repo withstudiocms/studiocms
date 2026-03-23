@@ -1,4 +1,6 @@
 ---
+// TODO: Implement this component, this is currently just a placeholder for the page editor swapper logic that needs to be implemented to handle the case where a user changes the pageType to one that doesn't have an available editor, or changes it back to markdown.
+
 interface Props {
 	editorKeys: string[];
 }
@@ -50,10 +52,13 @@ const { editorKeys } = Astro.props;
 		}
 
 		private setupPageEditorSwapper() {
-			const pageTypeDropdown = document.querySelector("#page-type-dropdown");
+			const pageTypeDropdown = document.querySelector(
+				"#page-type-dropdown",
+			);
 			if (!pageTypeDropdown) return;
 
-			const pageTypeOptions = pageTypeDropdown.querySelectorAll(".sui-select-option");
+			const pageTypeOptions =
+				pageTypeDropdown.querySelectorAll(".sui-select-option");
 
 			pageTypeOptions.forEach((option) => {
 				option.addEventListener("click", () => {
@@ -77,8 +82,12 @@ const { editorKeys } = Astro.props;
 		}
 
 		private handleNonMarkdownEditor(isEditorAvailable: boolean) {
-			const editorContainer = document.querySelector(".page-content-editor") as HTMLElement;
-			const editorPlaceholder = document.getElementById("page-content-editor-placeholder") as HTMLElement;
+			const editorContainer = document.querySelector(
+				".page-content-editor",
+			) as HTMLElement;
+			const editorPlaceholder = document.getElementById(
+				"page-content-editor-placeholder",
+			) as HTMLElement;
 
 			if (!editorContainer || !editorPlaceholder) return;
 
@@ -91,8 +100,12 @@ const { editorKeys } = Astro.props;
 		}
 
 		private handleMarkdownEditor() {
-			const editorContainer = document.querySelector(".page-content-editor") as HTMLElement;
-			const editorPlaceholder = document.getElementById("page-content-editor-placeholder") as HTMLElement;
+			const editorContainer = document.querySelector(
+				".page-content-editor",
+			) as HTMLElement;
+			const editorPlaceholder = document.getElementById(
+				"page-content-editor-placeholder",
+			) as HTMLElement;
 
 			if (!editorContainer || !editorPlaceholder) return;
 

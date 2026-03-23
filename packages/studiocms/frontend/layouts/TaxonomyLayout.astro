@@ -74,7 +74,11 @@ if (type === 'categories') {
 >
     <div slot="double-sidebar" class="inner-sidebar-container">
         <div class="sidebar-links-container">
-            <InnerSidebarElement {lang} categories={allCategories} tags={allTags} />
+            <InnerSidebarElement
+                {lang}
+                categories={allCategories}
+                tags={allTags}
+            />
         </div>
     </div>
 
@@ -92,11 +96,12 @@ if (type === 'categories') {
     <div
         id="current-taxonomy-entry-data"
         data-type={type}
-        data-mode={mode ?? ''}
+        data-mode={mode ?? ""}
         data-current-entry={JSON.stringify(currentEntry ?? {})}
-        data-parent-id={parentId ?? ''}
+        data-parent-id={parentId ?? ""}
         data-redirect={Astro.locals.StudioCMS.routeMap.mainLinks.taxonomy}
-    ></div>
+    >
+    </div>
 
     <slot />
 </DashboardLayout>
