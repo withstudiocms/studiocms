@@ -32,12 +32,19 @@ import {
 import { STUDIOCMS_EDITOR_CSRF_COOKIE_NAME } from '#consts';
 import { getUserPermissions, makeFallbackSiteConfig, SetLocal, setLocals } from './utils.js';
 
+const parseLevel = (level: string | LogLevel.LogLevel): string => {
+	if (level && typeof level === 'object' && '_tag' in level) {
+		return level._tag;
+	}
+	return level;
+};
+
 // Load the log level from the configuration and apply it as a layer
 const LogLevelLive = Config.withDefault(
 	Config.logLevel('STUDIOCMS_LOGLEVEL'),
 	config.logLevel
 ).pipe(
-	Effect.tap((level) => Effect.log(`StudioCMS Middleware Log Level set to: ${level}`)),
+	Effect.tap((level) => Effect.log(`StudioCMS Middleware Log Level set to: ${parseLevel(level)}`)),
 	Effect.andThen((level) =>
 		// Set the minimum log level
 		Logger.minimumLogLevel(level as LogLevel.LogLevel)
