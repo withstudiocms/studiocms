@@ -28,6 +28,9 @@ catalogs:
     vite:
       specifier: ^6.3.4 || ^7.3.0
       version: 7.3.1
+    zod:
+      specifier: ^4.3.6
+      version: 4.3.6
   default:
     '@types/mdast':
       specifier: ^4.0.4
@@ -1077,7 +1080,7 @@ importers:
         specifier: catalog:kysely
         version: 0.28.12
       zod:
-        specifier: ^4.3.6
+        specifier: catalog:astrojs-min
         version: 4.3.6
     devDependencies:
       '@types/node':
@@ -1131,9 +1134,15 @@ importers:
       '@effect/platform-node':
         specifier: catalog:effect
         version: 0.105.0(@effect/cluster@0.57.0(@effect/platform@0.95.0(effect@3.20.0))(@effect/rpc@0.74.0(@effect/platform@0.95.0(effect@3.20.0))(effect@3.20.0))(@effect/sql@0.50.0(@effect/experimental@0.59.0(@effect/platform@0.95.0(effect@3.20.0))(effect@3.20.0))(@effect/platform@0.95.0(effect@3.20.0))(effect@3.20.0))(@effect/workflow@0.17.0(@effect/experimental@0.59.0(@effect/platform@0.95.0(effect@3.20.0))(effect@3.20.0))(@effect/platform@0.95.0(effect@3.20.0))(@effect/rpc@0.74.0(@effect/platform@0.95.0(effect@3.20.0))(effect@3.20.0))(effect@3.20.0))(effect@3.20.0))(@effect/platform@0.95.0(effect@3.20.0))(@effect/rpc@0.74.0(@effect/platform@0.95.0(effect@3.20.0))(effect@3.20.0))(@effect/sql@0.50.0(@effect/experimental@0.59.0(@effect/platform@0.95.0(effect@3.20.0))(effect@3.20.0))(@effect/platform@0.95.0(effect@3.20.0))(effect@3.20.0))(effect@3.20.0)
+      '@traversable/zod':
+        specifier: ^0.0.57
+        version: 0.0.57(fast-check@3.23.2)(zod@4.3.6)
       effect:
         specifier: catalog:effect
         version: 3.20.0
+      zod:
+        specifier: catalog:astrojs-min
+        version: 4.3.6
     devDependencies:
       astro:
         specifier: catalog:astrojs-current
@@ -3712,6 +3721,30 @@ packages:
     peerDependencies:
       astro: ^4.5 || ^5.0.0-beta.0 || ^6.0.0-beta.20
       vite: ^5.0.0 || ^6.0.0 || ^7.0.0
+
+  '@traversable/json@0.0.52':
+    resolution: {integrity: sha512-QddhvjiJULZw6z/OhHE0YchZfKr1LRvRvs5dZqGpYb0UB3GpWSn/2fIJjYTOCT0pG95QhuxexPpKky6eihFBLA==}
+    peerDependencies:
+      '@traversable/registry': ^0.0.49
+      fast-check: 3 - 4
+    peerDependenciesMeta:
+      fast-check:
+        optional: true
+
+  '@traversable/registry@0.0.49':
+    resolution: {integrity: sha512-uof62gHhyf5MebDkjQMeJj1yIAQkCbCcJYl848b4A+jFnUXxo2NUuHi0NIZOeG3r+XgNSF4MapDED89tFM6iLA==}
+
+  '@traversable/zod-types@0.0.30':
+    resolution: {integrity: sha512-BbVyKLvxNpuVouwkLGf7NRNUuMauJBZFr3z4Qy1KZgiAFEryXTLZfJV1Sf98k+naDDj6zaHQD66NsTUTQ7upqw==}
+    peerDependencies:
+      '@traversable/json': ^0.0.52
+      '@traversable/registry': ^0.0.49
+      zod: '4'
+
+  '@traversable/zod@0.0.57':
+    resolution: {integrity: sha512-oOSaBQitiav6QrwPZFF8GY1J2VDKDeA/GQTgsi2E6D8dn6V+5jcji+Qp2zRz6XDGUzfJy+Xda+2LqzwDT2G8nA==}
+    peerDependencies:
+      zod: '4'
 
   '@ts-morph/common@0.28.1':
     resolution: {integrity: sha512-W74iWf7ILp1ZKNYXY5qbddNaml7e9Sedv5lvU1V8lftlitkc9Pq1A+jlH23ltDgWYeZFFEqGCD1Ies9hqu3O+g==}
@@ -9674,6 +9707,29 @@ snapshots:
       astro-integration-kit: 0.20.0(astro@6.0.8(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
       astro-transition-event-polyfill: 1.2.1(astro@6.0.8(@types/node@22.19.15)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2))
       vite: 7.3.1(@types/node@22.19.15)(jiti@2.6.1)(tsx@4.21.0)(yaml@2.8.2)
+
+  '@traversable/json@0.0.52(@traversable/registry@0.0.49)(fast-check@3.23.2)':
+    dependencies:
+      '@traversable/registry': 0.0.49
+    optionalDependencies:
+      fast-check: 3.23.2
+
+  '@traversable/registry@0.0.49': {}
+
+  '@traversable/zod-types@0.0.30(@traversable/json@0.0.52(@traversable/registry@0.0.49)(fast-check@3.23.2))(@traversable/registry@0.0.49)(zod@4.3.6)':
+    dependencies:
+      '@traversable/json': 0.0.52(@traversable/registry@0.0.49)(fast-check@3.23.2)
+      '@traversable/registry': 0.0.49
+      zod: 4.3.6
+
+  '@traversable/zod@0.0.57(fast-check@3.23.2)(zod@4.3.6)':
+    dependencies:
+      '@traversable/json': 0.0.52(@traversable/registry@0.0.49)(fast-check@3.23.2)
+      '@traversable/registry': 0.0.49
+      '@traversable/zod-types': 0.0.30(@traversable/json@0.0.52(@traversable/registry@0.0.49)(fast-check@3.23.2))(@traversable/registry@0.0.49)(zod@4.3.6)
+      zod: 4.3.6
+    transitivePeerDependencies:
+      - fast-check
 
   '@ts-morph/common@0.28.1':
     dependencies:

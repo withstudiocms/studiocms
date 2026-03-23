@@ -300,6 +300,88 @@ const EffectHttpApiHandler = EffectHttpHandlerToHttpApi('*', EffectHttpHandler);
 const ALL = HttpApiToAstroRoute(EffectHttpApiHandler);
 ```
 
+#### `effectify/zod`
+
+Converts Zod schemas to Effect schemas, enabling seamless migration from Zod to Effect's type-safe schema system. This function supports most common Zod schema types including primitives, objects, arrays, unions, intersections, and more.
+
+##### Features
+
+- **Comprehensive Type Support** - Handles primitives (string, number, boolean, etc.), complex types (objects, arrays, tuples), and special types (dates, symbols, bigints)
+- **File Schema Support** - Includes `FileFromSelf` schema for handling JavaScript File objects
+- **String Representation** - Provides `zodToEffect.writeable()` for debugging and visualization of the generated Effect schema structure
+
+##### Basic Example
+
+```ts
+import { zodToEffect } from 'effectify/zod';
+import { z } from 'zod';
+
+// Define a Zod schema
+const userSchema = z.object({
+  username: z.string(),
+  age: z.number().int(),
+  email: z.string().optional(),
+});
+
+// Convert to Effect schema
+const effectUserSchema = zodToEffect(userSchema);
+
+// Use the Effect schema for validation
+const result = Schema.decodeUnknownSync(effectUserSchema)({
+  username: 'johndoe',
+  age: 25,
+  email: 'john@example.com',
+});
+```
+
+##### Complex Example
+
+```ts
+import { zodToEffect } from 'effectify/zod';
+import { z } from 'zod';
+
+// Complex nested schema with unions and intersections
+const complexSchema = z.union([
+  z.object({
+    type: z.literal('user'),
+    data: z.tuple([
+      z.string(),
+      z.object({
+        id: z.int().optional(),
+        tags: z.array(z.string()),
+      }),
+    ]),
+  }),
+  z.intersection(
+    z.object({
+      type: z.literal('admin'),
+      permissions: z.record(z.string(), z.array(z.string())),
+    }),
+    z.object({
+      createdAt: z.date(),
+    })
+  ),
+]);
+
+// Convert to Effect schema
+const effectSchema = zodToEffect(complexSchema);
+
+// For debugging, visualize the schema structure as a string
+const schemaString = zodToEffect.writeable(complexSchema);
+console.log(schemaString);
+```
+
+##### Supported Schema Types
+
+- Primitives: `string`, `number`, `int`, `bigint`, `boolean`, `date`, `symbol`
+- Special values: `null`, `undefined`, `void`, `any`, `unknown`, `never`, `nan`
+- Collections: `array`, `set`, `map`, `record`, `tuple`
+- Composition: `union`, `intersection`, `object` (struct)
+- Modifiers: `optional`, `nullable`, `readonly`, `nonoptional`
+- Other: `literal`, `enum`, `template_literal`, `file`
+
+> **Note**: Some Zod schema types like `lazy`, `transform`, `pipe`, `promise`, and `custom` are not currently supported and will throw an error.
+
 ## Contributing
 
 Contributions are welcome! Please follow the StudioCMS contribution guidelines.
@@ -315,3 +397,4 @@ Contributions are welcome! Please follow the StudioCMS contribution guidelines.
 - [Effect Platform Documentation](https://effect.website/docs/platform/introduction/)
 - [Astro Documentation](https://docs.astro.build)
 - [GitHub Repository](https://github.com/withstudiocms/studiocms)
+- [Zod Documentation](https://zod.dev/)
