@@ -582,42 +582,38 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-page');
       (a) => a !== "no-augments",
     ) as string[];
 
-    const response = await Schema.decode(ObjectFromFormData)(formData).pipe(
-      Effect.map((data) => {
-        const pluginFields = Object.entries(data).reduce(
-          (acc, [key, value]) => {
-            // if the key is not in the knownFormDataKeys or knownDataKeys, it's a plugin field
-            if (
-              !knownFormDataKeys.includes(key as KnownFormDataKeys) &&
-              !knownDataKeys.includes(key as KnownDataKeys)
-            ) {
-              acc[key] = value;
-              delete data[key];
-            }
-            return acc;
-          },
-          {} as Record<string, FormDataEntryValue>,
-        );
+    const objectData = Object.fromEntries(formData.entries());
 
-        return {
-          ...data,
-          augments,
-          pluginFields,
-        };
-      }),
-      Schema.decodeUnknown(EditPageDataFromFormDataObjectSchema),
-      Effect.flatMap((payload) =>
-        dashboardClient.pipe(
-          Effect.flatMap((client) =>
-            client.content.updatePage({
-              payload,
-            }),
-          ),
+    const pluginFields = Object.entries(objectData).reduce((acc, [key, value]) => {
+      if (
+        !knownFormDataKeys.includes(key as KnownFormDataKeys) &&
+        !knownDataKeys.includes(key as KnownDataKeys)
+      ) {
+        acc[key] = value;
+      }
+      return acc;
+    }, {} as Record<string, FormDataEntryValue>);
+
+    const editPageDataFromFormDataObject = {
+      ...objectData,
+      augments,
+      pluginFields,
+    };
+
+    const editPageData = Schema.decodeUnknownSync(
+      EditPageDataFromFormDataObjectSchema,
+    )(editPageDataFromFormDataObject);
+
+    const response = await dashboardClient
+      .pipe(
+        Effect.flatMap((client) =>
+          client.content.updatePage({
+            payload: editPageData,
+          }),
         ),
-      ),
-      Effect.catchTags(dashboardSharedCatchTags),
-      Effect.runPromise,
-    );
+      )
+      .pipe(Effect.catchTags(dashboardSharedCatchTags))
+      .pipe(Effect.runPromise);
 
     if ("error" in response) {
       toast({

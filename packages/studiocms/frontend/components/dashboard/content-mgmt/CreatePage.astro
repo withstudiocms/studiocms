@@ -370,18 +370,15 @@ const preselectedParentFolder = searchParams.get('parent-folder') ?? 'null';
       (a) => a !== "no-augments",
     ) as string[];
 
-    const response = await Schema.decode(ObjectFromFormData)(formData).pipe(
-      Effect.flatMap((data) =>
-        Schema.decodeUnknown(CreatePageDataFromFormDataObjectSchema)({
-          ...data,
-          augments,
-        }),
-      ),
-      Effect.flatMap((payload) =>
-        dashboardClient.pipe(
-          Effect.flatMap((client) => client.content.createPage({ payload })),
-        ),
-      ),
+    const objectData = Object.fromEntries(formData.entries());
+
+    const createPageData = Schema.decodeUnknownSync(CreatePageDataFromFormDataObjectSchema)({
+      ...objectData,
+      augments,
+    });
+
+    const response = await dashboardClient.pipe(
+      Effect.flatMap((client) => client.content.createPage({ payload: createPageData })),
       Effect.catchTags(dashboardSharedCatchTags),
       Effect.runPromise,
     );
