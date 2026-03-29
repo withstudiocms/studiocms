@@ -17,12 +17,7 @@ const lang = Astro.locals.StudioCMS.defaultLang;
 const t = useTranslations(lang, '@studiocms/dashboard:profile');
 ---
 
-<Card
-    fullWidth
-    as="form"
-    id="basic-info-form"
-    class="basic-info-form"
->
+<Card fullWidth as="form" id="basic-info-form" class="basic-info-form">
     <div slot="header">
         <h2>
             <t-profile-basic key="basic-info-header"
@@ -107,7 +102,11 @@ const t = useTranslations(lang, '@studiocms/dashboard:profile');
             name="avatar"
         />
 
-        <input type="hidden" name="email-verified" value={data?.user?.emailVerified ? "true" : "false"} />
+        <input
+            type="hidden"
+            name="email-verified"
+            value={data?.user?.emailVerified ? "true" : "false"}
+        />
     </div>
 </Card>
 
@@ -140,7 +139,10 @@ const t = useTranslations(lang, '@studiocms/dashboard:profile');
 
 <script>
     import { toast } from "studiocms:ui/components/toaster/client";
-    import { dashboardClient, dashboardSharedCatchTags } from "studiocms:client/apiClients";
+    import {
+        dashboardClient,
+        dashboardSharedCatchTags,
+    } from "studiocms:client/apiClients";
     import * as Effect from "effect/Effect";
 
     const syncAvatar = document.getElementById(
@@ -196,9 +198,14 @@ const t = useTranslations(lang, '@studiocms/dashboard:profile');
                             name: formData.get("display-name") as string,
                             username: formData.get("username") as string,
                             email: formData.get("email") as string,
-                            url: (formData.get("account-url") ?? null) as string | null,
-                            avatar: (formData.get("avatar") ?? null) as string | null,
-                            emailVerified: formData.get("email-verified") === "true",
+                            url: (formData.get("account-url") ?? null) as
+                                | string
+                                | null,
+                            avatar: (formData.get("avatar") ?? null) as
+                                | string
+                                | null,
+                            emailVerified:
+                                formData.get("email-verified") === "true",
                             createdAt: undefined,
                             updatedAt: new Date().toISOString(),
                         },
@@ -218,8 +225,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:profile');
         } else {
             toast({
                 title: "Success",
-                description:
-                    response.message || "Profile updated successfully",
+                description: response.message || "Profile updated successfully",
                 type: "success",
             });
         }

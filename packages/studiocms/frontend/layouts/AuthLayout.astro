@@ -1,6 +1,9 @@
 ---
+import 'studiocms:ui/reset-css';
+import 'studiocms:ui/global-css';
 import '../styles/auth-layout.css';
 import type { ComponentProps } from 'astro/types';
+import { LAYOUT_IDS } from '#frontend/consts.ts';
 import FallbackCanvas from '../components/auth/FallbackCanvas.astro';
 import OAuthButtonStack from '../components/auth/OAuthButtonStack.astro';
 import StaticAuthCheck from '../components/auth/StaticAuthCheck.astro';
@@ -18,27 +21,24 @@ interface Props extends ComponentProps<typeof BaseLayout> {
 
 const { disableScreen, checkLogin, ...headProps } = Astro.props;
 ---
-<BaseLayout {...headProps}>
-	<main>
+
+<BaseLayout {...headProps} id={LAYOUT_IDS.auth}>
+	<main class="auth-main">
 		<div id="canvas-container">
 			<FallbackCanvas {config} />
 		</div>
 		<div class="login-form-container">
-
 			<slot name="header" />
 
 			<slot />
-			
-			{ !disableScreen && <OAuthButtonStack /> }
+
+			{!disableScreen && <OAuthButtonStack />}
 
 			<div class="form-footer">
 				<slot name="footer" />
 			</div>
-
 		</div>
 	</main>
-	{ checkLogin && (
-		<StaticAuthCheck {userData} />
-	)}
+	{checkLogin && <StaticAuthCheck {userData} />}
 	<ThreeCanvasLoader />
 </BaseLayout>

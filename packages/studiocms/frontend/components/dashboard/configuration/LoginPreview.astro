@@ -1,10 +1,11 @@
 ---
+import type { ValidImage, ValidLocalImage } from 'studiocms:auth/utils/validImages';
 import { validImages } from 'studiocms:auth/utils/validImages';
 import { type UiLanguageKeys, useTranslations } from 'studiocms:i18n';
 import { Card } from 'studiocms:ui/components/card';
 
-const imageFilter = (filterName: string) =>
-	validImages.filter(({ name }) => name === filterName)[0];
+const imageFilter = (filterName: string): ValidLocalImage =>
+	validImages.filter(({ name }) => name === filterName)[0] as ValidLocalImage;
 
 type LoginImage = {
 	light: ImageMetadata;
@@ -30,16 +31,19 @@ const blocks = getLoginImage('studiocms-blocks');
 const curves = getLoginImage('studiocms-curves');
 
 interface Props {
-	light?: ImageMetadata;
-	dark?: ImageMetadata;
-
+	image?: ValidImage | undefined;
 	defaultLang?: UiLanguageKeys;
 }
 
-const { light, dark, defaultLang } = Astro.props as Props;
+const { image, defaultLang } = Astro.props as Props;
 
-const lightSrc = light ? light : blobs.light;
-const darkSrc = dark ? dark : blobs.dark;
+let lightSrc = blobs.light;
+let darkSrc = blobs.dark;
+
+if (image && image.format === 'local') {
+	lightSrc = image.light;
+	darkSrc = image.dark;
+}
 
 const stringifyable = {
 	blobs: {
@@ -62,7 +66,11 @@ const t = useTranslations(lang, '@studiocms/dashboard:configuration');
 
 <Card class="login-preview-container">
     <div slot="header">
-        <span><t-config-form key="login-page-preview">{t('login-page-preview')}</t-config-form></span>
+        <span
+            ><t-config-form key="login-page-preview"
+                >{t("login-page-preview")}</t-config-form
+            ></span
+        >
     </div>
     <login-preview class="wrapper" data-sources={JSON.stringify(stringifyable)}>
         <div class="before">
@@ -95,14 +103,17 @@ const t = useTranslations(lang, '@studiocms/dashboard:configuration');
         $i18n,
         baseTranslation,
         makeTranslation,
-    } from 'studiocms:i18n/client';
+    } from "studiocms:i18n/client";
 
-    const currentPage = '@studiocms/dashboard:configuration';
+    const currentPage = "@studiocms/dashboard:configuration";
 
     const i18n = $i18n(currentPage, baseTranslation[currentPage]);
 
-    if (!customElements.get('t-config-form')) {
-        customElements.define('t-config-form', makeTranslation(currentPage, i18n));
+    if (!customElements.get("t-config-form")) {
+        customElements.define(
+            "t-config-form",
+            makeTranslation(currentPage, i18n),
+        );
     }
 </script>
 <script>
@@ -129,7 +140,11 @@ const t = useTranslations(lang, '@studiocms/dashboard:configuration');
             try {
                 this.jsonData = JSON.parse(dataSources || "{}");
             } catch {
-                this.jsonData = { blobs: { light: "", dark: "" }, blocks: { light: "", dark: "" }, curves: { light: "", dark: "" } };
+                this.jsonData = {
+                    blobs: { light: "", dark: "" },
+                    blocks: { light: "", dark: "" },
+                    curves: { light: "", dark: "" },
+                };
             }
         }
 
@@ -140,8 +155,12 @@ const t = useTranslations(lang, '@studiocms/dashboard:configuration');
         }
 
         cacheRefs() {
-            this.lightImageHolder = this.querySelector(".light-image-holder") as HTMLImageElement;
-            this.darkImageHolder = this.querySelector(".dark-image-holder") as HTMLImageElement;
+            this.lightImageHolder = this.querySelector(
+                ".light-image-holder",
+            ) as HTMLImageElement;
+            this.darkImageHolder = this.querySelector(
+                ".dark-image-holder",
+            ) as HTMLImageElement;
         }
 
         render() {
@@ -181,17 +200,29 @@ const t = useTranslations(lang, '@studiocms/dashboard:configuration');
                         customInputLabel.classList.add("disabled");
                     }
 
-                    if (selectedValue === "studiocms-blobs" && this.lightImageHolder && this.darkImageHolder) {
+                    if (
+                        selectedValue === "studiocms-blobs" &&
+                        this.lightImageHolder &&
+                        this.darkImageHolder
+                    ) {
                         this.lightImageHolder.src = this.jsonData.blobs.light;
                         this.darkImageHolder.src = this.jsonData.blobs.dark;
                     }
 
-                    if (selectedValue === "studiocms-blocks" && this.lightImageHolder && this.darkImageHolder) {
+                    if (
+                        selectedValue === "studiocms-blocks" &&
+                        this.lightImageHolder &&
+                        this.darkImageHolder
+                    ) {
                         this.lightImageHolder.src = this.jsonData.blocks.light;
                         this.darkImageHolder.src = this.jsonData.blocks.dark;
                     }
 
-                    if (selectedValue === "studiocms-curves" && this.lightImageHolder && this.darkImageHolder) {
+                    if (
+                        selectedValue === "studiocms-curves" &&
+                        this.lightImageHolder &&
+                        this.darkImageHolder
+                    ) {
                         this.lightImageHolder.src = this.jsonData.curves.light;
                         this.darkImageHolder.src = this.jsonData.curves.dark;
                     }

@@ -3,6 +3,7 @@ import defaultFrontEndConfig from 'studiocms:blog/frontend-config';
 import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import Navigation from '../components/Navigation.astro';
+import { LAYOUT_ID } from './consts.js';
 
 const { title: SiteTitle, description: SiteDescription } = Astro.locals.StudioCMS.siteConfig.data;
 
@@ -41,15 +42,18 @@ const pageTitle = `${title} ${pageTitleDelimiter} ${siteTitle}`;
 ---
 
 <!doctype html>
-<html {lang}>
+<html {lang} id={LAYOUT_ID}>
 	<head>
-		<BaseHead title={pageTitle} description={pageDescription} image={heroImage} lang={lang}/>
+		<BaseHead
+			title={pageTitle}
+			description={pageDescription}
+			image={heroImage}
+			lang={lang}
+		/>
 	</head>
 	<body>
 		<Navigation />
-		
 		<slot />
-
 		<Footer {siteTitle} />
 	</body>
 </html>

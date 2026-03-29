@@ -65,7 +65,10 @@ const filteredParentFolderOptions = [
 
 <script>
     import { toast } from "studiocms:ui/components/toaster/client";
-    import { dashboardClient, dashboardSharedCatchTags } from "studiocms:client/apiClients";
+    import {
+        dashboardClient,
+        dashboardSharedCatchTags,
+    } from "studiocms:client/apiClients";
     import * as Effect from "effect/Effect";
 
     const form = document.getElementById("edit-folder-form") as HTMLFormElement;

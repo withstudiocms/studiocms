@@ -107,7 +107,7 @@
     "typescript": "catalog:",
     "ts-patch": "^3.3.0",
     "tsdown": "catalog:",
-    "vite": "catalog:astrojs",
+    "vite": "catalog:astrojs-current",
     "vitest": "^3.2.4",
     "jsdom": "^29.0.0"
   }

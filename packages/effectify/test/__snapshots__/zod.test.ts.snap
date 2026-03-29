@@ -1,0 +1,41 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`effectify Package Tests > zodToEffect - Array of array 1`] = `"Schema.Array(Schema.String)"`;
+
+exports[`effectify Package Tests > zodToEffect - Array of array 2`] = `"Schema.Array(Schema.Array(Schema.Number))"`;
+
+exports[`effectify Package Tests > zodToEffect - Array of array 3`] = `"Schema.Array(Schema.Unknown)"`;
+
+exports[`effectify Package Tests > zodToEffect - Kitchen Sink 1`] = `"Schema.Union(Schema.Struct({ abc: Schema.Tuple(Schema.String, Schema.Struct({ def: Schema.optional(Schema.Int), ghi: Schema.Array(Schema.Number) })) }), Schema.Struct({ jkl: Schema.Record({ key: Schema.String, value: Schema.Array(Schema.Number) }) }).pipe(Schema.extend(Schema.Struct({ mno: Schema.Map({ key: Schema.Set(Schema.Date), value: Schema.Union(Schema.Union(Schema.Literal(1, 2, 3), Schema.BigInt), Schema.Null) }) }))))"`;
+
+exports[`effectify Package Tests > zodToEffect - Object with keys  1`] = `"Schema.Struct({  })"`;
+
+exports[`effectify Package Tests > zodToEffect - Object with keys abc, def, ghi 1`] = `"Schema.Struct({ abc: Schema.String, def: Schema.optional(Schema.Number), ghi: Schema.Array(Schema.Boolean) })"`;
+
+exports[`effectify Package Tests > zodToEffect - any 1`] = `"Schema.Any"`;
+
+exports[`effectify Package Tests > zodToEffect - bigint 1`] = `"Schema.BigInt"`;
+
+exports[`effectify Package Tests > zodToEffect - boolean 1`] = `"Schema.Boolean"`;
+
+exports[`effectify Package Tests > zodToEffect - date 1`] = `"Schema.Date"`;
+
+exports[`effectify Package Tests > zodToEffect - nan 1`] = `"Schema.Literal(NaN)"`;
+
+exports[`effectify Package Tests > zodToEffect - never 1`] = `"Schema.Never"`;
+
+exports[`effectify Package Tests > zodToEffect - null 1`] = `"Schema.Null"`;
+
+exports[`effectify Package Tests > zodToEffect - number 1`] = `"Schema.Int"`;
+
+exports[`effectify Package Tests > zodToEffect - number 2`] = `"Schema.Number"`;
+
+exports[`effectify Package Tests > zodToEffect - string 1`] = `"Schema.String"`;
+
+exports[`effectify Package Tests > zodToEffect - symbol 1`] = `"Schema.SymbolFromSelf"`;
+
+exports[`effectify Package Tests > zodToEffect - undefined 1`] = `"Schema.Undefined"`;
+
+exports[`effectify Package Tests > zodToEffect - unknown 1`] = `"Schema.Unknown"`;
+
+exports[`effectify Package Tests > zodToEffect - void 1`] = `"Schema.Void"`;

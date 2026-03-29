@@ -97,7 +97,7 @@
     "@types/node": "catalog:"
   },
   "peerDependencies": {
-    "astro": "catalog:min",
+    "astro": "catalog:studiocms-peerlock",
     "effect": "catalog:effect"
   }
 }

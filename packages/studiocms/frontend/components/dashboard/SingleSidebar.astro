@@ -9,7 +9,8 @@ interface Props {
 
 const { currentUser } = Astro.props as Props;
 ---
-<Sidebar class='sidebar'>
+
+<Sidebar class="sidebar">
   <MainSidebarContent {currentUser} />
 </Sidebar>
 
@@ -17,14 +18,13 @@ const { currentUser } = Astro.props as Props;
   import { SingleSidebarHelper } from "studiocms:ui/components/sidebar/client";
 
   function setupSidebar() {
-    if (!document.getElementById('sui-sidebar')) return;
+    if (!document.getElementById("sui-sidebar")) return;
 
     const sidebar = new SingleSidebarHelper();
 
-    sidebar.showSidebarOnClick('nav-open');
-    sidebar.hideSidebarOnClick('nav-close');
+    sidebar.showSidebarOnClick("nav-open");
+    sidebar.hideSidebarOnClick("nav-close");
   }
 
-  document.addEventListener('astro:page-load', setupSidebar);
   setupSidebar();
 </script>

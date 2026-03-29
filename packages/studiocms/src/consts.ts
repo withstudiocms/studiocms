@@ -254,6 +254,21 @@ export const AstroConfigImageSettings: Partial<AstroConfig['image']> = {
 	],
 };
 
+const optimizeDepsInclude = [
+	'@effect/platform',
+	'@effect/platform/OpenApi',
+	'@effect/platform/HttpApi',
+	'@effect/platform/HttpApiError',
+	'@effect/platform/HttpApiGroup',
+	'@effect/platform-node',
+	'effect',
+	'effect/Effect',
+	'effect/Schema',
+	'effect/Context',
+	'effect/Predicate',
+	'effect/Record',
+];
+
 /**
  * Partial Vite configuration settings for Astro projects.
  *
@@ -276,12 +291,7 @@ export const AstroConfigViteSettings: Partial<AstroConfig['vite']> = {
 		},
 	},
 	optimizeDeps: {
-		include: ['effect', '@effect/platform', '@effect/platform-node'],
-	},
-	ssr: {
-		optimizeDeps: {
-			include: ['effect', '@effect/platform', '@effect/platform-node'],
-		},
+		include: optimizeDepsInclude,
 	},
 };
 
@@ -351,6 +361,7 @@ type UiOptions = Parameters<typeof uiIntegration>[0];
 function getDefaultUiOpts(currentFlags: Array<{ key: string; flag: `lang-${string}` }>): UiOptions {
 	return {
 		noInjectCSS: true,
+		noInjectResetCSS: true,
 		icons: {
 			flatcoloricons: stripIconify({
 				src: flatColorIcons,

@@ -3,6 +3,23 @@ import { StudioCMSRoutes } from 'studiocms/lib/routeMap';
 export const parentSuiteName = '@studiocms/blog Package Tests';
 export const sharedTags = ['package:@studiocms/blog', 'type:unit', 'scope:studiocms'];
 
+export function cleanAstroAttributes(str: string, mockPath: string): string {
+	const regex1 = /\s*data-astro-[a-zA-Z0-9-]*(?:="[^"]*")?/g;
+	const replacer1 = '';
+	const regex2 = /src="[^"?]*(\?[^"]*)"/g;
+	const replacer2 = (_: string, p1: string) => `src="${mockPath}${p1}"`;
+	const regex3 = /(<meta name="generator" content="Astro v)[0-9]+\.[0-9]+\.[0-9]+(")/g;
+	const replacer3 = '$10.0.0-test$2';
+	const regex4 = /(<img[^>]*href=)[^&"]*(&[^>]*>|"[^>]*>)/g;
+	const replacer4 = '$1%2Fmock%2Fpath%2Fimage.webp$2';
+
+	return str
+		.replace(regex1, replacer1)
+		.replace(regex2, replacer2)
+		.replace(regex3, replacer3)
+		.replace(regex4, replacer4);
+}
+
 export const MockAstroLocals = (): App.Locals => {
 	const date = new Date();
 	return {

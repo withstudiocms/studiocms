@@ -1,5 +1,8 @@
 /** biome-ignore-all lint/style/noNonNullAssertion: This file is using non-null assertions */
 /** biome-ignore-all lint/suspicious/noExplicitAny: This file is using explicit any types */
+
+import type { ValidImage } from '../validImages/index.js';
+
 const configElement = document.getElementById('auth-pages-config');
 const loginPageBackground =
 	configElement instanceof HTMLDivElement ? configElement.dataset.config_background : undefined;
@@ -9,17 +12,6 @@ const currentMode =
 	(document.documentElement as HTMLElement | null)?.dataset?.theme === 'light' ? 'light' : 'dark';
 
 const studioCMS3DModel = 'https://cdn.studiocms.dev/studiocms-logo.glb';
-
-/**
- * A valid image that can be used as a background for the StudioCMS Logo.
- */
-interface ValidImage {
-	readonly name: string;
-	readonly label: string;
-	readonly format: 'local' | 'web';
-	readonly light: { src: string } | null;
-	readonly dark: { src: string } | null;
-}
 
 /**
  * The parameters for the background image.

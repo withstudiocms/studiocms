@@ -55,38 +55,39 @@ setDataContext(Astro, {
 });
 ---
 
-<Layout 
+<Layout
   title={title[lang]}
   description={description}
   sidebar={sidebarConfig}
   {lang}
   {config}
   {currentUser}
-  >
-
-  { 
-    sidebarConfig === 'double' && 
-    /* This is a safety check due to types even though we are checking above */ 
-    InnerSidebarComponent && ( 
-      <div slot="double-sidebar" class="inner-sidebar-container">
-        <div class="sidebar-links-container">
-          <InnerSidebarComponent />
+>
+  {
+    sidebarConfig === "double" &&
+      /* This is a safety check due to types even though we are checking above */
+      InnerSidebarComponent && (
+        <div slot="double-sidebar" class="inner-sidebar-container">
+          <div class="sidebar-links-container">
+            <InnerSidebarComponent />
+          </div>
         </div>
-      </div>
-    )}
+      )
+  }
 
   <div slot="header">
     <PageHeader title={title[lang]}>
-      {PageActionsComponent && ( 
-        <div slot="page-actions-container">
-          <PageActionsComponent />
-        </div>
-      )}
+      {
+        PageActionsComponent && (
+          <div slot="page-actions-container">
+            <PageActionsComponent />
+          </div>
+        )
+      }
     </PageHeader>
   </div>
 
   <PageBodyComponent />
-
 </Layout>
 
 <style>

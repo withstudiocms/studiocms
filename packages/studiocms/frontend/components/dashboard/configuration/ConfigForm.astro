@@ -172,10 +172,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:configuration');
             />
         </div>
 
-        <LoginPreview
-            light={currentLoginPageBg?.light}
-            dark={currentLoginPageBg?.dark}
-        />
+        <LoginPreview image={currentLoginPageBg} />
     </div>
 </form>
 
@@ -282,8 +279,11 @@ const t = useTranslations(lang, '@studiocms/dashboard:configuration');
 
 <script>
     import { toast } from "studiocms:ui/components/toaster/client";
-    import { dashboardClient, dashboardSharedCatchTags } from 'studiocms:client/apiClients';
-    import * as Effect from 'effect/Effect';
+    import {
+        dashboardClient,
+        dashboardSharedCatchTags,
+    } from "studiocms:client/apiClients";
+    import * as Effect from "effect/Effect";
 
     const configForm = document.querySelector(
         "#site-config-form",
@@ -293,7 +293,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:configuration');
         e.preventDefault();
 
         const formData = new FormData(configForm);
-        
+
         // Scope to grid container to avoid unrelated checkboxes
         const gridItems = Array.from(
             document.querySelectorAll(
@@ -303,23 +303,26 @@ const t = useTranslations(lang, '@studiocms/dashboard:configuration');
             name: input.name,
             enabled: input.checked,
         }));
-        
+
         const enabledGridItems = gridItems
             .filter((item) => item.enabled)
             .map((item) => item.name);
-        
+
         const diffPerPageRaw = formData.get("diff-per-page") as string;
         const diffPerPageParsed = Number.parseInt(diffPerPageRaw, 10);
         const data = {
             title: formData.get("site-title") as string,
             description: formData.get("site-description") as string,
-            defaultOgImage: (formData.get("default-og-image") ?? null) as string | null,
+            defaultOgImage: (formData.get("default-og-image") ?? null) as
+                | string
+                | null,
             siteIcon: (formData.get("site-icon") ?? null) as string | null,
             loginPageBackground: formData.get(
                 "login-page-background",
             ) as string,
-            loginPageCustomImage:
-                (formData.get("login-page-background-custom") ?? null) as string | null,
+            loginPageCustomImage: (formData.get(
+                "login-page-background-custom",
+            ) ?? null) as string | null,
             enableDiffs: formData.get("diff-enabled") === "true",
             diffPerPage: Number.isNaN(diffPerPageParsed)
                 ? 10
@@ -329,13 +332,13 @@ const t = useTranslations(lang, '@studiocms/dashboard:configuration');
         };
 
         const response = await dashboardClient.pipe(
-            Effect.flatMap((client) => 
+            Effect.flatMap((client) =>
                 client.config.updateSiteConfig({
-                    payload: data
-                })
+                    payload: data,
+                }),
             ),
             Effect.catchTags(dashboardSharedCatchTags),
-            Effect.runPromise
+            Effect.runPromise,
         );
 
         if ("error" in response) {
@@ -348,7 +351,8 @@ const t = useTranslations(lang, '@studiocms/dashboard:configuration');
         } else {
             toast({
                 title: "Success",
-                description: response.message || "Configuration updated successfully",
+                description:
+                    response.message || "Configuration updated successfully",
                 type: "success",
             });
         }

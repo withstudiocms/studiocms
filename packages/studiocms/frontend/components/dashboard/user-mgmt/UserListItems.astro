@@ -13,6 +13,4 @@ interface Props {
 const { users, searchQuery } = Astro.props;
 ---
 
-{users.map((user) => (
-	<UserListItem user={user} searchQuery={searchQuery} />
-))}
+{users.map((user) => <UserListItem user={user} searchQuery={searchQuery} />)}

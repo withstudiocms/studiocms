@@ -60,8 +60,7 @@
   "type": "module",
   "dependencies": {
     "diff": "catalog:",
-    "diff2html": "^3.4.56",
-    "zod": "^3.25.76"
+    "diff2html": "^3.4.56"
   },
   "devDependencies": {
     "@types/node": "catalog:",
@@ -74,6 +73,7 @@
     "@withstudiocms/kysely": "workspace:^",
     "effect": "catalog:effect",
     "effectify": "workspace:^",
-    "kysely": "catalog:kysely"
+    "kysely": "catalog:kysely",
+    "zod": "catalog:astrojs-min"
   }
 }

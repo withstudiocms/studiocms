@@ -58,9 +58,9 @@
   },
   "devDependencies": {
     "@types/node": "catalog:",
-    "astro": "catalog:min",
+    "astro": "catalog:studiocms-peerlock",
     "studiocms": "workspace:^",
-    "vite": "catalog:min"
+    "vite": "catalog:studiocms-peerlock"
   },
   "peerDependencies": {
     "effect": "catalog:effect"

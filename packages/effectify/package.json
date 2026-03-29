@@ -77,16 +77,30 @@
 		"./webHandler": {
 			"types": "./dist/webHandler.d.ts",
 			"default": "./dist/webHandler.js"
+		},
+		"./zod": {
+			"types": "./dist/zod.d.ts",
+			"default": "./dist/zod.js"
 		}
+	},
+	"dependencies": {
+    	"@traversable/zod": "^0.0.57"
+	},
+	"devDependencies": {
+		"astro": "catalog:astrojs-current"
 	},
 	"peerDependencies": {
 		"@effect/platform": "catalog:effect",
 		"@effect/platform-node": "catalog:effect",
-		"astro": "catalog:min",
-		"effect": "catalog:effect"
+		"astro": "catalog:astrojs-min",
+		"effect": "catalog:effect",
+		"zod": "catalog:astrojs-min"
 	},
 	"peerDependenciesMeta": {
 		"astro": {
+			"optional": true
+		},
+		"zod": {
 			"optional": true
 		}
 	}

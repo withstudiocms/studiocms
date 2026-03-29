@@ -98,8 +98,8 @@
     "mdast-util-mdx-expression": "^2.0.1"
   },
   "peerDependencies": {
-    "@astrojs/internal-helpers": "catalog:min",
-    "astro": "catalog:min",
-    "vite": "catalog:min"
+    "@astrojs/internal-helpers": "catalog:astrojs-min",
+    "astro": "catalog:astrojs-min",
+    "vite": "catalog:astrojs-min"
   }
 }

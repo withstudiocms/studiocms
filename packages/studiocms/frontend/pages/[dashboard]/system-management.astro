@@ -45,12 +45,16 @@ setDataContext(Astro, {
     </div>
 
     <div slot="external">
-        {/* DB Studio Modal Container */ }
+        {/* DB Studio Modal Container */}
         <div id="db-studio-container">
             <div class="studio-frame-container">
                 <div class="frame-header">
                     <span class="frame-title">
-                        <t-system-management key="database-management-label">{t('database-management-label')}</t-system-management>
+                        <t-system-management key="database-management-label"
+                            >{
+                                t("database-management-label")
+                            }</t-system-management
+                        >
                     </span>
                     <Button
                         color="default"
@@ -64,7 +68,9 @@ setDataContext(Astro, {
                             width={20}
                             height={20}
                         />
-                        <t-system-management key="close-button-label">{t('close-button-label')}</t-system-management>
+                        <t-system-management key="close-button-label"
+                            >{t("close-button-label")}</t-system-management
+                        >
                     </Button>
                 </div>
                 <db-studio dialect={userConfig.dialect}></db-studio>
@@ -72,24 +78,27 @@ setDataContext(Astro, {
         </div>
 
         {/* File Manager */}
-        <StorageFileBrowser 
-            triggerId='access-file-manager'
-            targetInputId='file-browser-url-input'
-            />
+        <StorageFileBrowser
+            triggerId="access-file-manager"
+            targetInputId="file-browser-url-input"
+        />
 
         {/* Component Registry */}
-        <ComponentRegistryUI 
-            registryData={registryData} 
-            triggerId='access-component-registry' 
-            noOutput 
-            />
+        <ComponentRegistryUI
+            registryData={registryData}
+            triggerId="access-component-registry"
+            noOutput
+        />
     </div>
 
     <div class="page-container">
-        {/* System Utilities Card */ }
+        {/* System Utilities Card */}
         <Card fullWidth>
             <div slot="header">
-                <h2><t-system-management key="system-utilities-label">{t('system-utilities-label')}</t-system-management></h2>
+                <h2>
+                    <t-system-management key="system-utilities-label"
+                        >{t("system-utilities-label")}</t-system-management>
+                </h2>
             </div>
 
             <div class="button-shelf">
@@ -105,13 +114,15 @@ setDataContext(Astro, {
                         width={20}
                         height={20}
                     />
-                    <t-system-management key="database-management-label">{t('database-management-label')}</t-system-management>
+                    <t-system-management key="database-management-label"
+                        >{t("database-management-label")}</t-system-management
+                    >
                 </Button>
 
                 <Button
                     id="access-file-manager"
                     variant="outlined"
-                    color={isDefaultManager ? 'danger' : 'info'}
+                    color={isDefaultManager ? "danger" : "info"}
                     size="md"
                 >
                     <Icon
@@ -120,7 +131,9 @@ setDataContext(Astro, {
                         width={20}
                         height={20}
                     />
-                    <t-system-management key="access-file-manager">{t('access-file-manager')}</t-system-management>
+                    <t-system-management key="access-file-manager"
+                        >{t("access-file-manager")}</t-system-management
+                    >
                 </Button>
 
                 <Button
@@ -135,39 +148,60 @@ setDataContext(Astro, {
                         width={18}
                         height={18}
                     />
-                    <t-system-management key="access-component-registry">{t('access-component-registry')}</t-system-management>
+                    <t-system-management key="access-component-registry"
+                        >{t("access-component-registry")}</t-system-management
+                    >
                 </Button>
             </div>
         </Card>
 
-        {/* File Manager Selection Output Card */ }
+        {/* File Manager Selection Output Card */}
         <div class="debug-output">
             <div class="debug-header">
-                <h3><t-system-management key="file-manager-selection">{t('file-manager-selection')}</t-system-management></h3>
+                <h3>
+                    <t-system-management key="file-manager-selection"
+                        >{t("file-manager-selection")}</t-system-management>
+                </h3>
             </div>
             <div class="debug-content-wrapper">
-                {isDefaultManager ? (
-                    <div class="notice">
-                        <p><t-system-management key="no-storage-configured">{t('no-storage-configured')}</t-system-management></p>
-                    </div>
-                ) : (
-                    <input 
-                        type="text" 
-                        id="file-browser-url-input" 
-                        readonly 
-                        placeholder={t('file-manager-url-input-placeholder')} 
+                {
+                    isDefaultManager ? (
+                        <div class="notice">
+                            <p>
+                                <t-system-management key="no-storage-configured">
+                                    {t("no-storage-configured")}
+                                </t-system-management>
+                            </p>
+                        </div>
+                    ) : (
+                        <input
+                            type="text"
+                            id="file-browser-url-input"
+                            readonly
+                            placeholder={t(
+                                "file-manager-url-input-placeholder",
+                            )}
                         />
-                )}
+                    )
+                }
             </div>
         </div>
 
-        {/* Debug Information Output Card */ }
+        {/* Debug Information Output Card */}
         <div class="debug-output">
             <div class="debug-header">
-                <h3><t-system-management key="debug-info-label">{t('debug-info-label')}</t-system-management></h3>
+                <h3>
+                    <t-system-management key="debug-info-label"
+                        >{t("debug-info-label")}</t-system-management>
+                </h3>
             </div>
             <div class="debug-content-wrapper">
-                <Button class="copy-button" id="copyDebugButton" variant="solid" size="sm">
+                <Button
+                    class="copy-button"
+                    id="copyDebugButton"
+                    variant="solid"
+                    size="sm"
+                >
                     <Icon
                         slot="start-content"
                         name="heroicons:clipboard-20-solid"
@@ -215,9 +249,12 @@ setDataContext(Astro, {
         i18n.subscribe((comp) => {
             documentUpdater(comp, lang);
             pageHeaderUpdater(comp.header);
-            copiedToClipboardText = comp['copied-to-clipboard'];
-            
-            $("#file-browser-url-input")?.setAttribute("placeholder", comp['file-manager-url-input-placeholder']);
+            copiedToClipboardText = comp["copied-to-clipboard"];
+
+            $("#file-browser-url-input")?.setAttribute(
+                "placeholder",
+                comp["file-manager-url-input-placeholder"],
+            );
         });
 
         if (!customElements.get("t-system-management")) {
@@ -257,7 +294,7 @@ setDataContext(Astro, {
         // Register copy-to-clipboard functionality for code blocks
         function registerCodeBlockCopy(
             button: HTMLButtonElement,
-            dataElement: HTMLElement
+            dataElement: HTMLElement,
         ) {
             button?.addEventListener("click", () => {
                 const debugData = dataElement?.textContent || "";
@@ -266,10 +303,10 @@ setDataContext(Astro, {
                 navigator.clipboard.writeText(formattedData).then(
                     () => {
                         const initialData = button.innerHTML;
-                        button.classList.add('success')
+                        button.classList.add("success");
                         button.textContent = copiedToClipboardText;
                         setTimeout(() => {
-                            button.classList.remove('success')
+                            button.classList.remove("success");
                             button.innerHTML = initialData;
                         }, 2000);
                     },
@@ -297,10 +334,10 @@ setDataContext(Astro, {
             closeButton: closeDbStudioButton,
         });
 
-		// Define the custom element if not already defined
-		if (!customElements.get('db-studio')) {
-			customElements.define('db-studio', DbStudioElement);
-		}
+        // Define the custom element if not already defined
+        if (!customElements.get("db-studio")) {
+            customElements.define("db-studio", DbStudioElement);
+        }
 
         // =========================================
         // Debug Output Copy Logic
@@ -365,7 +402,9 @@ setDataContext(Astro, {
         #db-studio-container {
             display: none;
             opacity: 0;
-            transition: opacity 0.3s ease, display 0.3s ease allow-discrete;
+            transition:
+                opacity 0.3s ease,
+                display 0.3s ease allow-discrete;
         }
 
         #db-studio-container.active {
@@ -419,9 +458,13 @@ setDataContext(Astro, {
 
                 & .notice {
                     padding: 1rem 0.5rem;
-                    background: color-mix(in srgb, var(--danger-base) 30%, transparent 70%);
+                    background: color-mix(
+                        in srgb,
+                        var(--danger-base) 30%,
+                        transparent 70%
+                    );
                     border-bottom: 1px solid var(--border);
-                    
+
                     & p {
                         margin: 0;
                         color: var(--danger-vibrant);
@@ -445,11 +488,10 @@ setDataContext(Astro, {
             }
 
             .debug-content code {
-                font-family: 'Courier New', Courier, monospace;
+                font-family: "Courier New", Courier, monospace;
                 font-size: 0.875rem;
                 line-height: 1.5;
             }
         }
-
     </style>
 </Layout>

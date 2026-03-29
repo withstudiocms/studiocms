@@ -59,88 +59,133 @@ if (usernameAndPassword && SHOW_OAUTH) {
 	paragraph = 'sub-header-noprovider';
 }
 ---
-<AuthLayout 
-    title={t('title')} 
-    description={t('description')} 
-    {lang}
-    checkLogin
-    >
 
-    <Modal id="forgot-password-modal" size='md' isForm actionButton={'Submit'} cancelButton={'Cancel'}>
-        <h2 slot='header'>
-            <t-login key="forgot-password-title">{t('forgot-password-title')}</t-login>
+<AuthLayout title={t("title")} description={t("description")} {lang} checkLogin>
+    <Modal
+        id="forgot-password-modal"
+        size="md"
+        isForm
+        actionButton={"Submit"}
+        cancelButton={"Cancel"}
+    >
+        <h2 slot="header">
+            <t-login key="forgot-password-title"
+                >{t("forgot-password-title")}</t-login
+            >
         </h2>
 
-        <input type="hidden" name="action-url" value={Astro.locals.StudioCMS.routeMap.authLinks.forgotPasswordAPI} />
+        <input
+            type="hidden"
+            name="action-url"
+            value={Astro.locals.StudioCMS.routeMap.authLinks.forgotPasswordAPI}
+        />
 
         <p>
-            <t-login key="forgot-password-message">{t('forgot-password-message')}</t-login>
+            <t-login key="forgot-password-message"
+                >{t("forgot-password-message")}</t-login
+            >
         </p>
 
-        <Input label={t('email-label')} name="email" type="email" />
-
+        <Input label={t("email-label")} name="email" type="email" />
     </Modal>
 
     <div slot="header" class="form-header">
+        {
+            DemoMode.enabled && (
+                <Card fullWidth>
+                    <h2 slot="header">
+                        <t-login key="demo-mode-credentials">
+                            {t("demo-mode-credentials")}
+                        </t-login>
+                    </h2>
 
-        { DemoMode.enabled && ( 
-            <Card fullWidth>
-                <h2 slot="header"><t-login key="demo-mode-credentials">{t('demo-mode-credentials')}</t-login></h2>
-
-                <table class="demo-table">
-                    <tr>
-                        <td><t-login key="username-label">{t('username-label')}</t-login></td>
-                        <td>{DemoMode.username}</td>
-                    </tr>
-                    <tr>
-                        <td><t-login key="password-label">{t('password-label')}</t-login></td>
-                        <td>{DemoMode.password}</td>
-                    </tr>
-                </table>
-            </Card>
-        )}
+                    <table class="demo-table">
+                        <tr>
+                            <td>
+                                <t-login key="username-label">
+                                    {t("username-label")}
+                                </t-login>
+                            </td>
+                            <td>{DemoMode.username}</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <t-login key="password-label">
+                                    {t("password-label")}
+                                </t-login>
+                            </td>
+                            <td>{DemoMode.password}</td>
+                        </tr>
+                    </table>
+                </Card>
+            )
+        }
 
         <h1>
-            <t-login key="header">{t('header')}</t-login>
+            <t-login key="header">{t("header")}</t-login>
         </h1>
         <p>
             <t-login key={paragraph}>{t(paragraph)}</t-login>
         </p>
     </div>
 
-    { usernameAndPassword && (
-        <form class="form" id="login-form" method="post" action={Astro.locals.StudioCMS.routeMap.authLinks.loginAPI}>
+    {
+        usernameAndPassword && (
+            <form
+                class="form"
+                id="login-form"
+                method="post"
+                action={Astro.locals.StudioCMS.routeMap.authLinks.loginAPI}
+            >
+                <Input
+                    label={t("username-label")}
+                    name="username"
+                    type="text"
+                />
+                <Input
+                    label={t("password-label")}
+                    name="password"
+                    type="password"
+                />
 
-            <Input label={t('username-label')} name="username" type="text" />
-            <Input label={t('password-label')} name="password" type='password' />
+                <Button
+                    fullWidth
+                    as="button"
+                    type="submit"
+                    color="primary"
+                    size="md"
+                    variant="solid"
+                >
+                    <t-login key="login-button">{t("login-button")}</t-login>
+                </Button>
 
-            <Button fullWidth as="button" type="submit" color='primary' size='md' variant='solid'>
-                <t-login key="login-button">{t('login-button')}</t-login>
-            </Button>
+                {enableMailer && (
+                    <Center>
+                        <div id="forgot-password" class="forgot-password">
+                            <t-login key="forgot-password">
+                                {t("forgot-password")}
+                            </t-login>
+                        </div>
+                    </Center>
+                )}
+            </form>
+        )
+    }
 
-            { enableMailer && ( 
-                <Center>
-                    <div id="forgot-password" class="forgot-password">
-                        <t-login key="forgot-password">{t('forgot-password')}</t-login>
-                    </div>
-                </Center>
-            )}
-        </form>
-    )}
-
-    { allowUserRegistration && (
-        <p slot="footer">
-            <t-login key="allow-registration-noaccount">
-                {t('allow-registration-noaccount')}
-            </t-login> 
-            <a href={Astro.locals.StudioCMS.routeMap.authLinks.signupURL}>
-                <t-login key="allow-registration-register">
-                    {t('allow-registration-register')}
+    {
+        allowUserRegistration && (
+            <p slot="footer">
+                <t-login key="allow-registration-noaccount">
+                    {t("allow-registration-noaccount")}
                 </t-login>
-            </a>
-        </p>
-    )}
-
+                <a href={Astro.locals.StudioCMS.routeMap.authLinks.signupURL}>
+                    <t-login key="allow-registration-register">
+                        {t("allow-registration-register")}
+                    </t-login>
+                </a>
+            </p>
+        )
+    }
 </AuthLayout>
 
 <style>
@@ -183,7 +228,7 @@ if (usernameAndPassword && SHOW_OAUTH) {
 </style>
 
 <script>
-    import { 
+    import {
         $i18n,
         $localeSettings,
         baseTranslation,
@@ -191,9 +236,9 @@ if (usernameAndPassword && SHOW_OAUTH) {
         documentUpdater,
         makeTranslation,
         updateElmLabel,
-    } from 'studiocms:i18n/client';
+    } from "studiocms:i18n/client";
 
-    const currentPage = '@studiocms/auth:login';
+    const currentPage = "@studiocms/auth:login";
 
     let lang = defaultLang;
 
@@ -202,129 +247,146 @@ if (usernameAndPassword && SHOW_OAUTH) {
     $localeSettings.subscribe((locale) => {
         lang = locale || defaultLang;
     });
-    
-    i18n.subscribe(comp => {
-        documentUpdater(comp, lang)
-        updateElmLabel('username', comp['username-label']);
-        updateElmLabel('password', comp['password-label']);
-        updateElmLabel('email', comp['email-label']);
+
+    i18n.subscribe((comp) => {
+        documentUpdater(comp, lang);
+        updateElmLabel("username", comp["username-label"]);
+        updateElmLabel("password", comp["password-label"]);
+        updateElmLabel("email", comp["email-label"]);
     });
 
-    if (!customElements.get('t-login')) {
-        customElements.define('t-login', makeTranslation(currentPage, i18n));
+    if (!customElements.get("t-login")) {
+        customElements.define("t-login", makeTranslation(currentPage, i18n));
     }
 </script>
 
 <script>
-    import { ModalHelper } from 'studiocms:ui/components/modal/client';
-    import { toast } from 'studiocms:ui/components/toaster/client';
-    import * as Effect from 'effect/Effect';
-    import { authClient, sharedAuthCatchTags } from 'studiocms:client/apiClients';
-    
-    const loginForm = document.getElementById('login-form') as HTMLFormElement | null;
+    import { ModalHelper } from "studiocms:ui/components/modal/client";
+    import { toast } from "studiocms:ui/components/toaster/client";
+    import * as Effect from "effect/Effect";
+    import {
+        authClient,
+        sharedAuthCatchTags,
+    } from "studiocms:client/apiClients";
+
+    const loginForm = document.getElementById(
+        "login-form",
+    ) as HTMLFormElement | null;
     if (loginForm) {
-        loginForm.addEventListener('submit', async (event) => {
+        loginForm.addEventListener("submit", async (event) => {
             event.preventDefault();
 
             const formData = new FormData(loginForm);
 
-            const username = formData.get('username')?.toString();
-            const password = formData.get('password')?.toString();
+            const username = formData.get("username")?.toString();
+            const password = formData.get("password")?.toString();
 
             const response = await authClient.pipe(
-                Effect.flatMap((client) => client.auth.login({
-                    payload: {
-                        username: username || '',
-                        password: password || '',
-                    }
-                })),
+                Effect.flatMap((client) =>
+                    client.auth.login({
+                        payload: {
+                            username: username || "",
+                            password: password || "",
+                        },
+                    }),
+                ),
                 Effect.catchTags(sharedAuthCatchTags),
-                Effect.catchTag('AuthAPIError', (err) => Effect.succeed({
-                    ok: false as const,
-                    error: {
-                        title: err._tag,
-                        description: err.message,
-                    },
-                })),
-                Effect.runPromise
-            )
+                Effect.catchTag("AuthAPIError", (err) =>
+                    Effect.succeed({
+                        ok: false as const,
+                        error: {
+                            title: err._tag,
+                            description: err.message,
+                        },
+                    }),
+                ),
+                Effect.runPromise,
+            );
 
             if (response.ok) {
                 toast({
-                    title: 'Login successful',
-                    description: 'Redirecting to dashboard...',
-                    type: 'success',
-                })
-                if (typeof window !== 'undefined') {
+                    title: "Login successful",
+                    description: "Redirecting to dashboard...",
+                    type: "success",
+                });
+                if (typeof window !== "undefined") {
                     window.location.reload();
                 }
                 return;
-            } else if ('error' in response) {
+            } else if ("error" in response) {
                 toast({
                     title: response.error.title,
                     description: response.error.description,
-                    type: 'danger',
-                })
+                    type: "danger",
+                });
                 return;
             } else {
                 toast({
-                    title: 'Error',
-                    description: 'An unknown error occurred',
-                    type: 'danger',
-                })
+                    title: "Error",
+                    description: "An unknown error occurred",
+                    type: "danger",
+                });
                 return;
             }
-        })
-
+        });
     }
 
-    const forgotPasswordLink = document.getElementById('forgot-password') as HTMLDivElement;
+    const forgotPasswordLink = document.getElementById(
+        "forgot-password",
+    ) as HTMLDivElement;
 
     if (forgotPasswordLink) {
-        const forgotPasswordModal = new ModalHelper('forgot-password-modal', 'forgot-password');
+        const forgotPasswordModal = new ModalHelper(
+            "forgot-password-modal",
+            "forgot-password",
+        );
 
         forgotPasswordModal.registerConfirmCallback(async (formData) => {
             if (!formData) return;
-            const email = formData.get('email')?.toString()
+            const email = formData.get("email")?.toString();
 
             if (!email) {
                 toast({
-                    title: 'Error',
-                    description: 'Email is required',
-                    type: 'danger',
-                })
+                    title: "Error",
+                    description: "Email is required",
+                    type: "danger",
+                });
                 return;
             }
 
             const response = await authClient.pipe(
-                Effect.flatMap((client) => client.auth.forgotPassword({
-                    payload: { email },
-                })),
+                Effect.flatMap((client) =>
+                    client.auth.forgotPassword({
+                        payload: { email },
+                    }),
+                ),
                 Effect.catchTags(sharedAuthCatchTags),
-                Effect.catchTag('AuthAPIError', (err) => Effect.succeed({
-                    error: {
-                        title: err._tag,
-                        description: err.message,
-                    },
-                })),
-                Effect.runPromise
-            )
+                Effect.catchTag("AuthAPIError", (err) =>
+                    Effect.succeed({
+                        error: {
+                            title: err._tag,
+                            description: err.message,
+                        },
+                    }),
+                ),
+                Effect.runPromise,
+            );
 
-            if ('error' in response) {
+            if ("error" in response) {
                 toast({
                     title: response.error.title,
                     description: response.error.description,
-                    type: 'danger',
-                })
+                    type: "danger",
+                });
                 return;
             } else {
                 toast({
-                    title: 'Success',
+                    title: "Success",
                     description: response.message,
-                    type: 'success',
-                })
+                    type: "success",
+                });
                 return;
             }
-        })
+        });
     }
 </script>

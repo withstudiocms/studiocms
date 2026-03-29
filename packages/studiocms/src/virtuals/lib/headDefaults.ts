@@ -1,6 +1,6 @@
 import { extname } from 'node:path';
 import version from 'studiocms:version';
-import type { AstroGlobalPartial } from 'astro';
+import type { AstroGlobal } from 'astro';
 import { lookup } from 'mrmime';
 import { StudioCMSCoreError } from '../../errors.js';
 import type { HeadUserConfig } from './head.js';
@@ -78,7 +78,7 @@ export const headDefaults = (
 	title: string,
 	description: string,
 	lang: string,
-	Astro: AstroGlobalPartial,
+	Astro: AstroGlobal,
 	favicon: string,
 	ogImage: string | undefined,
 	canonical: URL | undefined

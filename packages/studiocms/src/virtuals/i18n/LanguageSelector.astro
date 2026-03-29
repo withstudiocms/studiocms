@@ -15,51 +15,56 @@ import { languageSelectorOptions } from './config.js';
  * `packages/studiocms/src/virtuals/i18n/translations/` on https://github.com/withstudiocms/studiocms
  */
 ---
+
 <Dropdown
-  id='language-selector'
+  id="language-selector"
   options={languageSelectorOptions.map(({ flag, key, displayName }) => ({
-  	label: displayName,
-  	value: key,
-  	icon: `lang-flags:${flag}` as AvailableIcons,
+    label: displayName,
+    value: key,
+    icon: `lang-flags:${flag}` as AvailableIcons,
   }))}
-  align='start'
+  align="start"
 >
-  <Button variant='outlined' size='sm'>
-    <Icon name='heroicons:language' width={16} height={16} />
+  <Button variant="outlined" size="sm">
+    <Icon name="heroicons:language" width={16} height={16} />
   </Button>
 </Dropdown>
 
 <script>
-  import { DropdownHelper } from 'studiocms:ui/components/dropdown/client';
+  import { DropdownHelper } from "studiocms:ui/components/dropdown/client";
   import { $localeSettings, defaultLang } from "studiocms:i18n/client";
 
-  const languageSelector = new DropdownHelper('language-selector');
+  const languageSelector = new DropdownHelper("language-selector");
 
   languageSelector.registerClickCallback((value) => {
     $localeSettings.set(value);
   });
 
-  $localeSettings.subscribe(((lang) => {
+  $localeSettings.subscribe((lang) => {
     const currentLang = lang || defaultLang;
-    const dropdown = document.getElementById('language-selector-dropdown') as HTMLUListElement | null;
+    const dropdown = document.getElementById(
+      "language-selector-dropdown",
+    ) as HTMLUListElement | null;
     if (!dropdown) return;
-    dropdown.querySelectorAll('li').forEach((option) => {
-      option.classList.remove('active-language-selector-option');
+    dropdown.querySelectorAll("li").forEach((option) => {
+      option.classList.remove("active-language-selector-option");
     });
-    const activeOption = dropdown.querySelector(`[data-value="${currentLang}"]`);
+    const activeOption = dropdown.querySelector(
+      `[data-value="${currentLang}"]`,
+    );
     if (activeOption) {
-      activeOption.classList.add('active-language-selector-option');
+      activeOption.classList.add("active-language-selector-option");
     }
-  }));
+  });
 </script>
 
 <style is:global>
   .active-language-selector-option {
-      background-color: var(--primary-base);
-      color: var(--text-inverted);
+    background-color: var(--primary-base);
+    color: var(--text-inverted);
 
-      &:hover {
-        background-color: var(--primary-hover);
-      }
+    &:hover {
+      background-color: var(--primary-hover);
+    }
   }
 </style>

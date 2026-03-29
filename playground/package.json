@@ -21,15 +21,16 @@
 		"effect": "catalog:effect",
     "@effect/platform": "catalog:effect",
     "@effect/platform-node": "catalog:effect",
-    "@astrojs/node": "catalog:astrojs",
+    "@astrojs/node": "catalog:astrojs-current",
     "@libsql/client": "catalog:kysely",
-    "@studiocms/blog": "workspace:^",
-    "@studiocms/md": "workspace:^",
-    "@studiocms/wysiwyg": "workspace:^",
-    "@studiocms/s3-storage": "workspace:^",
-    "astro": "catalog:astrojs",
+    "@studiocms/blog": "workspace:*",
+    "@studiocms/md": "workspace:*",
+    "@studiocms/wysiwyg": "workspace:*",
+    "@studiocms/s3-storage": "workspace:*",
+    "astro": "catalog:astrojs-current",
     "kysely-turso": "catalog:kysely",
-    "studiocms": "workspace:^",
-    "sharp": "catalog:"
+    "studiocms": "workspace:*",
+    "sharp": "catalog:",
+    "vite-plugin-inspect": "11.3.3"
   }
 }

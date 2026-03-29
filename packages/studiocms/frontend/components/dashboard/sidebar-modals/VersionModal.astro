@@ -21,10 +21,10 @@ const t = useTranslations(lang, '@studiocms/dashboard:versionCheckModal');
 const latestVersion = Astro.locals.StudioCMS.latestVersion;
 const lastChecked = new Date(Astro.locals.StudioCMS.latestVersion.lastCacheUpdate);
 ---
-<Modal id="version-modal" size="lg">
 
+<Modal id="version-modal" size="lg">
     <h2 slot="header" class="inline-title">
-      <span><t-vcm key="header-title">{t('header-title')}</t-vcm></span>
+        <span><t-vcm key="header-title">{t("header-title")}</t-vcm></span>
         <button
             id="version-modal-reload"
             class="reload-button"
@@ -37,34 +37,61 @@ const lastChecked = new Date(Astro.locals.StudioCMS.latestVersion.lastCacheUpdat
     <div>
         <div class="version-modal-top-row">
             <div class="version-modal-col">
-                <span class="version-modal-col-title"><t-vcm key="current-version">{t('current-version')}</t-vcm></span>
+                <span class="version-modal-col-title"
+                    ><t-vcm key="current-version">{t("current-version")}</t-vcm
+                    ></span
+                >
                 <code class="version-modal-col-value">v{currentVersion}</code>
             </div>
 
             <div class="version-modal-col">
-                <span class="version-modal-col-title"><t-vcm key="latest-version">{t('latest-version')}</t-vcm></span>
-                <code id="latest-version" class="version-modal-col-value">v{latestVersion.version}</code>
+                <span class="version-modal-col-title"
+                    ><t-vcm key="latest-version">{t("latest-version")}</t-vcm
+                    ></span
+                >
+                <code id="latest-version" class="version-modal-col-value"
+                    >v{latestVersion.version}</code
+                >
             </div>
 
             <div class="version-modal-col">
-                <span class="version-modal-col-title"><t-vcm key="last-check">{t('last-check')}</t-vcm></span>
+                <span class="version-modal-col-title"
+                    ><t-vcm key="last-check">{t("last-check")}</t-vcm></span
+                >
                 <span class="version-modal-col-value">
-                    <time id="version-modal-last-checked-date" datetime={lastChecked.toISOString()}>{dateWithTimeAndZone(lastChecked)}</time>
-                    <span id="latest-update-check" class="latest-update-check">({timeAgo(lastChecked)})</span>
+                    <time
+                        id="version-modal-last-checked-date"
+                        datetime={lastChecked.toISOString()}
+                        >{dateWithTimeAndZone(lastChecked)}</time
+                    >
+                    <span id="latest-update-check" class="latest-update-check"
+                        >({timeAgo(lastChecked)})</span
+                    >
                 </span>
             </div>
         </div>
 
         <div class="version-modal-release-notes">
-            <div class="prose"><Fragment set:html={parseMarkdown(changelog)} /></div>
+            <div class="prose">
+                <Fragment set:html={parseMarkdown(changelog)} />
+            </div>
             <span class="release-notes-read-more">
-                <VersionCheckChangelog changelog={studioCMSSocials.changelog}><span class="read-more-text"><t-vcm key="full-changelog">{t('full-changelog')}</t-vcm></span></VersionCheckChangelog>
+                <VersionCheckChangelog changelog={studioCMSSocials.changelog}
+                    ><span class="read-more-text"
+                        ><t-vcm key="full-changelog"
+                            >{t("full-changelog")}</t-vcm
+                        ></span
+                    ></VersionCheckChangelog
+                >
             </span>
         </div>
 
         <div class="version-modal-links">
-            <span class="version-modal-row-title"><t-vcm key="view-on">{t('view-on')}</t-vcm></span>
-            <a href={studioCMSSocials.releases}
+            <span class="version-modal-row-title"
+                ><t-vcm key="view-on">{t("view-on")}</t-vcm></span
+            >
+            <a
+                href={studioCMSSocials.releases}
                 target="_blank"
                 rel="noopener noreferrer"
                 class="version-link"
@@ -72,7 +99,8 @@ const lastChecked = new Date(Astro.locals.StudioCMS.latestVersion.lastCacheUpdat
                 aria-label="GitHub"
                 ><span class="brand--github"></span>
             </a>
-            <a href={studioCMSSocials.npm}
+            <a
+                href={studioCMSSocials.npm}
                 target="_blank"
                 rel="noopener noreferrer"
                 class="version-link"
@@ -85,34 +113,37 @@ const lastChecked = new Date(Astro.locals.StudioCMS.latestVersion.lastCacheUpdat
 </Modal>
 
 <script>
-  import { $i18n, baseTranslation, makeTranslation} from "studiocms:i18n/client";
+    import {
+        $i18n,
+        baseTranslation,
+        makeTranslation,
+    } from "studiocms:i18n/client";
 
-  const currentPage = "@studiocms/dashboard:versionCheckModal";
+    const currentPage = "@studiocms/dashboard:versionCheckModal";
 
-  const i18n = $i18n(currentPage, baseTranslation[currentPage]);
+    const i18n = $i18n(currentPage, baseTranslation[currentPage]);
 
-  if (!customElements.get('t-vcm')) {
-    customElements.define('t-vcm', makeTranslation(currentPage, i18n))
-  }
+    if (!customElements.get("t-vcm")) {
+        customElements.define("t-vcm", makeTranslation(currentPage, i18n));
+    }
 </script>
 
 <style is:global>
-
-/* Fix for modal positioning/size issues
+    /* Fix for modal positioning/size issues
 
 This overrides the @studiocms/ui modal max size
 to allow for more information on a slightly bigger modal.
 
 */
-#version-modal.sui-modal.lg {
-  max-width: 800px !important;
-  width: min(90vw, 800px) !important;
-  background-color: var(--background-base);
-}
+    #version-modal.sui-modal.lg {
+        max-width: 800px !important;
+        width: min(90vw, 800px) !important;
+        background-color: var(--background-base);
+    }
 </style>
 
 <style>
-	.version-modal-top-row {
+    .version-modal-top-row {
         display: grid;
         grid-template-columns: 1fr 1fr minmax(0, 3fr);
         gap: 1rem;
@@ -122,7 +153,6 @@ to allow for more information on a slightly bigger modal.
         .version-modal-top-row {
             grid-template-columns: 1fr;
         }
-
     }
 
     .release-notes-read-more {
@@ -174,7 +204,7 @@ to allow for more information on a slightly bigger modal.
         height: 16px;
         display: flex;
         align-items: center;
-        gap: .5rem;
+        gap: 0.5rem;
     }
 
     #version-modal-last-checked-date {
@@ -199,7 +229,7 @@ to allow for more information on a slightly bigger modal.
 
     .latest-update-check {
         color: var(--text-muted);
-        font-size: .7em;
+        font-size: 0.7em;
         font-weight: 700;
         text-align: center;
     }
@@ -231,11 +261,11 @@ to allow for more information on a slightly bigger modal.
     }
 
     .inline-title {
-      display: flex;
-      flex-direction: row;
-      gap: 0.5rem;
-      align-items: center;
-      justify-content: start;
+        display: flex;
+        flex-direction: row;
+        gap: 0.5rem;
+        align-items: center;
+        justify-content: start;
     }
 
     .reload-button {
@@ -263,11 +293,11 @@ to allow for more information on a slightly bigger modal.
     .reload,
     .brand--github,
     .brand--npm {
-      display: inline-block;
-      -webkit-mask-repeat: no-repeat;
-      mask-repeat: no-repeat;
-      -webkit-mask-size: 100% 100%;
-      mask-size: 100% 100%;
+        display: inline-block;
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        -webkit-mask-size: 100% 100%;
+        mask-size: 100% 100%;
     }
 
     .reload {

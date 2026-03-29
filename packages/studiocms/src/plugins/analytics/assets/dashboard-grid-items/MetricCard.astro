@@ -16,9 +16,12 @@ const IconName: AvailableIcons = rating ? ratingIcons[rating] : 'heroicons:infor
 const iconColor = rating ? ratingText[rating] : '';
 const cardColors = rating ? ratingCardClasses[rating] : 'border-gray bg-light-gray';
 ---
+
 <article class={`metric-card ${cardColors}`}>
     <h4 class="metric-title">
-        <span class={`icon ${iconColor}`}><Icon name={IconName} height={24} width={24} /></span>
+        <span class={`icon ${iconColor}`}
+            ><Icon name={IconName} height={24} width={24} /></span
+        >
         {WEB_VITALS_METRIC_LABELS[metric]} ({metric})
     </h4>
     <slot />

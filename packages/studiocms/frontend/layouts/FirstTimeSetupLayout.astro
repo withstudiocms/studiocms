@@ -1,7 +1,9 @@
 ---
+import 'studiocms:ui/reset-css';
+import 'studiocms:ui/global-css';
 import '../styles/dashboard-base.css';
-import '../styles/dashboard-diff.css';
 import type { ComponentProps } from 'astro/types';
+import { LAYOUT_IDS } from '#frontend/consts.ts';
 import BaseLayout from './BaseLayout.astro';
 
 interface Props extends ComponentProps<typeof BaseLayout> {}
@@ -9,7 +11,7 @@ interface Props extends ComponentProps<typeof BaseLayout> {}
 const headProps = Astro.props;
 ---
 
-<BaseLayout {...headProps} generators={false}>
+<BaseLayout {...headProps} generators={false} id={LAYOUT_IDS.dashboard}>
   <main>
     <div class="container">
       <slot />

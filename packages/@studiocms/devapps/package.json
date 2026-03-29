@@ -65,10 +65,10 @@
     "@types/turndown": "^5.0.6",
     "@types/sanitize-html": "^2.16.1",
     "@withstudiocms/sdk": "workspace:^",
-    "astro": "catalog:min",
+    "astro": "catalog:studiocms-peerlock",
     "studiocms": "workspace:^",
     "typescript": "catalog:",
-    "vite": "catalog:min"
+    "vite": "catalog:studiocms-peerlock"
   },
   "peerDependencies": {
     "@withstudiocms/kysely": "workspace:^",

@@ -71,15 +71,14 @@ setDataContext(Astro, {
   {currentUser}
 >
   <div slot="header">
-    <PageHeader title={t("header")}>
-    </PageHeader>
+    <PageHeader title={t("header")} />
   </div>
 
-  <Tabs variant='starlight'>
+  <Tabs variant="starlight">
     <TabItem
       label={t("smtp-settings")}
       id="tab-smtp-settings"
-      icon='heroicons:inbox-20-solid'
+      icon="heroicons:inbox-20-solid"
     >
       <div class="smtp-content">
         <Card fullWidth>
@@ -209,7 +208,8 @@ setDataContext(Astro, {
 
           <form
             id="test-smtp-form"
-            action={Astro.locals.StudioCMS.routeMap.endpointLinks.mailer.testEmail}
+            action={Astro.locals.StudioCMS.routeMap.endpointLinks.mailer
+              .testEmail}
           >
             <div class="form-content">
               <Input
@@ -247,7 +247,7 @@ setDataContext(Astro, {
     <TabItem
       label={t("site-email-settings")}
       id="tab-site-email-settings"
-      icon='heroicons:envelope-20-solid'
+      icon="heroicons:envelope-20-solid"
     >
       <Card fullWidth>
         <form
@@ -283,7 +283,8 @@ setDataContext(Astro, {
               width={20}
               height={20}
             />
-            <t-smtp key="save-email-settings">{t("save-email-settings")}</t-smtp>
+            <t-smtp key="save-email-settings">{t("save-email-settings")}</t-smtp
+            >
           </Button>
         </div>
       </Card>
@@ -291,12 +292,18 @@ setDataContext(Astro, {
     <TabItem
       label={t("mail-templates")}
       id="tab-mail-templates"
-      icon='heroicons:document-text-20-solid'
+      icon="heroicons:document-text-20-solid"
     >
       <Card fullWidth fullHeight>
         <div slot="header">
-          <h2 class="template-header"><t-smtp key="available-templates">{t("available-templates")}</t-smtp></h2>
-          <div class="template-selectors" data-templates={JSON.stringify(tEngine.availableTemplates)}>
+          <h2 class="template-header">
+            <t-smtp key="available-templates"
+              >{t("available-templates")}</t-smtp>
+          </h2>
+          <div
+            class="template-selectors"
+            data-templates={JSON.stringify(tEngine.availableTemplates)}
+          >
             {
               tEngine.availableTemplates.map((template) => (
                 <Button
@@ -313,7 +320,10 @@ setDataContext(Astro, {
         </div>
         <div class="template-wrapper">
           <div class="template-wrapper-col1">
-            <div id="template-editor-container" class="template-editor-container">
+            <div
+              id="template-editor-container"
+              class="template-editor-container"
+            >
               <Card fullWidth fullHeight id="template-editor-card">
                 <TemplateEditor
                   templates={tEngine.allTemplates}
@@ -325,13 +335,21 @@ setDataContext(Astro, {
             </div>
           </div>
           <div class="template-wrapper-col2">
-            <div id="template-editor-notes-actions" class="template-editor-notes-actions">
+            <div
+              id="template-editor-notes-actions"
+              class="template-editor-notes-actions"
+            >
               <Card fullWidth fullHeight>
-
                 <div class="template-editor-instructions-container">
                   <div class="template-editor-instructions prose">
-                    <p><t-smtp key="template-instructions">{t("template-instructions")}</t-smtp></p>
-                    <h4><t-smtp key="available-variables">{t("available-variables")}</t-smtp></h4>
+                    <p>
+                      <t-smtp key="template-instructions"
+                        >{t("template-instructions")}</t-smtp>
+                    </p>
+                    <h4>
+                      <t-smtp key="available-variables"
+                        >{t("available-variables")}</t-smtp>
+                    </h4>
                     <span class="not-prose">
                       <Select
                         name="template-variable-examples"
@@ -344,14 +362,46 @@ setDataContext(Astro, {
                       />
                     </span>
                     <ul>
-                      <li><code set:html="{{site.title}}"></code>: <t-smtp key="variable-global-site.title">{t("variable-global-site.title")}</t-smtp></li>
-                      <li><code set:html="{{site.description}}"></code>: <t-smtp key="variable-global-site.description">{t("variable-global-site.description")}</t-smtp></li>
-                      <li><code set:html="{{site.icon}}"></code>: <t-smtp key="variable-global-site.icon">{t("variable-global-site.icon")}</t-smtp></li>
-                      <li id="template-variable-notifications"><code set:html="{{data.title}}"></code>: <t-smtp key="variable-notifications-data.title">{t("variable-notifications-data.title")}</t-smtp></li>
-                      <li id="template-variable-notifications"><code set:html="{{data.message}}"></code>: <t-smtp key="variable-notifications-data.message">{t("variable-notifications-data.message")}</t-smtp></li>
-                      <li id="template-variable-passwordReset" class="hidden"><code set:html="{{data.link}}"></code>: <t-smtp key="variable-passwordReset-data.link">{t("variable-passwordReset-data.link")}</t-smtp></li>
-                      <li id="template-variable-verifyEmail" class="hidden"><code set:html="{{data.link}}"></code>: <t-smtp key="variable-verifyEmail-data.link">{t("variable-verifyEmail-data.link")}</t-smtp></li>
-                      <li id="template-variable-userInvite" class="hidden"><code set:html="{{data.link}}"></code>: <t-smtp key="variable-userInvite-data.link">{t("variable-userInvite-data.link")}</t-smtp></li>
+                      <li>
+                        <code set:html="{{site.title}}" />: <t-smtp
+                          key="variable-global-site.title"
+                          >{t("variable-global-site.title")}</t-smtp>
+                      </li>
+                      <li>
+                        <code set:html="{{site.description}}" />: <t-smtp
+                          key="variable-global-site.description"
+                          >{t("variable-global-site.description")}</t-smtp>
+                      </li>
+                      <li>
+                        <code set:html="{{site.icon}}" />: <t-smtp
+                          key="variable-global-site.icon"
+                          >{t("variable-global-site.icon")}</t-smtp>
+                      </li>
+                      <li id="template-variable-notifications">
+                        <code set:html="{{data.title}}" />: <t-smtp
+                          key="variable-notifications-data.title"
+                          >{t("variable-notifications-data.title")}</t-smtp>
+                      </li>
+                      <li id="template-variable-notifications">
+                        <code set:html="{{data.message}}" />: <t-smtp
+                          key="variable-notifications-data.message"
+                          >{t("variable-notifications-data.message")}</t-smtp>
+                      </li>
+                      <li id="template-variable-passwordReset" class="hidden">
+                        <code set:html="{{data.link}}" />: <t-smtp
+                          key="variable-passwordReset-data.link"
+                          >{t("variable-passwordReset-data.link")}</t-smtp>
+                      </li>
+                      <li id="template-variable-verifyEmail" class="hidden">
+                        <code set:html="{{data.link}}" />: <t-smtp
+                          key="variable-verifyEmail-data.link"
+                          >{t("variable-verifyEmail-data.link")}</t-smtp>
+                      </li>
+                      <li id="template-variable-userInvite" class="hidden">
+                        <code set:html="{{data.link}}" />: <t-smtp
+                          key="variable-userInvite-data.link"
+                          >{t("variable-userInvite-data.link")}</t-smtp>
+                      </li>
                     </ul>
                   </div>
                 </div>
@@ -370,7 +420,9 @@ setDataContext(Astro, {
                         width={20}
                         height={20}
                       />
-                      <t-smtp key="template-save-button">{t("template-save-button")}</t-smtp>
+                      <t-smtp key="template-save-button"
+                        >{t("template-save-button")}</t-smtp
+                      >
                     </Button>
                     <Button
                       variant="outlined"
@@ -384,7 +436,9 @@ setDataContext(Astro, {
                         width={20}
                         height={20}
                       />
-                      <t-smtp key="template-reset-button">{t("template-reset-button")}</t-smtp>
+                      <t-smtp key="template-reset-button"
+                        >{t("template-reset-button")}</t-smtp
+                      >
                     </Button>
                   </div>
                 </div>
@@ -399,14 +453,17 @@ setDataContext(Astro, {
 
 <script>
   import { toast } from "studiocms:ui/components/toaster/client";
-  import { DbStudioElement } from '#db-studio/viewer';
-  import { dashboardClient, dashboardSharedCatchTags } from 'studiocms:client/apiClients';
-  import * as Effect from 'effect/Effect';
+  import { DbStudioElement } from "#db-studio/viewer";
+  import {
+    dashboardClient,
+    dashboardSharedCatchTags,
+  } from "studiocms:client/apiClients";
+  import * as Effect from "effect/Effect";
 
-	// Define the custom element if not already defined
-	if (!customElements.get('db-studio')) {
-		customElements.define('db-studio', DbStudioElement);
-	}
+  // Define the custom element if not already defined
+  if (!customElements.get("db-studio")) {
+    customElements.define("db-studio", DbStudioElement);
+  }
 
   const smtpConfigForm = document.getElementById(
     "smtp-config-form",
@@ -452,37 +509,39 @@ setDataContext(Astro, {
       Effect.flatMap((client) =>
         client.mailer.setupMailerConfig({
           payload: data,
-        })
-      )
+        }),
+      ),
     );
 
     const updateEffect = dashboardClient.pipe(
       Effect.flatMap((client) =>
         client.mailer.updateMailerConfig({
           payload: data,
-        })
-      )
+        }),
+      ),
     );
 
-    const effectToRun = createNewConfig === "true" ? createEffect : updateEffect;
+    const effectToRun =
+      createNewConfig === "true" ? createEffect : updateEffect;
 
     const response = await effectToRun.pipe(
       Effect.catchTags(dashboardSharedCatchTags),
-      Effect.runPromise
+      Effect.runPromise,
     );
 
-    if ('error' in response) {
+    if ("error" in response) {
       toast({
-        title: 'Error',
+        title: "Error",
         description: response.error,
-        type: 'danger',
+        type: "danger",
       });
       return;
     } else {
       toast({
-        title: 'Success',
-        description: response.message || 'SMTP configuration saved successfully.',
-        type: 'success',
+        title: "Success",
+        description:
+          response.message || "SMTP configuration saved successfully.",
+        type: "success",
       });
       setTimeout(() => {
         window.location.reload();
@@ -503,24 +562,24 @@ setDataContext(Astro, {
       Effect.flatMap((client) =>
         client.mailer.testEmailService({
           payload: data,
-        })
+        }),
       ),
       Effect.catchTags(dashboardSharedCatchTags),
-      Effect.runPromise
+      Effect.runPromise,
     );
 
-    if ('error' in response) {
+    if ("error" in response) {
       toast({
-        title: 'Error',
+        title: "Error",
         description: response.error,
-        type: 'danger',
+        type: "danger",
       });
       return;
     } else {
       toast({
-        title: 'Success',
-        description: response.message || 'Test email sent successfully.',
-        type: 'success',
+        title: "Success",
+        description: response.message || "Test email sent successfully.",
+        type: "success",
       });
       return;
     }
@@ -544,24 +603,26 @@ setDataContext(Astro, {
       Effect.flatMap((client) =>
         client.emailNotifications.updateEmailNotificationsSettings({
           payload: data,
-        })
+        }),
       ),
       Effect.catchTags(dashboardSharedCatchTags),
-      Effect.runPromise
+      Effect.runPromise,
     );
 
-    if ('error' in response) {
+    if ("error" in response) {
       toast({
-        title: 'Error',
+        title: "Error",
         description: response.error,
-        type: 'danger',
+        type: "danger",
       });
       return;
     } else {
       toast({
-        title: 'Success',
-        description: response.message || 'Email notification settings updated successfully.',
-        type: 'success',
+        title: "Success",
+        description:
+          response.message ||
+          "Email notification settings updated successfully.",
+        type: "success",
       });
       return;
     }
@@ -582,7 +643,7 @@ setDataContext(Astro, {
     updateSelectElmLabel,
     updateToggleElmLabel,
     updateTrueFalseSelectOptions,
-    updateTabLabel
+    updateTabLabel,
   } from "studiocms:i18n/client";
 
   const currentPage = "@studiocms/dashboard:smtp";
@@ -630,10 +691,13 @@ setDataContext(Astro, {
     updateTabLabel("tab-site-email-settings", comp["site-email-settings"]);
     updateTabLabel("tab-mail-templates", comp["mail-templates"]);
 
-    const trueFalseOptions = { true: comp['true-label'], false: comp['false-label'] };
+    const trueFalseOptions = {
+      true: comp["true-label"],
+      false: comp["false-label"],
+    };
 
-    updateTrueFalseSelectOptions('secure', trueFalseOptions);
-    updateTrueFalseSelectOptions('tls_rejectUnauthorized', trueFalseOptions);
+    updateTrueFalseSelectOptions("secure", trueFalseOptions);
+    updateTrueFalseSelectOptions("tls_rejectUnauthorized", trueFalseOptions);
 
     document
       .querySelector("#notification-settings-form")
@@ -672,6 +736,7 @@ setDataContext(Astro, {
 
   .smtp-content {
     display: flex;
+    width: 100%;
     flex-direction: column;
     gap: 1rem;
   }

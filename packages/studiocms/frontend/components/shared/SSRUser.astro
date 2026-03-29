@@ -45,9 +45,9 @@ const {
 } = Astro.props;
 ---
 
-<div class="sui-user-container" class:list={[className]} id={id}>
-    <div class="sui-avatar-container">
-        {
+<div class="sui-user-container scms-user" class:list={[className]} id={id}>
+	<div class="sui-avatar-container">
+		{
 			avatar ? (
 				<studiocms-avatar
 					data-avatar-url={avatar}
@@ -68,33 +68,36 @@ const {
 					/>
 				</studiocms-avatar>
 			) : (
-                <Icon
-                    name="heroicons:user"
-                    width={24}
-                    height={24}
-                    role="img"
-                    aria-label={`Placeholder avatar for ${name}`}
-                />
-            )
-        }
-    </div>
-    <div class="sui-text-content">
-        <span class="sui-name">{name}</span>
-        <span class="sui-description">{description}</span>
-    </div>
+				<Icon
+					name="heroicons:user"
+					width={24}
+					height={24}
+					role="img"
+					aria-label={`Placeholder avatar for ${name}`}
+				/>
+			)
+		}
+	</div>
+	<div class="sui-text-content">
+		<span class="sui-name">{name}</span>
+		<span class="sui-description">{description}</span>
+	</div>
 </div>
 
 <script>
 	class StudioCMSAvatar extends HTMLElement {
 		connectedCallback() {
 			const avatarUrl = this.dataset.avatarUrl;
-			const timeoutDelay = parseInt(this.dataset.avatarTimeout || '3000', 10);
+			const timeoutDelay = parseInt(
+				this.dataset.avatarTimeout || "3000",
+				10,
+			);
 			const fallbackDataUri = this.dataset.avatarFallback;
 
 			if (!avatarUrl) return;
 			if (!fallbackDataUri) return;
 
-			const img = this.querySelector('img');
+			const img = this.querySelector("img");
 			if (!img) return;
 
 			this.loadAvatar(img, avatarUrl, timeoutDelay, fallbackDataUri);
@@ -104,15 +107,15 @@ const {
 			try {
 				const urlObj = new URL(url);
 
-				const validProtocols = ['https:', 'data:'];
+				const validProtocols = ["https:", "data:"];
 				if (!validProtocols.includes(urlObj.protocol)) {
 					return false;
 				}
 
 				const isSvg =
-					url.toLowerCase().endsWith('.svg') ||
-					url.toLowerCase().includes('.svg?') ||
-					url.toLowerCase().includes('image/svg');
+					url.toLowerCase().endsWith(".svg") ||
+					url.toLowerCase().includes(".svg?") ||
+					url.toLowerCase().includes("image/svg");
 
 				if (isSvg) {
 					return false;
@@ -124,21 +127,24 @@ const {
 			}
 		}
 
-		async verifyAvatarUrl(url: string, timeoutMs: number): Promise<boolean> {
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+		async verifyAvatarUrl(
+			url: string,
+			timeoutMs: number,
+		): Promise<boolean> {
+			const controller = new AbortController();
+			const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 			try {
 				const response = await fetch(url, {
-					method: 'HEAD',
+					method: "HEAD",
 					signal: controller.signal,
-					cache: 'no-cache',
+					cache: "no-cache",
 				});
 
 				return response.ok;
 			} catch (error) {
 				return false;
- 	        } finally {
-                clearTimeout(timeoutId);
+			} finally {
+				clearTimeout(timeoutId);
 			}
 		}
 
@@ -152,16 +158,16 @@ const {
 			img: HTMLImageElement,
 			url: string,
 			timeoutMs: number,
-			fallbackDataUri: string
+			fallbackDataUri: string,
 		): Promise<void> {
 			if (!this.isValidAvatarUrl(url)) {
 				this.showFallbackIcon(img, fallbackDataUri);
 				return;
 			}
 
-			if (url.startsWith('data:')) {
+			if (url.startsWith("data:")) {
 				img.src = url;
-				img.classList.add('sui-avatar-loaded');
+				img.classList.add("sui-avatar-loaded");
 				return;
 			}
 
@@ -176,7 +182,7 @@ const {
 				return;
 			}
 			img.onload = () => {
-				img.classList.add('sui-avatar-loaded');
+				img.classList.add("sui-avatar-loaded");
 			};
 
 			img.onerror = () => {
@@ -189,53 +195,59 @@ const {
 			img.src = url;
 		}
 	}
-	if (!customElements.get('studiocms-avatar')) {
-		customElements.define('studiocms-avatar', StudioCMSAvatar);
+	if (!customElements.get("studiocms-avatar")) {
+		customElements.define("studiocms-avatar", StudioCMSAvatar);
 	}
 </script>
 
 <style>
-    .sui-user-container {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        gap: 1rem;
-    }
-    .sui-avatar-container {
-        width: 2.5rem;
-        height: 2.5rem;
-        background-color: var(--default-base);
-        border-radius: var(--radius-full);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        overflow: hidden;
-        border: 1px solid var(--border);
-    }
-    .sui-avatar-img {
-        width: 100%;
-        height: auto;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-		opacity: 0.5;
-		transition: opacity 0.2s ease-in;
-    }
-	.sui-avatar-img.sui-avatar-loaded {
-		opacity: 1;
+	.sui-user-container.scms-user {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		gap: 1rem;
+
+		.sui-avatar-container {
+			width: 2.5rem;
+			height: 2.5rem;
+			background-color: var(--default-base);
+			border-radius: var(--radius-full);
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			overflow: hidden;
+			border: 1px solid var(--border);
+		}
+
+		.sui-avatar-img {
+			width: 100%;
+			height: auto;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			opacity: 0.5;
+			transition: opacity 0.2s ease-in;
+		}
+
+		.sui-avatar-img.sui-avatar-loaded {
+			opacity: 1;
+		}
+
+		.sui-text-content {
+			display: flex;
+			flex-direction: column;
+			gap: 0.125rem;
+		}
+
+		.sui-name {
+			font-size: 1em;
+			font-weight: 600;
+		}
+
+		.sui-description {
+			font-size: 0.875em;
+			font-weight: 400;
+			color: var(--text-muted);
+		}
 	}
-    .sui-text-content {
-        display: flex;
-        flex-direction: column;
-        gap: 0.125rem;
-    }
-    .sui-name {
-        font-size: 1em;
-        font-weight: 600;
-    }
-    .sui-description {
-        font-size: 0.875em;
-        font-weight: 400;
-        color: var(--text-muted);
-    }
 </style>

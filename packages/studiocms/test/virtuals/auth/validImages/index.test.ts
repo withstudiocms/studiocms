@@ -25,9 +25,15 @@ describe(parentSuiteName, () => {
 				expect(typeof img.name).toBe('string');
 				expect(typeof img.label).toBe('string');
 				expect(['local', 'web']).toContain(img.format);
-				// light and dark can be null or object
-				expect(img.light === null || typeof img.light === 'object').toBe(true);
-				expect(img.dark === null || typeof img.dark === 'object').toBe(true);
+				if (img.format === 'local') {
+					expect(img.light).not.toBeNull();
+					expect(img.dark).not.toBeNull();
+				}
+				// For web format, light and dark should not be present
+				if (img.format === 'web') {
+					expect(img).not.toHaveProperty('light');
+					expect(img).not.toHaveProperty('dark');
+				}
 			});
 		});
 	});
@@ -60,8 +66,6 @@ describe(parentSuiteName, () => {
 			const customImage = validImages.find((img) => img.name === 'custom');
 			expect(customImage).toBeDefined();
 			expect(customImage?.format).toBe('web');
-			expect(customImage?.light).toBeNull();
-			expect(customImage?.dark).toBeNull();
 		});
 	});
 

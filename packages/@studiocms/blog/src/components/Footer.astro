@@ -8,11 +8,12 @@ const today = new Date();
 ---
 
 <footer>
-	&copy; <span id="footer-year">{today.getFullYear()}</span> {siteTitle}. All rights reserved.
+	&copy; <span id="footer-year">{today.getFullYear()}</span>
+	{siteTitle}. All rights reserved.
 </footer>
 
 <script is:inline>
-	const footerYear = document.getElementById('footer-year');
+	const footerYear = document.getElementById("footer-year");
 	footerYear.textContent = new Date().getFullYear();
 </script>
 

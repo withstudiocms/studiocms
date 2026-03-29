@@ -75,11 +75,12 @@
     "@oslojs/encoding": "^1.1.0"
   },
   "devDependencies": {
-    "@types/node": "catalog:"
+    "@types/node": "catalog:",
+    "astro": "catalog:astrojs-current"
   },
   "peerDependencies": {
 		"@effect/platform": "catalog:effect",
-    "astro": "catalog:min",
+    "astro": "catalog:astrojs-min",
 		"effect": "catalog:effect",
     "effectify": "workspace:^"
   }

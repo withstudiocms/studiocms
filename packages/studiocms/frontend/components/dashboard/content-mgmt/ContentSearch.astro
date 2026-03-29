@@ -102,11 +102,12 @@ const t = useTranslations(lang, '@studiocms/dashboard:content-sidebar');
             Effect.orElse(
                 dashboardClient.pipe(
                     Effect.flatMap((client) => client.search.searchList({})),
-                    Effect.tapError(Effect.logError)
+                    Effect.tapError(Effect.logError),
                 ),
-                () => Effect.log("Failed to fetch search list, returning empty list").pipe(
-                    Effect.as([] as SearchList)
-                ),
+                () =>
+                    Effect.log(
+                        "Failed to fetch search list, returning empty list",
+                    ).pipe(Effect.as([] as SearchList)),
             ),
         );
     }

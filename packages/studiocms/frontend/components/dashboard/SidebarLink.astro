@@ -2,12 +2,10 @@
 import { Icon } from 'studiocms:ui/components/icon';
 import type { AvailableIcons } from 'studiocms:ui/icons';
 import type { HTMLAttributes } from 'astro/types';
+import type { OutlinedIcons } from './sidebarConfig';
 
 interface Props extends HTMLAttributes<'a'> {
-	/**
-	 * ONLY USE OUTLINED ICONS! Shit will break otherwise
-	 */
-	icon: AvailableIcons;
+	icon: OutlinedIcons;
 	href: string;
 }
 
@@ -74,19 +72,20 @@ const compId = crypto.randomUUID();
     }
 
     setupEventListeners() {
-      this.addEventListener('click', (event) => {
+      this.addEventListener("click", (event) => {
         const e = event as MouseEvent;
         const url = new URL(this.href, window.location.origin);
-        const isHttp = url.protocol === 'http:' || url.protocol === 'https:';
-        const target = this.getAttribute('target');
-        const openInNewTab = target === '_blank' || e.ctrlKey || e.metaKey || e.button === 1;
+        const isHttp = url.protocol === "http:" || url.protocol === "https:";
+        const target = this.getAttribute("target");
+        const openInNewTab =
+          target === "_blank" || e.ctrlKey || e.metaKey || e.button === 1;
 
         if (!isHttp) return;
 
         if (openInNewTab) {
           // Preserve default middle-click behavior if this were a native link
           e.preventDefault();
-          window.open(url.href, '_blank');
+          window.open(url.href, "_blank");
           return;
         }
 
@@ -154,9 +153,9 @@ const compId = crypto.randomUUID();
           ? "block"
           : "none";
       if (isActive) {
-        this.setAttribute('aria-current', 'page');
+        this.setAttribute("aria-current", "page");
       } else {
-        this.removeAttribute('aria-current');
+        this.removeAttribute("aria-current");
       }
     }
 

@@ -20,12 +20,56 @@ const translations = generateComponentTranslationMap('@studiocms/component-regis
   data-no-output={noOutput ? "true" : "false"}
   data-trigger-id={triggerId}
   data-translations={JSON.stringify(translations)}
-  data-lang-storage-key={'studiocms-i18n-locale'}
+  data-lang-storage-key={"studiocms-i18n-locale"}
 >
 </component-registry-modal>
 
 <style is:global>
-  :root {
+  [data-theme="light"] component-registry-modal {
+    --component-registry-bg-base: var(--background-base, hsl(0 0% 97%));
+    --component-registry-bg-step-1: var(--background-step-1, hsl(0 0% 95%));
+    --component-registry-bg-step-2: var(--background-step-2, hsl(0, 0%, 92%));
+    --component-registry-bg-step-3: var(--background-step-3, hsl(0, 0%, 89%));
+
+    --component-registry-text-normal: var(--text-normal, hsl(0 0% 0%));
+    --component-registry-text-dimmed: var(--text-dimmed, hsl(0 0% 0% / 0.8));
+    --component-registry-text-muted: var(--text-muted, hsl(0 0% 0% / 0.75));
+    --component-registry-text-inverted: var(
+      --text-inverted,
+      var(--component-registry-white)
+    );
+
+    --component-registry-border: var(--border, hsl(263 5% 68%));
+    --component-registry-shadow: var(--shadow, hsl(0 0% 65% / 0.6));
+
+    --component-registry-default-base: var(--default-base, hsl(0, 0%, 82%));
+    --component-registry-default-hover: var(--default-hover, hsl(0, 0%, 91%));
+    --component-registry-default-active: var(--default-active, hsl(0, 0%, 86%));
+
+    --component-registry-primary-base: var(--primary-base, hsl(259, 74%, 25%));
+    --component-registry-primary-hover: var(
+      --primary-hover,
+      hsl(259, 76%, 35%)
+    );
+    --component-registry-primary-active: var(
+      --primary-active,
+      hsl(259, 76%, 32%)
+    );
+    --component-registry-primary-flat: var(
+      --primary-flat,
+      hsl(259 83% 73% / 0.1)
+    );
+
+    --component-registry-success-base: var(--success-base, hsl(142, 60%, 44%));
+    --component-registry-success-hover: var(
+      --success-hover,
+      hsl(142, 60%, 55%)
+    );
+
+    --component-registry-overlay: hsl(0 0% 0% / 0.4);
+  }
+
+  component-registry-modal {
     --component-registry-bg-base: var(--background-base, hsl(0 0% 6%));
     --component-registry-bg-step-1: var(--background-step-1, hsl(0 0% 8%));
     --component-registry-bg-step-2: var(--background-step-2, hsl(0, 0%, 9%));
@@ -76,53 +120,7 @@ const translations = generateComponentTranslationMap('@studiocms/component-regis
     --component-registry-radius-sm: 4px;
     --component-registry-radius-md: 6px;
     --component-registry-radius-lg: 8px;
-  }
 
-  [data-theme="light"] {
-    --component-registry-bg-base: var(--background-base, hsl(0 0% 97%));
-    --component-registry-bg-step-1: var(--background-step-1, hsl(0 0% 95%));
-    --component-registry-bg-step-2: var(--background-step-2, hsl(0, 0%, 92%));
-    --component-registry-bg-step-3: var(--background-step-3, hsl(0, 0%, 89%));
-
-    --component-registry-text-normal: var(--text-normal, hsl(0 0% 0%));
-    --component-registry-text-dimmed: var(--text-dimmed, hsl(0 0% 0% / 0.8));
-    --component-registry-text-muted: var(--text-muted, hsl(0 0% 0% / 0.75));
-    --component-registry-text-inverted: var(
-      --text-inverted,
-      var(--component-registry-white)
-    );
-
-    --component-registry-border: var(--border, hsl(263 5% 68%));
-    --component-registry-shadow: var(--shadow, hsl(0 0% 65% / 0.6));
-
-    --component-registry-default-base: var(--default-base, hsl(0, 0%, 82%));
-    --component-registry-default-hover: var(--default-hover, hsl(0, 0%, 91%));
-    --component-registry-default-active: var(--default-active, hsl(0, 0%, 86%));
-
-    --component-registry-primary-base: var(--primary-base, hsl(259, 74%, 25%));
-    --component-registry-primary-hover: var(
-      --primary-hover,
-      hsl(259, 76%, 35%)
-    );
-    --component-registry-primary-active: var(
-      --primary-active,
-      hsl(259, 76%, 32%)
-    );
-    --component-registry-primary-flat: var(
-      --primary-flat,
-      hsl(259 83% 73% / 0.1)
-    );
-
-    --component-registry-success-base: var(--success-base, hsl(142, 60%, 44%));
-    --component-registry-success-hover: var(
-      --success-hover,
-      hsl(142, 60%, 55%)
-    );
-
-    --component-registry-overlay: hsl(0 0% 0% / 0.4);
-  }
-
-  component-registry-modal {
     display: inline-block;
 
     .modal-overlay {
@@ -442,7 +440,7 @@ const translations = generateComponentTranslationMap('@studiocms/component-regis
 
 <script>
   import type { ComponentRegistryEntry } from "@withstudiocms/component-registry/types";
-  import { $locale } from 'studiocms:i18n/client';
+  import { $locale } from "studiocms:i18n/client";
 
   export interface TranslationStrings {
     // Modal
@@ -489,7 +487,8 @@ const translations = generateComponentTranslationMap('@studiocms/component-regis
     private t(key: keyof TranslationStrings): string {
       return (
         this.translations[this.currentLang]?.[key] ??
-        this.translations["en"][key] ?? key
+        this.translations["en"][key] ??
+        key
       );
     }
 

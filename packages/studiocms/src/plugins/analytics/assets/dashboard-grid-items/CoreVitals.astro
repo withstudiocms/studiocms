@@ -26,33 +26,42 @@ const summaries = CoreWebVitals.map((metric) => ({
 	summary: webVitals.summary[metric],
 }));
 ---
-<Tabs variant={'starlight'}>
-    <TabItem label='24 Hours'>
+
+<Tabs variant={"starlight"}>
+    <TabItem label="24 Hours">
         <div class="flex-wrap">
-            {twentyFourHourSummary.map(({ metric, summary }) => (
-                <SummaryCard {metric} {summary} />
-            ))}
+            {
+                twentyFourHourSummary.map(({ metric, summary }) => (
+                    <SummaryCard {metric} {summary} />
+                ))
+            }
         </div>
     </TabItem>
-    <TabItem label='7 Days'>
+    <TabItem label="7 Days">
         <div class="flex-wrap">
-            {sevenDaySummary.map(({ metric, summary }) => (
-                <SummaryCard {metric} {summary} />
-            ))}
+            {
+                sevenDaySummary.map(({ metric, summary }) => (
+                    <SummaryCard {metric} {summary} />
+                ))
+            }
         </div>
     </TabItem>
-    <TabItem label='30 Days'>
+    <TabItem label="30 Days">
         <div class="flex-wrap">
-            {thirtyDaySummary.map(({ metric, summary }) => (
-                <SummaryCard {metric} {summary} />
-            ))}
+            {
+                thirtyDaySummary.map(({ metric, summary }) => (
+                    <SummaryCard {metric} {summary} />
+                ))
+            }
         </div>
     </TabItem>
-    <TabItem label='All Time'>
+    <TabItem label="All Time">
         <div class="flex-wrap">
-            {summaries.map(({ metric, summary }) => (
-                <SummaryCard {metric} {summary} />
-            ))}
+            {
+                summaries.map(({ metric, summary }) => (
+                    <SummaryCard {metric} {summary} />
+                ))
+            }
         </div>
     </TabItem>
 </Tabs>
@@ -61,6 +70,6 @@ const summaries = CoreWebVitals.map((metric) => ({
     .flex-wrap {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-        gap: .5rem;
+        gap: 0.5rem;
     }
 </style>

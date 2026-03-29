@@ -17,24 +17,25 @@ const { name, entries } = Astro.props;
         <div class="dynamic-entry">
             <div class="key">
                 <div class="key-label">
-                    <slot name="key-label">Key</slot> <span class="required-star">*</span>
+                    <slot name="key-label">Key</slot>
+                    <span class="required-star">*</span>
                 </div>
-                <span 
-                    class="key-value-span" 
+                <span
+                    class="key-value-span"
                     contenteditable
                     role="textbox"
                     aria-label="Metadata key"
-                    aria-required="true"
-                ></span>
+                    aria-required="true"></span>
             </div>
             <div class="value">
-                <div class="value-label"><slot name="value-label">Value</slot></div>
-                <span 
-                    class="key-value-span" 
+                <div class="value-label">
+                    <slot name="value-label">Value</slot>
+                </div>
+                <span
+                    class="key-value-span"
                     contenteditable
                     role="textbox"
-                    aria-label="Metadata value"
-                ></span>
+                    aria-label="Metadata value"></span>
             </div>
             <button
                 class="remove-pair-button"
@@ -52,7 +53,9 @@ const { name, entries } = Astro.props;
     </template>
 
     <template id="alert-message-duplicate-keys">
-        <slot name="alert-message-duplicate-keys">Duplicate keys are not allowed.</slot>
+        <slot name="alert-message-duplicate-keys"
+            >Duplicate keys are not allowed.</slot
+        >
     </template>
 
     <div class="header">
@@ -247,12 +250,15 @@ const { name, entries } = Astro.props;
             const entries = this.getAttribute("entries");
             if (entries) {
                 try {
-                    const parsed = JSON.parse(entries) as Record<string, string>;
+                    const parsed = JSON.parse(entries) as Record<
+                        string,
+                        string
+                    >;
                     for (const [key, value] of Object.entries(parsed)) {
                         this.entries.set(key, { key, value });
                     }
                 } catch (error) {
-                    console.error('Failed to parse entries attribute:', error);
+                    console.error("Failed to parse entries attribute:", error);
                     // Continue with empty entries map
                 }
             }
@@ -290,13 +296,21 @@ const { name, entries } = Astro.props;
                         const entries = this.getAttribute("entries");
                         if (entries) {
                             try {
-                                const parsed = JSON.parse(entries) as Record<string, string>;
+                                const parsed = JSON.parse(entries) as Record<
+                                    string,
+                                    string
+                                >;
                                 this.entries.clear();
-                                for (const [key, value] of Object.entries(parsed)) {
+                                for (const [key, value] of Object.entries(
+                                    parsed,
+                                )) {
                                     this.entries.set(key, { key, value });
                                 }
                             } catch (error) {
-                                console.error('Failed to parse entries attribute:', error);
+                                console.error(
+                                    "Failed to parse entries attribute:",
+                                    error,
+                                );
                             }
                             this.render();
                         }
@@ -315,7 +329,9 @@ const { name, entries } = Astro.props;
                 const clone = this.template.content.cloneNode(
                     true,
                 ) as DocumentFragment;
-                const entryEl = clone.querySelector('.dynamic-entry') as HTMLElement;
+                const entryEl = clone.querySelector(
+                    ".dynamic-entry",
+                ) as HTMLElement;
                 const keySpan = clone.querySelector(
                     ".key .key-value-span",
                 ) as HTMLElement;
@@ -343,8 +359,12 @@ const { name, entries } = Astro.props;
         }
 
         addPair() {
-            const clone = this.template.content.cloneNode(true) as DocumentFragment;
-            const entryEl = clone.querySelector('.dynamic-entry') as HTMLElement;
+            const clone = this.template.content.cloneNode(
+                true,
+            ) as DocumentFragment;
+            const entryEl = clone.querySelector(
+                ".dynamic-entry",
+            ) as HTMLElement;
             if (entryEl) {
                 entryEl.id = `dynamic-entry-${this.idCounter++}`;
             }
@@ -359,10 +379,10 @@ const { name, entries } = Astro.props;
             return result;
         }
 
-        getAlertMessageTemplate(type: 'keysEmpty' | 'duplicateKeys'): string {
+        getAlertMessageTemplate(type: "keysEmpty" | "duplicateKeys"): string {
             const map = {
-                keysEmpty: 'alert-message-keys-empty',
-                duplicateKeys: 'alert-message-duplicate-keys',
+                keysEmpty: "alert-message-keys-empty",
+                duplicateKeys: "alert-message-duplicate-keys",
             } as const;
 
             const template = this.querySelector(
@@ -391,11 +411,12 @@ const { name, entries } = Astro.props;
 
                 if (!key) {
                     hasErrors = true;
-                    errorMessage = this.getAlertMessageTemplate('keysEmpty');
+                    errorMessage = this.getAlertMessageTemplate("keysEmpty");
                     keySpan.classList.add("invalid");
                 } else if (seenKeys.has(key)) {
                     hasErrors = true;
-                    errorMessage = this.getAlertMessageTemplate('duplicateKeys');
+                    errorMessage =
+                        this.getAlertMessageTemplate("duplicateKeys");
                 } else {
                     keySpan.classList.remove("invalid");
                 }
@@ -405,18 +426,23 @@ const { name, entries } = Astro.props;
                     this.entries.set(key, { key, value });
                 }
             });
-            
+
             // Set final validation state after processing all entries
             if (hasErrors) {
-                this.alertContainer.querySelector(".alert-message")!.innerHTML = errorMessage;
+                this.alertContainer.querySelector(".alert-message")!.innerHTML =
+                    errorMessage;
                 this.alertContainer.classList.add("visible");
-                this.#internals.setValidity({ customError: true }, errorMessage);
+                this.#internals.setValidity(
+                    { customError: true },
+                    errorMessage,
+                );
             } else {
-                this.alertContainer.querySelector(".alert-message")!.innerHTML = "";
+                this.alertContainer.querySelector(".alert-message")!.innerHTML =
+                    "";
                 this.alertContainer.classList.remove("visible");
                 this.#internals.setValidity({}, "");
             }
-    
+
             this._value = JSON.stringify(this.getEntries());
             this.updateValue(this._value);
         }

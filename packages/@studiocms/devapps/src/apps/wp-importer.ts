@@ -46,8 +46,6 @@ export default defineToolbarApp({
 	init(canvas, eventTarget) {
 		createCanvas();
 
-		document.addEventListener('astro:after-swap', createCanvas);
-
 		closeOnOutsideClick(eventTarget);
 		function createCanvas() {
 			const windowComponent = createWindowElement(

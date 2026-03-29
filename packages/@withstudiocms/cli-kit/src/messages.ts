@@ -409,7 +409,7 @@ const fitToTerminalHeight = (stream: typeof stdout, text: string) => {
  * @param stream - The output stream to write to (defaults to stdout)
  * @param options - Configuration options
  * @param options.showCursor - Whether to show the cursor during rendering (defaults to false)
- * @param options.symbol - The symbol to use for the message prefix (defaults to a grey bar)
+ * @param options.symbol - The symbol to use for the message prefix (defaults to a gray bar)
  *
  * @returns A render function with the following signature:
  * - `render(message: string)` - Updates the terminal with the given message
@@ -427,7 +427,7 @@ const fitToTerminalHeight = (stream: typeof stdout, text: string) => {
  */
 export function createClackMessageUpdate(
 	stream = stdout,
-	{ showCursor = false, symbol = styleText('grey', S_BAR) } = {}
+	{ showCursor = false, symbol = styleText('gray', S_BAR) } = {}
 ) {
 	let previousLineCount = 0;
 	let previousWidth = getWidth(stream);
@@ -449,7 +449,7 @@ export function createClackMessageUpdate(
 		const [firstLine, ...lines] = arguments_.split('\n');
 		parts.push(
 			`${symbol}  ${firstLine}`,
-			...lines.map((ln) => `${styleText('grey', S_BAR)}  ${ln}`)
+			...lines.map((ln) => `${styleText('gray', S_BAR)}  ${ln}`)
 		);
 
 		let output = fitToTerminalHeight(stream, `${parts.join('\n')}\n`);

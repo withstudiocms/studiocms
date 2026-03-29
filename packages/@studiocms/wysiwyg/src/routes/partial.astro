@@ -41,12 +41,18 @@ const Component = componentRegistry[componentKey];
 
 // Handle case where component doesn't exist
 if (!Component) {
-	return new Response(JSON.stringify({ error: `Component with key "${componentKey}" not found` }), {
-		status: 404,
-		headers: { 'Content-Type': 'application/json' },
-	});
+	return new Response(
+		JSON.stringify({
+			error: `Component with key "${componentKey}" not found`,
+		}),
+		{
+			status: 404,
+			headers: { 'Content-Type': 'application/json' },
+		}
+	);
 }
 ---
+
 <Component {...props}>
 	{slot && <Fragment set:html={slot} />}
 </Component>

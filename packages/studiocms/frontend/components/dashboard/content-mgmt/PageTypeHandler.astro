@@ -16,7 +16,7 @@ const { pluginFields } = Astro.props;
 </page-type-handler>
 
 <script>
-	import type { SettingsField } from 'studiocms:plugin-helpers';
+	import type { SettingsField } from "studiocms:plugin-helpers";
 
 	type PluginField = {
 		identifier: string;
@@ -62,10 +62,13 @@ const { pluginFields } = Astro.props;
 		}
 
 		private setupPluginFieldsHandler() {
-			const pageTypeDropdown = document.querySelector("#page-type-dropdown");
+			const pageTypeDropdown = document.querySelector(
+				"#page-type-dropdown",
+			);
 			if (!pageTypeDropdown) return;
 
-			const pageTypeOptions = pageTypeDropdown.querySelectorAll(".sui-select-option");
+			const pageTypeOptions =
+				pageTypeDropdown.querySelectorAll(".sui-select-option");
 
 			pageTypeOptions.forEach((option) => {
 				option.addEventListener("click", () => {
@@ -79,17 +82,21 @@ const { pluginFields } = Astro.props;
 			if (!selectedValue) return;
 
 			const matchedPluginFields = this.pluginFields.find(
-				(pluginField) => pluginField.identifier === selectedValue
+				(pluginField) => pluginField.identifier === selectedValue,
 			);
 
 			this.toggleCustomPageTypeFields(matchedPluginFields);
 		}
 
 		private toggleCustomPageTypeFields(matchedPluginFields?: PluginField) {
-			const customPageTypeFields = document.getElementById("custom-page-type-fields");
+			const customPageTypeFields = document.getElementById(
+				"custom-page-type-fields",
+			);
 			if (!customPageTypeFields) return;
 
-			const hasFields = matchedPluginFields?.fields && matchedPluginFields.fields.length > 0;
+			const hasFields =
+				matchedPluginFields?.fields &&
+				matchedPluginFields.fields.length > 0;
 
 			if (hasFields) {
 				customPageTypeFields.classList.remove("page-types-hidden");

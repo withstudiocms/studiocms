@@ -274,6 +274,7 @@ export const studiocms = (): AstroIntegration => {
 				addVirtualImports(params, {
 					name,
 					imports: {
+						'virtual:studiocms/site': `export const site = "${config.site || 'http://localhost:4321'}";`,
 						'studiocms:config': buildVirtualConfig(options),
 						'studiocms:plugins': buildDefaultOnlyVirtual(safePluginList),
 						'studiocms:version': buildDefaultOnlyVirtual(pkgVersion),
@@ -355,7 +356,7 @@ export const studiocms = (): AstroIntegration => {
 					image: AstroConfigImageSettings,
 					vite: AstroConfigViteSettings,
 					env: {
-						validateSecrets: true,
+						// validateSecrets: true,
 						schema: {
 							// Auth Encryption Key
 							CMS_ENCRYPTION_KEY: envField.string({

@@ -3,6 +3,7 @@ import node from '@astrojs/node';
 import { defineConfig } from 'astro/config';
 import { hmrIntegration } from 'astro-integration-kit/dev';
 import studioCMS from 'studiocms';
+import Inspect from 'vite-plugin-inspect';
 
 const site =
 	process.env.NODE_ENV === 'production'
@@ -35,11 +36,17 @@ const packagePaths = [
 
 // https://astro.build/config
 export default defineConfig({
-	site,
+	site: 'http://localhost:4321',
 	output: 'server',
 	adapter: node({ mode: 'standalone' }),
 	security: {
 		checkOrigin: false,
+		allowedDomains: [
+			{
+				hostname: 'localhost',
+				port: '4321',
+			},
+		],
 	},
 	integrations: [
 		hmrIntegration({
@@ -47,7 +54,9 @@ export default defineConfig({
 		}),
 		studioCMS(),
 	],
-
+	vite: {
+		plugins: [Inspect()],
+	},
 	// Used for devcontainer/docker development
 	server: {
 		port: 4321,

@@ -279,13 +279,13 @@
 		"@types/three": "0.169.0",
 		"@types/pg": "catalog:kysely",
 		"typescript": "catalog:",
-		"vite": "catalog:min"
+		"vite": "catalog:studiocms-peerlock"
 	},
 	"peerDependencies": {
 		"@effect/platform": "catalog:effect",
 		"@effect/platform-node": "catalog:effect",
 		"@libsql/client": "catalog:kysely",
-		"astro": "catalog:min",
+		"astro": "catalog:studiocms-peerlock",
 		"effect": "catalog:effect",
 		"pg": "catalog:kysely",
 		"mysql2": "catalog:kysely"

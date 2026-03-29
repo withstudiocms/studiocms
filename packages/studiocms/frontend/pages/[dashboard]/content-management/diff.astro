@@ -189,7 +189,10 @@ setDataContext(Astro, {
 
 <script>
   import { toast } from "studiocms:ui/components/toaster/client";
-  import { dashboardClient, dashboardSharedCatchTags } from "studiocms:client/apiClients";
+  import {
+    dashboardClient,
+    dashboardSharedCatchTags,
+  } from "studiocms:client/apiClients";
   import * as Effect from "effect/Effect";
 
   const revertMetaData = document.getElementById(
@@ -231,16 +234,16 @@ setDataContext(Astro, {
     }
 
     const response = await dashboardClient.pipe(
-      Effect.flatMap((client) => 
+      Effect.flatMap((client) =>
         client.content.revertToDiff({
           payload: {
             id,
             type,
-          }
-        })
+          },
+        }),
       ),
       Effect.catchTags(dashboardSharedCatchTags),
-      Effect.runPromise
+      Effect.runPromise,
     );
 
     if ("error" in response) {
@@ -311,7 +314,6 @@ setDataContext(Astro, {
 </script>
 
 <style>
-
   .sidebar-links-container {
     display: flex;
     flex-direction: column;

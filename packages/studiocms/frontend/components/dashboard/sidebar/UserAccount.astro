@@ -27,35 +27,45 @@ if (currentUser?.user?.avatar) {
 	userProps.avatar = currentUser.user.avatar;
 }
 ---
+
 <User {...userProps} />
 
 <div
-  id='logged-in-user-details'
-  style='display: none;'
+  id="logged-in-user-details"
+  style="display: none;"
   data-permission-level={permissionLevel}
   data-selector-id={id}
-></div>
+>
+</div>
 
 <script>
-  import {
-      $i18n,
-      baseTranslation,
-  } from 'studiocms:i18n/client';
+  import { $i18n, baseTranslation } from "studiocms:i18n/client";
 
-  const currentPage = '@studiocms/dashboard:user-component';
+  const currentPage = "@studiocms/dashboard:user-component";
 
   const i18n = $i18n(currentPage, baseTranslation[currentPage]);
 
-  const loggedInUserDetails = document.getElementById('logged-in-user-details') as HTMLDivElement;
+  const loggedInUserDetails = document.getElementById(
+    "logged-in-user-details",
+  ) as HTMLDivElement;
 
-  const descriptionKey = loggedInUserDetails.dataset.permissionLevel as "admin" | "editor" | "owner" | "visitor" | "unknown";
+  const descriptionKey = loggedInUserDetails.dataset.permissionLevel as
+    | "admin"
+    | "editor"
+    | "owner"
+    | "visitor"
+    | "unknown";
 
   const selectorId = loggedInUserDetails.dataset.selectorId as string;
 
-  i18n.subscribe(comp => {
+  i18n.subscribe((comp) => {
     const userContainer = document.getElementById(selectorId) as HTMLDivElement;
-    const userTextContent = userContainer.querySelector('.sui-text-content') as HTMLDivElement;
-    const userDescription = userTextContent.querySelector('.sui-description') as HTMLDivElement;
+    const userTextContent = userContainer.querySelector(
+      ".sui-text-content",
+    ) as HTMLDivElement;
+    const userDescription = userTextContent.querySelector(
+      ".sui-description",
+    ) as HTMLDivElement;
     userDescription.textContent = comp[descriptionKey];
-  })
+  });
 </script>

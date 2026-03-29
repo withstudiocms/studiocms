@@ -21,36 +21,34 @@ setDataContext(Astro, {
 });
 ---
 
-<Layout 
-  title={t('title')}
-  description={t('description')}
-  {lang}
-  {config}
-  {currentUser}
-  >
+<Layout
+    title={t("title")}
+    description={t("description")}
+    {lang}
+    {config}
+    {currentUser}
+>
+    <div slot="header">
+        <DashboardPageHeader {lang} {currentUser} />
+        <span class="index-sub-header">
+            <t-dashboard key="sub-header">{t("sub-header")}</t-dashboard>
+        </span>
+    </div>
 
-  <div slot="header">
-    <DashboardPageHeader {lang} {currentUser} />
-    <span class="index-sub-header">
-      <t-dashboard key="sub-header">{t('sub-header')}</t-dashboard>
-    </span>
-  </div>
-
-  <DashboardGrid {lang} {config} {currentUser} />
-
+    <DashboardGrid {lang} {config} {currentUser} />
 </Layout>
 
 <script>
-    import { 
+    import {
         $i18n,
         $localeSettings,
         baseTranslation,
         defaultLang,
         documentUpdater,
         makeTranslation,
-    } from 'studiocms:i18n/client';
+    } from "studiocms:i18n/client";
 
-    const currentPage = '@studiocms/dashboard:index';
+    const currentPage = "@studiocms/dashboard:index";
 
     let lang = defaultLang;
 
@@ -59,12 +57,15 @@ setDataContext(Astro, {
     $localeSettings.subscribe((locale) => {
         lang = locale || defaultLang;
     });
-    
-    i18n.subscribe(comp => {
+
+    i18n.subscribe((comp) => {
         documentUpdater(comp, lang);
     });
 
-    if (!customElements.get('t-dashboard')) {
-        customElements.define('t-dashboard', makeTranslation(currentPage, i18n));
+    if (!customElements.get("t-dashboard")) {
+        customElements.define(
+            "t-dashboard",
+            makeTranslation(currentPage, i18n),
+        );
     }
 </script>

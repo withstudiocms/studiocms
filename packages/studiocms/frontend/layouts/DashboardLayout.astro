@@ -1,11 +1,14 @@
 ---
-import '../styles/folder-tree.css';
+import 'studiocms:ui/reset-css';
+import 'studiocms:ui/global-css';
 import '../styles/dashboard-base.css';
 import '../styles/dashboard-diff.css';
+import '../styles/folder-tree.css';
 import type { UserSessionData } from 'studiocms:auth/lib/types';
 import { defaultLang } from 'studiocms:i18n';
 import type { DynamicConfigEntry, StudioCMSSiteConfig } from '@withstudiocms/sdk/types';
 import type { ComponentProps } from 'astro/types';
+import { LAYOUT_IDS } from '#frontend/consts.ts';
 import Ambients from '../components/Ambients.astro';
 import DoubleSidebar from '../components/dashboard/DoubleSidebar.astro';
 import SidebarModals from '../components/dashboard/SidebarModals.astro';
@@ -43,17 +46,13 @@ const title = makePageTitle(propTitle, config.data);
 const description = propDescription ?? config.data.description;
 ---
 
-<BaseLayout {lang} {title} {description}>
+<BaseLayout {lang} {title} {description} id={LAYOUT_IDS.dashboard}>
   <Ambients />
   <SidebarModals {lang} />
+  {sidebar === "single" && <SingleSidebar {currentUser} />}
   {
-    sidebar === 'single' && (
-      <SingleSidebar {currentUser} />
-    )
-  }
-  {
-    sidebar === 'double' && (
-      <DoubleSidebar {currentUser} >
+    sidebar === "double" && (
+      <DoubleSidebar {currentUser}>
         <slot name="double-sidebar" />
       </DoubleSidebar>
     )
@@ -79,28 +78,31 @@ const description = propDescription ?? config.data.description;
   </style>
 
   <script>
-    import { PluginTranslations } from 'studiocms:i18n/plugins';
+    import { PluginTranslations } from "studiocms:i18n/plugins";
 
-    if (!customElements.get('p-translations')) {
-      customElements.define('p-translations', PluginTranslations);
+    if (!customElements.get("p-translations")) {
+      customElements.define("p-translations", PluginTranslations);
     }
 
     // Whenever the element with id "sui-sidebars" changes width, set the main content width accordingly
-    const doubleSidebar = document.getElementById("sui-sidebars") as HTMLDivElement | null;
+    const doubleSidebar = document.getElementById(
+      "sui-sidebars",
+    ) as HTMLDivElement | null;
     const main = document.querySelector("main");
     const body = document.querySelector("body");
 
     if (doubleSidebar && body && main) {
-    	const resizeObserver = new ResizeObserver(() => {
-     		const newWidth = doubleSidebar.clientWidth;
-				const windowWidth = window.innerWidth;
-				const computedWidth = windowWidth - newWidth;
+      const resizeObserver = new ResizeObserver(() => {
+        const newWidth = doubleSidebar.clientWidth;
+        const windowWidth = window.innerWidth;
+        const computedWidth = windowWidth - newWidth;
 
-				main.style.maxWidth = computedWidth > 840 ? `${computedWidth}px` : `100%`;
-     	});
+        main.style.maxWidth =
+          computedWidth > 840 ? `${computedWidth}px` : `100%`;
+      });
 
-    	resizeObserver.observe(doubleSidebar);
-    	resizeObserver.observe(body);
+      resizeObserver.observe(doubleSidebar);
+      resizeObserver.observe(body);
     }
   </script>
 </BaseLayout>

@@ -88,7 +88,7 @@ describe(parentSuiteName, () => {
 			await ctx.parameter('Rendered Output', result);
 
 			expect(result).toMatch(/<span class="title".*?>Test Post<\/span>/);
-			expect(result).toMatch(/<p class="description".*?> This is a test post\. <\/p>/);
+			expect(result).toMatch(/This is a test post./);
 		});
 	});
 

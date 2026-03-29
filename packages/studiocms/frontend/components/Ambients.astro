@@ -4,11 +4,16 @@ import { componentKeys } from 'studiocms:dashboard/augments/components';
 import type { Internal_SCMS_AstroComponent } from '#types';
 ---
 
-{ componentKeys.length > 0 && componentKeys.map((key) => {
-    const Component = Components[key as keyof typeof Components] as unknown as Internal_SCMS_AstroComponent;
-    return <Component />;
-}) }
+{
+    componentKeys.length > 0 &&
+        componentKeys.map((key) => {
+            const Component = Components[
+                key as keyof typeof Components
+            ] as unknown as Internal_SCMS_AstroComponent;
+            return <Component />;
+        })
+}
 
 <script>
-    import 'studiocms:dashboard/augments/scripts';
+    import "studiocms:dashboard/augments/scripts";
 </script>

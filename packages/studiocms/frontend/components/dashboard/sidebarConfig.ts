@@ -4,12 +4,17 @@ import { type FinalDashboardPage, getPluginDashboardPages } from 'studiocms:plug
 import type { AvailableIcons } from 'studiocms:ui/icons';
 
 /**
+ * SidebarLink is a custom web component that renders a link with an icon for use in the dashboard sidebar. It manages its active state based on the current URL and supports keyboard navigation and accessibility features.
+ */
+export type OutlinedIcons = Exclude<AvailableIcons, `${string}-solid`>;
+
+/**
  * Represents a link in the sidebar of the dashboard.
  */
 interface SidebarLink {
 	title?: string;
 	key?: string;
-	icon: AvailableIcons;
+	icon: OutlinedIcons;
 	href: string;
 }
 
@@ -41,7 +46,7 @@ function filterAndProcessPages(
 
 	for (const { title: t, icon: ico, slug, requiredPermissions } of pages) {
 		const href = makeDashboardRoute(slug);
-		const icon = (ico || 'heroicons:cube-transparent') as AvailableIcons;
+		const icon = (ico || 'heroicons:cube-transparent') as OutlinedIcons;
 		const title = t[lang] || t[defaultLang];
 
 		if (admin) {
