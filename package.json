@@ -8,7 +8,7 @@
   },
   "packageManager": "pnpm@10.17.0",
   "engines": {
-    "node": ">=22.22.2"
+    "node": ">=22.20.0"
   },
   "workspaces": [
     "packages/@studiocms/*",
