@@ -43,7 +43,9 @@ type EffectSchemaFromZod<TSchema extends ZodSchema> = Schema.Schema<
  * @param schema - The Zod schema to be converted. It can be any Zod schema, and the function will attempt to match it against known Zod schema types to perform the conversion. If the schema type is not recognized or supported, an error will be thrown.
  * @returns The corresponding Effect schema that matches the structure and validation logic of the input Zod schema. The returned schema can be used in the Effect library for validation and type inference.
  */
-export function zodToEffect<TSchema extends ZodSchema>(schema: TSchema): EffectSchemaFromZod<TSchema>;
+export function zodToEffect<TSchema extends ZodSchema>(
+	schema: TSchema
+): EffectSchemaFromZod<TSchema>;
 
 export function zodToEffect(schema: ZodSchema): Schema.Schema.AnyNoContext {
 	return fold<Schema.Schema.AnyNoContext>((x) => {

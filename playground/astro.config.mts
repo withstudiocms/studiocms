@@ -36,7 +36,7 @@ const packagePaths = [
 
 // https://astro.build/config
 export default defineConfig({
-	site: 'http://localhost:4321',
+	site,
 	output: 'server',
 	adapter: node({ mode: 'standalone' }),
 	security: {
