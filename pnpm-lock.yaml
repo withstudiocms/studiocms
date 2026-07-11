@@ -1452,11 +1452,11 @@ importers:
         specifier: ^9.5.4
         version: 9.5.5(astro@5.18.2(@types/node@22.20.1)(jiti@2.7.0)(rollup@4.62.2)(tsx@4.23.0)(typescript@5.9.3)(yaml@2.9.0))
       '@effect/platform':
-        specifier: ^0.95.0
-        version: 0.95.0(effect@3.21.4)
+        specifier: ^0.96.2
+        version: 0.96.2(effect@3.21.4)
       '@effect/platform-node':
-        specifier: ^0.105.0
-        version: 0.105.0(@effect/cluster@0.57.0(@effect/platform@0.95.0(effect@3.21.4))(@effect/rpc@0.74.0(@effect/platform@0.95.0(effect@3.21.4))(effect@3.21.4))(@effect/sql@0.50.0(@effect/experimental@0.59.0(@effect/platform@0.95.0(effect@3.21.4))(effect@3.21.4))(@effect/platform@0.95.0(effect@3.21.4))(effect@3.21.4))(@effect/workflow@0.17.0(@effect/experimental@0.59.0(@effect/platform@0.95.0(effect@3.21.4))(effect@3.21.4))(@effect/platform@0.95.0(effect@3.21.4))(@effect/rpc@0.74.0(@effect/platform@0.95.0(effect@3.21.4))(effect@3.21.4))(effect@3.21.4))(effect@3.21.4))(@effect/platform@0.95.0(effect@3.21.4))(@effect/rpc@0.74.0(@effect/platform@0.95.0(effect@3.21.4))(effect@3.21.4))(@effect/sql@0.50.0(@effect/experimental@0.59.0(@effect/platform@0.95.0(effect@3.21.4))(effect@3.21.4))(@effect/platform@0.95.0(effect@3.21.4))(effect@3.21.4))(effect@3.21.4)
+        specifier: ^0.107.0
+        version: 0.107.0(@effect/cluster@0.57.0(@effect/platform@0.96.2(effect@3.21.4))(@effect/rpc@0.74.0(@effect/platform@0.96.2(effect@3.21.4))(effect@3.21.4))(@effect/sql@0.50.0(@effect/experimental@0.59.0(@effect/platform@0.96.2(effect@3.21.4))(effect@3.21.4))(@effect/platform@0.96.2(effect@3.21.4))(effect@3.21.4))(@effect/workflow@0.17.0(@effect/experimental@0.59.0(@effect/platform@0.96.2(effect@3.21.4))(effect@3.21.4))(@effect/platform@0.96.2(effect@3.21.4))(@effect/rpc@0.74.0(@effect/platform@0.96.2(effect@3.21.4))(effect@3.21.4))(effect@3.21.4))(effect@3.21.4))(@effect/platform@0.96.2(effect@3.21.4))(@effect/rpc@0.74.0(@effect/platform@0.96.2(effect@3.21.4))(effect@3.21.4))(@effect/sql@0.50.0(@effect/experimental@0.59.0(@effect/platform@0.96.2(effect@3.21.4))(effect@3.21.4))(@effect/platform@0.96.2(effect@3.21.4))(effect@3.21.4))(effect@3.21.4)
       '@studiocms/blog':
         specifier: ^0.3.0
         version: link:../../packages/@studiocms/blog
@@ -1467,10 +1467,10 @@ importers:
         specifier: ^5.18.0
         version: 5.18.2(@types/node@22.20.1)(jiti@2.7.0)(rollup@4.62.2)(tsx@4.23.0)(typescript@5.9.3)(yaml@2.9.0)
       effect:
-        specifier: ^3.20.0
+        specifier: ^3.21.4
         version: 3.21.4
       pg:
-        specifier: ^8.20.0
+        specifier: ^8.22.0
         version: 8.22.0
       sharp:
         specifier: ^0.34.3
