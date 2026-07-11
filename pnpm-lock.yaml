@@ -957,7 +957,7 @@ importers:
   packages/@withstudiocms/effect:
     dependencies:
       '@clack/prompts':
-        specifier: ^1.1.0
+        specifier: ^1.7.0
         version: 1.7.0
       '@effect/cli':
         specifier: catalog:effect
@@ -981,10 +981,10 @@ importers:
         specifier: ^4.0.8
         version: 4.0.8
       nodemailer:
-        specifier: ^8.0.3
+        specifier: ^8.0.11
         version: 8.0.11
       socks:
-        specifier: ^2.8.7
+        specifier: ^2.8.9
         version: 2.8.9
     devDependencies:
       '@types/micromatch':
@@ -994,7 +994,7 @@ importers:
         specifier: 'catalog:'
         version: 22.20.1
       '@types/nodemailer':
-        specifier: ^7.0.11
+        specifier: ^7.0.12
         version: 7.0.12
       astro:
         specifier: catalog:astrojs-current
