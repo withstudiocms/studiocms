@@ -99,7 +99,14 @@ export const PublicV1FolderGetSearchParams = Schema.Struct({
 });
 
 const PageDataStrippedBase = StudioCMSPageData.Select.omit('categories', 'tags', 'contributorIds');
-const UsersTableBase = StudioCMSUsersTable.Select.omit('email', 'password');
+const UsersTableBase = StudioCMSUsersTable.Select.omit(
+	'email',
+	'password',
+	'updatedAt',
+	'createdAt',
+	'emailVerified',
+	'notifications'
+);
 
 /**
  * Combined schema for page data with related information.
