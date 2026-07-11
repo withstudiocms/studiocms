@@ -1,5 +1,5 @@
 import { toast } from '@studiocms/ui/components/Toast/toast.js';
-import type { CommandFunction, CommandObject, Editor, ObjectAny } from 'grapesjs';
+import type { CommandDefinitionById, Editor, ObjectAny } from 'grapesjs';
 import type { RequiredCustomCodeOptions, RequiredGrapesBlocksOptions } from '../types.js';
 import clear from './clear.js';
 import customCodeCommands from './customCodeCommands.js';
@@ -8,10 +8,10 @@ import openImport from './openImport.js';
 
 export const AddCmd =
 	(editor: Editor) =>
-	<T extends ObjectAny>(
-		id: string,
-		// biome-ignore lint/suspicious/noExplicitAny: this is the source type used by grapesjs
-		command: CommandFunction | CommandObject<any, T>
+	// biome-ignore lint/complexity/noBannedTypes: just working with GrapesJS types here
+	<const TId extends string, T extends ObjectAny = {}>(
+		id: TId,
+		command: CommandDefinitionById<TId, T>
 	) => {
 		editor.Commands.add(id, command);
 	};
