@@ -52,7 +52,7 @@ export class QueryParseError extends Data.TaggedError('QueryParseError')<{
  */
 export class QueryError extends Data.TaggedError('QueryError')<{
 	message: string;
-}> {}
+}> { }
 
 /**
  * Error used to indicate that a requested entity or resource could not be found.
@@ -77,7 +77,7 @@ export class QueryError extends Data.TaggedError('QueryError')<{
  *   }
  * }
  */
-export class NotFoundError extends Data.TaggedError('NotFoundError') {}
+export class NotFoundError extends Data.TaggedError('NotFoundError') { }
 
 /**
  * Represents any error that can be produced by database operations.
@@ -104,4 +104,4 @@ export type DatabaseError = QueryParseError | QueryError | NotFoundError;
  */
 export class MigratorError extends Data.TaggedError('MigratorError')<{
 	cause: unknown;
-}> {}
+}> { }
