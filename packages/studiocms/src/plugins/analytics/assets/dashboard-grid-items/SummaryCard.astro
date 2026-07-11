@@ -15,7 +15,7 @@ const { metric, summary } = Astro.props;
 
 let message: string | undefined;
 
-if (!summary || !summary.percentiles.p75) {
+if (!summary?.percentiles.p75) {
 	message = 'Not enough data yet';
 }
 

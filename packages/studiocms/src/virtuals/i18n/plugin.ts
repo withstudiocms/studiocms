@@ -18,7 +18,7 @@ import type { ComponentsJSON, TranslationsJSON } from '../../schemas/plugins/i18
 export function $pluginI18n(pluginId: string, componentId: string): Messages<TranslationsJSON> {
 	const translations = pluginTranslations[pluginId];
 
-	if (!translations || !translations[defaultLang]) {
+	if (!translations?.[defaultLang]) {
 		console.warn(`[i18n] Missing translations for plugin "${pluginId}".`);
 		return createI18n($locale, {
 			baseLocale: defaultLang,

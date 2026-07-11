@@ -28,7 +28,7 @@ export const OAuthAPIHandler = HttpApiBuilder.group(StudioCMSAuthApi, 'oauth', (
 				const matchedProvider = oAuthProviders.find((p) => p.safeName === provider);
 
 				// If the provider is not found, not enabled, or does not have an initSession handler, return a 404 to avoid exposing the existence of the endpoint or the provider.
-				if (!matchedProvider || !matchedProvider.enabled || !matchedProvider.initSession) {
+				if (!matchedProvider?.enabled || !matchedProvider.initSession) {
 					return yield* new NotFound();
 				}
 
@@ -64,7 +64,7 @@ export const OAuthAPIHandler = HttpApiBuilder.group(StudioCMSAuthApi, 'oauth', (
 				const matchedProvider = oAuthProviders.find((p) => p.safeName === provider);
 
 				// If the provider is not found, not enabled, or does not have an initCallback handler, return a 404 to avoid exposing the existence of the endpoint or the provider.
-				if (!matchedProvider || !matchedProvider.enabled || !matchedProvider.initCallback) {
+				if (!matchedProvider?.enabled || !matchedProvider.initCallback) {
 					return yield* new NotFound();
 				}
 

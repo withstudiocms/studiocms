@@ -350,7 +350,7 @@ export class StudioCMSPluginTester {
 		const pageType = pageTypes.find((pt) => pt.identifier === identifier);
 
 		// If no page type or renderer component is found, return null
-		if (!pageType || !pageType.rendererComponent) return null;
+		if (!pageType?.rendererComponent) return null;
 
 		try {
 			// Dynamically import the renderer module

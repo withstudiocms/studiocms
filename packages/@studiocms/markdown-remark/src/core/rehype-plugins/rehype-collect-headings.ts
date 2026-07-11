@@ -101,7 +101,7 @@ function isMDXFile(file: VFile): boolean {
  * If it is, return the variable path (i.e. `["*", ..., "VARIABLE"]`) minus the `frontmatter` prefix.
  */
 function getMdxFrontmatterVariablePath(node: MdxTextExpression): string[] | Error {
-	if (!node.data?.estree || node.data.estree.body.length !== 1) return new Error();
+	if (node.data?.estree?.body.length !== 1) return new Error();
 
 	const statement = node.data.estree.body[0];
 

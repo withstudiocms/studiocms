@@ -23,8 +23,8 @@ export class QueryParseError extends Data.TaggedError('QueryParseError')<{
 	cause = this.parseError.cause;
 	message = this.parseError.message;
 	stack = this.parseError.stack;
-	toJSON = this.parseError.toJSON;
-	toString = this.parseError.toString;
+	toJSON = () => this.parseError.toJSON();
+	toString = () => this.parseError.toString();
 }
 
 /**

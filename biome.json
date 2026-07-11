@@ -46,7 +46,6 @@
   "linter": {
     "enabled": true,
     "rules": {
-      "recommended": true,
       "suspicious": {
         "noExplicitAny": "warn",
         "noTsIgnore": "warn",
@@ -76,6 +75,9 @@
       "complexity": {
         "noImportantStyles": "off",
         "noStaticOnlyClass": "off"
+      },
+      "a11y": {
+        "noSvgWithoutTitle": "off"
       }
     }
   },
