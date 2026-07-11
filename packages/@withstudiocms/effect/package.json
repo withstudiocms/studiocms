@@ -84,13 +84,13 @@
 		"deepmerge-ts": "catalog:",
 		"effectify": "workspace:^",
 		"micromatch": "^4.0.8",
-		"nodemailer": "^8.0.11",
+		"nodemailer": "^9.0.3",
 		"socks": "^2.8.9"
 	},
 	"devDependencies": {
 		"@types/micromatch": "^4.0.10",
 		"@types/node": "catalog:",
-		"@types/nodemailer": "^7.0.12",
+		"@types/nodemailer": "^8.0.1",
 		"astro": "catalog:astrojs-current",
 		"typescript": "catalog:"
 	},
