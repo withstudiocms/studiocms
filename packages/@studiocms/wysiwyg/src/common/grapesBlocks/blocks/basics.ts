@@ -110,7 +110,7 @@ export default (editor: Editor, opts: RequiredGrapesBlocksOptions) => {
 	const privateCls = [`.${clsRow}`, `.${clsCell}`];
 	editor.on(
 		'selector:add',
-		(selector) => privateCls.indexOf(selector.getFullName()) >= 0 && selector.set('private', 1)
+		(selector) => privateCls.indexOf(selector.getFullName()) >= 0 && selector.set('private', true)
 	);
 
 	// biome-ignore lint/suspicious/noExplicitAny: This is the type that was already used in the original code
@@ -187,14 +187,13 @@ export default (editor: Editor, opts: RequiredGrapesBlocksOptions) => {
 		content: `<div ${attrsRow}>
             <div ${attrsCell}></div>
           </div>
-          ${
-						addBasicStyle
-							? `<style>
+          ${addBasicStyle
+				? `<style>
               ${styleRow}
               ${styleClm}
             </style>`
-							: ''
-					}`,
+				: ''
+			}`,
 	});
 	addBlock('column2', {
 		...commonBasicBlockProps,
@@ -206,14 +205,13 @@ export default (editor: Editor, opts: RequiredGrapesBlocksOptions) => {
             <div ${attrsCell}></div>
             <div ${attrsCell}></div>
           </div>
-          ${
-						addBasicStyle
-							? `<style>
+          ${addBasicStyle
+				? `<style>
               ${styleRow}
               ${styleClm}
             </style>`
-							: ''
-					}`,
+				: ''
+			}`,
 	});
 	addBlock('column3', {
 		...commonBasicBlockProps,
@@ -226,14 +224,13 @@ export default (editor: Editor, opts: RequiredGrapesBlocksOptions) => {
             <div ${attrsCell}></div>
             <div ${attrsCell}></div>
           </div>
-          ${
-						addBasicStyle
-							? `<style>
+          ${addBasicStyle
+				? `<style>
               ${styleRow}
               ${styleClm}
             </style>`
-							: ''
-					}`,
+				: ''
+			}`,
 	});
 	addBlock('column3-7', {
 		...commonBasicBlockProps,
@@ -245,16 +242,15 @@ export default (editor: Editor, opts: RequiredGrapesBlocksOptions) => {
             <div ${attrsCell} style='${flexGrid ? 'flex-basis' : 'width'}: 30%;'></div>
             <div ${attrsCell} style='${flexGrid ? 'flex-basis' : 'width'}: 70%;'></div>
           </div>
-          ${
-						addBasicStyle
-							? `<style>
+          ${addBasicStyle
+				? `<style>
               ${styleRow}
               ${styleClm}
               ${styleClm30}
               ${styleClm70}
             </style>`
-							: ''
-					}`,
+				: ''
+			}`,
 	});
 	addBlock('text', {
 		...commonBasicBlockProps,
