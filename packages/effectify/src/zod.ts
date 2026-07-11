@@ -30,90 +30,12 @@ const makeError = (schema: Z.Hole<Schema.Schema.Any> | Z.Hole<string>) =>
  */
 export type TemplateLiteralParameter = Schema.Schema.AnyNoContext | AST.LiteralValue;
 
-/*
-TODO: Rework the following type conversion for zod to Effect...
-
-Currently the `zodToEffect` function is implemented using a fold over the Zod schema, which results in a type that is not properly inferred and appears as a union of all possible schema types. This is due to the way the fold function works and how TypeScript infers types in this context. The resulting type of the Effect schema is not what Effect's type system expects, and it will cause LSP errors for end users. This is needs to be fixed.
-
-Example of the type mangling issue:
-
-Zod schema input:
-
-const zodSchema = z.union([
-	z.object({
-		abc: z.tuple([
-			z.string(),
-			z.object({
-				def: z.optional(z.int()),
-				ghi: z.array(z.number()),
-			}),
-		]),
-	}),
-	z.intersection(
-		z.object({
-			jkl: z.record(z.string(), z.array(z.number())),
-		}),
-		z.object({
-			mno: z.map(z.set(z.date()), z.nullable(z.union([z.literal([1, 2, 3]), z.bigint()]))),
-		})
-	),
-]);
-
-The Resulting Effect schema type:
-
-const effectSchema: Schema<{
-    abc: [string, {
-        ghi: number[];
-        def?: number | undefined;
-    }];
-} | ({
-    jkl: Record<string, number[]>;
-} & {
-    mno: Map<Set<Date>, bigint | 3 | 2 | 1 | null>;
-}), {
-    abc: [string, {
-        ghi: number[];
-        def?: number | undefined;
-    }];
-} | ({
-    jkl: Record<string, number[]>;
-} & {
-    mno: Map<Set<Date>, bigint | 3 | 2 | 1 | null>;
-}), never> = zodToEffect(zodSchema);
-
-But the actual output type of `effectSchema` is:
-
-const effectSchema: Schema.Union(
-    Schema.Struct({ 
-        abc: Schema.Tuple(
-            Schema.String, 
-            Schema.Struct({ 
-                def: Schema.optional(Schema.Int), 
-                ghi: Schema.Array(Schema.Number) 
-            })
-        ) 
-    }),
-    Schema.Struct({ 
-        jkl: Schema.Record({ 
-            key: Schema.String, 
-            value: Schema.Array(Schema.Number) 
-        }) 
-    }).pipe(
-        Schema.extend(
-            Schema.Struct({ 
-                mno: Schema.Map({ 
-                    key: Schema.Set(Schema.Date), 
-                    value: Schema.Union(
-                        Schema.Union(Schema.Literal(1, 2, 3), Schema.BigInt), 
-                        Schema.Null
-                    ) 
-                }) 
-            })
-        )
-    )
-) = zodToEffect(zodSchema);
-
-*/
+type ZodSchema = z.core.$ZodType;
+type EffectSchemaFromZod<TSchema extends ZodSchema> = Schema.Schema<
+	z.output<TSchema>,
+	z.input<TSchema>,
+	never
+>;
 
 /**
  * A function that converts a Zod schema to an Effect schema. It takes a Zod schema as input and returns the corresponding Effect schema. The function uses pattern matching to identify the type of the Zod schema and maps it to the appropriate Effect schema. If the Zod schema is not supported, it throws an error using the `makeError` function. This function allows developers to easily convert their existing Zod schemas into Effect schemas, enabling them to leverage the features and benefits of the Effect library while maintaining compatibility with their existing validation logic.
@@ -121,10 +43,12 @@ const effectSchema: Schema.Union(
  * @param schema - The Zod schema to be converted. It can be any Zod schema, and the function will attempt to match it against known Zod schema types to perform the conversion. If the schema type is not recognized or supported, an error will be thrown.
  * @returns The corresponding Effect schema that matches the structure and validation logic of the input Zod schema. The returned schema can be used in the Effect library for validation and type inference.
  */
-export function zodToEffect<T>(schema: z.core.$ZodType<T>): Schema.Schema<T>;
+export function zodToEffect<TSchema extends ZodSchema>(
+	schema: TSchema
+): EffectSchemaFromZod<TSchema>;
 
-export function zodToEffect(schema: z.core.$ZodType) {
-	return fold<Schema.Schema.Any>((x) => {
+export function zodToEffect(schema: ZodSchema): Schema.Schema.AnyNoContext {
+	return fold<Schema.Schema.AnyNoContext>((x) => {
 		switch (true) {
 			// the usual suspects:
 			case tagged('never')(x):
