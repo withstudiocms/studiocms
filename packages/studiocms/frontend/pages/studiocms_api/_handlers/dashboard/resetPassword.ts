@@ -79,7 +79,7 @@ export const ResetPasswordHandlers = HttpApiBuilder.group(
 
 					const tokenInfo = yield* sdk.UTIL.Generators.testToken(token);
 
-					if (!tokenInfo || !tokenInfo.userId) {
+					if (!tokenInfo?.userId) {
 						return yield* new DashboardAPIError({
 							error: 'Invalid or expired reset token',
 						});

@@ -173,7 +173,7 @@ export function loadPanels(editor: Editor, opts: RequiredGrapesBlocksOptions) {
 
 			// Don't switch when the Layer Manager is on or
 			// there is no selected component
-			if ((!openLayersBtn || !openLayersBtn.get('active')) && editor.getSelected()) {
+			if (!openLayersBtn?.get('active') && editor.getSelected()) {
 				openSmBtn?.set('active', true);
 			}
 		});
