@@ -110,7 +110,7 @@ export default (editor: Editor, opts: RequiredGrapesBlocksOptions) => {
 	const privateCls = [`.${clsRow}`, `.${clsCell}`];
 	editor.on(
 		'selector:add',
-		(selector) => privateCls.indexOf(selector.getFullName()) >= 0 && selector.set('private', 1)
+		(selector) => privateCls.indexOf(selector.getFullName()) >= 0 && selector.set('private', true)
 	);
 
 	// biome-ignore lint/suspicious/noExplicitAny: This is the type that was already used in the original code

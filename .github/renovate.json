@@ -79,6 +79,7 @@
     "@astrojs/node",
     "@astrojs/rss",
     "@astrojs/internal-helpers",
-    "@astrojs/markdown-remark"
+    "@astrojs/markdown-remark",
+    "kysely"
   ]
 }
