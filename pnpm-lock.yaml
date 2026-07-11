@@ -873,9 +873,6 @@ importers:
       '@withstudiocms/effect':
         specifier: workspace:^
         version: link:../effect
-      astro-integration-kit:
-        specifier: 'catalog:'
-        version: 0.20.0(astro@6.4.8(@types/node@22.20.1)(jiti@2.7.0)(rollup@4.62.2)(tsx@4.23.0)(yaml@2.9.0))
       effect:
         specifier: catalog:effect
         version: 3.21.4
