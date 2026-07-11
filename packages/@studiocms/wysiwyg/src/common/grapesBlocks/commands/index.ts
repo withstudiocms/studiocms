@@ -8,10 +8,13 @@ import openImport from './openImport.js';
 
 export const AddCmd =
 	(editor: Editor) =>
-		// biome-ignore lint/complexity/noBannedTypes: just working with GrapesJS types here
-		<const TId extends string, T extends ObjectAny = {}>(id: TId, command: CommandDefinitionById<TId, T>) => {
-			editor.Commands.add(id, command);
-		};
+	// biome-ignore lint/complexity/noBannedTypes: just working with GrapesJS types here
+	<const TId extends string, T extends ObjectAny = {}>(
+		id: TId,
+		command: CommandDefinitionById<TId, T>
+	) => {
+		editor.Commands.add(id, command);
+	};
 
 export function loadCommands(editor: Editor, opts: RequiredGrapesBlocksOptions) {
 	clear(editor, opts);
