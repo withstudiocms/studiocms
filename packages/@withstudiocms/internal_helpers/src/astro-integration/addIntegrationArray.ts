@@ -1,5 +1,4 @@
-import type { AstroIntegration } from 'astro';
-import { addIntegration, defineUtility } from 'astro-integration-kit';
+import type { AstroIntegration, HookParameters } from 'astro';
 
 /* v8 ignore start */
 /**
@@ -21,17 +20,28 @@ import { addIntegration, defineUtility } from 'astro-integration-kit';
  *
  * @see https://astro-integration-kit.netlify.app/utilities/add-integration/
  */
-export const addIntegrationArray = defineUtility('astro:config:setup')(
-	(
-		params,
-		integrations: Array<{
-			integration: AstroIntegration;
-			ensureUnique?: boolean | undefined;
-		}>
-	): void => {
-		for (const { integration, ensureUnique } of integrations) {
-			addIntegration(params, { integration, ensureUnique });
+export const addIntegrationArray = (
+	params: HookParameters<'astro:config:setup'>,
+	integrations: Array<{
+		integration: AstroIntegration;
+		ensureUnique?: boolean | undefined;
+	}>
+): void => {
+	for (const { integration, ensureUnique } of integrations) {
+		if (ensureUnique) {
+			// Check if the integration is already present in the config
+			const isAlreadyPresent = params.config.integrations.some(
+				(existingIntegration) => existingIntegration.name === integration.name
+			);
+
+			if (isAlreadyPresent) {
+				// Skip adding this integration if it's already present
+				continue;
+			}
 		}
+		params.updateConfig({
+			integrations: [integration],
+		});
 	}
-);
+};
 /* v8 ignore stop */

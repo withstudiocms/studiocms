@@ -901,9 +901,6 @@ importers:
       astro:
         specifier: catalog:astrojs-min
         version: 5.18.2(@types/node@22.20.1)(jiti@2.7.0)(rollup@4.62.2)(tsx@4.23.0)(typescript@5.9.3)(yaml@2.9.0)
-      astro-integration-kit:
-        specifier: 'catalog:'
-        version: 0.20.0(astro@5.18.2(@types/node@22.20.1)(jiti@2.7.0)(rollup@4.62.2)(tsx@4.23.0)(typescript@5.9.3)(yaml@2.9.0))
       effect:
         specifier: catalog:effect
         version: 3.21.4
@@ -969,9 +966,6 @@ importers:
       astro:
         specifier: catalog:studiocms-peerlock
         version: 6.4.8(@types/node@22.20.1)(jiti@2.7.0)(rollup@4.62.2)(tsx@4.23.0)(yaml@2.9.0)
-      astro-integration-kit:
-        specifier: 'catalog:'
-        version: 0.20.0(astro@6.4.8(@types/node@22.20.1)(jiti@2.7.0)(rollup@4.62.2)(tsx@4.23.0)(yaml@2.9.0))
       effect:
         specifier: catalog:effect
         version: 3.21.4
@@ -9518,11 +9512,6 @@ snapshots:
       js-tokens: 10.0.0
 
   astring@1.9.0: {}
-
-  astro-integration-kit@0.20.0(astro@5.18.2(@types/node@22.20.1)(jiti@2.7.0)(rollup@4.62.2)(tsx@4.23.0)(typescript@5.9.3)(yaml@2.9.0)):
-    dependencies:
-      astro: 5.18.2(@types/node@22.20.1)(jiti@2.7.0)(rollup@4.62.2)(tsx@4.23.0)(typescript@5.9.3)(yaml@2.9.0)
-      pathe: 2.0.3
 
   astro-integration-kit@0.20.0(astro@6.4.8(@types/node@22.20.1)(jiti@2.7.0)(rollup@4.62.2)(tsx@4.23.0)(yaml@2.9.0)):
     dependencies:

@@ -1,5 +1,4 @@
-import type { InjectedScriptStage } from 'astro';
-import { defineUtility } from 'astro-integration-kit';
+import type { HookParameters, InjectedScriptStage } from 'astro';
 
 /**
  * Represents a script to be injected at a specific stage of the integration process.
@@ -27,12 +26,13 @@ export interface ScriptEntry {
  *   - `content`: The script content to inject.
  *   - `enabled`: A boolean indicating whether the script should be injected.
  */
-export const injectScripts = defineUtility('astro:config:setup')(
-	({ injectScript }, entries: ScriptEntry[]) => {
-		for (const { enabled, stage, content } of entries) {
-			if (!enabled) continue;
-			injectScript(stage, content);
-		}
+export const injectScripts = (
+	{ injectScript }: HookParameters<'astro:config:setup'>,
+	entries: ScriptEntry[]
+) => {
+	for (const { enabled, stage, content } of entries) {
+		if (!enabled) continue;
+		injectScript(stage, content);
 	}
-);
+};
 /* v8 ignore stop */

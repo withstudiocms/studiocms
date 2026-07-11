@@ -1,6 +1,8 @@
 ---
 "@studiocms/cloudinary-image-service": minor
 "@withstudiocms/component-registry": minor
+"@withstudiocms/config-utils": minor
+"@withstudiocms/internal_helpers": minor
 "@studiocms/s3-storage": minor
 "@studiocms/devapps": minor
 "@studiocms/discord": minor
