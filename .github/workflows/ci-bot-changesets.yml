@@ -31,13 +31,13 @@ jobs:
     steps:
       - name: Setup Apollo Git Bot
         id: bot-token
-        uses: actions/create-github-app-token@f8d387b68d61c58ab83c6c016672934102569859 # v3.0.0
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
         with:
           app-id: ${{ secrets.STUDIOCMS_GIT_BOT_APP_ID }}
           private-key: ${{ secrets.STUDIOCMS_GIT_BOT_PRIVATE_KEY }}
 
       - name: Checkout Repo
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
           persist-credentials: true
           ref: ${{ github.head_ref }}
@@ -52,7 +52,7 @@ jobs:
           CI_PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}
     
       - name: Commit changes
-        uses: stefanzweifel/git-auto-commit-action@04702edda442b2e678b25b537cec683a1493fcb9 # v7.1.0
+        uses: stefanzweifel/git-auto-commit-action@4a55954c782fc1ea30b9056cd3e7a2b40ca8887d # v7.2.0
         with:
           commit_message: '[ci] changesets'
           branch: ${{ github.head_ref }}
@@ -70,13 +70,13 @@ jobs:
     steps:
       - name: Setup Apollo Git Bot
         id: bot-token
-        uses: actions/create-github-app-token@f8d387b68d61c58ab83c6c016672934102569859 # v3.0.0
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
         with:
           app-id: ${{ secrets.STUDIOCMS_GIT_BOT_APP_ID }}
           private-key: ${{ secrets.STUDIOCMS_GIT_BOT_PRIVATE_KEY }}
 
       - name: Checkout Repo
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
           persist-credentials: true
           ref: ${{ github.head_ref }}
@@ -91,7 +91,7 @@ jobs:
           CI_PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}
     
       - name: Commit changes
-        uses: stefanzweifel/git-auto-commit-action@04702edda442b2e678b25b537cec683a1493fcb9 # v7.1.0
+        uses: stefanzweifel/git-auto-commit-action@4a55954c782fc1ea30b9056cd3e7a2b40ca8887d # v7.2.0
         with:
           commit_message: '[ci] changesets'
           branch: ${{ github.head_ref }}

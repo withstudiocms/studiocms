@@ -40,19 +40,19 @@ jobs:
     steps:
       - name: Setup Apollo Git Bot
         id: bot-token
-        uses: actions/create-github-app-token@f8d387b68d61c58ab83c6c016672934102569859 # v3.0.0
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
         with:
           app-id: ${{ secrets.STUDIOCMS_GIT_BOT_APP_ID }}
           private-key: ${{ secrets.STUDIOCMS_GIT_BOT_PRIVATE_KEY }}
 
       - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
           persist-credentials: false
           token: ${{ steps.bot-token.outputs.token }}
 
       - name: Crowdin pull
-        uses: crowdin/github-action@ce33ce793a5cbc401d9cd748716e03fc90c001f1 # v2.15.2
+        uses: crowdin/github-action@52aa776766211d83d975df51f3b9c53c2f8ba35f # v2.16.3
         id: crowdin-pull
         with:
           upload_sources: false
@@ -82,12 +82,12 @@ jobs:
       contents: read
     steps:
       - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
           persist-credentials: false
 
       - name: Crowdin push
-        uses: crowdin/github-action@ce33ce793a5cbc401d9cd748716e03fc90c001f1 # v2.15.2
+        uses: crowdin/github-action@52aa776766211d83d975df51f3b9c53c2f8ba35f # v2.16.3
         with:
           upload_sources: true
           download_translations: false
