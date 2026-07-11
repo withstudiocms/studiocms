@@ -1,6 +1,5 @@
 import { Effect } from '@withstudiocms/effect';
 import type { AstroIntegrationLogger } from 'astro';
-import { createResolver } from 'astro-integration-kit';
 import { ComponentRegistryError } from './errors.js';
 
 /**
@@ -107,7 +106,9 @@ export function dedent(str: string): string {
  * const result = yield* resolveEffect((resolve) => resolve('Button'));
  */
 export const resolver = Effect.fn(function* (base: string) {
-	const { resolve: _resolve } = createResolver(base);
+	function _resolve(path: string) {
+		return new URL(path, base).toString();
+	}
 	return Effect.fn((fn: (resolve: (...path: Array<string>) => string) => string) =>
 		Effect.try({
 			try: () => fn(_resolve),

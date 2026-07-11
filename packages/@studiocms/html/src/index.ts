@@ -6,12 +6,15 @@
 /// <reference types="./virtual.d.ts" preserve="true" />
 /// <reference types="studiocms/v/types" />
 
-import { createResolver } from 'astro-integration-kit';
 import { Schema } from 'effect';
 import { definePlugin } from 'studiocms/plugins';
 import type { StudioCMSPluginDef } from 'studiocms/schemas';
 import { shared } from './lib/shared.js';
 import { HTMLSchema, type HTMLSchemaOptions } from './types.js';
+
+function resolve(path: string) {
+	return new URL(path, import.meta.url).toString();
+}
 
 /**
  * Creates the StudioCMS HTML plugin.
@@ -23,9 +26,6 @@ import { HTMLSchema, type HTMLSchemaOptions } from './types.js';
  * @returns The StudioCMS plugin configuration object.
  */
 export function studiocmsHTML(options: HTMLSchemaOptions = {}): StudioCMSPluginDef {
-	// Resolve the path to the current file
-	const { resolve } = createResolver(import.meta.url);
-
 	// Define the package identifier
 	const packageIdentifier = '@studiocms/html';
 

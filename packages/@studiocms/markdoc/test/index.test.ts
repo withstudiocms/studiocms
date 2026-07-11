@@ -7,14 +7,6 @@ import { parentSuiteName, sharedTags } from './test-utils.js';
 
 const localSuiteName = 'studiocmsMarkDoc Plugin Tests';
 
-// Mock astro-integration-kit
-vi.mock('astro-integration-kit', () => ({
-	addVirtualImports: vi.fn(),
-	createResolver: vi.fn(() => ({
-		resolve: vi.fn((path: string) => `/mock/path/${path}`),
-	})),
-}));
-
 // Mock studiocms/plugins
 vi.mock('studiocms/plugins', () => ({
 	definePlugin: vi.fn((config) => config),

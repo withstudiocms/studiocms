@@ -68,8 +68,7 @@
   },
   "type": "module",
   "dependencies": {
-    "@studiocms/markdown-remark": "workspace:^",
-    "astro-integration-kit": "catalog:"
+    "@studiocms/markdown-remark": "workspace:^"
   },
   "devDependencies": {
     "@types/node": "catalog:",

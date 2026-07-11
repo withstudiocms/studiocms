@@ -7,13 +7,16 @@
 /// <reference types="astro/client" />
 
 import type { AstroIntegration } from 'astro';
-import { createResolver } from 'astro-integration-kit';
 import { Schema } from 'studiocms/effect';
 import { definePlugin } from 'studiocms/plugins';
 import type { StudioCMSPluginDef } from 'studiocms/schemas';
 import { GRAPES_CSS_PATH, PARTIAL_PATH, STORE_ENDPOINT_PATH } from './consts.js';
 import { shared } from './lib/shared.js';
 import { WYSIWYGSchema, type WYSIWYGSchemaOptions } from './types.js';
+
+function resolve(path: string) {
+	return new URL(path, import.meta.url).toString();
+}
 
 /**
  * Creates an internal Astro integration for WYSIWYG rendering.
@@ -90,9 +93,6 @@ export function internalWysiwygIntegration(
  * ```
  */
 function wysiwyg(opts: WYSIWYGSchemaOptions = {}): StudioCMSPluginDef {
-	// Resolve the path to the current file
-	const { resolve } = createResolver(import.meta.url);
-
 	// Validate and parse the provided options using the WYSIWYG schema
 	const options = Schema.decodeSync(WYSIWYGSchema)(opts);
 

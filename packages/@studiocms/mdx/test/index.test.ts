@@ -14,14 +14,6 @@ interface MockSetRenderingParams {
 	setRendering: (rendering: unknown) => void;
 }
 
-// Mock the dependencies
-vi.mock('astro-integration-kit', () => ({
-	createResolver: vi.fn(() => ({
-		resolve: vi.fn((path: string) => `/mocked/path/${path}`),
-	})),
-	addVirtualImports: vi.fn(),
-}));
-
 vi.mock('studiocms/plugins', () => ({
 	definePlugin: vi.fn((config) => config),
 }));

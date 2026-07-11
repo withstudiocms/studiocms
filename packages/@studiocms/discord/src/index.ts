@@ -6,9 +6,12 @@
 /// <reference types="studiocms/v/types" />
 /// <reference types="astro/client" />
 
-import { createResolver } from 'astro-integration-kit';
 import { definePlugin } from 'studiocms/plugins';
 import type { StudioCMSPluginDef } from 'studiocms/schemas';
+
+function resolve(path: string) {
+	return new URL(path, import.meta.url).toString();
+}
 
 /**
  * Creates and returns the StudioCMS Discord Provider Plugin.
@@ -26,9 +29,6 @@ import type { StudioCMSPluginDef } from 'studiocms/schemas';
  *   - `CMS_DISCORD_REDIRECT_URI`
  */
 export function studiocmsDiscord(): StudioCMSPluginDef {
-	// Resolve the path to the current file
-	const { resolve } = createResolver(import.meta.url);
-
 	// Define the package identifier
 	const packageIdentifier = '@studiocms/discord';
 
