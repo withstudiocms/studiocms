@@ -187,13 +187,14 @@ export default (editor: Editor, opts: RequiredGrapesBlocksOptions) => {
 		content: `<div ${attrsRow}>
             <div ${attrsCell}></div>
           </div>
-          ${addBasicStyle
-				? `<style>
+          ${
+						addBasicStyle
+							? `<style>
               ${styleRow}
               ${styleClm}
             </style>`
-				: ''
-			}`,
+							: ''
+					}`,
 	});
 	addBlock('column2', {
 		...commonBasicBlockProps,
@@ -205,13 +206,14 @@ export default (editor: Editor, opts: RequiredGrapesBlocksOptions) => {
             <div ${attrsCell}></div>
             <div ${attrsCell}></div>
           </div>
-          ${addBasicStyle
-				? `<style>
+          ${
+						addBasicStyle
+							? `<style>
               ${styleRow}
               ${styleClm}
             </style>`
-				: ''
-			}`,
+							: ''
+					}`,
 	});
 	addBlock('column3', {
 		...commonBasicBlockProps,
@@ -224,13 +226,14 @@ export default (editor: Editor, opts: RequiredGrapesBlocksOptions) => {
             <div ${attrsCell}></div>
             <div ${attrsCell}></div>
           </div>
-          ${addBasicStyle
-				? `<style>
+          ${
+						addBasicStyle
+							? `<style>
               ${styleRow}
               ${styleClm}
             </style>`
-				: ''
-			}`,
+							: ''
+					}`,
 	});
 	addBlock('column3-7', {
 		...commonBasicBlockProps,
@@ -242,15 +245,16 @@ export default (editor: Editor, opts: RequiredGrapesBlocksOptions) => {
             <div ${attrsCell} style='${flexGrid ? 'flex-basis' : 'width'}: 30%;'></div>
             <div ${attrsCell} style='${flexGrid ? 'flex-basis' : 'width'}: 70%;'></div>
           </div>
-          ${addBasicStyle
-				? `<style>
+          ${
+						addBasicStyle
+							? `<style>
               ${styleRow}
               ${styleClm}
               ${styleClm30}
               ${styleClm70}
             </style>`
-				: ''
-			}`,
+							: ''
+					}`,
 	});
 	addBlock('text', {
 		...commonBasicBlockProps,
