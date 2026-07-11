@@ -68,7 +68,7 @@ catalogs:
     zod: ^4.3.6
 
   studiocms:
-    "@studiocms/ui": ^1.2.0
+    "@studiocms/ui": ^1.2.1
 
   studiocms-peerlock:
     astro: ^6.0.0
