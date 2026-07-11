@@ -75,10 +75,10 @@ catalogs:
     vite: ^7.3.0
 
   effect:
-    "@effect/cli": ^0.74.0
-    "@effect/platform": ^0.95.0
-    "@effect/platform-node": ^0.105.0
-    effect: ^3.20.0
+    "@effect/cli": ^0.75.2
+    "@effect/platform": ^0.96.2
+    "@effect/platform-node": ^0.107.0
+    effect: ^3.21.4
 
   kysely:
     "@libsql/client": ^0.15.15
