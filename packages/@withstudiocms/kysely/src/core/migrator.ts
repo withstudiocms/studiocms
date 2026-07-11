@@ -99,14 +99,14 @@ export class PassthroughMigrationProvider implements MigrationProvider {
  */
 const kyselyMigrator =
 	(migrations: Record<string, Migration>) =>
-		<Schema>(db: Kysely<Schema>) =>
-			useWithError(
-				() =>
-					new Migrator({
-						db,
-						provider: new PassthroughMigrationProvider(migrations),
-					})
-			);
+	<Schema>(db: Kysely<Schema>) =>
+		useWithError(
+			() =>
+				new Migrator({
+					db,
+					provider: new PassthroughMigrationProvider(migrations),
+				})
+		);
 
 /**
  * Creates an Effect that builds a migration helper object for a given migration folder.
