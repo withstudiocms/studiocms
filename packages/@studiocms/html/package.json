@@ -70,8 +70,8 @@
   "dependencies": {
     "astro-integration-kit": "catalog:",
     "codemirror": "5.65.19",
-    "katex": "^0.16.38",
-    "suneditor": "^2.47.8"
+    "katex": "^0.17.0",
+    "suneditor": "^2.47.10"
   },
   "devDependencies": {
     "@types/codemirror": "5.60.16",
