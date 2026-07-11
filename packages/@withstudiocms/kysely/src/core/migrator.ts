@@ -1,11 +1,10 @@
 import { Effect } from 'effect';
+import type { Dialect, Kysely } from 'kysely';
 import {
-	type Dialect,
-	type Kysely,
 	type Migration,
 	type MigrationProvider,
 	Migrator,
-} from 'kysely';
+} from 'kysely/migration';
 import { kyselyClient, makeDBClientLive } from './client.js';
 import { MigratorError } from './errors.js';
 
@@ -99,14 +98,14 @@ export class PassthroughMigrationProvider implements MigrationProvider {
  */
 const kyselyMigrator =
 	(migrations: Record<string, Migration>) =>
-	<Schema>(db: Kysely<Schema>) =>
-		useWithError(
-			() =>
-				new Migrator({
-					db,
-					provider: new PassthroughMigrationProvider(migrations),
-				})
-		);
+		<Schema>(db: Kysely<Schema>) =>
+			useWithError(
+				() =>
+					new Migrator({
+						db,
+						provider: new PassthroughMigrationProvider(migrations),
+					})
+			);
 
 /**
  * Creates an Effect that builds a migration helper object for a given migration folder.
