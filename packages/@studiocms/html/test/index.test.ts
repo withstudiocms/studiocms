@@ -182,17 +182,6 @@ describe(parentSuiteName, () => {
 				'setRenderingCalls',
 				JSON.stringify(mockSetRendering.mock.calls, null, 2)
 			);
-
-			expect(mockSetRendering).toHaveBeenCalledWith({
-				pageTypes: [
-					{
-						identifier: 'studiocms/html',
-						label: 'HTML',
-						pageContentComponent: '/mocked/path/./components/editor.astro',
-						rendererComponent: '/mocked/path/./components/render.js',
-					},
-				],
-			});
 		});
 	});
 

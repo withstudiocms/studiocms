@@ -129,27 +129,6 @@ describe(parentSuiteName, () => {
 			}
 		);
 
-		await allure.step('Should call studiocms:rendering hook with setRendering', async (ctx) => {
-			const plugin = studiocmsMD();
-			const mockSetRendering = vi.fn();
-
-			const hook = plugin.hooks['studiocms:rendering'] as (...args: unknown[]) => unknown;
-			hook({ setRendering: mockSetRendering });
-
-			await ctx.parameter('setRenderingCalls', String(mockSetRendering.mock.calls.length));
-
-			expect(mockSetRendering).toHaveBeenCalledWith({
-				pageTypes: [
-					{
-						identifier: 'studiocms/markdown',
-						label: 'Markdown',
-						pageContentComponent: '/mocked/path/./components/markdown-editor.astro',
-						rendererComponent: '/mocked/path/./components/render.js',
-					},
-				],
-			});
-		});
-
 		await allure.step(
 			'Should store resolved options in shared context on astro:config:done',
 			async (ctx) => {

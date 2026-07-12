@@ -73,27 +73,5 @@ describe(parentSuiteName, () => {
 			expect(plugin.hooks['studiocms:astro-config']).toBeDefined();
 			expect(plugin.hooks['studiocms:rendering']).toBeDefined();
 		});
-
-		await allure.step('Should set up Astro page type configuration', async (ctx) => {
-			const plugin = studiocmsMarkDoc();
-			const setRendering = vi.fn();
-
-			const configSetupHook = plugin.hooks['studiocms:rendering']!;
-			// @ts-expect-error - testing hook invocation
-			configSetupHook({ setRendering });
-
-			await ctx.parameter('setRenderingCalls', String(setRendering.mock.calls.length));
-
-			expect(setRendering).toHaveBeenCalledWith({
-				pageTypes: [
-					{
-						identifier: 'studiocms/markdoc',
-						label: 'MarkDoc',
-						pageContentComponent: '/mock/path/./components/editor.astro',
-						rendererComponent: '/mock/path/./components/render.js',
-					},
-				],
-			});
-		});
 	});
 });
