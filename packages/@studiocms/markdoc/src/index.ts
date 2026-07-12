@@ -6,23 +6,12 @@
 /// <reference types="./virtual.d.ts" preserve="true" />
 /// <reference types="studiocms/v/types" />
 
+import { addVirtualImports } from '@withstudiocms/internal_helpers/astro-integration';
 import type { AstroIntegration } from 'astro';
 import { definePlugin } from 'studiocms/plugins';
 import type { StudioCMSPluginDef } from 'studiocms/schemas';
 import { shared } from './lib/shared.js';
 import type { MarkDocPluginOptions } from './types.js';
-
-function virtualImportsPlugin(name: string, imports: Record<string, string>) {
-	return {
-		name,
-		resolveId(id: string) {
-			if (id in imports) return `\0${id}`;
-		},
-		load(id: string) {
-			if (id.startsWith('\0')) return imports[id.slice(1)];
-		},
-	};
-}
 
 function resolve(path: string) {
 	return new URL(path, import.meta.url).toString();
@@ -55,18 +44,15 @@ export function internalMarkDocIntegration(
 		hooks: {
 			'astro:config:setup': (params) => {
 				// Add the virtual imports for the MarkDoc renderer
-				params.updateConfig({
-					vite: {
-						plugins: [
-							virtualImportsPlugin(packageIdentifier, {
-								'studiocms:markdoc/renderer': `
-									import { renderMarkDoc as _render } from '${internalRenderer}';
-				
-									export const renderMarkDoc = _render;
-									export default renderMarkDoc;
-								`,
-							}),
-						],
+				addVirtualImports(params, {
+					name: packageIdentifier,
+					imports: {
+						'studiocms:markdoc/renderer': `
+							import { renderMarkDoc as _render } from '${internalRenderer}';
+
+							export const renderMarkDoc = _render;
+							export default renderMarkDoc;
+						`,
 					},
 				});
 			},

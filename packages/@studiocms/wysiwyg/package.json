@@ -73,6 +73,7 @@
     "@studiocms/ui": "catalog:studiocms",
     "@types/node": "catalog:",
     "@withstudiocms/component-registry": "workspace:^",
+    "@withstudiocms/internal_helpers": "workspace:^",
     "astro": "catalog:studiocms-peerlock",
     "studiocms": "workspace:^",
     "vite": "catalog:studiocms-peerlock"

@@ -57,8 +57,7 @@
       "default": "./dist/types.js"
     },
     "./v/types": {
-      "types": "./dist/virtual.d.ts",
-      "default": "./dist/virtual.d.js"
+      "types": "./dist/virtual.d.ts"
     },
     "./editor": "./dist/components/editor.astro",
     "./renderer": {
@@ -73,6 +72,7 @@
     "suneditor": "^2.47.10"
   },
   "devDependencies": {
+    "@withstudiocms/internal_helpers": "workspace:^",
     "@types/codemirror": "5.60.16",
     "@types/node": "catalog:",
     "astro": "catalog:studiocms-peerlock",

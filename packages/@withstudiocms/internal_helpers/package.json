@@ -51,6 +51,10 @@
       "types": "./dist/astro-integration/index.d.ts",
       "default": "./dist/astro-integration/index.js"
     },
+    "./vite": {
+      "types": "./dist/vite/index.d.ts",
+      "default": "./dist/vite/index.js"
+    },
     "./pathGenerators": {
       "types": "./dist/pathGenerators.d.ts",
       "default": "./dist/pathGenerators.js"
@@ -97,6 +101,7 @@
   },
   "peerDependencies": {
     "astro": "catalog:studiocms-peerlock",
-    "effect": "catalog:effect"
+    "effect": "catalog:effect",
+    "vite": "catalog:studiocms-peerlock"
   }
 }

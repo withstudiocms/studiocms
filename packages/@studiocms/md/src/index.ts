@@ -6,24 +6,13 @@
 /// <reference types="./virtual.d.ts" preserve="true" />
 /// <reference types="studiocms/v/types" />
 
+import { addVirtualImports } from '@withstudiocms/internal_helpers/astro-integration';
 import type { AstroIntegration } from 'astro';
 import { Schema } from 'effect';
 import { definePlugin } from 'studiocms/plugins';
 import type { StudioCMSPluginDef } from 'studiocms/schemas';
 import { shared } from './lib/shared.js';
 import { MarkdownOptionsSchema, type MarkdownSchemaOptions } from './types.js';
-
-function virtualImportsPlugin(name: string, imports: Record<string, string>) {
-	return {
-		name,
-		resolveId(id: string) {
-			if (id in imports) return `\0${id}`;
-		},
-		load(id: string) {
-			if (id.startsWith('\0')) return imports[id.slice(1)];
-		},
-	};
-}
 
 function resolve(path: string) {
 	return new URL(path, import.meta.url).toString();
@@ -58,23 +47,20 @@ export function internalMarkdownIntegration(options: MarkdownSchemaOptions = {})
 		hooks: {
 			'astro:config:setup': (params) => {
 				// Add the virtual imports for the MDX renderer
-				params.updateConfig({
-					vite: {
-						plugins: [
-							virtualImportsPlugin(packageIdentifier, {
-								'studiocms:md/config': `
-									export const config = ${JSON.stringify(resolvedOptions)};
-									export default config;
-								`,
-								'studiocms:md/pre-render': `
-									export { preRender } from '${internalRenderer}';
-								`,
-								'studiocms:md/styles': `
-									import '${resolve('./styles/md-remark-headings.css')}';
-									${resolvedCalloutTheme ? `import '${resolvedCalloutTheme}';` : ''}
-								`,
-							}),
-						],
+				addVirtualImports(params, {
+					name: packageIdentifier,
+					imports: {
+						'studiocms:md/config': `
+							export const config = ${JSON.stringify(resolvedOptions)};
+							export default config;
+						`,
+						'studiocms:md/pre-render': `
+							export { preRender } from '${internalRenderer}';
+							`,
+						'studiocms:md/styles': `
+							import '${resolve('./styles/md-remark-headings.css')}';
+							${resolvedCalloutTheme ? `import '${resolvedCalloutTheme}';` : ''}
+						`,
 					},
 				});
 

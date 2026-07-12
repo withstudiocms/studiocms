@@ -264,6 +264,9 @@ importers:
       '@astrojs/rss':
         specifier: catalog:astrojs-current
         version: 4.0.19
+      '@withstudiocms/internal_helpers':
+        specifier: workspace:^
+        version: link:../../@withstudiocms/internal_helpers
       effect:
         specifier: catalog:effect
         version: 3.21.4
@@ -308,6 +311,9 @@ importers:
 
   packages/@studiocms/devapps:
     dependencies:
+      '@withstudiocms/internal_helpers':
+        specifier: workspace:^
+        version: link:../../@withstudiocms/internal_helpers
       '@withstudiocms/kysely':
         specifier: workspace:^
         version: link:../../@withstudiocms/kysely
@@ -460,6 +466,9 @@ importers:
       '@types/node':
         specifier: 'catalog:'
         version: 22.20.1
+      '@withstudiocms/internal_helpers':
+        specifier: workspace:^
+        version: link:../../@withstudiocms/internal_helpers
       astro:
         specifier: catalog:studiocms-peerlock
         version: 6.4.8(@types/node@22.20.1)(jiti@2.7.0)(rollup@4.62.2)(tsx@4.23.0)(yaml@2.9.0)
@@ -475,6 +484,9 @@ importers:
       '@markdoc/markdoc':
         specifier: ^0.5.7
         version: 0.5.7(@types/react@19.2.17)(react@19.2.7)
+      '@withstudiocms/internal_helpers':
+        specifier: workspace:^
+        version: link:../../@withstudiocms/internal_helpers
       effect:
         specifier: catalog:effect
         version: 3.21.4
@@ -615,6 +627,9 @@ importers:
       '@studiocms/markdown-remark':
         specifier: workspace:^
         version: link:../markdown-remark
+      '@withstudiocms/internal_helpers':
+        specifier: workspace:^
+        version: link:../../@withstudiocms/internal_helpers
       effect:
         specifier: catalog:effect
         version: 3.21.4
@@ -637,6 +652,9 @@ importers:
       '@mdx-js/mdx':
         specifier: ^3.1.1
         version: 3.1.1
+      '@withstudiocms/internal_helpers':
+        specifier: workspace:^
+        version: link:../../@withstudiocms/internal_helpers
       effect:
         specifier: catalog:effect
         version: 3.21.4
@@ -766,6 +784,9 @@ importers:
       '@withstudiocms/component-registry':
         specifier: workspace:^
         version: link:../../@withstudiocms/component-registry
+      '@withstudiocms/internal_helpers':
+        specifier: workspace:^
+        version: link:../../@withstudiocms/internal_helpers
       astro:
         specifier: catalog:studiocms-peerlock
         version: 6.4.8(@types/node@22.20.1)(jiti@2.7.0)(rollup@4.62.2)(tsx@4.23.0)(yaml@2.9.0)
@@ -873,6 +894,9 @@ importers:
       '@withstudiocms/effect':
         specifier: workspace:^
         version: link:../effect
+      '@withstudiocms/internal_helpers':
+        specifier: workspace:^
+        version: link:../internal_helpers
       effect:
         specifier: catalog:effect
         version: 3.21.4
@@ -978,6 +1002,9 @@ importers:
       unist-util-visit:
         specifier: ^5.1.0
         version: 5.1.0
+      vite:
+        specifier: catalog:studiocms-peerlock
+        version: 7.3.6(@types/node@22.20.1)(jiti@2.7.0)(tsx@4.23.0)(yaml@2.9.0)
     devDependencies:
       '@types/mdast':
         specifier: 'catalog:'

@@ -1,11 +1,11 @@
 /// <reference types="./virtual.d.ts" preserve="true" />
 
+import { addVirtualImports } from '@withstudiocms/internal_helpers/astro-integration';
 import createPathResolver from '@withstudiocms/internal_helpers/pathResolver';
 import type { AstroIntegration } from 'astro';
 import { MarkdownRemarkError } from '../errors.ts';
 import type { StudioCMSMarkdownRemarkIntegrationOptions } from '../types.ts';
 import { defaultIntegrationOptions } from './consts.ts';
-import { addVirtualImports } from './integration-utils.ts';
 import { setSharedConfig } from './shared.ts';
 
 const isValidJsIdentifier = (name: string) => /^[a-zA-Z_$][a-zA-Z0-9_$]*$/.test(name);

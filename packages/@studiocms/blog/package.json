@@ -61,7 +61,8 @@
   },
   "type": "module",
   "dependencies": {
-    "@astrojs/rss": "catalog:astrojs-current"
+    "@astrojs/rss": "catalog:astrojs-current",
+    "@withstudiocms/internal_helpers": "workspace:^"
   },
   "devDependencies": {
     "@studiocms/md": "workspace:^",
