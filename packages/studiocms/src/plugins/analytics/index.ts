@@ -1,7 +1,7 @@
 import { runEffect } from '@withstudiocms/effect';
+import { addVirtualImports } from '@withstudiocms/internal_helpers/astro-integration';
 import createPathResolver from '@withstudiocms/internal_helpers/pathResolver';
 import type { AstroIntegration } from 'astro';
-import { addVirtualImports } from '@withstudiocms/internal_helpers/astro-integration';
 import type { DbDialectType } from '../../db/index.js';
 import { KyselyTableManager } from '../../db/plugins.js';
 import { buildTranslations, loadJsTranslations } from '../../plugins.js';

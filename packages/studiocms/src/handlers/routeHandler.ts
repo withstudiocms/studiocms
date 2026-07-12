@@ -1,6 +1,6 @@
 import { Effect } from '@withstudiocms/effect';
-import type { AstroIntegrationMiddleware, HookParameters, InjectedRoute } from 'astro';
 import { addVirtualImports } from '@withstudiocms/internal_helpers/astro-integration';
+import type { AstroIntegrationMiddleware, HookParameters, InjectedRoute } from 'astro';
 import {
 	getAstroProject,
 	getRouteConfig,
@@ -35,42 +35,43 @@ import {
  * @example
  * // (Registered automatically via defineUtility('astro:config:setup'))
  */
-export const routeHandler = (
-	async (params: HookParameters<"astro:config:setup">, options: RouteConfig) => {
-		const { injectRoute, addMiddleware } = params;
+export const routeHandler = async (
+	params: HookParameters<'astro:config:setup'>,
+	options: RouteConfig
+) => {
+	const { injectRoute, addMiddleware } = params;
 
-		// Helper function to inject a route using the provided `injectRoute` callback
-		const _injectRoutes = (route: InjectedRoute) => Effect.sync(() => injectRoute(route));
+	// Helper function to inject a route using the provided `injectRoute` callback
+	const _injectRoutes = (route: InjectedRoute) => Effect.sync(() => injectRoute(route));
 
-		// Helper function to add middleware using the provided `addMiddleware` callback
-		const _addMiddleware = (mw: AstroIntegrationMiddleware) => Effect.sync(() => addMiddleware(mw));
+	// Helper function to add middleware using the provided `addMiddleware` callback
+	const _addMiddleware = (mw: AstroIntegrationMiddleware) => Effect.sync(() => addMiddleware(mw));
 
-		// Create a shared configuration layer for the route effect
-		const sharedConfig = StudioCMSRouteConfig.Live(options);
+	// Create a shared configuration layer for the route effect
+	const sharedConfig = StudioCMSRouteConfig.Live(options);
 
-		// Execute both the route configuration retrieval and Astro project retrieval in parallel, then process the results
-		await Effect.all([
-			// Retrieve the processed route configuration and add it as a virtual import for use in other parts of the application
-			getRouteConfig.pipe(
-				Effect.map((config) => {
-					// Add virtual imports for the route configuration, allowing it to be imported in other parts of the application
-					addVirtualImports(params, {
-						name: 'studiocms:routeHandler',
-						imports: {
-							'virtual:studiocms/route-config': `export const routeConfig = ${JSON.stringify(config)}; export default routeConfig;`,
-						},
-					});
-				})
-			),
-			// Retrieve the Astro project configuration, which includes the routes and middleware to be injected, and process them by injecting routes and adding middleware
-			getAstroProject.pipe(
-				Effect.flatMap(({ middleware, routes }) =>
-					Effect.all([
-						Effect.forEach(routes, _injectRoutes),
-						Effect.forEach(middleware, _addMiddleware),
-					])
-				)
-			),
-		]).pipe(Effect.provide(sharedConfig), Effect.runPromise);
-	}
-);
+	// Execute both the route configuration retrieval and Astro project retrieval in parallel, then process the results
+	await Effect.all([
+		// Retrieve the processed route configuration and add it as a virtual import for use in other parts of the application
+		getRouteConfig.pipe(
+			Effect.map((config) => {
+				// Add virtual imports for the route configuration, allowing it to be imported in other parts of the application
+				addVirtualImports(params, {
+					name: 'studiocms:routeHandler',
+					imports: {
+						'virtual:studiocms/route-config': `export const routeConfig = ${JSON.stringify(config)}; export default routeConfig;`,
+					},
+				});
+			})
+		),
+		// Retrieve the Astro project configuration, which includes the routes and middleware to be injected, and process them by injecting routes and adding middleware
+		getAstroProject.pipe(
+			Effect.flatMap(({ middleware, routes }) =>
+				Effect.all([
+					Effect.forEach(routes, _injectRoutes),
+					Effect.forEach(middleware, _addMiddleware),
+				])
+			)
+		),
+	]).pipe(Effect.provide(sharedConfig), Effect.runPromise);
+};

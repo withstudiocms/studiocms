@@ -24,9 +24,7 @@ export default defineConfig({
 			},
 		],
 	},
-	integrations: [
-		studioCMS(),
-	],
+	integrations: [studioCMS()],
 	vite: {
 		plugins: [Inspect()],
 	},

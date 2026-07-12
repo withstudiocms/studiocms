@@ -40,6 +40,7 @@ export function nodeNamespaceBuiltinsAstro(): AstroIntegration {
 			'astro:config:setup': (params) => {
 				// Check if the 'namespace-builtins' plugin is already present
 				const hasPlugin = params.config.vite?.plugins?.some(
+					// biome-ignore lint/suspicious/noExplicitAny: Vite is fun
 					(p) => p && typeof p === 'object' && (p as any).name === name
 				);
 
