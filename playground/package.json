@@ -14,11 +14,10 @@
   },
   "devDependencies": {
     "@types/node": "catalog:",
-    "typescript": "catalog:",
-    "astro-integration-kit": "catalog:"
+    "typescript": "catalog:"
   },
   "dependencies": {
-		"effect": "catalog:effect",
+    "effect": "catalog:effect",
     "@effect/platform": "catalog:effect",
     "@effect/platform-node": "catalog:effect",
     "@astrojs/node": "catalog:astrojs-current",

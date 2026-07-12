@@ -1,13 +1,14 @@
 import { loadChangelog, semverCategories } from '@withstudiocms/internal_helpers/utils';
-import { addVirtualImports, defineUtility } from 'astro-integration-kit';
+import { addVirtualImports } from '@withstudiocms/internal_helpers/astro-integration';
 import type { List, Root } from 'mdast';
 import { toMarkdown } from 'mdast-util-to-markdown';
+import type { HookParameters } from 'astro';
 
 /**
  * Generates a changelog markdown file from the changelog data.
  */
-export const changelogHelper = defineUtility('astro:config:setup')(
-	(params, resolvedPath: string) => {
+export const changelogHelper = (
+	(params: HookParameters<"astro:config:setup">, resolvedPath: string) => {
 		const changelog = loadChangelog({ path: resolvedPath });
 
 		// Generate markdown output

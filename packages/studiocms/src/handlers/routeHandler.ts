@@ -1,6 +1,6 @@
 import { Effect } from '@withstudiocms/effect';
-import type { AstroIntegrationMiddleware, InjectedRoute } from 'astro';
-import { addVirtualImports, defineUtility } from 'astro-integration-kit';
+import type { AstroIntegrationMiddleware, HookParameters, InjectedRoute } from 'astro';
+import { addVirtualImports } from '@withstudiocms/internal_helpers/astro-integration';
 import {
 	getAstroProject,
 	getRouteConfig,
@@ -35,8 +35,8 @@ import {
  * @example
  * // (Registered automatically via defineUtility('astro:config:setup'))
  */
-export const routeHandler = defineUtility('astro:config:setup')(
-	async (params, options: RouteConfig) => {
+export const routeHandler = (
+	async (params: HookParameters<"astro:config:setup">, options: RouteConfig) => {
 		const { injectRoute, addMiddleware } = params;
 
 		// Helper function to inject a route using the provided `injectRoute` callback

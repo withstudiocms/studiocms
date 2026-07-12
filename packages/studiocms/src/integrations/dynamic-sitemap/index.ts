@@ -1,7 +1,7 @@
 import createPathResolver from '@withstudiocms/internal_helpers/pathResolver';
 import { convertToSafeString } from '@withstudiocms/internal_helpers/utils';
 import type { AstroIntegration } from 'astro';
-import { addVirtualImports } from 'astro-integration-kit';
+import { addVirtualImports } from '@withstudiocms/internal_helpers/astro-integration';
 
 /**
  * Options for configuring the dynamic sitemap.

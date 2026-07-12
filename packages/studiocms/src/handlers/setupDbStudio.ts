@@ -1,11 +1,12 @@
 import createPathResolver from '@withstudiocms/internal_helpers/pathResolver';
-import { addVirtualImports, defineUtility } from 'astro-integration-kit';
+import { addVirtualImports } from '@withstudiocms/internal_helpers/astro-integration';
 import type { StudioCMSConfig } from '../schemas/index.js';
+import type { HookParameters } from 'astro';
 
 const { resolve } = createPathResolver(import.meta.url);
 
-export const setupDbStudio = defineUtility('astro:config:setup')(
-	async (params, opts: StudioCMSConfig['db']) => {
+export const setupDbStudio = (
+	async (params: HookParameters<"astro:config:setup">, opts: StudioCMSConfig['db']) => {
 		const { addDevToolbarApp } = params;
 		const { dialect } = opts;
 

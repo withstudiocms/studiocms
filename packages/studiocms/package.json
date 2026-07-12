@@ -251,7 +251,6 @@
 		"@withstudiocms/kysely": "workspace:^",
 		"@withstudiocms/sdk": "workspace:^",
 		"ace-builds": "^1.44.0",
-		"astro-integration-kit": "catalog:",
 		"boxen": "^8.0.1",
 		"diff": "catalog:",
 		"dompurify": "^3.4.11",

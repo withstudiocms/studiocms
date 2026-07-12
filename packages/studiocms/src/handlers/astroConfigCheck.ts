@@ -1,6 +1,6 @@
 import { integrationLogger } from '@withstudiocms/internal_helpers/astro-integration';
-import { defineUtility } from 'astro-integration-kit';
 import { StudioCMSCoreError } from '../errors.js';
+import type { HookParameters } from 'astro';
 
 /**
  * Checks the Users Astro Config for the following:
@@ -8,8 +8,8 @@ import { StudioCMSCoreError } from '../errors.js';
  * - SSR Adapter is available
  * - Site URL is set (can be "http://localhost:4321" for local development)
  */
-export const checkAstroConfig = defineUtility('astro:config:setup')(
-	({ config: astroConfig, logger }) => {
+export const checkAstroConfig = (
+	({ config: astroConfig, logger }: HookParameters<"astro:config:setup">) => {
 		if (!astroConfig.adapter) {
 			throw new StudioCMSCoreError(
 				'SSR Adapter not found in Astro Config',

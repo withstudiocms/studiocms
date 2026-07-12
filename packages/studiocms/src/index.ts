@@ -30,7 +30,7 @@ import { readJson } from '@withstudiocms/internal_helpers/utils';
 import { type Kysely, sql } from '@withstudiocms/kysely/kysely';
 import type { AstroIntegration } from 'astro';
 import { envField } from 'astro/config';
-import { addVirtualImports } from 'astro-integration-kit';
+import { addVirtualImports } from '@withstudiocms/internal_helpers/astro-integration';
 import dotenv from 'dotenv';
 import { compare as semCompare } from 'semver';
 import {

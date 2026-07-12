@@ -44,9 +44,6 @@ catalogs:
     arctic:
       specifier: ^3.7.0
       version: 3.7.0
-    astro-integration-kit:
-      specifier: ^0.20.0
-      version: 0.20.0
     deepmerge-ts:
       specifier: ^7.1.5
       version: 7.1.5
@@ -1195,9 +1192,6 @@ importers:
       astro:
         specifier: catalog:studiocms-peerlock
         version: 6.4.8(@types/node@22.20.1)(jiti@2.7.0)(rollup@4.62.2)(tsx@4.23.0)(yaml@2.9.0)
-      astro-integration-kit:
-        specifier: 'catalog:'
-        version: 0.20.0(astro@6.4.8(@types/node@22.20.1)(jiti@2.7.0)(rollup@4.62.2)(tsx@4.23.0)(yaml@2.9.0))
       boxen:
         specifier: ^8.0.1
         version: 8.0.1
@@ -1335,9 +1329,6 @@ importers:
       '@types/node':
         specifier: 'catalog:'
         version: 22.20.1
-      astro-integration-kit:
-        specifier: 'catalog:'
-        version: 0.20.0(astro@6.4.8(@types/node@22.20.1)(jiti@2.7.0)(rollup@4.62.2)(tsx@4.23.0)(yaml@2.9.0))
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
@@ -3975,12 +3966,6 @@ packages:
   astring@1.9.0:
     resolution: {integrity: sha512-LElXdjswlqjWrPpJFg1Fx4wpkOCxj1TDHlSV4PlaRxHGWko024xICaa97ZkMfs6DRKlCguiAI+rbXv5GWwXIkg==}
     hasBin: true
-
-  astro-integration-kit@0.20.0:
-    resolution: {integrity: sha512-VQQs7hS9M3XrJtxSLHVDhvHzgqwZuhot3sMoYImBJSvL7fMnleSVgkZhoEeRJd1+Qh96eb469nRnn5mdjIJJMQ==}
-    deprecated: 'Check the migration guide: https://astro-integration-kit.netlify.app/migration-guide/'
-    peerDependencies:
-      astro: ^4.14.0 || ^5.0.0 || ^6.0.0
 
   astro-transition-event-polyfill@1.2.2:
     resolution: {integrity: sha512-F8TDMD8lvlqUx8eYfOTmQYQKOUu1M3Ik8dVUFKU+gy3ao3l3iItGHfB5akJ/B+BBoJdoR4qe1OadmXMRfgfNqQ==}
@@ -9536,11 +9521,6 @@ snapshots:
       js-tokens: 10.0.0
 
   astring@1.9.0: {}
-
-  astro-integration-kit@0.20.0(astro@6.4.8(@types/node@22.20.1)(jiti@2.7.0)(rollup@4.62.2)(tsx@4.23.0)(yaml@2.9.0)):
-    dependencies:
-      astro: 6.4.8(@types/node@22.20.1)(jiti@2.7.0)(rollup@4.62.2)(tsx@4.23.0)(yaml@2.9.0)
-      pathe: 2.0.3
 
   astro-transition-event-polyfill@1.2.2(astro@6.4.8(@types/node@22.20.1)(jiti@2.7.0)(rollup@4.62.2)(tsx@4.23.0)(yaml@2.9.0)):
     dependencies:

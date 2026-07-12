@@ -10,9 +10,9 @@ import {
 	pageContentComponentFilter,
 	rendererComponentFilter,
 } from '@withstudiocms/internal_helpers/utils';
-import type { AstroIntegration, InjectedRoute } from 'astro';
+import type { AstroIntegration, HookParameters, InjectedRoute } from 'astro';
 import { AstroError } from 'astro/errors';
-import { addVirtualImports, defineUtility } from 'astro-integration-kit';
+import { addVirtualImports } from '@withstudiocms/internal_helpers/astro-integration';
 import boxen from 'boxen';
 import { loadEnv } from 'vite';
 import { StudioCMSDefaultRobotsConfig } from '../consts.js';
@@ -241,8 +241,8 @@ type Options = {
  * @throws {StudioCMSError} If a plugin specifies an invalid minimum version requirement or if no rendering plugins are found.
  * @throws {AstroError} If no rendering plugins are installed.
  */
-export const pluginHandler = defineUtility('astro:config:setup')(
-	async (params, options: Options) => {
+export const pluginHandler = (
+	async (params: HookParameters<"astro:config:setup">, options: Options) => {
 		const { logger, config } = params;
 
 		const {
