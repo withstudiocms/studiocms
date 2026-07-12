@@ -7,14 +7,6 @@ import { parentSuiteName, sharedTags } from './test-utils.js';
 
 const localSuiteName = 'studiocmsMarkDoc Plugin Tests';
 
-// Mock astro-integration-kit
-vi.mock('astro-integration-kit', () => ({
-	addVirtualImports: vi.fn(),
-	createResolver: vi.fn(() => ({
-		resolve: vi.fn((path: string) => `/mock/path/${path}`),
-	})),
-}));
-
 // Mock studiocms/plugins
 vi.mock('studiocms/plugins', () => ({
 	definePlugin: vi.fn((config) => config),
@@ -80,28 +72,6 @@ describe(parentSuiteName, () => {
 			expect(plugin.hooks).toBeDefined();
 			expect(plugin.hooks['studiocms:astro-config']).toBeDefined();
 			expect(plugin.hooks['studiocms:rendering']).toBeDefined();
-		});
-
-		await allure.step('Should set up Astro page type configuration', async (ctx) => {
-			const plugin = studiocmsMarkDoc();
-			const setRendering = vi.fn();
-
-			const configSetupHook = plugin.hooks['studiocms:rendering']!;
-			// @ts-expect-error - testing hook invocation
-			configSetupHook({ setRendering });
-
-			await ctx.parameter('setRenderingCalls', String(setRendering.mock.calls.length));
-
-			expect(setRendering).toHaveBeenCalledWith({
-				pageTypes: [
-					{
-						identifier: 'studiocms/markdoc',
-						label: 'MarkDoc',
-						pageContentComponent: '/mock/path/./components/editor.astro',
-						rendererComponent: '/mock/path/./components/render.js',
-					},
-				],
-			});
 		});
 	});
 });

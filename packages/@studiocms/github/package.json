@@ -55,7 +55,6 @@
   },
   "type": "module",
   "dependencies": {
-    "astro-integration-kit": "catalog:",
     "arctic": "catalog:"
   },
   "devDependencies": {

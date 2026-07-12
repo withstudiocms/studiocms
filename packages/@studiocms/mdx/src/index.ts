@@ -7,11 +7,26 @@
 /// <reference types="studiocms/v/types" />
 
 import type { AstroIntegration } from 'astro';
-import { addVirtualImports, createResolver } from 'astro-integration-kit';
 import { definePlugin } from 'studiocms/plugins';
 import type { StudioCMSPluginDef } from 'studiocms/schemas';
 import { shared } from './lib/shared.js';
 import type { MDXPluginOptions } from './types.js';
+
+function virtualImportsPlugin(name: string, imports: Record<string, string>) {
+	return {
+		name,
+		resolveId(id: string) {
+			if (id in imports) return `\0${id}`;
+		},
+		load(id: string) {
+			if (id.startsWith('\0')) return imports[id.slice(1)];
+		},
+	};
+}
+
+function resolve(path: string) {
+	return new URL(path, import.meta.url).toString();
+}
 
 /**
  * Creates an internal Astro integration for MDX functionality.
@@ -25,9 +40,6 @@ export function internalMDXIntegration(
 	packageIdentifier: string,
 	options?: MDXPluginOptions
 ): AstroIntegration {
-	// Resolve the path to the current file
-	const { resolve } = createResolver(import.meta.url);
-
 	// Resolve the path to the internal renderer
 	const internalRenderer = resolve('./lib/render.js');
 
@@ -44,15 +56,18 @@ export function internalMDXIntegration(
 		hooks: {
 			'astro:config:setup': (params) => {
 				// Add the virtual imports for the MDX renderer
-				addVirtualImports(params, {
-					name: packageIdentifier,
-					imports: {
-						'studiocms:mdx/renderer': `
-							import { renderMDX as _render } from '${internalRenderer}';
+				params.updateConfig({
+					vite: {
+						plugins: [
+							virtualImportsPlugin(packageIdentifier, {
+								'studiocms:mdx/renderer': `
+									import { renderMDX as _render } from '${internalRenderer}';
 
-							export const renderMDX = _render;
-							export default renderMDX;
-						`,
+									export const renderMDX = _render;
+									export default renderMDX;
+								`,
+							}),
+						],
 					},
 				});
 			},
@@ -83,9 +98,6 @@ export function internalMDXIntegration(
  * ```
  */
 export function studiocmsMDX(options?: MDXPluginOptions): StudioCMSPluginDef {
-	// Resolve the path to the current file
-	const { resolve } = createResolver(import.meta.url);
-
 	// Define the package identifier
 	const packageIdentifier = '@studiocms/mdx';
 

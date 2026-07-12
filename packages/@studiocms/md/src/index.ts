@@ -7,18 +7,31 @@
 /// <reference types="studiocms/v/types" />
 
 import type { AstroIntegration } from 'astro';
-import { addVirtualImports, createResolver } from 'astro-integration-kit';
 import { Schema } from 'effect';
 import { definePlugin } from 'studiocms/plugins';
 import type { StudioCMSPluginDef } from 'studiocms/schemas';
 import { shared } from './lib/shared.js';
 import { MarkdownOptionsSchema, type MarkdownSchemaOptions } from './types.js';
 
+function virtualImportsPlugin(name: string, imports: Record<string, string>) {
+	return {
+		name,
+		resolveId(id: string) {
+			if (id in imports) return `\0${id}`;
+		},
+		load(id: string) {
+			if (id.startsWith('\0')) return imports[id.slice(1)];
+		},
+	};
+}
+
+function resolve(path: string) {
+	return new URL(path, import.meta.url).toString();
+}
+
 const packageIdentifier = '@studiocms/md';
 
 export function internalMarkdownIntegration(options: MarkdownSchemaOptions = {}): AstroIntegration {
-	// Resolve the path to the current file
-	const { resolve } = createResolver(import.meta.url);
 	// Resolve the path to the internal renderer
 	const internalRenderer = resolve('./lib/markdown-prerender.js');
 
@@ -45,20 +58,23 @@ export function internalMarkdownIntegration(options: MarkdownSchemaOptions = {})
 		hooks: {
 			'astro:config:setup': (params) => {
 				// Add the virtual imports for the MDX renderer
-				addVirtualImports(params, {
-					name: packageIdentifier,
-					imports: {
-						'studiocms:md/config': `
-							export const config = ${JSON.stringify(resolvedOptions)};
-							export default config;
-						`,
-						'studiocms:md/pre-render': `
-							export { preRender } from '${internalRenderer}';
-						`,
-						'studiocms:md/styles': `
-							import '${resolve('./styles/md-remark-headings.css')}';
-							${resolvedCalloutTheme ? `import '${resolvedCalloutTheme}';` : ''}
-						`,
+				params.updateConfig({
+					vite: {
+						plugins: [
+							virtualImportsPlugin(packageIdentifier, {
+								'studiocms:md/config': `
+									export const config = ${JSON.stringify(resolvedOptions)};
+									export default config;
+								`,
+								'studiocms:md/pre-render': `
+									export { preRender } from '${internalRenderer}';
+								`,
+								'studiocms:md/styles': `
+									import '${resolve('./styles/md-remark-headings.css')}';
+									${resolvedCalloutTheme ? `import '${resolvedCalloutTheme}';` : ''}
+								`,
+							}),
+						],
 					},
 				});
 
@@ -96,9 +112,6 @@ export function internalMarkdownIntegration(options: MarkdownSchemaOptions = {})
  * ```
  */
 export function studiocmsMD(options: MarkdownSchemaOptions = {}): StudioCMSPluginDef {
-	// Resolve the path to the current file
-	const { resolve } = createResolver(import.meta.url);
-
 	// Resolve the options and set defaults if not provided
 	const parseResult = Schema.decodeEither(MarkdownOptionsSchema)(options);
 	/* v8 ignore start */

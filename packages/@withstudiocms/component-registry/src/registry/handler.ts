@@ -1,7 +1,7 @@
 /// <reference types="../virtual.d.ts" preserve="true" />
 
 import { deepmerge, Effect, runEffect, Schema } from '@withstudiocms/effect';
-import { addVirtualImports, defineUtility } from 'astro-integration-kit';
+import type { HookParameters } from 'astro';
 import type { ComponentRegistryEntry } from '../types.js';
 import { convertHyphensToUnderscores, integrationLogger, resolver } from '../utils.js';
 import {
@@ -93,6 +93,18 @@ export const ComponentRegistryOptionsSchema = Schema.Struct({
  */
 export type ComponentRegistryOptions = Schema.Schema.Type<typeof ComponentRegistryOptionsSchema>;
 
+function virtualImportsPlugin(name: string, imports: Record<string, string>) {
+	return {
+		name,
+		resolveId(id: string) {
+			if (id in imports) return `\0${id}`;
+		},
+		load(id: string) {
+			if (id.startsWith('\0')) return imports[id.slice(1)];
+		},
+	};
+}
+
 /* v8 ignore start */
 
 /**
@@ -141,161 +153,159 @@ export type ComponentRegistryOptions = Schema.Schema.Type<typeof ComponentRegist
  * //   componentRegistry: { Footer: './src/components/Footer.astro' }
  * // }
  */
-export const componentRegistryHandler = defineUtility('astro:config:setup')(
-	async (params, opts: ComponentRegistryOptions) =>
-		await runEffect(
-			Effect.gen(function* () {
-				// Decode and validate options using Effect's Schema
-				const {
-					config: { verbose = false, name, virtualId },
-					builtInComponents = {},
-					componentRegistry = {},
-				} = yield* Schema.decode(ComponentRegistryOptionsSchema)(opts);
+export const componentRegistryHandler = async (
+	params: HookParameters<'astro:config:setup'>,
+	opts: ComponentRegistryOptions
+) =>
+	await runEffect(
+		Effect.gen(function* () {
+			// Decode and validate options using Effect's Schema
+			const {
+				config: { verbose = false, name, virtualId },
+				builtInComponents = {},
+				componentRegistry = {},
+			} = yield* Schema.decode(ComponentRegistryOptionsSchema)(opts);
 
-				// Fork a logger for the component registry
-				const logger = params.logger.fork(`${name}:component-registry`);
-				const logInfo = { logger, logLevel: 'info' as const, verbose };
+			// Fork a logger for the component registry
+			const logger = params.logger.fork(`${name}:component-registry`);
+			const logInfo = { logger, logLevel: 'info' as const, verbose };
 
-				// Log the start of the component registry setup
-				integrationLogger(logInfo, 'Setting up component registry...');
+			// Log the start of the component registry setup
+			integrationLogger(logInfo, 'Setting up component registry...');
 
-				// Resolve necessary paths and registry
-				const [resolve, astroConfigResolve, registry] = yield* Effect.all([
-					resolver(import.meta.url),
-					resolver(params.config.root.pathname),
-					ComponentRegistry,
-				]);
+			// Resolve necessary paths and registry
+			const [resolve, astroConfigResolve, registry] = yield* Effect.all([
+				resolver(import.meta.url),
+				resolver(params.config.root.pathname),
+				ComponentRegistry,
+			]);
 
-				// Setup Components and Component Keys Arrays
-				const componentKeys: string[] = [];
-				const components: string[] = [];
+			// Setup Components and Component Keys Arrays
+			const componentKeys: string[] = [];
+			const components: string[] = [];
 
-				// merge built-in components with the provided user component registry
-				const componentRegistryToCheck: Record<string, string> = yield* deepmerge((fn) =>
-					fn({}, builtInComponents, componentRegistry)
+			// merge built-in components with the provided user component registry
+			const componentRegistryToCheck: Record<string, string> = yield* deepmerge((fn) =>
+				fn({}, builtInComponents, componentRegistry)
+			);
+
+			// Get entries of the component registry to check
+			const componentRegistryEntries = Object.entries(componentRegistryToCheck);
+
+			// Check if there are any components to process
+			if (Object.keys(componentRegistryToCheck).length === 0) {
+				integrationLogger(logInfo, 'No components found in the registry, skipping...');
+			} else {
+				// Log the number of components to check
+				integrationLogger(
+					logInfo,
+					`Checking ${Object.keys(componentRegistryToCheck).length} components...`
 				);
 
-				// Get entries of the component registry to check
-				const componentRegistryEntries = Object.entries(componentRegistryToCheck);
+				// Iterate over the component registry entries
+				integrationLogger(logInfo, 'Iterating over component registry entries...');
+				for (const [key, value] of componentRegistryEntries) {
+					// Log the component key and value
+					integrationLogger(logInfo, `Component "${key}" resolved to "${value}"`);
 
-				// Check if there are any components to process
-				if (Object.keys(componentRegistryToCheck).length === 0) {
-					integrationLogger(logInfo, 'No components found in the registry, skipping...');
-				} else {
-					// Log the number of components to check
-					integrationLogger(
-						logInfo,
-						`Checking ${Object.keys(componentRegistryToCheck).length} components...`
-					);
-
-					// Iterate over the component registry entries
-					integrationLogger(logInfo, 'Iterating over component registry entries...');
-					for (const [key, value] of componentRegistryEntries) {
-						// Log the component key and value
-						integrationLogger(logInfo, `Component "${key}" resolved to "${value}"`);
-
-						// Check if the value is defined and is a string ending with .astro
-						if (!value) {
-							integrationLogger(logInfo, `Component "${key}" is not defined, skipping...`);
-							continue;
-						}
-
-						if (typeof value !== 'string') {
-							integrationLogger(logInfo, `Component "${key}" is not a string, skipping...`);
-							continue;
-						}
-
-						if (!value.endsWith('.astro')) {
-							integrationLogger(
-								logInfo,
-								`Component "${key}" does not end with .astro, skipping...`
-							);
-							continue;
-						}
-
-						// Resolve the path using astroConfigResolve
-						integrationLogger(logInfo, `Resolving path for component "${key}"...`);
-
-						// Use Effect's error handling instead of try/catch
-						const resolvedPath = yield* astroConfigResolve((fn) => fn(value)).pipe(
-							Effect.catchAll((error) => {
-								integrationLogger(
-									logInfo,
-									`Failed to resolve path for component "${key}": ${error}`
-								);
-								return Effect.succeed(null); // Return null to indicate failure
-							})
-						);
-
-						// Check if the resolved path is empty
-						if (!resolvedPath) {
-							integrationLogger(logInfo, `Component "${key}" resolved path is empty, skipping...`);
-							continue;
-						}
-
-						integrationLogger(logInfo, `Component "${key}" resolved path: "${resolvedPath}"`);
-
-						const keyName = key.toLowerCase();
-						const safeKeyName = convertHyphensToUnderscores(keyName);
-
-						// Add the component key and import statement
-						componentKeys.push(safeKeyName);
-						components.push(`export { default as ${safeKeyName} } from '${resolvedPath}';`);
-
-						// Register the component in the registry
-						yield* registry.registerComponentFromFile(resolvedPath, keyName);
+					// Check if the value is defined and is a string ending with .astro
+					if (!value) {
+						integrationLogger(logInfo, `Component "${key}" is not defined, skipping...`);
+						continue;
 					}
+
+					if (typeof value !== 'string') {
+						integrationLogger(logInfo, `Component "${key}" is not a string, skipping...`);
+						continue;
+					}
+
+					if (!value.endsWith('.astro')) {
+						integrationLogger(logInfo, `Component "${key}" does not end with .astro, skipping...`);
+						continue;
+					}
+
+					// Resolve the path using astroConfigResolve
+					integrationLogger(logInfo, `Resolving path for component "${key}"...`);
+
+					// Use Effect's error handling instead of try/catch
+					const resolvedPath = yield* astroConfigResolve((fn) => fn(value)).pipe(
+						Effect.catchAll((error) => {
+							integrationLogger(logInfo, `Failed to resolve path for component "${key}": ${error}`);
+							return Effect.succeed(null); // Return null to indicate failure
+						})
+					);
+
+					// Check if the resolved path is empty
+					if (!resolvedPath) {
+						integrationLogger(logInfo, `Component "${key}" resolved path is empty, skipping...`);
+						continue;
+					}
+
+					integrationLogger(logInfo, `Component "${key}" resolved path: "${resolvedPath}"`);
+
+					const keyName = key.toLowerCase();
+					const safeKeyName = convertHyphensToUnderscores(keyName);
+
+					// Add the component key and import statement
+					componentKeys.push(safeKeyName);
+					components.push(`export { default as ${safeKeyName} } from '${resolvedPath}';`);
+
+					// Register the component in the registry
+					yield* registry.registerComponentFromFile(resolvedPath, keyName);
 				}
+			}
 
-				integrationLogger(logInfo, `Total components found: ${componentKeys.length}`);
+			integrationLogger(logInfo, `Total components found: ${componentKeys.length}`);
 
-				integrationLogger(logInfo, 'Extracting component props...');
+			integrationLogger(logInfo, 'Extracting component props...');
 
-				// Get all component props from the registry
-				const componentProps: ComponentRegistryEntry[] = yield* registry.getAllComponents().pipe(
-					Effect.map((map) => Array.from(map.entries())),
-					Effect.map((array) =>
-						array.map(([iName, data]) => ({
-							...data,
-							name: iName,
-							safeName: convertHyphensToUnderscores(iName),
-						}))
-					)
+			// Get all component props from the registry
+			const componentProps: ComponentRegistryEntry[] = yield* registry.getAllComponents().pipe(
+				Effect.map((map) => Array.from(map.entries())),
+				Effect.map((array) =>
+					array.map(([iName, data]) => ({
+						...data,
+						name: iName,
+						safeName: convertHyphensToUnderscores(iName),
+					}))
+				)
+			);
+
+			integrationLogger(logInfo, `Total component props extracted: ${componentProps.length}`);
+
+			// Log registered components based on verbosity and count
+			if (verbose && componentProps.length <= 10) {
+				integrationLogger(
+					logInfo,
+					`Registered components:\n${JSON.stringify(componentProps, null, 2)}`
 				);
+			} else {
+				integrationLogger(
+					logInfo,
+					`Registered ${componentProps.length} components. Use verbose mode with fewer components to see details.`
+				);
+			}
 
-				integrationLogger(logInfo, `Total component props extracted: ${componentProps.length}`);
+			// Resolve the virtual runtime import path
+			const virtualRuntimeImport = yield* resolve((fn) => fn('../runtime.js'));
 
-				// Log registered components based on verbosity and count
-				if (verbose && componentProps.length <= 10) {
-					integrationLogger(
-						logInfo,
-						`Registered components:\n${JSON.stringify(componentProps, null, 2)}`
-					);
-				} else {
-					integrationLogger(
-						logInfo,
-						`Registered ${componentProps.length} components. Use verbose mode with fewer components to see details.`
-					);
-				}
+			// Add virtual imports for the component registry
+			params.updateConfig({
+				vite: {
+					plugins: [
+						virtualImportsPlugin(name, {
+							[InternalId]: buildVirtualImport(componentKeys, componentProps, components),
+							[NameInternalId]: `export default '${name}'; export const name = '${name}';`,
+							[RuntimeInternalId]: `export * from '${virtualRuntimeImport}';`,
+							...(virtualId ? buildAliasExports(virtualId) : {}),
+						}),
+					],
+				},
+			});
 
-				// Resolve the virtual runtime import path
-				const virtualRuntimeImport = yield* resolve((fn) => fn('../runtime.js'));
-
-				// Add virtual imports for the component registry
-				addVirtualImports(params, {
-					name,
-					imports: {
-						[InternalId]: buildVirtualImport(componentKeys, componentProps, components),
-						[NameInternalId]: `export default '${name}'; export const name = '${name}';`,
-						[RuntimeInternalId]: `export * from '${virtualRuntimeImport}';`,
-						...(virtualId ? buildAliasExports(virtualId) : {}),
-					},
-				});
-
-				// Log the completion of the component registry setup
-				integrationLogger(logInfo, 'Component registry setup complete.');
-			}).pipe(Effect.provide(ComponentRegistry.Default))
-		)
-);
+			// Log the completion of the component registry setup
+			integrationLogger(logInfo, 'Component registry setup complete.');
+		}).pipe(Effect.provide(ComponentRegistry.Default))
+	);
 
 /* v8 ignore stop */

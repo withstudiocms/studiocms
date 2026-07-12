@@ -64,7 +64,6 @@
   "type": "module",
   "dependencies": {
     "@markdoc/markdoc": "^0.5.7",
-    "astro-integration-kit": "catalog:",
     "react": "catalog:react",
     "react-dom": "catalog:react"
   },

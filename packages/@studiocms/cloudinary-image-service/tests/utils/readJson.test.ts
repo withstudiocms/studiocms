@@ -140,7 +140,6 @@ describe(parentSuiteName, () => {
 				version: '1.0.0',
 				dependencies: {
 					'@cloudinary/url-gen': '^1.22.0',
-					'astro-integration-kit': 'catalog:',
 				},
 				scripts: {
 					build: 'buildkit build',

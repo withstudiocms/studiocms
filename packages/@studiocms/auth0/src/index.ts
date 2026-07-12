@@ -6,7 +6,6 @@
 /// <reference types="astro/client" />
 /// <reference types="studiocms/v/types" />
 
-import { createResolver } from 'astro-integration-kit';
 import { definePlugin } from 'studiocms/plugins';
 import type { StudioCMSPluginDef } from 'studiocms/schemas';
 
@@ -32,9 +31,6 @@ import type { StudioCMSPluginDef } from 'studiocms/schemas';
  * ```
  */
 export function studiocmsAuth0(): StudioCMSPluginDef {
-	// Resolve the path to the current file
-	const { resolve } = createResolver(import.meta.url);
-
 	// Define the package identifier
 	const packageIdentifier = '@studiocms/auth0';
 
@@ -48,7 +44,7 @@ export function studiocmsAuth0(): StudioCMSPluginDef {
 					oAuthProvider: {
 						name: 'auth0',
 						formattedName: 'Auth0',
-						endpointPath: resolve('./endpoint.js'),
+						endpointPath: `${new URL('./endpoint.js', import.meta.url)}`,
 						requiredEnvVariables: [
 							'CMS_AUTH0_CLIENT_ID',
 							'CMS_AUTH0_CLIENT_SECRET',

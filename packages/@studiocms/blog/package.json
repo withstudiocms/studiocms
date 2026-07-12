@@ -61,8 +61,7 @@
   },
   "type": "module",
   "dependencies": {
-    "@astrojs/rss": "catalog:astrojs-current",
-    "astro-integration-kit": "catalog:"
+    "@astrojs/rss": "catalog:astrojs-current"
   },
   "devDependencies": {
     "@studiocms/md": "workspace:^",

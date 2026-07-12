@@ -1,10 +1,11 @@
 import type { AstroIntegration } from 'astro';
 import { envField } from 'astro/config';
-import { createResolver } from 'astro-integration-kit';
 import { definePlugin } from 'studiocms/plugins';
 import { readJson } from './utils/readJson.js';
 
-const { resolve } = createResolver(import.meta.url);
+function resolve(path: string) {
+	return new URL(path, import.meta.url).toString();
+}
 
 // Read the package.json file for the package name and version
 const { name } = readJson<{ name: string; version: string }>(resolve('../package.json'));

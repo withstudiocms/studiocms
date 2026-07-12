@@ -6,9 +6,12 @@
 /// <reference types="studiocms/v/types" />
 /// <reference types="astro/client" />
 
-import { createResolver } from 'astro-integration-kit';
 import { definePlugin } from 'studiocms/plugins';
 import type { StudioCMSPluginDef } from 'studiocms/schemas';
+
+function resolve(path: string) {
+	return new URL(path, import.meta.url).toString();
+}
 
 /**
  * Creates and returns the StudioCMS Google Plugin.
@@ -28,9 +31,6 @@ import type { StudioCMSPluginDef } from 'studiocms/schemas';
  * - Registers the Google OAuth provider with a custom SVG logo.
  */
 export function studiocmsGoogle(): StudioCMSPluginDef {
-	// Resolve the path to the current file
-	const { resolve } = createResolver(import.meta.url);
-
 	// Define the package identifier
 	const packageIdentifier = '@studiocms/google';
 

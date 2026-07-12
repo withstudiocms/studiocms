@@ -1,7 +1,7 @@
 import { Effect } from '@withstudiocms/effect';
 import * as allure from 'allure-js-commons';
 import type { AstroIntegrationLogger } from 'astro';
-import { describe, expect, test, vi } from 'vitest';
+import { describe, expect, test } from 'vitest';
 import type { ComponentRegistryError } from '../src/errors.js';
 import {
 	convertHyphensToUnderscores,
@@ -14,17 +14,6 @@ import {
 import { createMockLogger, parentSuiteName, sharedTags } from './test-utils.js';
 
 const localSuiteName = 'Utility Tests';
-
-// Mock createResolver from astro-integration-kit
-vi.mock('astro-integration-kit', async () => {
-	return {
-		createResolver: (base: string) => ({
-			resolve: (...paths: string[]) => [base, ...paths].join('/'),
-		}),
-		defineUtility: () => () => {},
-		addVirtualImports: vi.fn(),
-	};
-});
 
 describe(parentSuiteName, () => {
 	[

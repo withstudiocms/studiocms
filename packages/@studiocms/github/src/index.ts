@@ -6,9 +6,12 @@
 /// <reference types="studiocms/v/types" />
 /// <reference types="astro/client" />
 
-import { createResolver } from 'astro-integration-kit';
 import { definePlugin } from 'studiocms/plugins';
 import type { StudioCMSPluginDef } from 'studiocms/schemas';
+
+function resolve(path: string) {
+	return new URL(path, import.meta.url).toString();
+}
 
 /**
  * Creates and returns the StudioCMS GitHub plugin configuration.
@@ -24,9 +27,6 @@ import type { StudioCMSPluginDef } from 'studiocms/schemas';
  * const githubPlugin = studiocmsGithub();
  */
 export function studiocmsGithub(): StudioCMSPluginDef {
-	// Resolve the path to the current file
-	const { resolve } = createResolver(import.meta.url);
-
 	// Define the package identifier
 	const packageIdentifier = '@studiocms/github';
 

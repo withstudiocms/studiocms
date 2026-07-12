@@ -1,5 +1,4 @@
 import type { AstroIntegration } from 'astro';
-import { addVirtualImports, createResolver } from 'astro-integration-kit';
 import { Schema } from 'effect';
 import { pathWithBase } from 'studiocms/lib/pathGenerators';
 import { definePlugin } from 'studiocms/plugins';
@@ -7,6 +6,22 @@ import type { StudioCMSPluginDef } from 'studiocms/schemas';
 import { FrontEndConfigSchema, type StudioCMSBlogOptions } from './types.js';
 
 const packageIdentifier = '@studiocms/blog';
+
+function virtualImportsPlugin(name: string, imports: Record<string, string>) {
+	return {
+		name,
+		resolveId(id: string) {
+			if (id in imports) return `\0${id}`;
+		},
+		load(id: string) {
+			if (id.startsWith('\0')) return imports[id.slice(1)];
+		},
+	};
+}
+
+function resolve(path: string) {
+	return new URL(path, import.meta.url).toString();
+}
 
 export function internalBlogIntegration(options: StudioCMSBlogOptions = {}): AstroIntegration {
 	// Resolve the options and set defaults
@@ -28,7 +43,7 @@ export function internalBlogIntegration(options: StudioCMSBlogOptions = {}): Ast
 			/* v8 ignore start */
 			/* this is tested indirectly via the plugin tests */
 			'astro:config:setup': async (params) => {
-				const { injectRoute } = params;
+				const { injectRoute, updateConfig } = params;
 
 				if (injectRoutes) {
 					injectRoute({
@@ -58,21 +73,20 @@ export function internalBlogIntegration(options: StudioCMSBlogOptions = {}): Ast
 					}
 				}
 
-				addVirtualImports(params, {
-					name: packageIdentifier,
-					imports: {
-						'studiocms:blog/config': `
-							const config = {
-								title: ${JSON.stringify(title)},
-								enableRSS: ${enableRSS},
-								route: ${JSON.stringify(route)}
-							}
-							export default config;
-						`,
-						'studiocms:blog/frontend-config': `
-							const config = ${JSON.stringify(frontendConfig)};
-							export default config;
-						`,
+				updateConfig({
+					vite: {
+						plugins: [
+							virtualImportsPlugin(packageIdentifier, {
+								'studiocms:blog/config': `
+									const config = { title: ${JSON.stringify(title)}, enableRSS: ${enableRSS}, route: ${JSON.stringify(route)} }; 
+									export default config;
+								`,
+								'studiocms:blog/frontend-config': `
+									const config = ${JSON.stringify(frontendConfig)}; 
+									export default config;
+								`,
+							}),
+						],
 					},
 				});
 			},
@@ -122,9 +136,6 @@ export function studioCMSBlogPlugin(options: StudioCMSBlogOptions = {}): StudioC
 	} = resolvedOptions;
 
 	const route = pathWithBase(orgRoute);
-
-	// Resolve the path to the current file
-	const { resolve } = createResolver(import.meta.url);
 
 	const editor = resolve('./components/editor.astro');
 	const renderer = resolve('./components/render.js');

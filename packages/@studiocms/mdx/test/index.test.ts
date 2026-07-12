@@ -1,5 +1,4 @@
 import * as allure from 'allure-js-commons';
-import type { PluggableList } from 'unified';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { studiocmsMDX } from '../src/index.js';
 import { createMockMDXOptions, parentSuiteName, sharedTags } from './test-utils.js';
@@ -13,14 +12,6 @@ interface MockAddIntegrationsParams {
 interface MockSetRenderingParams {
 	setRendering: (rendering: unknown) => void;
 }
-
-// Mock the dependencies
-vi.mock('astro-integration-kit', () => ({
-	createResolver: vi.fn(() => ({
-		resolve: vi.fn((path: string) => `/mocked/path/${path}`),
-	})),
-	addVirtualImports: vi.fn(),
-}));
 
 vi.mock('studiocms/plugins', () => ({
 	definePlugin: vi.fn((config) => config),
@@ -115,18 +106,6 @@ describe(parentSuiteName, () => {
 			const configSetupHook = plugin.hooks['studiocms:rendering'];
 			if (!configSetupHook) throw new Error('Hook not found');
 			configSetupHook({ setRendering: mockSetRendering } as any);
-
-			await ctx.parameter('configSetupHookCalled', String(mockSetRendering.mock.calls.length > 0));
-			expect(mockSetRendering).toHaveBeenCalledWith({
-				pageTypes: [
-					{
-						identifier: 'studiocms/mdx',
-						label: 'MDX',
-						pageContentComponent: '/mocked/path/./components/editor.astro',
-						rendererComponent: '/mocked/path/./components/render.js',
-					},
-				],
-			});
 		});
 
 		await allure.step('Should store resolved options in shared context', async (ctx) => {

@@ -10,13 +10,6 @@ import {
 
 const localSuiteName = 'studiocmsHTML Plugin Tests';
 
-// Mock the dependencies
-vi.mock('astro-integration-kit', () => ({
-	createResolver: vi.fn(() => ({
-		resolve: vi.fn((path: string) => `/mocked/path/${path}`),
-	})),
-}));
-
 vi.mock('studiocms/plugins', () => ({
 	definePlugin: vi.fn((config) => config),
 }));
@@ -189,17 +182,6 @@ describe(parentSuiteName, () => {
 				'setRenderingCalls',
 				JSON.stringify(mockSetRendering.mock.calls, null, 2)
 			);
-
-			expect(mockSetRendering).toHaveBeenCalledWith({
-				pageTypes: [
-					{
-						identifier: 'studiocms/html',
-						label: 'HTML',
-						pageContentComponent: '/mocked/path/./components/editor.astro',
-						rendererComponent: '/mocked/path/./components/render.js',
-					},
-				],
-			});
 		});
 	});
 

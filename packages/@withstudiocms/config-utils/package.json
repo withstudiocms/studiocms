@@ -54,7 +54,6 @@
   },
   "type": "module",
   "dependencies": {
-    "astro-integration-kit": "catalog:",
     "tsdown": "catalog:"
   },
   "devDependencies": {
