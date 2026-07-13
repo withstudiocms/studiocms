@@ -882,6 +882,10 @@ importers:
       wrap-ansi:
         specifier: ^10.0.0
         version: 10.0.0
+    devDependencies:
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.20.1
 
   packages/@withstudiocms/component-registry:
     dependencies:

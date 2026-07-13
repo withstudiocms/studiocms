@@ -16,6 +16,7 @@
     "pretty": true,
     "noErrorTruncation": true,
     "allowImportingTsExtensions": true,
+    "types": ["node"],
     "plugins": [
       {
         "name": "@effect/language-service"
