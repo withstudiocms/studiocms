@@ -18,15 +18,15 @@
   },
   "devDependencies": {
     "@types/node": "^22.13.5",
-    "typescript": "^5.9.3"
+    "typescript": "^6.0.3"
   },
   "dependencies": {
-    "@astrojs/node": "^9.5.4",
+    "@astrojs/node": "^10.0.0",
     "@effect/platform": "^0.96.2",
     "@effect/platform-node": "^0.107.0",
     "@studiocms/blog": "^0.3.0",
     "@studiocms/md": "^0.3.0",
-    "astro": "^5.18.0",
+    "astro": "^6.1.0",
     "effect": "^3.21.4",
     "pg": "^8.22.0",
     "sharp": "^0.34.3",

@@ -19,17 +19,17 @@
   },
   "devDependencies": {
     "@types/node": "^22.13.5",
-    "typescript": "^5.9.3"
+    "typescript": "^6.0.3"
   },
   "dependencies": {
-    "@astrojs/node": "^9.5.4",
+    "@astrojs/node": "^10.0.0",
     "@effect/platform": "^0.96.2",
     "@effect/platform-node": "^0.107.0",
     "@libsql/client": "^0.15.15",
     "@studiocms/github": "^0.3.0",
     "@studiocms/md": "^0.3.0",
     "@studiocms/html": "^0.3.0",
-    "astro": "^5.18.0",
+    "astro": "^6.1.0",
     "effect": "^3.21.4",
     "kysely-turso": "^0.1.1",
     "sharp": "^0.34.3",

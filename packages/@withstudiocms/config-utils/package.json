@@ -57,7 +57,8 @@
     "tsdown": "catalog:"
   },
   "devDependencies": {
-    "@types/node": "catalog:"
+    "@types/node": "catalog:",
+    "astro": "catalog:astrojs-current"
   },
   "peerDependencies": {
     "astro": "catalog:astrojs-min",
