@@ -57,8 +57,7 @@
       "default": "./dist/types.js"
     },
     "./v/types": {
-      "types": "./dist/virtual.d.ts",
-      "default": "./dist/virtual.d.js"
+      "types": "./dist/virtual.d.ts"
     },
     "./editor": "./dist/components/markdown-editor.astro",
     "./renderer": {
@@ -68,7 +67,8 @@
   },
   "type": "module",
   "dependencies": {
-    "@studiocms/markdown-remark": "workspace:^"
+    "@studiocms/markdown-remark": "workspace:^",
+    "@withstudiocms/internal_helpers": "workspace:^"
   },
   "devDependencies": {
     "@types/node": "catalog:",

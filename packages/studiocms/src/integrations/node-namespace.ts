@@ -1,6 +1,5 @@
 import { builtinModules as builtins } from 'node:module';
 import type { AstroIntegration } from 'astro';
-import { addVitePlugin, hasVitePlugin } from 'astro-integration-kit';
 import type { PluginOption } from 'vite';
 
 export const resolveBuiltIns = (id: string) => {
@@ -39,8 +38,18 @@ export function nodeNamespaceBuiltinsAstro(): AstroIntegration {
 		hooks: {
 			/* v8 ignore start */
 			'astro:config:setup': (params) => {
-				if (!hasVitePlugin(params, { plugin })) {
-					addVitePlugin(params, { plugin });
+				// Check if the 'namespace-builtins' plugin is already present
+				const hasPlugin = params.config.vite?.plugins?.some(
+					// biome-ignore lint/suspicious/noExplicitAny: Vite is fun
+					(p) => p && typeof p === 'object' && (p as any).name === name
+				);
+
+				if (!hasPlugin) {
+					params.updateConfig({
+						vite: {
+							plugins: [plugin],
+						},
+					});
 				}
 			},
 			/* v8 ignore stop */

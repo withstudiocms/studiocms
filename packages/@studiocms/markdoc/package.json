@@ -57,13 +57,13 @@
       "default": "./dist/types.js"
     },
     "./v/types": {
-      "types": "./dist/virtual.d.ts",
-      "default": "./dist/virtual.d.js"
+      "types": "./dist/virtual.d.ts"
     }
   },
   "type": "module",
   "dependencies": {
     "@markdoc/markdoc": "^0.5.7",
+    "@withstudiocms/internal_helpers": "workspace:^",
     "react": "catalog:react",
     "react-dom": "catalog:react"
   },

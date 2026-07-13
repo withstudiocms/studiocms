@@ -1,19 +1,8 @@
+import { addVirtualImports } from '@withstudiocms/internal_helpers/astro-integration';
 import type { AstroIntegration } from 'astro';
 import { Schema } from 'effect';
 import { type StudioCMSDevAppsOptions, StudioCMSDevAppsSchema } from './schema/index.js';
 import { pathGenerator } from './utils/pathGenerator.js';
-
-function virtualImportsPlugin(name: string, imports: Record<string, string>) {
-	return {
-		name,
-		resolveId(id: string) {
-			if (id in imports) return `\0${id}`;
-		},
-		load(id: string) {
-			if (id.startsWith('\0')) return imports[id.slice(1)];
-		},
-	};
-}
 
 function resolve(path: string) {
 	return new URL(path, import.meta.url).toString();
@@ -64,7 +53,7 @@ export function studioCMSDevApps(opts: StudioCMSDevAppsOptions = {}): AstroInteg
 		hooks: {
 			'astro:config:setup': (params) => {
 				// Destructure Params
-				const { config, logger, addDevToolbarApp, command, injectRoute, updateConfig } = params;
+				const { config, logger, addDevToolbarApp, command, injectRoute } = params;
 
 				// Endpoint Path Generator
 				makeEndpointPath = pathGenerator(options.endpoint, config.base);
@@ -79,18 +68,15 @@ export function studioCMSDevApps(opts: StudioCMSDevAppsOptions = {}): AstroInteg
 
 					// Add Virtual Imports
 
-					updateConfig({
-						vite: {
-							plugins: [
-								virtualImportsPlugin('@studiocms/devapps', {
-									'virtual:studiocms-devapps/endpoints': `
-										export const wpAPIEndpoint = "${wpAPIPath}";
-									`,
-									'virtual:studiocms-devapps/config': `
-										export const userProjectRoot = "${config.root.pathname}";
-									`,
-								}),
-							],
+					addVirtualImports(params, {
+						name: '@studiocms/devapps',
+						imports: {
+							'virtual:studiocms-devapps/endpoints': `
+								export const wpAPIEndpoint = "${wpAPIPath}";
+							`,
+							'virtual:studiocms-devapps/config': `
+								export const userProjectRoot = "${config.root.pathname}";
+							`,
 						},
 					});
 

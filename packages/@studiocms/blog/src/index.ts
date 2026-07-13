@@ -1,3 +1,4 @@
+import { addVirtualImports } from '@withstudiocms/internal_helpers/astro-integration';
 import type { AstroIntegration } from 'astro';
 import { Schema } from 'effect';
 import { pathWithBase } from 'studiocms/lib/pathGenerators';
@@ -6,18 +7,6 @@ import type { StudioCMSPluginDef } from 'studiocms/schemas';
 import { FrontEndConfigSchema, type StudioCMSBlogOptions } from './types.js';
 
 const packageIdentifier = '@studiocms/blog';
-
-function virtualImportsPlugin(name: string, imports: Record<string, string>) {
-	return {
-		name,
-		resolveId(id: string) {
-			if (id in imports) return `\0${id}`;
-		},
-		load(id: string) {
-			if (id.startsWith('\0')) return imports[id.slice(1)];
-		},
-	};
-}
 
 function resolve(path: string) {
 	return new URL(path, import.meta.url).toString();
@@ -43,7 +32,7 @@ export function internalBlogIntegration(options: StudioCMSBlogOptions = {}): Ast
 			/* v8 ignore start */
 			/* this is tested indirectly via the plugin tests */
 			'astro:config:setup': async (params) => {
-				const { injectRoute, updateConfig } = params;
+				const { injectRoute } = params;
 
 				if (injectRoutes) {
 					injectRoute({
@@ -73,20 +62,17 @@ export function internalBlogIntegration(options: StudioCMSBlogOptions = {}): Ast
 					}
 				}
 
-				updateConfig({
-					vite: {
-						plugins: [
-							virtualImportsPlugin(packageIdentifier, {
-								'studiocms:blog/config': `
-									const config = { title: ${JSON.stringify(title)}, enableRSS: ${enableRSS}, route: ${JSON.stringify(route)} }; 
-									export default config;
-								`,
-								'studiocms:blog/frontend-config': `
-									const config = ${JSON.stringify(frontendConfig)}; 
-									export default config;
-								`,
-							}),
-						],
+				addVirtualImports(params, {
+					name: packageIdentifier,
+					imports: {
+						'studiocms:blog/config': `
+							const config = { title: ${JSON.stringify(title)}, enableRSS: ${enableRSS}, route: ${JSON.stringify(route)} }; 
+							export default config;
+						`,
+						'studiocms:blog/frontend-config': `
+							const config = ${JSON.stringify(frontendConfig)}; 
+							export default config;
+						`,
 					},
 				});
 			},

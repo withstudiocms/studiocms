@@ -16,12 +16,6 @@ vi.mock('node:fs', () => ({
 	},
 }));
 
-vi.mock('astro-integration-kit', () => ({
-	createResolver: () => ({
-		resolve: (...segments: string[]) => segments.join('/'),
-	}),
-}));
-
 describe(parentSuiteName, () => {
 	const test = allureTester({
 		suiteName: localSuiteName,

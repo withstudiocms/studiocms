@@ -1,6 +1,7 @@
 /// <reference types="../virtual.d.ts" preserve="true" />
 
 import { deepmerge, Effect, runEffect, Schema } from '@withstudiocms/effect';
+import { addVirtualImports } from '@withstudiocms/internal_helpers/astro-integration';
 import type { HookParameters } from 'astro';
 import type { ComponentRegistryEntry } from '../types.js';
 import { convertHyphensToUnderscores, integrationLogger, resolver } from '../utils.js';
@@ -92,18 +93,6 @@ export const ComponentRegistryOptionsSchema = Schema.Struct({
  * - Because this type is derived from the schema, updating the schema will automatically update this type.
  */
 export type ComponentRegistryOptions = Schema.Schema.Type<typeof ComponentRegistryOptionsSchema>;
-
-function virtualImportsPlugin(name: string, imports: Record<string, string>) {
-	return {
-		name,
-		resolveId(id: string) {
-			if (id in imports) return `\0${id}`;
-		},
-		load(id: string) {
-			if (id.startsWith('\0')) return imports[id.slice(1)];
-		},
-	};
-}
 
 /* v8 ignore start */
 
@@ -289,17 +278,13 @@ export const componentRegistryHandler = async (
 			// Resolve the virtual runtime import path
 			const virtualRuntimeImport = yield* resolve((fn) => fn('../runtime.js'));
 
-			// Add virtual imports for the component registry
-			params.updateConfig({
-				vite: {
-					plugins: [
-						virtualImportsPlugin(name, {
-							[InternalId]: buildVirtualImport(componentKeys, componentProps, components),
-							[NameInternalId]: `export default '${name}'; export const name = '${name}';`,
-							[RuntimeInternalId]: `export * from '${virtualRuntimeImport}';`,
-							...(virtualId ? buildAliasExports(virtualId) : {}),
-						}),
-					],
+			addVirtualImports(params, {
+				name,
+				imports: {
+					[InternalId]: buildVirtualImport(componentKeys, componentProps, components),
+					[NameInternalId]: `export default '${name}'; export const name = '${name}';`,
+					[RuntimeInternalId]: `export * from '${virtualRuntimeImport}';`,
+					...(virtualId ? buildAliasExports(virtualId) : {}),
 				},
 			});
 

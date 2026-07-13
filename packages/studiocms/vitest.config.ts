@@ -1,8 +1,8 @@
 import { convertToSafeString, rendererComponentFilter } from '@withstudiocms/internal_helpers';
+import { addVirtualImports } from '@withstudiocms/internal_helpers/astro-integration';
 import createPathResolver from '@withstudiocms/internal_helpers/pathResolver';
 import type { AstroIntegration } from 'astro';
 import { getViteConfig } from 'astro/config';
-import { addVirtualImports } from 'astro-integration-kit';
 import { Schema } from 'effect';
 import { defineProject, mergeConfig } from 'vitest/config';
 import { configShared } from '../../vitest.shared.js';
