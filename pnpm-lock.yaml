@@ -13,7 +13,7 @@ catalogs:
       specifier: ^4.0.17
       version: 4.0.19
     astro:
-      specifier: ^6.0.8
+      specifier: ^6.1.0
       version: 6.4.8
     vite:
       specifier: ^7.3.1
@@ -23,7 +23,7 @@ catalogs:
       specifier: ^0.7.5 || ^0.8.0
       version: 0.8.0
     astro:
-      specifier: ^5.12.9 || ^6.0.0
+      specifier: ^5.12.9 || ^6.1.0
       version: 5.18.2
     vite:
       specifier: ^6.3.4 || ^7.3.0

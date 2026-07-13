@@ -1,9 +1,9 @@
+import { site } from 'astro:config/client';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import { Mailer } from 'studiocms:mailer';
 import { SDKCoreJs as sdk } from 'studiocms:sdk';
 import type { CombinedUserData } from 'studiocms:sdk/types';
 import templateEngine from 'studiocms:template-engine';
-import { site } from 'virtual:studiocms/site';
 import { CMSNotificationSettingsId } from '../../consts.js';
 import { Data, Effect, genLogger, pipeLogger } from '../../effect.js';
 import type { UserSessionData } from './types.js';

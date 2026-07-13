@@ -1,4 +1,4 @@
-import { site } from 'virtual:studiocms/site';
+import { site } from 'astro:config/client';
 import { FetchHttpClient, HttpApiClient } from '@effect/platform';
 import type { HttpApi } from '@effect/platform/HttpApi';
 import type { HttpApiGroup } from '@effect/platform/HttpApiGroup';
