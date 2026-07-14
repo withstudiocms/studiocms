@@ -151,10 +151,14 @@ export const componentRegistryHandler = async (
 		Effect.gen(function* () {
 			// Decode and validate options using Effect's Schema
 			const {
-				config: { verbose = false, name, virtualId },
+				config: { verbose = false, name: preName, virtualId },
 				builtInComponents = {},
 				componentRegistry = {},
 			} = yield* Schema.decode(ComponentRegistryOptionsSchema)(opts);
+
+			const name = preName.includes('-component-registry')
+				? preName
+				: `${preName}-component-registry`;
 
 			// Fork a logger for the component registry
 			const logger = params.logger.fork(`${name}:component-registry`);

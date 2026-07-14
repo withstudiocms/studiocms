@@ -10,11 +10,7 @@
 import { promises as fsP, writeFileSync } from 'node:fs';
 import studiocmsUi from '@studiocms/ui';
 import { componentRegistryHandler } from '@withstudiocms/component-registry';
-import {
-	configResolverBuilderEffect,
-	exists,
-	watchConfigFileBuilder,
-} from '@withstudiocms/config-utils';
+import { configResolverBuilder, exists, watchConfigFileBuilder } from '@withstudiocms/config-utils';
 import { Effect, runEffect } from '@withstudiocms/effect';
 import {
 	addIntegrationArray,
@@ -101,7 +97,7 @@ export const studiocms = (): AstroIntegration => {
 	});
 
 	// Config Resolver Builder
-	const configResolver = configResolverBuilderEffect({
+	const configResolver = configResolverBuilder({
 		configPaths,
 		label: name,
 		effectSchema: StudioCMSOptionsSchema,
