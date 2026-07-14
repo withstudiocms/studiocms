@@ -576,8 +576,8 @@ importers:
         specifier: ^1.7.0
         version: 1.7.0
       ultrahtml:
-        specifier: ^1.6.0
-        version: 1.6.0
+        specifier: ^1.7.0
+        version: 1.7.0
       unified:
         specifier: ^11.0.5
         version: 11.0.5
@@ -595,7 +595,7 @@ importers:
         specifier: ^1.0.9
         version: 1.0.9
       '@types/hast':
-        specifier: ^3.0.4
+        specifier: ^3.0.5
         version: 3.0.5
       '@types/html-escaper':
         specifier: ^3.0.4
@@ -1255,7 +1255,7 @@ importers:
         version: 0.2.17
       ultrahtml:
         specifier: ^1.6.0
-        version: 1.6.0
+        version: 1.7.0
       web-vitals:
         specifier: ^5.3.0
         version: 5.3.0
@@ -6515,6 +6515,9 @@ packages:
   ultrahtml@1.6.0:
     resolution: {integrity: sha512-R9fBn90VTJrqqLDwyMph+HGne8eqY1iPfYhPzZrvKpIfwkWZbcYlfpsb8B9dTvBfpy1/hqAD7Wi8EKfP9e8zdw==}
 
+  ultrahtml@1.7.0:
+    resolution: {integrity: sha512-2xRd0VHoAQE4M+vF/DvFFB7pUV0ZxTW1TLi7lHQWnF/Sb5TPeEUV/l+hxcNnGO00ZXGnR0voCMmYRKQf+rvJ2g==}
+
   unbash@2.2.0:
     resolution: {integrity: sha512-X2wH19RAPZE3+ldGicOkoj/SIA83OIxcJ6Cuaw23hf8Xc6fQpvZXY0SftE2JgS0QhYLUG4uwodSI3R53keyh7w==}
     engines: {node: '>=14'}
@@ -9080,7 +9083,7 @@ snapshots:
       tinyclip: 0.1.15
       tinyexec: 1.2.4
       tinyglobby: 0.2.17
-      ultrahtml: 1.6.0
+      ultrahtml: 1.7.0
       unifont: 0.7.4
       unist-util-visit: 5.1.0
       unstorage: 1.17.5
@@ -12375,6 +12378,8 @@ snapshots:
   ufo@1.6.4: {}
 
   ultrahtml@1.6.0: {}
+
+  ultrahtml@1.7.0: {}
 
   unbash@2.2.0: {}
 
