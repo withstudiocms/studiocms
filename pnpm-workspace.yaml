@@ -49,6 +49,7 @@ catalog:
   semver: ^7.8.5
   tsdown: ^0.22.4
   package-manager-detector: ^1.7.0
+  ultrahtml: ^1.7.0
 
 # Specific dependency catalogs for certain groups of packages
 catalogs:
