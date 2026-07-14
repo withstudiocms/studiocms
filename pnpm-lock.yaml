@@ -1073,7 +1073,7 @@ importers:
         specifier: workspace:^
         version: link:../kysely
       tsx:
-        specifier: ^4.21.0
+        specifier: ^4.23.0
         version: 4.23.0
 
   packages/@withstudiocms/template-lang:
