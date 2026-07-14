@@ -47,7 +47,7 @@ catalog:
   diff: ^8.0.4
   dotenv: ^17.4.2
   semver: ^7.8.5
-  tsdown: ^0.22.4
+  tsdown: ^0.22.5
   package-manager-detector: ^1.7.0
   ultrahtml: ^1.7.0
   tinyexec: ^1.2.4
