@@ -83,14 +83,14 @@
     "remark-rehype": "^11.1.2",
     "remark-smartypants": "^3.0.2",
     "smol-toml": "^1.7.0",
-    "ultrahtml": "^1.6.0",
+    "ultrahtml": "^1.7.0",
     "unified": "^11.0.5",
     "unist-util-visit": "^5.1.0",
     "vfile": "^6.0.3"
   },
   "devDependencies": {
     "@types/estree": "^1.0.9",
-    "@types/hast": "^3.0.4",
+    "@types/hast": "^3.0.5",
     "@types/html-escaper": "^3.0.4",
     "@types/js-yaml": "^4.0.9",
     "@types/mdast": "^4.0.4",
