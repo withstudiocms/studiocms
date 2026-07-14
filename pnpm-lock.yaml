@@ -165,10 +165,10 @@ importers:
         specifier: ^1.56.1
         version: 1.56.1
       '@dotenvx/dotenvx':
-        specifier: ^2.2.1
-        version: 2.3.4
+        specifier: ^2.4.1
+        version: 2.4.1
       '@effect/language-service':
-        specifier: ^0.86.4
+        specifier: ^0.86.6
         version: 0.86.6
       '@effect/vitest':
         specifier: ^0.29.0
@@ -1935,8 +1935,8 @@ packages:
     resolution: {integrity: sha512-QxULHAm7cNu72w97JUNCBFODFaXpbDg+dP8b/oWFAZ2MTRppA3U00Y2L1HqaS4J6yBqxwa/Y3nMBaxVKbB/NsA==}
     engines: {node: '>=20.19.0'}
 
-  '@dotenvx/dotenvx@2.3.4':
-    resolution: {integrity: sha512-Yb8vBLQK/EbArDf/NrbS6poCHlcumUOrXelCcR217f+tjdC+dHz3pOaKzCtRm1GGQPF42j5pWNsGNgjZaxl2mw==}
+  '@dotenvx/dotenvx@2.4.1':
+    resolution: {integrity: sha512-kwt04HYe8SmyYRPW6/nuM8+MSXav+hMEQvI7SRJTKdU0kM57lf/R7NvxvkC53OnWtTERN0v4DOShXn98ev3hfw==}
     hasBin: true
 
   '@dotenvx/primitives@1.8.1':
@@ -7780,7 +7780,7 @@ snapshots:
 
   '@csstools/css-tokenizer@4.0.0': {}
 
-  '@dotenvx/dotenvx@2.3.4':
+  '@dotenvx/dotenvx@2.4.1':
     dependencies:
       '@dotenvx/primitives': 1.8.1
       '@dotenvx/tooling': 1.0.2
