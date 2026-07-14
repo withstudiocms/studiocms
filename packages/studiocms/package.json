@@ -253,7 +253,7 @@
 		"ace-builds": "^1.44.0",
 		"boxen": "^8.0.1",
 		"diff": "catalog:",
-		"dompurify": "^3.4.11",
+		"dompurify": "^3.4.12",
 		"dotenv": "catalog:",
 		"effectify": "workspace:^",
 		"fuse.js": "^7.4.2",
