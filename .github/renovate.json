@@ -81,6 +81,7 @@
     "@astrojs/internal-helpers",
     "@astrojs/markdown-remark",
     "kysely",
-    "typescript"
+    "typescript",
+    "diff"
   ]
 }
