@@ -69,8 +69,8 @@ catalogs:
       specifier: ^0.2.17
       version: 0.2.17
     tsdown:
-      specifier: ^0.22.4
-      version: 0.22.4
+      specifier: ^0.22.5
+      version: 0.22.5
     typescript:
       specifier: ^6.0.3
       version: 6.0.3
@@ -217,7 +217,7 @@ importers:
         version: 4.0.1
       tsdown:
         specifier: 'catalog:'
-        version: 0.22.4(oxc-resolver@11.23.0)(publint@0.3.21)(tsx@4.23.0)(typescript@6.0.3)
+        version: 0.22.5(oxc-resolver@11.23.0)(publint@0.3.21)(tsx@4.23.0)(typescript@6.0.3)
       typescript:
         specifier: 'catalog:'
         version: 6.0.3
@@ -925,7 +925,7 @@ importers:
         version: 3.21.4
       tsdown:
         specifier: 'catalog:'
-        version: 0.22.4(oxc-resolver@11.23.0)(publint@0.3.21)(tsx@4.23.0)(typescript@6.0.3)
+        version: 0.22.5(oxc-resolver@11.23.0)(publint@0.3.21)(tsx@4.23.0)(typescript@6.0.3)
     devDependencies:
       '@types/node':
         specifier: 'catalog:'
@@ -6703,18 +6703,18 @@ packages:
     engines: {node: '>=22.15.0'}
     hasBin: true
 
-  tsdown@0.22.4:
-    resolution: {integrity: sha512-3a5FsNL2fH2jw3ozvFUuPMBgS0xXjX9wpZShHyB4klXelVhyaNw5Q5WA9TPCNeoGYpRZEc4OZdMx5wT4Fkma3A==}
+  tsdown@0.22.5:
+    resolution: {integrity: sha512-0iEpnuOVBGo7mPW+FlyglErHBExYOAlpLBlCl/QcTrRUJ+TF2prfzl6ipQS5VsjJejFXnmbkdh0Ta53B3stWxg==}
     engines: {node: ^22.18.0 || >=24.11.0}
     hasBin: true
     peerDependencies:
       '@arethetypeswrong/core': ^0.18.1
-      '@tsdown/css': 0.22.4
-      '@tsdown/exe': 0.22.4
+      '@tsdown/css': 0.22.5
+      '@tsdown/exe': 0.22.5
       '@vitejs/devtools': '*'
       publint: ^0.3.8
       tsx: '*'
-      typescript: ^5.0.0 || ^6.0.0
+      typescript: ^5.0.0 || ^6.0.0 || ^7.0.0
       unplugin-unused: ^0.5.0
       unrun: '*'
     peerDependenciesMeta:
@@ -12793,7 +12793,7 @@ snapshots:
       semver: 7.8.5
       strip-ansi: 6.0.1
 
-  tsdown@0.22.4(oxc-resolver@11.23.0)(publint@0.3.21)(tsx@4.23.0)(typescript@6.0.3):
+  tsdown@0.22.5(oxc-resolver@11.23.0)(publint@0.3.21)(tsx@4.23.0)(typescript@6.0.3):
     dependencies:
       ansis: 4.3.1
       cac: 7.0.0
