@@ -80,7 +80,7 @@
 		"@withstudiocms/effect": "workspace:^",
 		"@withstudiocms/internal_helpers": "workspace:^",
 		"ts-morph": "^27.0.2",
-		"ultrahtml": "1.6.0"
+		"ultrahtml": "catalog:"
 	},
 	"devDependencies": {
 		"@types/node": "catalog:",

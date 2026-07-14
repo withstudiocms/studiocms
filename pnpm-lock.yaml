@@ -71,6 +71,9 @@ catalogs:
     typescript:
       specifier: ^6.0.3
       version: 6.0.3
+    ultrahtml:
+      specifier: ^1.7.0
+      version: 1.7.0
   effect:
     '@effect/cli':
       specifier: ^0.75.2
@@ -576,7 +579,7 @@ importers:
         specifier: ^1.7.0
         version: 1.7.0
       ultrahtml:
-        specifier: ^1.7.0
+        specifier: 'catalog:'
         version: 1.7.0
       unified:
         specifier: ^11.0.5
@@ -902,8 +905,8 @@ importers:
         specifier: ^27.0.2
         version: 27.0.2
       ultrahtml:
-        specifier: 1.6.0
-        version: 1.6.0
+        specifier: 'catalog:'
+        version: 1.7.0
     devDependencies:
       '@types/node':
         specifier: 'catalog:'
@@ -1254,7 +1257,7 @@ importers:
         specifier: 'catalog:'
         version: 0.2.17
       ultrahtml:
-        specifier: ^1.7.0
+        specifier: 'catalog:'
         version: 1.7.0
       web-vitals:
         specifier: ^5.3.0
@@ -6511,9 +6514,6 @@ packages:
 
   ufo@1.6.4:
     resolution: {integrity: sha512-JFNbkD1Svwe0KvGi8GOeLcP4kAWQ609twvCdcHxq1oSL8svv39ZuSvajcD8B+5D0eL4+s1Is2D/O6KN3qcTeRA==}
-
-  ultrahtml@1.6.0:
-    resolution: {integrity: sha512-R9fBn90VTJrqqLDwyMph+HGne8eqY1iPfYhPzZrvKpIfwkWZbcYlfpsb8B9dTvBfpy1/hqAD7Wi8EKfP9e8zdw==}
 
   ultrahtml@1.7.0:
     resolution: {integrity: sha512-2xRd0VHoAQE4M+vF/DvFFB7pUV0ZxTW1TLi7lHQWnF/Sb5TPeEUV/l+hxcNnGO00ZXGnR0voCMmYRKQf+rvJ2g==}
@@ -12376,8 +12376,6 @@ snapshots:
   typescript@6.0.3: {}
 
   ufo@1.6.4: {}
-
-  ultrahtml@1.6.0: {}
 
   ultrahtml@1.7.0: {}
 
