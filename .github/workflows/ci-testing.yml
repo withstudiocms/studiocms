@@ -72,7 +72,7 @@ jobs:
           persist-credentials: true
 
       - name: Install Tools & Dependencies
-        uses: withstudiocms/automations/.github/actions/install@2f4fab1a66855feadec9e960bdbdc4368c23aa18 # main
+        uses: withstudiocms/automations/.github/actions/install@f32588d80ce35d57905264f7fa473b0f6e297c0a # main
 
       - name: Build packages
         run: pnpm ci:build

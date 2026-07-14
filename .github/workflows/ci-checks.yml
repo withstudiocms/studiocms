@@ -29,7 +29,7 @@ jobs:
       issues: write
       checks: write
       pull-requests: write
-    uses: withstudiocms/automations/.github/workflows/knip.yml@2f4fab1a66855feadec9e960bdbdc4368c23aa18 # main
+    uses: withstudiocms/automations/.github/workflows/knip.yml@f32588d80ce35d57905264f7fa473b0f6e297c0a # main
     secrets: inherit
     with:
       pre-knip-cmd: "pnpm ci:build"
