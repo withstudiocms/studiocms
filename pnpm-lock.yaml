@@ -457,8 +457,8 @@ importers:
         specifier: ^0.17.0
         version: 0.17.0
       suneditor:
-        specifier: ^2.47.10
-        version: 2.47.10
+        specifier: ^3.1.4
+        version: 3.1.4
     devDependencies:
       '@types/codemirror':
         specifier: 5.60.16
@@ -6320,9 +6320,9 @@ packages:
   style-to-object@1.0.14:
     resolution: {integrity: sha512-LIN7rULI0jBscWQYaSswptyderlarFkjQ+t79nzty8tcIAceVomEVlLzH5VP4Cmsv6MtKhs7qaAiwlcp+Mgaxw==}
 
-  suneditor@2.47.10:
-    resolution: {integrity: sha512-FGpb4r9wXq4YfQ7QiY4Prw4SWiqohYWhxzDhMTJoJhGvUubiPCP8yEDMw01cUBe7itGY9q0OWZbaKlgidf9b1w==}
-    engines: {node: <13.0.0}
+  suneditor@3.1.4:
+    resolution: {integrity: sha512-gHI1+Qz+P/qkAlgCpKB5sj+Wis2ZKnNWXdvVmq5cDHe2ACNYCR5A7qCacbqG0L77HnLe3cgBnmc73+Mbq9SBxw==}
+    engines: {node: '>=14.0.0'}
 
   supports-color@10.2.2:
     resolution: {integrity: sha512-SS+jx45GF1QjgEXQx4NJZV9ImqmO2NPz5FNsIHrsDjh2YsHnawpan7SNQ1o8NuhrbHZy9AZhIoCUiCeaW/C80g==}
@@ -12217,7 +12217,7 @@ snapshots:
     dependencies:
       inline-style-parser: 0.2.7
 
-  suneditor@2.47.10: {}
+  suneditor@3.1.4: {}
 
   supports-color@10.2.2: {}
 
