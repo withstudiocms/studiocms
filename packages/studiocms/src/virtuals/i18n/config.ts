@@ -25,7 +25,7 @@ export const defaultLang: UiTranslationKey = config.defaultLocale;
  */
 export const baseServerTranslations = (
 	await import('./translations/en.json', {
-		assert: { type: 'json' },
+		with: { type: 'json' },
 	})
 ).default;
 

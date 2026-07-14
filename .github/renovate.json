@@ -80,6 +80,7 @@
     "@astrojs/rss",
     "@astrojs/internal-helpers",
     "@astrojs/markdown-remark",
-    "kysely"
+    "kysely",
+    "typescript"
   ]
 }

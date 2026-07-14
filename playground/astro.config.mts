@@ -1,7 +1,6 @@
 import node from '@astrojs/node';
 import { defineConfig } from 'astro/config';
 import studioCMS from 'studiocms';
-import Inspect from 'vite-plugin-inspect';
 
 const site =
 	process.env.NODE_ENV === 'production'
@@ -25,9 +24,6 @@ export default defineConfig({
 		],
 	},
 	integrations: [studioCMS()],
-	vite: {
-		plugins: [Inspect()],
-	},
 	// Used for devcontainer/docker development
 	server: {
 		port: 4321,
