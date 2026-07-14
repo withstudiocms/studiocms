@@ -213,8 +213,8 @@ importers:
         specifier: 'catalog:'
         version: 0.2.17
       ts-patch:
-        specifier: ^3.3.0
-        version: 3.3.0
+        specifier: ^4.0.1
+        version: 4.0.1
       tsdown:
         specifier: 'catalog:'
         version: 0.22.4(oxc-resolver@11.23.0)(publint@0.3.21)(tsx@4.23.0)(typescript@6.0.3)
@@ -6433,8 +6433,9 @@ packages:
   ts-morph@27.0.2:
     resolution: {integrity: sha512-fhUhgeljcrdZ+9DZND1De1029PrE+cMkIP7ooqkLRTrRLTqcki2AstsyJm0vRNbTbVCNJ0idGlbBrfqc7/nA8w==}
 
-  ts-patch@3.3.0:
-    resolution: {integrity: sha512-zAOzDnd5qsfEnjd9IGy1IRuvA7ygyyxxdxesbhMdutt8AHFjD8Vw8hU2rMF89HX1BKRWFYqKHrO8Q6lw0NeUZg==}
+  ts-patch@4.0.1:
+    resolution: {integrity: sha512-pzXS6vZlsBwq3U+CUiPJfCAh0MJGco1j1C8bWsLgvtzDZLGZ7II1Usjtwm09mZ8Uoma+sg6sO3BlWHd6apCUww==}
+    engines: {node: '>=22.15.0'}
     hasBin: true
 
   tsdown@0.22.4:
@@ -12296,7 +12297,7 @@ snapshots:
       '@ts-morph/common': 0.28.1
       code-block-writer: 13.0.3
 
-  ts-patch@3.3.0:
+  ts-patch@4.0.1:
     dependencies:
       chalk: 4.1.2
       global-prefix: 4.0.0
