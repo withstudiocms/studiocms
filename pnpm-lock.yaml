@@ -606,9 +606,6 @@ importers:
       '@types/html-escaper':
         specifier: ^3.0.4
         version: 3.0.4
-      '@types/js-yaml':
-        specifier: ^4.0.9
-        version: 4.0.9
       '@types/mdast':
         specifier: ^4.0.4
         version: 4.0.4
@@ -3514,9 +3511,6 @@ packages:
 
   '@types/jquery@4.0.1':
     resolution: {integrity: sha512-9a59A/tycXgYuPABcp6/3spSShn0NT2UOM4EfHvMumjYi4lJWTsK5SZWjhx3yRm9IHGCeWXdV2YfNsrWrft/CA==}
-
-  '@types/js-yaml@4.0.9':
-    resolution: {integrity: sha512-k4MGaQl5TGo/iipqb2UDG2UwjXziSWkh0uysQelTlJpX1qGlpUZYm8PnO4DxG1qBomtJUdYJ6qR6xdIah10JLg==}
 
   '@types/linkify-it@3.0.5':
     resolution: {integrity: sha512-yg6E+u0/+Zjva+buc3EIb+29XEg4wltq7cSmd4Uc2EE/1nUVmxyzpX6gUXD0V8jIrG0r7YeOGVIbYRkxeooCtw==}
@@ -8701,8 +8695,6 @@ snapshots:
   '@types/html-escaper@3.0.4': {}
 
   '@types/jquery@4.0.1': {}
-
-  '@types/js-yaml@4.0.9': {}
 
   '@types/linkify-it@3.0.5':
     optional: true

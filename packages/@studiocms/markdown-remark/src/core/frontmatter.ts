@@ -1,4 +1,4 @@
-import yaml from 'js-yaml';
+import * as yaml from 'js-yaml';
 import * as toml from 'smol-toml';
 
 // biome-ignore lint/suspicious/noExplicitAny: Frontmatter can be any shape, but we want to ensure it's an object and JSON-serializable.
