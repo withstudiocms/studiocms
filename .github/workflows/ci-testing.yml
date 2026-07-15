@@ -98,7 +98,7 @@ jobs:
       # Only upload Allure report results to Github if we are a push to main
       - name: Upload Allure Report to Github Branch
         if: github.event_name == 'push'
-        uses: actions/upload-pages-artifact@f7e1c0b8d9a3f5c6e2b1c4e5d6f7a8b9c0d1e2f3 # v1.0.0
+        uses: peaceiris/actions-gh-pages@84c30a85c19949d7eee79c4ff27748b70285e453 # v4.1.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: allure/report
@@ -107,7 +107,7 @@ jobs:
       # Only upload Allure report results to Github if we are a push to main
       - name: Upload Allure History to Github Branch
         if: github.event_name == 'push'
-        uses: actions/upload-pages-artifact@f7e1c0b8d9a3f5c6e2b1c4e5d6f7a8b9c0d1e2f3 # v1.0.0
+        uses: peaceiris/actions-gh-pages@84c30a85c19949d7eee79c4ff27748b70285e453 # v4.1.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: allure/history
