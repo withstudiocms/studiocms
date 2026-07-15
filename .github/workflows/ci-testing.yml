@@ -80,17 +80,18 @@ jobs:
       - name: Run Tests & Code Coverage
         run: pnpm ci:test
 
-      # Allure Reports Require to be ran from within our repository only
-      # So we check if the PR is from a fork or from the same repository
-      - name: Generate Allure Report and Deploy
-        if: always() && (github.event.pull_request.head.repo.full_name == github.repository || github.ref == 'refs/heads/main')
-        uses: ./.github/actions/allure-report
-        with:
-          gh_pages_branch: testing/allure
-          gh_page_history: testing/allure
-          allure_report_id: studiocms-tests
-          allure_report_dir: allure-results
-          cname: tests.studiocms.dev
+      # TODO: Migrate this to the v3 Allure report once ready
+      # # Allure Reports Require to be ran from within our repository only
+      # # So we check if the PR is from a fork or from the same repository
+      # - name: Generate Allure Report and Deploy
+      #   if: always() && (github.event.pull_request.head.repo.full_name == github.repository || github.ref == 'refs/heads/main')
+      #   uses: ./.github/actions/allure-report
+      #   with:
+      #     gh_pages_branch: testing/allure
+      #     gh_page_history: testing/allure
+      #     allure_report_id: studiocms-tests
+      #     allure_report_dir: allure-results
+      #     cname: tests.studiocms.dev
 
       - name: Upload coverage report to Codecov
         uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7.0.0
