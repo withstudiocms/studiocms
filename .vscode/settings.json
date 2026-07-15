@@ -1,5 +1,5 @@
 {
-  "typescript.tsdk": "node_modules/typescript/lib",
+  "js/ts.tsdk.path": "node_modules/typescript/lib",
   "editor.fontFamily": "Fira Code Retina, Menlo, Monaco, 'Courier New', monospace",
   "editor.fontLigatures": true,
   "editor.fontSize": 14.2,
@@ -24,7 +24,6 @@
   "[yaml]": {
     "editor.defaultFormatter": "redhat.vscode-yaml"
   },
-  "vitest.disableWorkspaceWarning": true,
   "knip.requireConfig": true,
   "knip.configFilePath": "./knip.config.ts",
   "knip.editor.exports.hover.includeImportLocationSnippet": true

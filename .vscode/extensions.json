@@ -3,7 +3,6 @@
     "astro-build.astro-vscode",
     "astro-build.houston",
     "biomejs.biome",
-    "eamodio.gitlens",
     "redhat.vscode-yaml",
     "ms-vscode-remote.remote-containers",
     "ms-azuretools.vscode-containers",

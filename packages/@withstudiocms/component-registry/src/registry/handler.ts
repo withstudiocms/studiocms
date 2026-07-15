@@ -2,9 +2,10 @@
 
 import { deepmerge, Effect, runEffect, Schema } from '@withstudiocms/effect';
 import { addVirtualImports } from '@withstudiocms/internal_helpers/astro-integration';
+import createPathResolver from '@withstudiocms/internal_helpers/pathResolver';
 import type { HookParameters } from 'astro';
 import type { ComponentRegistryEntry } from '../types.js';
-import { convertHyphensToUnderscores, integrationLogger, resolver } from '../utils.js';
+import { convertHyphensToUnderscores, integrationLogger } from '../utils.js';
 import {
 	buildAliasExports,
 	buildVirtualImport,
@@ -150,10 +151,14 @@ export const componentRegistryHandler = async (
 		Effect.gen(function* () {
 			// Decode and validate options using Effect's Schema
 			const {
-				config: { verbose = false, name, virtualId },
+				config: { verbose = false, name: preName, virtualId },
 				builtInComponents = {},
 				componentRegistry = {},
 			} = yield* Schema.decode(ComponentRegistryOptionsSchema)(opts);
+
+			const name = preName.includes('-component-registry')
+				? preName
+				: `${preName}-component-registry`;
 
 			// Fork a logger for the component registry
 			const logger = params.logger.fork(`${name}:component-registry`);
@@ -162,12 +167,11 @@ export const componentRegistryHandler = async (
 			// Log the start of the component registry setup
 			integrationLogger(logInfo, 'Setting up component registry...');
 
+			const { resolve } = createPathResolver(import.meta.url);
+			const { resolve: astroConfigResolve } = createPathResolver(params.config.root.pathname);
+
 			// Resolve necessary paths and registry
-			const [resolve, astroConfigResolve, registry] = yield* Effect.all([
-				resolver(import.meta.url),
-				resolver(params.config.root.pathname),
-				ComponentRegistry,
-			]);
+			const registry = yield* ComponentRegistry;
 
 			// Setup Components and Component Keys Arrays
 			const componentKeys: string[] = [];
@@ -217,12 +221,7 @@ export const componentRegistryHandler = async (
 					integrationLogger(logInfo, `Resolving path for component "${key}"...`);
 
 					// Use Effect's error handling instead of try/catch
-					const resolvedPath = yield* astroConfigResolve((fn) => fn(value)).pipe(
-						Effect.catchAll((error) => {
-							integrationLogger(logInfo, `Failed to resolve path for component "${key}": ${error}`);
-							return Effect.succeed(null); // Return null to indicate failure
-						})
-					);
+					const resolvedPath = astroConfigResolve(value);
 
 					// Check if the resolved path is empty
 					if (!resolvedPath) {
@@ -276,7 +275,7 @@ export const componentRegistryHandler = async (
 			}
 
 			// Resolve the virtual runtime import path
-			const virtualRuntimeImport = yield* resolve((fn) => fn('../runtime.js'));
+			const virtualRuntimeImport = resolve('../runtime.js');
 
 			addVirtualImports(params, {
 				name,

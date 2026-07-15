@@ -23,11 +23,7 @@ export const defaultLang: UiTranslationKey = config.defaultLocale;
  *
  * - These translations are also converted to a client-friendly format.
  */
-export const baseServerTranslations = (
-	await import('./translations/en.json', {
-		with: { type: 'json' },
-	})
-).default;
+export const baseServerTranslations = (await import('./translations/en.json')).default;
 
 /**
  * Represents a translation record for StudioCMS.
