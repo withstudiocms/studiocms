@@ -1,6 +1,6 @@
 import { StudioCMSRoutes } from 'studiocms/lib/routeMap';
 
-export const parentSuiteName = '@studiocms/blog Package Tests';
+export const parentSuiteName = '@studiocms/blog Tests';
 export const sharedTags = ['package:@studiocms/blog', 'type:unit', 'scope:studiocms'];
 
 export function cleanAstroAttributes(str: string, mockPath: string): string {

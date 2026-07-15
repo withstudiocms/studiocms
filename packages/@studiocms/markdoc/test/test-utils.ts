@@ -1,7 +1,7 @@
 /** biome-ignore-all lint/suspicious/noExplicitAny: allowed for tests */
 import type { PluginPageTypeRendererProps } from 'studiocms/types';
 
-export const parentSuiteName = '@studiocms/markdoc Package Tests';
+export const parentSuiteName = '@studiocms/markdoc Tests';
 export const sharedTags = ['package:@studiocms/markdoc', 'type:unit', 'scope:studiocms'];
 
 export interface MarkDocRendererProps extends PluginPageTypeRendererProps {}

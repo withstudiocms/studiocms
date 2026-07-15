@@ -2,7 +2,7 @@ import * as allure from 'allure-js-commons';
 import { describe, expect, test } from 'vitest';
 import { TemplateEngine, TemplateParser, TemplateRenderer } from '../src/index';
 
-const parentSuiteName = '@withstudiocms/template-lang Package Tests';
+const parentSuiteName = '@withstudiocms/template-lang Tests';
 const sharedTags = ['package:@withstudiocms/template-lang', 'type:unit', 'scope:withstudiocms'];
 
 describe(parentSuiteName, () => {
