@@ -20,8 +20,7 @@ const loadConfigFile = Effect.fn((root: URL) =>
  * @param config - The configuration object to parse.
  * @returns An Effect that resolves to the parsed StudioCMSOptions.
  */
-// biome-ignore lint/suspicious/noExplicitAny: Dynamic config object
-const parse = Effect.fn((config: Record<string, any> | undefined) =>
+const parse = Effect.fn((config: Record<string, unknown> | undefined) =>
 	Schema.decode(StudioCMSOptionsSchema)(config ?? {})
 );
 

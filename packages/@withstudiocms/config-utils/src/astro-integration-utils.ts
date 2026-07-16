@@ -30,9 +30,9 @@ export const configResolverBuilder =
 		// Load the config file
 		const loadedViteConfigFile = await loadConfigFile({ configPaths, root: astroRoot, fs });
 
-		// If no config file was found, return the result of the effect with an empty object as input
-		if (!loadedViteConfigFile) {
-			logger.info('No config file found. Using default configuration.');
+		// If no config file is found, log a message and return the default configuration using the effect schema
+    if (Object.keys(loadedViteConfigFile).length === 0) {
+			logger.info('No config entries found. Using default configuration.');
 			return await Schema.decodeUnknownPromise(effectSchema)({});
 		}
 

@@ -3,4 +3,4 @@
 "studiocms": minor
 ---
 
-Migrates to a vite based config loader
+Migrates to a Vite-based loader with native ESM and SSR fallback support; callers now use the filesystem-aware options API.

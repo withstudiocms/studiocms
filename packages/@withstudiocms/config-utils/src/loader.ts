@@ -1,6 +1,4 @@
 import type fsType from 'node:fs';
-import { constants } from 'node:fs';
-import { access } from 'node:fs/promises';
 import { isRunnableDevEnvironment, type ViteDevServer } from 'vite';
 import { createMinimalViteDevServer } from './utils/createMinimalViteDevServer.js';
 import loadFallbackPlugin from './utils/vite-plugin-load-fallback.js';
@@ -31,8 +29,7 @@ export async function loadConfigFile({
 	configPaths,
 	root,
 	fs,
-	// biome-ignore lint/suspicious/noExplicitAny: We are dynamically loading a config
-}: LoadConfigWithViteOptions): Promise<Record<string, any>> {
+}: LoadConfigWithViteOptions): Promise<Record<string, unknown>> {
 	let configFileUrl: URL | undefined;
 
 	// Check each path in the configPaths array to see if the file exists
@@ -40,7 +37,7 @@ export async function loadConfigFile({
 	for (const path of configPaths) {
 		const fileUrl = new URL(path, root);
 		try {
-			await access(fileUrl, constants.F_OK);
+			await fs.promises.access(fileUrl, fs.constants.F_OK);
 			configFileUrl = fileUrl;
 			break;
 		} catch {
