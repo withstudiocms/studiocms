@@ -43,11 +43,11 @@ const loadConfig = <K extends 'astro' | 'studiocms'>(
 			const cwd = process.cwd();
 			const rootURL = pathToFileURL(`${cwd}/`);
 			const configPaths = key === 'astro' ? astroConfigPaths : studiocmsConfigPaths;
-      return await loadConfigFile({
-        root: rootURL,
-        configPaths,
-        fs,
-      });
+			return await loadConfigFile({
+				root: rootURL,
+				configPaths,
+				fs,
+			});
 		},
 		catch: (error) => {
 			throw new Error(`Failed to load config: ${(error as Error).message}`);

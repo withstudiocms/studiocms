@@ -13,9 +13,7 @@ export * from '@withstudiocms/kysely/plugin';
  * Load the StudioCMS configuration from the specified root URL
  */
 const loadConfigFile = Effect.fn((root: URL) =>
-	Effect.tryPromise(() =>
-		_loadConfigFile({ configPaths, root, fs })
-	)
+	Effect.tryPromise(() => _loadConfigFile({ configPaths, root, fs }))
 );
 
 /**
@@ -23,7 +21,7 @@ const loadConfigFile = Effect.fn((root: URL) =>
  */
 
 // biome-ignore lint/suspicious/noExplicitAny: dynamic config object
-const  parse = Effect.fn((config: Record<string, any> | undefined) =>
+const parse = Effect.fn((config: Record<string, any> | undefined) =>
 	Schema.decode(StudioCMSOptionsSchema)(config ?? {})
 );
 
