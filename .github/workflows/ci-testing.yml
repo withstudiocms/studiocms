@@ -103,6 +103,7 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: allure/report
           publish_dir: ./allure-report
+          cname: tests.studiocms.dev
 
       # Only upload Allure report results to Github if we are a push to main
       - name: Upload Allure History to Github Branch
