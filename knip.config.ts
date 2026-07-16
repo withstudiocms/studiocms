@@ -181,7 +181,7 @@ const config: KnipConfig = {
 	exclude: ['duplicates', 'optionalPeerDependencies'],
 	workspaces: {
 		'.': {
-			ignoreDependencies: ['@changesets/config', 'studiocms', 'vite', 'allure-js-commons'],
+			ignoreDependencies: ['@changesets/config', 'studiocms', 'vite', 'allure-js-commons', '@allurereport/plugin-awesome'],
 			ignoreBinaries: [/ci:.*$/, /bundle-test:.*$/, 'du'],
 			entry: ['.github/workflows/*.yml', '.github/scripts/**/*.mjs', 'scripts/**/*.mjs'],
 			project: ['.github/scripts/**/*.mjs', 'scripts/**/*.mjs'],

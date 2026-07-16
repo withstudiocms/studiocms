@@ -103,7 +103,6 @@
     "allure": "^3.14.2",
     "allure-js-commons": "^3.10.2",
     "allure-vitest": "^3.10.2",
-    "allure-commandline": "^2.43.0",
     "execa": "^9.6.1",
     "knip": "^6.26.0",
     "pkg-pr-new": "^0.0.75",

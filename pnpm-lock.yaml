@@ -188,9 +188,6 @@ importers:
       allure:
         specifier: ^3.14.2
         version: 3.14.2(preact@10.29.7)(typescript@6.0.3)
-      allure-commandline:
-        specifier: ^2.43.0
-        version: 2.43.0
       allure-js-commons:
         specifier: ^3.10.2
         version: 3.10.2
@@ -4324,10 +4321,6 @@ packages:
 
   ajv@6.15.0:
     resolution: {integrity: sha512-fgFx7Hfoq60ytK2c7DhnF8jIvzYgOMxfugjLOSMHjLIPgenqa7S7oaagATUq99mV6IYvN2tRmC0wnTYX6iPbMw==}
-
-  allure-commandline@2.43.0:
-    resolution: {integrity: sha512-nsqccDOgi80fi9WjvBapZjlFlugodVWudotNtWx6XKiSI7NuN6oTWEkXnkxQBzNg02Yf9lZLtCFlKvjAlcpu6Q==}
-    hasBin: true
 
   allure-js-commons@3.10.2:
     resolution: {integrity: sha512-5nAjUF1iNPSQMwKtEsadclSta8C3L705/k/pIzGb9M6P9krgfRaCyaEHt8pkLlCP9NFj5xk3grjtnAhiLeT+Kg==}
@@ -10650,8 +10643,6 @@ snapshots:
       json-schema-traverse: 0.4.1
       uri-js: 4.4.1
     optional: true
-
-  allure-commandline@2.43.0: {}
 
   allure-js-commons@3.10.2:
     dependencies:
