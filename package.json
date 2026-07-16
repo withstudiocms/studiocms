@@ -87,7 +87,7 @@
   },
   "devDependencies": {
     "@actions/core": "^3.0.1",
-		"@allurereport/plugin-awesome": "^3.14.2",
+    "@allurereport/plugin-awesome": "^3.14.2",
     "@biomejs/biome": "^2.5.3",
     "@changesets/changelog-github": "^0.7.0",
     "@changesets/cli": "^2.31.0",
