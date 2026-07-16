@@ -1,7 +1,7 @@
 import { symbol as mdSymbol } from '../src/lib/shared.js';
 import type { StudioCMSMarkdownOptions } from '../src/types.js';
 
-export const parentSuiteName = '@studiocms/md Package Tests';
+export const parentSuiteName = '@studiocms/md Tests';
 export const sharedTags = ['package:@studiocms/md', 'type:unit', 'scope:studiocms'];
 
 /**

@@ -71,6 +71,13 @@ jobs:
         with:
           persist-credentials: true
 
+      - name: Checkout Allure Test history
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          ref: allure/history
+          path: test-history
+          persist-credentials: false
+
       - name: Install Tools & Dependencies
         uses: withstudiocms/automations/.github/actions/install@f32588d80ce35d57905264f7fa473b0f6e297c0a # main
 
@@ -80,17 +87,31 @@ jobs:
       - name: Run Tests & Code Coverage
         run: pnpm ci:test
 
-      # Allure Reports Require to be ran from within our repository only
-      # So we check if the PR is from a fork or from the same repository
-      - name: Generate Allure Report and Deploy
-        if: always() && (github.event.pull_request.head.repo.full_name == github.repository || github.ref == 'refs/heads/main')
-        uses: ./.github/actions/allure-report
+      # Only run on PRs
+      - name: Report Allure results
+        if: github.event_name == 'pull_request'
+        uses: allure-framework/allure-action@bd0373251ed3f1c5ac9aa44ac86ed40d839b3094 # v0.8.0
         with:
-          gh_pages_branch: testing/allure
-          gh_page_history: testing/allure
-          allure_report_id: studiocms-tests
-          allure_report_dir: allure-results
-          cname: tests.studiocms.dev
+          report-directory: "./allure-report"
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      # Only upload Allure report results to Github if we are a push to main
+      - name: Upload Allure Report to Github Branch
+        if: github.event_name == 'push'
+        uses: peaceiris/actions-gh-pages@84c30a85c19949d7eee79c4ff27748b70285e453 # v4.1.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: allure/report
+          publish_dir: ./allure-report
+
+      # Only upload Allure report results to Github if we are a push to main
+      - name: Upload Allure History to Github Branch
+        if: github.event_name == 'push'
+        uses: peaceiris/actions-gh-pages@84c30a85c19949d7eee79c4ff27748b70285e453 # v4.1.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: allure/history
+          publish_dir: ./test-history
 
       - name: Upload coverage report to Codecov
         uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7.0.0

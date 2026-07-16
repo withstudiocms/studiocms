@@ -1,5 +1,4 @@
 {
-  "js/ts.tsdk.path": "node_modules/typescript/lib",
   "editor.fontFamily": "Fira Code Retina, Menlo, Monaco, 'Courier New', monospace",
   "editor.fontLigatures": true,
   "editor.fontSize": 14.2,

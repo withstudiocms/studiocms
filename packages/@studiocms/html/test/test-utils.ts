@@ -1,7 +1,7 @@
 import { symbol as htmlSymbol } from '../src/lib/shared.js';
 import type { HTMLSchemaOptions } from '../src/types.js';
 
-export const parentSuiteName = '@studiocms/html Package Tests';
+export const parentSuiteName = '@studiocms/html Tests';
 export const sharedTags = ['package:@studiocms/html', 'type:unit', 'scope:studiocms'];
 
 /**

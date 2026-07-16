@@ -164,10 +164,6 @@ component_management:
       name: "@withstudiocms/kysely"
       paths:
         - packages/@withstudiocms/kysely/**
-    - component_id: withstudiocms_sdk
-      name: "@withstudiocms/sdk"
-      paths:
-        - packages/@withstudiocms/sdk/**
     - component_id: withstudiocms_cli_kit
       name: "@withstudiocms/cli-kit"
       paths:

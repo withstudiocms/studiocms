@@ -17,7 +17,6 @@
     },
     "vscode": {
       "settings": {
-        "js/ts.tsdk.path": "node_modules/typescript/lib",
         "editor.codeActionsOnSave": {
           "source.fixAll.biome": "explicit"
         },

@@ -1,6 +1,6 @@
 /// <reference types="astro/client" />
 
-export const parentSuiteName = '@studiocms/wysiwyg Package Tests';
+export const parentSuiteName = '@studiocms/wysiwyg Tests';
 export const sharedTags = ['package:@studiocms/wysiwyg', 'type:unit', 'scope:studiocms'];
 
 /**

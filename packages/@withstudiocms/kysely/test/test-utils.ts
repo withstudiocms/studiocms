@@ -2,7 +2,7 @@ import * as allure from 'allure-js-commons';
 import { test as baseTest } from 'vitest';
 import { DBFixture } from '../src/test-utils';
 
-export const parentSuiteName = '@withstudiocms/kysely Package Tests';
+export const parentSuiteName = '@withstudiocms/kysely Tests';
 export const sharedTags = ['package:@withstudiocms/kysely', 'type:unit', 'scope:withstudiocms'];
 
 /**

@@ -1,7 +1,7 @@
 import type { AstroIntegrationLogger } from 'astro';
 import { vi } from 'vitest';
 
-export const parentSuiteName = '@withstudiocms/component-registry Package Tests';
+export const parentSuiteName = '@withstudiocms/component-registry Tests';
 export const sharedTags = [
 	'package:@withstudiocms/component-registry',
 	'type:unit',

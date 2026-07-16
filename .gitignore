@@ -18,7 +18,8 @@ junit-report.xml
 dist
 
 # allure results
-allure-results/*
 allure-results
+allure-report
+history.jsonl
 
 .env

@@ -1,6 +1,6 @@
 import type { MDXPluginOptions } from '../src/types.js';
 
-export const parentSuiteName = '@studiocms/mdx Package Tests';
+export const parentSuiteName = '@studiocms/mdx Tests';
 export const sharedTags = ['package:@studiocms/mdx', 'type:unit', 'scope:studiocms'];
 
 /**
