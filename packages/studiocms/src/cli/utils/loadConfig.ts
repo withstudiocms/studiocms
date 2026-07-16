@@ -11,7 +11,7 @@ import { StudioCMSOptionsSchema } from '../../schemas/index.js';
  * @returns An Effect that resolves to the loaded StudioCMSOptions or undefined if no config file is found.
  */
 const loadConfigFile = Effect.fn((root: URL) =>
-  Effect.tryPromise(() => _loadConfigFile({ configPaths, root, fs }))
+	Effect.tryPromise(() => _loadConfigFile({ configPaths, root, fs }))
 );
 
 /**
@@ -21,7 +21,7 @@ const loadConfigFile = Effect.fn((root: URL) =>
  * @returns An Effect that resolves to the parsed StudioCMSOptions.
  */
 // biome-ignore lint/suspicious/noExplicitAny: Dynamic config object
-const  parse = Effect.fn((config: Record<string, any> | undefined) =>
+const parse = Effect.fn((config: Record<string, any> | undefined) =>
 	Schema.decode(StudioCMSOptionsSchema)(config ?? {})
 );
 

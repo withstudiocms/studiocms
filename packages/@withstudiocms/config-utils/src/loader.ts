@@ -31,7 +31,7 @@ export async function loadConfigFile({
 	configPaths,
 	root,
 	fs,
-// biome-ignore lint/suspicious/noExplicitAny: We are dynamically loading a config
+	// biome-ignore lint/suspicious/noExplicitAny: We are dynamically loading a config
 }: LoadConfigWithViteOptions): Promise<Record<string, any>> {
 	let configFileUrl: URL | undefined;
 
@@ -50,7 +50,7 @@ export async function loadConfigFile({
 
 	// If no config file was found, return an empty object
 	if (!configFileUrl) {
-    return {};
+		return {};
 	}
 
 	// Attempt to load config using Node's native ESM loader if the file has a .js, .cjs, or .mjs extension
