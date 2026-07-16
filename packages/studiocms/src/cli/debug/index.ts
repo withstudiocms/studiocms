@@ -1,3 +1,4 @@
+import fs from 'node:fs';
 import { pathToFileURL } from 'node:url';
 import { StudioCMSColorwayBg } from '@withstudiocms/cli-kit/colors';
 import { label } from '@withstudiocms/cli-kit/messages';
@@ -42,11 +43,11 @@ const loadConfig = <K extends 'astro' | 'studiocms'>(
 			const cwd = process.cwd();
 			const rootURL = pathToFileURL(`${cwd}/`);
 			const configPaths = key === 'astro' ? astroConfigPaths : studiocmsConfigPaths;
-			return await loadConfigFile<K extends 'astro' ? AstroUserConfig : StudioCMSOptions>(
-				rootURL,
-				configPaths,
-				key
-			);
+      return await loadConfigFile({
+        root: rootURL,
+        configPaths,
+        fs,
+      });
 		},
 		catch: (error) => {
 			throw new Error(`Failed to load config: ${(error as Error).message}`);
