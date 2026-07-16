@@ -27,7 +27,6 @@ const packagesWithTests = [
 	'@withstudiocms/internal_helpers',
 	'@withstudiocms/template-lang',
 	'@withstudiocms/kysely',
-	'@withstudiocms/sdk',
 ];
 
 // Create a plugins configuration object for each package with tests, using the @allurereport/plugin-awesome plugin. The report will be named `${pkg} Tests`, and will be published to the Allure server.
