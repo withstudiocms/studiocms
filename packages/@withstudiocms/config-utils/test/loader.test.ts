@@ -70,16 +70,13 @@ describe(parentSuiteName, () => {
 		await allure.tags(...sharedTags);
 
 		const rootUrl = new URL('./fixtures/loader-both/', import.meta.url);
-		await allure.step(
-			'Loading config from loader-both (both .js and .ts present)',
-			async (ctx) => {
-				ctx.parameter('rootUrl', rootUrl.toString());
-				const config = await loadConfig(rootUrl);
-				ctx.parameter('loadedConfig', JSON.stringify(config, null, 2));
-				// configPaths = ['example.config.js', 'example.config.ts']
-				// .js is listed first so the loader must break on it and never reach .ts
-				expect(config).toHaveProperty('source', 'js');
-			}
-		);
+		await allure.step('Loading config from loader-both (both .js and .ts present)', async (ctx) => {
+			ctx.parameter('rootUrl', rootUrl.toString());
+			const config = await loadConfig(rootUrl);
+			ctx.parameter('loadedConfig', JSON.stringify(config, null, 2));
+			// configPaths = ['example.config.js', 'example.config.ts']
+			// .js is listed first so the loader must break on it and never reach .ts
+			expect(config).toHaveProperty('source', 'js');
+		});
 	});
 });
