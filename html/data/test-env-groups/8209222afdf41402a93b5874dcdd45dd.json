@@ -1,0 +1,1 @@
+{"id":"8209222afdf41402a93b5874dcdd45dd","fullName":"root:packages/effectify/test/astro/HttpApi.test.ts#effectify Tests buildEndpoint - should return 500 error response on handler failure","name":"buildEndpoint - should return 500 error response on handler failure","status":"passed","testResultsByEnv":{"default":"a1c77c495abf0225857fd6651de824db"}}

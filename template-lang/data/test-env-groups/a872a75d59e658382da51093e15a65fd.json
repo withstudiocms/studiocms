@@ -1,0 +1,1 @@
+{"id":"a872a75d59e658382da51093e15a65fd","fullName":"root:packages/effectify/test/webHandler.test.ts#effectify Tests ServerRequestToRequest - should not include body for HEAD request","name":"ServerRequestToRequest - should not include body for HEAD request","status":"passed","testResultsByEnv":{"default":"752457f72657c4c3c2408297cad8ca3b"}}

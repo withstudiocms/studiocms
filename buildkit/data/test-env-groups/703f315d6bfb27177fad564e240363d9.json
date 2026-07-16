@@ -1,0 +1,1 @@
+{"id":"703f315d6bfb27177fad564e240363d9","fullName":"root:packages/@studiocms/blog/test/components/helpers.test.ts#@studiocms/blog Tests getHeroImage(' hero.png ', Astro) should return 'hero.png'","name":"getHeroImage(' hero.png ', Astro) should return 'hero.png'","status":"passed","testResultsByEnv":{"default":"95dd271ba52add14dd0870fba8100609"}}

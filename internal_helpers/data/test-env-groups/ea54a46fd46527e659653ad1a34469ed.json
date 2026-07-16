@@ -1,0 +1,1 @@
+{"id":"ea54a46fd46527e659653ad1a34469ed","fullName":"root:packages/studiocms/test/integrations/dynamic-sitemap/sitemap-index.xml.test.ts#studiocms Tests sitemap-index.xml GET returns empty sitemapindex if no sitemaps","name":"sitemap-index.xml GET returns empty sitemapindex if no sitemaps","status":"passed","testResultsByEnv":{"default":"20f65a39a8fefd25ab1bd8b9dda6e51a"}}

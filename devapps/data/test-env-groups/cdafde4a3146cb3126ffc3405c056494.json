@@ -1,0 +1,1 @@
+{"id":"cdafde4a3146cb3126ffc3405c056494","fullName":"root:packages/studiocms/test/oAuthUtils.test.ts#studiocms Tests getCookie should throw AstroError for malformed cookies object","name":"getCookie should throw AstroError for malformed cookies object","status":"passed","testResultsByEnv":{"default":"401d6d351b283d376eedd522a1c565f1"}}

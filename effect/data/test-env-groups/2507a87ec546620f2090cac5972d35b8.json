@@ -1,0 +1,1 @@
+{"id":"2507a87ec546620f2090cac5972d35b8","fullName":"root:packages/studiocms/test/integrations/robots/core.test.ts#studiocms Tests generateHostContent returns empty string for host: example.com","name":"generateHostContent returns empty string for host: example.com","status":"passed","testResultsByEnv":{"default":"275d1bd33129e0da4efee23deb8f14ac"}}

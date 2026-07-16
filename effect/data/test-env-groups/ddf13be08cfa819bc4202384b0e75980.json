@@ -1,0 +1,1 @@
+{"id":"ddf13be08cfa819bc4202384b0e75980","fullName":"root:packages/studiocms/test/virtuals/scripts/user-quick-tools.test.ts#studiocms Tests verifyUserPermissionLevel('owner', 'owner') should return true","name":"verifyUserPermissionLevel('owner', 'owner') should return true","status":"passed","testResultsByEnv":{"default":"5f5df61cf854af6acf41bfa5b4c4ce40"}}

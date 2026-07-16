@@ -1,0 +1,1 @@
+{"id":"561ab48dac8b390ca12aa2ab9b568c4d","fullName":"root:packages/effectify/test/astro/HttpApi.test.ts#effectify Tests buildEndpoint - should decode %40 in request URL before handling","name":"buildEndpoint - should decode %40 in request URL before handling","status":"passed","testResultsByEnv":{"default":"8baf55ddc88e888b405072332d21d9d2"}}

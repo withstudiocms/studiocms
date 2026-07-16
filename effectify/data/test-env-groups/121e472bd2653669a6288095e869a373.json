@@ -1,0 +1,1 @@
+{"id":"121e472bd2653669a6288095e869a373","fullName":"root:packages/studiocms/test/virtuals/lib/makeAPIRoute.test.ts#studiocms Tests sdkRouteResolver('init') should return '/studiocms_api/sdk/init'","name":"sdkRouteResolver('init') should return '/studiocms_api/sdk/init'","status":"passed","testResultsByEnv":{"default":"4e88dcf2fe6c4dbceefce7e3928cfe29"}}

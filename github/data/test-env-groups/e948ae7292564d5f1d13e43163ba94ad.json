@@ -1,0 +1,1 @@
+{"id":"e948ae7292564d5f1d13e43163ba94ad","fullName":"root:packages/studiocms/test/integrations/robots/core.test.ts#studiocms Tests validateUrl throws for invalid sitemap url: ftp://example.com/sitemap.xml","name":"validateUrl throws for invalid sitemap url: ftp://example.com/sitemap.xml","status":"passed","testResultsByEnv":{"default":"1c915d9d26be1d9d1d0114b57c3490a6"}}

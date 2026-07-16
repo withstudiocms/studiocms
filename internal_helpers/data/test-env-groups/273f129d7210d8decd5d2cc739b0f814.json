@@ -1,0 +1,1 @@
+{"id":"273f129d7210d8decd5d2cc739b0f814","fullName":"root:packages/studiocms/test/virtuals/lib/makeAPIRoute.test.ts#studiocms Tests apiRoute('render') should return '/studiocms_api/renderer/render'","name":"apiRoute('render') should return '/studiocms_api/renderer/render'","status":"passed","testResultsByEnv":{"default":"7e50f084f824505ff42e18823056a279"}}
