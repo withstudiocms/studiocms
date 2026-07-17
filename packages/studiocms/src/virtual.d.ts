@@ -1,13 +1,13 @@
 declare module 'studiocms:client/apiClients' {
-	export const authClient: typeof import('./client/apiClient').authClient;
-	export const dashboardClient: typeof import('./client/apiClient').dashboardClient;
-	export const integrationsClient: typeof import('./client/apiClient').integrationsClient;
-	export const restClient: typeof import('./client/apiClient').restClient;
-	export const sdkClient: typeof import('./client/apiClient').sdkClient;
-	export const apiClients: typeof import('./client/apiClient').apiClients;
+	export const authClient: import('./client/apiClient').AuthClientEffect;
+	export const dashboardClient: import('./client/apiClient').DashboardClientEffect;
+	export const integrationsClient: import('./client/apiClient').IntegrationsClientEffect;
+	export const restClient: import('./client/apiClient').RestClientEffect;
+	export const sdkClient: import('./client/apiClient').SdkClientEffect;
+	export const apiClients: import('./client/apiClient').ApiClientsMap;
 
-	export const dashboardSharedCatchTags: typeof import('./client/apiClient').dashboardSharedCatchTags;
-	export const sharedAuthCatchTags: typeof import('./client/apiClient').sharedAuthCatchTags;
+	export const dashboardSharedCatchTags: import('./client/apiClient').DashboardSharedCatchTags;
+	export const sharedAuthCatchTags: import('./client/apiClient').SharedAuthCatchTags;
 }
 
 declare module 'virtual:studiocms/route-config' {
