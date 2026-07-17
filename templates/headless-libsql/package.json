@@ -26,7 +26,6 @@
     "@effect/platform": "^0.96.2",
     "@effect/platform-node": "^0.107.0",
     "@libsql/client": "^0.15.15",
-    "@studiocms/github": "^0.3.0",
     "@studiocms/md": "^0.3.0",
     "@studiocms/html": "^0.3.0",
     "astro": "^6.1.0",

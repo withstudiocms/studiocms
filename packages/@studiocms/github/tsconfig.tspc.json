@@ -1,9 +1,0 @@
-{
-  "extends": "../../../tsconfig.tspc.json",
-  "include": ["src"],
-  "exclude": ["dist"],
-  "compilerOptions": {
-    "outDir": "./dist",
-    "rootDir": "./src"
-  }
-}

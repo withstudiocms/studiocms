@@ -55,13 +55,10 @@ const buildKitWithStudioCMSConfig = {
  * ```
  */
 const atStudioCMSPackages = [
-	'auth0',
+	'oauth',
 	'blog',
 	'cloudinary-image-service',
 	'devapps',
-	'discord',
-	'github',
-	'google',
 	'markdoc',
 	'markdown-remark',
 	'mdx',
@@ -98,12 +95,9 @@ const atWithStudioCMSPackages = [
 ] as const;
 
 const studiocmsVirtualIgnore = [
-	'auth0',
+	'oauth',
 	'blog',
 	'devapps',
-	'discord',
-	'google',
-	'github',
 	'html',
 	'md',
 	'mdx',
@@ -112,10 +106,7 @@ const studiocmsVirtualIgnore = [
 
 const astroVirtualIgnore = [
 	'cloudinary-image-service',
-	'auth0',
-	'discord',
-	'google',
-	'github',
+	'oauth',
 ] as const;
 
 const ignoredVirtuals = (() => {
