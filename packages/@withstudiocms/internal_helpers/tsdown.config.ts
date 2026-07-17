@@ -6,6 +6,6 @@ export default defineConfig({
 	entry: 'src/**/*.ts',
 	unbundle: true,
 	deps: {
-		onlyBundle: ["@types/mdast", "@types/unist"],
+		onlyBundle: ['@types/mdast', '@types/unist'],
 	},
 });
