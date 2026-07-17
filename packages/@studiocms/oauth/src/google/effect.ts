@@ -1,13 +1,16 @@
 import { getSecret } from 'astro:env/server';
 import { Session, User, VerifyEmail } from 'studiocms:auth/lib';
-import config from 'studiocms:config';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import { SDKCore } from 'studiocms:sdk';
 import { Google, generateCodeVerifier, generateState } from 'arctic';
 import type { APIContext } from 'astro';
-import { LinkNewOAuthCookieName } from 'studiocms/consts';
 import { Effect, genLogger, Platform, Schema } from 'studiocms/effect';
 import { getCookie, getUrlParam, ValidateAuthCodeError } from 'studiocms/oAuthUtils';
+import {
+	handleExistingOAuthAccount,
+	handleNewOAuthUser,
+	handleOAuthLinking,
+} from '../shared.js';
 
 /**
  * Represents a user authenticated via Google OAuth.
@@ -68,13 +71,8 @@ const GOOGLE = {
 export class GoogleOAuthAPI extends Effect.Service<GoogleOAuthAPI>()('GoogleOAuthAPI', {
 	dependencies: [VerifyEmail.Default, Platform.FetchHttpClient.layer],
 	effect: genLogger('studiocms/routes/api/auth/google/effect')(function* () {
-		const [
-			sdk,
-			fetchClient,
-			{ setOAuthSessionTokenCookie, createUserSession },
-			{ isEmailVerified, sendVerificationEmail },
-			{ getUserData, createOAuthUser },
-		] = yield* Effect.all([SDKCore, Platform.HttpClient.HttpClient, Session, VerifyEmail, User]);
+		const [sdk, fetchClient, { setOAuthSessionTokenCookie }, { createOAuthUser }] =
+			yield* Effect.all([SDKCore, Platform.HttpClient.HttpClient, Session, User]);
 
 		const { CLIENT_ID, CLIENT_SECRET, REDIRECT_URI } = GOOGLE;
 
@@ -125,7 +123,7 @@ export class GoogleOAuthAPI extends Effect.Service<GoogleOAuthAPI>()('GoogleOAut
 				}),
 			initCallback: (context: APIContext) =>
 				genLogger('studiocms/routes/api/auth/google/effect.initCallback')(function* () {
-					const { cookies, redirect } = context;
+					const { redirect } = context;
 
 					const [code, state, storedState, codeVerifier] = yield* Effect.all([
 						getUrlParam(context, 'code'),
@@ -148,53 +146,15 @@ export class GoogleOAuthAPI extends Effect.Service<GoogleOAuthAPI>()('GoogleOAut
 					});
 
 					if (existingOAuthAccount) {
-						const user = yield* sdk.GET.users.byId(existingOAuthAccount.userId);
-
-						if (!user) {
-							return new Response('User not found', { status: 404 });
-						}
-
-						const isEmailAccountVerified = yield* isEmailVerified(user);
-
-						// If Mailer is enabled, is the user verified?
-						if (!isEmailAccountVerified) {
-							return new Response('Email not verified, please verify your account first.', {
-								status: 400,
-							});
-						}
-
-						yield* createUserSession(user.id, context);
-
-						return redirect(StudioCMSRoutes.mainLinks.dashboardIndex);
+						return yield* handleExistingOAuthAccount(context, existingOAuthAccount).pipe(Effect.provide(VerifyEmail.Default));
 					}
 
-					const loggedInUser = yield* getUserData(context);
-					const linkNewOAuth = !!cookies.get(LinkNewOAuthCookieName)?.value;
-
-					if (loggedInUser.user && linkNewOAuth) {
-						const existingUser = yield* sdk.GET.users.byId(loggedInUser.user.id);
-
-						if (existingUser) {
-							yield* sdk.AUTH.oAuth.create({
-								userId: existingUser.id,
-								provider: GoogleOAuthAPI.ProviderID,
-								providerUserId: googleUserId,
-							});
-
-							const isEmailAccountVerified = yield* isEmailVerified(existingUser);
-
-							// If Mailer is enabled, is the user verified?
-							if (!isEmailAccountVerified) {
-								return new Response('Email not verified, please verify your account first.', {
-									status: 400,
-								});
-							}
-
-							yield* createUserSession(existingUser.id, context);
-
-							return redirect(StudioCMSRoutes.mainLinks.dashboardIndex);
-						}
-					}
+					const linkResult = yield* handleOAuthLinking(
+						context,
+						GoogleOAuthAPI.ProviderID,
+						googleUserId
+					).pipe(Effect.provide(VerifyEmail.Default));
+					if (linkResult) return linkResult;
 
 					const newUser = yield* createOAuthUser(
 						{
@@ -213,31 +173,7 @@ export class GoogleOAuthAPI extends Effect.Service<GoogleOAuthAPI>()('GoogleOAut
 						{ provider: GoogleOAuthAPI.ProviderID, providerUserId: googleUserId }
 					);
 
-					if ('error' in newUser) {
-						return new Response('Error creating user', { status: 500 });
-					}
-
-					// FIRST-TIME-SETUP
-					if (config.dbStartPage) {
-						return redirect('/done');
-					}
-
-					yield* sendVerificationEmail(newUser.id, true);
-
-					const existingUser = yield* sdk.GET.users.byId(newUser.id);
-
-					const isEmailAccountVerified = yield* isEmailVerified(existingUser);
-
-					// If Mailer is enabled, is the user verified?
-					if (!isEmailAccountVerified) {
-						return new Response('Email not verified, please verify your account first.', {
-							status: 400,
-						});
-					}
-
-					yield* createUserSession(newUser.id, context);
-
-					return redirect(StudioCMSRoutes.mainLinks.dashboardIndex);
+					return yield* handleNewOAuthUser(context, newUser).pipe(Effect.provide(VerifyEmail.Default));
 				}),
 		};
 	}),
