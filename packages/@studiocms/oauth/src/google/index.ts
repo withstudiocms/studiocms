@@ -33,7 +33,7 @@ export function google(): StudioCMSPluginDef {
 	// Return the plugin configuration
 	return definePlugin({
 		identifier: packageIdentifier,
-		name: 'StudioCMS Google Plugin',
+		name: 'StudioCMS Google Provider Plugin',
 		hooks: {
 			'studiocms:auth': async ({ setAuthService }) => {
 				setAuthService({

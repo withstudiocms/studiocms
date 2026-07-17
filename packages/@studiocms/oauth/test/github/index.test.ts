@@ -33,7 +33,7 @@ describe(parentSuiteName, () => {
 
 			expect(pluginInfo).toBeDefined();
 			expect(pluginInfo.identifier).toBe('@studiocms/github');
-			expect(pluginInfo.name).toBe('StudioCMS GitHub Plugin');
+			expect(pluginInfo.name).toBe('StudioCMS GitHub Provider Plugin');
 			expect(pluginInfo.requires).toBeUndefined();
 		});
 
@@ -55,7 +55,7 @@ describe(parentSuiteName, () => {
 
 			expect(plugin).toBeDefined();
 			expect(plugin.identifier).toBe('@studiocms/github');
-			expect(plugin.name).toBe('StudioCMS GitHub Plugin');
+			expect(plugin.name).toBe('StudioCMS GitHub Provider Plugin');
 			expect(plugin.hooks).toBeDefined();
 		});
 	});

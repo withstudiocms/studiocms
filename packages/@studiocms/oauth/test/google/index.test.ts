@@ -33,7 +33,7 @@ describe(parentSuiteName, () => {
 
 			expect(pluginInfo).toBeDefined();
 			expect(pluginInfo.identifier).toBe('@studiocms/google');
-			expect(pluginInfo.name).toBe('StudioCMS Google Plugin');
+			expect(pluginInfo.name).toBe('StudioCMS Google Provider Plugin');
 			expect(pluginInfo.requires).toBeUndefined();
 		});
 
@@ -55,7 +55,7 @@ describe(parentSuiteName, () => {
 
 			expect(plugin).toBeDefined();
 			expect(plugin.identifier).toBe('@studiocms/google');
-			expect(plugin.name).toBe('StudioCMS Google Plugin');
+			expect(plugin.name).toBe('StudioCMS Google Provider Plugin');
 			expect(plugin.hooks).toBeDefined();
 		});
 	});
