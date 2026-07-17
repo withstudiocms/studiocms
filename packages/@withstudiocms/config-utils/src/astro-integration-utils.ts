@@ -1,3 +1,4 @@
+import fs from 'node:fs';
 import type { HookParameters } from 'astro';
 import { Schema } from 'effect';
 import { loadConfigFile } from './loader.js';
@@ -27,16 +28,16 @@ export const configResolverBuilder =
 		const logger = l.fork(`${label}:config`);
 
 		// Load the config file
-		const loadedConfigFile = await loadConfigFile<A>(astroRoot, configPaths, label);
+		const loadedViteConfigFile = await loadConfigFile({ configPaths, root: astroRoot, fs });
 
-		// If no config file was found, return the result of the effect with an empty object as input
-		if (!loadedConfigFile) {
-			logger.info('No config file found. Using default configuration.');
+		// If no config file is found, log a message and return the default configuration using the effect schema
+		if (Object.keys(loadedViteConfigFile).length === 0) {
+			logger.info('No config entries found. Using default configuration.');
 			return await Schema.decodeUnknownPromise(effectSchema)({});
 		}
 
 		// Parse the loaded config file using the provided effect schema
-		const parsedConfig = await Schema.decodeUnknownPromise(effectSchema)(loadedConfigFile);
+		const parsedConfig = await Schema.decodeUnknownPromise(effectSchema)(loadedViteConfigFile);
 
 		// Log a message indicating that the config file was loaded and parsed successfully
 		logger.info('Config file loaded and parsed successfully.');

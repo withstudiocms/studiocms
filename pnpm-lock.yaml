@@ -926,9 +926,6 @@ importers:
       effect:
         specifier: catalog:effect
         version: 3.21.4
-      tsdown:
-        specifier: 'catalog:'
-        version: 0.22.5(oxc-resolver@11.23.0)(publint@0.3.21)(tsx@4.23.0)(typescript@6.0.3)
     devDependencies:
       '@types/node':
         specifier: 'catalog:'
@@ -936,6 +933,9 @@ importers:
       astro:
         specifier: catalog:astrojs-current
         version: 6.4.8(@types/node@22.20.1)(jiti@2.7.0)(rollup@4.62.2)(tsx@4.23.0)(yaml@2.9.0)
+      vite:
+        specifier: catalog:astrojs-current
+        version: 7.3.6(@types/node@22.20.1)(jiti@2.7.0)(tsx@4.23.0)(yaml@2.9.0)
 
   packages/@withstudiocms/effect:
     dependencies:

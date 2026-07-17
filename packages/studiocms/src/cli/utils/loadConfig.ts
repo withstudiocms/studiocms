@@ -1,7 +1,8 @@
+import fs from 'node:fs';
 import { loadConfigFile as _loadConfigFile } from '@withstudiocms/config-utils';
 import { Effect, Schema } from 'effect';
 import { configPaths } from '../../consts.js';
-import { type StudioCMSOptions, StudioCMSOptionsSchema } from '../../schemas/index.js';
+import { StudioCMSOptionsSchema } from '../../schemas/index.js';
 
 /**
  * Loads the StudioCMS configuration file from the specified root directory.
@@ -10,7 +11,7 @@ import { type StudioCMSOptions, StudioCMSOptionsSchema } from '../../schemas/ind
  * @returns An Effect that resolves to the loaded StudioCMSOptions or undefined if no config file is found.
  */
 const loadConfigFile = Effect.fn((root: URL) =>
-	Effect.tryPromise(() => _loadConfigFile<StudioCMSOptions>(root, configPaths, 'migrator'))
+	Effect.tryPromise(() => _loadConfigFile({ configPaths, root, fs }))
 );
 
 /**
@@ -19,7 +20,7 @@ const loadConfigFile = Effect.fn((root: URL) =>
  * @param config - The configuration object to parse.
  * @returns An Effect that resolves to the parsed StudioCMSOptions.
  */
-const parse = Effect.fn((config: StudioCMSOptions | undefined) =>
+const parse = Effect.fn((config: Record<string, unknown> | undefined) =>
 	Schema.decode(StudioCMSOptionsSchema)(config ?? {})
 );
 

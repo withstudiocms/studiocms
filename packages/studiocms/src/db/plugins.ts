@@ -1,9 +1,10 @@
+import fs from 'node:fs';
 import { loadConfigFile as _loadConfigFile } from '@withstudiocms/config-utils';
 import { getDBClientLive } from '@withstudiocms/kysely/client';
 import type { StudioCMSDatabaseSchema } from '@withstudiocms/sdk/tables';
 import { configPaths } from '../consts.js';
 import { Effect, Schema } from '../effect.js';
-import { type StudioCMSOptions, StudioCMSOptionsSchema } from '../schemas/index.js';
+import { StudioCMSOptionsSchema } from '../schemas/index.js';
 import { type DbDialectType, getDbDriver, parseDbDialect } from './index.js';
 
 export * from '@withstudiocms/kysely/plugin';
@@ -12,15 +13,13 @@ export * from '@withstudiocms/kysely/plugin';
  * Load the StudioCMS configuration from the specified root URL
  */
 const loadConfigFile = Effect.fn((root: URL) =>
-	Effect.tryPromise(() =>
-		_loadConfigFile<StudioCMSOptions>(root, configPaths, 'studiocms-db-plugin')
-	)
+	Effect.tryPromise(() => _loadConfigFile({ configPaths, root, fs }))
 );
 
 /**
  * Parse the loaded configuration with the default configuration
  */
-const parse = Effect.fn((config: StudioCMSOptions | undefined) =>
+const parse = Effect.fn((config: Record<string, unknown> | undefined) =>
 	Schema.decode(StudioCMSOptionsSchema)(config ?? {})
 );
 
