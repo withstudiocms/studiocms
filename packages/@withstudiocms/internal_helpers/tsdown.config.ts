@@ -5,4 +5,7 @@ export default defineConfig({
 	...sharedConfig,
 	entry: 'src/**/*.ts',
 	unbundle: true,
+	deps: {
+		onlyBundle: ["@types/mdast", "@types/unist"],
+	},
 });
