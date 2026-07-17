@@ -31,13 +31,13 @@ import type { StudioCMSPluginDef } from 'studiocms/schemas';
  * ```
  */
 export const auth0 = (): StudioCMSPluginDef => {
-  const packageIdentifier = '@studiocms/auth0';
+	const packageIdentifier = '@studiocms/auth0';
 
-  return definePlugin({
-    identifier: packageIdentifier,
-    name: 'StudioCMS Auth0 Provider Plugin',
-    hooks: {
-      'studiocms:auth': async ({ setAuthService }) => {
+	return definePlugin({
+		identifier: packageIdentifier,
+		name: 'StudioCMS Auth0 Provider Plugin',
+		hooks: {
+			'studiocms:auth': async ({ setAuthService }) => {
 				setAuthService({
 					oAuthProvider: {
 						name: 'auth0',
@@ -53,8 +53,8 @@ export const auth0 = (): StudioCMSPluginDef => {
 					},
 				});
 			},
-    }
-  });
+		},
+	});
 };
 
 export default auth0;

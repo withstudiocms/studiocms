@@ -104,10 +104,7 @@ const studiocmsVirtualIgnore = [
 	'wysiwyg',
 ] as const;
 
-const astroVirtualIgnore = [
-	'cloudinary-image-service',
-	'oauth',
-] as const;
+const astroVirtualIgnore = ['cloudinary-image-service', 'oauth'] as const;
 
 const ignoredVirtuals = (() => {
 	const entries: Record<string, { ignoreDependencies: (string | RegExp)[] }> = {};

@@ -25,13 +25,13 @@ import type { StudioCMSPluginDef } from 'studiocms/schemas';
  *   - `CMS_DISCORD_REDIRECT_URI`
  */
 export const discord = (): StudioCMSPluginDef => {
-  const packageIdentifier = '@studiocms/discord';
+	const packageIdentifier = '@studiocms/discord';
 
-  return definePlugin({
-    identifier: packageIdentifier,
-    name: 'StudioCMS Discord Provider Plugin',
-    hooks: {
-      'studiocms:auth': async ({ setAuthService }) => {
+	return definePlugin({
+		identifier: packageIdentifier,
+		name: 'StudioCMS Discord Provider Plugin',
+		hooks: {
+			'studiocms:auth': async ({ setAuthService }) => {
 				setAuthService({
 					oAuthProvider: {
 						name: 'discord',
@@ -46,8 +46,8 @@ export const discord = (): StudioCMSPluginDef => {
 					},
 				});
 			},
-    }
-  })
+		},
+	});
 };
 
 export default discord;
