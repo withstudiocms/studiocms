@@ -1,6 +1,6 @@
 import type { APIContext, APIRoute } from 'astro';
 import { Effect, runEffect } from 'studiocms/effect';
-import { DiscordOAuthAPI } from './effect.js';
+import { DiscordOAuthAPI } from './impl.js';
 
 /**
  * API route handler for initializing a Discord session.
@@ -14,12 +14,7 @@ import { DiscordOAuthAPI } from './effect.js';
  * @returns A promise resolving to the API response after session initialization.
  */
 export const initSession: APIRoute = async (context: APIContext) =>
-	await runEffect(
-		Effect.gen(function* () {
-			const { initSession } = yield* DiscordOAuthAPI;
-			return yield* initSession(context);
-		}).pipe(Effect.provide(DiscordOAuthAPI.Default))
-	);
+  await runEffect(DiscordOAuthAPI.pipe(Effect.flatMap((api) => api.initSession(context))));
 
 /**
  * Handles the Discord OAuth callback endpoint.
@@ -32,9 +27,4 @@ export const initSession: APIRoute = async (context: APIContext) =>
  * @returns A promise resolving to the result of the Discord OAuth callback process.
  */
 export const initCallback: APIRoute = async (context: APIContext) =>
-	await runEffect(
-		Effect.gen(function* () {
-			const { initCallback } = yield* DiscordOAuthAPI;
-			return yield* initCallback(context);
-		}).pipe(Effect.provide(DiscordOAuthAPI.Default))
-	);
+  await runEffect(DiscordOAuthAPI.pipe(Effect.flatMap((api) => api.initCallback(context))));

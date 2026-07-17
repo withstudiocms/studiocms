@@ -1,6 +1,6 @@
 import type { APIContext, APIRoute } from 'astro';
 import { Effect, runEffect } from 'studiocms/effect';
-import { GoogleOAuthAPI } from './effect.js';
+import { GoogleOAuthAPI } from './impl.js';
 
 /**
  * API route handler for initializing a Google session.
@@ -14,12 +14,7 @@ import { GoogleOAuthAPI } from './effect.js';
  * @returns A promise resolving to the API response after session initialization.
  */
 export const initSession: APIRoute = async (context: APIContext) =>
-	await runEffect(
-		Effect.gen(function* () {
-			const { initSession } = yield* GoogleOAuthAPI;
-			return yield* initSession(context);
-		}).pipe(Effect.provide(GoogleOAuthAPI.Default))
-	);
+  await runEffect(GoogleOAuthAPI.pipe(Effect.flatMap((api) => api.initSession(context))));
 
 /**
  * Handles the Google OAuth callback endpoint.
@@ -32,9 +27,4 @@ export const initSession: APIRoute = async (context: APIContext) =>
  * @returns A promise resolving to the result of the Google OAuth callback process.
  */
 export const initCallback: APIRoute = async (context: APIContext) =>
-	await runEffect(
-		Effect.gen(function* () {
-			const { initCallback } = yield* GoogleOAuthAPI;
-			return yield* initCallback(context);
-		}).pipe(Effect.provide(GoogleOAuthAPI.Default))
-	);
+  await runEffect(GoogleOAuthAPI.pipe(Effect.flatMap((api) => api.initCallback(context))));

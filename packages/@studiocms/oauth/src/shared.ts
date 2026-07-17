@@ -4,7 +4,8 @@ import { StudioCMSRoutes } from 'studiocms:lib';
 import { SDKCore } from 'studiocms:sdk';
 import type { APIContext } from 'astro';
 import { LinkNewOAuthCookieName } from 'studiocms/consts';
-import { genLogger } from 'studiocms/effect';
+import { Effect, genLogger } from 'studiocms/effect';
+import { OAuthServiceError } from './service';
 
 /**
  * Handles the OAuth callback flow for a user whose provider ID is already linked to an
@@ -40,7 +41,15 @@ export const handleExistingOAuthAccount = (
 
 		yield* createUserSession(user.id, context);
 		return redirect(StudioCMSRoutes.mainLinks.dashboardIndex);
-	});
+	}).pipe(Effect.catchTags({
+    DBCallbackFailure: (error) => new OAuthServiceError({ message: error.message }),
+    DBClientInitializationError: (error) => new OAuthServiceError({ message: error.message }),
+    NotFoundError: (error) => new OAuthServiceError({ message: error.message }),
+    QueryError: (error) => new OAuthServiceError({ message: error.message }),
+    QueryParseError: (error) => new OAuthServiceError({ message: error.message }),
+    SDKInitializationError: (error) => new OAuthServiceError({ message: error.message }),
+    UnknownException: (error) => new OAuthServiceError({ message: error.message })
+  }));
 
 /**
  * Handles linking a new OAuth provider to an already-authenticated user.
@@ -93,7 +102,16 @@ export const handleOAuthLinking = (
 		}
 
 		return null as Response | null;
-	});
+  }).pipe(Effect.catchTags({
+    DBCallbackFailure: (error) => new OAuthServiceError({ message: error.message }),
+    DBClientInitializationError: (error) => new OAuthServiceError({ message: error.message }),
+    NotFoundError: (error) => new OAuthServiceError({ message: error.message }),
+    QueryError: (error) => new OAuthServiceError({ message: error.message }),
+    QueryParseError: (error) => new OAuthServiceError({ message: error.message }),
+    SDKInitializationError: (error) => new OAuthServiceError({ message: error.message }),
+    UnknownException: (error) => new OAuthServiceError({ message: error.message }),
+    UserError: (error) => new OAuthServiceError({ message: error.message }),
+  }));
 
 /**
  * Handles the post-creation flow for a newly created OAuth user.

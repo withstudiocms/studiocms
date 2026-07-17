@@ -1,6 +1,6 @@
 import type { APIContext, APIRoute } from 'astro';
 import { Effect, runEffect } from 'studiocms/effect';
-import { Auth0OAuthAPI } from './effect.js';
+import { Auth0OAuthAPI } from './impl.js';
 
 /**
  * API route handler for initializing an Auth0 session.
@@ -14,12 +14,7 @@ import { Auth0OAuthAPI } from './effect.js';
  * @returns A promise resolving to the API response after session initialization.
  */
 export const initSession: APIRoute = async (context: APIContext) =>
-	await runEffect(
-		Effect.gen(function* () {
-			const { initSession } = yield* Auth0OAuthAPI;
-			return yield* initSession(context);
-		}).pipe(Effect.provide(Auth0OAuthAPI.Default))
-	);
+  await runEffect(Auth0OAuthAPI.pipe(Effect.flatMap((api) => api.initSession(context))));
 
 /**
  * Handles the Auth0 OAuth callback endpoint.
@@ -32,9 +27,4 @@ export const initSession: APIRoute = async (context: APIContext) =>
  * @returns A promise resolving to the result of the Auth0 OAuth callback process.
  */
 export const initCallback: APIRoute = async (context: APIContext) =>
-	await runEffect(
-		Effect.gen(function* () {
-			const { initCallback } = yield* Auth0OAuthAPI;
-			return yield* initCallback(context);
-		}).pipe(Effect.provide(Auth0OAuthAPI.Default))
-	);
+  await runEffect(Auth0OAuthAPI.pipe(Effect.flatMap((api) => api.initCallback(context))));

@@ -1,6 +1,6 @@
 import type { APIContext, APIRoute } from 'astro';
 import { Effect, runEffect } from 'studiocms/effect';
-import { GitHubOAuthAPI } from './effect.js';
+import { GitHubOAuthAPI } from './impl.js';
 
 /**
  * API route handler for initializing a GitHub session.
@@ -14,12 +14,7 @@ import { GitHubOAuthAPI } from './effect.js';
  * @returns A promise resolving to the API response after session initialization.
  */
 export const initSession: APIRoute = async (context: APIContext) =>
-	await runEffect(
-		Effect.gen(function* () {
-			const { initSession } = yield* GitHubOAuthAPI;
-			return yield* initSession(context);
-		}).pipe(Effect.provide(GitHubOAuthAPI.Default))
-	);
+  await runEffect(GitHubOAuthAPI.pipe(Effect.flatMap((api) => api.initSession(context))));
 
 /**
  * Handles the GitHub OAuth callback endpoint.
@@ -32,9 +27,4 @@ export const initSession: APIRoute = async (context: APIContext) =>
  * @returns A promise resolving to the result of the GitHub OAuth callback process.
  */
 export const initCallback: APIRoute = async (context: APIContext) =>
-	await runEffect(
-		Effect.gen(function* () {
-			const { initCallback } = yield* GitHubOAuthAPI;
-			return yield* initCallback(context);
-		}).pipe(Effect.provide(GitHubOAuthAPI.Default))
-	);
+  await runEffect(GitHubOAuthAPI.pipe(Effect.flatMap((api) => api.initCallback(context))));
