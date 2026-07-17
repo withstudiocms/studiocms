@@ -14,7 +14,7 @@ import { GoogleOAuthAPI } from './impl.js';
  * @returns A promise resolving to the API response after session initialization.
  */
 export const initSession: APIRoute = async (context: APIContext) =>
-  await runEffect(GoogleOAuthAPI.pipe(Effect.flatMap((api) => api.initSession(context))));
+	await runEffect(GoogleOAuthAPI.pipe(Effect.flatMap((api) => api.initSession(context))));
 
 /**
  * Handles the Google OAuth callback endpoint.
@@ -27,4 +27,4 @@ export const initSession: APIRoute = async (context: APIContext) =>
  * @returns A promise resolving to the result of the Google OAuth callback process.
  */
 export const initCallback: APIRoute = async (context: APIContext) =>
-  await runEffect(GoogleOAuthAPI.pipe(Effect.flatMap((api) => api.initCallback(context))));
+	await runEffect(GoogleOAuthAPI.pipe(Effect.flatMap((api) => api.initCallback(context))));

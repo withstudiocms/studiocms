@@ -140,8 +140,6 @@ export const DiscordOAuthAPI = genLogger('@studiocms/oauth/discord/impl')(functi
 				);
 
 				return yield* handleNewOAuthUser(context, newUser);
-			}).pipe(
-				Effect.provide(VerifyEmail.Default)
-			),
+			}).pipe(Effect.provide(VerifyEmail.Default)),
 	});
 }).pipe(Effect.provide(Platform.FetchHttpClient.layer));

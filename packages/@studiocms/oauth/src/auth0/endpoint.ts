@@ -14,7 +14,7 @@ import { Auth0OAuthAPI } from './impl.js';
  * @returns A promise resolving to the API response after session initialization.
  */
 export const initSession: APIRoute = async (context: APIContext) =>
-  await runEffect(Auth0OAuthAPI.pipe(Effect.flatMap((api) => api.initSession(context))));
+	await runEffect(Auth0OAuthAPI.pipe(Effect.flatMap((api) => api.initSession(context))));
 
 /**
  * Handles the Auth0 OAuth callback endpoint.
@@ -27,4 +27,4 @@ export const initSession: APIRoute = async (context: APIContext) =>
  * @returns A promise resolving to the result of the Auth0 OAuth callback process.
  */
 export const initCallback: APIRoute = async (context: APIContext) =>
-  await runEffect(Auth0OAuthAPI.pipe(Effect.flatMap((api) => api.initCallback(context))));
+	await runEffect(Auth0OAuthAPI.pipe(Effect.flatMap((api) => api.initCallback(context))));

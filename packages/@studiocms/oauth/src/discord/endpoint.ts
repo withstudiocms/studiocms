@@ -14,7 +14,7 @@ import { DiscordOAuthAPI } from './impl.js';
  * @returns A promise resolving to the API response after session initialization.
  */
 export const initSession: APIRoute = async (context: APIContext) =>
-  await runEffect(DiscordOAuthAPI.pipe(Effect.flatMap((api) => api.initSession(context))));
+	await runEffect(DiscordOAuthAPI.pipe(Effect.flatMap((api) => api.initSession(context))));
 
 /**
  * Handles the Discord OAuth callback endpoint.
@@ -27,4 +27,4 @@ export const initSession: APIRoute = async (context: APIContext) =>
  * @returns A promise resolving to the result of the Discord OAuth callback process.
  */
 export const initCallback: APIRoute = async (context: APIContext) =>
-  await runEffect(DiscordOAuthAPI.pipe(Effect.flatMap((api) => api.initCallback(context))));
+	await runEffect(DiscordOAuthAPI.pipe(Effect.flatMap((api) => api.initCallback(context))));
