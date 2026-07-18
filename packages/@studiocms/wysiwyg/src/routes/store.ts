@@ -28,7 +28,7 @@ const POSTJsonSchema = <S extends Schema.Struct<any>>(schema: S) =>
 		data: Schema.mutable(schema),
 	});
 
-export class RequestError extends Data.TaggedError("RequestError")<{ message: string }>{}
+export class RequestError extends Data.TaggedError('RequestError')<{ message: string }> {}
 
 /**
  * Parses and validates the JSON body of a POST request using a provided schema.
