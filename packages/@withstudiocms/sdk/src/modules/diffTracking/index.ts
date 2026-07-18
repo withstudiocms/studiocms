@@ -358,6 +358,7 @@ export const SDKDiffTrackingModule = Effect.gen(function* () {
 	 * @param diffId - The ID of the diff tracking record to retrieve.
 	 * @returns The diff tracking record with parsed metadata, or undefined if not found.
 	 */
+	// @effect-diagnostics-next-line effectSucceedWithVoid:off
 	const _getSingleDiffById = Effect.fn((diffId: string) =>
 		_selectDiffById(diffId).pipe(
 			Effect.flatMap((diffOrNull) =>
