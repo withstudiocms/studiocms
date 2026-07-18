@@ -1,3 +1,4 @@
+/** @effect-diagnostics effectSucceedWithVoid:skip-file */
 import { Effect, type ParseResult, Schema } from '@withstudiocms/effect';
 import type { DBCallbackFailure } from '@withstudiocms/kysely/client';
 import type { DatabaseError } from '@withstudiocms/kysely/core/errors';
