@@ -231,37 +231,6 @@ importers:
         specifier: ^3.2.4
         version: 3.2.7(@types/debug@4.1.13)(@types/node@22.20.1)(jiti@2.7.0)(jsdom@29.1.1)(tsx@4.23.0)(yaml@2.9.0)
 
-  packages/@studiocms/auth0:
-    dependencies:
-      '@withstudiocms/auth-kit':
-        specifier: workspace:^
-        version: link:../../@withstudiocms/auth-kit
-      '@withstudiocms/effect':
-        specifier: workspace:^
-        version: link:../../@withstudiocms/effect
-      '@withstudiocms/kysely':
-        specifier: workspace:^
-        version: link:../../@withstudiocms/kysely
-      arctic:
-        specifier: 'catalog:'
-        version: 3.7.0
-      effect:
-        specifier: catalog:effect
-        version: 3.21.4
-    devDependencies:
-      '@types/node':
-        specifier: 'catalog:'
-        version: 22.20.1
-      astro:
-        specifier: catalog:studiocms-peerlock
-        version: 6.4.8(@types/node@22.20.1)(jiti@2.7.0)(rollup@4.62.2)(tsx@4.23.0)(yaml@2.9.0)
-      studiocms:
-        specifier: workspace:^
-        version: link:../../studiocms
-      vite:
-        specifier: catalog:studiocms-peerlock
-        version: 7.3.6(@types/node@22.20.1)(jiti@2.7.0)(tsx@4.23.0)(yaml@2.9.0)
-
   packages/@studiocms/blog:
     dependencies:
       '@astrojs/rss':
@@ -351,99 +320,6 @@ importers:
       typescript:
         specifier: 'catalog:'
         version: 6.0.3
-      vite:
-        specifier: catalog:studiocms-peerlock
-        version: 7.3.6(@types/node@22.20.1)(jiti@2.7.0)(tsx@4.23.0)(yaml@2.9.0)
-
-  packages/@studiocms/discord:
-    dependencies:
-      '@withstudiocms/auth-kit':
-        specifier: workspace:^
-        version: link:../../@withstudiocms/auth-kit
-      '@withstudiocms/effect':
-        specifier: workspace:^
-        version: link:../../@withstudiocms/effect
-      '@withstudiocms/kysely':
-        specifier: workspace:^
-        version: link:../../@withstudiocms/kysely
-      arctic:
-        specifier: 'catalog:'
-        version: 3.7.0
-      effect:
-        specifier: catalog:effect
-        version: 3.21.4
-    devDependencies:
-      '@types/node':
-        specifier: 'catalog:'
-        version: 22.20.1
-      astro:
-        specifier: catalog:studiocms-peerlock
-        version: 6.4.8(@types/node@22.20.1)(jiti@2.7.0)(rollup@4.62.2)(tsx@4.23.0)(yaml@2.9.0)
-      studiocms:
-        specifier: workspace:^
-        version: link:../../studiocms
-      vite:
-        specifier: catalog:studiocms-peerlock
-        version: 7.3.6(@types/node@22.20.1)(jiti@2.7.0)(tsx@4.23.0)(yaml@2.9.0)
-
-  packages/@studiocms/github:
-    dependencies:
-      '@withstudiocms/auth-kit':
-        specifier: workspace:^
-        version: link:../../@withstudiocms/auth-kit
-      '@withstudiocms/effect':
-        specifier: workspace:^
-        version: link:../../@withstudiocms/effect
-      '@withstudiocms/kysely':
-        specifier: workspace:^
-        version: link:../../@withstudiocms/kysely
-      arctic:
-        specifier: 'catalog:'
-        version: 3.7.0
-      effect:
-        specifier: catalog:effect
-        version: 3.21.4
-    devDependencies:
-      '@types/node':
-        specifier: 'catalog:'
-        version: 22.20.1
-      astro:
-        specifier: catalog:studiocms-peerlock
-        version: 6.4.8(@types/node@22.20.1)(jiti@2.7.0)(rollup@4.62.2)(tsx@4.23.0)(yaml@2.9.0)
-      studiocms:
-        specifier: workspace:^
-        version: link:../../studiocms
-      vite:
-        specifier: catalog:studiocms-peerlock
-        version: 7.3.6(@types/node@22.20.1)(jiti@2.7.0)(tsx@4.23.0)(yaml@2.9.0)
-
-  packages/@studiocms/google:
-    dependencies:
-      '@withstudiocms/auth-kit':
-        specifier: workspace:^
-        version: link:../../@withstudiocms/auth-kit
-      '@withstudiocms/effect':
-        specifier: workspace:^
-        version: link:../../@withstudiocms/effect
-      '@withstudiocms/kysely':
-        specifier: workspace:^
-        version: link:../../@withstudiocms/kysely
-      arctic:
-        specifier: 'catalog:'
-        version: 3.7.0
-      effect:
-        specifier: catalog:effect
-        version: 3.21.4
-    devDependencies:
-      '@types/node':
-        specifier: 'catalog:'
-        version: 22.20.1
-      astro:
-        specifier: catalog:studiocms-peerlock
-        version: 6.4.8(@types/node@22.20.1)(jiti@2.7.0)(rollup@4.62.2)(tsx@4.23.0)(yaml@2.9.0)
-      studiocms:
-        specifier: workspace:^
-        version: link:../../studiocms
       vite:
         specifier: catalog:studiocms-peerlock
         version: 7.3.6(@types/node@22.20.1)(jiti@2.7.0)(tsx@4.23.0)(yaml@2.9.0)
@@ -686,6 +562,37 @@ importers:
       '@types/react-dom':
         specifier: catalog:react
         version: 19.2.3(@types/react@19.2.17)
+      astro:
+        specifier: catalog:studiocms-peerlock
+        version: 6.4.8(@types/node@22.20.1)(jiti@2.7.0)(rollup@4.62.2)(tsx@4.23.0)(yaml@2.9.0)
+      studiocms:
+        specifier: workspace:^
+        version: link:../../studiocms
+      vite:
+        specifier: catalog:studiocms-peerlock
+        version: 7.3.6(@types/node@22.20.1)(jiti@2.7.0)(tsx@4.23.0)(yaml@2.9.0)
+
+  packages/@studiocms/oauth:
+    dependencies:
+      '@withstudiocms/auth-kit':
+        specifier: workspace:^
+        version: link:../../@withstudiocms/auth-kit
+      '@withstudiocms/effect':
+        specifier: workspace:^
+        version: link:../../@withstudiocms/effect
+      '@withstudiocms/kysely':
+        specifier: workspace:^
+        version: link:../../@withstudiocms/kysely
+      arctic:
+        specifier: 'catalog:'
+        version: 3.7.0
+      effect:
+        specifier: catalog:effect
+        version: 3.21.4
+    devDependencies:
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.20.1
       astro:
         specifier: catalog:studiocms-peerlock
         version: 6.4.8(@types/node@22.20.1)(jiti@2.7.0)(rollup@4.62.2)(tsx@4.23.0)(yaml@2.9.0)
@@ -1471,9 +1378,6 @@ importers:
       '@libsql/client':
         specifier: ^0.15.15
         version: 0.15.15
-      '@studiocms/github':
-        specifier: ^0.3.0
-        version: link:../../packages/@studiocms/github
       '@studiocms/html':
         specifier: ^0.3.0
         version: link:../../packages/@studiocms/html
@@ -1514,9 +1418,6 @@ importers:
       '@effect/platform-node':
         specifier: ^0.107.0
         version: 0.107.0(@effect/cluster@0.59.0(@effect/platform@0.96.2(effect@3.21.4))(@effect/rpc@0.75.1(@effect/platform@0.96.2(effect@3.21.4))(effect@3.21.4))(@effect/sql@0.51.1(@effect/experimental@0.60.0(@effect/platform@0.96.2(effect@3.21.4))(effect@3.21.4))(@effect/platform@0.96.2(effect@3.21.4))(effect@3.21.4))(@effect/workflow@0.18.2(@effect/experimental@0.60.0(@effect/platform@0.96.2(effect@3.21.4))(effect@3.21.4))(@effect/platform@0.96.2(effect@3.21.4))(@effect/rpc@0.75.1(@effect/platform@0.96.2(effect@3.21.4))(effect@3.21.4))(effect@3.21.4))(effect@3.21.4))(@effect/platform@0.96.2(effect@3.21.4))(@effect/rpc@0.75.1(@effect/platform@0.96.2(effect@3.21.4))(effect@3.21.4))(@effect/sql@0.51.1(@effect/experimental@0.60.0(@effect/platform@0.96.2(effect@3.21.4))(effect@3.21.4))(@effect/platform@0.96.2(effect@3.21.4))(effect@3.21.4))(effect@3.21.4)
-      '@studiocms/github':
-        specifier: ^0.3.0
-        version: link:../../packages/@studiocms/github
       '@studiocms/html':
         specifier: ^0.3.0
         version: link:../../packages/@studiocms/html
@@ -1557,9 +1458,6 @@ importers:
       '@effect/platform-node':
         specifier: ^0.107.0
         version: 0.107.0(@effect/cluster@0.59.0(@effect/platform@0.96.2(effect@3.21.4))(@effect/rpc@0.75.1(@effect/platform@0.96.2(effect@3.21.4))(effect@3.21.4))(@effect/sql@0.51.1(@effect/experimental@0.60.0(@effect/platform@0.96.2(effect@3.21.4))(effect@3.21.4))(@effect/platform@0.96.2(effect@3.21.4))(effect@3.21.4))(@effect/workflow@0.18.2(@effect/experimental@0.60.0(@effect/platform@0.96.2(effect@3.21.4))(effect@3.21.4))(@effect/platform@0.96.2(effect@3.21.4))(@effect/rpc@0.75.1(@effect/platform@0.96.2(effect@3.21.4))(effect@3.21.4))(effect@3.21.4))(effect@3.21.4))(@effect/platform@0.96.2(effect@3.21.4))(@effect/rpc@0.75.1(@effect/platform@0.96.2(effect@3.21.4))(effect@3.21.4))(@effect/sql@0.51.1(@effect/experimental@0.60.0(@effect/platform@0.96.2(effect@3.21.4))(effect@3.21.4))(@effect/platform@0.96.2(effect@3.21.4))(effect@3.21.4))(effect@3.21.4)
-      '@studiocms/github':
-        specifier: ^0.3.0
-        version: link:../../packages/@studiocms/github
       '@studiocms/html':
         specifier: ^0.3.0
         version: link:../../packages/@studiocms/html

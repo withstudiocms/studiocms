@@ -52,12 +52,9 @@ flags:
     # These have to be listed individually due to
     # the integrations flag containing a scoped package. (@studiocms/devapps)
     paths:
-      - packages/@studiocms/auth0/**
+      - packages/@studiocms/oauth/**
       - packages/@studiocms/blog/**
       - packages/@studiocms/cloudinary-image-service/**
-      - packages/@studiocms/discord/**
-      - packages/@studiocms/github/**
-      - packages/@studiocms/google/**
       - packages/@studiocms/html/**
       - packages/@studiocms/markdoc/**
       - packages/@studiocms/md/**
@@ -86,10 +83,10 @@ component_management:
         - packages/@studiocms/markdown-remark/**
 
     # StudioCMS Plugins
-    - component_id: studiocms_auth0
-      name: "@studiocms/auth0"
+    - component_id: studiocms_oauth
+      name: "@studiocms/oauth"
       paths:
-        - packages/@studiocms/auth0/**
+        - packages/@studiocms/oauth/**
     - component_id: studiocms_blog
       name: "@studiocms/blog"
       paths:
@@ -98,18 +95,6 @@ component_management:
       name: "@studiocms/cloudinary-image-service"
       paths:
         - packages/@studiocms/cloudinary-image-service/**
-    - component_id: studiocms_discord
-      name: "@studiocms/discord"
-      paths:
-        - packages/@studiocms/discord/**
-    - component_id: studiocms_github
-      name: "@studiocms/github"
-      paths:
-        - packages/@studiocms/github/**
-    - component_id: studiocms_google
-      name: "@studiocms/google"
-      paths:
-        - packages/@studiocms/google/**
     - component_id: studiocms_html
       name: "@studiocms/html"
       paths:

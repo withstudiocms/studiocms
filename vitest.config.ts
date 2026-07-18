@@ -45,10 +45,7 @@ const projectsWithTests: { scope?: string; names: string[] }[] = [
 	{
 		scope: 'studiocms',
 		names: [
-			'auth0',
-			'discord',
-			'github',
-			'google',
+			'oauth',
 			'devapps',
 			'html',
 			'cloudinary-image-service',

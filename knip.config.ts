@@ -55,13 +55,10 @@ const buildKitWithStudioCMSConfig = {
  * ```
  */
 const atStudioCMSPackages = [
-	'auth0',
+	'oauth',
 	'blog',
 	'cloudinary-image-service',
 	'devapps',
-	'discord',
-	'github',
-	'google',
 	'markdoc',
 	'markdown-remark',
 	'mdx',
@@ -98,25 +95,16 @@ const atWithStudioCMSPackages = [
 ] as const;
 
 const studiocmsVirtualIgnore = [
-	'auth0',
+	'oauth',
 	'blog',
 	'devapps',
-	'discord',
-	'google',
-	'github',
 	'html',
 	'md',
 	'mdx',
 	'wysiwyg',
 ] as const;
 
-const astroVirtualIgnore = [
-	'cloudinary-image-service',
-	'auth0',
-	'discord',
-	'google',
-	'github',
-] as const;
+const astroVirtualIgnore = ['cloudinary-image-service', 'oauth'] as const;
 
 const ignoredVirtuals = (() => {
 	const entries: Record<string, { ignoreDependencies: (string | RegExp)[] }> = {};

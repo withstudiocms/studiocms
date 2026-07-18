@@ -4,10 +4,7 @@ const packagesWithTests = [
 	'studiocms',
 	'effectify',
 
-	'@studiocms/auth0',
-	'@studiocms/discord',
-	'@studiocms/github',
-	'@studiocms/google',
+	'@studiocms/oauth',
 	'@studiocms/devapps',
 	'@studiocms/html',
 	'@studiocms/cloudinary-image-service',
