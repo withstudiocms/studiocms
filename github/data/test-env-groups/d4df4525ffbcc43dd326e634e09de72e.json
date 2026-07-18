@@ -1,1 +1,0 @@
-{"id":"d4df4525ffbcc43dd326e634e09de72e","fullName":"root:packages/studiocms/test/virtuals/lib/makeAPIRoute.test.ts#studiocms Tests makeAPIRoute('base')('') should return '/studiocms_api/base/'","name":"makeAPIRoute('base')('') should return '/studiocms_api/base/'","status":"passed","testResultsByEnv":{"default":"55050e85dfdada6241c960c41f4328ad"}}

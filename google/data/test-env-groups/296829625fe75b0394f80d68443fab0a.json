@@ -1,1 +1,0 @@
-{"id":"296829625fe75b0394f80d68443fab0a","fullName":"root:packages/studiocms/test/integrations/robots/utils.test.ts#studiocms Tests getFileSizeInKilobytes throws if statSync fails","name":"getFileSizeInKilobytes throws if statSync fails","status":"passed","testResultsByEnv":{"default":"dcb27fe68232a53e447d69e0bb68c39e"}}

@@ -1,1 +1,0 @@
-{"id":"beabe8f4f06ad085ce84fcaa604de615","fullName":"root:packages/studiocms/test/virtuals/scripts/user-quick-tools.test.ts#studiocms Tests UserQuickTools does not render menu if shouldSkipRendering returns true","name":"UserQuickTools does not render menu if shouldSkipRendering returns true","status":"passed","testResultsByEnv":{"default":"f67423d23011ac1924edcfdd386e20b7"}}

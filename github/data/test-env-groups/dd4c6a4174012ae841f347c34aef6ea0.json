@@ -1,1 +1,0 @@
-{"id":"dd4c6a4174012ae841f347c34aef6ea0","fullName":"root:packages/studiocms/test/virtuals/lib/makeAPIRoute.test.ts#studiocms Tests restRoute('v1')('users') should return '/studiocms_api/rest/v1/users'","name":"restRoute('v1')('users') should return '/studiocms_api/rest/v1/users'","status":"passed","testResultsByEnv":{"default":"731cdded4f94f9336bc260b9055beb8f"}}

@@ -1,1 +1,0 @@
-{"id":"76c756993bcc623afd3d7310b119dc77","fullName":"root:packages/@studiocms/blog/test/utils/remapFilter.test.ts#@studiocms/blog Tests getBlogRoute('my-post') should return '/blog/my-post'","name":"getBlogRoute('my-post') should return '/blog/my-post'","status":"passed","testResultsByEnv":{"default":"6215da075600599da193c91c66e9acf5"}}

@@ -1,1 +1,0 @@
-{"id":"6ab435655248052ff6d7d82f356f3ab6","fullName":"root:packages/studiocms/test/virtuals/lib/makeAPIRoute.test.ts#studiocms Tests makeAPIRoute('users')('profile') should return '/studiocms_api/users/profile'","name":"makeAPIRoute('users')('profile') should return '/studiocms_api/users/profile'","status":"passed","testResultsByEnv":{"default":"3f6e4cce46484a69a87cceb2962efa5b"}}

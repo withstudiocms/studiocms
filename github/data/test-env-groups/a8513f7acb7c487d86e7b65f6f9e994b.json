@@ -1,1 +1,0 @@
-{"id":"a8513f7acb7c487d86e7b65f6f9e994b","fullName":"root:packages/studiocms/test/virtuals/lib/makeAPIRoute.test.ts#studiocms Tests v1RestRoute('likes') should return '/studiocms_api/rest/v1/likes'","name":"v1RestRoute('likes') should return '/studiocms_api/rest/v1/likes'","status":"passed","testResultsByEnv":{"default":"1a63e5513d02518f2e8b4f329af03791"}}

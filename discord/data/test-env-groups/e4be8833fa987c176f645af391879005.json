@@ -1,1 +1,0 @@
-{"id":"e4be8833fa987c176f645af391879005","fullName":"root:packages/effectify/test/astro/integration.test.ts#effectify Tests defineIntegration - should handle EffectifyIntegrationHookError in hooks","name":"defineIntegration - should handle EffectifyIntegrationHookError in hooks","status":"passed","testResultsByEnv":{"default":"9865d80a8e43cf1199b1995b3f6babe8"}}

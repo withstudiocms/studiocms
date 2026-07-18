@@ -1,0 +1,159 @@
+[43m[30m WARN [39m[49m Issue while reading "/home/runner/work/_temp/.npmrc". Failed to replace env in config: ${NODE_AUTH_TOKEN}
+[90mstderr[2m | tests/cloudinary-js-service.test.ts[2m > [22m[2m@studiocms/cloudinary-image-service Tests[2m > [22m[2mShould return original src if CMS_CLOUDINARY_CLOUDNAME is not set
+[22m[39mError generating Cloudinary URL: {
+  message: [32m'CMS_CLOUDINARY_CLOUDNAME environment variable is required for Cloudinary image service'[39m,
+  name: [32m'AstroError'[39m
+}
+
+[90mstderr[2m | tests/cloudinary-js-service.test.ts[2m > [22m[2m@studiocms/cloudinary-image-service Tests[2m > [22m[2mShould return original src when cloud name is empty string
+[22m[39mError generating Cloudinary URL: {
+  message: [32m'CMS_CLOUDINARY_CLOUDNAME environment variable is required for Cloudinary image service'[39m,
+  name: [32m'AstroError'[39m
+}
+
+[90mstderr[2m | tests/cloudinary-js-service.test.ts[2m > [22m[2m@studiocms/cloudinary-image-service Tests[2m > [22m[2mShould return original src when Cloudinary throws an error
+[22m[39mError generating Cloudinary URL: Error: Cloudinary init error
+    at t.<anonymous> [90m(/home/runner/work/studiocms/studiocms/[39mpackages/@studiocms/cloudinary-image-service/tests/cloudinary-js-service.test.ts:226:11[90m)[39m
+    at new mockCall [90m(file:///home/runner/work/studiocms/studiocms/[39mnode_modules/[4m.pnpm[24m/@vitest+spy@3.2.7/node_modules/[4m@vitest/spy[24m/dist/index.js:96:15[90m)[39m
+    at new spy [90m(file:///home/runner/work/studiocms/studiocms/[39mnode_modules/[4m.pnpm[24m/tinyspy@4.0.4/node_modules/[4mtinyspy[24m/dist/index.js:47:34[90m)[39m
+    at Module.cloudinaryImageService [90m(/home/runner/work/studiocms/studiocms/[39mpackages/@studiocms/cloudinary-image-service/src/cloudinary-js-service.ts:31:15[90m)[39m
+    at body [90m(/home/runner/work/studiocms/studiocms/[39mpackages/@studiocms/cloudinary-image-service/tests/cloudinary-js-service.test.ts:231:19[90m)[39m
+    at body [90m(file:///home/runner/work/studiocms/studiocms/[39mnode_modules/[4m.pnpm[24m/allure-js-commons@3.10.2/node_modules/[4mallure-js-commons[24m/src/facade.ts:134:48[90m)[39m
+    at [90mfile:///home/runner/work/studiocms/studiocms/[39mnode_modules/[4m.pnpm[24m/allure-js-commons@3.10.2/node_modules/[4mallure-js-commons[24m/src/sdk/runtime/MessageTestRuntime.ts:210:28
+    at Generator.next (<anonymous>)
+    at asyncGeneratorStep [90m(file:///home/runner/work/studiocms/studiocms/[39mnode_modules/[4m.pnpm[24m/allure-js-commons@3.10.2/node_modules/[4mallure-js-commons[24m/dist/esm/sdk/runtime/MessageTestRuntime.js:3:70[90m)[39m
+    at _next [90m(file:///home/runner/work/studiocms/studiocms/[39mnode_modules/[4m.pnpm[24m/allure-js-commons@3.10.2/node_modules/[4mallure-js-commons[24m/dist/esm/sdk/runtime/MessageTestRuntime.js:4:163[90m)[39m
+
+[90mstderr[2m | tests/cloudinary-js-service.test.ts[2m > [22m[2m@studiocms/cloudinary-image-service Tests[2m > [22m[2mShould return original src when image processing throws an error
+[22m[39mError generating Cloudinary URL: Error: Image processing error
+    at Object.<anonymous> [90m(/home/runner/work/studiocms/studiocms/[39mpackages/@studiocms/cloudinary-image-service/tests/cloudinary-js-service.test.ts:250:11[90m)[39m
+    at Object.mockCall [90m(file:///home/runner/work/studiocms/studiocms/[39mnode_modules/[4m.pnpm[24m/@vitest+spy@3.2.7/node_modules/[4m@vitest/spy[24m/dist/index.js:96:15[90m)[39m
+    at Object.spy [as toURL] [90m(file:///home/runner/work/studiocms/studiocms/[39mnode_modules/[4m.pnpm[24m/tinyspy@4.0.4/node_modules/[4mtinyspy[24m/dist/index.js:47:80[90m)[39m
+    at Module.cloudinaryImageService [90m(/home/runner/work/studiocms/studiocms/[39mpackages/@studiocms/cloudinary-image-service/src/cloudinary-js-service.ts:50:17[90m)[39m
+    at body [90m(/home/runner/work/studiocms/studiocms/[39mpackages/@studiocms/cloudinary-image-service/tests/cloudinary-js-service.test.ts:255:19[90m)[39m
+    at body [90m(file:///home/runner/work/studiocms/studiocms/[39mnode_modules/[4m.pnpm[24m/allure-js-commons@3.10.2/node_modules/[4mallure-js-commons[24m/src/facade.ts:134:48[90m)[39m
+    at [90mfile:///home/runner/work/studiocms/studiocms/[39mnode_modules/[4m.pnpm[24m/allure-js-commons@3.10.2/node_modules/[4mallure-js-commons[24m/src/sdk/runtime/MessageTestRuntime.ts:210:28
+    at Generator.next (<anonymous>)
+    at asyncGeneratorStep [90m(file:///home/runner/work/studiocms/studiocms/[39mnode_modules/[4m.pnpm[24m/allure-js-commons@3.10.2/node_modules/[4mallure-js-commons[24m/dist/esm/sdk/runtime/MessageTestRuntime.js:3:70[90m)[39m
+    at _next [90m(file:///home/runner/work/studiocms/studiocms/[39mnode_modules/[4m.pnpm[24m/allure-js-commons@3.10.2/node_modules/[4mallure-js-commons[24m/dist/esm/sdk/runtime/MessageTestRuntime.js:4:163[90m)[39m
+
+[90mstderr[2m | test/components/index.test.ts[2m > [22m[2m@studiocms/blog Tests[2m > [22m[2mRSSIcon renders correctly
+[22m[39m[astro] `markdown.gfm` and `markdown.smartypants` are deprecated. Move them onto your processor instead (e.g. `unified({ gfm: false, smartypants: false })`). Will be removed in a future major.
+
+[90mstderr[2m | test/astro/context-utils.test.ts[2m > [22m[2m@withstudiocms/effect Tests[2m > [22m[2mContext Utils - parseAPIContextJson
+[22m[39mFailed to read JSON: AstroAPIContextError: Failed to parse JSON from Request
+    at catcher [90m(/home/runner/work/studiocms/studiocms/[39mpackages/@withstudiocms/effect/src/astro/context-utils.ts:23:4[90m)[39m
+    at EffectPrimitive.effect_instruction_i0 [90m(file:///home/runner/work/studiocms/studiocms/[39mnode_modules/[4m.pnpm[24m/effect@3.21.4/node_modules/[4meffect[24m/src/internal/core-effect.ts:1683:29[90m)[39m
+    at body [90m(file:///home/runner/work/studiocms/studiocms/[39mnode_modules/[4m.pnpm[24m/effect@3.21.4/node_modules/[4meffect[24m/src/internal/fiberRuntime.ts:1161:41[90m)[39m
+    at internalCall [90m(file:///home/runner/work/studiocms/studiocms/[39mnode_modules/[4m.pnpm[24m/effect@3.21.4/node_modules/[4meffect[24m/src/Utils.ts:779:12[90m)[39m
+    at FiberRuntime.Sync [90m(file:///home/runner/work/studiocms/studiocms/[39mnode_modules/[4m.pnpm[24m/effect@3.21.4/node_modules/[4meffect[24m/src/internal/fiberRuntime.ts:1161:19[90m)[39m
+    at f [90m(file:///home/runner/work/studiocms/studiocms/[39mnode_modules/[4m.pnpm[24m/effect@3.21.4/node_modules/[4meffect[24m/src/internal/fiberRuntime.ts:1398:53[90m)[39m
+    at Object.context [90m(file:///home/runner/work/studiocms/studiocms/[39mnode_modules/[4m.pnpm[24m/effect@3.21.4/node_modules/[4meffect[24m/src/internal/tracer.ts:101:19[90m)[39m
+    at FiberRuntime.runLoop [90m(file:///home/runner/work/studiocms/studiocms/[39mnode_modules/[4m.pnpm[24m/effect@3.21.4/node_modules/[4meffect[24m/src/internal/fiberRuntime.ts:1384:34[90m)[39m
+    at FiberRuntime.evaluateEffect [90m(file:///home/runner/work/studiocms/studiocms/[39mnode_modules/[4m.pnpm[24m/effect@3.21.4/node_modules/[4meffect[24m/src/internal/fiberRuntime.ts:950:27[90m)[39m
+    at FiberRuntime.evaluateMessageWhileSuspended [90m(file:///home/runner/work/studiocms/studiocms/[39mnode_modules/[4m.pnpm[24m/effect@3.21.4/node_modules/[4meffect[24m/src/internal/fiberRuntime.ts:918:14[90m)[39m {
+  _tag: [32m'AstroAPIContextError'[39m,
+  [cause]: Error: bad
+      at Object.json [90m(/home/runner/work/studiocms/studiocms/[39mpackages/@withstudiocms/effect/test/astro/context-utils.test.ts:96:13[90m)[39m
+      at evaluate [90m(/home/runner/work/studiocms/studiocms/[39mpackages/@withstudiocms/effect/src/astro/context-utils.ts:21:22[90m)[39m
+      at EffectPrimitive.effect_instruction_i0 [90m(file:///home/runner/work/studiocms/studiocms/[39mnode_modules/[4m.pnpm[24m/effect@3.21.4/node_modules/[4meffect[24m/src/internal/core-effect.ts:1701:7[90m)[39m
+      at body [90m(file:///home/runner/work/studiocms/studiocms/[39mnode_modules/[4m.pnpm[24m/effect@3.21.4/node_modules/[4meffect[24m/src/internal/core.ts:543:46[90m)[39m
+      at internalCall [90m(file:///home/runner/work/studiocms/studiocms/[39mnode_modules/[4m.pnpm[24m/effect@3.21.4/node_modules/[4meffect[24m/src/Utils.ts:779:12[90m)[39m
+      at EffectPrimitive.commit [90m(file:///home/runner/work/studiocms/studiocms/[39mnode_modules/[4m.pnpm[24m/effect@3.21.4/node_modules/[4meffect[24m/src/internal/core.ts:543:21[90m)[39m
+      at body [90m(file:///home/runner/work/studiocms/studiocms/[39mnode_modules/[4m.pnpm[24m/effect@3.21.4/node_modules/[4meffect[24m/src/internal/fiberRuntime.ts:1353:34[90m)[39m
+      at internalCall [90m(file:///home/runner/work/studiocms/studiocms/[39mnode_modules/[4m.pnpm[24m/effect@3.21.4/node_modules/[4meffect[24m/src/Utils.ts:779:12[90m)[39m
+      at FiberRuntime.Commit [90m(file:///home/runner/work/studiocms/studiocms/[39mnode_modules/[4m.pnpm[24m/effect@3.21.4/node_modules/[4meffect[24m/src/internal/fiberRuntime.ts:1353:12[90m)[39m
+      at [90mfile:///home/runner/work/studiocms/studiocms/[39mnode_modules/[4m.pnpm[24m/effect@3.21.4/node_modules/[4meffect[24m/src/internal/fiberRuntime.ts:1398:53
+}
+
+[90mstderr[2m | test/astro/context-utils.test.ts[2m > [22m[2m@withstudiocms/effect Tests[2m > [22m[2mContext Utils - parseAPIContextFormDataToObject
+[22m[39mFailed to read form data: AstroAPIContextError: Failed to parse formData from Request
+    at catcher [90m(/home/runner/work/studiocms/studiocms/[39mpackages/@withstudiocms/effect/src/astro/context-utils.ts:69:4[90m)[39m
+    at EffectPrimitive.effect_instruction_i0 [90m(file:///home/runner/work/studiocms/studiocms/[39mnode_modules/[4m.pnpm[24m/effect@3.21.4/node_modules/[4meffect[24m/src/internal/core-effect.ts:1683:29[90m)[39m
+    at body [90m(file:///home/runner/work/studiocms/studiocms/[39mnode_modules/[4m.pnpm[24m/effect@3.21.4/node_modules/[4meffect[24m/src/internal/fiberRuntime.ts:1161:41[90m)[39m
+    at internalCall [90m(file:///home/runner/work/studiocms/studiocms/[39mnode_modules/[4m.pnpm[24m/effect@3.21.4/node_modules/[4meffect[24m/src/Utils.ts:779:12[90m)[39m
+    at FiberRuntime.Sync [90m(file:///home/runner/work/studiocms/studiocms/[39mnode_modules/[4m.pnpm[24m/effect@3.21.4/node_modules/[4meffect[24m/src/internal/fiberRuntime.ts:1161:19[90m)[39m
+    at f [90m(file:///home/runner/work/studiocms/studiocms/[39mnode_modules/[4m.pnpm[24m/effect@3.21.4/node_modules/[4meffect[24m/src/internal/fiberRuntime.ts:1398:53[90m)[39m
+    at Object.context [90m(file:///home/runner/work/studiocms/studiocms/[39mnode_modules/[4m.pnpm[24m/effect@3.21.4/node_modules/[4meffect[24m/src/internal/tracer.ts:101:19[90m)[39m
+    at FiberRuntime.runLoop [90m(file:///home/runner/work/studiocms/studiocms/[39mnode_modules/[4m.pnpm[24m/effect@3.21.4/node_modules/[4meffect[24m/src/internal/fiberRuntime.ts:1384:34[90m)[39m
+    at FiberRuntime.evaluateEffect [90m(file:///home/runner/work/studiocms/studiocms/[39mnode_modules/[4m.pnpm[24m/effect@3.21.4/node_modules/[4meffect[24m/src/internal/fiberRuntime.ts:950:27[90m)[39m
+    at FiberRuntime.evaluateMessageWhileSuspended [90m(file:///home/runner/work/studiocms/studiocms/[39mnode_modules/[4m.pnpm[24m/effect@3.21.4/node_modules/[4meffect[24m/src/internal/fiberRuntime.ts:918:14[90m)[39m {
+  _tag: [32m'AstroAPIContextError'[39m,
+  [cause]: Error: bad
+      at Object.formData [90m(/home/runner/work/studiocms/studiocms/[39mpackages/@withstudiocms/effect/test/astro/context-utils.test.ts:170:13[90m)[39m
+      at evaluate [90m(/home/runner/work/studiocms/studiocms/[39mpackages/@withstudiocms/effect/src/astro/context-utils.ts:67:22[90m)[39m
+      at EffectPrimitive.effect_instruction_i0 [90m(file:///home/runner/work/studiocms/studiocms/[39mnode_modules/[4m.pnpm[24m/effect@3.21.4/node_modules/[4meffect[24m/src/internal/core-effect.ts:1701:7[90m)[39m
+      at body [90m(file:///home/runner/work/studiocms/studiocms/[39mnode_modules/[4m.pnpm[24m/effect@3.21.4/node_modules/[4meffect[24m/src/internal/core.ts:543:46[90m)[39m
+      at internalCall [90m(file:///home/runner/work/studiocms/studiocms/[39mnode_modules/[4m.pnpm[24m/effect@3.21.4/node_modules/[4meffect[24m/src/Utils.ts:779:12[90m)[39m
+      at EffectPrimitive.commit [90m(file:///home/runner/work/studiocms/studiocms/[39mnode_modules/[4m.pnpm[24m/effect@3.21.4/node_modules/[4meffect[24m/src/internal/core.ts:543:21[90m)[39m
+      at body [90m(file:///home/runner/work/studiocms/studiocms/[39mnode_modules/[4m.pnpm[24m/effect@3.21.4/node_modules/[4meffect[24m/src/internal/fiberRuntime.ts:1353:34[90m)[39m
+      at internalCall [90m(file:///home/runner/work/studiocms/studiocms/[39mnode_modules/[4m.pnpm[24m/effect@3.21.4/node_modules/[4meffect[24m/src/Utils.ts:779:12[90m)[39m
+      at FiberRuntime.Commit [90m(file:///home/runner/work/studiocms/studiocms/[39mnode_modules/[4m.pnpm[24m/effect@3.21.4/node_modules/[4meffect[24m/src/internal/fiberRuntime.ts:1353:12[90m)[39m
+      at [90mfile:///home/runner/work/studiocms/studiocms/[39mnode_modules/[4m.pnpm[24m/effect@3.21.4/node_modules/[4meffect[24m/src/internal/fiberRuntime.ts:1398:53
+}
+
+✘ [ERROR] Could not resolve "/tmp/buildkit-cli-test-RUWf2q/src/index.ts"
+
+[90mstderr[2m | lib/cmds/builder.js:221:16
+[22m[39m[03:53 AM] [31m✘ [41;31m[[41;97mERROR[41;31m][0m [1mCould not resolve "/tmp/buildkit-cli-test-RUWf2q/src/index.ts"[0m
+
+
+
+[90mstderr[2m | test/astro/HttpApi.test.ts[2m > [22m[2meffectify Tests[2m > [22m[2mbuildEndpoint - should return 500 error response on handler failure
+[22m[39mError handling request: Error: Handler error
+    at [90m/home/runner/work/studiocms/studiocms/[39mpackages/effectify/test/astro/HttpApi.test.ts:117:43
+    at [90mfile:///home/runner/work/studiocms/studiocms/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.7/node_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:734:40
+    at runWithSuite [90m(file:///home/runner/work/studiocms/studiocms/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.7/node_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:1849:8[90m)[39m
+    at Object.collect [90m(file:///home/runner/work/studiocms/studiocms/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.7/node_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:734:10[90m)[39m
+    at Object.collect [90m(file:///home/runner/work/studiocms/studiocms/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.7/node_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:738:54[90m)[39m
+[90m    at processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+    at collectTests [90m(file:///home/runner/work/studiocms/studiocms/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.7/node_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:1179:25[90m)[39m
+    at startTests [90m(file:///home/runner/work/studiocms/studiocms/[39mnode_modules/[4m.pnpm[24m/@vitest+runner@3.2.7/node_modules/[4m@vitest/runner[24m/dist/chunk-hooks.js:1817:17[90m)[39m
+    at [90mfile:///home/runner/work/studiocms/studiocms/[39mnode_modules/[4m.pnpm[24m/vitest@3.2.7_@types+debug@4.1.13_@types+node@22.20.1_jiti@2.7.0_jsdom@29.1.1_tsx@4.23.0_yaml@2.9.0/node_modules/[4mvitest[24m/dist/chunks/runBaseTests.9Ij9_de-.js:117:26
+    at withEnv [90m(file:///home/runner/work/studiocms/studiocms/[39mnode_modules/[4m.pnpm[24m/vitest@3.2.7_@types+debug@4.1.13_@types+node@22.20.1_jiti@2.7.0_jsdom@29.1.1_tsx@4.23.0_yaml@2.9.0/node_modules/[4mvitest[24m/dist/chunks/runBaseTests.9Ij9_de-.js:84:3[90m)[39m
+
+[90mstderr[2m | test/components/editor.test.ts[2m > [22m[2m@studiocms/markdoc Tests[2m > [22m[2mEditor with props
+[22m[39m[astro] `markdown.gfm` and `markdown.smartypants` are deprecated. Move them onto your processor instead (e.g. `unified({ gfm: false, smartypants: false })`). Will be removed in a future major.
+
+[90mstderr[2m | test/components.test.ts[2m > [22m[2mstudiocms Tests[2m > [22m[2mComponents Container tests - ThemeManager component
+[22m[39m[astro] `markdown.gfm` and `markdown.smartypants` are deprecated. Move them onto your processor instead (e.g. `unified({ gfm: false, smartypants: false })`). Will be removed in a future major.
+
+[90mstderr[2m | test/components/editor.test.ts[2m > [22m[2m@studiocms/mdx Tests[2m > [22m[2mRender with basic props
+[22m[39m[astro] `markdown.gfm` and `markdown.smartypants` are deprecated. Move them onto your processor instead (e.g. `unified({ gfm: false, smartypants: false })`). Will be removed in a future major.
+
+[90mstderr[2m | test/components/Editor.test.ts[2m > [22m[2m@studiocms/wysiwyg Tests[2m > [22m[2mWYSIWYG Editor Component Test Case #1
+[22m[39m[astro] `markdown.gfm` and `markdown.smartypants` are deprecated. Move them onto your processor instead (e.g. `unified({ gfm: false, smartypants: false })`). Will be removed in a future major.
+
+[90mstderr[2m | test/virtuals.components.test.ts[2m > [22m[2mstudiocms Tests[2m > [22m[2mVirtual Components Container tests - CustomImage component
+[22m[39m[astro] `markdown.gfm` and `markdown.smartypants` are deprecated. Move them onto your processor instead (e.g. `unified({ gfm: false, smartypants: false })`). Will be removed in a future major.
+
+[90mstderr[2m | test/layouts.test.ts[2m > [22m[2mstudiocms Tests[2m > [22m[2mLayout Container tests - FirstTimeSetupLayout component
+[22m[39m[astro] `markdown.gfm` and `markdown.smartypants` are deprecated. Move them onto your processor instead (e.g. `unified({ gfm: false, smartypants: false })`). Will be removed in a future major.
+
+[90mstderr[2m | test/components/editor.test.ts[2m > [22m[2m@studiocms/html Tests[2m > [22m[2mEditor component
+[22m[39m[astro] `markdown.gfm` and `markdown.smartypants` are deprecated. Move them onto your processor instead (e.g. `unified({ gfm: false, smartypants: false })`). Will be removed in a future major.
+
+[90mstderr[2m | test/components/editor.test.ts[2m > [22m[2m@studiocms/md Tests[2m > [22m[2mRender Editor component
+[22m[39m[astro] `markdown.gfm` and `markdown.smartypants` are deprecated. Move them onto your processor instead (e.g. `unified({ gfm: false, smartypants: false })`). Will be removed in a future major.
+
+[90mstderr[2m | test/layouts/Layout.test.ts[2m > [22m[2m@studiocms/blog Tests[2m > [22m[2mLayout renders correctly
+[22m[39m[astro] `markdown.gfm` and `markdown.smartypants` are deprecated. Move them onto your processor instead (e.g. `unified({ gfm: false, smartypants: false })`). Will be removed in a future major.
+
+[90mstderr[2m | test/virtuals/scripts/user-quick-tools.test.ts[2m > [22m[2mstudiocms Tests[2m > [22m[2mUserQuickTools toggles menu open/close on click
+[22m[39mSession verification failed: TypeError: Failed to parse URL from /studiocms_api/dashboard/verify-session
+[90m    at node:internal/deps/undici/undici:13510:13[39m
+    at ConfigurableUserQuickTools.getSession [90m(/home/runner/work/studiocms/studiocms/[39mpackages/studiocms/src/virtuals/scripts/user-quick-tools.ts:716:21[90m)[39m
+    at ConfigurableUserQuickTools.initializeAsync [90m(/home/runner/work/studiocms/studiocms/[39mpackages/studiocms/src/virtuals/scripts/user-quick-tools.ts:379:24[90m)[39m {
+  [cause]: TypeError: Invalid URL: /studiocms_api/dashboard/verify-session
+      at new URLImpl [90m(/home/runner/work/studiocms/studiocms/[39mnode_modules/[4m.pnpm[24m/whatwg-url@16.0.1/node_modules/[4mwhatwg-url[24m/lib/URL-impl.js:21:13[90m)[39m
+      at Object.exports.setup [90m(/home/runner/work/studiocms/studiocms/[39mnode_modules/[4m.pnpm[24m/whatwg-url@16.0.1/node_modules/[4mwhatwg-url[24m/lib/URL.js:54:12[90m)[39m
+      at new URL [90m(/home/runner/work/studiocms/studiocms/[39mnode_modules/[4m.pnpm[24m/whatwg-url@16.0.1/node_modules/[4mwhatwg-url[24m/lib/URL.js:115:22[90m)[39m
+  [90m    at new Request (node:internal/deps/undici/undici:9586:25)[39m
+  [90m    at fetch (node:internal/deps/undici/undici:10315:25)[39m
+  [90m    at fetch (node:internal/deps/undici/undici:13508:10)[39m
+  [90m    at fetch (node:internal/bootstrap/web/exposed-window-or-worker:75:12)[39m
+      at ConfigurableUserQuickTools.getSession [90m(/home/runner/work/studiocms/studiocms/[39mpackages/studiocms/src/virtuals/scripts/user-quick-tools.ts:716:27[90m)[39m
+      at ConfigurableUserQuickTools.initializeAsync [90m(/home/runner/work/studiocms/studiocms/[39mpackages/studiocms/src/virtuals/scripts/user-quick-tools.ts:379:35[90m)[39m
+      at Timeout.initializeComponent [as _onTimeout] [90m(/home/runner/work/studiocms/studiocms/[39mpackages/studiocms/src/virtuals/scripts/user-quick-tools.ts:359:9[90m)[39m
+}
+

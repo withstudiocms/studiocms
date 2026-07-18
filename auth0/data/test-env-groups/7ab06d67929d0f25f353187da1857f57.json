@@ -1,1 +1,0 @@
-{"id":"7ab06d67929d0f25f353187da1857f57","fullName":"root:packages/studiocms/test/virtuals/scripts/user-quick-tools.test.ts#studiocms Tests verifyUserPermissionLevel('editor', 'editor') should return true","name":"verifyUserPermissionLevel('editor', 'editor') should return true","status":"passed","testResultsByEnv":{"default":"0a750e1b0caacc8583d1a81ffca79853"}}

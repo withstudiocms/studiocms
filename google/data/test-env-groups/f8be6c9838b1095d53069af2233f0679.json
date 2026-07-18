@@ -1,1 +1,0 @@
-{"id":"f8be6c9838b1095d53069af2233f0679","fullName":"root:packages/studiocms/test/virtuals/lib/makeAPIRoute.test.ts#studiocms Tests apiRoute('preview') should return '/studiocms_api/renderer/preview'","name":"apiRoute('preview') should return '/studiocms_api/renderer/preview'","status":"passed","testResultsByEnv":{"default":"e4d1d1cbd9e41a39044be838486c06c0"}}

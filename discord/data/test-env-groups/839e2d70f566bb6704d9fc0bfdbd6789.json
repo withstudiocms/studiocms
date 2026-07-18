@@ -1,1 +1,0 @@
-{"id":"839e2d70f566bb6704d9fc0bfdbd6789","fullName":"root:packages/@studiocms/devapps/tests/schema/index.test.ts#@studiocms/devapps Tests AppsConfigSchema should reject invalid config: {\"wpImporter\":123}","name":"AppsConfigSchema should reject invalid config: {\"wpImporter\":123}","status":"passed","testResultsByEnv":{"default":"3f8caa648451a25a53e7b93180349e8f"}}

@@ -1,1 +1,0 @@
-{"id":"1de704c034ec4b2199f14228f6755953","fullName":"root:packages/@withstudiocms/cli-kit/test/utils.test.ts#@withstudiocms/cli-kit Tests resolveRoot - should use process.cwd() when no path provided","name":"resolveRoot - should use process.cwd() when no path provided","status":"passed","testResultsByEnv":{"default":"a8f4f8f240a4f033b67795c1391051ba"}}
