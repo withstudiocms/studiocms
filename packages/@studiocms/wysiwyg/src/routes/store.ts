@@ -4,6 +4,7 @@ import {
 	Cause,
 	createEffectAPIRoutes,
 	createJsonResponse,
+	Data,
 	Effect,
 	genLogger,
 	OptionsResponse,
@@ -27,6 +28,8 @@ const POSTJsonSchema = <S extends Schema.Struct<any>>(schema: S) =>
 		data: Schema.mutable(schema),
 	});
 
+export class RequestError extends Data.TaggedError("RequestError")<{ message: string }>{}
+
 /**
  * Parses and validates the JSON body of a POST request using a provided schema.
  *
@@ -47,12 +50,12 @@ const parsePOSTJsonRequest = <S extends Schema.Struct<any>>(context: APIContext,
 		Effect.mapError((error) => {
 			console.error('Error parsing POST JSON request:', error);
 			if (error instanceof ParseResult.ParseError) {
-				return new Error(`Invalid request data: ${error.message}`);
+				return new RequestError({ message: `Invalid request data: ${error.message}` });
 			}
 			if (error instanceof Cause.UnknownException) {
-				return new Error(`Unknown error occurred: ${error.message}`);
+				return new RequestError({ message: `Unknown error occurred: ${error.message}` });
 			}
-			return new Error('Failed to parse request data: Unknown error');
+			return new RequestError({ message: 'Failed to parse request data: Unknown error' });
 		})
 	);
 
