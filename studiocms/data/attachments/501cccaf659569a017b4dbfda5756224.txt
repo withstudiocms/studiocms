@@ -1,0 +1,1104 @@
+
+> root@ ci:vitest /home/runner/work/studiocms/studiocms
+> vitest run --coverage
+
+[33m[1m01:03:03[22m [WARN][39m Missing pages directory: src/pages
+[33m[1m01:03:03[22m [WARN][39m Missing pages directory: src/pages
+[33m[1m01:03:03[22m [WARN][39m Missing pages directory: src/pages
+[33m[1m01:03:07[22m [WARN][39m Missing pages directory: src/pages
+[33m[1m01:03:07[22m [WARN][39m Missing pages directory: src/pages
+
+[1m[46m RUN [49m[22m [36mv3.2.7 [39m[90m/home/runner/work/studiocms/studiocms[39m
+      [2mCoverage enabled with [22m[33mv8[39m
+
+ [32m✓[39m [30m[42m @withstudiocms/internal_helpers [49m[39m test/astro-integration.test.ts [2m([22m[2m20 tests[22m[2m)[22m[32m 39[2mms[22m[39m
+ [32m✓[39m [30m[45m @withstudiocms/template-lang [49m[39m test/index.test.ts [2m([22m[2m36 tests[22m[2m)[22m[32m 59[2mms[22m[39m
+ [32m✓[39m [30m[42m @studiocms/devapps [49m[39m tests/schema.test.ts [2m([22m[2m52 tests[22m[2m)[22m[32m 92[2mms[22m[39m
+ [32m✓[39m [30m[45m @withstudiocms/component-registry [49m[39m test/Registry.test.ts [2m([22m[2m16 tests[22m[2m)[22m[33m 452[2mms[22m[39m
+ [32m✓[39m [30m[46m @withstudiocms/effect [49m[39m test/scrypt.test.ts [2m([22m[2m18 tests[22m[2m)[22m[33m 639[2mms[22m[39m
+ [32m✓[39m [30m[42m @withstudiocms/cli-kit [49m[39m test/messages.test.ts [2m([22m[2m34 tests[22m[2m)[22m[33m 361[2mms[22m[39m
+ [32m✓[39m [30m[46m effectify [49m[39m test/scrypt.test.ts [2m([22m[2m17 tests[22m[2m)[22m[33m 550[2mms[22m[39m
+ [32m✓[39m [30m[42m @withstudiocms/internal_helpers [49m[39m test/utils.test.ts [2m([22m[2m27 tests[22m[2m)[22m[32m 128[2mms[22m[39m
+ [32m✓[39m [30m[46m @studiocms/cloudinary-image-service [49m[39m tests/cloudinary-js-service.test.ts [2m([22m[2m12 tests[22m[2m)[22m[32m 45[2mms[22m[39m
+ [32m✓[39m [30m[46m effectify [49m[39m test/astro/integration.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 46[2mms[22m[39m
+ [32m✓[39m [30m[46m @withstudiocms/effect [49m[39m test/astro/api-route.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 49[2mms[22m[39m
+ [32m✓[39m [30m[42m @withstudiocms/auth-kit [49m[39m test/modules/user.test.ts [2m([22m[2m16 tests[22m[2m)[22m[32m 152[2mms[22m[39m
+ [32m✓[39m [30m[42m @studiocms/mdx [49m[39m test/lib/render.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 29[2mms[22m[39m
+ [32m✓[39m [30m[42m @studiocms/devapps [49m[39m tests/configs.test.ts [2m([22m[2m29 tests[22m[2m)[22m[32m 101[2mms[22m[39m
+[90mstdout[2m | test/utils.test.ts[2m > [22m[2m@withstudiocms/cli-kit Tests[2m > [22m[2mshell - should throw timeout error when exitCode is null
+[22m[39mError: Timeout
+    at Module.shell [90m(/home/runner/work/studiocms/studiocms/[39mpackages/@withstudiocms/cli-kit/src/utils.ts:90:9[90m)[39m
+    at [90m/home/runner/work/studiocms/studiocms/[39mpackages/@withstudiocms/cli-kit/test/utils.test.ts:142:5
+
+ [32m✓[39m [30m[42m @withstudiocms/cli-kit [49m[39m test/utils.test.ts [2m([22m[2m18 tests[22m[2m)[22m[32m 44[2mms[22m[39m
+ [32m✓[39m [30m[42m @withstudiocms/internal_helpers [49m[39m test/headConfigSchema.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 19[2mms[22m[39m
+[90mstdout[2m | test/plugin.test.ts[2m > [22m[2m@withstudiocms/kysely Tests[2m > [22m[2mKyselyTableManager can create and manage plugin tables
+[22m[39m[2m01:03:20[22m [34m[studiocms:database][39m Verifying existence of table 'plugin_test_table'...
+
+[90mstdout[2m | test/plugin.test.ts[2m > [22m[2m@withstudiocms/kysely Tests[2m > [22m[2mKyselyTableManager can create and manage plugin tables
+[22m[39m[2m01:03:20[22m [34m[studiocms:database][39m Table 'plugin_test_table' does not exist. Creating...
+
+[90mstdout[2m | test/plugin.test.ts[2m > [22m[2m@withstudiocms/kysely Tests[2m > [22m[2mKyselyTableManager can create and manage plugin tables
+[22m[39m[2m01:03:20[22m [34m[studiocms:database][39m Table 'plugin_test_table' created successfully.
+
+[90mstdout[2m | test/plugin.test.ts[2m > [22m[2m@withstudiocms/kysely Tests[2m > [22m[2mKyselyTableManager handles existing tables correctly
+[22m[39m[2m01:03:20[22m [34m[studiocms:database][39m Verifying existence of table 'plugin_existing_table'...
+
+[90mstdout[2m | test/plugin.test.ts[2m > [22m[2m@withstudiocms/kysely Tests[2m > [22m[2mKyselyTableManager handles existing tables correctly
+[22m[39m[2m01:03:20[22m [34m[studiocms:database][39m Table 'plugin_existing_table' already exists.
+
+[90mstdout[2m | test/plugin.test.ts[2m > [22m[2m@withstudiocms/kysely Tests[2m > [22m[2mKyselyTableManager creates tables with indexes and foreign keys
+[22m[39m[2m01:03:20[22m [34m[studiocms:database][39m Verifying existence of table 'plugin_sessions'...
+
+[90mstdout[2m | test/plugin.test.ts[2m > [22m[2m@withstudiocms/kysely Tests[2m > [22m[2mKyselyTableManager creates tables with indexes and foreign keys
+[22m[39m[2m01:03:20[22m [34m[studiocms:database][39m Table 'plugin_sessions' does not exist. Creating...
+
+[90mstdout[2m | test/plugin.test.ts[2m > [22m[2m@withstudiocms/kysely Tests[2m > [22m[2mKyselyTableManager creates tables with indexes and foreign keys
+[22m[39m[2m01:03:20[22m [34m[studiocms:database][39m Table 'plugin_sessions' created successfully.
+
+[90mstdout[2m | test/plugin.test.ts[2m > [22m[2m@withstudiocms/kysely Tests[2m > [22m[2mKyselyTableManager handles trigger creation
+[22m[39m[2m01:03:20[22m [34m[studiocms:database][39m Verifying existence of table 'plugin_audit_log'...
+
+[90mstdout[2m | test/plugin.test.ts[2m > [22m[2m@withstudiocms/kysely Tests[2m > [22m[2mKyselyTableManager handles trigger creation
+[22m[39m[2m01:03:20[22m [34m[studiocms:database][39m Table 'plugin_audit_log' does not exist. Creating...
+
+[90mstdout[2m | test/plugin.test.ts[2m > [22m[2m@withstudiocms/kysely Tests[2m > [22m[2mKyselyTableManager handles trigger creation
+[22m[39m[2m01:03:20[22m [34m[studiocms:database][39m Table 'plugin_audit_log' created successfully.
+
+[90mstdout[2m | test/plugin.test.ts[2m > [22m[2m@withstudiocms/kysely Tests[2m > [22m[2mKyselyTableManager can Handle default values in table definitions
+[22m[39m[2m01:03:20[22m [34m[studiocms:database][39m Verifying existence of table 'plugin_default_values'...
+
+[90mstdout[2m | test/plugin.test.ts[2m > [22m[2m@withstudiocms/kysely Tests[2m > [22m[2mKyselyTableManager can Handle default values in table definitions
+[22m[39m[2m01:03:20[22m [34m[studiocms:database][39m Table 'plugin_default_values' does not exist. Creating...
+
+[90mstdout[2m | test/plugin.test.ts[2m > [22m[2m@withstudiocms/kysely Tests[2m > [22m[2mKyselyTableManager can Handle default values in table definitions
+[22m[39m[2m01:03:20[22m [34m[studiocms:database][39m Table 'plugin_default_values' created successfully.
+
+[90mstdout[2m | test/plugin.test.ts[2m > [22m[2m@withstudiocms/kysely Tests[2m > [22m[2mKyselyTableManager can Create, drop, and recreate a table
+[22m[39m[2m01:03:20[22m [34m[studiocms:database][39m Verifying existence of table 'plugin_recreate_table'...
+
+[90mstdout[2m | test/plugin.test.ts[2m > [22m[2m@withstudiocms/kysely Tests[2m > [22m[2mKyselyTableManager can Create, drop, and recreate a table
+[22m[39m[2m01:03:20[22m [34m[studiocms:database][39m Table 'plugin_recreate_table' does not exist. Creating...
+
+[90mstdout[2m | test/plugin.test.ts[2m > [22m[2m@withstudiocms/kysely Tests[2m > [22m[2mKyselyTableManager can Create, drop, and recreate a table
+[22m[39m[2m01:03:20[22m [34m[studiocms:database][39m Table 'plugin_recreate_table' created successfully.
+
+[90mstdout[2m | test/plugin.test.ts[2m > [22m[2m@withstudiocms/kysely Tests[2m > [22m[2mKyselyTableManager can Create, drop, and recreate a table
+[22m[39m[2m01:03:20[22m [34m[studiocms:database][39m Verifying existence of table 'plugin_recreate_table'...
+
+[90mstdout[2m | test/plugin.test.ts[2m > [22m[2m@withstudiocms/kysely Tests[2m > [22m[2mKyselyTableManager can Create, drop, and recreate a table
+[22m[39m[2m01:03:20[22m [34m[studiocms:database][39m Table 'plugin_recreate_table' does not exist. Creating...
+
+[90mstdout[2m | test/plugin.test.ts[2m > [22m[2m@withstudiocms/kysely Tests[2m > [22m[2mKyselyTableManager can Create, drop, and recreate a table
+[22m[39m[2m01:03:20[22m [34m[studiocms:database][39m Table 'plugin_recreate_table' created successfully.
+
+ [32m✓[39m [30m[46m @withstudiocms/kysely [49m[39m test/plugin.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 105[2mms[22m[39m
+[90mstdout[2m | test/integrations/robots/core.test.ts[2m > [22m[2mstudiocms Tests[2m > [22m[2mprintInfo logs correctly for fileSize: 11, executionTime: 100
+[22m[39m
+[42m[30m generating 'robots.txt' file [39m[0m
+
+[33m(!) Keep your 'robots.txt' file size under 10 KB for best crawling results.
+- To keep it low, only include directives that are necessary for your site.
+- Remove rules for pages that no longer exist to avoid bloat.[0m
+
+
+ [32m✓[39m [30m[45m studiocms [49m[39m test/integrations/robots/core.test.ts [2m([22m[2m29 tests[22m[2m)[22m[32m 57[2mms[22m[39m
+ [32m✓[39m [30m[45m @withstudiocms/component-registry [49m[39m test/utils.test.ts [2m([22m[2m45 tests[22m[2m)[22m[32m 38[2mms[22m[39m
+ [32m✓[39m [30m[45m @studiocms/blog [49m[39m test/components/index.test.ts [2m([22m[2m9 tests[22m[2m)[22m[33m 419[2mms[22m[39m
+ [32m✓[39m [30m[46m effectify [49m[39m test/schemas.test.ts [2m([22m[2m15 tests[22m[2m)[22m[32m 31[2mms[22m[39m
+ [32m✓[39m [30m[46m @withstudiocms/effect [49m[39m test/astro/response-helpers.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 21[2mms[22m[39m
+ [32m✓[39m [30m[42m @withstudiocms/internal_helpers [49m[39m test/pathGenerators.test.ts [2m([22m[2m39 tests[22m[2m)[22m[32m 36[2mms[22m[39m
+ [32m✓[39m [30m[42m @withstudiocms/internal_helpers [49m[39m test/pathResolver.test.ts [2m([22m[2m16 tests[22m[2m)[22m[32m 20[2mms[22m[39m
+ [32m✓[39m [30m[45m studiocms [49m[39m test/consts.test.ts [2m([22m[2m47 tests[22m[2m)[22m[32m 68[2mms[22m[39m
+ [32m✓[39m [30m[42m @withstudiocms/auth-kit [49m[39m test/config.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 22[2mms[22m[39m
+ [32m✓[39m [30m[42m @withstudiocms/auth-kit [49m[39m test/utils/libravatar.test.ts [2m([22m[2m21 tests[22m[2m)[22m[32m 56[2mms[22m[39m
+ [32m✓[39m [30m[43m @studiocms/markdoc [49m[39m test/lib/render.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 36[2mms[22m[39m
+ [32m✓[39m [30m[42m @withstudiocms/auth-kit [49m[39m test/modules/session.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 22[2mms[22m[39m
+ [32m✓[39m [30m[46m @withstudiocms/effect [49m[39m test/astro/context-utils.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 65[2mms[22m[39m
+ [32m✓[39m [30m[46m effectify [49m[39m test/webHandler.test.ts [2m([22m[2m15 tests[22m[2m)[22m[32m 53[2mms[22m[39m
+ [32m✓[39m [30m[45m @withstudiocms/component-registry [49m[39m test/component-proxy/decoder/util.test.ts [2m([22m[2m31 tests[22m[2m)[22m[32m 23[2mms[22m[39m
+ [32m✓[39m [30m[43m @studiocms/html [49m[39m test/index.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 24[2mms[22m[39m
+ [32m✓[39m [30m[46m @withstudiocms/kysely [49m[39m test/utils/triggers.test.ts [2m([22m[2m14 tests[22m[2m)[22m[32m 25[2mms[22m[39m
+ [32m✓[39m [30m[42m @studiocms/devapps [49m[39m tests/utils/app-utils.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 14[2mms[22m[39m
+ [32m✓[39m [30m[46m @withstudiocms/effect [49m[39m test/astro/data-middleware.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 52[2mms[22m[39m
+ [32m✓[39m [30m[46m @studiocms/markdown-remark [49m[39m test/core/frontmatter.test.ts [2m([22m[2m30 tests[22m[2m)[22m[32m 27[2mms[22m[39m
+ [32m✓[39m [30m[45m @withstudiocms/component-registry [49m[39m test/transform-html.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 35[2mms[22m[39m
+ [32m✓[39m [30m[46m @withstudiocms/effect [49m[39m test/smtp.test.ts [2m([22m[2m10 tests[22m[2m)[22m[33m 14808[2mms[22m[39m
+   [33m[2m✓[22m[39m @withstudiocms/effect Tests[2m > [22mSMTPService - Verify Transport with Valid Config [33m 1450[2mms[22m[39m
+   [33m[2m✓[22m[39m @withstudiocms/effect Tests[2m > [22mSMTPService - Should send email successfully [33m 3799[2mms[22m[39m
+   [33m[2m✓[22m[39m @withstudiocms/effect Tests[2m > [22mSMTPService - Should fail to send email with invalid options [33m 2852[2mms[22m[39m
+   [33m[2m✓[22m[39m @withstudiocms/effect Tests[2m > [22mSMTPService - Full Integration Test [33m 5917[2mms[22m[39m
+ [32m✓[39m [30m[45m studiocms [49m[39m test/middleware/utils.test.ts [2m([22m[2m15 tests[22m[2m)[22m[32m 181[2mms[22m[39m
+ [32m✓[39m [30m[45m @withstudiocms/component-registry [49m[39m test/errors.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 25[2mms[22m[39m
+ [32m✓[39m [30m[46m @withstudiocms/effect [49m[39m test/astro/utils/middleware.test.ts [2m([22m[2m37 tests[22m[2m)[22m[32m 59[2mms[22m[39m
+ [32m✓[39m [30m[45m studiocms [49m[39m test/virtuals/utils.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 18[2mms[22m[39m
+ [32m✓[39m [30m[45m @studiocms/blog [49m[39m test/types.test.ts [2m([22m[2m30 tests[22m[2m)[22m[32m 67[2mms[22m[39m
+ [32m✓[39m [30m[42m @studiocms/devapps [49m[39m tests/utils/pathGenerator.test.ts [2m([22m[2m21 tests[22m[2m)[22m[32m 32[2mms[22m[39m
+ [32m✓[39m [30m[46m @studiocms/cloudinary-image-service [49m[39m tests/utils/readJson.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 20[2mms[22m[39m
+ [32m✓[39m [30m[46m @studiocms/md [49m[39m test/index.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 25[2mms[22m[39m
+[90mstdout[2m | test/builder.test.js[2m > [22m[2m@withstudiocms/buildkit Tests[2m > [22m[2mBuildkit CLI - build command with --no-clean-dist
+[22m[39m[01:03 AM] √ updated
+
+ [32m✓[39m [30m[45m @withstudiocms/buildkit [49m[39m test/builder.test.js [2m([22m[2m6 tests[22m[2m)[22m[32m 111[2mms[22m[39m
+ [32m✓[39m [30m[45m @withstudiocms/component-registry [49m[39m test/component-proxy/index.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 23[2mms[22m[39m
+ [32m✓[39m [30m[45m studiocms [49m[39m test/integrations/dynamic-sitemap/sitemap-index.xml.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 21[2mms[22m[39m
+ [32m✓[39m [30m[42m @withstudiocms/auth-kit [49m[39m test/utils/user.test.ts [2m([22m[2m17 tests[22m[2m)[22m[32m 42[2mms[22m[39m
+ [32m✓[39m [30m[42m @withstudiocms/auth-kit [49m[39m test/utils/password.test.ts [2m([22m[2m12 tests[22m[2m)[22m[32m 91[2mms[22m[39m
+ [32m✓[39m [30m[45m studiocms [49m[39m test/virtuals/i18n/server.test.ts [2m([22m[2m13 tests[22m[2m)[22m[32m 33[2mms[22m[39m
+ [32m✓[39m [30m[46m effectify [49m[39m test/astro/HttpApi.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 40[2mms[22m[39m
+ [32m✓[39m [30m[46m @withstudiocms/kysely [49m[39m test/core/client.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 75[2mms[22m[39m
+ [32m✓[39m [30m[45m studiocms [49m[39m test/virtuals/lib/routeMap.test.ts [2m([22m[2m31 tests[22m[2m)[22m[32m 91[2mms[22m[39m
+ [32m✓[39m [30m[42m @studiocms/mdx [49m[39m test/index.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 22[2mms[22m[39m
+ [32m✓[39m [30m[42m @studiocms/devapps [49m[39m tests/schema/index.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 25[2mms[22m[39m
+ [32m✓[39m [30m[45m @studiocms/blog [49m[39m test/index.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 28[2mms[22m[39m
+ [32m✓[39m [30m[45m @studiocms/oauth [49m[39m test/google/index.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 21[2mms[22m[39m
+ [32m✓[39m [30m[45m @studiocms/oauth [49m[39m test/discord/index.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 13[2mms[22m[39m
+ [32m✓[39m [30m[46m @withstudiocms/effect [49m[39m test/deepmerge.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 75[2mms[22m[39m
+ [32m✓[39m [30m[42m @withstudiocms/internal_helpers [49m[39m test/virtualImportsPlugin.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 14[2mms[22m[39m
+ [32m✓[39m [30m[43m @studiocms/markdoc [49m[39m test/components/editor.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 78[2mms[22m[39m
+ [32m✓[39m [30m[45m @withstudiocms/component-registry [49m[39m test/registry/PropsParser.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 47[2mms[22m[39m
+[90mstdout[2m | test/cli.test.js
+[22m[39m
+[32mStudioCMS Buildkit[39m - Build tool for StudioCMS packages
+
+[33mUsage:[39m
+  buildkit <command> [...files] [...options]
+
+[33mCommands:[39m
+  dev                     Watch files and rebuild on changes
+  build                   Perform a one-time build
+  help                    Show this help message
+
+[33mDev and Build Options:[39m
+  --no-clean-dist         Skip cleaning the dist directory
+  --bundle                Enable bundling mode
+  --force-cjs             Force CommonJS output format
+  --tsconfig=<path>       Specify TypeScript config file (default: tsconfig.json)
+  --outdir=<path>         Specify output directory (default: dist)
+
+[33mExamples:[39m
+  - buildkit dev "src/**/*.ts" --no-clean-dist
+  - buildkit build "src/**/*.ts"
+  - buildkit build "src/**/*.ts" --bundle --force-cjs
+
+
+ [32m✓[39m [30m[45m @withstudiocms/buildkit [49m[39m test/cli.test.js [2m([22m[2m4 tests[22m[2m)[22m[32m 42[2mms[22m[39m
+ [32m✓[39m [30m[42m @withstudiocms/cli-kit [49m[39m test/colors.test.ts [2m([22m[2m13 tests[22m[2m)[22m[32m 13[2mms[22m[39m
+ [32m✓[39m [30m[45m @studiocms/oauth [49m[39m test/auth0/index.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 22[2mms[22m[39m
+ [32m✓[39m [30m[45m studiocms [49m[39m test/schemas/plugins/shared.test.ts [2m([22m[2m13 tests[22m[2m)[22m[32m 47[2mms[22m[39m
+ [32m✓[39m [30m[45m studiocms [49m[39m test/virtuals/lib/makeAPIRoute.test.ts [2m([22m[2m12 tests[22m[2m)[22m[32m 32[2mms[22m[39m
+ [32m✓[39m [30m[45m studiocms [49m[39m test/virtuals/lib/headDefaults.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 25[2mms[22m[39m
+ [32m✓[39m [30m[45m studiocms [49m[39m test/virtuals/notifier/client.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 16[2mms[22m[39m
+ [32m✓[39m [30m[45m studiocms [49m[39m test/schemas/config/index.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 47[2mms[22m[39m
+ [32m✓[39m [30m[45m @studiocms/oauth [49m[39m test/github/index.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 24[2mms[22m[39m
+ [32m✓[39m [30m[45m studiocms [49m[39m test/oAuthUtils.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 26[2mms[22m[39m
+ [32m✓[39m [30m[45m @withstudiocms/component-registry [49m[39m test/registry/consts.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 35[2mms[22m[39m
+ [32m✓[39m [30m[42m @withstudiocms/auth-kit [49m[39m test/modules/encryption.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 97[2mms[22m[39m
+ [32m✓[39m [30m[45m studiocms [49m[39m test/test-utils.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 26[2mms[22m[39m
+ [32m✓[39m [30m[45m studiocms [49m[39m test/components/utils.test.ts [2m([22m[2m15 tests[22m[2m)[22m[32m 36[2mms[22m[39m
+ [32m✓[39m [30m[45m studiocms [49m[39m test/schemas/plugins/index.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 25[2mms[22m[39m
+ [32m✓[39m [30m[42m @studiocms/wysiwyg [49m[39m test/index.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 16[2mms[22m[39m
+ [32m✓[39m [30m[42m @studiocms/wysiwyg [49m[39m test/lib/utils.test.ts [2m([22m[2m32 tests[22m[2m)[22m[32m 41[2mms[22m[39m
+ [32m✓[39m [30m[45m @studiocms/blog [49m[39m test/components/helpers.test.ts [2m([22m[2m19 tests[22m[2m)[22m[32m 22[2mms[22m[39m
+ [32m✓[39m [30m[43m @studiocms/html [49m[39m test/shared.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 16[2mms[22m[39m
+ [32m✓[39m [30m[42m @withstudiocms/auth-kit [49m[39m test/modules/password.test.ts [2m([22m[2m5 tests[22m[2m)[22m[33m 475[2mms[22m[39m
+ [32m✓[39m [30m[46m effectify [49m[39m test/zod.test.ts [2m([22m[2m20 tests[22m[2m)[22m[32m 40[2mms[22m[39m
+ [32m✓[39m [30m[42m @studiocms/wysiwyg [49m[39m test/types.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 32[2mms[22m[39m
+ [32m✓[39m [30m[45m @studiocms/blog [49m[39m test/utils/remapFilter.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 15[2mms[22m[39m
+ [32m✓[39m [30m[45m studiocms [49m[39m test/components.test.ts [2m([22m[2m15 tests[22m[2m)[22m[32m 239[2mms[22m[39m
+ [32m✓[39m [30m[46m @withstudiocms/config-utils [49m[39m test/watcher.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 15[2mms[22m[39m
+ [32m✓[39m [30m[46m @studiocms/markdown-remark [49m[39m test/core/remark-plugins/remark-collect-images.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 78[2mms[22m[39m
+ [32m✓[39m [30m[46m @withstudiocms/effect [49m[39m test/effect.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 144[2mms[22m[39m
+ [32m✓[39m [30m[45m studiocms [49m[39m test/virtuals/i18n/config.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 31[2mms[22m[39m
+ [32m✓[39m [30m[42m @withstudiocms/auth-kit [49m[39m test/utils/session.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 76[2mms[22m[39m
+ [32m✓[39m [30m[46m @withstudiocms/effect [49m[39m test/clack.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 20[2mms[22m[39m
+ [32m✓[39m [30m[42m @studiocms/mdx [49m[39m test/components/editor.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 52[2mms[22m[39m
+ [32m✓[39m [30m[45m studiocms [49m[39m test/integrations/robots/utils.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 48[2mms[22m[39m
+ [32m✓[39m [30m[43m @studiocms/html [49m[39m test/types.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 11[2mms[22m[39m
+ [32m✓[39m [30m[42m @withstudiocms/internal_helpers [49m[39m test/urlGenFactory.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 17[2mms[22m[39m
+ [32m✓[39m [30m[46m @withstudiocms/kysely [49m[39m test/core/schema.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 44[2mms[22m[39m
+ [32m✓[39m [30m[45m @withstudiocms/component-registry [49m[39m test/component-proxy/decoder/decode-codepoint.test.ts [2m([22m[2m18 tests[22m[2m)[22m[32m 21[2mms[22m[39m
+ [32m✓[39m [30m[46m @withstudiocms/config-utils [49m[39m test/loader.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 105[2mms[22m[39m
+ [32m✓[39m [30m[45m studiocms [49m[39m test/virtuals/auth/validImages/index.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 23[2mms[22m[39m
+ [32m✓[39m [30m[45m studiocms [49m[39m test/schemas/config/dashboard.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 36[2mms[22m[39m
+ [32m✓[39m [30m[42m @withstudiocms/cli-kit [49m[39m test/context.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 17[2mms[22m[39m
+ [32m✓[39m [30m[45m studiocms [49m[39m test/errors.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 19[2mms[22m[39m
+ [32m✓[39m [30m[46m effectify [49m[39m test/zod.types.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 33[2mms[22m[39m
+ [32m✓[39m [30m[43m @studiocms/markdoc [49m[39m test/index.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 13[2mms[22m[39m
+ [32m✓[39m [30m[46m @studiocms/md [49m[39m test/lib/markdown-prerender.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 17[2mms[22m[39m
+ [32m✓[39m [30m[42m @withstudiocms/auth-kit [49m[39m test/index.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 140[2mms[22m[39m
+ [32m✓[39m [30m[42m @studiocms/wysiwyg [49m[39m test/routes/grapes-css.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 45[2mms[22m[39m
+ [32m✓[39m [30m[45m studiocms [49m[39m test/integrations/node-namespace.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 31[2mms[22m[39m
+ [32m✓[39m [30m[42m @studiocms/devapps [49m[39m tests/index.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 33[2mms[22m[39m
+ [32m✓[39m [30m[46m @studiocms/cloudinary-image-service [49m[39m tests/index.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 41[2mms[22m[39m
+ [32m✓[39m [30m[45m studiocms [49m[39m test/config.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 14[2mms[22m[39m
+ [32m✓[39m [30m[42m @studiocms/wysiwyg [49m[39m test/components/Editor.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 89[2mms[22m[39m
+ [32m✓[39m [30m[45m studiocms [49m[39m test/virtuals/template-engine/default-template.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 23[2mms[22m[39m
+ [32m✓[39m [30m[45m @withstudiocms/component-registry [49m[39m test/component-proxy/decoder/decode-data-xml.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 11[2mms[22m[39m
+ [32m✓[39m [30m[45m @withstudiocms/component-registry [49m[39m test/component-proxy/decoder/index.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 17[2mms[22m[39m
+ [32m✓[39m [30m[45m studiocms [49m[39m test/integrations/dynamic-sitemap/index.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 21[2mms[22m[39m
+ [32m✓[39m [30m[45m studiocms [49m[39m test/schemas/config/developer.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 28[2mms[22m[39m
+ [32m✓[39m [30m[46m @withstudiocms/kysely [49m[39m test/core/errors.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 17[2mms[22m[39m
+ [32m✓[39m [30m[45m studiocms [49m[39m test/virtuals.components.test.ts [2m([22m[2m5 tests[22m[2m)[22m[33m 417[2mms[22m[39m
+   [33m[2m✓[22m[39m studiocms Tests[2m > [22mVirtual Components Container tests - CustomImage component [33m 374[2mms[22m[39m
+ [32m✓[39m [30m[42m @withstudiocms/auth-kit [49m[39m test/utils/unsafeCheck.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 19[2mms[22m[39m
+ [32m✓[39m [30m[46m @studiocms/markdown-remark [49m[39m test/core/rehype-plugins/rehype-autolink-headings.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 59[2mms[22m[39m
+ [32m✓[39m [30m[45m studiocms [49m[39m test/utils/tinyMDParser.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 43[2mms[22m[39m
+ [32m✓[39m [30m[46m @studiocms/markdown-remark [49m[39m test/core/index.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 43[2mms[22m[39m
+ [32m✓[39m [30m[45m studiocms [49m[39m test/schemas/config/auth.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 16[2mms[22m[39m
+ [32m✓[39m [30m[45m studiocms [49m[39m test/layouts.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 55[2mms[22m[39m
+[90mstdout[2m | test/utils/errors.test.ts[2m > [22m[2m@withstudiocms/kysely Tests[2m > [22m[2mproduces an effect that dies with the correct error message for DialectDeterminationError
+[22m[39mtimestamp=2026-07-20T01:04:22.237Z level=ERROR fiber=#0 message="Migration failure: DialectDeterminationError: An error has occurred
+    at /home/runner/work/studiocms/studiocms/packages/@withstudiocms/kysely/test/utils/errors.test.ts:16:19
+    at file:///home/runner/work/studiocms/studiocms/node_modules/.pnpm/@vitest+runner@3.2.7/node_modules/@vitest/runner/dist/chunk-hooks.js:734:40
+    at runWithSuite (file:///home/runner/work/studiocms/studiocms/node_modules/.pnpm/@vitest+runner@3.2.7/node_modules/@vitest/runner/dist/chunk-hooks.js:1849:8)
+    at Object.collect (file:///home/runner/work/studiocms/studiocms/node_modules/.pnpm/@vitest+runner@3.2.7/node_modules/@vitest/runner/dist/chunk-hooks.js:734:10)
+    at Object.collect (file:///home/runner/work/studiocms/studiocms/node_modules/.pnpm/@vitest+runner@3.2.7/node_modules/@vitest/runner/dist/chunk-hooks.js:738:54)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at collectTests (file:///home/runner/work/studiocms/studiocms/node_modules/.pnpm/@vitest+runner@3.2.7/node_modules/@vitest/runner/dist/chunk-hooks.js:1179:25)
+    at startTests (file:///home/runner/work/studiocms/studiocms/node_modules/.pnpm/@vitest+runner@3.2.7/node_modules/@vitest/runner/dist/chunk-hooks.js:1817:17)
+    at file:///home/runner/work/studiocms/studiocms/node_modules/.pnpm/vitest@3.2.7_@types+debug@4.1.13_@types+node@22.20.1_jiti@2.7.0_jsdom@29.1.1_tsx@4.23.0_yaml@2.9.0/node_modules/vitest/dist/chunks/runBaseTests.9Ij9_de-.js:117:26
+    at withEnv (file:///home/runner/work/studiocms/studiocms/node_modules/.pnpm/vitest@3.2.7_@types+debug@4.1.13_@types+node@22.20.1_jiti@2.7.0_jsdom@29.1.1_tsx@4.23.0_yaml@2.9.0/node_modules/vitest/dist/chunks/runBaseTests.9Ij9_de-.js:84:3)"
+
+[90mstdout[2m | test/utils/errors.test.ts[2m > [22m[2m@withstudiocms/kysely Tests[2m > [22m[2mproduces an effect that dies with the correct error message for SqlError
+[22m[39mtimestamp=2026-07-20T01:04:22.326Z level=ERROR fiber=#2 message="Migration failure: SqlError: An error has occurred
+    at /home/runner/work/studiocms/studiocms/packages/@withstudiocms/kysely/test/utils/errors.test.ts:20:19
+    at file:///home/runner/work/studiocms/studiocms/node_modules/.pnpm/@vitest+runner@3.2.7/node_modules/@vitest/runner/dist/chunk-hooks.js:734:40
+    at runWithSuite (file:///home/runner/work/studiocms/studiocms/node_modules/.pnpm/@vitest+runner@3.2.7/node_modules/@vitest/runner/dist/chunk-hooks.js:1849:8)
+    at Object.collect (file:///home/runner/work/studiocms/studiocms/node_modules/.pnpm/@vitest+runner@3.2.7/node_modules/@vitest/runner/dist/chunk-hooks.js:734:10)
+    at Object.collect (file:///home/runner/work/studiocms/studiocms/node_modules/.pnpm/@vitest+runner@3.2.7/node_modules/@vitest/runner/dist/chunk-hooks.js:738:54)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at collectTests (file:///home/runner/work/studiocms/studiocms/node_modules/.pnpm/@vitest+runner@3.2.7/node_modules/@vitest/runner/dist/chunk-hooks.js:1179:25)
+    at startTests (file:///home/runner/work/studiocms/studiocms/node_modules/.pnpm/@vitest+runner@3.2.7/node_modules/@vitest/runner/dist/chunk-hooks.js:1817:17)
+    at file:///home/runner/work/studiocms/studiocms/node_modules/.pnpm/vitest@3.2.7_@types+debug@4.1.13_@types+node@22.20.1_jiti@2.7.0_jsdom@29.1.1_tsx@4.23.0_yaml@2.9.0/node_modules/vitest/dist/chunks/runBaseTests.9Ij9_de-.js:117:26
+    at withEnv (file:///home/runner/work/studiocms/studiocms/node_modules/.pnpm/vitest@3.2.7_@types+debug@4.1.13_@types+node@22.20.1_jiti@2.7.0_jsdom@29.1.1_tsx@4.23.0_yaml@2.9.0/node_modules/vitest/dist/chunks/runBaseTests.9Ij9_de-.js:84:3)"
+
+ [32m✓[39m [30m[46m @withstudiocms/kysely [49m[39m test/utils/errors.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 126[2mms[22m[39m
+ [32m✓[39m [30m[45m @withstudiocms/component-registry [49m[39m test/component-proxy/decoder/decode-data-html.test.ts [2m([22m[2m2 tests[22m[2m)[22m[33m 2449[2mms[22m[39m
+   [33m[2m✓[22m[39m @withstudiocms/component-registry Tests[2m > [22mdecode-data-html - htmlDecodeTree properties [33m 2145[2mms[22m[39m
+ [32m✓[39m [30m[45m studiocms [49m[39m test/virtuals/lib/makePublicRoute.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 17[2mms[22m[39m
+ [32m✓[39m [30m[46m @withstudiocms/kysely [49m[39m test/utils/tables.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 15[2mms[22m[39m
+ [32m✓[39m [30m[45m studiocms [49m[39m test/integrations/robots/index.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 12[2mms[22m[39m
+ [32m✓[39m [30m[46m @studiocms/md [49m[39m test/components/editor.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 40[2mms[22m[39m
+ [32m✓[39m [30m[43m @studiocms/html [49m[39m test/components/editor.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 44[2mms[22m[39m
+ [32m✓[39m [30m[45m @studiocms/blog [49m[39m test/layouts/Layout.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 68[2mms[22m[39m
+ [32m✓[39m [30m[46m @studiocms/markdown-remark [49m[39m test/core/remark-plugins/remark-discord-subtext.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 46[2mms[22m[39m
+ [32m✓[39m [30m[46m @withstudiocms/kysely [49m[39m test/utils/introspection.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 27[2mms[22m[39m
+ [32m✓[39m [30m[45m studiocms [49m[39m test/virtuals/i18n/client.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 72[2mms[22m[39m
+ [32m✓[39m [30m[45m studiocms [49m[39m test/virtuals/scripts/user-quick-tools.test.ts [2m([22m[2m18 tests[22m[2m)[22m[32m 103[2mms[22m[39m
+
+[2m  Snapshots [22m [1m[33m48 obsolete[39m[22m
+[2m            [22m [90m↳[39m [2mpackages/effectify/test/[22m[1mzod[22m[2m.test.ts[22m
+[2m            [22m   [90m·[39m effectify Package Tests > zodToEffect - Array of array 1
+[2m            [22m   [90m·[39m effectify Package Tests > zodToEffect - Array of array 2
+[2m            [22m   [90m·[39m effectify Package Tests > zodToEffect - Array of array 3
+[2m            [22m   [90m·[39m effectify Package Tests > zodToEffect - Kitchen Sink 1
+[2m            [22m   [90m·[39m effectify Package Tests > zodToEffect - Object with keys  1
+[2m            [22m   [90m·[39m effectify Package Tests > zodToEffect - Object with keys abc, def, ghi 1
+[2m            [22m   [90m·[39m effectify Package Tests > zodToEffect - any 1
+[2m            [22m   [90m·[39m effectify Package Tests > zodToEffect - bigint 1
+[2m            [22m   [90m·[39m effectify Package Tests > zodToEffect - boolean 1
+[2m            [22m   [90m·[39m effectify Package Tests > zodToEffect - date 1
+[2m            [22m   [90m·[39m effectify Package Tests > zodToEffect - nan 1
+[2m            [22m   [90m·[39m effectify Package Tests > zodToEffect - never 1
+[2m            [22m   [90m·[39m effectify Package Tests > zodToEffect - null 1
+[2m            [22m   [90m·[39m effectify Package Tests > zodToEffect - number 1
+[2m            [22m   [90m·[39m effectify Package Tests > zodToEffect - number 2
+[2m            [22m   [90m·[39m effectify Package Tests > zodToEffect - string 1
+[2m            [22m   [90m·[39m effectify Package Tests > zodToEffect - symbol 1
+[2m            [22m   [90m·[39m effectify Package Tests > zodToEffect - undefined 1
+[2m            [22m   [90m·[39m effectify Package Tests > zodToEffect - unknown 1
+[2m            [22m   [90m·[39m effectify Package Tests > zodToEffect - void 1
+[2m            [22m [90m↳[39m [2mpackages/studiocms/test/[22m[1mcomponents[22m[2m.test.ts[22m
+[2m            [22m   [90m·[39m studiocms Package Tests > Components Container tests - Code component 1
+[2m            [22m   [90m·[39m studiocms Package Tests > Components Container tests - FallbackCanvas component 1
+[2m            [22m   [90m·[39m studiocms Package Tests > Components Container tests - OAuthButton component 1
+[2m            [22m   [90m·[39m studiocms Package Tests > Components Container tests - OAuthButtonStack component 1
+[2m            [22m   [90m·[39m studiocms Package Tests > Components Container tests - PageHeader component 1
+[2m            [22m   [90m·[39m studiocms Package Tests > Components Container tests - PageHeader with badge and icon component 1
+[2m            [22m   [90m·[39m studiocms Package Tests > Components Container tests - PageHeader with badge component 1
+[2m            [22m   [90m·[39m studiocms Package Tests > Components Container tests - SSRUser component 1
+[2m            [22m   [90m·[39m studiocms Package Tests > Components Container tests - SSRUser component 2
+[2m            [22m   [90m·[39m studiocms Package Tests > Components Container tests - SSRUser component 3
+[2m            [22m   [90m·[39m studiocms Package Tests > Components Container tests - SSRUser component 4
+[2m            [22m   [90m·[39m studiocms Package Tests > Components Container tests - StaticAuthCheck component 1
+[2m            [22m   [90m·[39m studiocms Package Tests > Components Container tests - StudioCMSLogoSVG component 1
+[2m            [22m   [90m·[39m studiocms Package Tests > Components Container tests - ThemeManager component 1
+[2m            [22m   [90m·[39m studiocms Package Tests > Components Container tests - ThreeCanvasLoader component 1
+[2m            [22m [90m↳[39m [2mpackages/@studiocms/wysiwyg/test/components/[22m[1mEditor[22m[2m.test.ts[22m
+[2m            [22m   [90m·[39m @studiocms/wysiwyg Package Tests > WYSIWYG Editor Component Test Case #1 1
+[2m            [22m   [90m·[39m @studiocms/wysiwyg Package Tests > WYSIWYG Editor Component Test Case #2 1
+[2m            [22m   [90m·[39m @studiocms/wysiwyg Package Tests > WYSIWYG Editor Component Test Case #3 1
+[2m            [22m   [90m·[39m @studiocms/wysiwyg Package Tests > WYSIWYG Editor Component Test Case #4 1
+[2m            [22m   [90m·[39m @studiocms/wysiwyg Package Tests > WYSIWYG Editor Component Test Case #5 1
+[2m            [22m [90m↳[39m [2mpackages/studiocms/test/[22m[1mvirtuals.components[22m[2m.test.ts[22m
+[2m            [22m   [90m·[39m studiocms Package Tests > Virtual Components Container tests - CustomImage component 1
+[2m            [22m   [90m·[39m studiocms Package Tests > Virtual Components Container tests - FormattedDate component 1
+[2m            [22m   [90m·[39m studiocms Package Tests > Virtual Components Container tests - Generator component 1
+[2m            [22m   [90m·[39m studiocms Package Tests > Virtual Components Container tests - Renderer (no content) component 1
+[2m            [22m   [90m·[39m studiocms Package Tests > Virtual Components Container tests - Renderer component 1
+[2m            [22m [90m↳[39m [2mpackages/studiocms/test/[22m[1mlayouts[22m[2m.test.ts[22m
+[2m            [22m   [90m·[39m studiocms Package Tests > Layout Container tests - AuthLayout component 1
+[2m            [22m   [90m·[39m studiocms Package Tests > Layout Container tests - FirstTimeSetupLayout component 1
+[2m            [22m [90m↳[39m [2mpackages/@studiocms/blog/test/layouts/[22m[1mLayout[22m[2m.test.ts[22m
+[2m            [22m   [90m·[39m @studiocms/blog Package Tests > Layout renders correctly 1
+
+[2m Test Files [22m [1m[32m141 passed[39m[22m[90m (141)[39m
+[2m      Tests [22m [1m[32m1461 passed[39m[22m[90m (1461)[39m
+[2m   Start at [22m 01:03:09
+[2m   Duration [22m 86.81s[2m (transform 8.30s, setup 9.19s, collect 126.74s, tests 26.55s, environment 1.96s, prepare 23.26s)[22m
+
+JUNIT report written to /home/runner/work/studiocms/studiocms/junit-report.xml
+[34m % [39m[2mCoverage report from [22m[33mv8[39m
+-------------------|---------|----------|---------|---------|-------------------
+File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+-------------------|---------|----------|---------|---------|-------------------
+[31;1mAll files         [0m | [31;1m  45.16[0m | [33;1m   78.21[0m | [33;1m  69.32[0m | [31;1m  45.16[0m | [31;1m                 [0m 
+[31;1m studiocms        [0m | [31;1m      0[0m | [31;1m   33.33[0m | [31;1m  33.33[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  allurerc.mjs    [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-72             [0m 
+[31;1m  tsdown.shared.ts[0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m6-19             [0m 
+[31;1m  vitest.shared.ts[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-22             [0m 
+[32;1m ...iocms/blog/src[0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m  90.47[0m | [32;1m    100[0m | [33;1m                 [0m 
+  blog.d.ts        |       0 |        0 |       0 |       0 | [31;1m                 [0m 
+[32;1m  index.ts        [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m  88.88[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  types.ts        [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m   90.9[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m ...src/components[0m | [32;1m  85.27[0m | [32;1m   83.33[0m | [32;1m     80[0m | [32;1m  85.27[0m | [31;1m                 [0m 
+[32;1m  BaseHead.astro  [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  Footer.astro    [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[33;1m  Navigation.astro[0m | [33;1m  62.16[0m | [33;1m      50[0m | [32;1m    100[0m | [33;1m  62.16[0m | [31;1m28,59-89         [0m 
+[32;1m  PageList.astro  [0m | [32;1m  93.54[0m | [32;1m      80[0m | [32;1m    100[0m | [32;1m  93.54[0m | [31;1m15-16            [0m 
+[32;1m  PostHeader.astro[0m | [32;1m  92.85[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m  92.85[0m | [31;1m28               [0m 
+[32;1m  RSSIcon.astro   [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  consts.ts       [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  editor.astro    [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  heroHelper.ts   [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[31;1m  render.ts       [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-10             [0m 
+[32;1m ...og/src/layouts[0m | [32;1m    100[0m | [33;1m      50[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  Layout.astro    [0m | [32;1m    100[0m | [33;1m      50[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m33               [0m 
+[32;1m  consts.ts       [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m ...blog/src/utils[0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  remapFilter.ts  [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+ ...-image-service |       0 |        0 |       0 |       0 | [31;1m                 [0m 
+  astroenv.d.ts    |       0 |        0 |       0 |       0 | [31;1m                 [0m 
+[33;1m ...ge-service/src[0m | [33;1m  65.43[0m | [32;1m     100[0m | [33;1m     50[0m | [33;1m  65.43[0m | [31;1m                 [0m 
+[32;1m  ...js-service.ts[0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[31;1m  index.ts        [0m | [31;1m  42.85[0m | [32;1m     100[0m | [31;1m     40[0m | [31;1m  42.85[0m | [31;1m17-36,49-50,52-60[0m 
+[32;1m ...vice/src/utils[0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  readJson.ts     [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m ...-service/tests[0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  test-utils.ts   [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[31;1m ...ms/devapps/src[0m | [31;1m  33.33[0m | [32;1m     100[0m | [33;1m     50[0m | [31;1m  33.33[0m | [31;1m                 [0m 
+[31;1m  index.ts        [0m | [31;1m  33.33[0m | [32;1m     100[0m | [31;1m  33.33[0m | [31;1m  33.33[0m | [31;1m7-9,56-100       [0m 
+  virt.d.ts        |       0 |        0 |       0 |       0 | [31;1m                 [0m 
+[31;1m ...vapps/src/apps[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  wp-importer.ts  [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-265            [0m 
+[31;1m ...ps/src/effects[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  wpImporter.ts   [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-129            [0m 
+[31;1m ...s/WordPressAPI[0m | [31;1m   18.5[0m | [33;1m      75[0m | [31;1m  32.43[0m | [31;1m   18.5[0m | [31;1m                 [0m 
+[33;1m  configs.ts      [0m | [33;1m  67.02[0m | [32;1m     100[0m | [31;1m  36.36[0m | [33;1m  67.02[0m | [31;1m...-85,88,110,113[0m 
+[31;1m  converters.ts   [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-467            [0m 
+[31;1m  errors.ts       [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-9              [0m 
+[31;1m  importers.ts    [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-195            [0m 
+[32;1m  schema.ts       [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[31;1m  utils.ts        [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-369            [0m 
+[32;1m ...pps/src/schema[0m | [32;1m  80.55[0m | [32;1m   81.81[0m | [32;1m  83.33[0m | [32;1m  80.55[0m | [31;1m                 [0m 
+[32;1m  index.ts        [0m | [32;1m  80.55[0m | [32;1m   81.81[0m | [32;1m  83.33[0m | [32;1m  80.55[0m | [31;1m49-56,69-71,74-83[0m 
+[32;1m ...apps/src/utils[0m | [32;1m  97.05[0m | [32;1m      80[0m | [32;1m    100[0m | [32;1m  97.05[0m | [31;1m                 [0m 
+[32;1m  app-utils.ts    [0m | [32;1m  94.44[0m | [33;1m   54.54[0m | [32;1m    100[0m | [32;1m  94.44[0m | [31;1m58-59            [0m 
+[32;1m  pathGenerator.ts[0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m .../devapps/tests[0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  test-utils.ts   [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m ...iocms/html/src[0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  index.ts        [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  types.ts        [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+  virtual.d.ts     |       0 |        0 |       0 |       0 | [31;1m                 [0m 
+[33;1m ...src/components[0m | [33;1m     60[0m | [32;1m     100[0m | [32;1m    100[0m | [33;1m     60[0m | [31;1m                 [0m 
+[32;1m  editor.astro    [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[31;1m  render.ts       [0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m2-18             [0m 
+[32;1m ...s/html/src/lib[0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  shared.ts       [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[31;1m ...ms/markdoc/src[0m | [31;1m  40.29[0m | [32;1m     100[0m | [33;1m   62.5[0m | [31;1m  40.29[0m | [31;1m                 [0m 
+  astro.d.ts       |       0 |        0 |       0 |       0 | [31;1m                 [0m 
+[31;1m  index.ts        [0m | [31;1m  40.29[0m | [32;1m     100[0m | [31;1m     40[0m | [31;1m  40.29[0m | [31;1m...5,90-91,93-104[0m 
+  types.ts         |       0 |        0 |       0 |       0 | [31;1m                 [0m 
+  virtual.d.ts     |       0 |        0 |       0 |       0 | [31;1m                 [0m 
+[31;1m ...src/components[0m | [31;1m     40[0m | [33;1m      50[0m | [31;1m      0[0m | [31;1m     40[0m | [31;1m                 [0m 
+[32;1m  editor.astro    [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[31;1m  render.ts       [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-15             [0m 
+[32;1m ...arkdoc/src/lib[0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  render.ts       [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  shared.ts       [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[31;1m ...own-remark/src[0m | [31;1m  14.28[0m | [33;1m      50[0m | [31;1m     25[0m | [31;1m  14.28[0m | [31;1m                 [0m 
+[31;1m  errors.ts       [0m | [31;1m     15[0m | [32;1m     100[0m | [31;1m      0[0m | [31;1m     15[0m | [31;1m7-8,22-41        [0m 
+[31;1m  index.ts        [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1                [0m 
+  types.ts         |       0 |        0 |       0 |       0 | [31;1m                 [0m 
+[32;1m ...emark/src/core[0m | [32;1m   92.1[0m | [33;1m      70[0m | [32;1m  83.33[0m | [32;1m   92.1[0m | [31;1m                 [0m 
+[32;1m  frontmatter.ts  [0m | [32;1m   87.5[0m | [32;1m    87.5[0m | [33;1m     75[0m | [32;1m   87.5[0m | [31;1m6-13             [0m 
+[32;1m  index.ts        [0m | [32;1m  94.02[0m | [33;1m      50[0m | [32;1m    100[0m | [32;1m  94.02[0m | [31;1m...53-154,197-199[0m 
+[33;1m ...e/plugin-utils[0m | [33;1m     60[0m | [33;1m   71.42[0m | [33;1m  66.66[0m | [33;1m     60[0m | [31;1m                 [0m 
+[31;1m  import-plugin.ts[0m | [31;1m  36.36[0m | [32;1m     100[0m | [31;1m      0[0m | [31;1m  36.36[0m | [31;1m14-23            [0m 
+[33;1m  load-plugins.ts [0m | [33;1m  70.83[0m | [33;1m   71.42[0m | [32;1m    100[0m | [33;1m  70.83[0m | [31;1m13-14,35-39      [0m 
+[31;1m ...rehype-plugins[0m | [31;1m  39.88[0m | [33;1m      75[0m | [31;1m   37.5[0m | [31;1m  39.88[0m | [31;1m                 [0m 
+[32;1m  index.ts        [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[31;1m  ...k-headings.ts[0m | [31;1m  29.72[0m | [32;1m     100[0m | [31;1m      0[0m | [31;1m  29.72[0m | [31;1m17-20,22-43      [0m 
+[31;1m  ...t-headings.ts[0m | [31;1m  26.21[0m | [33;1m   72.72[0m | [31;1m     40[0m | [31;1m  26.21[0m | [31;1m...,78-87,103-152[0m 
+[32;1m  rehype-images.ts[0m | [32;1m   93.1[0m | [33;1m   76.47[0m | [32;1m    100[0m | [32;1m   93.1[0m | [31;1m43-44            [0m 
+[31;1m ...ugins/callouts[0m | [31;1m  40.66[0m | [31;1m      20[0m | [31;1m     30[0m | [31;1m  40.66[0m | [31;1m                 [0m 
+[31;1m  index.ts        [0m | [31;1m  39.16[0m | [31;1m   17.64[0m | [32;1m    100[0m | [31;1m  39.16[0m | [31;1m...35-140,159-175[0m 
+  types.ts         |       0 |        0 |       0 |       0 | [31;1m                 [0m 
+[31;1m  utils.ts        [0m | [31;1m  42.14[0m | [31;1m   14.28[0m | [31;1m   12.5[0m | [31;1m  42.14[0m | [31;1m...96-209,220-228[0m 
+[32;1m ...allouts/themes[0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  github.config.ts[0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  ...ian.config.ts[0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  ...ess.config.ts[0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m ...remark-plugins[0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  index.ts        [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  ...ect-images.ts[0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  ...rd-subtext.ts[0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[31;1m ...rc/integration[0m | [31;1m      0[0m | [32;1m      80[0m | [32;1m     80[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  consts.ts       [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-12             [0m 
+[31;1m  index.ts        [0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m3-132            [0m 
+[31;1m  shared.ts       [0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m24-63            [0m 
+[31;1m  utils.ts        [0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m3-99             [0m 
+  virtual.d.ts     |       0 |        0 |       0 |       0 | [31;1m                 [0m 
+[31;1m ...ion/components[0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  live.ts         [0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m3-55             [0m 
+  types.ts         |       0 |        0 |       0 |       0 | [31;1m                 [0m 
+[31;1m  virtual.ts      [0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m3-116            [0m 
+[31;1m ...ration/decoder[0m | [31;1m      0[0m | [31;1m      20[0m | [31;1m     20[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  ...-codepoint.ts[0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m3-76             [0m 
+[31;1m  ...-data-html.ts[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-6              [0m 
+[31;1m  ...e-data-xml.ts[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-6              [0m 
+[31;1m  index.ts        [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-49             [0m 
+[31;1m  util.ts         [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-584            [0m 
+[32;1m ...udiocms/md/src[0m | [32;1m  83.87[0m | [32;1m   92.85[0m | [32;1m  84.61[0m | [32;1m  83.87[0m | [31;1m                 [0m 
+[33;1m  index.ts        [0m | [33;1m  71.01[0m | [32;1m    87.5[0m | [33;1m  71.42[0m | [33;1m  71.01[0m | [31;1m...,50-69,133-136[0m 
+[32;1m  types.ts        [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+  virtual.d.ts     |       0 |        0 |       0 |       0 | [31;1m                 [0m 
+[31;1m ...src/components[0m | [31;1m  46.66[0m | [33;1m      50[0m | [31;1m      0[0m | [31;1m  46.66[0m | [31;1m                 [0m 
+[32;1m  ...-editor.astro[0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[31;1m  render.ts       [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-11             [0m 
+[32;1m ...cms/md/src/lib[0m | [32;1m    100[0m | [33;1m      75[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  ...-prerender.ts[0m | [32;1m    100[0m | [33;1m   72.72[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m15-17            [0m 
+[32;1m  shared.ts       [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m ...diocms/mdx/src[0m | [32;1m   88.4[0m | [32;1m      80[0m | [32;1m  88.88[0m | [32;1m   88.4[0m | [31;1m                 [0m 
+[32;1m  index.ts        [0m | [32;1m   88.4[0m | [33;1m   77.77[0m | [32;1m  85.71[0m | [32;1m   88.4[0m | [31;1m48-59            [0m 
+  types.ts         |       0 |        0 |       0 |       0 | [31;1m                 [0m 
+  virtual.d.ts     |       0 |        0 |       0 |       0 | [31;1m                 [0m 
+[31;1m ...src/components[0m | [31;1m     40[0m | [33;1m      50[0m | [31;1m      0[0m | [31;1m     40[0m | [31;1m                 [0m 
+[32;1m  editor.astro    [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[31;1m  render.ts       [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-9              [0m 
+[32;1m ...ms/mdx/src/lib[0m | [32;1m  94.44[0m | [33;1m   66.66[0m | [32;1m    100[0m | [32;1m  94.44[0m | [31;1m                 [0m 
+[32;1m  render.ts       [0m | [32;1m  93.33[0m | [33;1m   66.66[0m | [32;1m    100[0m | [32;1m  93.33[0m | [31;1m20-21            [0m 
+[32;1m  shared.ts       [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[31;1m ...ocms/oauth/src[0m | [31;1m      0[0m | [31;1m   33.33[0m | [31;1m  33.33[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  index.ts        [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-4              [0m 
+[31;1m  service.ts      [0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m3-37             [0m 
+[31;1m  shared.ts       [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-165            [0m 
+[31;1m ...auth/src/auth0[0m | [31;1m  19.01[0m | [33;1m      75[0m | [33;1m     75[0m | [31;1m  19.01[0m | [31;1m                 [0m 
+[31;1m  endpoint.ts     [0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m2-30             [0m 
+[31;1m  impl.ts         [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-163            [0m 
+[32;1m  index.ts        [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[31;1m ...th/src/discord[0m | [31;1m  19.11[0m | [33;1m      75[0m | [33;1m     75[0m | [31;1m  19.11[0m | [31;1m                 [0m 
+[31;1m  endpoint.ts     [0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m2-30             [0m 
+[31;1m  impl.ts         [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-145            [0m 
+[32;1m  index.ts        [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[31;1m ...uth/src/github[0m | [31;1m  19.69[0m | [33;1m      75[0m | [33;1m     75[0m | [31;1m  19.69[0m | [31;1m                 [0m 
+[31;1m  endpoint.ts     [0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m2-30             [0m 
+[31;1m  impl.ts         [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-146            [0m 
+[32;1m  index.ts        [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[31;1m ...uth/src/google[0m | [31;1m   19.4[0m | [33;1m      75[0m | [33;1m     75[0m | [31;1m   19.4[0m | [31;1m                 [0m 
+[31;1m  endpoint.ts     [0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m2-30             [0m 
+[31;1m  impl.ts         [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-136            [0m 
+[32;1m  index.ts        [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[31;1m ...s3-storage/src[0m | [31;1m      0[0m | [33;1m      50[0m | [33;1m     50[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  index.ts        [0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m9-56             [0m 
+[31;1m  ...ge-manager.ts[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-418            [0m 
+[31;1m ...diocms/upgrade[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  upgrade.mjs     [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-19             [0m 
+[31;1m ...ms/upgrade/src[0m | [31;1m      0[0m | [31;1m      20[0m | [31;1m     20[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  args.ts         [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-24             [0m 
+[31;1m  context.ts      [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-164            [0m 
+[31;1m  index.ts        [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-102            [0m 
+[31;1m  messages.ts     [0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m13-70            [0m 
+[31;1m  npm-utils.ts    [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-83             [0m 
+[31;1m ...rade/src/steps[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  install.ts      [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-300            [0m 
+[31;1m  verify.ts       [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-379            [0m 
+[33;1m ...ms/wysiwyg/src[0m | [33;1m  79.27[0m | [32;1m    87.5[0m | [33;1m     70[0m | [33;1m  79.27[0m | [31;1m                 [0m 
+[32;1m  consts.ts       [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  index.ts        [0m | [32;1m  91.54[0m | [32;1m     100[0m | [33;1m     75[0m | [32;1m  91.54[0m | [31;1m63-66,69-70      [0m 
+[31;1m  schema.ts       [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-68             [0m 
+[32;1m  types.ts        [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[31;1m ...wyg/src/common[0m | [31;1m      0[0m | [33;1m      50[0m | [33;1m     50[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  gjs-blocks.ts   [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-35             [0m 
+[31;1m  ...ntRegistry.ts[0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m3-106            [0m 
+[31;1m  ...r-settings.ts[0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m2-376            [0m 
+[31;1m  ...itor-utils.ts[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-405            [0m 
+[31;1m ...n/grapesBlocks[0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  consts.ts       [0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m8-238            [0m 
+  types.ts         |       0 |        0 |       0 |       0 | [31;1m                 [0m 
+[31;1m ...sBlocks/blocks[0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  basics.ts       [0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m3-322            [0m 
+[31;1m  extras.ts       [0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m2-81             [0m 
+[31;1m  forms.ts        [0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m2-112            [0m 
+[31;1m  index.ts        [0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m3-25             [0m 
+[31;1m  tabs.ts         [0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m3-22             [0m 
+[31;1m ...locks/commands[0m | [31;1m      0[0m | [33;1m      60[0m | [33;1m     60[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  clear.ts        [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-23             [0m 
+[31;1m  ...deCommands.ts[0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m2-129            [0m 
+[31;1m  ...ceCommands.ts[0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m2-20             [0m 
+[31;1m  index.ts        [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-48             [0m 
+[31;1m  openImport.ts   [0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m2-84             [0m 
+[31;1m ...cks/components[0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  countdown.ts    [0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m3-175            [0m 
+[31;1m  customCode.ts   [0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m2-106            [0m 
+[31;1m  forms.ts        [0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m2-316            [0m 
+[31;1m  index.ts        [0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m10-30            [0m 
+[31;1m  tabLoader.ts    [0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m3-30             [0m 
+[31;1m  tooltip.ts      [0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m4-254            [0m 
+[31;1m  typed.ts        [0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m2-132            [0m 
+[31;1m ...omponents/tabs[0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  Tab.ts          [0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m2-119            [0m 
+[31;1m  TabContainer.ts [0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m4-24             [0m 
+[31;1m  TabContent.ts   [0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m4-24             [0m 
+[31;1m  TabContents.ts  [0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m4-20             [0m 
+[31;1m  Tabs.ts         [0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m2-227            [0m 
+[31;1m ...pesBlocks/i18n[0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  index.ts        [0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m3-18             [0m 
+[31;1m ...sBlocks/panels[0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  index.ts        [0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m2-182            [0m 
+[31;1m ...apesBlocks/rte[0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  colorPicker.ts  [0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m19-241           [0m 
+[31;1m  index.ts        [0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m2-515            [0m 
+[31;1m ...ocks/selectors[0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  index.ts        [0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m3-9              [0m 
+[31;1m  tooltip.ts      [0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m4-17             [0m 
+[31;1m ...sBlocks/traits[0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  formTraits.ts   [0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m2-61             [0m 
+[31;1m  index.ts        [0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m2-16             [0m 
+[31;1m  typedTraits.ts  [0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m2-26             [0m 
+[31;1m ...tuiImageEditor[0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  index.ts        [0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m137-373          [0m 
+[33;1m ...src/components[0m | [33;1m   61.9[0m | [32;1m     100[0m | [32;1m    100[0m | [33;1m   61.9[0m | [31;1m                 [0m 
+[32;1m  Editor.astro    [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[31;1m  render.ts       [0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m2-11             [0m 
+[31;1m ...ysiwyg/src/lib[0m | [31;1m  18.33[0m | [33;1m      75[0m | [33;1m     75[0m | [31;1m  18.33[0m | [31;1m                 [0m 
+[31;1m  db.ts           [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-91             [0m 
+[31;1m  prerender.ts    [0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m2-41             [0m 
+[32;1m  shared.ts       [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  utils.ts        [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[31;1m ...i-spec/scripts[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  test-srv.ts     [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-76             [0m 
+[31;1m ...s/api-spec/src[0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  astro-context.ts[0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m5-72             [0m 
+[31;1m  consts.ts       [0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m5-41             [0m 
+[31;1m  index.ts        [0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m5-9              [0m 
+[31;1m ...-spec/src/auth[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  errors.ts       [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-15             [0m 
+[31;1m  index.ts        [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-80             [0m 
+[31;1m  schemas.ts      [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-56             [0m 
+[31;1m .../src/dashboard[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  errors.ts       [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-15             [0m 
+[31;1m  index.ts        [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-287            [0m 
+[31;1m  schemas.ts      [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-709            [0m 
+[31;1m ...c/integrations[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  errors.ts       [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-15             [0m 
+[31;1m  index.ts        [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-78             [0m 
+[31;1m  schemas.ts      [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-375            [0m 
+[31;1m ...c/src/rest-api[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  errors.ts       [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-15             [0m 
+[31;1m  index.ts        [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-3              [0m 
+[31;1m  middleware.ts   [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-104            [0m 
+[31;1m  schemas.ts      [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-287            [0m 
+[31;1m ...rc/rest-api/v1[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  index.ts        [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-59             [0m 
+[31;1m ...-api/v1/public[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  categories.ts   [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-38             [0m 
+[31;1m  folders.ts      [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-38             [0m 
+[31;1m  index.ts        [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-58             [0m 
+[31;1m  pages.ts        [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-39             [0m 
+[31;1m  tags.ts         [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-31             [0m 
+[31;1m ...-api/v1/secure[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  categories.ts   [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-88             [0m 
+[31;1m  folders.ts      [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-89             [0m 
+[31;1m  index.ts        [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-107            [0m 
+[31;1m  pages.ts        [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-126            [0m 
+[31;1m  settings.ts     [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-36             [0m 
+[31;1m  tags.ts         [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-85             [0m 
+[31;1m  users.ts        [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-96             [0m 
+[31;1m ...i-spec/src/sdk[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  errors.ts       [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-15             [0m 
+[31;1m  index.ts        [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-94             [0m 
+[31;1m  schemas.ts      [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-50             [0m 
+[32;1m ...s/auth-kit/src[0m | [32;1m  99.36[0m | [32;1m   97.67[0m | [33;1m  78.57[0m | [32;1m  99.36[0m | [31;1m                 [0m 
+[32;1m  config.ts       [0m | [32;1m  98.38[0m | [32;1m   96.15[0m | [32;1m   87.5[0m | [32;1m  98.38[0m | [31;1m168              [0m 
+[32;1m  errors.ts       [0m | [32;1m    100[0m | [32;1m     100[0m | [33;1m  68.75[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  index.ts        [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  types.ts        [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m ...it/src/modules[0m | [32;1m  92.92[0m | [32;1m      82[0m | [32;1m    100[0m | [32;1m  92.92[0m | [31;1m                 [0m 
+[32;1m  encryption.ts   [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  index.ts        [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  password.ts     [0m | [32;1m    100[0m | [32;1m   81.81[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m83-84            [0m 
+[32;1m  session.ts      [0m | [32;1m  82.99[0m | [33;1m   70.96[0m | [32;1m    100[0m | [32;1m  82.99[0m | [31;1m...34-136,140-145[0m 
+[32;1m  user.ts         [0m | [32;1m  97.43[0m | [32;1m   83.33[0m | [32;1m    100[0m | [32;1m  97.43[0m | [31;1m284,307,311,315  [0m 
+[32;1m ...-kit/src/utils[0m | [32;1m  96.52[0m | [32;1m   92.48[0m | [32;1m  89.47[0m | [32;1m  96.52[0m | [31;1m                 [0m 
+[32;1m  libravatar.ts   [0m | [32;1m  92.46[0m | [32;1m   85.18[0m | [32;1m    100[0m | [32;1m  92.46[0m | [31;1m...24,228-229,233[0m 
+[32;1m  password.ts     [0m | [32;1m  98.71[0m | [32;1m   96.66[0m | [33;1m     60[0m | [32;1m  98.71[0m | [31;1m81               [0m 
+[32;1m  session.ts      [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  unsafeCheck.ts  [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  user.ts         [0m | [32;1m    100[0m | [32;1m   97.05[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m85               [0m 
+[32;1m ...rc/utils/lists[0m | [32;1m    100[0m | [33;1m      75[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  passwords.ts    [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  usernames.ts    [0m | [32;1m    100[0m | [33;1m   66.66[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m555              [0m 
+[32;1m ...s/buildkit/lib[0m | [32;1m    100[0m | [32;1m      80[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  index.js        [0m | [32;1m    100[0m | [32;1m      80[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m11               [0m 
+[32;1m ...ldkit/lib/cmds[0m | [32;1m    100[0m | [32;1m      96[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  builder.js      [0m | [32;1m    100[0m | [32;1m   95.91[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m93-102           [0m 
+[32;1m  help.js         [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m ...ms/cli-kit/src[0m | [32;1m  98.99[0m | [32;1m   80.88[0m | [32;1m  94.28[0m | [32;1m  98.99[0m | [31;1m                 [0m 
+[32;1m  colors.ts       [0m | [32;1m    100[0m | [32;1m      90[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m110              [0m 
+[32;1m  context.ts      [0m | [32;1m    100[0m | [32;1m   85.71[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m31               [0m 
+[32;1m  messages.ts     [0m | [32;1m  98.29[0m | [33;1m   76.34[0m | [32;1m     90[0m | [32;1m  98.29[0m | [31;1m514-516          [0m 
+  package-json.ts  |       0 |        0 |       0 |       0 | [31;1m                 [0m 
+[32;1m  utils.ts        [0m | [32;1m    100[0m | [32;1m      92[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m43,89            [0m 
+[32;1m ...t-registry/src[0m | [32;1m  98.86[0m | [32;1m   97.14[0m | [32;1m    100[0m | [32;1m  98.86[0m | [31;1m                 [0m 
+[32;1m  errors.ts       [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+  index.ts         |       0 |        0 |       0 |       0 | [31;1m                 [0m 
+[32;1m  ...sform-html.ts[0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+  types.ts         |       0 |        0 |       0 |       0 | [31;1m                 [0m 
+[32;1m  utils.ts        [0m | [32;1m  97.05[0m | [32;1m   94.73[0m | [32;1m    100[0m | [32;1m  97.05[0m | [31;1m39               [0m 
+  virtual.d.ts     |       0 |        0 |       0 |       0 | [31;1m                 [0m 
+[32;1m ...omponent-proxy[0m | [32;1m    100[0m | [32;1m   88.88[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  index.ts        [0m | [32;1m    100[0m | [32;1m   88.88[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m41               [0m 
+[32;1m ...-proxy/decoder[0m | [32;1m    100[0m | [32;1m   91.81[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  ...-codepoint.ts[0m | [32;1m    100[0m | [32;1m   88.88[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m40               [0m 
+[32;1m  ...-data-html.ts[0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  ...e-data-xml.ts[0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  index.ts        [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  util.ts         [0m | [32;1m    100[0m | [32;1m    91.2[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m...32,261,370,388[0m 
+[32;1m ...y/src/registry[0m | [32;1m  96.72[0m | [33;1m   73.01[0m | [32;1m     90[0m | [32;1m  96.72[0m | [31;1m                 [0m 
+[32;1m  PropsParser.ts  [0m | [32;1m   94.4[0m | [33;1m   60.97[0m | [32;1m  85.71[0m | [32;1m   94.4[0m | [31;1m262-269          [0m 
+[32;1m  Registry.ts     [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  consts.ts       [0m | [32;1m    100[0m | [33;1m   66.66[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m33               [0m 
+[32;1m  handler.ts      [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  index.ts        [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m ...nfig-utils/src[0m | [32;1m  81.94[0m | [33;1m   73.91[0m | [33;1m  66.66[0m | [32;1m  81.94[0m | [31;1m                 [0m 
+[31;1m  ...tion-utils.ts[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-6              [0m 
+[31;1m  index.ts        [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-3              [0m 
+[32;1m  loader.ts       [0m | [32;1m   87.5[0m | [33;1m   66.66[0m | [32;1m    100[0m | [32;1m   87.5[0m | [31;1m59-64,78         [0m 
+  types.ts         |       0 |        0 |       0 |       0 | [31;1m                 [0m 
+[32;1m  watcher.ts      [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[31;1m ...tils/src/utils[0m | [31;1m   26.5[0m | [33;1m      50[0m | [31;1m     25[0m | [31;1m   26.5[0m | [31;1m                 [0m 
+[32;1m  ...eDevServer.ts[0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[31;1m  ...d-fallback.ts[0m | [31;1m  14.08[0m | [31;1m   33.33[0m | [31;1m  14.28[0m | [31;1m  14.08[0m | [31;1m15-16,20-21,32-94[0m 
+[33;1m ...cms/effect/src[0m | [33;1m  68.94[0m | [32;1m   93.18[0m | [33;1m   67.3[0m | [33;1m  68.94[0m | [31;1m                 [0m 
+[32;1m  clack.ts        [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  deepmerge.ts    [0m | [32;1m  96.66[0m | [32;1m   85.71[0m | [32;1m    100[0m | [32;1m  96.66[0m | [31;1m33               [0m 
+[32;1m  effect.ts       [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  index.ts        [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[31;1m  logger.ts       [0m | [31;1m  40.83[0m | [32;1m     100[0m | [31;1m  15.38[0m | [31;1m  40.83[0m | [31;1m...97-199,249-264[0m 
+[32;1m  scrypt.ts       [0m | [32;1m  95.65[0m | [32;1m     100[0m | [32;1m  83.33[0m | [32;1m  95.65[0m | [31;1m104              [0m 
+[33;1m  smtp.ts         [0m | [33;1m  72.93[0m | [32;1m    90.9[0m | [33;1m  66.66[0m | [33;1m  72.93[0m | [31;1m...90-293,305-314[0m 
+[32;1m ...fect/src/astro[0m | [32;1m  85.88[0m | [32;1m    90.9[0m | [32;1m  81.57[0m | [32;1m  85.88[0m | [31;1m                 [0m 
+[33;1m  api-route.ts    [0m | [33;1m  72.95[0m | [32;1m   80.55[0m | [33;1m  66.66[0m | [33;1m  72.95[0m | [31;1m...83-287,290-294[0m 
+[32;1m  context-utils.ts[0m | [32;1m  93.84[0m | [32;1m     100[0m | [32;1m   90.9[0m | [32;1m  93.84[0m | [31;1m124-127          [0m 
+[32;1m  ...middleware.ts[0m | [32;1m    100[0m | [32;1m    87.5[0m | [33;1m     75[0m | [32;1m    100[0m | [33;1m80               [0m 
+[32;1m  http-app.ts     [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  index.ts        [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  middleware.ts   [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  ...se-helpers.ts[0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+  types.ts         |       0 |        0 |       0 |       0 | [31;1m                 [0m 
+[32;1m ...rc/astro/utils[0m | [32;1m   94.5[0m | [32;1m   88.09[0m | [32;1m    100[0m | [32;1m   94.5[0m | [31;1m                 [0m 
+[32;1m  api-route.ts    [0m | [32;1m  90.38[0m | [33;1m   76.19[0m | [32;1m    100[0m | [32;1m  90.38[0m | [31;1m63,67,73-74,89   [0m 
+[32;1m  middleware.ts   [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[33;1m ...al_helpers/src[0m | [33;1m  70.24[0m | [32;1m   97.18[0m | [32;1m  96.15[0m | [33;1m  70.24[0m | [31;1m                 [0m 
+[31;1m  ...o-provider.ts[0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m36-143           [0m 
+[32;1m  ...nfigSchema.ts[0m | [32;1m  97.11[0m | [32;1m   94.11[0m | [32;1m     90[0m | [32;1m  97.11[0m | [31;1m98,162-163       [0m 
+[32;1m  index.ts        [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  ...Generators.ts[0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  pathResolver.ts [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  urlGenFactory.ts[0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m ...ro-integration[0m | [32;1m   91.5[0m | [32;1m   96.42[0m | [32;1m  85.71[0m | [32;1m   91.5[0m | [31;1m                 [0m 
+  ...ationArray.ts |       0 |        0 |       0 |       0 | [31;1m                 [0m 
+[31;1m  ...ualImports.ts[0m | [31;1m  18.18[0m | [32;1m     100[0m | [31;1m      0[0m | [31;1m  18.18[0m | [31;1m10-18            [0m 
+[32;1m  ...estVersion.ts[0m | [32;1m    100[0m | [32;1m   93.75[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m44               [0m 
+[32;1m  index.ts        [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+  injectScripts.ts |       0 |        0 |       0 |       0 | [31;1m                 [0m 
+[32;1m  ...tionLogger.ts[0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[31;1m .../cli-providers[0m | [31;1m      0[0m | [33;1m      50[0m | [33;1m     50[0m | [31;1m      0[0m | [31;1m                 [0m 
+  definitions.ts   |       0 |        0 |       0 |       0 | [31;1m                 [0m 
+[31;1m  index.ts        [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-6              [0m 
+[31;1m ...providers/core[0m | [31;1m      0[0m | [33;1m   66.66[0m | [33;1m  66.66[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  formatter.ts    [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-84             [0m 
+[31;1m  ...age-manger.ts[0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m18-52            [0m 
+[31;1m  ...n-provider.ts[0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m6-8              [0m 
+[31;1m  ...t-provider.ts[0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m6-9              [0m 
+[31;1m  ...o-provider.ts[0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m6-29             [0m 
+[31;1m  tinyexec.ts     [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-50             [0m 
+[31;1m ...roviders/infra[0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  ...ge-manager.ts[0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m6-12             [0m 
+[31;1m  ...ge-manager.ts[0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m6-12             [0m 
+[31;1m  ...ge-manager.ts[0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m6-47             [0m 
+[31;1m  ...ge-manager.ts[0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m9-99             [0m 
+[31;1m  ...ge-manager.ts[0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m17-58            [0m 
+[32;1m ...pers/src/utils[0m | [32;1m  86.33[0m | [33;1m   69.44[0m | [32;1m    100[0m | [32;1m  86.33[0m | [31;1m                 [0m 
+[32;1m  index.ts        [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  jsonUtils.ts    [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  loadChangelog.ts[0m | [32;1m  82.07[0m | [33;1m   59.25[0m | [32;1m    100[0m | [32;1m  82.07[0m | [31;1m...90-192,221-223[0m 
+[32;1m  ...TypeFilter.ts[0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  safeString.ts   [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m ...lpers/src/vite[0m | [32;1m  89.47[0m | [32;1m   89.47[0m | [32;1m    100[0m | [32;1m  89.47[0m | [31;1m                 [0m 
+[32;1m  index.ts        [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  ...ortsPlugin.ts[0m | [32;1m  89.18[0m | [32;1m   89.47[0m | [32;1m    100[0m | [32;1m  89.18[0m | [31;1m23-24,47-48      [0m 
+[32;1m ...cms/kysely/src[0m | [32;1m  98.87[0m | [32;1m   95.55[0m | [32;1m  86.95[0m | [32;1m  98.87[0m | [31;1m                 [0m 
+  kysely.ts        |       0 |        0 |       0 |       0 | [31;1m                 [0m 
+[32;1m  plugin.ts       [0m | [32;1m    100[0m | [32;1m   93.93[0m | [32;1m  84.61[0m | [32;1m    100[0m | [33;1m114,188          [0m 
+[32;1m  test-utils.ts   [0m | [32;1m  95.34[0m | [32;1m     100[0m | [32;1m  88.88[0m | [32;1m  95.34[0m | [31;1m72-73            [0m 
+[33;1m ...ysely/src/core[0m | [33;1m  73.36[0m | [32;1m   97.14[0m | [32;1m  94.44[0m | [33;1m  73.36[0m | [31;1m                 [0m 
+[32;1m  client.ts       [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  errors.ts       [0m | [32;1m    100[0m | [32;1m     100[0m | [33;1m  66.66[0m | [32;1m    100[0m | [33;1m                 [0m 
+  ...ion-schema.ts |       0 |        0 |       0 |       0 | [31;1m                 [0m 
+[31;1m  migrator.ts     [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-169            [0m 
+[32;1m  schema.ts       [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[33;1m ...sely/src/utils[0m | [33;1m  64.59[0m | [32;1m    87.5[0m | [32;1m   91.3[0m | [33;1m  64.59[0m | [31;1m                 [0m 
+[32;1m  errors.ts       [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  indexes.ts      [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  introspection.ts[0m | [32;1m  91.66[0m | [32;1m      80[0m | [33;1m  66.66[0m | [32;1m  91.66[0m | [31;1m35-36            [0m 
+[32;1m  logger.ts       [0m | [32;1m    100[0m | [32;1m   88.88[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m57               [0m 
+  migrator.ts      |       0 |        0 |       0 |       0 | [31;1m                 [0m 
+  sql.ts           |       0 |        0 |       0 |       0 | [31;1m                 [0m 
+[32;1m  tables.ts       [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  triggers.ts     [0m | [32;1m    100[0m | [32;1m      90[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m183              [0m 
+[31;1m  types.ts        [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-164            [0m 
+[31;1m ...ms/sdk/scripts[0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  ...-migration.ts[0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m2-146            [0m 
+[31;1m ...diocms/sdk/src[0m | [31;1m      0[0m | [33;1m      50[0m | [33;1m     50[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  cache.ts        [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-250            [0m 
+[31;1m  consts.ts       [0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m4-38             [0m 
+[31;1m  context.ts      [0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m2-106            [0m 
+[31;1m  errors.ts       [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-6              [0m 
+[31;1m  index.ts        [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-50             [0m 
+[31;1m  migrator.ts     [0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m6-74             [0m 
+[31;1m  tables.ts       [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-219            [0m 
+[31;1m  types.ts        [0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m22-397           [0m 
+[31;1m ...ms/sdk/src/lib[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  diff.ts         [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-53             [0m 
+[31;1m  logger.ts       [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-173            [0m 
+[31;1m  pluginUtils.ts  [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-314            [0m 
+[31;1m  ...ge-manager.ts[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-43             [0m 
+[31;1m ...src/migrations[0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  ...40912_init.ts[0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m15-291           [0m 
+[31;1m  ...deprecated.ts[0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m11-287           [0m 
+[31;1m  ...rl-mapping.ts[0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m11-253           [0m 
+[31;1m ...dk/src/modules[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  index.ts        [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-41             [0m 
+[31;1m ...c/modules/auth[0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  index.ts        [0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m3-788            [0m 
+[31;1m .../modules/clear[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  index.ts        [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-93             [0m 
+[31;1m ...modules/config[0m | [31;1m      0[0m | [31;1m   33.33[0m | [31;1m  33.33[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  consts.ts       [0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m4-39             [0m 
+[31;1m  index.ts        [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-407            [0m 
+[31;1m  type-utils.ts   [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-21             [0m 
+[31;1m ...nfig/templates[0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  mailer.ts       [0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m4-218            [0m 
+[31;1m ...modules/delete[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  index.ts        [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-594            [0m 
+[31;1m ...s/diffTracking[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  index.ts        [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-586            [0m 
+[31;1m ...rc/modules/get[0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  index.ts        [0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m2-1143           [0m 
+[31;1m ...c/modules/init[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  index.ts        [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-71             [0m 
+[31;1m ...les/middleware[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  index.ts        [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-115            [0m 
+[31;1m ...cationSettings[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  index.ts        [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-89             [0m 
+[31;1m ...odules/plugins[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  index.ts        [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-730            [0m 
+[31;1m ...c/modules/post[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  index.ts        [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-684            [0m 
+[31;1m ...setTokenBucket[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  index.ts        [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-255            [0m 
+[31;1m ...dules/rest_api[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  index.ts        [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-232            [0m 
+[31;1m ...modules/update[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  index.ts        [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-405            [0m 
+[31;1m ...c/modules/util[0m | [31;1m      0[0m | [31;1m    12.5[0m | [31;1m   12.5[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  collectors.ts   [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-381            [0m 
+[31;1m  folderTree.ts   [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-359            [0m 
+[31;1m  generators.ts   [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-293            [0m 
+[31;1m  getFromNPM.ts   [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-184            [0m 
+[31;1m  index.ts        [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-23             [0m 
+[31;1m  parsers.ts      [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-114            [0m 
+[31;1m  slugify.ts      [0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m6-61             [0m 
+[31;1m  users.ts        [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-180            [0m 
+[32;1m ...plate-lang/src[0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  engine.ts       [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  index.ts        [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  parser.ts       [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  renderer.ts     [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+  types.ts         |       0 |        0 |       0 |       0 | [31;1m                 [0m 
+[31;1m ...eate-studiocms[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  ...studiocms.mjs[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-19             [0m 
+[31;1m ...-studiocms/src[0m | [31;1m      0[0m | [31;1m      20[0m | [31;1m     20[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  args.ts         [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-152            [0m 
+[31;1m  context.ts      [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-123            [0m 
+[31;1m  index.ts        [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-99             [0m 
+[31;1m  ...tes.config.ts[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-50             [0m 
+  types.ts         |       0 |        0 |       0 |       0 | [31;1m                 [0m 
+[31;1m ...ocms/src/steps[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  _shared.ts      [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-74             [0m 
+[31;1m  dependencies.ts [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-106            [0m 
+[31;1m  git.ts          [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-105            [0m 
+[31;1m  intro.ts        [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-29             [0m 
+[31;1m  next.ts         [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-72             [0m 
+[31;1m  projectName.ts  [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-98             [0m 
+[31;1m  template.ts     [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-196            [0m 
+[31;1m  verify.ts       [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-119            [0m 
+[31;1m ...ocms/src/utils[0m | [31;1m      0[0m | [33;1m      50[0m | [33;1m     50[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  messages.ts     [0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m13-110           [0m 
+[31;1m  project-name.ts [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-278            [0m 
+[33;1m .../effectify/src[0m | [33;1m  59.32[0m | [33;1m   66.66[0m | [33;1m  59.25[0m | [33;1m  59.32[0m | [31;1m                 [0m 
+  httpApi.ts       |       0 |        0 |       0 |       0 | [31;1m                 [0m 
+[31;1m  scalar.ts       [0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m2-361            [0m 
+[32;1m  schemas.ts      [0m | [32;1m  89.39[0m | [32;1m     100[0m | [33;1m     50[0m | [32;1m  89.39[0m | [31;1m56-59,90,108-111 [0m 
+[32;1m  scrypt.ts       [0m | [32;1m  94.59[0m | [32;1m      90[0m | [32;1m     80[0m | [32;1m  94.59[0m | [31;1m87,111           [0m 
+[31;1m  static.ts       [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-186            [0m 
+[32;1m  webHandler.ts   [0m | [32;1m  90.62[0m | [32;1m   95.23[0m | [33;1m     60[0m | [32;1m  90.62[0m | [31;1m34,39-43,142-149 [0m 
+[32;1m  zod.ts          [0m | [32;1m  83.15[0m | [33;1m   55.17[0m | [33;1m     50[0m | [32;1m  83.15[0m | [31;1m...20,231-232,234[0m 
+[32;1m ...tify/src/astro[0m | [32;1m  80.99[0m | [32;1m      80[0m | [33;1m  71.42[0m | [32;1m  80.99[0m | [31;1m                 [0m 
+[33;1m  HttpApi.ts      [0m | [33;1m  71.15[0m | [32;1m   85.71[0m | [33;1m     75[0m | [33;1m  71.15[0m | [31;1m80-83,95-114     [0m 
+[32;1m  context.ts      [0m | [32;1m    100[0m | [32;1m     100[0m | [31;1m      0[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  integration.ts  [0m | [32;1m  87.09[0m | [33;1m   76.92[0m | [32;1m    100[0m | [32;1m  87.09[0m | [31;1m66-71,87-88      [0m 
+ ...ages/studiocms |       0 |        0 |       0 |       0 | [31;1m                 [0m 
+  astroenv.d.ts    |       0 |        0 |       0 |       0 | [31;1m                 [0m 
+  ui.d.ts          |       0 |        0 |       0 |       0 | [31;1m                 [0m 
+[31;1m .../studiocms/src[0m | [31;1m  36.59[0m | [32;1m    83.6[0m | [33;1m  72.13[0m | [31;1m  36.59[0m | [31;1m                 [0m 
+[32;1m  config.ts       [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  consts.ts       [0m | [32;1m    100[0m | [32;1m   95.83[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m212              [0m 
+  effect.ts        |       0 |        0 |       0 |       0 | [31;1m                 [0m 
+[32;1m  errors.ts       [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[31;1m  index.ts        [0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m10-505           [0m 
+[32;1m  oAuthUtils.ts   [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+  plugins.ts       |       0 |        0 |       0 |       0 | [31;1m                 [0m 
+[31;1m  storage-api.ts  [0m | [31;1m   7.54[0m | [32;1m     100[0m | [31;1m      0[0m | [31;1m   7.54[0m | [31;1m34,40-115        [0m 
+[33;1m  test-utils.ts   [0m | [33;1m  50.48[0m | [33;1m   57.14[0m | [31;1m  45.45[0m | [33;1m  50.48[0m | [31;1m...47-369,378-385[0m 
+  theme.d.ts       |       0 |        0 |       0 |       0 | [31;1m                 [0m 
+  types.ts         |       0 |        0 |       0 |       0 | [31;1m                 [0m 
+  virtual.d.ts     |       0 |        0 |       0 |       0 | [31;1m                 [0m 
+[31;1m ...diocms/src/cli[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  index.ts        [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-45             [0m 
+[31;1m ...ms/src/cli/add[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  index.ts        [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-283            [0m 
+[31;1m  npm-utils.ts    [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-166            [0m 
+[31;1m  ...allPlugins.ts[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-118            [0m 
+[31;1m  ...oCMSConfig.ts[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-102            [0m 
+[31;1m  ...atePlugins.ts[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-110            [0m 
+[31;1m ...src/cli/crypto[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  index.ts        [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-7              [0m 
+[31;1m .../crypto/genJWT[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  index.ts        [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-159            [0m 
+[31;1m .../src/cli/debug[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  index.ts        [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-128            [0m 
+[31;1m ...c/cli/getTurso[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  index.ts        [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-36             [0m 
+[31;1m ...s/src/cli/init[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  index.ts        [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-99             [0m 
+[31;1m ...cli/init/steps[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  env.ts          [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-566            [0m 
+[31;1m  next.ts         [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-62             [0m 
+[31;1m ...c/cli/migrator[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  index.ts        [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-293            [0m 
+[31;1m .../src/cli/users[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  index.ts        [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-120            [0m 
+[31;1m  shared.ts       [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-55             [0m 
+[31;1m ...li/users/steps[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  createUsers.ts  [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-259            [0m 
+[31;1m  modifyUsers.ts  [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-300            [0m 
+[31;1m  next.ts         [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-18             [0m 
+[31;1m .../src/cli/utils[0m | [31;1m      0[0m | [31;1m   21.42[0m | [31;1m  21.42[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  ...redEnvVars.ts[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-36             [0m 
+[31;1m  context.ts      [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-66             [0m 
+[31;1m  dateAdd.ts      [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-65             [0m 
+[31;1m  debugOpt.ts     [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-10             [0m 
+[31;1m  effectBoxen.ts  [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-51             [0m 
+[31;1m  errors.ts       [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-6              [0m 
+[31;1m  ...liDbClient.ts[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-36             [0m 
+[31;1m  intro.ts        [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-43             [0m 
+[31;1m  loadConfig.ts   [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-33             [0m 
+[31;1m  logger.ts       [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-43             [0m 
+[31;1m  seasonal.ts     [0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m5-92             [0m 
+[31;1m  studiocmsEnv.ts [0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m58-180           [0m 
+[31;1m  types.ts        [0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m46-53            [0m 
+[31;1m  user-utils.ts   [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-49             [0m 
+[31;1m ...cms/src/client[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  apiClient.ts    [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-281            [0m 
+[31;1m ...udiocms/src/db[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  index.ts        [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-99             [0m 
+[31;1m  plugins.ts      [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-48             [0m 
+[32;1m ...c/integrations[0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  ...-namespace.ts[0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+  plugins.ts       |       0 |        0 |       0 |       0 | [31;1m                 [0m 
+[32;1m ...ynamic-sitemap[0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  index.ts        [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  ...-index.xml.ts[0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m ...rations/robots[0m | [32;1m  99.74[0m | [32;1m   84.48[0m | [32;1m    100[0m | [32;1m  99.74[0m | [31;1m                 [0m 
+[32;1m  core.ts         [0m | [32;1m  99.45[0m | [32;1m   83.63[0m | [32;1m    100[0m | [32;1m  99.45[0m | [31;1m100              [0m 
+[32;1m  index.ts        [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  schema.ts       [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  utils.ts        [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[31;1m ...gins/analytics[0m | [31;1m      0[0m | [31;1m   33.33[0m | [31;1m  33.33[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  client-script.ts[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-36             [0m 
+[31;1m  consts.ts       [0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m4                [0m 
+[31;1m  db-client.ts    [0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m2-14             [0m 
+[31;1m  index.ts        [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-142            [0m 
+[31;1m  schemas.ts      [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-89             [0m 
+[31;1m  table.ts        [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-49             [0m 
+[31;1m ...alytics/assets[0m | [31;1m      0[0m | [32;1m   83.33[0m | [32;1m  83.33[0m | [31;1m      0[0m | [31;1m                 [0m 
+  consts.ts        |       0 |        0 |       0 |       0 | [31;1m                 [0m 
+[31;1m  schemas.ts      [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-121            [0m 
+  types.ts         |       0 |        0 |       0 |       0 | [31;1m                 [0m 
+  webVital.ts      |       0 |        0 |       0 |       0 | [31;1m                 [0m 
+[31;1m  ...uteSummary.ts[0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m25-112           [0m 
+[31;1m  ...alsSummary.ts[0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m21-89            [0m 
+[31;1m ...ard-grid-items[0m | [31;1m      0[0m | [31;1m      25[0m | [31;1m     25[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  CoreVitals.astro[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-7              [0m 
+[31;1m  MetricCard.astro[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-7              [0m 
+[31;1m  ...aryCard.astro[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-7              [0m 
+[31;1m  shared.ts       [0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m4-45             [0m 
+[31;1m ...ages/analytics[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  body.astro      [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-7              [0m 
+[31;1m  header.astro    [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-7              [0m 
+[31;1m ...s/assets/utils[0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  ...DataObject.ts[0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m2-50             [0m 
+[31;1m  ...DataObject.ts[0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m2-84             [0m 
+[31;1m  ...DataObject.ts[0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m2-258            [0m 
+[31;1m  checkDate.ts    [0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m7-28             [0m 
+[31;1m  ...italsUtils.ts[0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m4-315            [0m 
+[31;1m ...analytics/i18n[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  de.ts           [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-24             [0m 
+[31;1m  en.ts           [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-25             [0m 
+[31;1m  es.ts           [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-24             [0m 
+[31;1m  fr.ts           [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-24             [0m 
+[31;1m  nl.ts           [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-24             [0m 
+[31;1m  no.ts           [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-24             [0m 
+[31;1m  zh.ts           [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-24             [0m 
+[33;1m ...ms/src/schemas[0m | [33;1m  78.77[0m | [33;1m   55.55[0m | [33;1m  66.66[0m | [33;1m  78.77[0m | [31;1m                 [0m 
+[32;1m  custom.ts       [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[33;1m  ...al-schemas.ts[0m | [33;1m  73.98[0m | [31;1m   33.33[0m | [31;1m  44.44[0m | [33;1m  73.98[0m | [31;1m...36-247,293-298[0m 
+  index.ts         |       0 |        0 |       0 |       0 | [31;1m                 [0m 
+[32;1m ...schemas/config[0m | [32;1m  95.83[0m | [33;1m   57.14[0m | [33;1m  66.66[0m | [32;1m  95.83[0m | [31;1m                 [0m 
+[32;1m  api.ts          [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  auth.ts         [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  dashboard.ts    [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  db.ts           [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  developer.ts    [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  index.ts        [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  sdk.ts          [0m | [32;1m  81.42[0m | [31;1m      40[0m | [33;1m     50[0m | [32;1m  81.42[0m | [31;1m76-84,89-92      [0m 
+[32;1m ...chemas/plugins[0m | [32;1m  98.17[0m | [32;1m   81.81[0m | [33;1m  71.42[0m | [32;1m  98.17[0m | [31;1m                 [0m 
+[32;1m  i18n.ts         [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  index.ts        [0m | [32;1m  98.24[0m | [32;1m     100[0m | [33;1m  66.66[0m | [32;1m  98.24[0m | [31;1m512-515          [0m 
+[32;1m  shared.ts       [0m | [32;1m  97.87[0m | [33;1m   77.77[0m | [33;1m     75[0m | [32;1m  97.87[0m | [31;1m26-27,31-34      [0m 
+[31;1m ...lbar/db-viewer[0m | [31;1m      0[0m | [31;1m      25[0m | [31;1m     25[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  config.ts       [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-41             [0m 
+  ...ared-types.ts |       0 |        0 |       0 |       0 | [31;1m                 [0m 
+[31;1m  index.ts        [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-47             [0m 
+[31;1m  viewer.ts       [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-110            [0m 
+[31;1m ...-viewer/studio[0m | [31;1m      0[0m | [33;1m   66.66[0m | [33;1m  66.66[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  connection.ts   [0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m11-16            [0m 
+[31;1m  index.ts        [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-66             [0m 
+  type.ts          |       0 |        0 |       0 |       0 | [31;1m                 [0m 
+[31;1m ...studio/drivers[0m | [31;1m      0[0m | [31;1m      25[0m | [31;1m     25[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  base.ts         [0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m22-28            [0m 
+[31;1m  mysql.ts        [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-271            [0m 
+[31;1m  postgres.ts     [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-73             [0m 
+[31;1m  sqlite.ts       [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-137            [0m 
+[31;1m ...wer/studio/env[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  libsql.ts       [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-22             [0m 
+[31;1m  mysql.ts        [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-28             [0m 
+[31;1m  postgres.ts     [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-28             [0m 
+[31;1m ...ual-connection[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  libsql.ts       [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-27             [0m 
+[31;1m  mysql.ts        [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-8              [0m 
+[31;1m  postgres.ts     [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-8              [0m 
+[31;1m .../toolbar/utils[0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  app-utils.ts    [0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m8-67             [0m 
+[31;1m ...ocms/src/utils[0m | [31;1m  15.68[0m | [33;1m   66.66[0m | [33;1m     50[0m | [31;1m  15.68[0m | [31;1m                 [0m 
+[31;1m  lang-helper.ts  [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-78             [0m 
+  safeString.ts    |       0 |        0 |       0 |       0 | [31;1m                 [0m 
+[31;1m  stripIconify.ts [0m | [31;1m   12.5[0m | [32;1m     100[0m | [31;1m      0[0m | [31;1m   12.5[0m | [31;1m12-20            [0m 
+[32;1m  tinyMDParser.ts [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+ .../utils/effects |       0 |        0 |       0 |       0 | [31;1m                 [0m 
+  smtp.ts          |       0 |        0 |       0 |       0 | [31;1m                 [0m 
+[32;1m ...s/src/virtuals[0m | [32;1m    100[0m | [32;1m   92.85[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  utils.ts        [0m | [32;1m    100[0m | [32;1m   92.85[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m89               [0m 
+[31;1m .../virtuals/auth[0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  ...ssionLevel.ts[0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m4-19             [0m 
+  types.ts         |       0 |        0 |       0 |       0 | [31;1m                 [0m 
+[32;1m ...th/validImages[0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  index.ts        [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[33;1m ...als/components[0m | [33;1m  71.01[0m | [33;1m      50[0m | [32;1m     80[0m | [33;1m  71.01[0m | [31;1m                 [0m 
+[33;1m  ...omImage.astro[0m | [33;1m  72.97[0m | [31;1m   42.85[0m | [32;1m    100[0m | [33;1m  72.97[0m | [31;1m32-42            [0m 
+[32;1m  ...tedDate.astro[0m | [32;1m    100[0m | [33;1m      50[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m16               [0m 
+[32;1m  Generator.astro [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  Renderer.astro  [0m | [32;1m  92.85[0m | [32;1m   85.71[0m | [32;1m    100[0m | [32;1m  92.85[0m | [31;1m45,50            [0m 
+[31;1m  renderFn.ts     [0m | [31;1m  48.14[0m | [31;1m   16.66[0m | [33;1m     50[0m | [31;1m  48.14[0m | [31;1m...12-119,123-130[0m 
+[33;1m ...l-transformers[0m | [33;1m     75[0m | [33;1m      75[0m | [32;1m    100[0m | [33;1m     75[0m | [31;1m                 [0m 
+[33;1m  storage-api.ts  [0m | [33;1m     75[0m | [33;1m      75[0m | [32;1m    100[0m | [33;1m     75[0m | [31;1m68-75,80-81      [0m 
+[33;1m .../virtuals/i18n[0m | [33;1m  78.19[0m | [32;1m      85[0m | [32;1m  81.81[0m | [33;1m  78.19[0m | [31;1m                 [0m 
+[33;1m  client.ts       [0m | [33;1m   72.8[0m | [32;1m     100[0m | [33;1m     75[0m | [33;1m   72.8[0m | [31;1m...19-235,238-242[0m 
+[32;1m  config.ts       [0m | [32;1m    100[0m | [33;1m      75[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m165              [0m 
+[32;1m  overrides.ts    [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[33;1m  server.ts       [0m | [33;1m  78.26[0m | [33;1m   79.16[0m | [32;1m     90[0m | [33;1m  78.26[0m | [31;1m112-125,192      [0m 
+[32;1m ...c/virtuals/lib[0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m  93.33[0m | [32;1m    100[0m | [33;1m                 [0m 
+  head.ts          |       0 |        0 |       0 |       0 | [31;1m                 [0m 
+[32;1m  headDefaults.ts [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  makeAPIRoute.ts [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  ...ublicRoute.ts[0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  ...Generators.ts[0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  routeMap.ts     [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m  85.71[0m | [32;1m    100[0m | [33;1m                 [0m 
+  urlGen.ts        |       0 |        0 |       0 |       0 | [31;1m                 [0m 
+[32;1m ...tuals/notifier[0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  client.ts       [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[31;1m ...rtuals/scripts[0m | [31;1m  10.91[0m | [33;1m   71.79[0m | [32;1m  94.73[0m | [31;1m  10.91[0m | [31;1m                 [0m 
+[31;1m  ...ileBrowser.ts[0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m2-2278           [0m 
+[32;1m  ...uick-tools.ts[0m | [32;1m  98.94[0m | [33;1m   71.05[0m | [32;1m  94.59[0m | [32;1m  98.94[0m | [31;1m287-288          [0m 
+[31;1m ...c/virtuals/sdk[0m | [31;1m      0[0m | [33;1m      50[0m | [33;1m     50[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  index.ts        [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-115            [0m 
+[31;1m  types.ts        [0m | [31;1m      0[0m | [32;1m     100[0m | [32;1m    100[0m | [31;1m      0[0m | [31;1m4                [0m 
+[32;1m ...emplate-engine[0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+[32;1m  ...-templates.ts[0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m 
+  index.ts         |       0 |        0 |       0 |       0 | [31;1m                 [0m 
+[31;1m ...es/blog-libsql[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  astro.config.mjs[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-14             [0m 
+[31;1m  ...ms.config.mjs[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-8              [0m 
+[31;1m ...tes/blog-mysql[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  astro.config.mjs[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-14             [0m 
+[31;1m  ...ms.config.mjs[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-11             [0m 
+[31;1m .../blog-postgres[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  astro.config.mjs[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-14             [0m 
+[31;1m  ...ms.config.mjs[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-11             [0m 
+[31;1m ...eadless-libsql[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  astro.config.mjs[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-14             [0m 
+[31;1m  ...ms.config.mjs[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-8              [0m 
+[31;1m ...ql/src/layouts[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  Layout.astro    [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-26             [0m 
+[31;1m ...bsql/src/pages[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  index.astro     [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-11             [0m 
+[31;1m ...headless-mysql[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  astro.config.mjs[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-14             [0m 
+[31;1m  ...ms.config.mjs[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-11             [0m 
+[31;1m ...ql/src/layouts[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  Layout.astro    [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-26             [0m 
+[31;1m ...ysql/src/pages[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  index.astro     [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-11             [0m 
+[31;1m ...dless-postgres[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  astro.config.mjs[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-14             [0m 
+[31;1m  ...ms.config.mjs[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-11             [0m 
+[31;1m ...es/src/layouts[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  Layout.astro    [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-26             [0m 
+[31;1m ...gres/src/pages[0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m                 [0m 
+[31;1m  index.astro     [0m | [31;1m      0[0m | [31;1m       0[0m | [31;1m      0[0m | [31;1m      0[0m | [31;1m1-11             [0m 
+-------------------|---------|----------|---------|---------|-------------------
