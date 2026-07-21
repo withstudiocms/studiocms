@@ -62,7 +62,7 @@
   },
   "type": "module",
   "dependencies": {
-    "@markdoc/markdoc": "^0.5.7",
+    "@markdoc/markdoc": "^0.5.8",
     "@withstudiocms/internal_helpers": "workspace:^",
     "react": "catalog:react",
     "react-dom": "catalog:react"
