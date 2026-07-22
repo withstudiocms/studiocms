@@ -25,12 +25,12 @@
     "@effect/platform": "^0.96.2",
     "@effect/platform-node": "^0.107.0",
     "@libsql/client": "^0.15.15",
-    "@studiocms/blog": "^0.3.0",
-    "@studiocms/md": "^0.3.0",
+    "@studiocms/blog": "^0.4.0",
+    "@studiocms/md": "^0.4.0",
     "astro": "^6.1.0",
     "effect": "^3.21.4",
     "kysely-turso": "^0.1.1",
     "sharp": "^0.34.3",
-    "studiocms": "^0.4.4"
+    "studiocms": "^0.5.0"
   }
 }

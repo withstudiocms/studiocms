@@ -1,5 +1,27 @@
 # @studiocms/s3-storage
 
+## 0.4.0
+
+### Minor Changes
+
+- [#1537](https://github.com/withstudiocms/studiocms/pull/1537) [`f7646fe`](https://github.com/withstudiocms/studiocms/commit/f7646fedc637f250d04844f9a6e1ac8126ec5015) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Breaking Change: This version drops support for Astro v5
+
+- [#1537](https://github.com/withstudiocms/studiocms/pull/1537) [`f7646fe`](https://github.com/withstudiocms/studiocms/commit/f7646fedc637f250d04844f9a6e1ac8126ec5015) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Updates for Astro v6, Lints `.astro` files, and scope CSS files to prevent weird CSS leakage across pages.
+
+- [#1500](https://github.com/withstudiocms/studiocms/pull/1500) [`3a0beb1`](https://github.com/withstudiocms/studiocms/commit/3a0beb13f25e38c4d7d98cc9644623eb82964851) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Migrates packages to use tsdown instead of custom esbuild pipeline
+
+- [#1579](https://github.com/withstudiocms/studiocms/pull/1579) [`55b6083`](https://github.com/withstudiocms/studiocms/commit/55b6083fa48b00e125bbb06bc1e83bf846e9c7b8) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Remove dependency on Astro integration kit
+
+### Patch Changes
+
+- [#1496](https://github.com/withstudiocms/studiocms/pull/1496) [`ddb5bf2`](https://github.com/withstudiocms/studiocms/commit/ddb5bf2c5cd68f05f06632ade3c1bd047532e85e) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update aws s3 dependencies to ^3.1008.0
+
+- [#1536](https://github.com/withstudiocms/studiocms/pull/1536) [`d575739`](https://github.com/withstudiocms/studiocms/commit/d57573995a388bce68452fc5d4a0345a0734cef5) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update aws s3 dependencies to ^3.1012.0
+
+- [#1572](https://github.com/withstudiocms/studiocms/pull/1572) [`d9162fa`](https://github.com/withstudiocms/studiocms/commit/d9162fa76405bab20f1834f241830d37435b0b25) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update aws s3 dependencies to ^3.1082.0
+
+- [#1594](https://github.com/withstudiocms/studiocms/pull/1594) [`af2ea2b`](https://github.com/withstudiocms/studiocms/commit/af2ea2b80a70585d972c3cffd69963288f8e03cf) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update aws s3 dependencies to ^3.1085.0
+
 ## 0.3.1
 
 ### Patch Changes

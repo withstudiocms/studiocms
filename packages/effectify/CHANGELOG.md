@@ -1,5 +1,21 @@
 # effectify
 
+## 0.3.0
+
+### Minor Changes
+
+- [#1537](https://github.com/withstudiocms/studiocms/pull/1537) [`f7646fe`](https://github.com/withstudiocms/studiocms/commit/f7646fedc637f250d04844f9a6e1ac8126ec5015) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Updates for Astro v6, Lints `.astro` files, and scope CSS files to prevent weird CSS leakage across pages.
+
+- [#1559](https://github.com/withstudiocms/studiocms/pull/1559) [`f3dcee2`](https://github.com/withstudiocms/studiocms/commit/f3dcee25fcdcab2199e849cef62e97ef54c60543) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Fix zod to Effect type conversion
+
+### Patch Changes
+
+- [#1517](https://github.com/withstudiocms/studiocms/pull/1517) [`72148f4`](https://github.com/withstudiocms/studiocms/commit/72148f4d5eae2108f6995c980d1834128da4f020) Thanks [@renovate](https://github.com/apps/renovate)! - chore(deps): Updated Effect dependencies (PR: [#1517](https://github.com/withstudiocms/studiocms/issues/1517))
+
+- [#1563](https://github.com/withstudiocms/studiocms/pull/1563) [`a5a5769`](https://github.com/withstudiocms/studiocms/commit/a5a57694c1a273196b754acce545a8d259b3423f) Thanks [@renovate](https://github.com/apps/renovate)! - chore(deps): Updated Effect dependencies (PR: [#1563](https://github.com/withstudiocms/studiocms/issues/1563))
+
+- [#1486](https://github.com/withstudiocms/studiocms/pull/1486) [`497ec43`](https://github.com/withstudiocms/studiocms/commit/497ec43d30436cd6042ec2be3e933b44d03491e0) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Unifies tsdown configs across project repository and updates related references
+
 ## 0.2.0
 
 ### Minor Changes

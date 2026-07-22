@@ -1,5 +1,27 @@
 # @studiocms/html
 
+## 0.4.0
+
+### Minor Changes
+
+- [#1537](https://github.com/withstudiocms/studiocms/pull/1537) [`f7646fe`](https://github.com/withstudiocms/studiocms/commit/f7646fedc637f250d04844f9a6e1ac8126ec5015) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Breaking Change: This version drops support for Astro v5
+
+- [#1580](https://github.com/withstudiocms/studiocms/pull/1580) [`9a1678a`](https://github.com/withstudiocms/studiocms/commit/9a1678a44cc23c7253c7aacdd38e8ed94fc6a589) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Migrate from per-package helpers to use helpers from `@withstudiocms/internal_helpers` package
+
+- [#1537](https://github.com/withstudiocms/studiocms/pull/1537) [`f7646fe`](https://github.com/withstudiocms/studiocms/commit/f7646fedc637f250d04844f9a6e1ac8126ec5015) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Updates for Astro v6, Lints `.astro` files, and scope CSS files to prevent weird CSS leakage across pages.
+
+- [#1500](https://github.com/withstudiocms/studiocms/pull/1500) [`3a0beb1`](https://github.com/withstudiocms/studiocms/commit/3a0beb13f25e38c4d7d98cc9644623eb82964851) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Migrates packages to use tsdown instead of custom esbuild pipeline
+
+- [#1579](https://github.com/withstudiocms/studiocms/pull/1579) [`55b6083`](https://github.com/withstudiocms/studiocms/commit/55b6083fa48b00e125bbb06bc1e83bf846e9c7b8) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Remove dependency on Astro integration kit
+
+### Patch Changes
+
+- [#1491](https://github.com/withstudiocms/studiocms/pull/1491) [`33607f7`](https://github.com/withstudiocms/studiocms/commit/33607f70c00b3243e673bce5b1961e620d0d728c) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update dependency katex to ^0.16.38
+
+- [#1540](https://github.com/withstudiocms/studiocms/pull/1540) [`3a27c29`](https://github.com/withstudiocms/studiocms/commit/3a27c297241522a9e2fd807a8d078568885eeb02) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update @studiocms plugin dependencies
+
+- [#1590](https://github.com/withstudiocms/studiocms/pull/1590) [`8ed6cec`](https://github.com/withstudiocms/studiocms/commit/8ed6cecda4e48b66ca77c02924e07ff6431ade27) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update dependency suneditor to v3
+
 ## 0.3.0
 
 ### Minor Changes

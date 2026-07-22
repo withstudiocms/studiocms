@@ -1,5 +1,30 @@
 # @studiocms/markdown-remark
 
+## 1.4.0
+
+### Minor Changes
+
+- [#1580](https://github.com/withstudiocms/studiocms/pull/1580) [`9a1678a`](https://github.com/withstudiocms/studiocms/commit/9a1678a44cc23c7253c7aacdd38e8ed94fc6a589) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Migrate from per-package helpers to use helpers from `@withstudiocms/internal_helpers` package
+
+- [#1537](https://github.com/withstudiocms/studiocms/pull/1537) [`f7646fe`](https://github.com/withstudiocms/studiocms/commit/f7646fedc637f250d04844f9a6e1ac8126ec5015) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Updates for Astro v6, Lints `.astro` files, and scope CSS files to prevent weird CSS leakage across pages.
+
+### Patch Changes
+
+- [#1570](https://github.com/withstudiocms/studiocms/pull/1570) [`112fba7`](https://github.com/withstudiocms/studiocms/commit/112fba7aeff97ac8f1fc0c2ec649c9b6d980255d) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update all non-major dependencies
+
+- [#1582](https://github.com/withstudiocms/studiocms/pull/1582) [`5117edb`](https://github.com/withstudiocms/studiocms/commit/5117edb692efd8575e0477547487b0e92fbf24d7) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update all non-major dependencies
+
+- [#1591](https://github.com/withstudiocms/studiocms/pull/1591) [`6e2d6e4`](https://github.com/withstudiocms/studiocms/commit/6e2d6e404878d428d3610af1acd3395eb3a0fe9d) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update dependency js-yaml to v5
+
+- [#1503](https://github.com/withstudiocms/studiocms/pull/1503) [`3a8e4ce`](https://github.com/withstudiocms/studiocms/commit/3a8e4ceea5b1c5e31a42e5e7a2402258f9c149cc) Thanks [@renovate](https://github.com/apps/renovate)! - Lint
+
+- [#1490](https://github.com/withstudiocms/studiocms/pull/1490) [`418b743`](https://github.com/withstudiocms/studiocms/commit/418b743c6387878f82599f94ad7185947ec6815d) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Tweaks neverBundle list to use regularExpression instead to make dep selection easier
+
+- [#1548](https://github.com/withstudiocms/studiocms/pull/1548) [`5b68503`](https://github.com/withstudiocms/studiocms/commit/5b6850349f1ac9d2acdc9cbb8bcd79b7561de769) Thanks [@renovate](https://github.com/apps/renovate)! - Update dependencies, and lint
+
+- Updated dependencies [[`ef73e14`](https://github.com/withstudiocms/studiocms/commit/ef73e14e7c72ef92a06341d7fed2dfba5070a4b0), [`4bf7ffa`](https://github.com/withstudiocms/studiocms/commit/4bf7ffa7486db51e5d0f023c4380da9f47c25d57), [`9a1678a`](https://github.com/withstudiocms/studiocms/commit/9a1678a44cc23c7253c7aacdd38e8ed94fc6a589), [`f7646fe`](https://github.com/withstudiocms/studiocms/commit/f7646fedc637f250d04844f9a6e1ac8126ec5015), [`55b6083`](https://github.com/withstudiocms/studiocms/commit/55b6083fa48b00e125bbb06bc1e83bf846e9c7b8), [`418b743`](https://github.com/withstudiocms/studiocms/commit/418b743c6387878f82599f94ad7185947ec6815d)]:
+  - @withstudiocms/internal_helpers@0.3.0
+
 ## 1.3.1
 
 ### Patch Changes
