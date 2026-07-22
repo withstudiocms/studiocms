@@ -1,5 +1,24 @@
 # @withstudiocms/sdk
 
+## 0.4.0
+
+### Minor Changes
+
+- [#1537](https://github.com/withstudiocms/studiocms/pull/1537) [`f7646fe`](https://github.com/withstudiocms/studiocms/commit/f7646fedc637f250d04844f9a6e1ac8126ec5015) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Updates for Astro v6, Lints `.astro` files, and scope CSS files to prevent weird CSS leakage across pages.
+
+- [#1490](https://github.com/withstudiocms/studiocms/pull/1490) [`418b743`](https://github.com/withstudiocms/studiocms/commit/418b743c6387878f82599f94ad7185947ec6815d) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Moves packages to tsdown based builder instead of custom esbuild pipeline
+
+### Patch Changes
+
+- [#1581](https://github.com/withstudiocms/studiocms/pull/1581) [`859b0e2`](https://github.com/withstudiocms/studiocms/commit/859b0e280e2b032867461c5b44bfce07e3e05193) Thanks [@renovate](https://github.com/apps/renovate)! - chore(deps): update dependency tsx to ^4.23.0
+
+- [#1613](https://github.com/withstudiocms/studiocms/pull/1613) [`2832c86`](https://github.com/withstudiocms/studiocms/commit/2832c86d75ab77af7655e917321df329b4cb9ebf) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Fix Effect LSP diagnostic warnings
+
+- Updated dependencies [[`72148f4`](https://github.com/withstudiocms/studiocms/commit/72148f4d5eae2108f6995c980d1834128da4f020), [`49cdf12`](https://github.com/withstudiocms/studiocms/commit/49cdf12fb73eed117e1ab3fa4225d11a8a13554f), [`010cb29`](https://github.com/withstudiocms/studiocms/commit/010cb293dc73cbd3d7fd42fac43072f24c908a60), [`2bd1616`](https://github.com/withstudiocms/studiocms/commit/2bd161637b58a64fab90b1e8fb0d5d9d1c64f166), [`f7646fe`](https://github.com/withstudiocms/studiocms/commit/f7646fedc637f250d04844f9a6e1ac8126ec5015), [`f3dcee2`](https://github.com/withstudiocms/studiocms/commit/f3dcee25fcdcab2199e849cef62e97ef54c60543), [`3a8e4ce`](https://github.com/withstudiocms/studiocms/commit/3a8e4ceea5b1c5e31a42e5e7a2402258f9c149cc), [`a5a5769`](https://github.com/withstudiocms/studiocms/commit/a5a57694c1a273196b754acce545a8d259b3423f), [`76400b0`](https://github.com/withstudiocms/studiocms/commit/76400b06202c081390bf1b28f2a7c07a2d141a99), [`497ec43`](https://github.com/withstudiocms/studiocms/commit/497ec43d30436cd6042ec2be3e933b44d03491e0), [`418b743`](https://github.com/withstudiocms/studiocms/commit/418b743c6387878f82599f94ad7185947ec6815d), [`5b68503`](https://github.com/withstudiocms/studiocms/commit/5b6850349f1ac9d2acdc9cbb8bcd79b7561de769)]:
+  - @withstudiocms/effect@0.5.0
+  - effectify@0.3.0
+  - @withstudiocms/kysely@0.3.0
+
 ## 0.3.0
 
 ### Minor Changes

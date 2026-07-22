@@ -1,6 +1,6 @@
 {
   "name": "@withstudiocms/auth-kit",
-  "version": "0.1.4",
+  "version": "0.2.0",
   "description": "Utilities for managing authentication",
   "author": {
     "name": "withstudiocms",
@@ -79,9 +79,9 @@
     "astro": "catalog:astrojs-current"
   },
   "peerDependencies": {
-		"@effect/platform": "catalog:effect",
+    "@effect/platform": "catalog:effect",
     "astro": "catalog:astrojs-min",
-		"effect": "catalog:effect",
+    "effect": "catalog:effect",
     "effectify": "workspace:^"
   }
 }

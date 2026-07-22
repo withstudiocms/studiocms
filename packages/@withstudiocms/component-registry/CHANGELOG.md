@@ -1,5 +1,31 @@
 # @withstudiocms/component-registry
 
+## 0.2.0
+
+### Minor Changes
+
+- [#1580](https://github.com/withstudiocms/studiocms/pull/1580) [`9a1678a`](https://github.com/withstudiocms/studiocms/commit/9a1678a44cc23c7253c7aacdd38e8ed94fc6a589) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Migrate from per-package helpers to use helpers from `@withstudiocms/internal_helpers` package
+
+- [#1537](https://github.com/withstudiocms/studiocms/pull/1537) [`f7646fe`](https://github.com/withstudiocms/studiocms/commit/f7646fedc637f250d04844f9a6e1ac8126ec5015) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Updates for Astro v6, Lints `.astro` files, and scope CSS files to prevent weird CSS leakage across pages.
+
+- [#1579](https://github.com/withstudiocms/studiocms/pull/1579) [`55b6083`](https://github.com/withstudiocms/studiocms/commit/55b6083fa48b00e125bbb06bc1e83bf846e9c7b8) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Remove dependency on Astro integration kit
+
+- [#1490](https://github.com/withstudiocms/studiocms/pull/1490) [`418b743`](https://github.com/withstudiocms/studiocms/commit/418b743c6387878f82599f94ad7185947ec6815d) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Moves packages to tsdown based builder instead of custom esbuild pipeline
+
+- [#1483](https://github.com/withstudiocms/studiocms/pull/1483) [`5f2a350`](https://github.com/withstudiocms/studiocms/commit/5f2a350b69429cf21d33851fb507ac930c3ccdf7) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Cleans up old legacy or ununused code
+
+### Patch Changes
+
+- [#1602](https://github.com/withstudiocms/studiocms/pull/1602) [`c5070e8`](https://github.com/withstudiocms/studiocms/commit/c5070e8ac0eff77a4462fdd4d72b49cde2fa26f0) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Fixes component registry path resolution
+
+- [#1593](https://github.com/withstudiocms/studiocms/pull/1593) [`f6f1607`](https://github.com/withstudiocms/studiocms/commit/f6f1607a0870fdec9b488e11c08c633c71ed4ff6) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update dependency ts-morph to v28
+
+- [#1503](https://github.com/withstudiocms/studiocms/pull/1503) [`3a8e4ce`](https://github.com/withstudiocms/studiocms/commit/3a8e4ceea5b1c5e31a42e5e7a2402258f9c149cc) Thanks [@renovate](https://github.com/apps/renovate)! - Lint
+
+- Updated dependencies [[`72148f4`](https://github.com/withstudiocms/studiocms/commit/72148f4d5eae2108f6995c980d1834128da4f020), [`49cdf12`](https://github.com/withstudiocms/studiocms/commit/49cdf12fb73eed117e1ab3fa4225d11a8a13554f), [`ef73e14`](https://github.com/withstudiocms/studiocms/commit/ef73e14e7c72ef92a06341d7fed2dfba5070a4b0), [`010cb29`](https://github.com/withstudiocms/studiocms/commit/010cb293dc73cbd3d7fd42fac43072f24c908a60), [`2bd1616`](https://github.com/withstudiocms/studiocms/commit/2bd161637b58a64fab90b1e8fb0d5d9d1c64f166), [`4bf7ffa`](https://github.com/withstudiocms/studiocms/commit/4bf7ffa7486db51e5d0f023c4380da9f47c25d57), [`9a1678a`](https://github.com/withstudiocms/studiocms/commit/9a1678a44cc23c7253c7aacdd38e8ed94fc6a589), [`f7646fe`](https://github.com/withstudiocms/studiocms/commit/f7646fedc637f250d04844f9a6e1ac8126ec5015), [`55b6083`](https://github.com/withstudiocms/studiocms/commit/55b6083fa48b00e125bbb06bc1e83bf846e9c7b8), [`a5a5769`](https://github.com/withstudiocms/studiocms/commit/a5a57694c1a273196b754acce545a8d259b3423f), [`76400b0`](https://github.com/withstudiocms/studiocms/commit/76400b06202c081390bf1b28f2a7c07a2d141a99), [`418b743`](https://github.com/withstudiocms/studiocms/commit/418b743c6387878f82599f94ad7185947ec6815d)]:
+  - @withstudiocms/effect@0.5.0
+  - @withstudiocms/internal_helpers@0.3.0
+
 ## 0.1.4
 
 ### Patch Changes

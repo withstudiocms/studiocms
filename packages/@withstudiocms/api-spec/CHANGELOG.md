@@ -1,5 +1,21 @@
 # @withstudiocms/api-spec
 
+## 0.4.0
+
+### Minor Changes
+
+- [#1537](https://github.com/withstudiocms/studiocms/pull/1537) [`f7646fe`](https://github.com/withstudiocms/studiocms/commit/f7646fedc637f250d04844f9a6e1ac8126ec5015) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Updates for Astro v6, Lints `.astro` files, and scope CSS files to prevent weird CSS leakage across pages.
+
+### Patch Changes
+
+- [#1560](https://github.com/withstudiocms/studiocms/pull/1560) [`fa83227`](https://github.com/withstudiocms/studiocms/commit/fa83227c767d80fe07d823f27bcb95acc7012473) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Restricts available data on the public RestAPI endpoints to prevent exposing any private information.
+
+- [#1486](https://github.com/withstudiocms/studiocms/pull/1486) [`497ec43`](https://github.com/withstudiocms/studiocms/commit/497ec43d30436cd6042ec2be3e933b44d03491e0) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Unifies tsdown configs across project repository and updates related references
+
+- Updated dependencies [[`72148f4`](https://github.com/withstudiocms/studiocms/commit/72148f4d5eae2108f6995c980d1834128da4f020), [`f7646fe`](https://github.com/withstudiocms/studiocms/commit/f7646fedc637f250d04844f9a6e1ac8126ec5015), [`859b0e2`](https://github.com/withstudiocms/studiocms/commit/859b0e280e2b032867461c5b44bfce07e3e05193), [`f3dcee2`](https://github.com/withstudiocms/studiocms/commit/f3dcee25fcdcab2199e849cef62e97ef54c60543), [`a5a5769`](https://github.com/withstudiocms/studiocms/commit/a5a57694c1a273196b754acce545a8d259b3423f), [`2832c86`](https://github.com/withstudiocms/studiocms/commit/2832c86d75ab77af7655e917321df329b4cb9ebf), [`497ec43`](https://github.com/withstudiocms/studiocms/commit/497ec43d30436cd6042ec2be3e933b44d03491e0), [`418b743`](https://github.com/withstudiocms/studiocms/commit/418b743c6387878f82599f94ad7185947ec6815d)]:
+  - effectify@0.3.0
+  - @withstudiocms/sdk@0.4.0
+
 ## 0.3.2
 
 ### Patch Changes

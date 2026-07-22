@@ -1,5 +1,58 @@
 # studiocms
 
+## 0.5.0
+
+### Minor Changes
+
+- [#1537](https://github.com/withstudiocms/studiocms/pull/1537) [`f7646fe`](https://github.com/withstudiocms/studiocms/commit/f7646fedc637f250d04844f9a6e1ac8126ec5015) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Breaking Change: This version drops support for Astro v5
+
+- [#1537](https://github.com/withstudiocms/studiocms/pull/1537) [`f7646fe`](https://github.com/withstudiocms/studiocms/commit/f7646fedc637f250d04844f9a6e1ac8126ec5015) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Updates for Astro v6, Lints `.astro` files, and scope CSS files to prevent weird CSS leakage across pages.
+
+- [#1606](https://github.com/withstudiocms/studiocms/pull/1606) [`b42fb34`](https://github.com/withstudiocms/studiocms/commit/b42fb347fca3c2632eccc716ad401ee962a31f76) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Migrates to a Vite-based loader with native ESM and SSR fallback support; callers now use the filesystem-aware options API.
+
+- [#1580](https://github.com/withstudiocms/studiocms/pull/1580) [`9a1678a`](https://github.com/withstudiocms/studiocms/commit/9a1678a44cc23c7253c7aacdd38e8ed94fc6a589) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Replace Astro integration kit helpers
+
+- [#1483](https://github.com/withstudiocms/studiocms/pull/1483) [`5f2a350`](https://github.com/withstudiocms/studiocms/commit/5f2a350b69429cf21d33851fb507ac930c3ccdf7) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Cleans up old legacy or ununused code
+
+### Patch Changes
+
+- [#1585](https://github.com/withstudiocms/studiocms/pull/1585) [`9336707`](https://github.com/withstudiocms/studiocms/commit/93367071c696c9aefe0fee67a7c9e18b5f62d310) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Update i18n virtual module dynamic import for TS6 support
+
+- [#1607](https://github.com/withstudiocms/studiocms/pull/1607) [`7f10c18`](https://github.com/withstudiocms/studiocms/commit/7f10c1804bec372424866aab52195c497abc8b19) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Export explicit Effect-derived API client, client-map, and catch-tag types to improve consumer type safety. This is a type-only change with no user-facing runtime impact.
+
+- [#1493](https://github.com/withstudiocms/studiocms/pull/1493) [`274290d`](https://github.com/withstudiocms/studiocms/commit/274290dc62f5f4c1b11356c905f96e797247e323) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update studiocms dependencies
+
+- [#1516](https://github.com/withstudiocms/studiocms/pull/1516) [`17ca00c`](https://github.com/withstudiocms/studiocms/commit/17ca00c10fac3d5c0fa969cd555362729e3c8866) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update studiocms dependencies
+
+- [#1586](https://github.com/withstudiocms/studiocms/pull/1586) [`db92490`](https://github.com/withstudiocms/studiocms/commit/db9249036e15290cb6b070215259fda904cc24c6) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update dependency ultrahtml to ^1.7.0
+
+- [#1599](https://github.com/withstudiocms/studiocms/pull/1599) [`82645af`](https://github.com/withstudiocms/studiocms/commit/82645afb5c92032a3137c6e9c9764e0887db7653) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update dependency dompurify to ^3.4.12
+
+- [#1539](https://github.com/withstudiocms/studiocms/pull/1539) [`cefc168`](https://github.com/withstudiocms/studiocms/commit/cefc1689df1ee93b61febb079f39e69b61c29996) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update studiocms dependencies
+
+- [#1584](https://github.com/withstudiocms/studiocms/pull/1584) [`2da4af3`](https://github.com/withstudiocms/studiocms/commit/2da4af3d3a9f2ffff4babca2f193f76651d14211) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Bump to Astro 6.1.0 and migrate back to astro:config virtual module
+
+- [#1503](https://github.com/withstudiocms/studiocms/pull/1503) [`3a8e4ce`](https://github.com/withstudiocms/studiocms/commit/3a8e4ceea5b1c5e31a42e5e7a2402258f9c149cc) Thanks [@renovate](https://github.com/apps/renovate)! - Lint
+
+- [#1490](https://github.com/withstudiocms/studiocms/pull/1490) [`418b743`](https://github.com/withstudiocms/studiocms/commit/418b743c6387878f82599f94ad7185947ec6815d) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Fix type errors introduced from newly migrated packages
+
+- [#1548](https://github.com/withstudiocms/studiocms/pull/1548) [`5b68503`](https://github.com/withstudiocms/studiocms/commit/5b6850349f1ac9d2acdc9cbb8bcd79b7561de769) Thanks [@renovate](https://github.com/apps/renovate)! - Update dependencies, and lint
+
+- [#1602](https://github.com/withstudiocms/studiocms/pull/1602) [`c5070e8`](https://github.com/withstudiocms/studiocms/commit/c5070e8ac0eff77a4462fdd4d72b49cde2fa26f0) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Fixes Code component script, as well as i18n import logic
+
+- Updated dependencies [[`c5070e8`](https://github.com/withstudiocms/studiocms/commit/c5070e8ac0eff77a4462fdd4d72b49cde2fa26f0), [`72148f4`](https://github.com/withstudiocms/studiocms/commit/72148f4d5eae2108f6995c980d1834128da4f020), [`49cdf12`](https://github.com/withstudiocms/studiocms/commit/49cdf12fb73eed117e1ab3fa4225d11a8a13554f), [`5720755`](https://github.com/withstudiocms/studiocms/commit/57207550e2415db9f0246ddec0a9306556973029), [`ef73e14`](https://github.com/withstudiocms/studiocms/commit/ef73e14e7c72ef92a06341d7fed2dfba5070a4b0), [`010cb29`](https://github.com/withstudiocms/studiocms/commit/010cb293dc73cbd3d7fd42fac43072f24c908a60), [`2bd1616`](https://github.com/withstudiocms/studiocms/commit/2bd161637b58a64fab90b1e8fb0d5d9d1c64f166), [`9f4b1a1`](https://github.com/withstudiocms/studiocms/commit/9f4b1a190f4771a6e17e832cbdd98c5c4a44e6c7), [`4bf7ffa`](https://github.com/withstudiocms/studiocms/commit/4bf7ffa7486db51e5d0f023c4380da9f47c25d57), [`d1f6329`](https://github.com/withstudiocms/studiocms/commit/d1f6329764e754ed8f22685d4371b87e4278fde0), [`f6f1607`](https://github.com/withstudiocms/studiocms/commit/f6f1607a0870fdec9b488e11c08c633c71ed4ff6), [`9a1678a`](https://github.com/withstudiocms/studiocms/commit/9a1678a44cc23c7253c7aacdd38e8ed94fc6a589), [`9a1678a`](https://github.com/withstudiocms/studiocms/commit/9a1678a44cc23c7253c7aacdd38e8ed94fc6a589), [`f7646fe`](https://github.com/withstudiocms/studiocms/commit/f7646fedc637f250d04844f9a6e1ac8126ec5015), [`5f2a350`](https://github.com/withstudiocms/studiocms/commit/5f2a350b69429cf21d33851fb507ac930c3ccdf7), [`859b0e2`](https://github.com/withstudiocms/studiocms/commit/859b0e280e2b032867461c5b44bfce07e3e05193), [`f3dcee2`](https://github.com/withstudiocms/studiocms/commit/f3dcee25fcdcab2199e849cef62e97ef54c60543), [`fa83227`](https://github.com/withstudiocms/studiocms/commit/fa83227c767d80fe07d823f27bcb95acc7012473), [`b42fb34`](https://github.com/withstudiocms/studiocms/commit/b42fb347fca3c2632eccc716ad401ee962a31f76), [`55b6083`](https://github.com/withstudiocms/studiocms/commit/55b6083fa48b00e125bbb06bc1e83bf846e9c7b8), [`252798a`](https://github.com/withstudiocms/studiocms/commit/252798a1a7198487141b629ce181f99170a57558), [`3a8e4ce`](https://github.com/withstudiocms/studiocms/commit/3a8e4ceea5b1c5e31a42e5e7a2402258f9c149cc), [`a5a5769`](https://github.com/withstudiocms/studiocms/commit/a5a57694c1a273196b754acce545a8d259b3423f), [`2832c86`](https://github.com/withstudiocms/studiocms/commit/2832c86d75ab77af7655e917321df329b4cb9ebf), [`76400b0`](https://github.com/withstudiocms/studiocms/commit/76400b06202c081390bf1b28f2a7c07a2d141a99), [`497ec43`](https://github.com/withstudiocms/studiocms/commit/497ec43d30436cd6042ec2be3e933b44d03491e0), [`418b743`](https://github.com/withstudiocms/studiocms/commit/418b743c6387878f82599f94ad7185947ec6815d), [`5b68503`](https://github.com/withstudiocms/studiocms/commit/5b6850349f1ac9d2acdc9cbb8bcd79b7561de769), [`5f2a350`](https://github.com/withstudiocms/studiocms/commit/5f2a350b69429cf21d33851fb507ac930c3ccdf7)]:
+  - @withstudiocms/component-registry@0.2.0
+  - @withstudiocms/effect@0.5.0
+  - effectify@0.3.0
+  - @withstudiocms/cli-kit@0.3.0
+  - @withstudiocms/internal_helpers@0.3.0
+  - @withstudiocms/config-utils@0.3.0
+  - @withstudiocms/api-spec@0.4.0
+  - @withstudiocms/auth-kit@0.2.0
+  - @withstudiocms/sdk@0.4.0
+  - @withstudiocms/kysely@0.3.0
+  - @withstudiocms/template-lang@0.2.0
+
 ## 0.4.4
 
 ### Patch Changes

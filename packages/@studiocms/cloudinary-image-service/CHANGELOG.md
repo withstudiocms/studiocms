@@ -1,5 +1,17 @@
 # @studiocms/cloudinary-image-service
 
+## 0.4.0
+
+### Minor Changes
+
+- [#1537](https://github.com/withstudiocms/studiocms/pull/1537) [`f7646fe`](https://github.com/withstudiocms/studiocms/commit/f7646fedc637f250d04844f9a6e1ac8126ec5015) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Breaking Change: This version drops support for Astro v5
+
+- [#1537](https://github.com/withstudiocms/studiocms/pull/1537) [`f7646fe`](https://github.com/withstudiocms/studiocms/commit/f7646fedc637f250d04844f9a6e1ac8126ec5015) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Updates for Astro v6, Lints `.astro` files, and scope CSS files to prevent weird CSS leakage across pages.
+
+- [#1500](https://github.com/withstudiocms/studiocms/pull/1500) [`3a0beb1`](https://github.com/withstudiocms/studiocms/commit/3a0beb13f25e38c4d7d98cc9644623eb82964851) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Migrates packages to use tsdown instead of custom esbuild pipeline
+
+- [#1579](https://github.com/withstudiocms/studiocms/pull/1579) [`55b6083`](https://github.com/withstudiocms/studiocms/commit/55b6083fa48b00e125bbb06bc1e83bf846e9c7b8) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Remove dependency on Astro integration kit
+
 ## 0.3.0
 
 ### Minor Changes
