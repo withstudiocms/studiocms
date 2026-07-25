@@ -7,6 +7,23 @@ interface PathResolver {
 }
 
 /**
+ * Convert a filesystem path into a JS module specifier literal (JSON-quoted),
+ * with POSIX separators so Windows backslashes are never treated as escape sequences
+ * when the result is embedded in generated virtual-module source.
+ */
+export function toModuleSpecifier(filePath: string): string {
+	return JSON.stringify(filePath.replaceAll('\\', '/'));
+}
+
+/**
+ * Normalize an absolute path to POSIX separators for safe use in virtual-module
+ * source and cross-platform FS APIs (Node accepts `/` on Windows).
+ */
+function toPosixPath(filePath: string): string {
+	return filePath.replaceAll('\\', '/');
+}
+
+/**
  * Create a path resolver anchored to the provided base.
  *
  * The function accepts either a file URL (for example `import.meta.url`, i.e. a string
@@ -20,7 +37,8 @@ interface PathResolver {
  *   - a filesystem path string (absolute or relative).
  * @returns An object with two helpers:
  *   - `resolve(...segments: string[]): string` — resolves the given path segments
- *     against the computed base directory and returns an absolute filesystem path.
+ *     against the computed base directory and returns an absolute filesystem path
+ *     with POSIX separators (safe to embed in virtual-module source on Windows).
  *   - `resolveURL(...segments: string[]): URL` — resolves the given path segments
  *     against the computed base directory and returns a `file://` URL.
  *
@@ -48,9 +66,10 @@ function createPathResolver(baseOption: string): PathResolver {
 		 * Resolve path segments against the base directory.
 		 *
 		 * @param segments - Path segments to resolve.
-		 * @returns The resolved absolute filesystem path.
+		 * @returns The resolved absolute filesystem path with POSIX separators.
 		 */
-		resolve: (...segments: string[]): string => path.resolve(baseDir, ...segments),
+		resolve: (...segments: string[]): string =>
+			toPosixPath(path.resolve(baseDir, ...segments)),
 
 		/**
 		 * Resolve path segments against the base directory and return a file URL.
@@ -58,7 +77,8 @@ function createPathResolver(baseOption: string): PathResolver {
 		 * @param segments - Path segments to resolve.
 		 * @returns The resolved file URL.
 		 */
-		resolveURL: (...segments: string[]): URL => pathToFileURL(path.resolve(baseDir, ...segments)),
+		resolveURL: (...segments: string[]): URL =>
+			pathToFileURL(path.resolve(baseDir, ...segments)),
 	};
 }
 

@@ -7,6 +7,7 @@
 /// <reference types="studiocms/v/types" />
 
 import { addVirtualImports } from '@withstudiocms/internal_helpers/astro-integration';
+import { toModuleSpecifier } from '@withstudiocms/internal_helpers/pathResolver';
 import type { AstroIntegration } from 'astro';
 import { definePlugin } from 'studiocms/plugins';
 import type { StudioCMSPluginDef } from 'studiocms/schemas';
@@ -48,7 +49,7 @@ export function internalMarkDocIntegration(
 					name: packageIdentifier,
 					imports: {
 						'studiocms:markdoc/renderer': `
-							import { renderMarkDoc as _render } from '${internalRenderer}';
+							import { renderMarkDoc as _render } from ${toModuleSpecifier(internalRenderer)};
 
 							export const renderMarkDoc = _render;
 							export default renderMarkDoc;

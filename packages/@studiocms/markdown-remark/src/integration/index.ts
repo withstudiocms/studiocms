@@ -1,7 +1,9 @@
 /// <reference types="./virtual.d.ts" preserve="true" />
 
 import { addVirtualImports } from '@withstudiocms/internal_helpers/astro-integration';
-import createPathResolver from '@withstudiocms/internal_helpers/pathResolver';
+import createPathResolver, {
+	toModuleSpecifier,
+} from '@withstudiocms/internal_helpers/pathResolver';
 import type { AstroIntegration } from 'astro';
 import { MarkdownRemarkError } from '../errors.ts';
 import type { StudioCMSMarkdownRemarkIntegrationOptions } from '../types.ts';
@@ -65,9 +67,11 @@ const markdownRemark = (
 				addVirtualImports(params, {
 					name: '@studiocms/markdown-remark',
 					imports: {
-						'studiocms:markdown-remark': `export * from '${virtualComponents}';`,
-						'studiocms:markdown-remark/css': `import '${headingsCSS}'; ${
-							markdownExtended.callouts ? `import '${resolvedCalloutTheme}';` : ''
+						'studiocms:markdown-remark': `export * from ${toModuleSpecifier(virtualComponents)};`,
+						'studiocms:markdown-remark/css': `import ${toModuleSpecifier(headingsCSS)}; ${
+							markdownExtended.callouts
+								? `import ${toModuleSpecifier(resolvedCalloutTheme)};`
+								: ''
 						}`,
 						'studiocms:markdown-remark/user-components': `
 							export const componentKeys = ${JSON.stringify(Object.keys(components).map((name) => name.toLowerCase()))};
@@ -80,7 +84,7 @@ const markdownRemark = (
 											`Invalid component name "${name}": must be a valid JavaScript identifier when lowercased.`
 										);
 									}
-									return `export { default as ${id} } from '${astroRootResolve(path)}';`;
+									return `export { default as ${id} } from ${toModuleSpecifier(astroRootResolve(path))};`;
 								})
 								.join('\n')}
 						`,

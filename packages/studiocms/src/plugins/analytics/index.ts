@@ -1,6 +1,8 @@
 import { runEffect } from '@withstudiocms/effect';
 import { addVirtualImports } from '@withstudiocms/internal_helpers/astro-integration';
-import createPathResolver from '@withstudiocms/internal_helpers/pathResolver';
+import createPathResolver, {
+	toModuleSpecifier,
+} from '@withstudiocms/internal_helpers/pathResolver';
 import type { AstroIntegration } from 'astro';
 import type { DbDialectType } from '../../db/index.js';
 import { KyselyTableManager } from '../../db/plugins.js';
@@ -58,14 +60,14 @@ const webVitalsIntegration = (): AstroIntegration => {
 				});
 
 				// Client-side performance measurement script.
-				injectScript('page', `import '${resolve('./client-script.js')}';`);
+				injectScript('page', `import ${toModuleSpecifier(resolve('./client-script.js'))};`);
 
 				// Virtual import for dashboard web vitals components and data fetching.
 				addVirtualImports(params, {
 					name: pkgName,
 					imports: {
 						'studiocms-dashboard:web-vitals': `
-                            export * from '${resolve('./assets/webVital.js')}';
+                            export * from ${toModuleSpecifier(resolve('./assets/webVital.js'))};
                         `,
 					},
 				});

@@ -1,3 +1,5 @@
+import { toModuleSpecifier } from '../pathResolver.js';
+
 /**
  * Generates an export statement for a renderer component based on the provided component path and page type.
  *
@@ -10,7 +12,7 @@ export function rendererComponentFilter(comp: string | undefined, safePageType: 
 	if (!comp) {
 		throw new Error(`Renderer Component path is required for page type: ${safePageType}`);
 	}
-	return `export { default as ${safePageType} } from '${comp}';`;
+	return `export { default as ${safePageType} } from ${toModuleSpecifier(comp)};`;
 }
 
 /**
@@ -25,5 +27,5 @@ export function pageContentComponentFilter(comp: string | undefined, safePageTyp
 	if (!comp) {
 		throw new Error(`Page Content Component path is required for page type: ${safePageType}`);
 	}
-	return `export { default as ${safePageType} } from '${comp}';`;
+	return `export { default as ${safePageType} } from ${toModuleSpecifier(comp)};`;
 }
