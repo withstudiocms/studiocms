@@ -68,8 +68,7 @@ function createPathResolver(baseOption: string): PathResolver {
 		 * @param segments - Path segments to resolve.
 		 * @returns The resolved absolute filesystem path with POSIX separators.
 		 */
-		resolve: (...segments: string[]): string =>
-			toPosixPath(path.resolve(baseDir, ...segments)),
+		resolve: (...segments: string[]): string => toPosixPath(path.resolve(baseDir, ...segments)),
 
 		/**
 		 * Resolve path segments against the base directory and return a file URL.
@@ -77,8 +76,7 @@ function createPathResolver(baseOption: string): PathResolver {
 		 * @param segments - Path segments to resolve.
 		 * @returns The resolved file URL.
 		 */
-		resolveURL: (...segments: string[]): URL =>
-			pathToFileURL(path.resolve(baseDir, ...segments)),
+		resolveURL: (...segments: string[]): URL => pathToFileURL(path.resolve(baseDir, ...segments)),
 	};
 }
 

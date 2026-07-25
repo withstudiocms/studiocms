@@ -69,9 +69,7 @@ const markdownRemark = (
 					imports: {
 						'studiocms:markdown-remark': `export * from ${toModuleSpecifier(virtualComponents)};`,
 						'studiocms:markdown-remark/css': `import ${toModuleSpecifier(headingsCSS)}; ${
-							markdownExtended.callouts
-								? `import ${toModuleSpecifier(resolvedCalloutTheme)};`
-								: ''
+							markdownExtended.callouts ? `import ${toModuleSpecifier(resolvedCalloutTheme)};` : ''
 						}`,
 						'studiocms:markdown-remark/user-components': `
 							export const componentKeys = ${JSON.stringify(Object.keys(components).map((name) => name.toLowerCase()))};

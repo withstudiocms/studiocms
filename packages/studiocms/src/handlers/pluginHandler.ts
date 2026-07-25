@@ -1424,7 +1424,9 @@ export const pluginHandler = async (
 			},
 			{
 				id: 'studiocms:dashboard/augments/scripts',
-				content: dashboardAugmentScripts.map((script) => `import ${toModuleSpecifier(script)};`).join('\n'),
+				content: dashboardAugmentScripts
+					.map((script) => `import ${toModuleSpecifier(script)};`)
+					.join('\n'),
 			},
 			{
 				id: 'studiocms:plugins/list',
