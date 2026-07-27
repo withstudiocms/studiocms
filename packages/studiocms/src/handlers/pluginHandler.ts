@@ -793,9 +793,9 @@ export const pluginHandler = async (
 			},
 			{
 				id: 'studiocms:storage-manager/module',
-				content: `
-						export { default } from ${toModuleSpecifier(finalStorageManagerModulePath ?? '')};
-					`,
+				content: finalStorageManagerModulePath
+					? `export { default } from ${toModuleSpecifier(finalStorageManagerModulePath)};`
+					: `throw new Error('[studiocms] finalStorageManagerModulePath is undefined – cannot emit virtual module without a valid storage manager path');`,
 			},
 			{
 				id: 'studiocms:storage-manager/name',
@@ -1441,9 +1441,9 @@ export const pluginHandler = async (
 			},
 			{
 				id: 'studiocms:storage-manager/module',
-				content: `
-						export { default } from ${toModuleSpecifier(finalStorageManagerModulePath ?? '')};
-					`,
+				content: finalStorageManagerModulePath
+					? `export { default } from ${toModuleSpecifier(finalStorageManagerModulePath)};`
+					: `throw new Error('[studiocms] finalStorageManagerModulePath is undefined – cannot emit virtual module without a valid storage manager path');`,
 			},
 			{
 				id: 'studiocms:storage-manager/name',

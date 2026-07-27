@@ -7,20 +7,13 @@ interface PathResolver {
 }
 
 /**
- * Convert a filesystem path into a JS module specifier literal (JSON-quoted),
- * with POSIX separators so Windows backslashes are never treated as escape sequences
- * when the result is embedded in generated virtual-module source.
+ * Convert a filesystem path into a JS module specifier literal (JSON-quoted).
+ * Paths are normalized to POSIX separators because Vite/Rollup normalize
+ * module ids to POSIX internally; JSON.stringify is what makes the result
+ * safe to embed (escaping backslashes, quotes, etc.).
  */
 export function toModuleSpecifier(filePath: string): string {
 	return JSON.stringify(filePath.replaceAll('\\', '/'));
-}
-
-/**
- * Normalize an absolute path to POSIX separators for safe use in virtual-module
- * source and cross-platform FS APIs (Node accepts `/` on Windows).
- */
-function toPosixPath(filePath: string): string {
-	return filePath.replaceAll('\\', '/');
 }
 
 /**
@@ -37,8 +30,8 @@ function toPosixPath(filePath: string): string {
  *   - a filesystem path string (absolute or relative).
  * @returns An object with two helpers:
  *   - `resolve(...segments: string[]): string` — resolves the given path segments
- *     against the computed base directory and returns an absolute filesystem path
- *     with POSIX separators (safe to embed in virtual-module source on Windows).
+ *     against the computed base directory and returns a platform-native absolute
+ *     filesystem path (same contract as `path.resolve`).
  *   - `resolveURL(...segments: string[]): URL` — resolves the given path segments
  *     against the computed base directory and returns a `file://` URL.
  *
@@ -66,9 +59,9 @@ function createPathResolver(baseOption: string): PathResolver {
 		 * Resolve path segments against the base directory.
 		 *
 		 * @param segments - Path segments to resolve.
-		 * @returns The resolved absolute filesystem path with POSIX separators.
+		 * @returns The resolved absolute filesystem path (platform-native separators).
 		 */
-		resolve: (...segments: string[]): string => toPosixPath(path.resolve(baseDir, ...segments)),
+		resolve: (...segments: string[]): string => path.resolve(baseDir, ...segments),
 
 		/**
 		 * Resolve path segments against the base directory and return a file URL.

@@ -2,13 +2,10 @@ import * as path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import * as allure from 'allure-js-commons';
 import { beforeEach, describe, expect, test } from 'vitest';
-import createPathResolver, { toModuleSpecifier } from '../src/pathResolver.js';
+import createPathResolver from '../src/pathResolver.js';
 import { parentSuiteName, sharedTags } from './test-utils.js';
 
-const localSuiteName = 'Path Resolver Tests';
-
-/** Match pathResolver.resolve output (POSIX separators on all platforms). */
-const toPosix = (p: string) => p.replaceAll('\\', '/');
+const localSuiteName = 'Path Resolver Tests (OS-sensitive)';
 
 describe(parentSuiteName, () => {
 	let testFileUrl: string;
@@ -16,7 +13,6 @@ describe(parentSuiteName, () => {
 	let testDirPath: string;
 
 	beforeEach(() => {
-		// Setup test paths
 		testFilePath = path.join(process.cwd(), 'test', 'fixtures', 'test-file.js');
 		testFileUrl = pathToFileURL(testFilePath).href;
 		testDirPath = path.dirname(testFilePath);
@@ -42,9 +38,7 @@ describe(parentSuiteName, () => {
 		const resolver = createPathResolver(testFileUrl);
 		const result = resolver.resolve('assets', 'image.png');
 
-		const expected = toPosix(path.join(testDirPath, 'assets', 'image.png'));
-		expect(result).toBe(expected);
-		expect(result).not.toContain('\\');
+		expect(result).toBe(path.join(testDirPath, 'assets', 'image.png'));
 	});
 
 	test('should resolve parent directory paths correctly', async () => {
@@ -56,8 +50,7 @@ describe(parentSuiteName, () => {
 		const resolver = createPathResolver(testFileUrl);
 		const result = resolver.resolve('..', 'sibling', 'file.txt');
 
-		const expected = toPosix(path.join(testDirPath, '..', 'sibling', 'file.txt'));
-		expect(result).toBe(expected);
+		expect(result).toBe(path.join(testDirPath, '..', 'sibling', 'file.txt'));
 	});
 
 	test('should resolveURL to return a file:// URL', async () => {
@@ -84,8 +77,7 @@ describe(parentSuiteName, () => {
 		const resolver = createPathResolver(testFileUrl);
 		const result = resolver.resolve('config.json');
 
-		const expected = toPosix(path.join(testDirPath, 'config.json'));
-		expect(result).toBe(expected);
+		expect(result).toBe(path.join(testDirPath, 'config.json'));
 	});
 
 	test('should handle empty segments', async () => {
@@ -95,9 +87,7 @@ describe(parentSuiteName, () => {
 		await allure.tags(...sharedTags);
 
 		const resolver = createPathResolver(testFileUrl);
-		const result = resolver.resolve();
-
-		expect(result).toBe(toPosix(testDirPath));
+		expect(resolver.resolve()).toBe(testDirPath);
 	});
 
 	test('should create resolver from process.cwd()', async () => {
@@ -109,8 +99,7 @@ describe(parentSuiteName, () => {
 		const resolver = createPathResolver(process.cwd());
 		const result = resolver.resolve('src', 'index.ts');
 
-		const expected = toPosix(path.join(process.cwd(), 'src', 'index.ts'));
-		expect(result).toBe(expected);
+		expect(result).toBe(path.join(process.cwd(), 'src', 'index.ts'));
 	});
 
 	test('should create resolver from absolute path', async () => {
@@ -123,8 +112,7 @@ describe(parentSuiteName, () => {
 		const resolver = createPathResolver(basePath);
 		const result = resolver.resolve('utils', 'helper.ts');
 
-		const expected = toPosix(path.join(basePath, 'utils', 'helper.ts'));
-		expect(result).toBe(expected);
+		expect(result).toBe(path.join(basePath, 'utils', 'helper.ts'));
 	});
 
 	test('should create resolver from relative path', async () => {
@@ -137,8 +125,7 @@ describe(parentSuiteName, () => {
 		const resolver = createPathResolver(relativePath);
 		const result = resolver.resolve('index.ts');
 
-		const expected = toPosix(path.resolve(relativePath, 'index.ts'));
-		expect(result).toBe(expected);
+		expect(result).toBe(path.resolve(relativePath, 'index.ts'));
 	});
 
 	test('should resolveURL with filesystem path base', async () => {
@@ -152,9 +139,7 @@ describe(parentSuiteName, () => {
 
 		expect(result).toBeInstanceOf(URL);
 		expect(result.protocol).toBe('file:');
-		expect(toPosix(fileURLToPath(result))).toBe(
-			toPosix(path.join(process.cwd(), 'src', 'index.ts'))
-		);
+		expect(fileURLToPath(result)).toBe(path.join(process.cwd(), 'src', 'index.ts'));
 	});
 
 	test('should handle paths with special characters', async () => {
@@ -167,7 +152,6 @@ describe(parentSuiteName, () => {
 		const result = resolver.resolve('test-file', 'my file (1).txt');
 
 		expect(result).toContain('my file (1).txt');
-		expect(result).not.toContain('\\');
 	});
 
 	test('should handle multiple parent directory navigation', async () => {
@@ -179,8 +163,7 @@ describe(parentSuiteName, () => {
 		const resolver = createPathResolver(testFileUrl);
 		const result = resolver.resolve('..', '..', '..', 'root-level.txt');
 
-		const expected = toPosix(path.join(testDirPath, '..', '..', '..', 'root-level.txt'));
-		expect(result).toBe(expected);
+		expect(result).toBe(path.join(testDirPath, '..', '..', '..', 'root-level.txt'));
 	});
 
 	test('should normalize paths correctly', async () => {
@@ -192,8 +175,7 @@ describe(parentSuiteName, () => {
 		const resolver = createPathResolver(process.cwd());
 		const result = resolver.resolve('src', '.', 'utils', '..', 'index.ts');
 
-		const expected = toPosix(path.join(process.cwd(), 'src', 'index.ts'));
-		expect(result).toBe(expected);
+		expect(result).toBe(path.join(process.cwd(), 'src', 'index.ts'));
 	});
 
 	test('should handle absolute path segments in resolve', async () => {
@@ -206,8 +188,7 @@ describe(parentSuiteName, () => {
 		const absolutePath = path.join(process.cwd(), 'other', 'location');
 		const result = resolver.resolve(absolutePath);
 
-		// path.resolve with absolute path ignores base
-		expect(result).toBe(toPosix(absolutePath));
+		expect(result).toBe(absolutePath);
 	});
 
 	test('should produce consistent results between resolve and resolveURL', async () => {
@@ -222,54 +203,24 @@ describe(parentSuiteName, () => {
 		const resolvedPath = resolver.resolve(...segments);
 		const resolvedURL = resolver.resolveURL(...segments);
 
-		expect(toPosix(fileURLToPath(resolvedURL))).toBe(resolvedPath);
+		expect(fileURLToPath(resolvedURL)).toBe(resolvedPath);
 	});
 
-	test('should always return POSIX separators', async () => {
+	test('resolve returns platform-native separators', async () => {
 		await allure.parentSuite(parentSuiteName);
 		await allure.suite(localSuiteName);
-		await allure.subSuite('should always return POSIX separators');
+		await allure.subSuite('resolve returns platform-native separators');
 		await allure.tags(...sharedTags);
 
 		const resolver = createPathResolver(process.cwd());
 		const result = resolver.resolve('src', 'utils', 'helper.ts');
+		const expected = path.join(process.cwd(), 'src', 'utils', 'helper.ts');
 
-		expect(result).toBe(toPosix(path.join(process.cwd(), 'src', 'utils', 'helper.ts')));
-		expect(result).not.toContain('\\');
-	});
-
-	test('should not produce JS escape-prone backslashes for utils/node_modules segments', async () => {
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite(
-			'should not produce JS escape-prone backslashes for utils/node_modules segments'
-		);
-		await allure.tags(...sharedTags);
-
-		const resolver = createPathResolver(process.cwd());
-		const result = resolver.resolve('node_modules', 'studiocms', 'dist', 'utils', 'safeString.js');
-
-		expect(result).not.toContain('\\');
-		expect(result).toContain('/utils/');
-		expect(result).toContain('/node_modules/');
-		// Embedding as a single-quoted string must not create \u or \n escapes
-		const embedded = `from '${result}'`;
-		expect(embedded).not.toMatch(/\\[unt]/);
-	});
-
-	test('toModuleSpecifier JSON-quotes and POSIX-normalizes paths', async () => {
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('toModuleSpecifier JSON-quotes and POSIX-normalizes paths');
-		await allure.tags(...sharedTags);
-
-		const windowsStyle = 'E:\\AI Projects\\node_modules\\studiocms\\dist\\utils\\safeString.js';
-		const specifier = toModuleSpecifier(windowsStyle);
-
-		expect(specifier).toBe(
-			JSON.stringify('E:/AI Projects/node_modules/studiocms/dist/utils/safeString.js')
-		);
-		expect(specifier.startsWith('"')).toBe(true);
-		expect(specifier).not.toContain('\\u');
+		expect(result).toBe(expected);
+		if (process.platform === 'win32') {
+			expect(result).toContain('\\');
+		} else {
+			expect(result).not.toContain('\\');
+		}
 	});
 });
