@@ -156,7 +156,7 @@ const generateUrlMetadata = ({ publicEndpoint, bucketName, client }: S3ClientInt
  *
  * PUT requests are used for direct file uploads with the file key specified in the `x-storage-key` header.
  *
- * Most operations require authorization except for `resolveUrl` and `publicUrl` which are publicly accessible.
+ * Most operations require authorization except for `resolveUrl`, `download` and `publicUrl` which are publicly accessible.
  *
  * @example
  * ```typescript
