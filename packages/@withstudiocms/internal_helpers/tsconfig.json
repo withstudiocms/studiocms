@@ -2,19 +2,6 @@
   "extends": "../../../tsconfig.base.json",
   "include": [
     "src",
-    "test/crypto/sha3/hash.test.ts",
-    "test/crypto/sha3/xof.test.ts",
-    "test/crypto/sha2/sha384.test.ts",
-    "test/crypto/sha2/sha224.test.ts",
-    "test/crypto/sha2/sha512.test.ts",
-    "test/crypto/sha2/sha512_224.test.ts",
-    "test/crypto/sha2/sha256.test.ts",
-    "test/crypto/sha2/sha512_256.test.ts",
-    "test/crypto/sha1/index.test.ts",
-    "test/crypto/rsa/index.test.ts",
-    "test/crypto/hmac/index.test.ts",
-    "test/crypto/ecdsa/ecdsa.test.ts",
-    "test/crypto/ecdsa/curve.test.ts"
   ],
   "exclude": ["dist"],
   "compilerOptions": {

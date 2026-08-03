@@ -102,6 +102,10 @@
     "./jwt": {
       "types": "./dist/jwt/index.d.ts",
       "default": "./dist/jwt/index.js"
+    },
+    "./crypto": {
+      "types": "./dist/crypto/index.d.ts",
+      "default": "./dist/crypto/index.js"
     }
   },
   "type": "module",
