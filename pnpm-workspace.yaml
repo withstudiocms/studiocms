@@ -47,8 +47,8 @@ catalog:
   diff: ^8.0.4
   dotenv: ^17.4.2
   semver: ^7.8.5
-  tsdown: ^0.22.5
-  package-manager-detector: ^1.7.0
+  tsdown: ^0.22.14
+  package-manager-detector: ^1.8.0
   ultrahtml: ^1.7.0
   tinyexec: ^1.2.4
 
@@ -85,10 +85,10 @@ catalogs:
     kysely: ^0.28.17
     kysely-turso: ^0.1.1
     pg: ^8.22.0
-    mysql2: ^3.22.6
+    mysql2: ^3.23.2
 
   react:
-    "@types/react": ^19.2.17
-    "@types/react-dom": ^19.2.3
-    react: ^19.2.7
-    react-dom: ^19.2.7
+    "@types/react": ^19.2.18
+    "@types/react-dom": ^19.2.4
+    react: ^19.2.8
+    react-dom: ^19.2.8
