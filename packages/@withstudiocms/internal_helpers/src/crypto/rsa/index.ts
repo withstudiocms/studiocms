@@ -182,7 +182,7 @@ function mgf1(Hash: HashAlgorithm, Z: Uint8Array, l: number): Uint8Array {
 		const zcHash = new Hash();
 		zcHash.update(Z);
 		zcHash.update(counterBytes);
-		t = concatenateBytes(t, zcHash.digest());
+		t = concatenateBytes(t, zcHash.digest()) as Uint8Array<ArrayBuffer>;
 		counter++;
 	}
 	return t.slice(0, l);
