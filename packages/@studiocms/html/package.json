@@ -68,8 +68,8 @@
   "type": "module",
   "dependencies": {
     "codemirror": "5.65.19",
-    "katex": "^0.17.0",
-    "suneditor": "^3.1.4"
+    "katex": "^0.18.1",
+    "suneditor": "^3.2.6"
   },
   "devDependencies": {
     "@withstudiocms/internal_helpers": "workspace:^",
