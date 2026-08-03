@@ -38,7 +38,6 @@ catalog:
   "@types/mdast": ^4.0.4
   "@types/node": ^22.0.0
   "@types/semver": ^7.7.1
-  arctic: ^3.7.0
   deepmerge-ts: ^7.1.5
   esbuild: ^0.25.8
   sharp: ^0.34.3
