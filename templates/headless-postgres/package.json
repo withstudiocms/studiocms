@@ -24,7 +24,7 @@
   "dependencies": {
     "@astrojs/node": "^10.0.0",
     "@effect/platform": "^0.97.1",
-    "@effect/platform-node": "^0.108.0",
+    "@effect/platform-node": "^0.108.1",
     "@studiocms/md": "^0.3.0",
     "@studiocms/html": "^0.3.0",
     "astro": "^6.1.0",
