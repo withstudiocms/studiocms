@@ -1247,11 +1247,11 @@ importers:
         specifier: ^10.0.0
         version: 10.1.4(astro@6.4.8(@types/node@22.20.1)(jiti@2.7.0)(rollup@4.62.2)(tsx@4.23.1)(yaml@2.9.0))
       '@effect/platform':
-        specifier: ^0.96.2
-        version: 0.96.2(effect@3.22.1)
+        specifier: ^0.97.1
+        version: 0.97.1(effect@3.22.1)
       '@effect/platform-node':
-        specifier: ^0.107.0
-        version: 0.107.0(@effect/cluster@0.59.0(@effect/platform@0.96.2(effect@3.22.1))(@effect/rpc@0.75.1(@effect/platform@0.96.2(effect@3.22.1))(effect@3.22.1))(@effect/sql@0.51.1(@effect/experimental@0.60.0(@effect/platform@0.96.2(effect@3.22.1))(effect@3.22.1))(@effect/platform@0.96.2(effect@3.22.1))(effect@3.22.1))(@effect/workflow@0.18.2(@effect/experimental@0.60.0(@effect/platform@0.96.2(effect@3.22.1))(effect@3.22.1))(@effect/platform@0.96.2(effect@3.22.1))(@effect/rpc@0.75.1(@effect/platform@0.96.2(effect@3.22.1))(effect@3.22.1))(effect@3.22.1))(effect@3.22.1))(@effect/platform@0.96.2(effect@3.22.1))(@effect/rpc@0.75.1(@effect/platform@0.96.2(effect@3.22.1))(effect@3.22.1))(@effect/sql@0.51.1(@effect/experimental@0.60.0(@effect/platform@0.96.2(effect@3.22.1))(effect@3.22.1))(@effect/platform@0.96.2(effect@3.22.1))(effect@3.22.1))(effect@3.22.1)
+        specifier: ^0.108.0
+        version: 0.108.0(@effect/cluster@0.59.0(@effect/platform@0.97.1(effect@3.22.1))(@effect/rpc@0.75.1(@effect/platform@0.97.1(effect@3.22.1))(effect@3.22.1))(@effect/sql@0.51.1(@effect/experimental@0.60.0(@effect/platform@0.97.1(effect@3.22.1))(effect@3.22.1))(@effect/platform@0.97.1(effect@3.22.1))(effect@3.22.1))(@effect/workflow@0.18.2(@effect/experimental@0.60.0(@effect/platform@0.97.1(effect@3.22.1))(effect@3.22.1))(@effect/platform@0.97.1(effect@3.22.1))(@effect/rpc@0.75.1(@effect/platform@0.97.1(effect@3.22.1))(effect@3.22.1))(effect@3.22.1))(effect@3.22.1))(@effect/platform@0.97.1(effect@3.22.1))(@effect/rpc@0.75.1(@effect/platform@0.97.1(effect@3.22.1))(effect@3.22.1))(@effect/sql@0.51.1(@effect/experimental@0.60.0(@effect/platform@0.97.1(effect@3.22.1))(effect@3.22.1))(@effect/platform@0.97.1(effect@3.22.1))(effect@3.22.1))(effect@3.22.1)
       '@libsql/client':
         specifier: ^0.15.15
         version: 0.15.15
@@ -1265,7 +1265,7 @@ importers:
         specifier: ^6.1.0
         version: 6.4.8(@types/node@22.20.1)(jiti@2.7.0)(rollup@4.62.2)(tsx@4.23.1)(yaml@2.9.0)
       effect:
-        specifier: ^3.21.4
+        specifier: ^3.22.1
         version: 3.22.1
       kysely-turso:
         specifier: ^0.1.1
