@@ -35,7 +35,7 @@ export function parseJWT(
 	if (typeof payload !== 'object' || payload === null) {
 		throw new Error('Invalid JWT: Invalid payload');
 	}
-	const signatureMessage = new TextEncoder().encode(parts[0] + '.' + parts[1]);
+	const signatureMessage = new TextEncoder().encode(`${parts[0]}.${parts[1]}`);
 	return [header as object, payload as object, signature, signatureMessage];
 }
 
@@ -66,14 +66,14 @@ export function encodeJWT(headerJSON: string, payloadJSON: string, signature: Ui
 	const encodedHeader = encodeBase64urlNoPadding(new TextEncoder().encode(headerJSON));
 	const encodedPayload = encodeBase64urlNoPadding(new TextEncoder().encode(payloadJSON));
 	const encodedSignature = encodeBase64urlNoPadding(signature);
-	const jwt = encodedHeader + '.' + encodedPayload + '.' + encodedSignature;
+	const jwt = `${encodedHeader}.${encodedPayload}.${encodedSignature}`;
 	return jwt;
 }
 
 export function createJWTSignatureMessage(headerJSON: string, payloadJSON: string): Uint8Array {
 	const encodedHeader = encodeBase64urlNoPadding(new TextEncoder().encode(headerJSON));
 	const encodedPayload = encodeBase64urlNoPadding(new TextEncoder().encode(payloadJSON));
-	const message = encodedHeader + '.' + encodedPayload;
+	const message = `${encodedHeader}.${encodedPayload}`;
 	return new TextEncoder().encode(message);
 }
 

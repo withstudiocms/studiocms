@@ -36,37 +36,46 @@ describe(parentSuiteName, () => {
 			await ctx.parameter('shift', String(2));
 			await ctx.parameter('expected', '0b11000000000000000000000000000011');
 		});
-  });
+	});
 
 	test('rotl64()', async () => {
-    await allure.parentSuite(parentSuiteName);
-    await allure.suite(localSuiteName);
-    await allure.subSuite('rotl64()');
-    await allure.tags(...sharedTags);
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('rotl64()');
+		await allure.tags(...sharedTags);
 
-    await allure.step('rotl64(0b1111000000000000000000000000000000000000000000000000000000000000n, 2)', async (ctx) => {
-      expect(rotl64(0b1111000000000000000000000000000000000000000000000000000000000000n, 2)).toBe(
-        0b1100000000000000000000000000000000000000000000000000000000000011n
-      );
-      await ctx.parameter('input', '0b1111000000000000000000000000000000000000000000000000000000000000n');
-      await ctx.parameter('shift', String(2));
-      await ctx.parameter('expected', '0b1100000000000000000000000000000000000000000000011n');
-    });
-  });
+		await allure.step(
+			'rotl64(0b1111000000000000000000000000000000000000000000000000000000000000n, 2)',
+			async (ctx) => {
+				expect(rotl64(0b1111000000000000000000000000000000000000000000000000000000000000n, 2)).toBe(
+					0b1100000000000000000000000000000000000000000000000000000000000011n
+				);
+				await ctx.parameter(
+					'input',
+					'0b1111000000000000000000000000000000000000000000000000000000000000n'
+				);
+				await ctx.parameter('shift', String(2));
+				await ctx.parameter('expected', '0b1100000000000000000000000000000000000000000000011n');
+			}
+		);
+	});
 
-  test('rotr64()', async () => {
-    await allure.parentSuite(parentSuiteName);
-    await allure.suite(localSuiteName);
-    await allure.subSuite('rotr64()');
-    await allure.tags(...sharedTags);
+	test('rotr64()', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('rotr64()');
+		await allure.tags(...sharedTags);
 
-    await allure.step('rotr64(0b0000000000000000000000000000000000000000000000000000000000001111n, 2)', async (ctx) => {
-      expect(rotr64(0b0000000000000000000000000000000000000000000000000000000000001111n, 2)).toBe(
-        0b1100000000000000000000000000000000000000000000011n
-      );
-      await ctx.parameter('input', '0b00000000000000000000000000001111n');
-      await ctx.parameter('shift', String(2));
-      await ctx.parameter('expected', '0b1100000000000011n');
-    });
-  });
+		await allure.step(
+			'rotr64(0b0000000000000000000000000000000000000000000000000000000000001111n, 2)',
+			async (ctx) => {
+				expect(rotr64(0b0000000000000000000000000000000000000000000000000000000000001111n, 2)).toBe(
+					0b1100000000000000000000000000000000000000000000011n
+				);
+				await ctx.parameter('input', '0b00000000000000000000000000001111n');
+				await ctx.parameter('shift', String(2));
+				await ctx.parameter('expected', '0b1100000000000011n');
+			}
+		);
+	});
 });

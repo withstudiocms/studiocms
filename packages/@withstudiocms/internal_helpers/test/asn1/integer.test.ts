@@ -134,7 +134,9 @@ describe(parentSuiteName, () => {
 		await allure.tags(...sharedTags);
 
 		await allure.step('throws error when input bytes are truncated', async (ctx) => {
-			expect(() => variableLengthQuantityFromBytes(new Uint8Array([0x83, 0xff]), 10)).toThrowError();
+			expect(() =>
+				variableLengthQuantityFromBytes(new Uint8Array([0x83, 0xff]), 10)
+			).toThrowError();
 			await ctx.parameter('input', new Uint8Array([0x83, 0xff]).toString());
 			await ctx.parameter('maxLen', String(10));
 		});

@@ -237,27 +237,21 @@ describe(parentSuiteName, () => {
 
 		await allure.step('127-byte short-form length', async (ctx) => {
 			expect(
-				encodeASN1(
-					new ASN1Value(ASN1Class.Universal, ASN1Form.Primitive, 0, new Uint8Array(127))
-				)
+				encodeASN1(new ASN1Value(ASN1Class.Universal, ASN1Form.Primitive, 0, new Uint8Array(127)))
 			).toStrictEqual(new Uint8Array([0x00, 0x7f, ...new Uint8Array(127)]));
 			await ctx.parameter('contentLength', String(127));
 		});
 
 		await allure.step('128-byte long-form length (1 length octet)', async (ctx) => {
 			expect(
-				encodeASN1(
-					new ASN1Value(ASN1Class.Universal, ASN1Form.Primitive, 0, new Uint8Array(128))
-				)
+				encodeASN1(new ASN1Value(ASN1Class.Universal, ASN1Form.Primitive, 0, new Uint8Array(128)))
 			).toStrictEqual(new Uint8Array([0x00, 0x81, 0x80, ...new Uint8Array(128)]));
 			await ctx.parameter('contentLength', String(128));
 		});
 
 		await allure.step('256-byte long-form length (2 length octets)', async (ctx) => {
 			expect(
-				encodeASN1(
-					new ASN1Value(ASN1Class.Universal, ASN1Form.Primitive, 0, new Uint8Array(256))
-				)
+				encodeASN1(new ASN1Value(ASN1Class.Universal, ASN1Form.Primitive, 0, new Uint8Array(256)))
 			).toStrictEqual(new Uint8Array([0x00, 0x82, 0x01, 0x00, ...new Uint8Array(256)]));
 			await ctx.parameter('contentLength', String(256));
 		});
@@ -310,8 +304,8 @@ describe(parentSuiteName, () => {
 					ASN1Form.Primitive,
 					2,
 					new Uint8Array([
-						0x33, 0xff, 0x8e, 0xec, 0x07, 0x9c, 0x46, 0x65, 0x7a, 0x20, 0xb5, 0xd4, 0xb4, 0x7d, 0xf6,
-						0xb0, 0x59, 0xca, 0x46, 0xb4, 0x4b, 0xfa, 0xae, 0x0d, 0x3b, 0xf6, 0x52, 0xf2,
+						0x33, 0xff, 0x8e, 0xec, 0x07, 0x9c, 0x46, 0x65, 0x7a, 0x20, 0xb5, 0xd4, 0xb4, 0x7d,
+						0xf6, 0xb0, 0x59, 0xca, 0x46, 0xb4, 0x4b, 0xfa, 0xae, 0x0d, 0x3b, 0xf6, 0x52, 0xf2,
 					])
 				).integer()
 			).toStrictEqual(
@@ -340,7 +334,12 @@ describe(parentSuiteName, () => {
 
 		await allure.step('empty bit string', async (ctx) => {
 			expect(
-				new ASN1Value(ASN1Class.Universal, ASN1Form.Primitive, 3, new Uint8Array([0x00])).bitString()
+				new ASN1Value(
+					ASN1Class.Universal,
+					ASN1Form.Primitive,
+					3,
+					new Uint8Array([0x00])
+				).bitString()
 			).toStrictEqual(new ASN1BitString(new Uint8Array(), 0));
 			await ctx.parameter('unused bits', String(0));
 			await ctx.parameter('bytes', '');
@@ -1236,7 +1235,9 @@ describe(parentSuiteName, () => {
 
 		await allure.step('ASN1UTCTime.contents()', async (ctx) => {
 			expect(new ASN1UTCTime(0, 12, 31, 10, 40, 54).contents()).toStrictEqual(
-				new Uint8Array([0x30, 0x30, 0x31, 0x32, 0x33, 0x31, 0x31, 0x30, 0x34, 0x30, 0x35, 0x34, 0x5a])
+				new Uint8Array([
+					0x30, 0x30, 0x31, 0x32, 0x33, 0x31, 0x31, 0x30, 0x34, 0x30, 0x35, 0x34, 0x5a,
+				])
 			);
 			await ctx.parameter('datetime', '00-12-31T10:40:54Z');
 		});

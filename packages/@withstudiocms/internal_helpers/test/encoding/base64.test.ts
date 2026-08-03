@@ -90,7 +90,9 @@ describe(parentSuiteName, () => {
 			for (let i = 1; i <= 100; i++) {
 				const bytes = new Uint8Array(i);
 				crypto.getRandomValues(bytes);
-				expect(decodeBase64IgnorePadding(encodeBase64(bytes).replace('=', ''))).toStrictEqual(bytes);
+				expect(decodeBase64IgnorePadding(encodeBase64(bytes).replace('=', ''))).toStrictEqual(
+					bytes
+				);
 			}
 			await ctx.parameter('random iterations', String(100));
 		});

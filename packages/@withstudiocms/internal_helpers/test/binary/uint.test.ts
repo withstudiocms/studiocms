@@ -482,9 +482,7 @@ describe(parentSuiteName, () => {
 		});
 
 		await allure.step('throws error on insufficient bytes with offset', async () => {
-			expect(() =>
-				littleEndian.uint64(new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8]), 1)
-			).toThrowError();
+			expect(() => littleEndian.uint64(new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8]), 1)).toThrowError();
 		});
 	});
 

@@ -44,14 +44,17 @@ describe(parentSuiteName, () => {
 		await allure.subSuite('decodeHex()');
 		await allure.tags(...sharedTags);
 
-		await allure.step('round-trips through encodeHexLowerCase and encodeHexUpperCase', async (ctx) => {
-			for (let i = 0; i < 100; i++) {
-				const data = crypto.getRandomValues(new Uint8Array(i));
-				expect(decodeHex(encodeHexLowerCase(data))).toStrictEqual(data);
-				expect(decodeHex(encodeHexUpperCase(data))).toStrictEqual(data);
+		await allure.step(
+			'round-trips through encodeHexLowerCase and encodeHexUpperCase',
+			async (ctx) => {
+				for (let i = 0; i < 100; i++) {
+					const data = crypto.getRandomValues(new Uint8Array(i));
+					expect(decodeHex(encodeHexLowerCase(data))).toStrictEqual(data);
+					expect(decodeHex(encodeHexUpperCase(data))).toStrictEqual(data);
+				}
+				await ctx.parameter('random iterations', String(100));
 			}
-			await ctx.parameter('random iterations', String(100));
-		});
+		);
 
 		await allure.step('throws on invalid hex data', async (ctx) => {
 			expect(() => decodeHex('a')).toThrowError();
