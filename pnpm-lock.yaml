@@ -333,11 +333,11 @@ importers:
         specifier: catalog:effect
         version: 3.21.4
       katex:
-        specifier: ^0.17.0
-        version: 0.17.0
+        specifier: ^0.18.1
+        version: 0.18.1
       suneditor:
-        specifier: ^3.1.4
-        version: 3.1.4
+        specifier: ^3.2.6
+        version: 3.2.6
     devDependencies:
       '@types/codemirror':
         specifier: 5.60.16
@@ -5660,8 +5660,8 @@ packages:
     resolution: {integrity: sha512-P2bSOMAc/ciLz6DzgjVlGJP9+BrJWu5UDGK70C2iweC5QBIeFf0ZXRvGjEj2uYgrY2MkAAhsSWHDWlFtEroZWw==}
     engines: {node: '>=0.6.0'}
 
-  katex@0.17.0:
-    resolution: {integrity: sha512-Vdw0ATsQ9V+LuegM/BTwQqV/6cTl5lbGcIrU+BCgLxyf6bo38ybOr372tuSIxir3CN720flu1meYR6XzNMwQnw==}
+  katex@0.18.1:
+    resolution: {integrity: sha512-Td8GCYSxDAoMhHOlKmCFMJ/hz5qlAAb71n66Dryw9nfCVfumLo7nhuotbvKom/XPADmrYC3O5QR71EPq4DarJQ==}
     hasBin: true
 
   kind-of@6.0.3:
@@ -6946,8 +6946,8 @@ packages:
   style-to-object@1.0.14:
     resolution: {integrity: sha512-LIN7rULI0jBscWQYaSswptyderlarFkjQ+t79nzty8tcIAceVomEVlLzH5VP4Cmsv6MtKhs7qaAiwlcp+Mgaxw==}
 
-  suneditor@3.1.4:
-    resolution: {integrity: sha512-gHI1+Qz+P/qkAlgCpKB5sj+Wis2ZKnNWXdvVmq5cDHe2ACNYCR5A7qCacbqG0L77HnLe3cgBnmc73+Mbq9SBxw==}
+  suneditor@3.2.6:
+    resolution: {integrity: sha512-P/rmqntTlCW4s8aaxFR5JXE+X+MwtKkRyYy5r+9oSTyhwKP6x/FW2Fb9+SD074MSRTDIVtLemxGyyhq9nRopbQ==}
     engines: {node: '>=14.0.0'}
 
   supports-color@10.2.2:
@@ -12235,7 +12235,7 @@ snapshots:
       verror: 1.10.0
     optional: true
 
-  katex@0.17.0:
+  katex@0.18.1:
     dependencies:
       commander: 8.3.0
 
@@ -13967,7 +13967,7 @@ snapshots:
     dependencies:
       inline-style-parser: 0.2.7
 
-  suneditor@3.1.4: {}
+  suneditor@3.2.6: {}
 
   supports-color@10.2.2: {}
 
