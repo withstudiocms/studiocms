@@ -1,6 +1,6 @@
-import { sha1 } from '@oslojs/crypto/sha1';
-import { encodeHexLowerCase } from '@oslojs/encoding';
 import { Effect, Platform } from '@withstudiocms/effect';
+import { sha1 } from '@withstudiocms/internal_helpers/crypto/sha1';
+import { encodeHexLowerCase } from '@withstudiocms/internal_helpers/encoding';
 import { PasswordError, usePasswordError } from '../errors.js';
 import { CheckIfUnsafe } from './unsafeCheck.js';
 
