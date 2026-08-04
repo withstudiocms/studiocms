@@ -108,7 +108,7 @@ describe(parentSuiteName, () => {
 		await allure.step('Verifying rendered HTML structure and content', async (ctx) => {
 			await ctx.parameter('Rendered Output', result);
 
-			expect(result).toMatch(/<li .*?>No blog posts found<\/li>/);
+			expect(result).toMatch(/<li[^>]*>No blog posts found<\/li>/);
 		});
 	});
 
@@ -150,7 +150,7 @@ describe(parentSuiteName, () => {
 			await ctx.parameter('Rendered Output', result);
 
 			const footerRegex =
-				/<footer.*?>[\s\S]*?<span id="footer-year".*?>\d{4}<\/span> Test Site\. All rights reserved\.[\s\S]*?<\/footer>/;
+				/<footer.*?>[\s\S]*?<span id="footer-year".*?>\d{4}<\/span>\s*Test Site\. All rights reserved\.[\s\S]*?<\/footer>/;
 			expect(result).toMatch(footerRegex);
 		});
 	});
