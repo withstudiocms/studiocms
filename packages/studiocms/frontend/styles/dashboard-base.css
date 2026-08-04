@@ -189,6 +189,7 @@
 		& a {
 			color: var(--text-muted);
 			text-decoration: none;
+			margin-left: 0.25rem;
 		}
 	}
 
