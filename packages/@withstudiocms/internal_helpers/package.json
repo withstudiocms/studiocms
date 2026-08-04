@@ -86,6 +86,26 @@
     "./cli-providers/core/*": {
       "types": "./dist/cli-providers/core/*.d.ts",
       "default": "./dist/cli-providers/core/*.js"
+    },
+    "./binary": {
+      "types": "./dist/binary/index.d.ts",
+      "default": "./dist/binary/index.js"
+    },
+    "./asn1": {
+      "types": "./dist/asn1/index.d.ts",
+      "default": "./dist/asn1/index.js"
+    },
+    "./encoding": {
+      "types": "./dist/encoding/index.d.ts",
+      "default": "./dist/encoding/index.js"
+    },
+    "./jwt": {
+      "types": "./dist/jwt/index.d.ts",
+      "default": "./dist/jwt/index.js"
+    },
+    "./crypto": {
+      "types": "./dist/crypto/index.d.ts",
+      "default": "./dist/crypto/index.js"
     }
   },
   "type": "module",
@@ -96,6 +116,7 @@
     "tinyexec": "catalog:"
   },
   "devDependencies": {
+    "@scure/base": "^2.2.0",
     "@types/mdast": "catalog:",
     "@types/node": "catalog:"
   },
