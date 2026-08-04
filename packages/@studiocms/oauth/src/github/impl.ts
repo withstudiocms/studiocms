@@ -2,9 +2,9 @@ import { getSecret } from 'astro:env/server';
 import { Session, User, VerifyEmail } from 'studiocms:auth/lib';
 import { StudioCMSRoutes } from 'studiocms:lib';
 import { SDKCore } from 'studiocms:sdk';
-import { GitHub, generateState } from 'arctic';
 import { Effect, genLogger, Platform, Schema } from 'studiocms/effect';
 import { getCookie, getUrlParam, ValidateAuthCodeError } from 'studiocms/oAuthUtils';
+import { GitHub, generateState } from '../internal/index.js';
 import { OAuthService } from '../service.js';
 import { handleExistingOAuthAccount, handleNewOAuthUser, handleOAuthLinking } from '../shared.js';
 
