@@ -10,7 +10,7 @@ catalogs:
       specifier: ^11.0.0
       version: 11.0.3
     '@astrojs/rss':
-      specifier: ^4.0.17
+      specifier: ^4.0.19
       version: 4.0.19
     astro:
       specifier: ^7.0.0
