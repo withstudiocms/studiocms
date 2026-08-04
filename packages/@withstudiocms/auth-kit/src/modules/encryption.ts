@@ -1,7 +1,7 @@
 import { createCipheriv, createDecipheriv } from 'node:crypto';
-import { DynamicBuffer } from '@oslojs/binary';
-import { decodeBase64 } from '@oslojs/encoding';
 import { Effect } from '@withstudiocms/effect';
+import { DynamicBuffer } from '@withstudiocms/internal_helpers/binary';
+import { decodeBase64 } from '@withstudiocms/internal_helpers/encoding';
 import { useDecryptionError, useEncryptionError } from '../errors.js';
 
 /**

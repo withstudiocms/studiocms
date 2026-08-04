@@ -1,6 +1,6 @@
-import { sha256 } from '@oslojs/crypto/sha2';
-import { encodeHexLowerCase } from '@oslojs/encoding';
 import { Effect, pipe } from '@withstudiocms/effect';
+import { sha256 } from '@withstudiocms/internal_helpers/crypto/sha2';
+import { encodeHexLowerCase } from '@withstudiocms/internal_helpers/encoding';
 import { useSessionError } from '../errors.js';
 import type { SessionConfig } from '../types.js';
 
