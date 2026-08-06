@@ -38,7 +38,6 @@ catalog:
   "@types/mdast": ^4.0.4
   "@types/node": ^22.0.0
   "@types/semver": ^7.7.1
-  arctic: ^3.7.0
   deepmerge-ts: ^7.1.5
   esbuild: ^0.25.8
   sharp: ^0.34.3
@@ -47,8 +46,8 @@ catalog:
   diff: ^8.0.4
   dotenv: ^17.4.2
   semver: ^7.8.5
-  tsdown: ^0.22.5
-  package-manager-detector: ^1.7.0
+  tsdown: ^0.22.14
+  package-manager-detector: ^1.8.0
   ultrahtml: ^1.7.0
   tinyexec: ^1.2.4
 
@@ -74,10 +73,10 @@ catalogs:
     vite: ^7.3.0
 
   effect:
-    "@effect/cli": ^0.75.2
-    "@effect/platform": ^0.96.2
-    "@effect/platform-node": ^0.107.0
-    effect: ^3.21.4
+    "@effect/cli": ^0.77.0
+    "@effect/platform": ^0.97.1
+    "@effect/platform-node": ^0.108.1
+    effect: ^3.22.1
 
   kysely:
     "@libsql/client": ^0.15.15
@@ -85,10 +84,10 @@ catalogs:
     kysely: ^0.28.17
     kysely-turso: ^0.1.1
     pg: ^8.22.0
-    mysql2: ^3.22.6
+    mysql2: ^3.23.2
 
   react:
-    "@types/react": ^19.2.17
-    "@types/react-dom": ^19.2.3
-    react: ^19.2.7
-    react-dom: ^19.2.7
+    "@types/react": ^19.2.18
+    "@types/react-dom": ^19.2.4
+    react: ^19.2.8
+    react-dom: ^19.2.8

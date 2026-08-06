@@ -86,6 +86,58 @@
     "./cli-providers/core/*": {
       "types": "./dist/cli-providers/core/*.d.ts",
       "default": "./dist/cli-providers/core/*.js"
+    },
+    "./binary": {
+      "types": "./dist/binary/index.d.ts",
+      "default": "./dist/binary/index.js"
+    },
+    "./asn1": {
+      "types": "./dist/asn1/index.d.ts",
+      "default": "./dist/asn1/index.js"
+    },
+    "./encoding": {
+      "types": "./dist/encoding/index.d.ts",
+      "default": "./dist/encoding/index.js"
+    },
+    "./jwt": {
+      "types": "./dist/jwt/index.d.ts",
+      "default": "./dist/jwt/index.js"
+    },
+    "./crypto/ecdsa": {
+      "types": "./dist/crypto/ecdsa/index.d.ts",
+      "default": "./dist/crypto/ecdsa/index.js"
+    },
+    "./crypto/hash": {
+      "types": "./dist/crypto/hash/index.d.ts",
+      "default": "./dist/crypto/hash/index.js"
+    },
+    "./crypto/hmac": {
+      "types": "./dist/crypto/hmac/index.d.ts",
+      "default": "./dist/crypto/hmac/index.js"
+    },
+    "./crypto/random": {
+      "types": "./dist/crypto/random/index.d.ts",
+      "default": "./dist/crypto/random/index.js"
+    },
+    "./crypto/rsa": {
+      "types": "./dist/crypto/rsa/index.d.ts",
+      "default": "./dist/crypto/rsa/index.js"
+    },
+    "./crypto/sha1": {
+      "types": "./dist/crypto/sha1/index.d.ts",
+      "default": "./dist/crypto/sha1/index.js"
+    },
+    "./crypto/sha2": {
+      "types": "./dist/crypto/sha2/index.d.ts",
+      "default": "./dist/crypto/sha2/index.js"
+    },
+    "./crypto/sha3": {
+      "types": "./dist/crypto/sha3/index.d.ts",
+      "default": "./dist/crypto/sha3/index.js"
+    },
+    "./crypto/subtle": {
+      "types": "./dist/crypto/subtle/index.d.ts",
+      "default": "./dist/crypto/subtle/index.js"
     }
   },
   "type": "module",
@@ -96,6 +148,7 @@
     "tinyexec": "catalog:"
   },
   "devDependencies": {
+    "@scure/base": "^2.2.0",
     "@types/mdast": "catalog:",
     "@types/node": "catalog:"
   },

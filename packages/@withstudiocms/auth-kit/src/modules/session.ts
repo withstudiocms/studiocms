@@ -1,5 +1,5 @@
-import { encodeBase32LowerCaseNoPadding } from '@oslojs/encoding';
 import { Effect } from '@withstudiocms/effect';
+import { encodeBase32LowerCaseNoPadding } from '@withstudiocms/internal_helpers/encoding';
 import type { APIContext, AstroGlobal } from 'astro';
 import { SessionError, useSessionError, useSessionErrorPromise } from '../errors.js';
 import type { SessionConfig, SessionValidationResult } from '../types.js';

@@ -71,7 +71,7 @@
   },
   "type": "module",
   "dependencies": {
-    "arctic": "catalog:"
+    "@withstudiocms/internal_helpers": "workspace:^"
   },
   "devDependencies": {
     "@types/node": "catalog:",
