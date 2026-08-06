@@ -1,6 +1,6 @@
 import * as allure from 'allure-js-commons';
 import { describe, expect, test } from 'vitest';
-import { toModuleSpecifier } from '../src/pathResolver.js';
+import { toModuleSpecifier } from '../src/toModuleSpecifier.js';
 import { parentSuiteName, sharedTags } from './test-utils.js';
 
 const localSuiteName = 'toModuleSpecifier Tests (OS-independent)';
@@ -45,5 +45,15 @@ describe(parentSuiteName, () => {
 		const raw = 'C:\\Users\\test\\file.js';
 		expect(JSON.stringify(raw)).toBe('"C:\\\\Users\\\\test\\\\file.js"');
 		expect(toModuleSpecifier(raw)).toBe('"C:/Users/test/file.js"');
+	});
+
+	test('URL inputs use href as the module specifier', async () => {
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('URL inputs use href as the module specifier');
+		await allure.tags(...sharedTags);
+
+		const fileUrl = new URL('file:///E:/AI%20Projects/pkg/service.js');
+		expect(toModuleSpecifier(fileUrl)).toBe(JSON.stringify(fileUrl.href));
 	});
 });

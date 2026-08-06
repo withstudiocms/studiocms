@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - 'packages/@withstudiocms/internal_helpers/src/pathResolver.ts'
+      - 'packages/@withstudiocms/internal_helpers/src/toModuleSpecifier.ts'
       - 'packages/@withstudiocms/internal_helpers/test/pathResolver.test.ts'
       - 'packages/@withstudiocms/internal_helpers/test/toModuleSpecifier.test.ts'
       - 'packages/@withstudiocms/internal_helpers/package.json'
@@ -18,6 +19,7 @@ on:
       - synchronize
     paths:
       - 'packages/@withstudiocms/internal_helpers/src/pathResolver.ts'
+      - 'packages/@withstudiocms/internal_helpers/src/toModuleSpecifier.ts'
       - 'packages/@withstudiocms/internal_helpers/test/pathResolver.test.ts'
       - 'packages/@withstudiocms/internal_helpers/test/toModuleSpecifier.test.ts'
       - 'packages/@withstudiocms/internal_helpers/package.json'

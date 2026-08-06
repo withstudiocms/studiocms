@@ -1,19 +1,11 @@
 import * as path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
+export { toModuleSpecifier } from './toModuleSpecifier.js';
+
 interface PathResolver {
 	resolve: (...segments: string[]) => string;
 	resolveURL: (...segments: string[]) => URL;
-}
-
-/**
- * Convert a filesystem path into a JS module specifier literal (JSON-quoted).
- * Paths are normalized to POSIX separators because Vite/Rollup normalize
- * module ids to POSIX internally; JSON.stringify is what makes the result
- * safe to embed (escaping backslashes, quotes, etc.).
- */
-export function toModuleSpecifier(filePath: string): string {
-	return JSON.stringify(filePath.replaceAll('\\', '/'));
 }
 
 /**

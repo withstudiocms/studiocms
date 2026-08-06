@@ -1,4 +1,4 @@
-import { toModuleSpecifier } from '../pathResolver.js';
+import { toModuleSpecifier } from '../toModuleSpecifier.js';
 
 /**
  * Generates an export statement for a renderer component based on the provided component path and page type.

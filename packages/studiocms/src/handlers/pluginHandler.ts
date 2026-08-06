@@ -1024,7 +1024,7 @@ export const pluginHandler = async (
 						});
 
 						imageServiceEndpoints.push(
-							`export { default as ${convertToSafeString(imageService.identifier)} } from ${toModuleSpecifier(String(imageService.servicePath))};`
+							`export { default as ${convertToSafeString(imageService.identifier)} } from ${toModuleSpecifier(imageService.servicePath)};`
 						);
 					}
 				},
