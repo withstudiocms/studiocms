@@ -278,7 +278,7 @@ export const TaxonomyHandlers = HttpApiBuilder.group(
 									sdk.GET.tags.getAll().pipe(Effect.map(tagsToTaxonomyNodes)),
 								])
 							),
-							Effect.flatMap(([categories, tags]) => Effect.succeed([...categories, ...tags])),
+							Effect.map(([categories, tags]) => [...categories, ...tags]),
 							Effect.catchTags(sharedDBErrors)
 						)
 			)

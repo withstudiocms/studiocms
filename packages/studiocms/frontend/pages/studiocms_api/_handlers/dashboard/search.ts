@@ -51,9 +51,7 @@ export const SearchHandlers = HttpApiBuilder.group(
 								),
 							])
 						),
-						Effect.flatMap(([folders, pages]) =>
-							Effect.succeed([...folders, ...pages] as SearchItem[])
-						),
+						Effect.map(([folders, pages]) => [...folders, ...pages] as SearchItem[]),
 						Effect.catchTags({
 							...sharedDBErrors,
 							...sharedPageCollectionErrors,

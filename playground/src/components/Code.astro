@@ -41,33 +41,37 @@ const id = __test_mode ? 'test-id' : Math.random().toString(36).substring(2, 9);
 
 <pre class="playground-code-container"><code id={id} class:list={["custom-code", (del || ins) ? 'diff' : '']} {...props} set:html={htmlCode} /></pre>
 <script is:inline define:vars={{ id: id }}>
-	const codesWithDiff = document.getElementById(id);
 
-	if (!codesWithDiff) return;
+	(function () {
+		const codesWithDiff = document.getElementById(id);
 
-	const code = codesWithDiff.classList.contains("diff");
+		if (!codesWithDiff) return;
 
-	if (!code) return;
+		const code = codesWithDiff.classList.contains("diff");
 
-	const linesInserted = codesWithDiff.getAttribute("data-lines-inserted");
-	const linesDeleted = codesWithDiff.getAttribute("data-lines-deleted");
+		if (!code) return;
 
-	if (!linesInserted && !linesDeleted) return;
+		const linesInserted = codesWithDiff.getAttribute("data-lines-inserted");
+		const linesDeleted = codesWithDiff.getAttribute("data-lines-deleted");
 
-	const parsedInsertedLines =
-		linesInserted?.split(",").map((line) => parseInt(line, 10)) || [];
-	const parsedDeletedLines =
-		linesDeleted?.split(",").map((line) => parseInt(line, 10)) || [];
+		if (!linesInserted && !linesDeleted) return;
 
-	const codeLines = codesWithDiff.querySelectorAll(".line");
+		const parsedInsertedLines =
+			linesInserted?.split(",").map((line) => parseInt(line, 10)) || [];
+		const parsedDeletedLines =
+			linesDeleted?.split(",").map((line) => parseInt(line, 10)) || [];
 
-	codeLines.forEach((line, index) => {
-		if (parsedInsertedLines.includes(index + 1)) {
-			line.classList.add("diff", "ins");
-		}
+		const codeLines = codesWithDiff.querySelectorAll(".line");
 
-		if (parsedDeletedLines.includes(index + 1)) {
-			line.classList.add("diff", "del");
-		}
-	});
+		codeLines.forEach((line, index) => {
+			if (parsedInsertedLines.includes(index + 1)) {
+				line.classList.add("diff", "ins");
+			}
+
+			if (parsedDeletedLines.includes(index + 1)) {
+				line.classList.add("diff", "del");
+			}
+		});
+	})();
+
 </script>

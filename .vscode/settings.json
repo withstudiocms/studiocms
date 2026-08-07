@@ -25,5 +25,6 @@
   },
   "knip.requireConfig": true,
   "knip.configFilePath": "./knip.config.ts",
-  "knip.editor.exports.hover.includeImportLocationSnippet": true
+  "knip.editor.exports.hover.includeImportLocationSnippet": true,
+  "js/ts.tsdk.path": "node_modules/typescript/lib"
 }

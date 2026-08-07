@@ -627,12 +627,10 @@ export const SDKAuthModule = Effect.gen(function* () {
 		 */
 		delete: (input: { readonly userId: string; readonly provider: string }): AuthDeletionResponse =>
 			_deleteOAuthUserAccount(input).pipe(
-				Effect.flatMap(() =>
-					Effect.succeed({
-						status: 'success' as const,
-						message: 'OAuth account deleted successfully',
-					})
-				),
+				Effect.map(() => ({
+					status: 'success' as const,
+					message: 'OAuth account deleted successfully',
+				})),
 				_CatchErrs('OAuth account')
 			),
 
@@ -702,9 +700,10 @@ export const SDKAuthModule = Effect.gen(function* () {
 		 */
 		delete: (input: string): AuthDeletionResponse =>
 			_deleteSession(input).pipe(
-				Effect.flatMap(() =>
-					Effect.succeed({ status: 'success' as const, message: 'Session deleted successfully' })
-				),
+				Effect.map(() => ({
+					status: 'success' as const,
+					message: 'Session deleted successfully',
+				})),
 				_CatchErrs('Session')
 			),
 

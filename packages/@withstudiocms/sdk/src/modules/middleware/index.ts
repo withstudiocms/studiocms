@@ -87,7 +87,7 @@ export const SDKMiddlewareModule = Effect.gen(function* () {
 				startTime: Effect.succeed(startTime),
 			})
 		),
-		Effect.flatMap(({ startTime }) => Effect.succeed({ startTime, endTime: Date.now() })),
+		Effect.map(({ startTime }) => ({ startTime, endTime: Date.now() })),
 		Effect.flatMap(({ startTime, endTime }) =>
 			Effect.log(`Middleware caches verified in ${endTime - startTime}ms.`)
 		)
