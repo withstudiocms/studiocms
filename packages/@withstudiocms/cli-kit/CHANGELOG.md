@@ -1,5 +1,19 @@
 # @withstudiocms/cli-kit
 
+## 0.3.0
+
+### Minor Changes
+
+- [#1490](https://github.com/withstudiocms/studiocms/pull/1490) [`418b743`](https://github.com/withstudiocms/studiocms/commit/418b743c6387878f82599f94ad7185947ec6815d) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Moves packages to tsdown based builder instead of custom esbuild pipeline
+
+### Patch Changes
+
+- [#1505](https://github.com/withstudiocms/studiocms/pull/1505) [`5720755`](https://github.com/withstudiocms/studiocms/commit/57207550e2415db9f0246ddec0a9306556973029) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update dependency tinyexec to ^1.0.4
+
+- [#1583](https://github.com/withstudiocms/studiocms/pull/1583) [`9f4b1a1`](https://github.com/withstudiocms/studiocms/commit/9f4b1a190f4771a6e17e832cbdd98c5c4a44e6c7) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update dependency tinyexec to ^1.2.4
+
+- [#1592](https://github.com/withstudiocms/studiocms/pull/1592) [`d1f6329`](https://github.com/withstudiocms/studiocms/commit/d1f6329764e754ed8f22685d4371b87e4278fde0) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update dependency slice-ansi to v9
+
 ## 0.2.1
 
 ### Patch Changes

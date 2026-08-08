@@ -1,5 +1,13 @@
 # create-studiocms
 
+## 0.6.1
+
+### Patch Changes
+
+- [#1515](https://github.com/withstudiocms/studiocms/pull/1515) [`367630b`](https://github.com/withstudiocms/studiocms/commit/367630be4b8976c4d463dd11f77b2e90d7bdb0b9) Thanks [@renovate](https://github.com/apps/renovate)! - chore(deps): update dependency @bluwy/giget-core to ^0.1.7
+
+- [#1486](https://github.com/withstudiocms/studiocms/pull/1486) [`497ec43`](https://github.com/withstudiocms/studiocms/commit/497ec43d30436cd6042ec2be3e933b44d03491e0) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Unifies tsdown configs across project repository and updates related references
+
 ## 0.6.0
 
 ### Minor Changes

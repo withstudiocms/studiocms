@@ -1,5 +1,17 @@
 # @withstudiocms/kysely
 
+## 0.3.0
+
+### Minor Changes
+
+- [#1490](https://github.com/withstudiocms/studiocms/pull/1490) [`418b743`](https://github.com/withstudiocms/studiocms/commit/418b743c6387878f82599f94ad7185947ec6815d) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Moves packages to tsdown based builder instead of custom esbuild pipeline
+
+### Patch Changes
+
+- [#1503](https://github.com/withstudiocms/studiocms/pull/1503) [`3a8e4ce`](https://github.com/withstudiocms/studiocms/commit/3a8e4ceea5b1c5e31a42e5e7a2402258f9c149cc) Thanks [@renovate](https://github.com/apps/renovate)! - Lint
+
+- [#1548](https://github.com/withstudiocms/studiocms/pull/1548) [`5b68503`](https://github.com/withstudiocms/studiocms/commit/5b6850349f1ac9d2acdc9cbb8bcd79b7561de769) Thanks [@renovate](https://github.com/apps/renovate)! - Update dependencies, and lint
+
 ## 0.2.1
 
 ### Patch Changes
