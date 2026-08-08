@@ -22,12 +22,12 @@
     "typescript": "^6.0.3"
   },
   "dependencies": {
-    "@astrojs/node": "^10.0.0",
+    "@astrojs/node": "^11.0.3",
     "@effect/platform": "^0.97.1",
     "@effect/platform-node": "^0.108.1",
     "@studiocms/md": "^0.3.0",
     "@studiocms/html": "^0.3.0",
-    "astro": "^6.1.0",
+    "astro": "^7.1.6",
     "effect": "^3.22.1",
     "pg": "^8.22.0",
     "sharp": "^0.34.3",
