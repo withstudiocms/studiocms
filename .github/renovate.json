@@ -57,7 +57,7 @@
       "labels": ["templates"]
     },
     {
-      "matchDepTypes": ["pnpm.catalog.astrojs-min", "pnpm.catalog:studiocms-peerlock"],
+      "matchDepTypes": ["pnpm.catalog.astrojs-min", "pnpm.catalog.studiocms-peerlock"],
       "enabled": false
     }
   ],
