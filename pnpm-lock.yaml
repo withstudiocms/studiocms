@@ -125,7 +125,7 @@ catalogs:
       version: 1.2.1
   studiocms-peerlock:
     astro:
-      specifier: ^7.1.6
+      specifier: ^7.0.0
       version: 7.1.6
     vite:
       specifier: ^8.0.0
