@@ -1,6 +1,8 @@
 import { convertToSafeString, rendererComponentFilter } from '@withstudiocms/internal_helpers';
 import { addVirtualImports } from '@withstudiocms/internal_helpers/astro-integration';
-import createPathResolver from '@withstudiocms/internal_helpers/pathResolver';
+import createPathResolver, {
+	toModuleSpecifier,
+} from '@withstudiocms/internal_helpers/pathResolver';
 import type { AstroIntegration } from 'astro';
 import { getViteConfig } from 'astro/config';
 import { Schema } from 'effect';
@@ -47,8 +49,8 @@ const testIntegration: AstroIntegration = {
 				imports: {
 					'studiocms:version': `export default '0.0.0-test';`,
 					'studiocms:i18n/config': `export default ${JSON.stringify({ ...testConfig.locale.i18n })}`,
-					'studiocms:i18n': `export * from '${resolve('./src/virtuals/i18n/server.ts')}';`,
-					'studiocms:i18n/client': `export * from '${resolve('./src/virtuals/i18n/client.ts')}';`,
+					'studiocms:i18n': `export * from ${toModuleSpecifier(resolve('./src/virtuals/i18n/server.ts'))};`,
+					'studiocms:i18n/client': `export * from ${toModuleSpecifier(resolve('./src/virtuals/i18n/client.ts'))};`,
 					'studiocms:i18n/virtual': `
 						export const availableTranslationFileKeys = ${JSON.stringify(availableTranslationFileKeys)};
 						export const availableTranslations = ${JSON.stringify(availableTranslations)};
@@ -63,8 +65,8 @@ const testIntegration: AstroIntegration = {
 						// Test-only identity renderer: mirrors API shape but skips sanitization on purpose.
 						'export const createRenderer = (result, sanitize, preRenderer) => (content) => content;',
 					'studiocms:auth/scripts/three': `export const hello = 'world';`,
-					'studiocms:auth/utils/validImages': `export * from '${resolve('./src/virtuals/auth/validImages/index.ts')}';`,
-					'studiocms:lib': `export * from '${resolve('./src/virtuals/lib/routeMap.ts')}';`,
+					'studiocms:auth/utils/validImages': `export * from ${toModuleSpecifier(resolve('./src/virtuals/auth/validImages/index.ts'))};`,
+					'studiocms:lib': `export * from ${toModuleSpecifier(resolve('./src/virtuals/lib/routeMap.ts'))};`,
 					'studiocms:plugins/auth/providers': `export const oAuthButtons = ${JSON.stringify([
 						{
 							enabled: true,
@@ -80,7 +82,7 @@ const testIntegration: AstroIntegration = {
 						},
 					])};`,
 					'virtual:studiocms/sitemaps': `export const sitemaps = ['./sitemap-blog.xml', './sitemap-shop.xml'];`,
-					'studiocms:components': `export { default as Generator } from '${resolve('./test/fixtures/Generator.astro')}';`,
+					'studiocms:components': `export { default as Generator } from ${toModuleSpecifier(resolve('./test/fixtures/Generator.astro'))};`,
 					'studiocms:plugins/augments':
 						'export const renderAugments = []; export const renderPostProcessorAugments = [];',
 				},

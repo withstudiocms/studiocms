@@ -2,7 +2,9 @@
 
 import { deepmerge, Effect, runEffect, Schema } from '@withstudiocms/effect';
 import { addVirtualImports } from '@withstudiocms/internal_helpers/astro-integration';
-import createPathResolver from '@withstudiocms/internal_helpers/pathResolver';
+import createPathResolver, {
+	toModuleSpecifier,
+} from '@withstudiocms/internal_helpers/pathResolver';
 import type { HookParameters } from 'astro';
 import type { ComponentRegistryEntry } from '../types.js';
 import { convertHyphensToUnderscores, integrationLogger } from '../utils.js';
@@ -236,7 +238,9 @@ export const componentRegistryHandler = async (
 
 					// Add the component key and import statement
 					componentKeys.push(safeKeyName);
-					components.push(`export { default as ${safeKeyName} } from '${resolvedPath}';`);
+					components.push(
+						`export { default as ${safeKeyName} } from ${toModuleSpecifier(resolvedPath)};`
+					);
 
 					// Register the component in the registry
 					yield* registry.registerComponentFromFile(resolvedPath, keyName);
@@ -282,7 +286,7 @@ export const componentRegistryHandler = async (
 				imports: {
 					[InternalId]: buildVirtualImport(componentKeys, componentProps, components),
 					[NameInternalId]: `export default '${name}'; export const name = '${name}';`,
-					[RuntimeInternalId]: `export * from '${virtualRuntimeImport}';`,
+					[RuntimeInternalId]: `export * from ${toModuleSpecifier(virtualRuntimeImport)};`,
 					...(virtualId ? buildAliasExports(virtualId) : {}),
 				},
 			});

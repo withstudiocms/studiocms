@@ -185,8 +185,14 @@ describe(parentSuiteName, () => {
 		{
 			comp: './components/Renderer.astro',
 			safePageType: 'BlogPage',
-			expected: `export { default as BlogPage } from './components/Renderer.astro';`,
+			expected: `export { default as BlogPage } from "./components/Renderer.astro";`,
 			description: 'returns correct export statement for valid input',
+		},
+		{
+			comp: 'E:\\AI Projects\\node_modules\\pkg\\utils\\Renderer.astro',
+			safePageType: 'WinPage',
+			expected: `export { default as WinPage } from "E:/AI Projects/node_modules/pkg/utils/Renderer.astro";`,
+			description: 'POSIX-normalizes Windows paths in the export specifier',
 		},
 		{
 			comp: undefined,
@@ -230,8 +236,14 @@ describe(parentSuiteName, () => {
 		{
 			comp: './components/PageContent.astro',
 			safePageType: 'DocsPage',
-			expected: `export { default as DocsPage } from './components/PageContent.astro';`,
+			expected: `export { default as DocsPage } from "./components/PageContent.astro";`,
 			description: 'returns correct export statement for valid input',
+		},
+		{
+			comp: 'E:\\AI Projects\\node_modules\\pkg\\utils\\PageContent.astro',
+			safePageType: 'WinDocs',
+			expected: `export { default as WinDocs } from "E:/AI Projects/node_modules/pkg/utils/PageContent.astro";`,
+			description: 'POSIX-normalizes Windows paths in the export specifier',
 		},
 		{
 			comp: undefined,

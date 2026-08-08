@@ -1,0 +1,75 @@
+name: CI - Path Resolver
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - 'packages/@withstudiocms/internal_helpers/src/pathResolver.ts'
+      - 'packages/@withstudiocms/internal_helpers/src/toModuleSpecifier.ts'
+      - 'packages/@withstudiocms/internal_helpers/test/pathResolver.test.ts'
+      - 'packages/@withstudiocms/internal_helpers/test/toModuleSpecifier.test.ts'
+      - 'packages/@withstudiocms/internal_helpers/package.json'
+      - 'packages/@withstudiocms/internal_helpers/vitest.config.ts'
+      - '.github/workflows/ci-path-resolver.yml'
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+    paths:
+      - 'packages/@withstudiocms/internal_helpers/src/pathResolver.ts'
+      - 'packages/@withstudiocms/internal_helpers/src/toModuleSpecifier.ts'
+      - 'packages/@withstudiocms/internal_helpers/test/pathResolver.test.ts'
+      - 'packages/@withstudiocms/internal_helpers/test/toModuleSpecifier.test.ts'
+      - 'packages/@withstudiocms/internal_helpers/package.json'
+      - 'packages/@withstudiocms/internal_helpers/vitest.config.ts'
+      - '.github/workflows/ci-path-resolver.yml'
+
+concurrency:
+  group: ${{ github.workflow }}-path-resolver-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  os-independent:
+    name: toModuleSpecifier (OS-independent)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Install Tools & Dependencies
+        uses: withstudiocms/automations/.github/actions/install@f32588d80ce35d57905264f7fa473b0f6e297c0a # main
+
+      - name: Build internal_helpers
+        run: pnpm --filter @withstudiocms/internal_helpers build
+
+      - name: Run OS-independent tests
+        run: pnpm --filter @withstudiocms/internal_helpers exec vitest run test/toModuleSpecifier.test.ts
+
+  os-sensitive:
+    name: pathResolver (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Install Tools & Dependencies
+        uses: withstudiocms/automations/.github/actions/install@f32588d80ce35d57905264f7fa473b0f6e297c0a # main
+
+      - name: Build internal_helpers
+        run: pnpm --filter @withstudiocms/internal_helpers build
+
+      - name: Run OS-sensitive tests
+        run: pnpm --filter @withstudiocms/internal_helpers exec vitest run test/pathResolver.test.ts

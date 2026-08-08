@@ -5,7 +5,9 @@ import {
 	type Messages,
 	pluginLogger,
 } from '@withstudiocms/internal_helpers/astro-integration';
-import createPathResolver from '@withstudiocms/internal_helpers/pathResolver';
+import createPathResolver, {
+	toModuleSpecifier,
+} from '@withstudiocms/internal_helpers/pathResolver';
 import {
 	convertToSafeString,
 	pageContentComponentFilter,
@@ -592,7 +594,7 @@ export const pluginHandler = async (
 		const { endpointPath, formattedName, name, svg, requiredEnvVariables } = oAuthProvider;
 		const safeName = convertToSafeString(name);
 		let enabled = true;
-		const endpoints = `export { initSession as ${safeName}_initSession, initCallback as ${safeName}_initCallback } from '${endpointPath}';`;
+		const endpoints = `export { initSession as ${safeName}_initSession, initCallback as ${safeName}_initCallback } from ${toModuleSpecifier(endpointPath)};`;
 		const env = loadEnv('', process.cwd(), '');
 
 		if (requiredEnvVariables) {
@@ -708,7 +710,7 @@ export const pluginHandler = async (
 
 	const remapAugmentComps = (components: Record<string, string>) =>
 		Object.entries(components)
-			.map(([key, value]) => `export { default as ${key} } from '${value}';`)
+			.map(([key, value]) => `export { default as ${key} } from ${toModuleSpecifier(value)};`)
 			.join('\n');
 
 	/////
@@ -791,9 +793,9 @@ export const pluginHandler = async (
 			},
 			{
 				id: 'studiocms:storage-manager/module',
-				content: `
-						export { default } from '${finalStorageManagerModulePath}';
-					`,
+				content: finalStorageManagerModulePath
+					? `export { default } from ${toModuleSpecifier(finalStorageManagerModulePath)};`
+					: `throw new Error('[studiocms] finalStorageManagerModulePath is undefined – cannot emit virtual module without a valid storage manager path');`,
 			},
 			{
 				id: 'studiocms:storage-manager/name',
@@ -910,7 +912,7 @@ export const pluginHandler = async (
 								identifier: safeData.identifier,
 								safeIdentifier: convertToSafeString(safeData.identifier),
 								apiEndpoint: `
-											export { onSave as ${convertToSafeString(safeData.identifier)}_onSave } from '${endpoint}';
+											export { onSave as ${convertToSafeString(safeData.identifier)}_onSave } from ${toModuleSpecifier(endpoint)};
 										`,
 							});
 						}
@@ -965,9 +967,9 @@ export const pluginHandler = async (
 								identifier: identifier,
 								safeIdentifier: convertToSafeString(identifier),
 								apiEndpoint: `
-											export { onCreate as ${convertToSafeString(identifier)}_onCreate } from '${apiEndpoint}';
-											export { onEdit as ${convertToSafeString(identifier)}_onEdit } from '${apiEndpoint}';
-											export { onDelete as ${convertToSafeString(identifier)}_onDelete } from '${apiEndpoint}';
+											export { onCreate as ${convertToSafeString(identifier)}_onCreate } from ${toModuleSpecifier(apiEndpoint)};
+											export { onEdit as ${convertToSafeString(identifier)}_onEdit } from ${toModuleSpecifier(apiEndpoint)};
+											export { onDelete as ${convertToSafeString(identifier)}_onDelete } from ${toModuleSpecifier(apiEndpoint)};
 										`,
 							});
 						}
@@ -1022,7 +1024,7 @@ export const pluginHandler = async (
 						});
 
 						imageServiceEndpoints.push(
-							`export { default as ${convertToSafeString(imageService.identifier)} } from '${imageService.servicePath}';`
+							`export { default as ${convertToSafeString(imageService.identifier)} } from ${toModuleSpecifier(imageService.servicePath)};`
 						);
 					}
 				},
@@ -1106,7 +1108,7 @@ export const pluginHandler = async (
 			{
 				id: 'virtual:studiocms/components/Editors',
 				content: `
-						import { convertToSafeString } from '${resolve('../utils/safeString.js')}';
+						import { convertToSafeString } from ${toModuleSpecifier(resolve('../utils/safeString.js'))};
 						export const editorKeys = ${JSON.stringify([
 							...allPageTypes.map(({ identifier }) => convertToSafeString(identifier)),
 						])};
@@ -1127,7 +1129,7 @@ export const pluginHandler = async (
 						const components: Record<string, string> = item.body?.components || {};
 
 						const remappedComps = Object.entries(components).map(
-							([key, value]) => `export { default as ${key} } from '${value}';`
+							([key, value]) => `export { default as ${key} } from ${toModuleSpecifier(value)};`
 						);
 
 						return remappedComps.join('\n');
@@ -1179,7 +1181,7 @@ export const pluginHandler = async (
 
 							const remappedComps = Object.entries(components).map(
 								([key, value]) =>
-									`export { default as ${convertToSafeString(item.title + key)} } from '${value}';`
+									`export { default as ${convertToSafeString(item.title + key)} } from ${toModuleSpecifier(value)};`
 							);
 
 							return remappedComps.join('\n');
@@ -1205,7 +1207,7 @@ export const pluginHandler = async (
 
 							const remappedComps = Object.entries(components).map(
 								([key, value]) =>
-									`export { default as ${convertToSafeString(item.title + key)} } from '${value}';`
+									`export { default as ${convertToSafeString(item.title + key)} } from ${toModuleSpecifier(value)};`
 							);
 
 							return remappedComps.join('\n');
@@ -1215,7 +1217,7 @@ export const pluginHandler = async (
 			{
 				id: 'studiocms:plugins/dashboard-pages/user',
 				content: `
-						import { convertToSafeString } from '${resolve('../utils/safeString.js')}';
+						import { convertToSafeString } from ${toModuleSpecifier(resolve('../utils/safeString.js'))};
 						import * as components from 'studiocms:plugins/dashboard-pages/components/user';
 
 						const currentComponents = ${JSON.stringify(availableDashboardPages.user || [])};
@@ -1239,7 +1241,7 @@ export const pluginHandler = async (
 			{
 				id: 'studiocms:plugins/dashboard-pages/admin',
 				content: `
-						import { convertToSafeString } from '${resolve('../utils/safeString.js')}';
+						import { convertToSafeString } from ${toModuleSpecifier(resolve('../utils/safeString.js'))};
 						import * as components from 'studiocms:plugins/dashboard-pages/components/admin';
 
 						const currentComponents = ${JSON.stringify(availableDashboardPages.admin || [])};
@@ -1342,7 +1344,7 @@ export const pluginHandler = async (
 				content: `
 						import * as augments from 'virtual:studiocms/plugins/augments';
 						import * as postProcessorAugments from 'virtual:studiocms/plugins/post-processor-augments';
-						import { convertToSafeString } from '${resolve('../utils/safeString.js')}';
+						import { convertToSafeString } from ${toModuleSpecifier(resolve('../utils/safeString.js'))};
 
 						const pluginAugments = ${JSON.stringify(pluginAugments || [])};
 						const postProcessorPluginAugments = ${JSON.stringify(postProcessorAugments || [])};
@@ -1422,7 +1424,9 @@ export const pluginHandler = async (
 			},
 			{
 				id: 'studiocms:dashboard/augments/scripts',
-				content: dashboardAugmentScripts.map((script) => `import '${script}';`).join('\n'),
+				content: dashboardAugmentScripts
+					.map((script) => `import ${toModuleSpecifier(script)};`)
+					.join('\n'),
 			},
 			{
 				id: 'studiocms:plugins/list',
@@ -1437,9 +1441,9 @@ export const pluginHandler = async (
 			},
 			{
 				id: 'studiocms:storage-manager/module',
-				content: `
-						export { default } from '${finalStorageManagerModulePath}';
-					`,
+				content: finalStorageManagerModulePath
+					? `export { default } from ${toModuleSpecifier(finalStorageManagerModulePath)};`
+					: `throw new Error('[studiocms] finalStorageManagerModulePath is undefined – cannot emit virtual module without a valid storage manager path');`,
 			},
 			{
 				id: 'studiocms:storage-manager/name',

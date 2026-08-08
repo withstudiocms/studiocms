@@ -5,7 +5,7 @@ import { beforeEach, describe, expect, test } from 'vitest';
 import createPathResolver from '../src/pathResolver.js';
 import { parentSuiteName, sharedTags } from './test-utils.js';
 
-const localSuiteName = 'Path Resolver Tests';
+const localSuiteName = 'Path Resolver Tests (OS-sensitive)';
 
 describe(parentSuiteName, () => {
 	let testFileUrl: string;
@@ -13,7 +13,6 @@ describe(parentSuiteName, () => {
 	let testDirPath: string;
 
 	beforeEach(() => {
-		// Setup test paths
 		testFilePath = path.join(process.cwd(), 'test', 'fixtures', 'test-file.js');
 		testFileUrl = pathToFileURL(testFilePath).href;
 		testDirPath = path.dirname(testFilePath);
@@ -39,8 +38,7 @@ describe(parentSuiteName, () => {
 		const resolver = createPathResolver(testFileUrl);
 		const result = resolver.resolve('assets', 'image.png');
 
-		const expected = path.join(testDirPath, 'assets', 'image.png');
-		expect(result).toBe(expected);
+		expect(result).toBe(path.join(testDirPath, 'assets', 'image.png'));
 	});
 
 	test('should resolve parent directory paths correctly', async () => {
@@ -52,8 +50,7 @@ describe(parentSuiteName, () => {
 		const resolver = createPathResolver(testFileUrl);
 		const result = resolver.resolve('..', 'sibling', 'file.txt');
 
-		const expected = path.join(testDirPath, '..', 'sibling', 'file.txt');
-		expect(result).toBe(expected);
+		expect(result).toBe(path.join(testDirPath, '..', 'sibling', 'file.txt'));
 	});
 
 	test('should resolveURL to return a file:// URL', async () => {
@@ -80,8 +77,7 @@ describe(parentSuiteName, () => {
 		const resolver = createPathResolver(testFileUrl);
 		const result = resolver.resolve('config.json');
 
-		const expected = path.join(testDirPath, 'config.json');
-		expect(result).toBe(expected);
+		expect(result).toBe(path.join(testDirPath, 'config.json'));
 	});
 
 	test('should handle empty segments', async () => {
@@ -91,9 +87,7 @@ describe(parentSuiteName, () => {
 		await allure.tags(...sharedTags);
 
 		const resolver = createPathResolver(testFileUrl);
-		const result = resolver.resolve();
-
-		expect(result).toBe(testDirPath);
+		expect(resolver.resolve()).toBe(testDirPath);
 	});
 
 	test('should create resolver from process.cwd()', async () => {
@@ -105,8 +99,7 @@ describe(parentSuiteName, () => {
 		const resolver = createPathResolver(process.cwd());
 		const result = resolver.resolve('src', 'index.ts');
 
-		const expected = path.join(process.cwd(), 'src', 'index.ts');
-		expect(result).toBe(expected);
+		expect(result).toBe(path.join(process.cwd(), 'src', 'index.ts'));
 	});
 
 	test('should create resolver from absolute path', async () => {
@@ -119,8 +112,7 @@ describe(parentSuiteName, () => {
 		const resolver = createPathResolver(basePath);
 		const result = resolver.resolve('utils', 'helper.ts');
 
-		const expected = path.join(basePath, 'utils', 'helper.ts');
-		expect(result).toBe(expected);
+		expect(result).toBe(path.join(basePath, 'utils', 'helper.ts'));
 	});
 
 	test('should create resolver from relative path', async () => {
@@ -133,8 +125,7 @@ describe(parentSuiteName, () => {
 		const resolver = createPathResolver(relativePath);
 		const result = resolver.resolve('index.ts');
 
-		const expected = path.resolve(relativePath, 'index.ts');
-		expect(result).toBe(expected);
+		expect(result).toBe(path.resolve(relativePath, 'index.ts'));
 	});
 
 	test('should resolveURL with filesystem path base', async () => {
@@ -172,8 +163,7 @@ describe(parentSuiteName, () => {
 		const resolver = createPathResolver(testFileUrl);
 		const result = resolver.resolve('..', '..', '..', 'root-level.txt');
 
-		const expected = path.join(testDirPath, '..', '..', '..', 'root-level.txt');
-		expect(result).toBe(expected);
+		expect(result).toBe(path.join(testDirPath, '..', '..', '..', 'root-level.txt'));
 	});
 
 	test('should normalize paths correctly', async () => {
@@ -185,8 +175,7 @@ describe(parentSuiteName, () => {
 		const resolver = createPathResolver(process.cwd());
 		const result = resolver.resolve('src', '.', 'utils', '..', 'index.ts');
 
-		const expected = path.join(process.cwd(), 'src', 'index.ts');
-		expect(result).toBe(expected);
+		expect(result).toBe(path.join(process.cwd(), 'src', 'index.ts'));
 	});
 
 	test('should handle absolute path segments in resolve', async () => {
@@ -199,7 +188,6 @@ describe(parentSuiteName, () => {
 		const absolutePath = path.join(process.cwd(), 'other', 'location');
 		const result = resolver.resolve(absolutePath);
 
-		// path.resolve with absolute path ignores base
 		expect(result).toBe(absolutePath);
 	});
 
@@ -218,16 +206,21 @@ describe(parentSuiteName, () => {
 		expect(fileURLToPath(resolvedURL)).toBe(resolvedPath);
 	});
 
-	test('should work with both Windows and Unix-style paths', async () => {
+	test('resolve returns platform-native separators', async () => {
 		await allure.parentSuite(parentSuiteName);
 		await allure.suite(localSuiteName);
-		await allure.subSuite('should work with both Windows and Unix-style paths');
+		await allure.subSuite('resolve returns platform-native separators');
 		await allure.tags(...sharedTags);
 
 		const resolver = createPathResolver(process.cwd());
 		const result = resolver.resolve('src', 'utils', 'helper.ts');
+		const expected = path.join(process.cwd(), 'src', 'utils', 'helper.ts');
 
-		// Should always produce platform-appropriate separators
-		expect(result).toBe(path.join(process.cwd(), 'src', 'utils', 'helper.ts'));
+		expect(result).toBe(expected);
+		if (process.platform === 'win32') {
+			expect(result).toContain('\\');
+		} else {
+			expect(result).not.toContain('\\');
+		}
 	});
 });

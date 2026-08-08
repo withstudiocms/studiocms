@@ -1,6 +1,8 @@
 import * as path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
+export { toModuleSpecifier } from './toModuleSpecifier.js';
+
 interface PathResolver {
 	resolve: (...segments: string[]) => string;
 	resolveURL: (...segments: string[]) => URL;
@@ -20,7 +22,8 @@ interface PathResolver {
  *   - a filesystem path string (absolute or relative).
  * @returns An object with two helpers:
  *   - `resolve(...segments: string[]): string` — resolves the given path segments
- *     against the computed base directory and returns an absolute filesystem path.
+ *     against the computed base directory and returns a platform-native absolute
+ *     filesystem path (same contract as `path.resolve`).
  *   - `resolveURL(...segments: string[]): URL` — resolves the given path segments
  *     against the computed base directory and returns a `file://` URL.
  *
@@ -48,7 +51,7 @@ function createPathResolver(baseOption: string): PathResolver {
 		 * Resolve path segments against the base directory.
 		 *
 		 * @param segments - Path segments to resolve.
-		 * @returns The resolved absolute filesystem path.
+		 * @returns The resolved absolute filesystem path (platform-native separators).
 		 */
 		resolve: (...segments: string[]): string => path.resolve(baseDir, ...segments),
 
