@@ -333,8 +333,8 @@ importers:
         specifier: ^0.18.1
         version: 0.18.1
       suneditor:
-        specifier: ^3.2.6
-        version: 3.2.6
+        specifier: ^3.3.0
+        version: 3.3.0
     devDependencies:
       '@types/codemirror':
         specifier: 5.60.16
@@ -6972,8 +6972,8 @@ packages:
   style-to-object@1.0.14:
     resolution: {integrity: sha512-LIN7rULI0jBscWQYaSswptyderlarFkjQ+t79nzty8tcIAceVomEVlLzH5VP4Cmsv6MtKhs7qaAiwlcp+Mgaxw==}
 
-  suneditor@3.2.6:
-    resolution: {integrity: sha512-P/rmqntTlCW4s8aaxFR5JXE+X+MwtKkRyYy5r+9oSTyhwKP6x/FW2Fb9+SD074MSRTDIVtLemxGyyhq9nRopbQ==}
+  suneditor@3.3.0:
+    resolution: {integrity: sha512-AyTbpJFihd/INIrEBqORUcreADBQ749Dm1l+FHxHkNmHwwbWeoUKGGP+bhr+6Vn/TX4bvAlGi1riBF/BS2I2NQ==}
     engines: {node: '>=14.0.0'}
 
   supports-color@10.2.2:
@@ -14086,7 +14086,7 @@ snapshots:
     dependencies:
       inline-style-parser: 0.2.7
 
-  suneditor@3.2.6: {}
+  suneditor@3.3.0: {}
 
   supports-color@10.2.2: {}
 
