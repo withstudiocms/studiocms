@@ -54,9 +54,9 @@ catalog:
 # Specific dependency catalogs for certain groups of packages
 catalogs:
   astrojs-current:
-    "@astrojs/node": ^11.0.3
+    "@astrojs/node": ^11.1.0
     "@astrojs/rss": ^4.0.19
-    astro: ^7.1.6
+    astro: ^7.2.0
     vite: ^8.0.0
 
   astrojs-min:
@@ -80,7 +80,7 @@ catalogs:
 
   kysely:
     "@libsql/client": ^0.15.15
-    "@types/pg": ^8.20.4
+    "@types/pg": ^8.21.0
     kysely: ^0.28.17
     kysely-turso: ^0.1.1
     pg: ^8.22.0
