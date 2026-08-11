@@ -145,7 +145,7 @@ setDataContext(Astro, {
       <t-users-edit key="user-info-header">{t('user-info-header')}</t-users-edit>
     </div>
 
-    <Card class="user-information-block" fullWidth variant={'filled'}>
+    <Card class="sui-card user-information-block" fullWidth variant={'filled'}>
       <table>
         <tr>
           <td><t-users-edit key="user-info-email">{t('user-info-email')}</t-users-edit></td>
@@ -227,7 +227,7 @@ setDataContext(Astro, {
 
       <div class="edit-card-list">
         { userTokens.length > 0 ? userTokens.map((token) => (
-            <Card fullWidth class="token-list-item">
+            <Card fullWidth class="sui-card token-list-item">
                 <div slot="header" class="token-list-item-header">
                     <div class="token-list-item-header-row">
                         <h4>
@@ -248,7 +248,7 @@ setDataContext(Astro, {
                 </div>
             </Card>
         )) : (
-            <Card fullWidth class="token-list-item">
+            <Card fullWidth class="sui-card token-list-item">
                 <Center>
                     <span class="description"><t-users-edit key="api-tokens-no-tokens">{t('api-tokens-no-tokens')}</t-users-edit></span>
                 </Center>
@@ -265,7 +265,7 @@ setDataContext(Astro, {
         {
           diffs.length > 0 ? (
             diffs.map((diff) => (
-              <Card fullWidth class={'edit-card'}>
+              <Card fullWidth class={'sui-card edit-card'}>
                 <div class="card-row">
                   <span class="card-title">{pages.find((page) => page.id === diff.pageId)?.title}</span>
                   <span class="card-date"><t-users-edit key="last-edit-pages-edited">{t('last-edit-pages-edited')}</t-users-edit>: <FormattedDate date={diff.timestamp!} /></span>
@@ -280,7 +280,7 @@ setDataContext(Astro, {
               </Card>
             ))
           ) : (
-            <Card fullWidth style="background-color: var(--background-step-1);">
+            <Card fullWidth class="sui-card" style="background-color: var(--background-step-1);">
               <Center><t-users-edit key="last-edit-pages-no-edits">{t('last-edit-pages-no-edits')}</t-users-edit></Center>
             </Card>
           )
