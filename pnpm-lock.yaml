@@ -673,7 +673,7 @@ importers:
         specifier: catalog:effect
         version: 3.22.1
       grapesjs:
-        specifier: ^0.23.3
+        specifier: ^0.23.4
         version: 0.23.4
       tui-image-editor:
         specifier: ^3.15.3
