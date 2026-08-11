@@ -2,4 +2,4 @@
 "studiocms": patch
 ---
 
-CSS fixes for Astro v7 to fix some parts of the dashboard that got messed up
+Fix dashboard card styling for Astro v7 compatibility by applying `sui-card` to profile and user-management cards.
