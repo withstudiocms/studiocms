@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect } from 'vitest';
+import { afterEach, beforeEach, describe, expect, vi } from 'vitest';
 import { syncDatabaseSchema, type TableDefinition } from '../../src/utils/migrator';
 import { allureTester, DBClientFixture, parentSuiteName, sharedTags } from '../test-utils';
 
@@ -22,9 +22,13 @@ describe(parentSuiteName, () => {
 
 	beforeEach(async () => {
 		await dbFixture.cleanup();
+		// freeze the wall clock so both saves fall in the same second
+		vi.useFakeTimers({ toFake: ['Date'] });
+		vi.setSystemTime(new Date('2026-01-01T00:00:00Z'));
 	});
 
 	afterEach(async () => {
+		vi.useRealTimers();
 		await dbFixture.cleanup();
 	});
 
@@ -37,27 +41,23 @@ describe(parentSuiteName, () => {
 			tags: [...sharedTags],
 		});
 
-		await step(
-			'two syncs back-to-back produce two strictly increasing ids, without waiting',
-			async () => {
-				const { db } = await dbFixture.getClient();
+		await step('two syncs in one transaction and one second get consecutive ids', async () => {
+			const { db } = await dbFixture.getClient();
 
-				const start = Date.now();
-				await syncDatabaseSchema(db, schemaA, []);
-				await syncDatabaseSchema(db, schemaB, schemaA);
-				const elapsed = Date.now() - start;
+			// mirrors Kysely's Migrator on transactional-DDL dialects: one transaction for the batch
+			await db.transaction().execute(async (trx) => {
+				await syncDatabaseSchema(trx, schemaA, []);
+				await syncDatabaseSchema(trx, schemaB, schemaA);
+			});
 
-				const rows = await db
-					.selectFrom('_kysely_schema_v1')
-					.select('id')
-					.orderBy('id', 'asc')
-					.execute();
+			const rows = await db
+				.selectFrom('_kysely_schema_v1')
+				.select('id')
+				.orderBy('id', 'asc')
+				.execute();
 
-				expect(rows).toHaveLength(2);
-				expect(rows[1].id).toBeGreaterThan(rows[0].id);
-				// the old retry loop slept 1s per collision; the fix must not
-				expect(elapsed).toBeLessThan(900);
-			}
-		);
+			expect(rows).toHaveLength(2);
+			expect(rows[1].id).toBe(rows[0].id + 1);
+		});
 	});
 });

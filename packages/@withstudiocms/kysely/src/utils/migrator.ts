@@ -27,6 +27,10 @@ function now() {
  * value and `max(id) + 1`. Reads its own writes inside a transaction, so several
  * migrations saved in the same second (e.g. a fresh install batched in one
  * Postgres transaction) never collide on the primary key.
+ *
+ * Not an atomic allocator: concurrent callers outside a transaction (or in
+ * separate transactions) can compute the same id. Callers are expected to be
+ * serialized, Kysely's `Migrator` does this via `kysely_migration_lock`.
  */
 const nextId = (db: Kysely<any>) =>
 	Effect.tryPromise({
@@ -179,6 +183,10 @@ const schemaManager = Effect.fn('schemaManager')(function* (
  * - Wraps SQL-level failures in SqlError and delegates error handling to the
  *   configured `handleCause` handler (via Effect.catchAllCause).
  *
+ * Concurrency: calls must be serialized (e.g. run from a Kysely `Migrator`, which
+ * holds `kysely_migration_lock`). Concurrent direct calls can collide on the
+ * schema-history primary key.
+ *
  * Important notes:
  * - This operation performs destructive changes (drops tables/indexes/triggers)
  *   when the schema indicates removal or deprecation — ensure you have backups
@@ -307,6 +315,8 @@ export const syncDatabaseSchema = (
  * - Logs progress and outcomes for each table and for the overall rollback procedure.
  * - Uses the provided `db` Kysely instance's schema API to perform table existence checks
  *   and drops.
+ *
+ * Concurrency: same contract as `syncDatabaseSchema` — calls must be serialized.
  *
  * Notes and guarantees:
  * - The operation is executed asynchronously and returns a promise that resolves
