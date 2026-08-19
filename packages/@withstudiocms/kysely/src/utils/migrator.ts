@@ -1,7 +1,7 @@
 /** biome-ignore-all lint/suspicious/noExplicitAny: It's okay, doing dynamic stuff */
 /* v8 ignore start */
 
-import { Data, Effect, Schedule } from 'effect';
+import { Effect } from 'effect';
 import type { Kysely } from 'kysely';
 import { handleCause, SqlError } from './errors.js';
 import { addMissingIndexes, dropRemovedIndexes, getTableIndexes } from './indexes.js';
@@ -22,7 +22,21 @@ function now() {
 	return Math.floor(diff / 1000);
 }
 
-class SaveError extends Data.TaggedError('SaveError')<{ cause: unknown }> {}
+/**
+ * Next id for the schema history table: the greater of the current wall-clock
+ * value and `max(id) + 1`. Reads its own writes inside a transaction, so several
+ * migrations saved in the same second (e.g. a fresh install batched in one
+ * Postgres transaction) never collide on the primary key.
+ */
+const nextId = (db: Kysely<any>) =>
+	Effect.tryPromise({
+		try: () =>
+			db
+				.selectFrom(v1TableName)
+				.select(db.fn.max<number | null>('id').as('max'))
+				.executeTakeFirst(),
+		catch: (cause) => new SqlError({ cause }),
+	}).pipe(Effect.map((row) => Math.max(now(), Number(row?.max ?? 0) + 1)));
 
 const schemaManager = Effect.fn('schemaManager')(function* (
 	db: Kysely<any>,
@@ -72,9 +86,9 @@ const schemaManager = Effect.fn('schemaManager')(function* (
 
 		if (!v1HasRows && previousSchemaDefinitionInternal.length > 0) {
 			const definition = yield* stringifyTableSchema(previousSchemaDefinitionInternal);
+			const id = yield* nextId(db);
 			yield* Effect.tryPromise({
-				try: () =>
-					db.insertInto(v1TableName).values({ definition, id: now() }).executeTakeFirstOrThrow(),
+				try: () => db.insertInto(v1TableName).values({ definition, id }).executeTakeFirstOrThrow(),
 				catch: (cause) => new SqlError({ cause }),
 			});
 		}
@@ -135,44 +149,12 @@ const schemaManager = Effect.fn('schemaManager')(function* (
 			yield* createTable;
 		}
 
-		let attempt = 0;
-		const maxAttempts = 9; // With 1 second fixed delay, this allows for up to ~10 seconds of retries, which should be sufficient to resolve clock issues in most cases.
-
-		yield* Effect.retry(
-			Effect.gen(function* () {
-				const id = now() + attempt;
-				attempt++;
-				return yield* Effect.tryPromise({
-					try: () =>
-						db.insertInto(v1TableName).values({ definition, id }).executeTakeFirstOrThrow(),
-					catch: (cause) => {
-						// 23505 means unique ID conflict
-						if (cause instanceof Error && 'code' in cause && cause.code === '23505') {
-							return new SaveError({ cause });
-						}
-						return new SqlError({ cause });
-					},
-				}).pipe(Effect.andThen(() => Effect.succeed(true)));
-			}),
-			{
-				times: maxAttempts,
-				schedule: Schedule.fixed('1 seconds'),
-				while: (e) => e._tag === 'SaveError',
-			}
-		).pipe(
-			Effect.catchTag(
-				'SaveError',
-				() =>
-					new SqlError({
-						cause: new Error(
-							`Failed to save schema after ${maxAttempts + 1} attempts due to repeated ID conflicts, which is likely caused by a clock issue. Please ensure the system clock is accurate and try again.`
-						),
-					})
-			)
-		);
-
-		return;
-	}, Effect.catchAll(Effect.logError));
+		const id = yield* nextId(db);
+		yield* Effect.tryPromise({
+			try: () => db.insertInto(v1TableName).values({ definition, id }).executeTakeFirstOrThrow(),
+			catch: (cause) => new SqlError({ cause }),
+		});
+	});
 
 	return {
 		getPreviousSchema,
