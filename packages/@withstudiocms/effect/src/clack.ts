@@ -6,8 +6,10 @@ import type {
 	ClackSettings,
 	CommonOptions,
 	ConfirmOptions,
+	DateOptions,
 	GroupMultiSelectOptions,
 	LogMessageOptions,
+	MultiLineOptions,
 	MultiSelectOptions,
 	NoteOptions,
 	PasswordOptions,
@@ -34,10 +36,14 @@ export type {
 	ClackSettings,
 	CommonOptions,
 	ConfirmOptions,
+	DateFormat,
+	DateOptions,
 	GroupMultiSelectOptions,
 	LogMessageOptions,
+	MultiLineOptions,
 	MultiSelectOptions,
 	NoteOptions,
+	Option,
 	PasswordOptions,
 	PathOptions,
 	ProgressOptions,
@@ -154,6 +160,14 @@ export const confirm = Effect.fn((options: ConfirmOptions) =>
 );
 
 /**
+ * Prompts the user for a date input using Clack, with error handling.
+ *
+ * @param opts - The configuration options for the date prompt.
+ * @returns The result of the date prompt, wrapped with error handling.
+ */
+export const date = (opts: DateOptions) => useClackErrorPromise(() => ClackPrompts.date(opts));
+
+/**
  * Groups multiple prompts together and executes them as a single operation.
  * Utilizes error handling via `useClackError` to wrap the `clackGroup` execution.
  *
@@ -223,7 +237,16 @@ export const isTTY = Effect.fn((output: Writable) =>
 );
 
 /**
- * Presents a multi-select prompt to the user with error handling.
+ * Prompts the user for multi-line text input using Clack, with error handling.
+ *
+ * @param opts - The configuration options for the multiline prompt.
+ * @returns The result of the multiline prompt, wrapped with error handling.
+ */
+export const multiline = (opts: MultiLineOptions) =>
+	useClackErrorPromise(() => ClackPrompts.multiline(opts));
+
+/**
+ * Presents a multi-select prompt to the user using Clack, handling errors gracefully.
  *
  * @typeParam T - The type of the selectable options.
  * @param options - The configuration options for the multi-select prompt.
