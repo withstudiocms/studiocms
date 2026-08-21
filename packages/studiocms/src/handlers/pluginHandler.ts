@@ -222,7 +222,7 @@ type Options = {
  * Handles the setup and configuration of StudioCMS plugins during the Astro build process.
  *
  * This utility function is registered for the `astro:config:setup` hook and is responsible for:
- * - Initializing and validating StudioCMS plugins, including checking minimum version requirements.
+ * - Initializing and validating StudioCMS plugins.
  * - Collecting integrations, dashboard grid items, dashboard pages, plugin endpoints, renderers, image services, and other plugin-related data.
  * - Invoking plugin hooks (`studiocms:astro:config`, `studiocms:config:setup`) to allow plugins to register their features and integrations.
  * - Setting up virtual imports for plugin components, endpoints, renderers, and image services for use in the StudioCMS dashboard and editor.
@@ -238,7 +238,6 @@ type Options = {
  *   - `safePluginList`: List of validated and processed plugins with their safe configuration data.
  *   - `messages`: Informational messages about the plugin setup process.
  *
- * @throws {StudioCMSError} If a plugin specifies an invalid minimum version requirement or if no rendering plugins are found.
  * @throws {AstroError} If no rendering plugins are installed.
  */
 export const pluginHandler = async (
@@ -554,11 +553,10 @@ export const pluginHandler = async (
 	}
 
 	/**
-	 * Extracts and validates plugin data, ensuring it meets the required format and version.
+	 * Extracts plugin data, ensuring it meets the required format.
 	 *
 	 * @param plugin - The StudioCMSPlugin instance to process.
 	 * @returns An object containing the validated plugin data, including hooks and other properties.
-	 * @throws {StudioCMSError} If the plugin's minimum version requirement is not met.
 	 */
 	function getPluginData(plugin: StudioCMSPlugin) {
 		const { hooks = {}, requires, ...safeData } = plugin;
