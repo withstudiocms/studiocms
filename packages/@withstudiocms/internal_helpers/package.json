@@ -152,7 +152,7 @@
     "tinyexec": "catalog:"
   },
   "devDependencies": {
-    "@scure/base": "^2.2.0",
+    "@scure/base": "^2.3.0",
     "@types/mdast": "catalog:",
     "@types/node": "catalog:"
   },
