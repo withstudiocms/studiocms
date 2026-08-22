@@ -39,8 +39,8 @@ catalogs:
       specifier: ^7.8.0
       version: 7.8.0
     deepmerge-ts:
-      specifier: ^7.1.5
-      version: 7.1.5
+      specifier: ^8.0.1
+      version: 8.0.1
     diff:
       specifier: ^8.0.4
       version: 8.0.4
@@ -668,7 +668,7 @@ importers:
         version: link:../../@withstudiocms/sdk
       deepmerge-ts:
         specifier: 'catalog:'
-        version: 7.1.5
+        version: 8.0.1
       effect:
         specifier: catalog:effect
         version: 3.22.1
@@ -851,7 +851,7 @@ importers:
         version: 0.108.1(@effect/cluster@0.60.2(@effect/platform@0.97.1(effect@3.22.1))(@effect/rpc@0.76.2(@effect/platform@0.97.1(effect@3.22.1))(effect@3.22.1))(@effect/sql@0.52.1(@effect/experimental@0.61.1(@effect/platform@0.97.1(effect@3.22.1))(effect@3.22.1))(@effect/platform@0.97.1(effect@3.22.1))(effect@3.22.1))(@effect/workflow@0.19.1(@effect/experimental@0.61.1(@effect/platform@0.97.1(effect@3.22.1))(effect@3.22.1))(@effect/platform@0.97.1(effect@3.22.1))(@effect/rpc@0.76.2(@effect/platform@0.97.1(effect@3.22.1))(effect@3.22.1))(effect@3.22.1))(effect@3.22.1))(@effect/platform@0.97.1(effect@3.22.1))(@effect/rpc@0.76.2(@effect/platform@0.97.1(effect@3.22.1))(effect@3.22.1))(@effect/sql@0.52.1(@effect/experimental@0.61.1(@effect/platform@0.97.1(effect@3.22.1))(effect@3.22.1))(@effect/platform@0.97.1(effect@3.22.1))(effect@3.22.1))(effect@3.22.1)
       deepmerge-ts:
         specifier: 'catalog:'
-        version: 7.1.5
+        version: 8.0.1
       effect:
         specifier: catalog:effect
         version: 3.22.1
@@ -4640,8 +4640,8 @@ packages:
   deep-is@0.1.4:
     resolution: {integrity: sha512-oIPzksmTg4/MriiaYGO+okXDT7ztn/w3Eptv/+gSIdMdKsJo0u4CfYNFJPy+4SKMuCqGw2wxnA+URMg3t8a/bQ==}
 
-  deepmerge-ts@7.1.5:
-    resolution: {integrity: sha512-HOJkrhaYsweh+W+e74Yn7YStZOilkoPb6fycpwNLKzSPtruFs48nYis0zy5yJz1+ktUhHxoRDJ27RQAWLIJVJw==}
+  deepmerge-ts@8.0.1:
+    resolution: {integrity: sha512-szCXE7YLCvLKR9bFPJcvsezOShdalctSvrgN/LM/QGUEPZQajwjmsMObZ6/DuANT5lxzM/wtO8Feubwdkz8myA==}
     engines: {node: '>=16.0.0'}
 
   deepmerge@4.3.1:
@@ -11122,7 +11122,7 @@ snapshots:
   deep-is@0.1.4:
     optional: true
 
-  deepmerge-ts@7.1.5: {}
+  deepmerge-ts@8.0.1: {}
 
   deepmerge@4.3.1: {}
 
