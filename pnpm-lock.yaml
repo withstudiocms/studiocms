@@ -784,8 +784,8 @@ importers:
         specifier: 'catalog:'
         version: 1.3.0
       wrap-ansi:
-        specifier: ^10.0.0
-        version: 10.0.0
+        specifier: ^10.0.1
+        version: 10.0.1
     devDependencies:
       '@types/node':
         specifier: 'catalog:'
@@ -7591,8 +7591,8 @@ packages:
   wordwrap@1.0.0:
     resolution: {integrity: sha512-gvVzJFlPycKc5dZN4yPkP8w7Dc37BtP1yczEneOb4uq34pXZcvrtRTmWV8W+Ume+XCxKgbjM+nevkyFPMybd4Q==}
 
-  wrap-ansi@10.0.0:
-    resolution: {integrity: sha512-SGcvg80f0wUy2/fXES19feHMz8E0JoXv2uNgHOu4Dgi2OrCy1lqwFYEJz1BLbDI0exjPMe/ZdzZ/YpGECBG/aQ==}
+  wrap-ansi@10.0.1:
+    resolution: {integrity: sha512-M0N4xzyzosiIok3svYlEo1sdLZts/8FPgYH/GPC3wvlmPoRvnoManGMrE54waYj3tISA8w6lsdesfVv67qSr8Q==}
     engines: {node: '>=20'}
 
   wrap-ansi@7.0.0:
@@ -14615,11 +14615,10 @@ snapshots:
 
   wordwrap@1.0.0: {}
 
-  wrap-ansi@10.0.0:
+  wrap-ansi@10.0.1:
     dependencies:
       ansi-styles: 6.2.3
       string-width: 8.2.2
-      strip-ansi: 7.2.0
 
   wrap-ansi@7.0.0:
     dependencies:
