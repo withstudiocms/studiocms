@@ -1,11 +1,6 @@
 import { Effect } from 'effect';
-import {
-	type Dialect,
-	type Kysely,
-	type Migration,
-	type MigrationProvider,
-	Migrator,
-} from 'kysely';
+import type { Dialect, Kysely } from 'kysely';
+import { type Migration, type MigrationProvider, Migrator } from 'kysely/migration';
 import { kyselyClient, makeDBClientLive } from './client.js';
 import { MigratorError } from './errors.js';
 

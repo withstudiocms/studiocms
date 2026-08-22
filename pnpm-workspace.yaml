@@ -80,9 +80,9 @@ catalogs:
     effect: ^3.22.1
 
   kysely:
-    "@libsql/client": ^0.15.15
+    "@libsql/client": ^0.17.4
     "@types/pg": ^8.23.1
-    kysely: ^0.28.17
+    kysely: ^0.29.5
     pg: ^8.23.0
     mysql2: ^3.23.3
 
