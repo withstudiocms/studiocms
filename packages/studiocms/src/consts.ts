@@ -287,7 +287,7 @@ export const AstroConfigViteSettings: Partial<AstroConfig['vite']> = {
 		chunkSizeWarningLimit: 1200, // Allow's increase to 1.2 kB for Plugins such as our WYSIWYG editor to not trigger warnings
 		rollupOptions: {
 			// Users will need to install these peer dependencies themselves
-			external: ['@libsql/client', 'kysely-turso', 'pg', 'mysql2'],
+			external: ['@libsql/client', 'pg', 'mysql2'],
 		},
 	},
 	optimizeDeps: {
