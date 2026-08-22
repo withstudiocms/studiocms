@@ -10,6 +10,7 @@
     "ignoreUnknown": true,
     "includes": [
       "**",
+      "!**/assets/**/*.svg",
       "!**/package.json",
       "!**/*.d.ts",
       "!**/*.min.js",
