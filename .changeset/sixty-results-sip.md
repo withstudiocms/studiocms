@@ -1,4 +1,5 @@
 ---
+"studiocms": minor
 "@withstudiocms/kysely": minor
 "@withstudiocms/sdk": minor
 ---
