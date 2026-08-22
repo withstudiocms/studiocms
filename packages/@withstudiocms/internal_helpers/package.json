@@ -71,6 +71,10 @@
       "types": "./dist/pathResolver.d.ts",
       "default": "./dist/pathResolver.js"
     },
+    "./toModuleSpecifier": {
+      "types": "./dist/toModuleSpecifier.d.ts",
+      "default": "./dist/toModuleSpecifier.js"
+    },
     "./debug-info-provider": {
       "types": "./dist/debug-info-provider.d.ts",
       "default": "./dist/debug-info-provider.js"
