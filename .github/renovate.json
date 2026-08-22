@@ -77,6 +77,10 @@
     "zod",
     "kysely",
     "typescript",
-    "diff"
+    "diff",
+    "@changesets/changelog-github",
+    "@changesets/cli",
+    "@changesets/config",
+    "@changesets/write"
   ]
 }
