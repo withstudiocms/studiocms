@@ -257,19 +257,19 @@
 		"dotenv": "catalog:",
 		"effectify": "workspace:^",
 		"fuse.js": "^7.5.0",
-		"jose": "^6.2.8",
+		"jose": "^6.2.9",
 		"micromark": "^4.0.2",
 		"micromark-extension-gfm": "^3.0.0",
 		"magicast": "^0.5.4",
 		"mdast-util-to-markdown": "^2.1.2",
 		"mrmime": "^2.0.1",
-		"nanostores": "^1.4.2",
+		"nanostores": "^1.5.1",
 		"package-manager-detector": "catalog:",
 		"semver": "catalog:",
 		"three": "0.170.0",
 		"tinyglobby": "catalog:",
 		"ultrahtml": "catalog:",
-		"web-vitals": "^6.1.0"
+		"web-vitals": "^6.1.1"
 	},
 	"devDependencies": {
 		"@types/mdast": "^4.0.4",
