@@ -68,7 +68,7 @@
   "type": "module",
   "dependencies": {
     "codemirror": "5.65.19",
-    "katex": "^0.18.1",
+    "katex": "^0.18.4",
     "suneditor": "^3.3.0"
   },
   "devDependencies": {
