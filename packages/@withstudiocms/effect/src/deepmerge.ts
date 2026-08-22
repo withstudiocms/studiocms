@@ -49,7 +49,7 @@ export const deepmergeCustom = Effect.fn(<T>(fn: (deepmerge: typeof _deepmergeCu
  */
 export const deepmerge = Effect.fn(function* <T>(
 	fn: (deepmerge: typeof _deepmergeSrc) => T,
-	opts: DeepMergeOptions<DeepMergeBuiltInMetaData, DeepMergeBuiltInMetaData> = {}
+	opts: DeepMergeOptions<DeepMergeBuiltInMetaData, Readonly<Record<PropertyKey, unknown>>> = {}
 ) {
 	const _deepmerge = yield* deepmergeCustom((merge) => merge(opts));
 
