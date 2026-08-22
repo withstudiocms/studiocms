@@ -73,7 +73,6 @@
     "vite",
     "vitest",
     "zod",
-    "kysely",
     "typescript",
     "diff",
     "@changesets/changelog-github",
