@@ -1,5 +1,40 @@
 # @withstudiocms/effect
 
+## 0.5.0
+
+### Minor Changes
+
+- [#1537](https://github.com/withstudiocms/studiocms/pull/1537) [`f7646fe`](https://github.com/withstudiocms/studiocms/commit/f7646fedc637f250d04844f9a6e1ac8126ec5015) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Updates for Astro v6, Lints `.astro` files, and scope CSS files to prevent weird CSS leakage across pages.
+
+- [#1691](https://github.com/withstudiocms/studiocms/pull/1691) [`33b879f`](https://github.com/withstudiocms/studiocms/commit/33b879f4475dcd9bf948a4fc4d386a90994b98c7) Thanks [@dreyfus92](https://github.com/dreyfus92)! - Expose new `@clack/prompts` v1.7 functionality through the Effect clack wrapper: adds `date` and `multiline` prompt wrappers and re-exports the `DateOptions`, `DateFormat`, `MultiLineOptions`, and `Option` types. All existing wrapper APIs are unchanged; no consumer updates required.
+
+- [#1490](https://github.com/withstudiocms/studiocms/pull/1490) [`418b743`](https://github.com/withstudiocms/studiocms/commit/418b743c6387878f82599f94ad7185947ec6815d) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Moves packages to tsdown based builder instead of custom esbuild pipeline
+
+### Patch Changes
+
+- [#1517](https://github.com/withstudiocms/studiocms/pull/1517) [`72148f4`](https://github.com/withstudiocms/studiocms/commit/72148f4d5eae2108f6995c980d1834128da4f020) Thanks [@renovate](https://github.com/apps/renovate)! - chore(deps): Updated Effect dependencies (PR: [#1517](https://github.com/withstudiocms/studiocms/issues/1517))
+
+- [#1492](https://github.com/withstudiocms/studiocms/pull/1492) [`49cdf12`](https://github.com/withstudiocms/studiocms/commit/49cdf12fb73eed117e1ab3fa4225d11a8a13554f) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update dependency nodemailer to ^8.0.2
+
+- [#1571](https://github.com/withstudiocms/studiocms/pull/1571) [`010cb29`](https://github.com/withstudiocms/studiocms/commit/010cb293dc73cbd3d7fd42fac43072f24c908a60) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update @withstudiocms dependencies
+
+- [#1578](https://github.com/withstudiocms/studiocms/pull/1578) [`2bd1616`](https://github.com/withstudiocms/studiocms/commit/2bd161637b58a64fab90b1e8fb0d5d9d1c64f166) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update @withstudiocms dependencies
+
+- [#1673](https://github.com/withstudiocms/studiocms/pull/1673) [`67efa61`](https://github.com/withstudiocms/studiocms/commit/67efa613fe870e187ee37e322df6e935eea57eaf) Thanks [@renovate](https://github.com/apps/renovate)! - Update dependency nodemailer to ^9.0.5
+
+- [#1631](https://github.com/withstudiocms/studiocms/pull/1631) [`0d2c3c9`](https://github.com/withstudiocms/studiocms/commit/0d2c3c9d37676bac5b0a8187c7e8a78bf3feb38b) Thanks [@renovate](https://github.com/apps/renovate)! - chore(deps): Updated Effect dependencies (PR: [#1631](https://github.com/withstudiocms/studiocms/issues/1631))
+
+- [#1563](https://github.com/withstudiocms/studiocms/pull/1563) [`a5a5769`](https://github.com/withstudiocms/studiocms/commit/a5a57694c1a273196b754acce545a8d259b3423f) Thanks [@renovate](https://github.com/apps/renovate)! - chore(deps): Updated Effect dependencies (PR: [#1563](https://github.com/withstudiocms/studiocms/issues/1563))
+
+- [#1533](https://github.com/withstudiocms/studiocms/pull/1533) [`76400b0`](https://github.com/withstudiocms/studiocms/commit/76400b06202c081390bf1b28f2a7c07a2d141a99) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update dependency nodemailer to ^8.0.3
+
+- [#1641](https://github.com/withstudiocms/studiocms/pull/1641) [`193e4aa`](https://github.com/withstudiocms/studiocms/commit/193e4aad1f31bed18c5f88167513363cf3bd1b01) Thanks [@renovate](https://github.com/apps/renovate)! - chore(deps): Updated Effect dependencies (PR: [#1641](https://github.com/withstudiocms/studiocms/issues/1641))
+
+- [#1697](https://github.com/withstudiocms/studiocms/pull/1697) [`0800f15`](https://github.com/withstudiocms/studiocms/commit/0800f15e461e5aac2915c9d63bbff4d39f81e5b3) Thanks [@renovate](https://github.com/apps/renovate)! - Update deepmerge to v8
+
+- Updated dependencies [[`72148f4`](https://github.com/withstudiocms/studiocms/commit/72148f4d5eae2108f6995c980d1834128da4f020), [`f7646fe`](https://github.com/withstudiocms/studiocms/commit/f7646fedc637f250d04844f9a6e1ac8126ec5015), [`f3dcee2`](https://github.com/withstudiocms/studiocms/commit/f3dcee25fcdcab2199e849cef62e97ef54c60543), [`0d2c3c9`](https://github.com/withstudiocms/studiocms/commit/0d2c3c9d37676bac5b0a8187c7e8a78bf3feb38b), [`a5a5769`](https://github.com/withstudiocms/studiocms/commit/a5a57694c1a273196b754acce545a8d259b3423f), [`497ec43`](https://github.com/withstudiocms/studiocms/commit/497ec43d30436cd6042ec2be3e933b44d03491e0), [`193e4aa`](https://github.com/withstudiocms/studiocms/commit/193e4aad1f31bed18c5f88167513363cf3bd1b01)]:
+  - effectify@0.3.0
+
 ## 0.4.1
 
 ### Patch Changes
