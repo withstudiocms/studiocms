@@ -3,7 +3,7 @@ import createPathResolver from '@withstudiocms/internal_helpers/pathResolver';
 import type { HookParameters } from 'astro';
 import type { StudioCMSConfig } from '../schemas/index.js';
 
-const { resolve } = createPathResolver(import.meta.url);
+const { resolve, resolveModuleSpecifier } = createPathResolver(import.meta.url);
 
 export const setupDbStudio = async (
 	params: HookParameters<'astro:config:setup'>,
@@ -15,7 +15,7 @@ export const setupDbStudio = async (
 	addVirtualImports(params, {
 		name: 'studiocms:db-studio',
 		imports: {
-			'virtual:studiocms/db-studio/connection': `export { createConnectionFromConfig } from '${resolve(`../toolbar/db-viewer/studio/virtual-connection/${dialect}.js`)}';`,
+			'virtual:studiocms/db-studio/connection': `export { createConnectionFromConfig } from ${resolveModuleSpecifier(`../toolbar/db-viewer/studio/virtual-connection/${dialect}.js`)};`,
 		},
 	});
 

@@ -7,6 +7,7 @@
 /// <reference types="studiocms/v/types" />
 
 import { addVirtualImports } from '@withstudiocms/internal_helpers/astro-integration';
+import { toModuleSpecifier } from '@withstudiocms/internal_helpers/toModuleSpecifier';
 import type { AstroIntegration } from 'astro';
 import { Schema } from 'effect';
 import { definePlugin } from 'studiocms/plugins';
@@ -55,11 +56,11 @@ export function internalMarkdownIntegration(options: MarkdownSchemaOptions = {})
 							export default config;
 						`,
 						'studiocms:md/pre-render': `
-							export { preRender } from '${internalRenderer}';
+							export { preRender } from ${toModuleSpecifier(internalRenderer)};
 							`,
 						'studiocms:md/styles': `
-							import '${resolve('./styles/md-remark-headings.css')}';
-							${resolvedCalloutTheme ? `import '${resolvedCalloutTheme}';` : ''}
+							import ${toModuleSpecifier(resolve('./styles/md-remark-headings.css'))};
+							${resolvedCalloutTheme ? `import ${toModuleSpecifier(resolvedCalloutTheme)};` : ''}
 						`,
 					},
 				});

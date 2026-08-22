@@ -116,8 +116,8 @@ describe(parentSuiteName, () => {
 		await step('Testing ambientScripts method', async () => {
 			const items = ['foo.js', 'bar.js'];
 			const result = builder.ambientScripts(items);
-			expect(result).toContain("import 'foo.js';");
-			expect(result).toContain("import 'bar.js';");
+			expect(result).toContain('import "foo.js";');
+			expect(result).toContain('import "bar.js";');
 		});
 	});
 
