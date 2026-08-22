@@ -4,7 +4,7 @@ import { StudioCMSColorwayBg, StudioCMSColorwayInfoBg } from '@withstudiocms/cli
 import { label } from '@withstudiocms/cli-kit/messages';
 import { Cli, Effect, runEffect } from '@withstudiocms/effect';
 import { intro, log, outro, select, tasks } from '@withstudiocms/effect/clack';
-import type { MigrationInfo, MigrationResult } from '@withstudiocms/kysely/kysely';
+import type { MigrationInfo, MigrationResult } from '@withstudiocms/kysely/kysely-migration';
 import { getMigratorLive } from '@withstudiocms/sdk/migrator';
 import { getDbDriver, parseDbDialect } from '../../db/index.js';
 import { genLogger } from '../../effect.js';
