@@ -416,25 +416,19 @@ export const StorageManagerPluginHooksSchema = Schema.mutable(
  */
 export type StorageManagerPluginHooks = typeof StorageManagerPluginHooksSchema.Type;
 
-// TODO: Remove `studiocmsMinimumVersion` from Plugin API in a future release.
-
 /**
- * Schema for validating the structure of the base plugin configuration, including essential metadata such as identifier, name, minimum required version of StudioCMS, and dependencies on other plugins. This schema ensures that the basic information about the plugin is correctly structured, allowing for seamless integration of plugins into the StudioCMS system while providing necessary information about the plugin and its functionality.
+ * Schema for validating the structure of the base plugin configuration, including essential metadata such as identifier, name, and dependencies on other plugins. This schema ensures that the basic information about the plugin is correctly structured, allowing for seamless integration of plugins into the StudioCMS system while providing necessary information about the plugin and its functionality.
  */
 export class StudioCMSPluginBaseSchema extends Schema.Class<StudioCMSPluginBaseSchema>(
 	'StudioCMSPluginBaseSchema'
 )({
 	identifier: Schema.String,
 	name: Schema.String,
-	/**
-	 * @deprecated The `studiocmsMinimumVersion` property is deprecated and will be removed in a future release. Please ensure that your plugin is compatible with the latest version of StudioCMS and remove this property from your plugin configuration. It is recommended to use `peerDependencies` in your plugin's package.json to specify the compatible versions of StudioCMS instead of relying on this property for version compatibility checks.
-	 */
-	studiocmsMinimumVersion: Schema.optional(Schema.String),
 	requires: Schema.optional(Schema.Array(Schema.String)),
 }) {}
 
 /**
- * Schema for validating the structure of the entire plugin configuration, including metadata such as identifier, name, minimum required version of StudioCMS, dependencies on other plugins, and the hooks that the plugin implements. This schema ensures that the plugin configuration adheres to the expected structure, allowing for seamless integration of plugins into the StudioCMS system while providing necessary information about the plugin and its functionality.
+ * Schema for validating the structure of the entire plugin configuration, including metadata such as identifier, name, dependencies on other plugins, and the hooks that the plugin implements. This schema ensures that the plugin configuration adheres to the expected structure, allowing for seamless integration of plugins into the StudioCMS system while providing necessary information about the plugin and its functionality.
  */
 export class StudioCMSPluginSchema extends StudioCMSPluginBaseSchema.extend<StudioCMSPluginSchema>(
 	'StudioCMSPluginSchema'
@@ -462,7 +456,7 @@ export type PluginHookParameters<
 > = Fn extends (...args: any) => any ? Parameters<Fn>[0] : never;
 
 /**
- * Schema for validating the structure of the storage manager plugin configuration, including metadata such as identifier, name, minimum required version of StudioCMS, dependencies on other plugins, and the specific hooks related to storage management that the plugin implements. This schema extends the base plugin schema to include storage manager-specific hooks, ensuring that any implementation of a storage manager plugin adheres to the expected structure and provides necessary functionality for managing storage within the StudioCMS system while maintaining compatibility with the overall system.
+ * Schema for validating the structure of the storage manager plugin configuration, including metadata such as identifier, name, dependencies on other plugins, and the specific hooks related to storage management that the plugin implements. This schema extends the base plugin schema to include storage manager-specific hooks, ensuring that any implementation of a storage manager plugin adheres to the expected structure and provides necessary functionality for managing storage within the StudioCMS system while maintaining compatibility with the overall system.
  */
 export class StudioCMSStorageManagerSchema extends StudioCMSPluginBaseSchema.extend<StudioCMSStorageManagerSchema>(
 	'StudioCMSStorageManagerSchema'
