@@ -7,7 +7,6 @@
  * URL inputs use `.href` (e.g. `file://…`), which Vite accepts as a module id.
  */
 export function toModuleSpecifier(filePath: string | URL): string {
-	let normalized = filePath instanceof URL ? filePath.href : filePath;
-	normalized = process.platform === 'win32' ? normalized.replaceAll('\\', '/') : normalized;
-	return JSON.stringify(normalized);
+	const normalized = filePath instanceof URL ? filePath.href : filePath;
+	return JSON.stringify(normalized.replaceAll('\\', '/'));
 }
