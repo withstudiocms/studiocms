@@ -22,6 +22,7 @@ minimumReleaseAge: 4320 # 3 days
 minimumReleaseAgeExclude:
   - astro
   - studiocms
+  - "@astrojs/*"
   - "@studiocms/*"
   - "@withstudiocms/*"
 
@@ -54,9 +55,9 @@ catalog:
 # Specific dependency catalogs for certain groups of packages
 catalogs:
   astrojs-current:
-    "@astrojs/node": ^11.1.0
+    "@astrojs/node": ^11.1.3
     "@astrojs/rss": ^4.0.19
-    astro: ^7.2.0
+    astro: ^7.2.3
     vite: ^8.0.0
 
   astrojs-min:
@@ -80,11 +81,11 @@ catalogs:
 
   kysely:
     "@libsql/client": ^0.15.15
-    "@types/pg": ^8.21.0
+    "@types/pg": ^8.23.1
     kysely: ^0.28.17
     kysely-turso: ^0.1.1
-    pg: ^8.22.0
-    mysql2: ^3.23.2
+    pg: ^8.23.0
+    mysql2: ^3.23.3
 
   react:
     "@types/react": ^19.2.18
