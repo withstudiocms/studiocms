@@ -59,7 +59,7 @@
     "@withstudiocms/internal_helpers": "workspace:^",
     "cheerio": "^1.2.0",
     "turndown": "^7.2.4",
-    "sanitize-html": "^2.17.6"
+    "sanitize-html": "^2.17.7"
   },
   "devDependencies": {
     "@types/turndown": "^5.0.6",
