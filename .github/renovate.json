@@ -62,7 +62,6 @@
     }
   ],
   "ignoreDeps": [
-    "@libsql/client",
     "@types/node",
     "@vitest/coverage-v8",
     "sharp",
@@ -74,7 +73,6 @@
     "vite",
     "vitest",
     "zod",
-    "kysely",
     "typescript",
     "diff",
     "@changesets/changelog-github",

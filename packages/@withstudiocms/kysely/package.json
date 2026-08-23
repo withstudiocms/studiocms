@@ -44,6 +44,14 @@
       "types": "./dist/kysely.d.ts",
       "default": "./dist/kysely.js"
     },
+    "./kysely-migration": {
+      "types": "./dist/kysely-migration.d.ts",
+      "default": "./dist/kysely-migration.js"
+    },
+    "./kysely-readonly": {
+      "types": "./dist/kysely-readonly.d.ts",
+      "default": "./dist/kysely-readonly.js"
+    },
     "./client": {
       "types": "./dist/client.d.ts",
       "default": "./dist/client.js"
