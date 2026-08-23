@@ -1,6 +1,6 @@
 {
 	"name": "@withstudiocms/cli-kit",
-	"version": "0.2.1",
+	"version": "0.3.0",
 	"type": "module",
 	"author": "withstudiocms",
 	"license": "MIT",
@@ -28,8 +28,8 @@
 		"withstudiocms"
 	],
 	"scripts": {
-    	"build": "tsdown --config tsdown.config.ts --clean",
-    	"dev": "tsdown --config tsdown.config.ts --no-clean",
+		"build": "tsdown --config tsdown.config.ts --clean",
+		"dev": "tsdown --config tsdown.config.ts --no-clean",
 		"test": "vitest",
 		"typecheck": "tspc -p tsconfig.tspc.json"
 	},
@@ -43,7 +43,7 @@
 		}
 	},
 	"devDependencies": {
-    	"@types/node": "catalog:"
+		"@types/node": "catalog:"
 	},
 	"dependencies": {
 		"strip-ansi": "^7.2.0",

@@ -1,5 +1,23 @@
 # @withstudiocms/kysely
 
+## 0.3.0
+
+### Minor Changes
+
+- [#1714](https://github.com/withstudiocms/studiocms/pull/1714) [`bba790f`](https://github.com/withstudiocms/studiocms/commit/bba790ffb3ae02a6104d11c811401d5d8d3dd371) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Migrate from external `kysely-turso` package to local driver
+
+- [#1715](https://github.com/withstudiocms/studiocms/pull/1715) [`a04fe6e`](https://github.com/withstudiocms/studiocms/commit/a04fe6e0360f5c8cddd583fa10529d5c060757ba) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Update Kysely and Libsql database Clients
+
+- [#1490](https://github.com/withstudiocms/studiocms/pull/1490) [`418b743`](https://github.com/withstudiocms/studiocms/commit/418b743c6387878f82599f94ad7185947ec6815d) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Moves packages to tsdown based builder instead of custom esbuild pipeline
+
+### Patch Changes
+
+- [#1690](https://github.com/withstudiocms/studiocms/pull/1690) [`40cb35c`](https://github.com/withstudiocms/studiocms/commit/40cb35c519d033883c2e46f3592f4ca109be9371) Thanks [@dreyfus92](https://github.com/dreyfus92)! - fix `_kysely_schema_v1` primary-key collisions when several migrations run in one transaction. schema-history ids are now `max(now(), max(id)+1)` instead of a second-granularity timestamp, the retry loop is gone, and `saveSchema` no longer swallows errors.
+
+- [#1503](https://github.com/withstudiocms/studiocms/pull/1503) [`3a8e4ce`](https://github.com/withstudiocms/studiocms/commit/3a8e4ceea5b1c5e31a42e5e7a2402258f9c149cc) Thanks [@renovate](https://github.com/apps/renovate)! - Lint
+
+- [#1548](https://github.com/withstudiocms/studiocms/pull/1548) [`5b68503`](https://github.com/withstudiocms/studiocms/commit/5b6850349f1ac9d2acdc9cbb8bcd79b7561de769) Thanks [@renovate](https://github.com/apps/renovate)! - Update dependencies, and lint
+
 ## 0.2.1
 
 ### Patch Changes

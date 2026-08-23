@@ -1,5 +1,11 @@
 # @studiocms/upgrade
 
+## 0.2.2
+
+### Patch Changes
+
+- [#1486](https://github.com/withstudiocms/studiocms/pull/1486) [`497ec43`](https://github.com/withstudiocms/studiocms/commit/497ec43d30436cd6042ec2be3e933b44d03491e0) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Unifies tsdown configs across project repository and updates related references
+
 ## 0.2.1
 
 ### Patch Changes

@@ -1241,10 +1241,10 @@ importers:
         specifier: ^0.17.4
         version: 0.17.4
       '@studiocms/blog':
-        specifier: ^0.3.0
+        specifier: ^0.4.0
         version: link:../../packages/@studiocms/blog
       '@studiocms/md':
-        specifier: ^0.3.0
+        specifier: ^0.4.0
         version: link:../../packages/@studiocms/md
       astro:
         specifier: ^7.2.3
@@ -1256,7 +1256,7 @@ importers:
         specifier: ^0.34.3
         version: 0.34.5
       studiocms:
-        specifier: ^0.4.4
+        specifier: ^0.5.0
         version: link:../../packages/studiocms
     devDependencies:
       '@types/node':
@@ -1278,10 +1278,10 @@ importers:
         specifier: ^0.108.1
         version: 0.108.1(@effect/cluster@0.60.2(@effect/platform@0.97.1(effect@3.22.1))(@effect/rpc@0.76.2(@effect/platform@0.97.1(effect@3.22.1))(effect@3.22.1))(@effect/sql@0.52.1(@effect/experimental@0.61.1(@effect/platform@0.97.1(effect@3.22.1))(effect@3.22.1))(@effect/platform@0.97.1(effect@3.22.1))(effect@3.22.1))(@effect/workflow@0.19.1(@effect/experimental@0.61.1(@effect/platform@0.97.1(effect@3.22.1))(effect@3.22.1))(@effect/platform@0.97.1(effect@3.22.1))(@effect/rpc@0.76.2(@effect/platform@0.97.1(effect@3.22.1))(effect@3.22.1))(effect@3.22.1))(effect@3.22.1))(@effect/platform@0.97.1(effect@3.22.1))(@effect/rpc@0.76.2(@effect/platform@0.97.1(effect@3.22.1))(effect@3.22.1))(@effect/sql@0.52.1(@effect/experimental@0.61.1(@effect/platform@0.97.1(effect@3.22.1))(effect@3.22.1))(@effect/platform@0.97.1(effect@3.22.1))(effect@3.22.1))(effect@3.22.1)
       '@studiocms/blog':
-        specifier: ^0.3.0
+        specifier: ^0.4.0
         version: link:../../packages/@studiocms/blog
       '@studiocms/md':
-        specifier: ^0.3.0
+        specifier: ^0.4.0
         version: link:../../packages/@studiocms/md
       astro:
         specifier: ^7.2.3
@@ -1296,7 +1296,7 @@ importers:
         specifier: ^0.34.3
         version: 0.34.5
       studiocms:
-        specifier: ^0.4.4
+        specifier: ^0.5.0
         version: link:../../packages/studiocms
     devDependencies:
       '@types/node':
@@ -1318,10 +1318,10 @@ importers:
         specifier: ^0.108.1
         version: 0.108.1(@effect/cluster@0.60.2(@effect/platform@0.97.1(effect@3.22.1))(@effect/rpc@0.76.2(@effect/platform@0.97.1(effect@3.22.1))(effect@3.22.1))(@effect/sql@0.52.1(@effect/experimental@0.61.1(@effect/platform@0.97.1(effect@3.22.1))(effect@3.22.1))(@effect/platform@0.97.1(effect@3.22.1))(effect@3.22.1))(@effect/workflow@0.19.1(@effect/experimental@0.61.1(@effect/platform@0.97.1(effect@3.22.1))(effect@3.22.1))(@effect/platform@0.97.1(effect@3.22.1))(@effect/rpc@0.76.2(@effect/platform@0.97.1(effect@3.22.1))(effect@3.22.1))(effect@3.22.1))(effect@3.22.1))(@effect/platform@0.97.1(effect@3.22.1))(@effect/rpc@0.76.2(@effect/platform@0.97.1(effect@3.22.1))(effect@3.22.1))(@effect/sql@0.52.1(@effect/experimental@0.61.1(@effect/platform@0.97.1(effect@3.22.1))(effect@3.22.1))(@effect/platform@0.97.1(effect@3.22.1))(effect@3.22.1))(effect@3.22.1)
       '@studiocms/blog':
-        specifier: ^0.3.0
+        specifier: ^0.4.0
         version: link:../../packages/@studiocms/blog
       '@studiocms/md':
-        specifier: ^0.3.0
+        specifier: ^0.4.0
         version: link:../../packages/@studiocms/md
       astro:
         specifier: ^7.2.3
@@ -1336,7 +1336,7 @@ importers:
         specifier: ^0.34.3
         version: 0.34.5
       studiocms:
-        specifier: ^0.4.4
+        specifier: ^0.5.0
         version: link:../../packages/studiocms
     devDependencies:
       '@types/node':
@@ -1361,10 +1361,10 @@ importers:
         specifier: ^0.17.4
         version: 0.17.4
       '@studiocms/html':
-        specifier: ^0.3.0
+        specifier: ^0.4.0
         version: link:../../packages/@studiocms/html
       '@studiocms/md':
-        specifier: ^0.3.0
+        specifier: ^0.4.0
         version: link:../../packages/@studiocms/md
       astro:
         specifier: ^7.2.3
@@ -1376,7 +1376,7 @@ importers:
         specifier: ^0.34.3
         version: 0.34.5
       studiocms:
-        specifier: ^0.4.4
+        specifier: ^0.5.0
         version: link:../../packages/studiocms
     devDependencies:
       '@types/node':
@@ -1398,10 +1398,10 @@ importers:
         specifier: ^0.108.1
         version: 0.108.1(@effect/cluster@0.60.2(@effect/platform@0.97.1(effect@3.22.1))(@effect/rpc@0.76.2(@effect/platform@0.97.1(effect@3.22.1))(effect@3.22.1))(@effect/sql@0.52.1(@effect/experimental@0.61.1(@effect/platform@0.97.1(effect@3.22.1))(effect@3.22.1))(@effect/platform@0.97.1(effect@3.22.1))(effect@3.22.1))(@effect/workflow@0.19.1(@effect/experimental@0.61.1(@effect/platform@0.97.1(effect@3.22.1))(effect@3.22.1))(@effect/platform@0.97.1(effect@3.22.1))(@effect/rpc@0.76.2(@effect/platform@0.97.1(effect@3.22.1))(effect@3.22.1))(effect@3.22.1))(effect@3.22.1))(@effect/platform@0.97.1(effect@3.22.1))(@effect/rpc@0.76.2(@effect/platform@0.97.1(effect@3.22.1))(effect@3.22.1))(@effect/sql@0.52.1(@effect/experimental@0.61.1(@effect/platform@0.97.1(effect@3.22.1))(effect@3.22.1))(@effect/platform@0.97.1(effect@3.22.1))(effect@3.22.1))(effect@3.22.1)
       '@studiocms/html':
-        specifier: ^0.3.0
+        specifier: ^0.4.0
         version: link:../../packages/@studiocms/html
       '@studiocms/md':
-        specifier: ^0.3.0
+        specifier: ^0.4.0
         version: link:../../packages/@studiocms/md
       astro:
         specifier: ^7.2.3
@@ -1416,7 +1416,7 @@ importers:
         specifier: ^0.34.3
         version: 0.34.5
       studiocms:
-        specifier: ^0.4.4
+        specifier: ^0.5.0
         version: link:../../packages/studiocms
     devDependencies:
       '@types/node':
@@ -1438,10 +1438,10 @@ importers:
         specifier: ^0.108.1
         version: 0.108.1(@effect/cluster@0.60.2(@effect/platform@0.97.1(effect@3.22.1))(@effect/rpc@0.76.2(@effect/platform@0.97.1(effect@3.22.1))(effect@3.22.1))(@effect/sql@0.52.1(@effect/experimental@0.61.1(@effect/platform@0.97.1(effect@3.22.1))(effect@3.22.1))(@effect/platform@0.97.1(effect@3.22.1))(effect@3.22.1))(@effect/workflow@0.19.1(@effect/experimental@0.61.1(@effect/platform@0.97.1(effect@3.22.1))(effect@3.22.1))(@effect/platform@0.97.1(effect@3.22.1))(@effect/rpc@0.76.2(@effect/platform@0.97.1(effect@3.22.1))(effect@3.22.1))(effect@3.22.1))(effect@3.22.1))(@effect/platform@0.97.1(effect@3.22.1))(@effect/rpc@0.76.2(@effect/platform@0.97.1(effect@3.22.1))(effect@3.22.1))(@effect/sql@0.52.1(@effect/experimental@0.61.1(@effect/platform@0.97.1(effect@3.22.1))(effect@3.22.1))(@effect/platform@0.97.1(effect@3.22.1))(effect@3.22.1))(effect@3.22.1)
       '@studiocms/html':
-        specifier: ^0.3.0
+        specifier: ^0.4.0
         version: link:../../packages/@studiocms/html
       '@studiocms/md':
-        specifier: ^0.3.0
+        specifier: ^0.4.0
         version: link:../../packages/@studiocms/md
       astro:
         specifier: ^7.2.3
@@ -1456,7 +1456,7 @@ importers:
         specifier: ^0.34.3
         version: 0.34.5
       studiocms:
-        specifier: ^0.4.4
+        specifier: ^0.5.0
         version: link:../../packages/studiocms
     devDependencies:
       '@types/node':

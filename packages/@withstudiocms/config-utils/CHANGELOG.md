@@ -1,5 +1,21 @@
 # @withstudiocms/config-utils
 
+## 0.3.0
+
+### Minor Changes
+
+- [#1537](https://github.com/withstudiocms/studiocms/pull/1537) [`f7646fe`](https://github.com/withstudiocms/studiocms/commit/f7646fedc637f250d04844f9a6e1ac8126ec5015) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Updates for Astro v6, Lints `.astro` files, and scope CSS files to prevent weird CSS leakage across pages.
+
+- [#1483](https://github.com/withstudiocms/studiocms/pull/1483) [`5f2a350`](https://github.com/withstudiocms/studiocms/commit/5f2a350b69429cf21d33851fb507ac930c3ccdf7) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Removes legacy configResolverBuilder in favor of new Effect based configResolverBuilderEffect which has been renamed to configResolverBuilder
+
+- [#1606](https://github.com/withstudiocms/studiocms/pull/1606) [`b42fb34`](https://github.com/withstudiocms/studiocms/commit/b42fb347fca3c2632eccc716ad401ee962a31f76) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Migrates to a Vite-based loader with native ESM and SSR fallback support; callers now use the filesystem-aware options API.
+
+- [#1579](https://github.com/withstudiocms/studiocms/pull/1579) [`55b6083`](https://github.com/withstudiocms/studiocms/commit/55b6083fa48b00e125bbb06bc1e83bf846e9c7b8) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Remove dependency on Astro integration kit
+
+- [#1485](https://github.com/withstudiocms/studiocms/pull/1485) [`252798a`](https://github.com/withstudiocms/studiocms/commit/252798a1a7198487141b629ce181f99170a57558) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Migrates internal config loading utility from esbuild to tsdown
+
+- [#1490](https://github.com/withstudiocms/studiocms/pull/1490) [`418b743`](https://github.com/withstudiocms/studiocms/commit/418b743c6387878f82599f94ad7185947ec6815d) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Moves packages to tsdown based builder instead of custom esbuild pipeline
+
 ## 0.2.0
 
 ### Minor Changes
