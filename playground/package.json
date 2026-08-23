@@ -26,7 +26,6 @@
     "@studiocms/md": "workspace:*",
     "@studiocms/wysiwyg": "workspace:*",
     "astro": "catalog:astrojs-current",
-    "kysely-turso": "catalog:kysely",
     "studiocms": "workspace:*",
     "sharp": "catalog:"
   }

@@ -65,7 +65,6 @@
     "@libsql/client",
     "@types/node",
     "@vitest/coverage-v8",
-    "drizzle-orm",
     "sharp",
     "node",
     "npm",

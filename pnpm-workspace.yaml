@@ -83,7 +83,6 @@ catalogs:
     "@libsql/client": ^0.15.15
     "@types/pg": ^8.23.1
     kysely: ^0.28.17
-    kysely-turso: ^0.1.1
     pg: ^8.23.0
     mysql2: ^3.23.3
 

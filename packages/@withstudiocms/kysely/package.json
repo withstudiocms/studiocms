@@ -68,6 +68,10 @@
       "types": "./dist/drivers/*.d.ts",
       "default": "./dist/drivers/*.js"
     },
+    "./drivers/kysely-turso": {
+      "types": "./dist/drivers/kysely-turso/index.d.ts",
+      "default": "./dist/drivers/kysely-turso/index.js"
+    },
     "./utils/*": {
       "types": "./dist/utils/*.d.ts",
       "default": "./dist/utils/*.js"
@@ -75,8 +79,7 @@
   },
   "type": "module",
   "dependencies": {
-    "kysely": "catalog:kysely",
-    "kysely-turso": "catalog:kysely"
+    "kysely": "catalog:kysely"
   },
   "devDependencies": {
     "@types/node": "catalog:",
@@ -85,15 +88,11 @@
   "peerDependencies": {
     "@libsql/client": "catalog:kysely",
     "effect": "catalog:effect",
-    "kysely-turso": "catalog:kysely",
     "mysql2": "catalog:kysely",
     "pg": "catalog:kysely"
   },
   "peerDependenciesMeta": {
     "@libsql/client": {
-      "optional": true
-    },
-    "kysely-turso": {
       "optional": true
     },
     "mysql2": {
