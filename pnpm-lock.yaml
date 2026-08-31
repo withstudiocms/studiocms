@@ -670,8 +670,8 @@ importers:
         specifier: catalog:effect
         version: 3.22.1
       grapesjs:
-        specifier: ^0.23.5
-        version: 0.23.5
+        specifier: ^0.23.6
+        version: 0.23.6
       tui-image-editor:
         specifier: ^3.15.3
         version: 3.15.3
@@ -5162,8 +5162,8 @@ packages:
   graceful-fs@4.2.11:
     resolution: {integrity: sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ==}
 
-  grapesjs@0.23.5:
-    resolution: {integrity: sha512-66E5x5ZWJUGMQkL/BfFK6oyuFdXAMpsG15+6atiTPbB/Wf4ChZ4I62R+rgUHr1DDAvrM/LxdPwmqOwdDsrplhw==}
+  grapesjs@0.23.6:
+    resolution: {integrity: sha512-I8M/sPWjHm6MLIdUtRFNOKsQ3PtDgIDsc2S8ANkJsfHj3ZoH98oNMMWr64Kx22XgjHCQ4xpUx7nvXyQSKV1mrQ==}
 
   h3@1.15.11:
     resolution: {integrity: sha512-L3THSe2MPeBwgIZVSH5zLdBBU90TOxarvhK9d04IDY2AmVS8j2Jz2LIWtwsGOU3lu2I5jCN7FNvVfY2+XyF+mg==}
@@ -11687,7 +11687,7 @@ snapshots:
 
   graceful-fs@4.2.11: {}
 
-  grapesjs@0.23.5:
+  grapesjs@0.23.6:
     dependencies:
       '@types/backbone': 1.4.15
       backbone: 1.4.1
