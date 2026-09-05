@@ -39,7 +39,7 @@ catalog:
   "@types/mdast": ^4.0.4
   "@types/node": ^22.0.0
   "@types/semver": ^7.8.0
-  deepmerge-ts: ^8.0.1
+  deepmerge-ts: ^8.0.2
   esbuild: ^0.25.8
   sharp: ^0.34.3
   tinyglobby: ^0.2.17
@@ -55,9 +55,9 @@ catalog:
 # Specific dependency catalogs for certain groups of packages
 catalogs:
   astrojs-current:
-    "@astrojs/node": ^11.1.3
+    "@astrojs/node": ^11.1.5
     "@astrojs/rss": ^4.0.19
-    astro: ^7.2.3
+    astro: ^7.2.10
     vite: ^8.0.0
 
   astrojs-min:
@@ -80,14 +80,14 @@ catalogs:
     effect: ^3.22.1
 
   kysely:
-    "@libsql/client": ^0.17.4
+    "@libsql/client": ^0.18.0
     "@types/pg": ^8.23.1
     kysely: ^0.29.5
     pg: ^8.23.0
-    mysql2: ^3.23.3
+    mysql2: ^3.24.3
 
   react:
     "@types/react": ^19.2.18
-    "@types/react-dom": ^19.2.4
+    "@types/react-dom": ^19.2.5
     react: ^19.2.8
     react-dom: ^19.2.8
