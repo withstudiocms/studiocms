@@ -80,12 +80,12 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"@clack/prompts": "^1.7.0",
+		"@clack/prompts": "^1.8.0",
 		"deepmerge-ts": "catalog:",
 		"effectify": "workspace:^",
 		"micromatch": "^4.0.8",
-		"nodemailer": "^9.0.5",
-		"socks": "^2.8.9"
+		"nodemailer": "^9.1.1",
+		"socks": "^2.8.10"
 	},
 	"devDependencies": {
 		"@types/micromatch": "^4.0.10",
