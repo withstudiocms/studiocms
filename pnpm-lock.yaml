@@ -835,8 +835,8 @@ importers:
   packages/@withstudiocms/effect:
     dependencies:
       '@clack/prompts':
-        specifier: ^1.7.0
-        version: 1.7.0
+        specifier: ^1.8.1
+        version: 1.8.1
       '@effect/cli':
         specifier: catalog:effect
         version: 0.77.0(@effect/platform@0.97.1(effect@3.22.1))(@effect/printer-ansi@0.51.0(@effect/typeclass@0.41.0(effect@3.22.1))(effect@3.22.1))(@effect/printer@0.51.0(@effect/typeclass@0.41.0(effect@3.22.1))(effect@3.22.1))(effect@3.22.1)
@@ -859,11 +859,11 @@ importers:
         specifier: ^4.0.8
         version: 4.0.8
       nodemailer:
-        specifier: ^9.0.5
-        version: 9.0.5
+        specifier: ^9.1.1
+        version: 9.1.1
       socks:
-        specifier: ^2.8.9
-        version: 2.8.9
+        specifier: ^2.8.10
+        version: 2.8.10
     devDependencies:
       '@types/micromatch':
         specifier: ^4.0.10
@@ -872,8 +872,8 @@ importers:
         specifier: 'catalog:'
         version: 22.20.1
       '@types/nodemailer':
-        specifier: ^8.0.1
-        version: 8.0.1
+        specifier: ^8.0.2
+        version: 8.0.2
       astro:
         specifier: catalog:astrojs-current
         version: 7.2.4(@emnapi/core@2.0.0-alpha.3)(@emnapi/runtime@2.0.0-alpha.3)(@types/node@22.20.1)(jiti@2.7.0)(tsx@4.23.12)(yaml@2.9.0)
@@ -1958,12 +1958,12 @@ packages:
   '@changesets/write@0.4.0':
     resolution: {integrity: sha512-CdTLvIOPiCNuH71pyDu3rA+Q0n65cmAbXnwWH84rKGiFumFzkmHNT8KHTMEchcxN+Kl8I54xGUhJ7l3E7X396Q==}
 
-  '@clack/core@1.4.3':
-    resolution: {integrity: sha512-/kr3UWNtdJfxZtPgDqUOmG2pvwlmcLGheex5yiZKdwbzZJxhV+HMNR9QNmyY5cGwTNV6LrR7Jtp+KjhUAP1qBQ==}
+  '@clack/core@1.5.1':
+    resolution: {integrity: sha512-iHTrHA8MtVuLl2TfZySmcKv1qO2PoyC9Z7pfSDozEuV5vtY3/wcOPKJXlqJ5Oq2Cx5DDGQGAMVx6HZfRRoVEbQ==}
     engines: {node: '>= 20.12.0'}
 
-  '@clack/prompts@1.7.0':
-    resolution: {integrity: sha512-y7/yvZ2TPAnR9+jnc00klvNNLkJiXFFrQA/hlLCcxA9a2A4zQIOimyFQ9XfwYKiGD1fb5GY8vbKIIgO8d5Tb2A==}
+  '@clack/prompts@1.8.1':
+    resolution: {integrity: sha512-dlT1m5e/0yUL0kRNcQn7yGLVThkgbB0Ga/1AmfDDC/8ik6AIiSf2QLQO2zPYvefsHP0aFgxO93cVLCCfDp7kzQ==}
     engines: {node: '>= 20.12.0'}
 
   '@cloudinary/transformation-builder-sdk@1.21.2':
@@ -3753,8 +3753,8 @@ packages:
   '@types/node@22.20.1':
     resolution: {integrity: sha512-EANqOCF9QFyra+4pfxUcX9STKJpCLjMbObVzljIJomAWSnuSIEAvyzEU53GaajbXJEgdh0iEcPL+DGvpUd4k1Q==}
 
-  '@types/nodemailer@8.0.1':
-    resolution: {integrity: sha512-PxpaInm8V1JQDd4j0ds5HfvWQk8JupS1C0Picb96QJsrrRDjBH+DlK7L4ZdNSqNULhiZRQHc40nLVShaGxXAMw==}
+  '@types/nodemailer@8.0.2':
+    resolution: {integrity: sha512-c7M5ox8p0nEOfbJ2E9Qcmt8/QCu/VzsiAhzBiZbvky2PhKZDHpKB3sQHBM5MEZNkCfBOaS6S9//AGPRTNB7IaA==}
 
   '@types/pg@8.23.1':
     resolution: {integrity: sha512-fKVHpikPdg4GKks3JuLEhvwSyvwzF23hnabPy6DD8ljVbC7+6J5dQzdv4arV6jqq57djnMgs1HKBxX4P8aBI3A==}
@@ -6106,8 +6106,8 @@ packages:
     resolution: {integrity: sha512-ObaRrRoR8T68wF6suxHd7R4XQNamij6ZQHrwG7Dx1D2zeHcDNLsIOBcWrIwtDm7AsCXBguaPHgXhcjxDa2szrg==}
     engines: {node: '>=0.12.0'}
 
-  nodemailer@9.0.5:
-    resolution: {integrity: sha512-wvjiKvjczmsN7U/8006JOdXubgBk2XFAbioDMbT+sM7cPs0QrhJTa6KBRX7P5REGGkDcLUz/EarWidb8G8C1jQ==}
+  nodemailer@9.1.1:
+    resolution: {integrity: sha512-izw9mVKFix6YSnC9eLgV6g1opl9DUlRio9ZNcq+Wu9Ujn2UwF+8Nl0B8nz22kEC+CTZCvinkxwJ0DeFbb6NwcQ==}
     engines: {node: '>=6.0.0'}
 
   nopt@1.0.10:
@@ -6796,8 +6796,8 @@ packages:
     resolution: {integrity: sha512-kCZr2V3ch9i00x8zXRhjUNVcjG9ijES5dDudkXvUVCT5QlJNQWElSJdZqyPemffHoLNUYwOcou0Fy+ojN0uHSQ==}
     engines: {node: '>= 18'}
 
-  socks@2.8.9:
-    resolution: {integrity: sha512-LJhUYUvItdQ0LkJTmPeaEObWXAqFyfmP85x0tch/ez9cahmhlBBLbIqDFnvBnUJGagb0JbIQrkBs1wJ+yRYpEw==}
+  socks@2.8.10:
+    resolution: {integrity: sha512-e0VyvkVTwVYViNovRkZ9aodhxVlyoMn7eJhVUPxZ+eK9P/7CBkxvvsBOHqFPEH416726W8tLXXXjKwqgTErrCQ==}
     engines: {node: '>= 10.0.0', npm: '>= 3.0.0'}
 
   sortablejs@1.15.7:
@@ -8562,14 +8562,14 @@ snapshots:
       human-id: 4.2.0
       prettier: 2.8.8
 
-  '@clack/core@1.4.3':
+  '@clack/core@1.5.1':
     dependencies:
       fast-wrap-ansi: 0.2.2
       sisteransi: 1.0.5
 
-  '@clack/prompts@1.7.0':
+  '@clack/prompts@1.8.1':
     dependencies:
-      '@clack/core': 1.4.3
+      '@clack/core': 1.5.1
       fast-string-width: 3.0.2
       fast-wrap-ansi: 0.2.2
       sisteransi: 1.0.5
@@ -10133,7 +10133,7 @@ snapshots:
     dependencies:
       undici-types: 6.21.0
 
-  '@types/nodemailer@8.0.1':
+  '@types/nodemailer@8.0.2':
     dependencies:
       '@types/node': 22.20.1
 
@@ -10524,7 +10524,7 @@ snapshots:
       '@astrojs/markdown-satteri': 0.3.7
       '@astrojs/telemetry': 3.3.3
       '@capsizecss/unpack': 4.0.1
-      '@clack/prompts': 1.7.0
+      '@clack/prompts': 1.8.1
       '@oslojs/encoding': 1.1.0
       am-i-vibing: 0.4.0
       aria-query: 5.3.2
@@ -12987,7 +12987,7 @@ snapshots:
 
   node-stream-zip@1.16.0: {}
 
-  nodemailer@9.0.5: {}
+  nodemailer@9.1.1: {}
 
   nopt@1.0.10:
     dependencies:
@@ -13874,7 +13874,7 @@ snapshots:
 
   smol-toml@1.8.0: {}
 
-  socks@2.8.9:
+  socks@2.8.10:
     dependencies:
       ip-address: 10.4.0
       smart-buffer: 4.2.0
