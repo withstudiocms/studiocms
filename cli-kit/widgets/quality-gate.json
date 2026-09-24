@@ -1,1 +1,1 @@
-{}
+{"default":[{"success":true,"actual":0,"testResults":[],"expected":0,"rule":"maxFailures","message":"The number of failed tests \u001b[1m0\u001b[22m is within the allowed threshold value \u001b[1m0\u001b[22m"}]}
