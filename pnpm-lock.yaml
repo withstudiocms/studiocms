@@ -45,8 +45,8 @@ catalogs:
       specifier: ^8.0.4
       version: 8.0.4
     dotenv:
-      specifier: ^17.4.2
-      version: 17.4.2
+      specifier: ^18.0.1
+      version: 18.0.1
     esbuild:
       specifier: ^0.25.8
       version: 0.25.12
@@ -638,7 +638,7 @@ importers:
         version: link:../../@withstudiocms/internal_helpers
       dotenv:
         specifier: 'catalog:'
-        version: 17.4.2
+        version: 18.0.1
       effect:
         specifier: catalog:effect
         version: 3.22.2
@@ -1105,7 +1105,7 @@ importers:
         version: 3.4.15
       dotenv:
         specifier: 'catalog:'
-        version: 17.4.2
+        version: 18.0.1
       effect:
         specifier: catalog:effect
         version: 3.22.2
@@ -4691,9 +4691,10 @@ packages:
     resolution: {integrity: sha512-qI4JLRKnSzqFqr7hAlS5xQDusBCjKSEG4t4+7aNrIQMHBcsC2TGEhuyABJdYkgSewL57PNLYEiibY2iPKhKpaA==}
     engines: {node: '>=20.19.0'}
 
-  dotenv@17.4.2:
-    resolution: {integrity: sha512-nI4U3TottKAcAD9LLud4Cb7b2QztQMUEfHbvhTH09bqXTxnSie8WnjPALV/WMCrJZ6UV/qHJ6L03OqO3LcdYZw==}
+  dotenv@18.0.1:
+    resolution: {integrity: sha512-0eR4m4D/jH5eaI3evo2ZqqMii5mrTCR12v12VChdie6O1gPHs7XAjzTep0CWc1Bd+oNx3vVfbi734dK4zghigw==}
     engines: {node: '>=12'}
+    hasBin: true
 
   dotenv@8.6.0:
     resolution: {integrity: sha512-IrPdXQsk2BbzvCBGBOTmmSH5SodmqZNt4ERAZDmW4CT+tL8VtvinqywuANaFu4bOMWki16nqf0e4oC0QIaDr/g==}
@@ -10869,7 +10870,7 @@ snapshots:
       domelementtype: 3.0.0
       domhandler: 6.0.1
 
-  dotenv@17.4.2: {}
+  dotenv@18.0.1: {}
 
   dotenv@8.6.0: {}
 
