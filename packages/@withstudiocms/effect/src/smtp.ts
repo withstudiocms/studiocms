@@ -1,5 +1,5 @@
 import { Brand, Context, Data, Effect, Layer } from 'effect';
-import _nodemailer from 'nodemailer';
+import _nodemailer, { type MailDefaults } from 'nodemailer';
 import type Mail from 'nodemailer/lib/mailer';
 import type SMTPTransport from 'nodemailer/lib/smtp-transport';
 import socks from 'socks';
@@ -26,12 +26,12 @@ export interface Transport extends SMTPTransport.Options {
  * including options for the SMTP server, authentication, and TLS settings.
  * @interface TransportConfig
  * @property {Transport} [transport] - The transport options for the mail transporter.
- * @property {SMTPTransport.Options} [defaults] - Default options for the mail transporter.
+ * @property {MailDefaults} [defaults] - Default options for the mail transporter.
  * Note: Proxy configuration is specified on `transport.proxy`.
  */
 export type TransportConfig = {
 	transport?: Transport;
-	defaults?: SMTPTransport.Options;
+	defaults?: MailDefaults;
 } & Brand.Brand<'TransportConfig'>;
 
 /**
