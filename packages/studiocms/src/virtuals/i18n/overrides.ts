@@ -7,4 +7,6 @@ import type { LanguageFlagIdentifier } from './config.js';
 export const translationFlagKeyOverrides: Record<string, LanguageFlagIdentifier> = {
 	en: 'lang-en-us',
 	es: 'lang-es-mx',
+	fr: 'fr',
+	no: 'no',
 } as const;

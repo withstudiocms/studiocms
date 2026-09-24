@@ -237,6 +237,10 @@ export const studiocms = (): AstroIntegration => {
 					shouldInject404Route,
 				});
 
+				console.log('='.repeat(80));
+				console.log(`Current Flags: ${JSON.stringify(currentFlags)}`);
+				console.log('='.repeat(80));
+
 				// Inject Integrations into Astro project
 				addIntegrationArray(params, [
 					{ integration: nodeNamespaceBuiltinsAstro() },

@@ -10,6 +10,7 @@ import type { AstroConfig } from 'astro';
 import { Duration } from 'effect';
 import type { RobotsConfig } from './integrations/robots/schema.js';
 import { stripIconify } from './utils/stripIconify.js';
+import type { LanguageFlagIdentifier } from './virtuals/i18n/config.js';
 import { makeAPIRoute } from './virtuals/lib/makeAPIRoute.js';
 import { stripLeadingAndTrailingSlashes } from './virtuals/lib/pathGenerators.js';
 
@@ -358,7 +359,9 @@ export const FAVICON_ASSETS = {
 type UiOptions = Parameters<typeof uiIntegration>[0];
 
 /* v8 ignore start */
-function getDefaultUiOpts(currentFlags: Array<{ key: string; flag: `lang-${string}` }>): UiOptions {
+function getDefaultUiOpts(
+	currentFlags: Array<{ key: string; flag: LanguageFlagIdentifier }>
+): UiOptions {
 	return {
 		noInjectCSS: true,
 		noInjectResetCSS: true,
@@ -390,7 +393,7 @@ function getDefaultUiOpts(currentFlags: Array<{ key: string; flag: `lang-${strin
  * - The `icons` property is deeply merged, combining default and user-provided icons.
  */
 export function getUiOpts(
-	currentFlags: Array<{ key: string; flag: `lang-${string}` }>,
+	currentFlags: Array<{ key: string; flag: LanguageFlagIdentifier }>,
 	userOpts?: Partial<UiOptions>
 ): UiOptions {
 	const base = { ...getDefaultUiOpts(currentFlags) };

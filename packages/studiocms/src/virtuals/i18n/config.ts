@@ -101,7 +101,7 @@ export type ServerUiTranslations = Record<UiTranslationKey, StudioCMSTranslation
  */
 export type ClientUiTranslations = Record<UiTranslationKey, ComponentsJSON>;
 
-export type LanguageFlagIdentifier = `lang-${string}`;
+export type LanguageFlagIdentifier = `lang-${string}` | string;
 
 /**
  * Represents an option for selecting a language in the UI.
