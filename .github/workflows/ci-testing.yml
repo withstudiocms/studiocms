@@ -61,6 +61,7 @@ jobs:
     permissions:
       contents: write # For Allure GitHub Pages deployment
       pull-requests: write # For Allure PR comments
+      checks: write # For Allure PR comments
       id-token: write # For Codecov upload
     env:
       NODE_OPTIONS: "--max_old_space_size=4096"
