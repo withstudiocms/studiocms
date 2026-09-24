@@ -95,6 +95,9 @@ jobs:
         with:
           report-directory: "./allure-report"
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          sections: |
+            new
+            flaky
 
       # Only upload Allure report results to Github if we are a push to main
       - name: Upload Allure Report to Github Branch
