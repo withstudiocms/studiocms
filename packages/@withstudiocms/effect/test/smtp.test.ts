@@ -226,7 +226,7 @@ describe(parentSuiteName, { timeout: 10000 }, () => {
 				const result = await Effect.runPromise(runnable);
 				await allure.step('Email sent successfully', async (ctx) => {
 					await ctx.parameter('messageId', result.messageId);
-					await ctx.parameter('response', result.response);
+					await ctx.parameter('response', result.response || 'No response from server');
 					const previewUrl = nodemailer.getTestMessageUrl(result);
 					if (previewUrl) {
 						await ctx.parameter('previewUrl', previewUrl);
