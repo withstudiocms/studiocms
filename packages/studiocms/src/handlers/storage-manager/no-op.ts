@@ -8,7 +8,6 @@ const { resolve } = createPathResolver(import.meta.url);
  *
  * This storage manager performs no operations and serves as a placeholder.
  *
- * @param version - The minimum StudioCMS version required for this storage manager.
  * @returns A StudioCMSStorageManager plugin definition.
  */
 export const NoOpStorageManager = (): StudioCMSStorageManagerDef =>

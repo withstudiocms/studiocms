@@ -89,7 +89,7 @@ export function internalBlogIntegration(options: StudioCMSBlogOptions = {}): Ast
  *
  * @remarks
  * This function sets up the StudioCMS Blog plugin with the provided options or default values.
- * It configures the plugin's identifier, name, minimum version, frontend navigation links, page types,
+ * It configures the plugin's identifier, name, frontend navigation links, page types,
  * sitemap settings, and integration hooks.
  *
  * @example
