@@ -355,8 +355,8 @@ importers:
   packages/@studiocms/markdoc:
     dependencies:
       '@markdoc/markdoc':
-        specifier: ^0.5.9
-        version: 0.5.9(@types/react@19.2.18)(react@19.2.8)
+        specifier: ^0.5.10
+        version: 0.5.10(@types/react@19.2.18)(react@19.2.8)
       '@withstudiocms/internal_helpers':
         specifier: workspace:^
         version: link:../../@withstudiocms/internal_helpers
@@ -2745,8 +2745,8 @@ packages:
     resolution: {integrity: sha512-Yhlar6v9WQgUp/He7BdgzOz8lqMQ8sU+jkCq7Wx8Myc5YFJLbEe7lgui/V7G1qB1DJykHSGwreceSaD60Y0PUQ==}
     hasBin: true
 
-  '@markdoc/markdoc@0.5.9':
-    resolution: {integrity: sha512-req3Wpi1xXIs7C+n2nsKv7oGeC0xREkpd+D+JRGZ/pIMXEuQSlT+s/I760fqdmiysvkx10EC3MGlScokRRcaSQ==}
+  '@markdoc/markdoc@0.5.10':
+    resolution: {integrity: sha512-5HwkG2cLG/ivffeJlxGmraJ9erYfsaYz9rjG1KCf46PLy+yhrBQWw26h69GewNUHbyKNW6FrXuDYgbl2kvIYdA==}
     engines: {node: '>=14.7.0'}
     peerDependencies:
       '@types/react': '*'
@@ -9180,7 +9180,7 @@ snapshots:
       - supports-color
     optional: true
 
-  '@markdoc/markdoc@0.5.9(@types/react@19.2.18)(react@19.2.8)':
+  '@markdoc/markdoc@0.5.10(@types/react@19.2.18)(react@19.2.8)':
     optionalDependencies:
       '@types/linkify-it': 3.0.5
       '@types/markdown-it': 12.2.3
