@@ -1,6 +1,6 @@
 {
   "name": "@studiocms/wysiwyg",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Add A WYSIWYG Editor to your StudioCMS project with ease!",
   "author": {
     "name": "withstudiocms",
@@ -66,7 +66,7 @@
   "type": "module",
   "dependencies": {
     "deepmerge-ts": "catalog:",
-    "grapesjs": "^0.23.4",
+    "grapesjs": "^0.23.5",
     "tui-image-editor": "^3.15.3"
   },
   "devDependencies": {

@@ -5,7 +5,7 @@ import { beforeEach, describe, expect, test } from 'vitest';
 import createPathResolver from '../src/pathResolver.js';
 import { parentSuiteName, sharedTags } from './test-utils.js';
 
-const localSuiteName = 'Path Resolver Tests';
+const localSuiteName = 'Path Resolver Tests (OS-sensitive)';
 
 describe(parentSuiteName, () => {
 	let testFileUrl: string;
@@ -218,16 +218,21 @@ describe(parentSuiteName, () => {
 		expect(fileURLToPath(resolvedURL)).toBe(resolvedPath);
 	});
 
-	test('should work with both Windows and Unix-style paths', async () => {
+	test('resolve returns platform-native separators', async () => {
 		await allure.parentSuite(parentSuiteName);
 		await allure.suite(localSuiteName);
-		await allure.subSuite('should work with both Windows and Unix-style paths');
+		await allure.subSuite('resolve returns platform-native separators');
 		await allure.tags(...sharedTags);
 
 		const resolver = createPathResolver(process.cwd());
 		const result = resolver.resolve('src', 'utils', 'helper.ts');
+		const expected = path.join(process.cwd(), 'src', 'utils', 'helper.ts');
 
-		// Should always produce platform-appropriate separators
-		expect(result).toBe(path.join(process.cwd(), 'src', 'utils', 'helper.ts'));
+		expect(result).toBe(expected);
+		if (process.platform === 'win32') {
+			expect(result).toContain('\\');
+		} else {
+			expect(result).not.toContain('\\');
+		}
 	});
 });

@@ -7,6 +7,7 @@
 /// <reference types="studiocms/v/types" />
 
 import { addVirtualImports } from '@withstudiocms/internal_helpers/astro-integration';
+import { toModuleSpecifier } from '@withstudiocms/internal_helpers/toModuleSpecifier';
 import type { AstroIntegration } from 'astro';
 import { definePlugin } from 'studiocms/plugins';
 import type { StudioCMSPluginDef } from 'studiocms/schemas';
@@ -49,7 +50,7 @@ export function internalMDXIntegration(
 					name: packageIdentifier,
 					imports: {
 						'studiocms:mdx/renderer': `
-							import { renderMDX as _render } from '${internalRenderer}';
+							import { renderMDX as _render } from ${toModuleSpecifier(internalRenderer)};
 
 							export const renderMDX = _render;
 							export default renderMDX;

@@ -1,6 +1,6 @@
 import { createClient, type Config as LibSQLConfig } from '@libsql/client/node';
 import { Config, Effect, Redacted } from 'effect';
-import { LibSQLDialect } from 'kysely-turso/libsql';
+import { LibSQLDialect } from './kysely-turso/index.js';
 
 /**
  * Configuration class for LibSQL database connections with support for redacted sensitive values.

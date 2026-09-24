@@ -70,7 +70,7 @@ export const VirtualModuleBuilder = (resolve: (...path: Array<string>) => string
 	 * Generates import statements for a list of module paths (for side effects).
 	 */
 	const ambientScripts = (items: Array<string>): string =>
-		items.map((item) => `import '${resolve(item)}';`).join('\n');
+		items.map((item) => `import ${JSON.stringify(resolve(item))};`).join('\n');
 
 	/**
 	 * Generates code to re-export a named export (and optionally as default) from a module.

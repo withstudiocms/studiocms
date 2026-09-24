@@ -1,5 +1,6 @@
 import { internalMarkdownIntegration } from '@studiocms/md';
 import { addVirtualImports } from '@withstudiocms/internal_helpers/astro-integration';
+import { toModuleSpecifier } from '@withstudiocms/internal_helpers/toModuleSpecifier';
 import type { AstroIntegration } from 'astro';
 import { getViteConfig } from 'astro/config';
 import { defineProject, mergeConfig } from 'vitest/config';
@@ -33,8 +34,8 @@ const testIntegration: AstroIntegration = {
 							return [{ text: 'Home', href: '/', }, { text: 'Blog', href: '/blog' }];
 						}
 					`,
-					'studiocms:components': `export { default as FormattedDate } from '${resolve('./test/fixtures/FormattedDate.astro')}';`,
-					'studiocms:imageHandler/components': `export { default as CustomImage } from '${resolve('./test/fixtures/CustomImage.astro')}';`,
+					'studiocms:components': `export { default as FormattedDate } from ${toModuleSpecifier(resolve('./test/fixtures/FormattedDate.astro'))};`,
+					'studiocms:imageHandler/components': `export { default as CustomImage } from ${toModuleSpecifier(resolve('./test/fixtures/CustomImage.astro'))};`,
 				},
 			});
 		},

@@ -4,13 +4,12 @@
 import type { Effect } from '@withstudiocms/effect';
 import type { MigratorError } from '@withstudiocms/kysely/core/errors';
 import { makeMigratorLive } from '@withstudiocms/kysely/core/migrator';
+import type { Dialect, Kysely } from '@withstudiocms/kysely/kysely';
 import type {
-	Dialect,
-	Kysely,
 	Migration,
 	MigrationInfo,
 	MigrationResultSet,
-} from '@withstudiocms/kysely/kysely';
+} from '@withstudiocms/kysely/kysely-migration';
 
 /**
  * Dynamically imports a migration module by its name.

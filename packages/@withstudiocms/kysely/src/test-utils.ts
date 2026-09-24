@@ -2,8 +2,8 @@ import { existsSync } from 'node:fs';
 import { unlink } from 'node:fs/promises';
 import { createClient } from '@libsql/client/node';
 import { Effect } from 'effect';
-import { LibSQLDialect } from 'kysely-turso/libsql';
 import { getDBClientLive } from './client.js';
+import { LibSQLDialect } from './drivers/kysely-turso/index.js';
 
 type DBFixtureOptions = {
 	suiteName: string;

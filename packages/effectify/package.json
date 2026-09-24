@@ -1,6 +1,6 @@
 {
 	"name": "effectify",
-	"version": "0.2.0",
+	"version": "0.3.0",
 	"description": "Utility library that bridges Effect-ts with various utilities and projects, such as Astro!",
 	"license": "MIT",
 	"author": {
@@ -84,7 +84,7 @@
 		}
 	},
 	"dependencies": {
-    	"@traversable/zod": "^0.0.57"
+		"@traversable/zod": "^0.0.57"
 	},
 	"devDependencies": {
 		"astro": "catalog:astrojs-current"

@@ -62,10 +62,8 @@
     }
   ],
   "ignoreDeps": [
-    "@libsql/client",
     "@types/node",
     "@vitest/coverage-v8",
-    "drizzle-orm",
     "sharp",
     "node",
     "npm",
@@ -75,8 +73,11 @@
     "vite",
     "vitest",
     "zod",
-    "kysely",
     "typescript",
-    "diff"
+    "diff",
+    "@changesets/changelog-github",
+    "@changesets/cli",
+    "@changesets/config",
+    "@changesets/write"
   ]
 }

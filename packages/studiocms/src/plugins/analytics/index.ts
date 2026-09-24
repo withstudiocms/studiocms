@@ -10,7 +10,7 @@ import { WEB_VITALS_ENDPOINT_PATH } from './consts.js';
 import { getAnalyticsDbClient } from './db-client.js';
 import { StudioCMSMetricTableDefinition } from './table.js';
 
-const { resolve } = createPathResolver(import.meta.url);
+const { resolve, resolveModuleSpecifier } = createPathResolver(import.meta.url);
 
 /**
  * Resolves a path within the analytics plugin.
@@ -58,14 +58,14 @@ const webVitalsIntegration = (): AstroIntegration => {
 				});
 
 				// Client-side performance measurement script.
-				injectScript('page', `import '${resolve('./client-script.js')}';`);
+				injectScript('page', `import ${resolveModuleSpecifier('./client-script.js')};`);
 
 				// Virtual import for dashboard web vitals components and data fetching.
 				addVirtualImports(params, {
 					name: pkgName,
 					imports: {
 						'studiocms-dashboard:web-vitals': `
-                            export * from '${resolve('./assets/webVital.js')}';
+                            export * from ${resolveModuleSpecifier('./assets/webVital.js')};
                         `,
 					},
 				});
