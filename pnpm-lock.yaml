@@ -20,8 +20,8 @@ catalogs:
       version: 8.2.0
   astrojs-min:
     '@astrojs/internal-helpers':
-      specifier: ^0.7.5 || ^0.8.0 || ^0.9.0 || ^0.10.0
-      version: 0.10.4
+      specifier: ^0.7.5 || ^0.8.0 || ^0.9.0 || ^0.10.0 || ^0.11.0
+      version: 0.11.0
     vite:
       specifier: ^6.3.4 || ^7.3.0 || ^8.0.0
       version: 8.2.0
@@ -396,7 +396,7 @@ importers:
     dependencies:
       '@astrojs/internal-helpers':
         specifier: catalog:astrojs-min
-        version: 0.10.4
+        version: 0.11.0
       '@withstudiocms/internal_helpers':
         specifier: workspace:^
         version: link:../../@withstudiocms/internal_helpers
@@ -1646,9 +1646,6 @@ packages:
   '@astrojs/compiler-rs@0.5.0':
     resolution: {integrity: sha512-2xIypn5R33FRWCXXXv0sfbDj8xcOvc2VmIbteytxMjOzP9LiGfvqaAFJjhdAjzhs6+ZKzYzbSE79rrPObYW5mg==}
     engines: {node: '>=22.12.0'}
-
-  '@astrojs/internal-helpers@0.10.4':
-    resolution: {integrity: sha512-nozZSy/mKYLqe4YrqbKtdOszedAfXYCtw3wZ0d+CAjz4GqQ4L9rl1ltIL5BlgwmYVinJg/RZ0MgGuWOdlyRZlA==}
 
   '@astrojs/internal-helpers@0.11.0':
     resolution: {integrity: sha512-3rzxJ+xbo0+8YyqOzLziIN32wmsHdCjEVz2sGOpRxJ+Ben/KiLph4ItxBy1abEL+E8fkRzqjg0rfXmaHJGw9JA==}
@@ -8002,17 +7999,6 @@ snapshots:
   '@astrojs/compiler-rs@0.5.0':
     dependencies:
       '@astrojs/compiler-binding': 0.5.0
-
-  '@astrojs/internal-helpers@0.10.4':
-    dependencies:
-      '@types/hast': 3.0.5
-      '@types/mdast': 4.0.4
-      js-yaml: 4.3.2
-      picomatch: 4.0.7
-      retext-smartypants: 6.2.0
-      shiki: 4.4.1
-      smol-toml: 1.8.0
-      unified: 11.0.5
 
   '@astrojs/internal-helpers@0.11.0':
     dependencies:
