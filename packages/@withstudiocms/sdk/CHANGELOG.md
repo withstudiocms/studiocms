@@ -1,5 +1,15 @@
 # @withstudiocms/sdk
 
+## 0.4.1
+
+### Patch Changes
+
+- [#1724](https://github.com/withstudiocms/studiocms/pull/1724) [`d3760ad`](https://github.com/withstudiocms/studiocms/commit/d3760ad4d46ab21602c2c8dd79eab54c9d16b59f) Thanks [@renovate](https://github.com/apps/renovate)! - Update dependency tsx to ^4.23.15
+
+- Updated dependencies [[`4887823`](https://github.com/withstudiocms/studiocms/commit/4887823666b07443ec7239696c38e7fb27881889), [`7ed8081`](https://github.com/withstudiocms/studiocms/commit/7ed8081e1a3aa4ae7cb5541cff0babeb0a7508ba), [`42a5310`](https://github.com/withstudiocms/studiocms/commit/42a53102c29b4a7d465bcefbbf010d3830654d1f)]:
+  - @withstudiocms/effect@0.5.1
+  - effectify@0.3.1
+
 ## 0.4.0
 
 ### Minor Changes
