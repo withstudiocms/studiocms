@@ -1,5 +1,11 @@
 # @withstudiocms/cli-kit
 
+## 0.3.1
+
+### Patch Changes
+
+- [#1730](https://github.com/withstudiocms/studiocms/pull/1730) [`1c3047b`](https://github.com/withstudiocms/studiocms/commit/1c3047bd816acb46e613038cdbbe6e4ac89a631b) Thanks [@renovate](https://github.com/apps/renovate)! - Update @withstudiocms/cli-kit Dependencies
+
 ## 0.3.0
 
 ### Minor Changes

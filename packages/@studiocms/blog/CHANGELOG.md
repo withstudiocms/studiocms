@@ -1,5 +1,15 @@
 # @studiocms/blog
 
+## 0.4.1
+
+### Patch Changes
+
+- [#1692](https://github.com/withstudiocms/studiocms/pull/1692) [`3425357`](https://github.com/withstudiocms/studiocms/commit/3425357c32b358d7f08256270909139b7b78b8b1) Thanks [@dreyfus92](https://github.com/dreyfus92)! - Removes the deprecated `studiocmsMinimumVersion` field from the Plugin API (`StudioCMSPluginBaseSchema`) and cleans up stale JSDoc that still referenced version checks. Plugins still passing the field will get a TypeScript excess-property error in `definePlugin()`; use `peerDependencies` to declare StudioCMS compatibility instead.
+
+- Updated dependencies [[`181e771`](https://github.com/withstudiocms/studiocms/commit/181e771a756566428a6ea246c62061613e1c91e4)]:
+  - @withstudiocms/internal_helpers@0.3.1
+  - @studiocms/md@0.4.0
+
 ## 0.4.0
 
 ### Minor Changes
