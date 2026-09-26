@@ -1,0 +1,35 @@
+{
+  "$schema": "../../packages/create-studiocms/templates-pkg.schema.json",
+  "name": "studiocms-blog-template-postgres",
+  "type": "module",
+  "version": "0.0.1",
+  "private": true,
+  "studiocms_template": {
+    "value": "blog-postgres",
+    "label": "StudioCMS w/ blog frontend (PostgreSQL)"
+  },
+  "scripts": {
+    "astro": "astro",
+    "studiocms": "studiocms",
+    "migrate": "studiocms migrate",
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.5",
+    "typescript": "^6.0.3"
+  },
+  "dependencies": {
+    "@astrojs/node": "^11.1.6",
+    "@effect/platform": "^0.97.2",
+    "@effect/platform-node": "^0.108.2",
+    "@studiocms/blog": "^0.4.1",
+    "@studiocms/md": "^0.4.0",
+    "astro": "^7.3.3",
+    "effect": "^3.22.2",
+    "pg": "^8.23.0",
+    "sharp": "^0.34.3",
+    "studiocms": "^0.6.0"
+  }
+}
