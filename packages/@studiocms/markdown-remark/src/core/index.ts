@@ -1,3 +1,7 @@
+import type {
+	MarkdownProcessor,
+	MarkdownProcessorRenderResult,
+} from '@withstudiocms/internal_helpers/markdown';
 import { HTMLString } from 'astro/runtime/server/escape.js';
 import rehypeAutoLink from 'rehype-autolink-headings';
 import rehypeRaw from 'rehype-raw';
@@ -10,20 +14,13 @@ import { unified } from 'unified';
 import { VFile } from 'vfile';
 import { prefixError } from '../errors.ts';
 import type {
-	MarkdownProcessor,
-	MarkdownProcessorRenderResult,
 	StudioCMSCalloutOptions,
 	StudioCMSMarkdownConfig,
-	StudioCMSMarkdownProcessorOptions,
+	StudioCMSMarkdownOptions,
 } from '../types.ts';
 import { loadPlugins } from './plugin-utils/load-plugins.ts';
-import {
-	rehypeAutolinkOptions,
-	rehypeCallouts,
-	rehypeHeadingIds,
-	rehypeImages,
-} from './rehype-plugins/index.ts';
-import { remarkCollectImages, remarkDiscordSubtext } from './remark-plugins/index.ts';
+import { rehypeAutolinkOptions, rehypeCallouts } from './rehype-plugins/index.ts';
+import { remarkDiscordSubtext } from './remark-plugins/index.ts';
 
 /**
  * Default configuration for the markdown processor. This is used as the base for the user's configuration, and is deeply merged with the user's config.
@@ -34,18 +31,6 @@ export const markdownConfigDefaults: StudioCMSMarkdownConfig = {
 	remarkRehype: {},
 	gfm: true,
 	smartypants: true,
-	shikiConfig: {
-		langs: [],
-		theme: 'github-dark',
-		themes: {},
-		wrap: false,
-		transformers: [],
-		langAlias: {},
-	},
-	syntaxHighlight: {
-		excludeLangs: ['math'],
-		type: 'shiki',
-	},
 	studiocms: {
 		callouts: {
 			theme: 'obsidian',
@@ -77,19 +62,15 @@ export const markdownConfigDefaults: StudioCMSMarkdownConfig = {
  * @public
  */
 export const createMarkdownProcessor = async (
-	opts?: StudioCMSMarkdownProcessorOptions
+	opts?: StudioCMSMarkdownOptions
 ): Promise<MarkdownProcessor> => {
 	const {
-		// TODO: Add syntax highlighting support back in via plugins -- This should not be done via a hardcoded dependency on Shiki, but rather via a plugin system that allows users to choose if they want to use Shiki, Prism, or another syntax highlighter, or nothing at all.
-		// syntaxHighlight = markdownConfigDefaults.syntaxHighlight,
-		// shikiConfig = markdownConfigDefaults.shikiConfig,
 		remarkPlugins = markdownConfigDefaults.remarkPlugins,
 		rehypePlugins = markdownConfigDefaults.rehypePlugins,
 		remarkRehype: remarkRehypeOptions = markdownConfigDefaults.remarkRehype,
 		gfm = markdownConfigDefaults.gfm,
 		smartypants = markdownConfigDefaults.smartypants,
 		studiocms = markdownConfigDefaults.studiocms,
-		experimentalHeadingIdCompat = false,
 	} = opts ?? {};
 
 	let autolink = true;
@@ -138,9 +119,6 @@ export const createMarkdownProcessor = async (
 		parser.use(plugin, pluginOpts);
 	}
 
-	// Apply later in case user plugins resolve relative image paths
-	parser.use(remarkCollectImages, opts?.image);
-
 	// Remark -> Rehype
 	parser.use(remarkRehype, {
 		allowDangerousHtml: true,
@@ -152,12 +130,6 @@ export const createMarkdownProcessor = async (
 	for (const [plugin, pluginOpts] of loadedRehypePlugins) {
 		parser.use(plugin, pluginOpts);
 	}
-
-	// Images / Assets support
-	parser.use(rehypeImages);
-
-	// Headings
-	parser.use(rehypeHeadingIds, { experimentalHeadingIdCompat });
 
 	// Autolink headings
 	if (autolink) {
@@ -206,12 +178,6 @@ export const createMarkdownProcessor = async (
 			return {
 				code: String(code),
 				astroHTML: new HTMLString(code),
-				metadata: {
-					headings: result.data.astro?.headings ?? [],
-					localImagePaths: result.data.astro?.localImagePaths ?? [],
-					remoteImagePaths: result.data.astro?.remoteImagePaths ?? [],
-					frontmatter: result.data.astro?.frontmatter ?? {},
-				},
 			};
 		},
 	};
