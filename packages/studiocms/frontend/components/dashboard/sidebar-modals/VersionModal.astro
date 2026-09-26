@@ -4,8 +4,8 @@ import changelog from 'studiocms:changelog';
 import { type UiLanguageKeys, useTranslations } from 'studiocms:i18n';
 import { Modal } from 'studiocms:ui/components/modal';
 import currentVersion from 'studiocms:version';
+import { markdownToHtml } from 'satteri';
 import { studioCMSSocials } from '#consts';
-import { parseMarkdown } from '#utils/tinyMDParser';
 import { dateWithTimeAndZone } from '../../../scripts/dateWithTimeAndZone.js';
 import { timeAgo } from '../../../scripts/timeAgo.js';
 import VersionCheckChangelog from '../sidebar/VersionCheckChangelog.astro';
@@ -20,6 +20,12 @@ const t = useTranslations(lang, '@studiocms/dashboard:versionCheckModal');
 
 const latestVersion = Astro.locals.StudioCMS.latestVersion;
 const lastChecked = new Date(Astro.locals.StudioCMS.latestVersion.lastCacheUpdate);
+
+const { html: changelogHtml } = markdownToHtml(changelog, {
+	features: {
+		gfm: true,
+	},
+});
 ---
 
 <Modal id="version-modal" size="lg">
@@ -73,7 +79,7 @@ const lastChecked = new Date(Astro.locals.StudioCMS.latestVersion.lastCacheUpdat
 
         <div class="version-modal-release-notes">
             <div class="prose">
-                <Fragment set:html={parseMarkdown(changelog)} />
+                <Fragment set:html={changelogHtml} />
             </div>
             <span class="release-notes-read-more">
                 <VersionCheckChangelog changelog={studioCMSSocials.changelog}
