@@ -892,9 +892,6 @@ importers:
       effect:
         specifier: catalog:effect
         version: 3.22.2
-      mdast-util-from-markdown:
-        specifier: ^2.0.3
-        version: 2.0.3
       mdast-util-to-string:
         specifier: ^4.0.0
         version: 4.0.0
