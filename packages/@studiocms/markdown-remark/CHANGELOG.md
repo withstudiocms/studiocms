@@ -1,5 +1,18 @@
 # @studiocms/markdown-remark
 
+## 1.5.0
+
+### Minor Changes
+
+- [#1747](https://github.com/withstudiocms/studiocms/pull/1747) [`2d039b8`](https://github.com/withstudiocms/studiocms/commit/2d039b8863523023f7579b1bf28586fbef5b32c8) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Update @astrojs/internal-helpers dependency scope to allow ^0.11.0
+
+### Patch Changes
+
+- [#1737](https://github.com/withstudiocms/studiocms/pull/1737) [`73be559`](https://github.com/withstudiocms/studiocms/commit/73be559f1b0ab9791932945e046402643c2c2c19) Thanks [@renovate](https://github.com/apps/renovate)! - Update dependency js-yaml to ^5.4.2
+
+- Updated dependencies [[`181e771`](https://github.com/withstudiocms/studiocms/commit/181e771a756566428a6ea246c62061613e1c91e4)]:
+  - @withstudiocms/internal_helpers@0.3.1
+
 ## 1.4.0
 
 ### Minor Changes

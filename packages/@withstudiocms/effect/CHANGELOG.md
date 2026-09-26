@@ -1,5 +1,18 @@
 # @withstudiocms/effect
 
+## 0.5.1
+
+### Patch Changes
+
+- [#1739](https://github.com/withstudiocms/studiocms/pull/1739) [`4887823`](https://github.com/withstudiocms/studiocms/commit/4887823666b07443ec7239696c38e7fb27881889) Thanks [@renovate](https://github.com/apps/renovate)! - Update dependency nodemailer to v10
+
+- [#1726](https://github.com/withstudiocms/studiocms/pull/1726) [`7ed8081`](https://github.com/withstudiocms/studiocms/commit/7ed8081e1a3aa4ae7cb5541cff0babeb0a7508ba) Thanks [@renovate](https://github.com/apps/renovate)! - chore(deps): Updated Effect dependencies (PR: [#1726](https://github.com/withstudiocms/studiocms/issues/1726))
+
+- [#1722](https://github.com/withstudiocms/studiocms/pull/1722) [`42a5310`](https://github.com/withstudiocms/studiocms/commit/42a53102c29b4a7d465bcefbbf010d3830654d1f) Thanks [@renovate](https://github.com/apps/renovate)! - Update @withstudiocms/effect Dependencies
+
+- Updated dependencies [[`7ed8081`](https://github.com/withstudiocms/studiocms/commit/7ed8081e1a3aa4ae7cb5541cff0babeb0a7508ba)]:
+  - effectify@0.3.1
+
 ## 0.5.0
 
 ### Minor Changes

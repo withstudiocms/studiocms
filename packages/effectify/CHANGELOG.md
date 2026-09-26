@@ -1,5 +1,11 @@
 # effectify
 
+## 0.3.1
+
+### Patch Changes
+
+- [#1726](https://github.com/withstudiocms/studiocms/pull/1726) [`7ed8081`](https://github.com/withstudiocms/studiocms/commit/7ed8081e1a3aa4ae7cb5541cff0babeb0a7508ba) Thanks [@renovate](https://github.com/apps/renovate)! - chore(deps): Updated Effect dependencies (PR: [#1726](https://github.com/withstudiocms/studiocms/issues/1726))
+
 ## 0.3.0
 
 ### Minor Changes

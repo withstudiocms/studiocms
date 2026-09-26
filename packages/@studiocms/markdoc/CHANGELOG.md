@@ -1,5 +1,14 @@
 # @studiocms/markdoc
 
+## 0.4.1
+
+### Patch Changes
+
+- [#1731](https://github.com/withstudiocms/studiocms/pull/1731) [`54c5a3c`](https://github.com/withstudiocms/studiocms/commit/54c5a3c505ff7614a58c817c8e290b030ca68379) Thanks [@renovate](https://github.com/apps/renovate)! - Update dependency @markdoc/markdoc to ^0.5.10
+
+- Updated dependencies [[`181e771`](https://github.com/withstudiocms/studiocms/commit/181e771a756566428a6ea246c62061613e1c91e4)]:
+  - @withstudiocms/internal_helpers@0.3.1
+
 ## 0.4.0
 
 ### Minor Changes
