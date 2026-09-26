@@ -2,17 +2,9 @@
 /// <reference types="../astroenv.d.ts" />
 
 import type { Messages } from '@withstudiocms/internal_helpers/astro-integration';
-import type { InjectedRoute } from 'astro';
 import type { SanitizeOptions } from 'ultrahtml/transformers/sanitize';
 import type { StudioCMSOptions } from './schemas/index.js';
 import type { CombinedPageData } from './virtuals/sdk/types.js';
-
-/**
- * Represents a route object that can be used for a Array of routes for the Astro integration injectRoute() function.
- *
- * @deprecated use InjectedRoute from 'astro' instead
- */
-export type Route = InjectedRoute;
 
 /**
  * Options for starting the server.

@@ -81,68 +81,6 @@ export const currentRESTAPIVersions = ['v1'] as const;
 export type CurrentRESTAPIVersions = (typeof currentRESTAPIVersions)[number];
 
 /**
- * Routes Directory Resolver
- *
- * @deprecated use new src/frontend/routes resolver functions instead
- */
-const baseDir = (path: string) => `studiocms/src/${path}`;
-
-/**
- * Base Directory Functions
- *
- * @deprecated use new src/frontend/routes resolver functions instead
- */
-const baseRoutesDir = (path: string) => baseDir(`routes/${path}`);
-
-/**
- * Base Directory Functions for Middleware
- *
- * @deprecated use new src/frontend/routes resolver functions instead
- */
-const baseMiddlewareDir = (path: string) => baseDir(`middleware/${path}`);
-
-/**
- * Base Directory Functions for API Routes
- *
- * @deprecated use new src/frontend/routes resolver functions instead
- */
-const baseAPIRoutesDir = (path: string) => baseRoutesDir(`api/${path}`);
-
-/**
- * Base Directory Functions for REST API Routes
- *
- * @deprecated use new src/frontend/routes resolver functions instead
- */
-const baseRestDir = (version: CurrentRESTAPIVersions) => (path: string) =>
-	baseRoutesDir(`api/rest/${version}/${path}`);
-
-/**
- * REST API Directory
- *
- * @deprecated use new src/frontend/routes resolver functions instead
- */
-export const routesDir = {
-	// Main Routes
-	fts: (file: string) => baseRoutesDir(`firstTimeSetupRoutes/${file}`),
-	dashRoute: (file: string) => baseRoutesDir(`dashboard/${file}`),
-	errors: (file: string) => baseRoutesDir(`error-pages/${file}`),
-	authPage: (file: string) => baseRoutesDir(`auth/${file}`),
-
-	// API Routes
-	dashApi: (file: string) => baseAPIRoutesDir(`dashboard/${file}`),
-	authAPI: (file: string) => baseAPIRoutesDir(`auth/${file}`),
-	api: (file: string) => baseAPIRoutesDir(file),
-	sdk: (file: string) => baseAPIRoutesDir(`sdk/${file}`),
-	mailer: (file: string) => baseAPIRoutesDir(`mailer/${file}`),
-
-	// REST API Routes
-	v1Rest: (file: string) => baseRestDir('v1')(file),
-
-	// Middleware
-	middleware: (file: string) => baseMiddlewareDir(file),
-};
-
-/**
  * StudioCMS Social Links Type
  */
 export type StudioCMSSocials = {
