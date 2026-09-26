@@ -26,11 +26,11 @@
     "@effect/platform": "^0.97.2",
     "@effect/platform-node": "^0.108.2",
     "@studiocms/md": "^0.4.0",
-    "@studiocms/html": "^0.4.0",
+    "@studiocms/html": "^0.4.1",
     "astro": "^7.3.3",
     "effect": "^3.22.2",
     "pg": "^8.23.0",
     "sharp": "^0.34.3",
-    "studiocms": "^0.5.0"
+    "studiocms": "^0.6.0"
   }
 }

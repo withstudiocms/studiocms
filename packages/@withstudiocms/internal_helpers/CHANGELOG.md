@@ -1,5 +1,11 @@
 # @withstudiocms/internal_helpers
 
+## 0.3.1
+
+### Patch Changes
+
+- [#1736](https://github.com/withstudiocms/studiocms/pull/1736) [`181e771`](https://github.com/withstudiocms/studiocms/commit/181e771a756566428a6ea246c62061613e1c91e4) Thanks [@renovate](https://github.com/apps/renovate)! - Update dependency @scure/base to ^2.4.0
+
 ## 0.3.0
 
 ### Minor Changes

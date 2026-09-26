@@ -1,5 +1,11 @@
 # @studiocms/s3-storage
 
+## 0.4.1
+
+### Patch Changes
+
+- [#1744](https://github.com/withstudiocms/studiocms/pull/1744) [`6e7e6c6`](https://github.com/withstudiocms/studiocms/commit/6e7e6c6156c437ded3ae68c73ac7dfa8e22253d9) Thanks [@renovate](https://github.com/apps/renovate)! - Update AWS S3 Dependencies to ^3.1136.0
+
 ## 0.4.0
 
 ### Minor Changes

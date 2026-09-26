@@ -1,5 +1,24 @@
 # studiocms
 
+## 0.6.0
+
+### Minor Changes
+
+- [#1692](https://github.com/withstudiocms/studiocms/pull/1692) [`3425357`](https://github.com/withstudiocms/studiocms/commit/3425357c32b358d7f08256270909139b7b78b8b1) Thanks [@dreyfus92](https://github.com/dreyfus92)! - Removes the deprecated `studiocmsMinimumVersion` field from the Plugin API (`StudioCMSPluginBaseSchema`) and cleans up stale JSDoc that still referenced version checks. Plugins still passing the field will get a TypeScript excess-property error in `definePlugin()`; use `peerDependencies` to declare StudioCMS compatibility instead.
+
+### Patch Changes
+
+- [#1718](https://github.com/withstudiocms/studiocms/pull/1718) [`5f50558`](https://github.com/withstudiocms/studiocms/commit/5f50558405eb308993814ca788987e0fdf639c59) Thanks [@renovate](https://github.com/apps/renovate)! - Update studiocms Dependencies
+
+- [#1746](https://github.com/withstudiocms/studiocms/pull/1746) [`befb0af`](https://github.com/withstudiocms/studiocms/commit/befb0af4f11792850fdab9eb70d705f8bcc25832) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Fixes circle-flags error by including proper overrides for now missing lang-\* flags
+
+- Updated dependencies [[`d3760ad`](https://github.com/withstudiocms/studiocms/commit/d3760ad4d46ab21602c2c8dd79eab54c9d16b59f), [`181e771`](https://github.com/withstudiocms/studiocms/commit/181e771a756566428a6ea246c62061613e1c91e4), [`4887823`](https://github.com/withstudiocms/studiocms/commit/4887823666b07443ec7239696c38e7fb27881889), [`7ed8081`](https://github.com/withstudiocms/studiocms/commit/7ed8081e1a3aa4ae7cb5541cff0babeb0a7508ba), [`1c3047b`](https://github.com/withstudiocms/studiocms/commit/1c3047bd816acb46e613038cdbbe6e4ac89a631b), [`42a5310`](https://github.com/withstudiocms/studiocms/commit/42a53102c29b4a7d465bcefbbf010d3830654d1f)]:
+  - @withstudiocms/sdk@0.4.1
+  - @withstudiocms/internal_helpers@0.3.1
+  - @withstudiocms/effect@0.5.1
+  - effectify@0.3.1
+  - @withstudiocms/cli-kit@0.3.1
+
 ## 0.5.0
 
 ### Minor Changes
