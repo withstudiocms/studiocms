@@ -268,7 +268,7 @@
 		"tinyglobby": "catalog:",
 		"ultrahtml": "catalog:",
 		"web-vitals": "^6.2.2",
-		"satteri": "^0.10.5"
+		"satteri": "catalog:"
 	},
 	"devDependencies": {
 		"@types/mdast": "^4.0.4",
