@@ -1,0 +1,35 @@
+name: CI - Checks
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["**"]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions: {}
+
+env:
+  FORCE_COLOR: true
+  # 7 GiB by default on GitHub, setting to 6 GiB
+  # https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners#supported-runners-and-hardware-resources
+  NODE_OPTIONS: --max-old-space-size=6144
+
+jobs:
+  # Knip Reporter only supports pull requests at the moment
+  # (We are using a custom github action in the automation for github action alerts)
+  lint-knip:
+    name: Run Knip Linter and Report
+    if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+    permissions:
+      contents: read
+      issues: write
+      checks: write
+      pull-requests: write
+    uses: withstudiocms/automations/.github/workflows/knip.yml@f32588d80ce35d57905264f7fa473b0f6e297c0a # main
+    secrets: inherit
+    with:
+      pre-knip-cmd: "pnpm ci:build"

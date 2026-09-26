@@ -1,0 +1,86 @@
+---
+/// <reference types="astro/client" />
+import { Image } from 'astro:assets';
+import { site } from 'astro:config/server';
+import config from 'studiocms:config';
+import * as imageServices from 'studiocms:plugins/imageService';
+import { imageServiceKeys } from 'studiocms:plugins/imageService';
+import type { StudioCMSImageService } from '../../schemas/index.js';
+import { isStorageIdentifier, resolveStorageIdentifier } from '../../storage-api.js';
+
+const {
+	features: { preferredImageService },
+} = config;
+
+interface Props {
+	src: string;
+	alt: string;
+	width: number;
+	height: number;
+}
+
+const { src, ...props } = Astro.props;
+
+// Get the current configured image service
+async function getImageSrc() {
+	const keys = imageServiceKeys;
+
+	if (keys.length === 0 || !preferredImageService) {
+		return src;
+	}
+
+	if (isStorageIdentifier(src)) {
+		// Process storage files differently
+		try {
+			return await resolveStorageIdentifier(src, {
+				baseUrl: site || 'http://localhost:4321',
+			});
+		} catch (error) {
+			console.error(`Failed to resolve storage URL ${src}:`, error);
+			return src; // Fallback to original identifier
+		}
+	}
+
+	/* v8 ignore start */
+	const preferredService = keys.find(({ identifier }) => {
+		return identifier === preferredImageService;
+	});
+
+	if (!preferredService) {
+		return src;
+	}
+
+	// @ts-expect-error - This is a dynamic type... from a virtual module
+	const serviceFn = imageServices[preferredService.safe] as unknown as StudioCMSImageService;
+
+	if (typeof serviceFn !== 'function') {
+		console.warn(`Image service "${preferredImageService}" is not properly configured`);
+		return src;
+	}
+
+	return await serviceFn(src, props);
+}
+/* v8 ignore stop */
+
+// check if the image source is an external URL
+function inferSizeNeeded(url: string) {
+	if (url.startsWith('https://') || url.startsWith('http://')) {
+		return true;
+	}
+	/* v8 ignore start */
+	return false;
+}
+/* v8 ignore stop */
+
+// Get the current configured image service source URL
+const currentSrcURL = await getImageSrc();
+
+// Set the image properties
+const imageProps = {
+	src: currentSrcURL,
+	inferSize: inferSizeNeeded(currentSrcURL),
+	...props,
+};
+---
+
+<Image loading={"lazy"} {...imageProps} />

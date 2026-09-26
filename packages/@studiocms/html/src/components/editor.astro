@@ -1,0 +1,432 @@
+---
+import 'suneditor/css/editor';
+import 'suneditor/css/contents';
+import 'codemirror/lib/codemirror.css';
+import 'katex/dist/katex.min.css';
+import type { PluginPageTypeEditorProps } from 'studiocms/types';
+
+interface Props extends PluginPageTypeEditorProps {}
+
+const { content } = Astro.props;
+---
+
+<div class="editor-container">
+    <sun-editor>
+        <textarea id="page-content" name="page-content">{content}</textarea>
+    </sun-editor>
+</div>
+
+<script>
+    import "codemirror/mode/htmlmixed/htmlmixed";
+    const { default: sunEditor, plugins } = await import("suneditor");
+    const { default: katex } = await import("katex");
+    const { default: codeMirror } = await import("codemirror");
+
+    class SunEditorElement extends HTMLElement {
+        editor: SunEditor.Instance | null;
+        textarea: HTMLTextAreaElement | null;
+
+        constructor() {
+            super();
+            this.editor = null;
+            this.textarea = null;
+        }
+
+        connectedCallback() {
+            this.textarea = this.querySelector("textarea") as HTMLTextAreaElement;
+            if (this.textarea) {
+                this.setupEditor();
+            }
+        }
+
+        setupEditor() {
+            const textarea = this.textarea;
+            if (!textarea) return;
+            
+            this.editor = sunEditor.create(textarea, {
+                externalLibs: {
+                    katex,
+                    codeMirror,
+                },
+                width: "100%",
+                height: "400",
+                charCounter: true,
+                charCounter_label: "Characters :",
+                placeholder: "Start typing something...",
+                plugins: plugins,
+                buttonList: [
+                    // default
+                    ["undo", "redo"],
+                    ["font", "fontSize", "blockStyle"],
+                    ["paragraphStyle", "blockquote"],
+                    [
+                        "bold",
+                        "underline",
+                        "italic",
+                        "strike",
+                        "subscript",
+                        "superscript",
+                    ],
+                    ["fontColor", "backgroundColor", "textStyle"],
+                    ["removeFormat"],
+                    ["outdent", "indent"],
+                    ["align", "hr", "list", "lineHeight"],
+                    ["table", "link", "image", "video", "audio", "math"],
+                    // ['imageGallery'],
+                    ["fullScreen", "showBlocks", "codeView"],
+                    ["preview"],
+                    // (min-width: 1546)
+                    [
+                        "%1546",
+                        [
+                            ["undo", "redo"],
+                            ["font", "fontSize", "blockStyle"],
+                            ["paragraphStyle", "blockquote"],
+                            [
+                                "bold",
+                                "underline",
+                                "italic",
+                                "strike",
+                                "subscript",
+                                "superscript",
+                            ],
+                            ["fontColor", "backgroundColor", "textStyle"],
+                            ["removeFormat"],
+                            ["outdent", "indent"],
+                            ["align", "hr", "list", "lineHeight"],
+                            ["table", "link", "image", "video", "audio", "math"],
+                            // ['imageGallery'],
+                            ["fullScreen", "showBlocks", "codeView"],
+                            ["-right", ":i-More Misc-default.more_vertical", "preview"],
+                        ],
+                    ],
+                    // (min-width: 1455)
+                    [
+                        "%1455",
+                        [
+                            ["undo", "redo"],
+                            ["font", "fontSize", "blockStyle"],
+                            ["paragraphStyle", "blockquote"],
+                            [
+                                "bold",
+                                "underline",
+                                "italic",
+                                "strike",
+                                "subscript",
+                                "superscript",
+                            ],
+                            ["fontColor", "backgroundColor", "textStyle"],
+                            ["removeFormat"],
+                            ["outdent", "indent"],
+                            ["align", "hr", "list", "lineHeight"],
+                            ["table", "link", "image", "video", "audio", "math"],
+                            // ['imageGallery'],
+                            [
+                                "-right",
+                                ":i-More Misc-default.more_vertical",
+                                "fullScreen",
+                                "showBlocks",
+                                "codeView",
+                                "preview",
+                            ],
+                        ],
+                    ],
+                    // (min-width: 1326)
+                    [
+                        "%1326",
+                        [
+                            ["undo", "redo"],
+                            ["font", "fontSize", "blockStyle"],
+                            ["paragraphStyle", "blockquote"],
+                            [
+                                "bold",
+                                "underline",
+                                "italic",
+                                "strike",
+                                "subscript",
+                                "superscript",
+                            ],
+                            ["fontColor", "backgroundColor", "textStyle"],
+                            ["removeFormat"],
+                            ["outdent", "indent"],
+                            ["align", "hr", "list", "lineHeight"],
+                            [
+                                "-right",
+                                ":i-More Misc-default.more_vertical",
+                                "fullScreen",
+                                "showBlocks",
+                                "codeView",
+                                "preview",
+                            ],
+                            [
+                                "-right",
+                                ":r-More Rich-default.more_plus",
+                                "table",
+                                "link",
+                                "image",
+                                "video",
+                                "audio",
+                                "math",
+                            ],
+                        ],
+                    ],
+                    // (min-width: 1123)
+                    [
+                        "%1123",
+                        [
+                            ["undo", "redo"],
+                            [
+                                ":p-More Paragraph-default.more_paragraph",
+                                "font",
+                                "fontSize",
+                                "blockStyle",
+                                "paragraphStyle",
+                                "blockquote",
+                            ],
+                            [
+                                "bold",
+                                "underline",
+                                "italic",
+                                "strike",
+                                "subscript",
+                                "superscript",
+                            ],
+                            ["fontColor", "backgroundColor", "textStyle"],
+                            ["removeFormat"],
+                            ["outdent", "indent"],
+                            ["align", "hr", "list", "lineHeight"],
+                            [
+                                "-right",
+                                ":i-More Misc-default.more_vertical",
+                                "fullScreen",
+                                "showBlocks",
+                                "codeView",
+                                "preview",
+                            ],
+                            [
+                                "-right",
+                                ":r-More Rich-default.more_plus",
+                                "table",
+                                "link",
+                                "image",
+                                "video",
+                                "audio",
+                                "math",
+                            ],
+                        ],
+                    ],
+                    // (min-width: 817)
+                    [
+                        "%817",
+                        [
+                            ["undo", "redo"],
+                            [
+                                ":p-More Paragraph-default.more_paragraph",
+                                "font",
+                                "fontSize",
+                                "blockStyle",
+                                "paragraphStyle",
+                                "blockquote",
+                            ],
+                            ["bold", "underline", "italic", "strike"],
+                            [
+                                ":t-More Text-default.more_text",
+                                "subscript",
+                                "superscript",
+                                "fontColor",
+                                "backgroundColor",
+                                "textStyle",
+                            ],
+                            ["removeFormat"],
+                            ["outdent", "indent"],
+                            ["align", "hr", "list", "lineHeight"],
+                            [
+                                "-right",
+                                ":i-More Misc-default.more_vertical",
+                                "fullScreen",
+                                "showBlocks",
+                                "codeView",
+                                "preview",
+                            ],
+                            [
+                                "-right",
+                                ":r-More Rich-default.more_plus",
+                                "table",
+                                "link",
+                                "image",
+                                "video",
+                                "audio",
+                                "math",
+                            ],
+                        ],
+                    ],
+                    // (min-width: 673)
+                    [
+                        "%673",
+                        [
+                            ["undo", "redo"],
+                            [
+                                ":p-More Paragraph-default.more_paragraph",
+                                "font",
+                                "fontSize",
+                                "blockStyle",
+                                "paragraphStyle",
+                                "blockquote",
+                            ],
+                            [
+                                ":t-More Text-default.more_text",
+                                "bold",
+                                "underline",
+                                "italic",
+                                "strike",
+                                "subscript",
+                                "superscript",
+                                "fontColor",
+                                "backgroundColor",
+                                "textStyle",
+                            ],
+                            ["removeFormat"],
+                            ["outdent", "indent"],
+                            ["align", "hr", "list", "lineHeight"],
+                            [
+                                ":r-More Rich-default.more_plus",
+                                "table",
+                                "link",
+                                "image",
+                                "video",
+                                "audio",
+                                "math",
+                            ],
+                            [
+                                "-right",
+                                ":i-More Misc-default.more_vertical",
+                                "fullScreen",
+                                "showBlocks",
+                                "codeView",
+                                "preview",
+                            ],
+                        ],
+                    ],
+                    // (min-width: 525)
+                    [
+                        "%525",
+                        [
+                            ["undo", "redo"],
+                            [
+                                ":p-More Paragraph-default.more_paragraph",
+                                "font",
+                                "fontSize",
+                                "blockStyle",
+                                "paragraphStyle",
+                                "blockquote",
+                            ],
+                            [
+                                ":t-More Text-default.more_text",
+                                "bold",
+                                "underline",
+                                "italic",
+                                "strike",
+                                "subscript",
+                                "superscript",
+                                "fontColor",
+                                "backgroundColor",
+                                "textStyle",
+                            ],
+                            ["removeFormat"],
+                            ["outdent", "indent"],
+                            [
+                                ":e-More Line-default.more_horizontal",
+                                "align",
+                                "hr",
+                                "list",
+                                "lineHeight",
+                            ],
+                            [
+                                ":r-More Rich-default.more_plus",
+                                "table",
+                                "link",
+                                "image",
+                                "video",
+                                "audio",
+                                "math",
+                            ],
+                            [
+                                "-right",
+                                ":i-More Misc-default.more_vertical",
+                                "fullScreen",
+                                "showBlocks",
+                                "codeView",
+                                "preview",
+                            ],
+                        ],
+                    ],
+                    // (min-width: 420)
+                    [
+                        "%420",
+                        [
+                            ["undo", "redo"],
+                            [
+                                ":p-More Paragraph-default.more_paragraph",
+                                "font",
+                                "fontSize",
+                                "blockStyle",
+                                "paragraphStyle",
+                                "blockquote",
+                            ],
+                            [
+                                ":t-More Text-default.more_text",
+                                "bold",
+                                "underline",
+                                "italic",
+                                "strike",
+                                "subscript",
+                                "superscript",
+                                "fontColor",
+                                "backgroundColor",
+                                "textStyle",
+                                "removeFormat",
+                            ],
+                            [
+                                ":e-More Line-default.more_horizontal",
+                                "outdent",
+                                "indent",
+                                "align",
+                                "hr",
+                                "list",
+                                "lineHeight",
+                            ],
+                            [
+                                ":r-More Rich-default.more_plus",
+                                "table",
+                                "link",
+                                "image",
+                                "video",
+                                "audio",
+                                "math",
+                            ],
+                            [
+                                "-right",
+                                ":i-More Misc-default.more_vertical",
+                                "fullScreen",
+                                "showBlocks",
+                                "codeView",
+                                "preview",
+                            ],
+                        ],
+                    ],
+                ],
+            });
+        }
+
+        disconnectedCallback() {
+            if (this.editor) {
+                this.editor.destroy();
+                this.editor = null;
+            }
+        }
+    }
+
+    if (!customElements.get("sun-editor")) {
+        customElements.define("sun-editor", SunEditorElement);
+    }
+</script>

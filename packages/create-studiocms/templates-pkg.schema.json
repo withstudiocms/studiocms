@@ -1,0 +1,31 @@
+{
+  "$id": "templates-pkg.schema.json",
+  "type": "object",
+  "allOf": [{ "$ref": "https://www.schemastore.org/package.json" }],
+  "properties": {
+    "studiocms_template": {
+      "type": "object",
+      "description": "Custom object to define details for create-studiocms CLI templates",
+      "properties": {
+        "value": {
+          "type": "string",
+          "description": "The internal value identifier for the StudioCMS template."
+        },
+        "label": {
+          "type": "string",
+          "description": "The human-readable label for the StudioCMS template."
+        },
+        "hint": {
+          "type": "string",
+          "description": "An optional hint or description for the StudioCMS template."
+        },
+        "disabled": {
+          "type": "boolean",
+          "description": "Indicates if the StudioCMS template is disabled."
+        }
+      },
+      "required": ["value", "label"]
+    }
+  },
+  "required": ["studiocms_template"]
+}

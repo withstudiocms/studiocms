@@ -1,0 +1,26 @@
+name: CI - Write coauthors to a pull request
+  
+on:
+  issue_comment:
+    types:
+      - created
+      
+permissions:
+  pull-requests: write
+
+env:
+  FORCE_COLOR: true
+  # 7 GiB by default on GitHub, setting to 6 GiB
+  # https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners#supported-runners-and-hardware-resources
+  NODE_OPTIONS: --max-old-space-size=6144
+
+jobs:
+  generate-coauthors:
+    name: Generate Coauthor List
+    if: ${{ github.event.issue.pull_request }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: kevinzunigacuellar/coauthor-action@292b32bdbffc663431a2a37b3bfa597d83a74905 # v0.1.3

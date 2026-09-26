@@ -1,0 +1,58 @@
+{
+	"name": "@withstudiocms/cli-kit",
+	"version": "0.3.1",
+	"type": "module",
+	"author": "withstudiocms",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/withstudiocms/studiocms.git",
+		"directory": "packages/@withstudiocms/cli-kit"
+	},
+	"bugs": "https://github.com/withstudiocms/studiocms/issues",
+	"homepage": "https://studiocms.dev",
+	"publishConfig": {
+		"provenance": true
+	},
+	"keywords": [
+		"cli",
+		"command-line",
+		"cli-toolkit",
+		"cli-kit",
+		"cli-utilities",
+		"command-line-utilities",
+		"utilities",
+		"tools",
+		"toolkit",
+		"studiocms",
+		"withstudiocms"
+	],
+	"scripts": {
+		"build": "tsdown --config tsdown.config.ts --clean",
+		"dev": "tsdown --config tsdown.config.ts --no-clean",
+		"test": "vitest",
+		"typecheck": "tspc -p tsconfig.tspc.json"
+	},
+	"files": [
+		"dist"
+	],
+	"exports": {
+		"./*": {
+			"types": "./dist/*.d.ts",
+			"default": "./dist/*.js"
+		}
+	},
+	"devDependencies": {
+		"@types/node": "catalog:"
+	},
+	"dependencies": {
+		"strip-ansi": "^7.2.0",
+		"wrap-ansi": "^10.0.2",
+		"boxen": "^8.0.1",
+		"ansi-escapes": "^7.3.0",
+		"cli-cursor": "^5.0.0",
+		"is-unicode-supported": "^2.1.0",
+		"slice-ansi": "^9.0.1",
+		"tinyexec": "catalog:"
+	}
+}

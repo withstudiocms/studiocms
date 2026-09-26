@@ -1,0 +1,114 @@
+# @studiocms/s3-storage
+
+## 0.4.1
+
+### Patch Changes
+
+- [#1744](https://github.com/withstudiocms/studiocms/pull/1744) [`6e7e6c6`](https://github.com/withstudiocms/studiocms/commit/6e7e6c6156c437ded3ae68c73ac7dfa8e22253d9) Thanks [@renovate](https://github.com/apps/renovate)! - Update AWS S3 Dependencies to ^3.1136.0
+
+## 0.4.0
+
+### Minor Changes
+
+- [#1537](https://github.com/withstudiocms/studiocms/pull/1537) [`f7646fe`](https://github.com/withstudiocms/studiocms/commit/f7646fedc637f250d04844f9a6e1ac8126ec5015) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Breaking Change: This version drops support for Astro v5
+
+- [#1537](https://github.com/withstudiocms/studiocms/pull/1537) [`f7646fe`](https://github.com/withstudiocms/studiocms/commit/f7646fedc637f250d04844f9a6e1ac8126ec5015) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Updates for Astro v6, Lints `.astro` files, and scope CSS files to prevent weird CSS leakage across pages.
+
+- [#1500](https://github.com/withstudiocms/studiocms/pull/1500) [`3a0beb1`](https://github.com/withstudiocms/studiocms/commit/3a0beb13f25e38c4d7d98cc9644623eb82964851) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Migrates packages to use tsdown instead of custom esbuild pipeline
+
+- [#1579](https://github.com/withstudiocms/studiocms/pull/1579) [`55b6083`](https://github.com/withstudiocms/studiocms/commit/55b6083fa48b00e125bbb06bc1e83bf846e9c7b8) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Remove dependency on Astro integration kit
+
+### Patch Changes
+
+- [#1496](https://github.com/withstudiocms/studiocms/pull/1496) [`ddb5bf2`](https://github.com/withstudiocms/studiocms/commit/ddb5bf2c5cd68f05f06632ade3c1bd047532e85e) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update aws s3 dependencies to ^3.1008.0
+
+- [#1536](https://github.com/withstudiocms/studiocms/pull/1536) [`d575739`](https://github.com/withstudiocms/studiocms/commit/d57573995a388bce68452fc5d4a0345a0734cef5) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update aws s3 dependencies to ^3.1012.0
+
+- [#1572](https://github.com/withstudiocms/studiocms/pull/1572) [`d9162fa`](https://github.com/withstudiocms/studiocms/commit/d9162fa76405bab20f1834f241830d37435b0b25) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update aws s3 dependencies to ^3.1082.0
+
+- [#1594](https://github.com/withstudiocms/studiocms/pull/1594) [`af2ea2b`](https://github.com/withstudiocms/studiocms/commit/af2ea2b80a70585d972c3cffd69963288f8e03cf) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update aws s3 dependencies to ^3.1085.0
+
+- [#1676](https://github.com/withstudiocms/studiocms/pull/1676) [`38206c6`](https://github.com/withstudiocms/studiocms/commit/38206c66e57bbc7bb98150fd87b28413f76efa5e) Thanks [@renovate](https://github.com/apps/renovate)! - Update AWS S3 Dependencies to ^3.1106.0
+
+- [#1629](https://github.com/withstudiocms/studiocms/pull/1629) [`244ff28`](https://github.com/withstudiocms/studiocms/commit/244ff287d89122d9c576343edb5323e1ea810c2c) Thanks [@renovate](https://github.com/apps/renovate)! - Update AWS S3 Dependencies to ^3.1099.0
+
+- [#1706](https://github.com/withstudiocms/studiocms/pull/1706) [`5d96575`](https://github.com/withstudiocms/studiocms/commit/5d965758c228451b372124d791f3b0fbc033aeda) Thanks [@renovate](https://github.com/apps/renovate)! - Update AWS S3 Dependencies to ^3.1113.0
+
+- [#1625](https://github.com/withstudiocms/studiocms/pull/1625) [`8f953e8`](https://github.com/withstudiocms/studiocms/commit/8f953e8c2d6cdc037c09a06eee684083c3a82ff3) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Correct jsdocs note about which endpoints require authorization.
+
+## 0.3.1
+
+### Patch Changes
+
+- [#1468](https://github.com/withstudiocms/studiocms/pull/1468) [`42c47d9`](https://github.com/withstudiocms/studiocms/commit/42c47d9dd3557c65fbbba632e630b10b9f6a5007) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Fixes missing awaits in the Storage Manager
+
+## 0.3.0
+
+### Minor Changes
+
+- [#1322](https://github.com/withstudiocms/studiocms/pull/1322) [`0ae47b0`](https://github.com/withstudiocms/studiocms/commit/0ae47b06a4ff03ed9cdf01b136e1a50f4c8c4add) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Update Plugin hooks to align with new schemas
+
+- [#1448](https://github.com/withstudiocms/studiocms/pull/1448) [`35a1984`](https://github.com/withstudiocms/studiocms/commit/35a19845b30b6eed5b1273a40d99d9b405eeab9f) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Removes deprecated studiocmsMinimumVersion variable from plugin config
+
+### Patch Changes
+
+- [#1297](https://github.com/withstudiocms/studiocms/pull/1297) [`a560f7b`](https://github.com/withstudiocms/studiocms/commit/a560f7b3821e762e5e2b3c361a50fa3c63d12345) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update aws s3 dependencies to ^3.985.0
+
+- [#1406](https://github.com/withstudiocms/studiocms/pull/1406) [`1d9f304`](https://github.com/withstudiocms/studiocms/commit/1d9f304658556f221838ae65bba432dfed998cb2) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update aws s3 dependencies to ^3.999.0
+
+- [#1455](https://github.com/withstudiocms/studiocms/pull/1455) [`af7d1c3`](https://github.com/withstudiocms/studiocms/commit/af7d1c3fdfc86981d0e4657cfc527de0f3078da9) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update aws s3 dependencies to ^3.1003.0
+
+## 0.2.1
+
+### Patch Changes
+
+- [#1239](https://github.com/withstudiocms/studiocms/pull/1239) [`07cf030`](https://github.com/withstudiocms/studiocms/commit/07cf030414191a843e323e0cb6c70936014d9487) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update aws s3 dependencies to ^3.975.0
+
+- [#1263](https://github.com/withstudiocms/studiocms/pull/1263) [`a4f3c66`](https://github.com/withstudiocms/studiocms/commit/a4f3c66a8b7469538882b7fd47a41f6424ab0da4) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update aws s3 dependencies to ^3.978.0
+
+## 0.2.0
+
+### Minor Changes
+
+- [#1197](https://github.com/withstudiocms/studiocms/pull/1197) [`4b542ec`](https://github.com/withstudiocms/studiocms/commit/4b542eca8934996f7ed9eaf1c9f040305ea5e471) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Tweaks dependencies to prevent weird dep issues
+
+### Patch Changes
+
+- [#1211](https://github.com/withstudiocms/studiocms/pull/1211) [`b269e44`](https://github.com/withstudiocms/studiocms/commit/b269e44d68c8fd0da8eb3147c75b7d1cc899580d) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Adds regex and proper error handling to prevent illegal characters (non-url-safe) from being used for S3 objects.
+
+- [#1208](https://github.com/withstudiocms/studiocms/pull/1208) [`0f7b810`](https://github.com/withstudiocms/studiocms/commit/0f7b81012e96ea5d4c6e4fb382411071c83e8011) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update aws s3 dependencies to ^3.970.0
+
+## 0.1.1
+
+### Patch Changes
+
+- [#1186](https://github.com/withstudiocms/studiocms/pull/1186) [`415a512`](https://github.com/withstudiocms/studiocms/commit/415a51241ffddf5045ad8f8d695a5f40a86b5af7) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - fix workspace package dependency specifiers
+
+- Updated dependencies [[`a169a89`](https://github.com/withstudiocms/studiocms/commit/a169a893338947b425e87057cc77401f33abcbfd), [`415a512`](https://github.com/withstudiocms/studiocms/commit/415a51241ffddf5045ad8f8d695a5f40a86b5af7), [`1b2a0c5`](https://github.com/withstudiocms/studiocms/commit/1b2a0c57299544caeba18205ca85a8ca0381d7cb)]:
+  - studiocms@0.1.1
+
+## 0.1.0
+
+### Patch Changes
+
+- [#1125](https://github.com/withstudiocms/studiocms/pull/1125) [`07ba944`](https://github.com/withstudiocms/studiocms/commit/07ba9448dc90cd6c3864db3b7deb1958fff93f0f) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update aws s3 dependencies to ^3.958.0
+
+- [#1157](https://github.com/withstudiocms/studiocms/pull/1157) [`f8a2d34`](https://github.com/withstudiocms/studiocms/commit/f8a2d342cc3c35bf4478bb523bf28d78dd2d0404) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Add effect-language-service diagnostics scripts to all workspace packages
+
+- Updated dependencies [[`25e6fc0`](https://github.com/withstudiocms/studiocms/commit/25e6fc0cca879e77c49c35da5e9a28e582957988), [`0435b82`](https://github.com/withstudiocms/studiocms/commit/0435b82fbc40af767f065a990639b44cfefecf4d), [`e1c3052`](https://github.com/withstudiocms/studiocms/commit/e1c30524e7fd6ed8f7b85874f049d36ffb50afc8), [`3a27939`](https://github.com/withstudiocms/studiocms/commit/3a279390d2688d464fc5476fac0faf2bada2c1fd), [`4b676ca`](https://github.com/withstudiocms/studiocms/commit/4b676ca9fe4a603d036c0d9e680fd5bed997cab2), [`28f0e56`](https://github.com/withstudiocms/studiocms/commit/28f0e5614ae07c3f73b9c9fd102cd9bb8b912ca9), [`96c98c2`](https://github.com/withstudiocms/studiocms/commit/96c98c2e420bf8526611e674f1f58dd3fa2f33a3), [`7c8a684`](https://github.com/withstudiocms/studiocms/commit/7c8a68431f9087d4c3b65b06c76093b462dcddb1), [`36eead9`](https://github.com/withstudiocms/studiocms/commit/36eead9e3b002491f1d3ddd562479b0ea381e2c0), [`9c350ea`](https://github.com/withstudiocms/studiocms/commit/9c350ea47118aa83738ded08b01a2ee3c98875a9), [`3ab68b4`](https://github.com/withstudiocms/studiocms/commit/3ab68b4de1ba2730d5acf16804c5b452fb7fcc43), [`f8a2d34`](https://github.com/withstudiocms/studiocms/commit/f8a2d342cc3c35bf4478bb523bf28d78dd2d0404), [`3cf47d9`](https://github.com/withstudiocms/studiocms/commit/3cf47d90c38c1b70a1378dabe6e72bf4a0ae467c), [`4ece96b`](https://github.com/withstudiocms/studiocms/commit/4ece96bb9b9a3180a2d840dc64ee647371ff693e), [`249b674`](https://github.com/withstudiocms/studiocms/commit/249b67423122c589fd15ea83518837d11c444b11), [`7439f48`](https://github.com/withstudiocms/studiocms/commit/7439f485691f7c95397e2da46f509fa36e55cd48), [`feb85ad`](https://github.com/withstudiocms/studiocms/commit/feb85ada2084e4e83e3dfbb47b89f747a41979a0), [`45b9470`](https://github.com/withstudiocms/studiocms/commit/45b9470867c552e87e5ea1f68e20f5e4386233ff), [`845f147`](https://github.com/withstudiocms/studiocms/commit/845f14732a2d2a76159027b9ed29695f62ebf22c), [`dfa40ff`](https://github.com/withstudiocms/studiocms/commit/dfa40ff0c145ef70c7f8d2bb6bd7aaf467e934d0), [`db2778a`](https://github.com/withstudiocms/studiocms/commit/db2778ae77944a1e8bb362e49215cfefff5223d0), [`d59c4b0`](https://github.com/withstudiocms/studiocms/commit/d59c4b00d44b65bae84315d34fa3b721f9621136), [`d5c77ea`](https://github.com/withstudiocms/studiocms/commit/d5c77eaf352e0ce3d45b0ce761ce6370e5a7a4ff), [`8f53993`](https://github.com/withstudiocms/studiocms/commit/8f539933716b9d3335a13c180e3c607e44a63f8a), [`30de271`](https://github.com/withstudiocms/studiocms/commit/30de271f347a3a997669c8118006143148efb33a), [`e26ff92`](https://github.com/withstudiocms/studiocms/commit/e26ff92c731776156dfdb6830b5ebbccaf05acbf), [`87a5ed0`](https://github.com/withstudiocms/studiocms/commit/87a5ed0fdf3a23b0c743f38a42a814b7d68f496d), [`3af3578`](https://github.com/withstudiocms/studiocms/commit/3af357827ad2ef1f2a7c41b8b4d459ecc743fc69), [`cd865cf`](https://github.com/withstudiocms/studiocms/commit/cd865cf995c3b926900b347ee0782d9ccecc1d4f), [`359e655`](https://github.com/withstudiocms/studiocms/commit/359e65541206e5d10c3fef67666bc883f81e2f85), [`860337f`](https://github.com/withstudiocms/studiocms/commit/860337f73d2c6bb56135f16146c524721600057e), [`80285ec`](https://github.com/withstudiocms/studiocms/commit/80285ecf94078c1f99912fa88bd230a42e106bbd), [`1e85356`](https://github.com/withstudiocms/studiocms/commit/1e8535629363c518549ff3606710ae000245aa8a), [`c36800e`](https://github.com/withstudiocms/studiocms/commit/c36800e5e13173e6d3a030d060774d223892d6e2), [`4a4db87`](https://github.com/withstudiocms/studiocms/commit/4a4db87f755bf9e5f6d46c8daa04a48591395dff)]:
+  - studiocms@0.1.0
+
+## 0.1.0-beta.32
+
+### Patch Changes
+
+- [#1095](https://github.com/withstudiocms/studiocms/pull/1095) [`d6c5c9e`](https://github.com/withstudiocms/studiocms/commit/d6c5c9e93462796b925692ad781eb88519fd4e1e) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update all non-major dependencies to ^3.955.0
+
+- [#1125](https://github.com/withstudiocms/studiocms/pull/1125) [`07ba944`](https://github.com/withstudiocms/studiocms/commit/07ba9448dc90cd6c3864db3b7deb1958fff93f0f) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update aws s3 dependencies to ^3.958.0
+
+- [#1157](https://github.com/withstudiocms/studiocms/pull/1157) [`f8a2d34`](https://github.com/withstudiocms/studiocms/commit/f8a2d342cc3c35bf4478bb523bf28d78dd2d0404) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Add effect-language-service diagnostics scripts to all workspace packages
+
+- [#1086](https://github.com/withstudiocms/studiocms/pull/1086) [`41c06e5`](https://github.com/withstudiocms/studiocms/commit/41c06e5fb86b7a3776d552c8c07bd09cbb6c7a9d) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Introduces new S3 Storage manager plugin
+
+- Updated dependencies [[`25e6fc0`](https://github.com/withstudiocms/studiocms/commit/25e6fc0cca879e77c49c35da5e9a28e582957988), [`0435b82`](https://github.com/withstudiocms/studiocms/commit/0435b82fbc40af767f065a990639b44cfefecf4d), [`e1c3052`](https://github.com/withstudiocms/studiocms/commit/e1c30524e7fd6ed8f7b85874f049d36ffb50afc8), [`3a27939`](https://github.com/withstudiocms/studiocms/commit/3a279390d2688d464fc5476fac0faf2bada2c1fd), [`4b676ca`](https://github.com/withstudiocms/studiocms/commit/4b676ca9fe4a603d036c0d9e680fd5bed997cab2), [`28f0e56`](https://github.com/withstudiocms/studiocms/commit/28f0e5614ae07c3f73b9c9fd102cd9bb8b912ca9), [`96c98c2`](https://github.com/withstudiocms/studiocms/commit/96c98c2e420bf8526611e674f1f58dd3fa2f33a3), [`82af1e3`](https://github.com/withstudiocms/studiocms/commit/82af1e3f0c057e020e40900ab67d4b0c6d9defb5), [`7c8a684`](https://github.com/withstudiocms/studiocms/commit/7c8a68431f9087d4c3b65b06c76093b462dcddb1), [`36eead9`](https://github.com/withstudiocms/studiocms/commit/36eead9e3b002491f1d3ddd562479b0ea381e2c0), [`9c350ea`](https://github.com/withstudiocms/studiocms/commit/9c350ea47118aa83738ded08b01a2ee3c98875a9), [`3ab68b4`](https://github.com/withstudiocms/studiocms/commit/3ab68b4de1ba2730d5acf16804c5b452fb7fcc43), [`546725f`](https://github.com/withstudiocms/studiocms/commit/546725f654050ffe0576451195cc206dfbf25023), [`f8a2d34`](https://github.com/withstudiocms/studiocms/commit/f8a2d342cc3c35bf4478bb523bf28d78dd2d0404), [`3cf47d9`](https://github.com/withstudiocms/studiocms/commit/3cf47d90c38c1b70a1378dabe6e72bf4a0ae467c), [`4ece96b`](https://github.com/withstudiocms/studiocms/commit/4ece96bb9b9a3180a2d840dc64ee647371ff693e), [`249b674`](https://github.com/withstudiocms/studiocms/commit/249b67423122c589fd15ea83518837d11c444b11), [`7439f48`](https://github.com/withstudiocms/studiocms/commit/7439f485691f7c95397e2da46f509fa36e55cd48), [`45b9470`](https://github.com/withstudiocms/studiocms/commit/45b9470867c552e87e5ea1f68e20f5e4386233ff), [`845f147`](https://github.com/withstudiocms/studiocms/commit/845f14732a2d2a76159027b9ed29695f62ebf22c), [`dfa40ff`](https://github.com/withstudiocms/studiocms/commit/dfa40ff0c145ef70c7f8d2bb6bd7aaf467e934d0), [`db2778a`](https://github.com/withstudiocms/studiocms/commit/db2778ae77944a1e8bb362e49215cfefff5223d0), [`d59c4b0`](https://github.com/withstudiocms/studiocms/commit/d59c4b00d44b65bae84315d34fa3b721f9621136), [`d5c77ea`](https://github.com/withstudiocms/studiocms/commit/d5c77eaf352e0ce3d45b0ce761ce6370e5a7a4ff), [`9ef6390`](https://github.com/withstudiocms/studiocms/commit/9ef6390da92b5d4cf26f81ff0eabf08f1210cf96), [`8f53993`](https://github.com/withstudiocms/studiocms/commit/8f539933716b9d3335a13c180e3c607e44a63f8a), [`30de271`](https://github.com/withstudiocms/studiocms/commit/30de271f347a3a997669c8118006143148efb33a), [`e26ff92`](https://github.com/withstudiocms/studiocms/commit/e26ff92c731776156dfdb6830b5ebbccaf05acbf), [`2678e59`](https://github.com/withstudiocms/studiocms/commit/2678e59c80feda82d160bfe35f7c417b807ba864), [`07095e6`](https://github.com/withstudiocms/studiocms/commit/07095e6ca5056f42ca642c6356b5196e9ccb4818), [`87a5ed0`](https://github.com/withstudiocms/studiocms/commit/87a5ed0fdf3a23b0c743f38a42a814b7d68f496d), [`cd865cf`](https://github.com/withstudiocms/studiocms/commit/cd865cf995c3b926900b347ee0782d9ccecc1d4f), [`359e655`](https://github.com/withstudiocms/studiocms/commit/359e65541206e5d10c3fef67666bc883f81e2f85), [`860337f`](https://github.com/withstudiocms/studiocms/commit/860337f73d2c6bb56135f16146c524721600057e), [`64839f3`](https://github.com/withstudiocms/studiocms/commit/64839f3fcbe418feb52f40b0cc3757b357cea957), [`80285ec`](https://github.com/withstudiocms/studiocms/commit/80285ecf94078c1f99912fa88bd230a42e106bbd), [`1e85356`](https://github.com/withstudiocms/studiocms/commit/1e8535629363c518549ff3606710ae000245aa8a), [`c36800e`](https://github.com/withstudiocms/studiocms/commit/c36800e5e13173e6d3a030d060774d223892d6e2), [`4a4db87`](https://github.com/withstudiocms/studiocms/commit/4a4db87f755bf9e5f6d46c8daa04a48591395dff)]:
+  - studiocms@0.1.0-beta.32

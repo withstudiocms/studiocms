@@ -1,0 +1,107 @@
+{
+	"name": "effectify",
+	"version": "0.3.1",
+	"description": "Utility library that bridges Effect-ts with various utilities and projects, such as Astro!",
+	"license": "MIT",
+	"author": {
+		"name": "withstudiocms",
+		"url": "https://studiocms.dev"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/withstudiocms/studiocms.git",
+		"directory": "packages/effectify"
+	},
+	"keywords": [
+		"effect-ts",
+		"effect",
+		"utilities",
+		"web",
+		"withstudiocms"
+	],
+	"homepage": "https://studiocms.dev",
+	"contributors": [
+		"Adammatthiesen",
+		"jdtjenkins",
+		"dreyfus92",
+		"code.spirit"
+	],
+	"type": "module",
+	"publishConfig": {
+		"access": "public",
+		"provenance": true
+	},
+	"sideEffects": false,
+	"files": [
+		"dist",
+		"LICENSE",
+		"CHANGELOG.md",
+		"README.md"
+	],
+	"scripts": {
+		"build": "tsdown --config tsdown.config.ts --clean",
+		"dev": "tsdown --config tsdown.config.ts --no-clean",
+		"test": "vitest",
+		"effect-check": "pnpm effect-language-service diagnostics --project tsconfig.tspc.json",
+		"ci:effect-check": "pnpm effect-check --format github-actions",
+		"typecheck": "tspc -p tsconfig.tspc.json",
+		"update-scalar": "tsx ./scripts/update-scalar.ts",
+		"scratch:fn": "tsx ./scratchpad/functionSchema.ts",
+		"scratch:static": "tsx ./scratchpad/static.ts"
+	},
+	"exports": {
+		"./astro/*": {
+			"types": "./dist/astro/*.d.ts",
+			"default": "./dist/astro/*.js"
+		},
+		"./httpApi": {
+			"types": "./dist/httpApi.d.ts",
+			"default": "./dist/httpApi.js"
+		},
+		"./scalar": {
+			"types": "./dist/scalar.d.ts",
+			"default": "./dist/scalar.js"
+		},
+		"./schemas": {
+			"types": "./dist/schemas.d.ts",
+			"default": "./dist/schemas.js"
+		},
+		"./scrypt": {
+			"types": "./dist/scrypt.d.ts",
+			"default": "./dist/scrypt.js"
+		},
+		"./static": {
+			"types": "./dist/static.d.ts",
+			"default": "./dist/static.js"
+		},
+		"./webHandler": {
+			"types": "./dist/webHandler.d.ts",
+			"default": "./dist/webHandler.js"
+		},
+		"./zod": {
+			"types": "./dist/zod.d.ts",
+			"default": "./dist/zod.js"
+		}
+	},
+	"dependencies": {
+		"@traversable/zod": "^0.0.57"
+	},
+	"devDependencies": {
+		"astro": "catalog:astrojs-current"
+	},
+	"peerDependencies": {
+		"@effect/platform": "catalog:effect",
+		"@effect/platform-node": "catalog:effect",
+		"astro": "catalog:astrojs-min",
+		"effect": "catalog:effect",
+		"zod": "catalog:astrojs-min"
+	},
+	"peerDependenciesMeta": {
+		"astro": {
+			"optional": true
+		},
+		"zod": {
+			"optional": true
+		}
+	}
+}

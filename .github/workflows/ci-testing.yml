@@ -1,0 +1,138 @@
+name: CI - Testing
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+
+concurrency:
+  group: ${{ github.workflow }}-testing-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  typecheck:
+    name: Type Checks
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        cmd: ["withstudiocms", "studiocms", "studiocms-packages"]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Run ${{ matrix.cmd }} TypeCheck
+        uses: ./.github/actions/type-check
+        with:
+          cmd: ${{ matrix.cmd }}
+
+  effect-check:
+    name: Effect Diagnostics
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        cmd: ["withstudiocms", "studiocms", "studiocms-packages"]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Run ${{ matrix.cmd }} Effect Diagnostics
+        uses: ./.github/actions/effect-check
+        with:
+          cmd: ${{ matrix.cmd }}
+
+  vitest-tests:
+    name: Code Coverage & Test Report
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # For Allure GitHub Pages deployment
+      pull-requests: write # For Allure PR comments
+      checks: write # For Allure PR comments
+      id-token: write # For Codecov upload
+    env:
+      NODE_OPTIONS: "--max_old_space_size=4096"
+      NODE_EXTRA_CA_CERTS: /etc/ssl/certs/ca-certificates.crt
+    steps:
+      - name: Check out code using Git
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: true
+
+      - name: Checkout Allure Test history
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: allure/history
+          path: test-history
+          persist-credentials: false
+
+      - name: Install Tools & Dependencies
+        uses: withstudiocms/automations/.github/actions/install@f32588d80ce35d57905264f7fa473b0f6e297c0a # main
+
+      - name: Build packages
+        run: pnpm ci:build
+
+      - name: Run Tests & Code Coverage
+        run: pnpm ci:test
+
+      # Only run on PRs that are from our org (no forks)
+      - name: Report Allure results
+        if: github.event_name == 'pull_request' && startsWith(github.event.pull_request.head.repo.full_name, 'withstudiocms/')
+        uses: allure-framework/allure-action@27ffdeb073d64e24282b71ea82b7d4f989c9caca # v0.10.3
+        with:
+          report-directory: "./allure-report"
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          sections: |
+            new
+            flaky
+
+      # Only upload Allure report results to Github if we are a push to main
+      - name: Upload Allure Report to Github Branch
+        if: github.event_name == 'push'
+        uses: peaceiris/actions-gh-pages@84c30a85c19949d7eee79c4ff27748b70285e453 # v4.1.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: allure/report
+          publish_dir: ./allure-report
+          cname: tests.studiocms.dev
+
+      # Only upload Allure report results to Github if we are a push to main
+      - name: Upload Allure History to Github Branch
+        if: github.event_name == 'push'
+        uses: peaceiris/actions-gh-pages@84c30a85c19949d7eee79c4ff27748b70285e453 # v4.1.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: allure/history
+          publish_dir: ./test-history
+
+      - name: Upload coverage report to Codecov
+        uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7.1.1
+        with:
+          use_oidc: true
+          slug: withstudiocms/studiocms
+          directory: "./coverage/"
+          files: "./coverage-final.json"
+          flags: integrations,plugins,tools-utils
+          report_type: "coverage"
+
+      - name: Upload test results to Codecov
+        uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7.1.1
+        with:
+          use_oidc: true
+          slug: withstudiocms/studiocms
+          files: "./junit-report.xml"
+          flags: integrations,plugins,tools-utils
+          report_type: "test_results"

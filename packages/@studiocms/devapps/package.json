@@ -1,0 +1,78 @@
+{
+  "name": "@studiocms/devapps",
+  "version": "0.4.0",
+  "description": "Devapps for StudioCMS Astro projects, including a WordPress importer.",
+  "author": {
+    "name": "withstudiocms",
+    "url": "https://studiocms.dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/withstudiocms/studiocms.git",
+    "directory": "packages/@studiocms/devapps"
+  },
+  "contributors": [
+    "Adammatthiesen",
+    "jdtjenkins",
+    "dreyfus92",
+    "code.spirit"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "astro",
+    "astro-integration",
+    "studiocms",
+    "withastro",
+    "wordpress",
+    "wordpress-import",
+    "wordpress-importer",
+    "devapp",
+    "astro-devapp",
+    "astro-devtoolbarapp"
+  ],
+  "homepage": "https://studiocms.dev",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "sideEffects": false,
+  "files": [
+    "dist",
+    "assets"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsdown --config tsdown.config.ts --clean",
+    "dev": "tsdown --config tsdown.config.ts --no-clean",
+    "typecheck": "tspc -p tsconfig.tspc.json",
+    "effect-check": "pnpm effect-language-service diagnostics --project tsconfig.tspc.json",
+    "ci:effect-check": "pnpm effect-check --format github-actions",
+    "test": "vitest"
+  },
+  "type": "module",
+  "dependencies": {
+    "@withstudiocms/internal_helpers": "workspace:^",
+    "cheerio": "^1.2.0",
+    "turndown": "^7.2.4",
+    "sanitize-html": "^2.17.7"
+  },
+  "devDependencies": {
+    "@types/turndown": "^5.0.6",
+    "@types/sanitize-html": "^2.16.1",
+    "@withstudiocms/sdk": "workspace:^",
+    "astro": "catalog:studiocms-peerlock",
+    "studiocms": "workspace:^",
+    "typescript": "catalog:",
+    "vite": "catalog:studiocms-peerlock"
+  },
+  "peerDependencies": {
+    "@withstudiocms/kysely": "workspace:^",
+    "@withstudiocms/sdk": "workspace:^",
+    "effect": "catalog:effect"
+  }
+}

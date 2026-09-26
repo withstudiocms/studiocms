@@ -1,0 +1,78 @@
+{
+  "name": "@studiocms/blog",
+  "version": "0.4.1",
+  "description": "Add a blog to your StudioCMS project with ease!",
+  "author": {
+    "name": "withstudiocms",
+    "url": "https://studiocms.dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/withstudiocms/studiocms.git",
+    "directory": "packages/@studiocms/blog"
+  },
+  "contributors": [
+    "Adammatthiesen",
+    "jdtjenkins",
+    "dreyfus92",
+    "code.spirit"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "astro",
+    "astrocms",
+    "astrodb",
+    "astrostudio",
+    "astro-studio",
+    "astro-studiocms",
+    "cms",
+    "studiocms",
+    "blog",
+    "studio-blog",
+    "astro-blog",
+    "astro-studio-blog",
+    "studiocms-blog",
+    "plugin",
+    "studiocms-plugin"
+  ],
+  "homepage": "https://studiocms.dev",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsdown --config tsdown.config.ts --clean",
+    "dev": "tsdown --config tsdown.config.ts --no-clean",
+    "typecheck": "tspc -p tsconfig.tspc.json",
+    "effect-check": "pnpm effect-language-service diagnostics --project tsconfig.tspc.json",
+    "ci:effect-check": "pnpm effect-check --format github-actions",
+    "test": "vitest"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./routes/*": "./dist/routes/*"
+  },
+  "type": "module",
+  "dependencies": {
+    "@astrojs/rss": "catalog:astrojs-current",
+    "@withstudiocms/internal_helpers": "workspace:^"
+  },
+  "devDependencies": {
+    "@studiocms/md": "workspace:^",
+    "@types/node": "catalog:",
+    "astro": "catalog:studiocms-peerlock",
+    "studiocms": "workspace:^",
+    "vite": "catalog:studiocms-peerlock"
+  },
+  "peerDependencies": {
+    "@studiocms/md": "workspace:^",
+    "effect": "catalog:effect"
+  }
+}

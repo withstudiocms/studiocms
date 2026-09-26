@@ -1,0 +1,164 @@
+{
+  "name": "@withstudiocms/internal_helpers",
+  "version": "0.3.1",
+  "description": "Internal helper utilities for StudioCMS",
+  "author": {
+    "name": "withstudiocms",
+    "url": "https://studiocms.dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/withstudiocms/studiocms.git",
+    "directory": "packages/@withstudiocms/internal_helpers"
+  },
+  "contributors": [
+    "Adammatthiesen",
+    "jdtjenkins",
+    "dreyfus92",
+    "code.spirit"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "astro-studiocms",
+    "cms",
+    "studiocms"
+  ],
+  "homepage": "https://studiocms.dev",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsdown --config tsdown.config.ts --clean",
+    "dev": "tsdown --config tsdown.config.ts --no-clean",
+    "test": "vitest",
+    "typecheck": "tspc -p tsconfig.tspc.json"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./utils": {
+      "types": "./dist/utils/index.d.ts",
+      "default": "./dist/utils/index.js"
+    },
+    "./astro-integration": {
+      "types": "./dist/astro-integration/index.d.ts",
+      "default": "./dist/astro-integration/index.js"
+    },
+    "./vite": {
+      "types": "./dist/vite/index.d.ts",
+      "default": "./dist/vite/index.js"
+    },
+    "./pathGenerators": {
+      "types": "./dist/pathGenerators.d.ts",
+      "default": "./dist/pathGenerators.js"
+    },
+    "./urlGenFactory": {
+      "types": "./dist/urlGenFactory.d.ts",
+      "default": "./dist/urlGenFactory.js"
+    },
+    "./headConfigSchema": {
+      "types": "./dist/headConfigSchema.d.ts",
+      "default": "./dist/headConfigSchema.js"
+    },
+    "./pathResolver": {
+      "types": "./dist/pathResolver.d.ts",
+      "default": "./dist/pathResolver.js"
+    },
+    "./toModuleSpecifier": {
+      "types": "./dist/toModuleSpecifier.d.ts",
+      "default": "./dist/toModuleSpecifier.js"
+    },
+    "./debug-info-provider": {
+      "types": "./dist/debug-info-provider.d.ts",
+      "default": "./dist/debug-info-provider.js"
+    },
+    "./cli-providers": {
+      "types": "./dist/cli-providers/index.d.ts",
+      "default": "./dist/cli-providers/index.js"
+    },
+    "./cli-providers/definitions": {
+      "types": "./dist/cli-providers/definitions.d.ts",
+      "default": "./dist/cli-providers/definitions.js"
+    },
+    "./cli-providers/core/*": {
+      "types": "./dist/cli-providers/core/*.d.ts",
+      "default": "./dist/cli-providers/core/*.js"
+    },
+    "./binary": {
+      "types": "./dist/binary/index.d.ts",
+      "default": "./dist/binary/index.js"
+    },
+    "./asn1": {
+      "types": "./dist/asn1/index.d.ts",
+      "default": "./dist/asn1/index.js"
+    },
+    "./encoding": {
+      "types": "./dist/encoding/index.d.ts",
+      "default": "./dist/encoding/index.js"
+    },
+    "./jwt": {
+      "types": "./dist/jwt/index.d.ts",
+      "default": "./dist/jwt/index.js"
+    },
+    "./crypto/ecdsa": {
+      "types": "./dist/crypto/ecdsa/index.d.ts",
+      "default": "./dist/crypto/ecdsa/index.js"
+    },
+    "./crypto/hash": {
+      "types": "./dist/crypto/hash/index.d.ts",
+      "default": "./dist/crypto/hash/index.js"
+    },
+    "./crypto/hmac": {
+      "types": "./dist/crypto/hmac/index.d.ts",
+      "default": "./dist/crypto/hmac/index.js"
+    },
+    "./crypto/random": {
+      "types": "./dist/crypto/random/index.d.ts",
+      "default": "./dist/crypto/random/index.js"
+    },
+    "./crypto/rsa": {
+      "types": "./dist/crypto/rsa/index.d.ts",
+      "default": "./dist/crypto/rsa/index.js"
+    },
+    "./crypto/sha1": {
+      "types": "./dist/crypto/sha1/index.d.ts",
+      "default": "./dist/crypto/sha1/index.js"
+    },
+    "./crypto/sha2": {
+      "types": "./dist/crypto/sha2/index.d.ts",
+      "default": "./dist/crypto/sha2/index.js"
+    },
+    "./crypto/sha3": {
+      "types": "./dist/crypto/sha3/index.d.ts",
+      "default": "./dist/crypto/sha3/index.js"
+    },
+    "./crypto/subtle": {
+      "types": "./dist/crypto/subtle/index.d.ts",
+      "default": "./dist/crypto/subtle/index.js"
+    }
+  },
+  "type": "module",
+  "dependencies": {
+    "mdast-util-from-markdown": "^2.0.3",
+    "mdast-util-to-string": "^4.0.0",
+    "unist-util-visit": "^5.1.0",
+    "tinyexec": "catalog:"
+  },
+  "devDependencies": {
+    "@scure/base": "^2.4.0",
+    "@types/mdast": "catalog:",
+    "@types/node": "catalog:"
+  },
+  "peerDependencies": {
+    "astro": "catalog:studiocms-peerlock",
+    "effect": "catalog:effect",
+    "vite": "catalog:studiocms-peerlock"
+  }
+}
