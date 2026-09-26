@@ -26,7 +26,7 @@ const markdownRemark = (
 	const {
 		injectCSS = defaultIntegrationOptions.injectCSS,
 		components = defaultIntegrationOptions.components,
-		markdownExtended = defaultIntegrationOptions.markdownExtended,
+		markdownConfig = defaultIntegrationOptions.markdownConfig,
 		verbose = defaultIntegrationOptions.verbose,
 	} = opts;
 
@@ -38,8 +38,8 @@ const markdownRemark = (
 	// We store the markdown config and studiocms config in a shared object so that it can be accessed by the virtual components.
 	const calloutTheme =
 		// biome-ignore lint/complexity/useOptionalChain: type of callouts can be false, so we need to check for that before accessing the theme property.
-		markdownExtended.callouts && markdownExtended.callouts.theme
-			? markdownExtended.callouts.theme
+		markdownConfig.studiocms?.callouts && markdownConfig.studiocms.callouts.theme
+			? markdownConfig.studiocms.callouts.theme
 			: 'obsidian';
 
 	// We resolve the callout theme path here so that we can conditionally import it in the virtual CSS module.
@@ -69,7 +69,7 @@ const markdownRemark = (
 					imports: {
 						'studiocms:markdown-remark': `export * from ${resolveModuleSpecifier(virtualComponents)};`,
 						'studiocms:markdown-remark/css': `import ${resolveModuleSpecifier(headingsCSS)}; ${
-							markdownExtended.callouts
+							markdownConfig.studiocms?.callouts
 								? `import ${resolveModuleSpecifier(resolvedCalloutTheme)};`
 								: ''
 						}`,
@@ -109,7 +109,7 @@ const markdownRemark = (
 					messages.forEach((message) => logger.info(message));
 				}
 			},
-			'astro:config:done': ({ config, logger }) => {
+			'astro:config:done': ({ logger }) => {
 				// Log the final configuration for the integration if verbose mode is enabled. This includes the injectCSS option, the user-defined components, and the extended markdown options specific to StudioCMS.
 				if (verbose) {
 					logger.info('Final Markdown Remark configuration:');
@@ -117,13 +117,12 @@ const markdownRemark = (
 					logger.info(
 						`Components: ${Object.keys(components).length > 0 ? Object.keys(components).join(', ') : 'None'}`
 					);
-					logger.info(`Markdown Extended options: ${JSON.stringify(markdownExtended)}`);
+					logger.info(`Markdown options: ${JSON.stringify(markdownConfig)}`);
 				}
 
 				// Store the markdown config and studiocms config in a shared object so that it can be accessed by the virtual components.
 				setSharedConfig({
-					markdownConfig: config.markdown,
-					studiocms: markdownExtended,
+					studiocms: markdownConfig,
 				});
 
 				// Log that the integration has been successfully set up.

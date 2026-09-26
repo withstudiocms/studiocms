@@ -400,9 +400,6 @@ importers:
       '@withstudiocms/internal_helpers':
         specifier: workspace:^
         version: link:../../@withstudiocms/internal_helpers
-      github-slugger:
-        specifier: ^2.0.0
-        version: 2.0.0
       hast-util-from-html:
         specifier: ^2.0.3
         version: 2.0.3
@@ -424,9 +421,6 @@ importers:
       js-yaml:
         specifier: ^5.4.2
         version: 5.4.2
-      mdast-util-definitions:
-        specifier: ^6.0.0
-        version: 6.0.0
       mdast-util-find-and-replace:
         specifier: ^3.0.2
         version: 3.0.2
@@ -470,9 +464,6 @@ importers:
         specifier: catalog:astrojs-min
         version: 8.2.0(@types/node@22.20.1)(esbuild@0.28.1)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1)
     devDependencies:
-      '@types/estree':
-        specifier: ^1.0.9
-        version: 1.0.9
       '@types/hast':
         specifier: ^3.0.5
         version: 3.0.5
@@ -482,15 +473,9 @@ importers:
       '@types/mdast':
         specifier: ^4.0.4
         version: 4.0.4
-      '@types/unist':
-        specifier: ^3.0.3
-        version: 3.0.3
       astro:
         specifier: catalog:astrojs-current
         version: 7.3.5(@types/node@22.20.1)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1)
-      mdast-util-mdx-expression:
-        specifier: ^2.0.1
-        version: 2.0.1
 
   packages/@studiocms/md:
     dependencies:
@@ -5726,9 +5711,6 @@ packages:
 
   md5@2.3.0:
     resolution: {integrity: sha512-T1GITYmFaKuO91vxyoQMFETst+O71VUPEU3ze5GNzDm0OWdP8v1ziTaAEPUr/3kLsY3Sftgz242A1SetQiDL7g==}
-
-  mdast-util-definitions@6.0.0:
-    resolution: {integrity: sha512-scTllyX6pnYNZH/AIp/0ePz6s4cZtARxImwoPJ7kS42n+MnVsI4XbnG6d4ibehRIldYMWM2LD7ImQblVhUejVQ==}
 
   mdast-util-find-and-replace@3.0.2:
     resolution: {integrity: sha512-Tmd1Vg/m3Xz43afeNxDIhWRtFZgM2VLyaf4vSTYwudTyeuTneoL3qtWMA5jeLyz/O1vDJmmV4QuScFCA2tBPwg==}
@@ -12082,12 +12064,6 @@ snapshots:
       charenc: 0.0.2
       crypt: 0.0.2
       is-buffer: 1.1.6
-
-  mdast-util-definitions@6.0.0:
-    dependencies:
-      '@types/mdast': 4.0.4
-      '@types/unist': 3.0.3
-      unist-util-visit: 5.1.0
 
   mdast-util-find-and-replace@3.0.2:
     dependencies:

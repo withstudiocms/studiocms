@@ -1,8 +1,9 @@
 /** biome-ignore-all lint/suspicious/noExplicitAny: Any is the return type of the Astro component */
+
+import type { MarkdownProcessorRenderOptions } from '@withstudiocms/internal_helpers/markdown';
 import type { SSRResult } from 'astro';
 import { HTMLString, renderSlot } from 'astro/runtime/server/index.js';
 import { createMarkdownProcessor } from '../../core/index.ts';
-import type { MarkdownProcessorRenderOptions } from '../../types.ts';
 import { importComponentsKeys } from '../runtime.ts';
 import { getMDConfig } from '../shared.ts';
 import { createComponentProxy, mergeRecords, transformHTML } from '../utils.ts';
@@ -43,14 +44,13 @@ export async function render(
 		);
 	}
 
-	const { code, metadata } = await processor.render(content, options);
+	const { code } = await processor.render(content, options);
 
 	const html = await transformHTML(code, componentsRendered);
 
 	return {
 		html: new HTMLString(html),
 		code: html,
-		meta: metadata,
 	};
 }
 

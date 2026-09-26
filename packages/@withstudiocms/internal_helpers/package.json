@@ -79,6 +79,10 @@
       "types": "./dist/debug-info-provider.d.ts",
       "default": "./dist/debug-info-provider.js"
     },
+    "./markdown": {
+      "types": "./dist/markdown.d.ts",
+      "default": "./dist/markdown.js"
+    },
     "./cli-providers": {
       "types": "./dist/cli-providers/index.d.ts",
       "default": "./dist/cli-providers/index.js"

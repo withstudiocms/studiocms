@@ -159,10 +159,8 @@ describe(parentSuiteName, () => {
 				// Verify the shared context was updated
 				const { shared } = await import('../src/lib/shared.js');
 				await ctx.parameter('sharedMdConfig', JSON.stringify(shared.mdConfig));
-				await ctx.parameter('sharedAstroMDRemark', JSON.stringify(shared.astroMDRemark));
 
 				expect(shared.mdConfig).toEqual(customOptions);
-				expect(shared.astroMDRemark).toEqual(mockConfig.markdown);
 			}
 		);
 	});

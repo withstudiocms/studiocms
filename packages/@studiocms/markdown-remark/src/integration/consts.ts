@@ -7,6 +7,6 @@ import type { StudioCMSMarkdownRemarkIntegrationConfig } from '../types.ts';
 export const defaultIntegrationOptions: StudioCMSMarkdownRemarkIntegrationConfig = {
 	injectCSS: true,
 	components: {},
-	markdownExtended: markdownConfigDefaults.studiocms,
+	markdownConfig: markdownConfigDefaults,
 	verbose: false,
 };

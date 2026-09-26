@@ -1,5 +1,5 @@
 import { createMarkdownProcessor as createStudioCMSMD } from '@studiocms/markdown-remark/core';
-import type { StudioCMSMarkdownProcessorOptions } from '@studiocms/markdown-remark/types';
+import type { StudioCMSMarkdownOptions } from '@studiocms/markdown-remark/types';
 import { shared } from './shared.js';
 
 export function parseCallouts(opt: false | 'obsidian' | 'github' | 'vitepress' | undefined) {
@@ -10,7 +10,7 @@ export function parseCallouts(opt: false | 'obsidian' | 'github' | 'vitepress' |
 	};
 }
 
-const parseStudioCMSMDOpts = (): StudioCMSMarkdownProcessorOptions['studiocms'] => {
+const parseStudioCMSMDOpts = (): StudioCMSMarkdownOptions['studiocms'] => {
 	return {
 		autolink: shared.mdConfig?.autoLinkHeadings,
 		discordSubtext: shared.mdConfig?.discordSubtext,

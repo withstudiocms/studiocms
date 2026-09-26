@@ -1,8 +1,4 @@
-import type {
-	AstroMarkdownConfig,
-	StudioCMSMarkdownExtendedOptions,
-	StudioCMSMarkdownProcessorOptions,
-} from '../types.ts';
+import type { StudioCMSMarkdownOptions } from '../types.ts';
 
 /**
  * Interface representing shared configuration for markdown.
@@ -12,8 +8,7 @@ import type {
  * @property {StudioCMSMarkdownExtendedOptions} studiocms - The extended markdown options specific to StudioCMS.
  */
 export interface Shared {
-	markdownConfig: AstroMarkdownConfig;
-	studiocms: StudioCMSMarkdownExtendedOptions;
+	studiocms: StudioCMSMarkdownOptions;
 }
 
 /**
@@ -40,24 +35,21 @@ export const shared: Shared =
 	globalThis[symbol] ||
 	// @ts-expect-error
 	(globalThis[symbol] = {
-		markdownConfig: {},
 		studiocms: {},
 	});
 
 /**
  * Sets the shared configuration for markdown processing.
  */
-export const setSharedConfig = ({ markdownConfig, studiocms }: Shared) => {
-	shared.markdownConfig = markdownConfig;
+export const setSharedConfig = ({ studiocms }: Shared) => {
 	shared.studiocms = studiocms;
 };
 
 /**
  * Retrieves the complete markdown configuration for the StudioCMS Markdown Remark integration. This function combines the base markdown configuration from Astro with the extended options specific to StudioCMS, providing a comprehensive configuration object that can be used throughout the integration.
  *
- * @returns {StudioCMSMarkdownProcessorOptions} The complete markdown configuration for the integration, including both the base Astro markdown options and the extended StudioCMS options.
+ * @returns {StudioCMSMarkdownOptions} The complete markdown configuration for the integration, including both the base Astro markdown options and the extended StudioCMS options.
  */
-export const getMDConfig = (): StudioCMSMarkdownProcessorOptions => ({
-	...shared.markdownConfig,
-	studiocms: shared.studiocms,
+export const getMDConfig = (): StudioCMSMarkdownOptions => ({
+	...shared.studiocms,
 });
