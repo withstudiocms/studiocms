@@ -258,8 +258,6 @@
 		"effectify": "workspace:^",
 		"fuse.js": "^7.5.0",
 		"jose": "^6.2.12",
-		"micromark": "^4.0.2",
-		"micromark-extension-gfm": "^3.0.0",
 		"magicast": "^0.5.5",
 		"mdast-util-to-markdown": "^2.1.2",
 		"mrmime": "^2.0.1",
@@ -269,7 +267,8 @@
 		"three": "0.170.0",
 		"tinyglobby": "catalog:",
 		"ultrahtml": "catalog:",
-		"web-vitals": "^6.2.2"
+		"web-vitals": "^6.2.2",
+		"satteri": "catalog:"
 	},
 	"devDependencies": {
 		"@types/mdast": "^4.0.4",
