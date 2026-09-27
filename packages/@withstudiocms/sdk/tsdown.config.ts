@@ -1,11 +1,11 @@
 import { defineConfig } from 'tsdown';
-import { sharedConfig } from '../../../tsdown.shared.ts';
+import { noBundleConfig, sharedConfig } from '../../../tsdown.shared.ts';
 
 export default defineConfig({
 	...sharedConfig,
+	...noBundleConfig,
 	entry: 'src/**/*.ts',
-	unbundle: true,
 	dts: {
-		build: false, // We use tsc for .d.ts generation to avoid type collapsing issues with complex types
+		resolver: 'tsc',
 	},
 });
