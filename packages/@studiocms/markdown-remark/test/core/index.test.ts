@@ -1,7 +1,7 @@
+import type { MarkdownProcessor } from '@withstudiocms/internal_helpers/markdown';
 import * as allure from 'allure-js-commons';
 import { beforeAll, describe, expect, test } from 'vitest';
 import { createMarkdownProcessor, markdownConfigDefaults } from '../../src/core/index.js';
-import type { MarkdownProcessor } from '../../src/types.js';
 import { parentSuiteName, sharedTags } from '../test-utils.js';
 
 const localSuiteName = 'createMarkdownProcessor Tests';

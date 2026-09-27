@@ -1,4 +1,3 @@
-import type { AstroConfig } from 'astro';
 import type { MarkdownSchemaOptions } from '../types.js';
 
 export const symbol: symbol = Symbol.for('@studiocms/md');
@@ -14,8 +13,6 @@ export const symbol: symbol = Symbol.for('@studiocms/md');
  */
 export const shared: {
 	mdConfig?: MarkdownSchemaOptions | undefined;
-	// TODO: Astro has deprecated/changed these options... we should change this to be part of just the mdConfig instead now.
-	astroMDRemark?: AstroConfig['markdown'] | undefined;
 } =
 	// @ts-expect-error
 	globalThis[symbol] ||

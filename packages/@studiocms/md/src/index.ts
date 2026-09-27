@@ -68,10 +68,9 @@ export function internalMarkdownIntegration(options: MarkdownSchemaOptions = {})
 				// Inject the StudioCMS-specific styles for the markdown renderer
 				params.injectScript('page-ssr', `import "studiocms:md/styles";`);
 			},
-			'astro:config:done': ({ config }) => {
+			'astro:config:done': () => {
 				// Store the resolved options in the shared context for the renderer
 				shared.mdConfig = resolvedOptions;
-				shared.astroMDRemark = config.markdown;
 			},
 		},
 	};
