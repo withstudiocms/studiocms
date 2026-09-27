@@ -28,7 +28,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsdown --config tsdown.config.ts --clean",
+    "build": "tsdown --config tsdown.config.ts --clean && tsc --emitDeclarationOnly --declaration",
     "dev": "tsdown --config tsdown.config.ts --no-clean",
     "typecheck": "tspc -p tsconfig.tspc.json",
     "effect-check": "pnpm effect-language-service diagnostics --project tsconfig.tspc.json",
