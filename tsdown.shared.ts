@@ -51,6 +51,7 @@ export const virtualModuleFix: UserConfig = {
  * It is useful when working with external libraries or modules that should remain separate from the main bundle.
  */
 export const noBundleConfig: UserConfig = {
+	unbundle: true,
 	deps: {
 		neverBundle: true,
 	},
