@@ -99,7 +99,6 @@ We have an active community of developers on the StudioCMS [Discord Server](http
 
 ## Sponsors
 
-<a href="https://tur.so/studiocms" rel="sponsored" target="_blank"><img src="https://turso.tech/logokit/turso-logo-illustrated.svg" width="400px" alt="Turso logo" /></a>
 <a href="https://www.skip2.net/?utm_source=studiocms" rel="sponsored" target="_blank"><img src="https://www.skip2.net/images/logo.svg" width="400px" alt="Skip2 logo" /></a>
 
 ## Licensing

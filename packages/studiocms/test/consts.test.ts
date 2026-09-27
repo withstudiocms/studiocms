@@ -16,7 +16,6 @@ import {
 	Next_NotificationSettingsId,
 	Next_SiteConfigId,
 	NotificationSettingsDefaults,
-	routesDir,
 	STUDIOCMS_CDN_URL,
 	STUDIOCMS_EDITOR_CSRF_COOKIE_NAME,
 	STUDIOCMS_THEME_COLOR,
@@ -76,61 +75,6 @@ describe(parentSuiteName, () => {
 			name: 'currentRESTAPIVersions',
 			actual: currentRESTAPIVersions[0],
 			expected: 'v1',
-		},
-		{
-			name: 'routesDir.fts',
-			actual: routesDir.fts('setup'),
-			expected: 'studiocms/src/routes/firstTimeSetupRoutes/setup',
-		},
-		{
-			name: 'routesDir.dashRoute',
-			actual: routesDir.dashRoute('main'),
-			expected: 'studiocms/src/routes/dashboard/main',
-		},
-		{
-			name: 'routesDir.errors',
-			actual: routesDir.errors('404'),
-			expected: 'studiocms/src/routes/error-pages/404',
-		},
-		{
-			name: 'routesDir.authPage',
-			actual: routesDir.authPage('login'),
-			expected: 'studiocms/src/routes/auth/login',
-		},
-		{
-			name: 'routesDir.dashApi',
-			actual: routesDir.dashApi('stats'),
-			expected: 'studiocms/src/routes/api/dashboard/stats',
-		},
-		{
-			name: 'routesDir.authAPI',
-			actual: routesDir.authAPI('callback'),
-			expected: 'studiocms/src/routes/api/auth/callback',
-		},
-		{
-			name: 'routesDir.api',
-			actual: routesDir.api('misc'),
-			expected: 'studiocms/src/routes/api/misc',
-		},
-		{
-			name: 'routesDir.sdk',
-			actual: routesDir.sdk('client'),
-			expected: 'studiocms/src/routes/api/sdk/client',
-		},
-		{
-			name: 'routesDir.mailer',
-			actual: routesDir.mailer('send'),
-			expected: 'studiocms/src/routes/api/mailer/send',
-		},
-		{
-			name: 'routesDir.v1Rest',
-			actual: routesDir.v1Rest('users'),
-			expected: 'studiocms/src/routes/api/rest/v1/users',
-		},
-		{
-			name: 'routesDir.middleware',
-			actual: routesDir.middleware('auth'),
-			expected: 'studiocms/src/middleware/auth',
 		},
 		{
 			name: 'studioCMSSocials.github',
