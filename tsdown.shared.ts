@@ -11,7 +11,6 @@ export const sharedConfig: UserConfig = {
 	checks: {
 		pluginTimings: false,
 	},
-	treeshake: true,
 	outExtensions: () => ({
 		js: '.js',
 		dts: '.d.ts',
