@@ -72,9 +72,12 @@ export class ValidatePlugins extends Effect.Service<ValidatePlugins>()('Validate
 
 					const resolvedScope = pkgType === 'first-party' ? '@studiocms' : scope;
 					const packageName = `${resolvedScope ? `${resolvedScope}/` : ''}${name}`;
+					const subpathSpecifier = subpath
+						? `${packageName}/${subpath.replace(/^\.\//, '')}`
+						: undefined;
 					const importPath =
-						subpath && OAUTH_ALIAS_SPECIFIERS.has(plugin)
-							? `${packageName}/${subpath.replace(/^\.\//, '')}`
+						subpathSpecifier && OAUTH_ALIAS_SPECIFIERS.has(subpathSpecifier)
+							? subpathSpecifier
 							: packageName;
 					const pluginName = importPath;
 					const dependencies: PluginInfo['dependencies'] = [[pkgJson.name, `^${pkgJson.version}`]];
