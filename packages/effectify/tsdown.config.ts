@@ -1,8 +1,8 @@
 import { defineConfig } from 'tsdown';
-import { sharedConfig } from '../../tsdown.shared.ts';
+import { noBundleConfig, sharedConfig } from '../../tsdown.shared.ts';
 
 export default defineConfig({
 	...sharedConfig,
+	...noBundleConfig,
 	entry: 'src/**/*.ts',
-	unbundle: true,
 });

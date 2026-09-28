@@ -79,6 +79,7 @@
     "@changesets/cli",
     "@changesets/config",
     "@changesets/write",
-    "tsdown"
+    "tsdown",
+    "@tsdown/css"
   ]
 }
