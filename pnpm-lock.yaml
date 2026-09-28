@@ -1358,7 +1358,7 @@ importers:
         specifier: ^0.4.0
         version: link:../../packages/@studiocms/md
       astro:
-        specifier: ^7.3.3
+        specifier: ^7.3.5
         version: 7.3.5(@types/node@22.20.1)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1)
       effect:
         specifier: ^3.22.2
