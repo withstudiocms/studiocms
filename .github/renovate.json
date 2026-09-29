@@ -78,7 +78,6 @@
     "@changesets/changelog-github",
     "@changesets/cli",
     "@changesets/config",
-    "@changesets/write",
-    "tsdown"
+    "@changesets/write"
   ]
 }

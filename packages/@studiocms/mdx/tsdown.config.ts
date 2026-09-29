@@ -1,24 +1,9 @@
 import { defineConfig } from 'tsdown';
-import { sharedConfig } from '../../../tsdown.shared.ts';
+import { noBundleConfig, sharedConfig, virtualModuleFix } from '../../../tsdown.shared.ts';
 
 export default defineConfig({
 	...sharedConfig,
+	...virtualModuleFix,
+	...noBundleConfig,
 	entry: 'src/**/*.ts',
-	unbundle: true,
-	deps: {
-		neverBundle: [/^astro:/, /^studiocms/, /^ultrahtml/],
-		skipNodeModulesBundle: true,
-	},
-	copy: [
-		{
-			from: 'src/**/*.astro',
-			to: 'dist',
-			flatten: false,
-		},
-		{
-			from: 'src/**/*.d.ts',
-			to: 'dist',
-			flatten: false,
-		},
-	],
 });

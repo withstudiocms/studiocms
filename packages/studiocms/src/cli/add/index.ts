@@ -15,18 +15,28 @@ import { TryToInstallPlugins } from './tryToInstallPlugins.js';
 import { UpdateStudioCMSConfig } from './updateStudioCMSConfig.js';
 import { ValidatePlugins } from './validatePlugins.js';
 
-export const ALIASES = new Map([
-	['auth0', '@studiocms/auth0'],
+// The following are the known oauth plugins that are exported from the `@studiocms/oauth` package.
+// These are exported as `@studiocms/oauth/<provider>` and are not available as standalone packages.
+export const OAUTH_PLUGINS = ['auth0', 'discord', 'github', 'google'];
+
+const OAUTH_ALIASES = OAUTH_PLUGINS.map(
+	(provider) => [provider, `@studiocms/oauth/${provider}`] as const
+);
+
+// Only these specifiers have their subpath preserved in the generated import.
+export const OAUTH_ALIAS_SPECIFIERS = new Set<string>(
+	OAUTH_ALIASES.map(([, specifier]) => specifier)
+);
+
+export const ALIASES = new Map<string, string>([
 	['blog', '@studiocms/blog'],
 	['cloudinary', '@studiocms/cloudinary-image-service'],
-	['discord', '@studiocms/discord'],
-	['github', '@studiocms/github'],
-	['google', '@studiocms/google'],
 	['html', '@studiocms/html'],
 	['markdoc', '@studiocms/markdoc'],
 	['md', '@studiocms/md'],
 	['mdx', '@studiocms/mdx'],
 	['wysiwyg', '@studiocms/wysiwyg'],
+	...OAUTH_ALIASES,
 ]);
 
 export const StudioCMSScopes = ['@studiocms', '@withstudiocms'];
@@ -34,6 +44,7 @@ export const StudioCMSScopes = ['@studiocms', '@withstudiocms'];
 export interface PluginInfo {
 	id: string;
 	packageName: string;
+	importPath: string;
 	pluginName: string;
 	dependencies: [name: string, version: string][];
 }
@@ -136,11 +147,20 @@ const loadConfigModule = (configURL: URL, validatedPlugins: PluginInfo[]) =>
 			const config = getDefaultExportOptions(mod);
 			const pluginId = toIdent(plugin.id);
 
-			if (!mod.imports.$items.some((imp) => imp.local === pluginId)) {
+			const existingImport = mod.imports.$items.find((imp) => imp.local === pluginId);
+
+			if (existingImport && existingImport.from !== plugin.importPath) {
+				yield* Console.warn(
+					`Skipping ${plugin.id}: "${pluginId}" is already imported from "${existingImport.from}".`
+				);
+				continue;
+			}
+
+			if (!existingImport) {
 				mod.imports.$append({
 					imported: 'default',
 					local: pluginId,
-					from: plugin.packageName,
+					from: plugin.importPath,
 				});
 			}
 

@@ -1,7 +1,7 @@
 import { styleText } from 'node:util';
 import { askToContinue, spinner } from '@withstudiocms/effect/clack';
 import { Effect, genLogger } from '../../effect.js';
-import { type PluginInfo, StudioCMSScopes } from './index.js';
+import { OAUTH_ALIAS_SPECIFIERS, type PluginInfo, StudioCMSScopes } from './index.js';
 import { fetchPackageJson, parsePluginName } from './npm-utils.js';
 
 export class ValidatePlugins extends Effect.Service<ValidatePlugins>()('ValidatePlugins', {
@@ -22,7 +22,7 @@ export class ValidatePlugins extends Effect.Service<ValidatePlugins>()('Validate
 							`${styleText('bold', plugin)} does not appear to be a valid package name!`
 						);
 
-					const { scope, name, tag } = parsed;
+					const { scope, name, tag, subpath } = parsed;
 
 					// biome-ignore lint/suspicious/noExplicitAny: this is a valid use case for explicit any
 					let pkgJson: any = {};
@@ -72,7 +72,14 @@ export class ValidatePlugins extends Effect.Service<ValidatePlugins>()('Validate
 
 					const resolvedScope = pkgType === 'first-party' ? '@studiocms' : scope;
 					const packageName = `${resolvedScope ? `${resolvedScope}/` : ''}${name}`;
-					const pluginName = packageName;
+					const subpathSpecifier = subpath
+						? `${packageName}/${subpath.replace(/^\.\//, '')}`
+						: undefined;
+					const importPath =
+						subpathSpecifier && OAUTH_ALIAS_SPECIFIERS.has(subpathSpecifier)
+							? subpathSpecifier
+							: packageName;
+					const pluginName = importPath;
 					const dependencies: PluginInfo['dependencies'] = [[pkgJson.name, `^${pkgJson.version}`]];
 
 					if (pkgJson.peerDependencies) {
@@ -96,6 +103,7 @@ export class ValidatePlugins extends Effect.Service<ValidatePlugins>()('Validate
 					entries.push({
 						id: plugin,
 						packageName,
+						importPath,
 						dependencies,
 						pluginName,
 					});

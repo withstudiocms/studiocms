@@ -93,10 +93,11 @@
     "@changesets/cli": "^2.31.1",
     "@changesets/config": "^3.1.4",
     "@changesets/write": "^0.4.0",
-    "@crowdin/crowdin-api-client": "^1.57.0",
-    "@dotenvx/dotenvx": "^2.28.2",
+    "@crowdin/crowdin-api-client": "^1.58.0",
+    "@dotenvx/dotenvx": "^2.30.0",
     "@effect/language-service": "^0.87.2",
     "@effect/vitest": "^0.30.0",
+    "@tsdown/css": "catalog:",
     "@types/node": "catalog:",
     "@vitest/coverage-v8": "^3.2.4",
     "@withstudiocms/buildkit": "workspace:^",
@@ -104,7 +105,7 @@
     "allure-js-commons": "^3.12.2",
     "allure-vitest": "^3.12.2",
     "execa": "^10.0.1",
-    "knip": "^6.37.0",
+    "knip": "^6.38.0",
     "pkg-pr-new": "^0.0.88",
     "publint": "^0.3.24",
     "studiocms": "workspace:^",
@@ -114,6 +115,6 @@
     "tsdown": "catalog:",
     "vite": "catalog:astrojs-current",
     "vitest": "^3.2.4",
-    "jsdom": "^30.1.0"
+    "jsdom": "^30.1.1"
   }
 }
