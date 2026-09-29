@@ -1,5 +1,13 @@
 # @studiocms/html
 
+## 0.4.2
+
+### Patch Changes
+
+- [#1754](https://github.com/withstudiocms/studiocms/pull/1754) [`733f638`](https://github.com/withstudiocms/studiocms/commit/733f638fb0adae5f99f69790d70d4eea443afcdb) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Updates tsdown configs to prepare for 0.23.0 upgrade/migration
+
+- [#1765](https://github.com/withstudiocms/studiocms/pull/1765) [`f456f43`](https://github.com/withstudiocms/studiocms/commit/f456f4368b91493134bfb90356ed98f3e79cd617) Thanks [@renovate](https://github.com/apps/renovate)! - Update dependency katex to ^0.18.9
+
 ## 0.4.1
 
 ### Patch Changes
