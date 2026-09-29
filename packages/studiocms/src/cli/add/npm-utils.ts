@@ -150,6 +150,7 @@ export const parsePluginName = (spec: string) =>
 	genLogger('studiocms/cli/add/npm-utils.parsePluginName')(function* () {
 		const result = yield* parseNpmName(spec);
 		if (!result) return;
+		const { subpath } = result;
 		let { scope, name } = result;
 		let tag = 'latest';
 		if (scope) {
@@ -162,5 +163,5 @@ export const parsePluginName = (spec: string) =>
 		}
 		// Basic validation to ensure we have a non-empty name
 		if (!name) return undefined;
-		return { scope, name, tag };
+		return { scope, name, tag, subpath };
 	});
