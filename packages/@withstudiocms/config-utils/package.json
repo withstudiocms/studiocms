@@ -1,6 +1,6 @@
 {
   "name": "@withstudiocms/config-utils",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Utilities for managing configuration files",
   "author": {
     "name": "withstudiocms",

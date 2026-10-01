@@ -1,5 +1,13 @@
 # @withstudiocms/cli-kit
 
+## 0.3.2
+
+### Patch Changes
+
+- [#1754](https://github.com/withstudiocms/studiocms/pull/1754) [`733f638`](https://github.com/withstudiocms/studiocms/commit/733f638fb0adae5f99f69790d70d4eea443afcdb) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Updates tsdown configs to prepare for 0.23.0 upgrade/migration
+
+- [#1767](https://github.com/withstudiocms/studiocms/pull/1767) [`ff86121`](https://github.com/withstudiocms/studiocms/commit/ff86121611c7e159c8cf08c535d86be098a7e6e2) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Update boxen to `9.0.0`
+
 ## 0.3.1
 
 ### Patch Changes

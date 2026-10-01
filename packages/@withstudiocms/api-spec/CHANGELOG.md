@@ -1,5 +1,15 @@
 # @withstudiocms/api-spec
 
+## 0.4.1
+
+### Patch Changes
+
+- [#1754](https://github.com/withstudiocms/studiocms/pull/1754) [`733f638`](https://github.com/withstudiocms/studiocms/commit/733f638fb0adae5f99f69790d70d4eea443afcdb) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Updates tsdown configs to prepare for 0.23.0 upgrade/migration
+
+- Updated dependencies [[`733f638`](https://github.com/withstudiocms/studiocms/commit/733f638fb0adae5f99f69790d70d4eea443afcdb)]:
+  - @withstudiocms/sdk@0.4.2
+  - effectify@0.3.2
+
 ## 0.4.0
 
 ### Minor Changes

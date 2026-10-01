@@ -1,5 +1,18 @@
 # @studiocms/markdown-remark
 
+## 1.6.0
+
+### Minor Changes
+
+- [#1751](https://github.com/withstudiocms/studiocms/pull/1751) [`68d2808`](https://github.com/withstudiocms/studiocms/commit/68d2808255ca88b138596ef66214313dc4b08521) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Reworks Markdown remark package to simplify and update to conform with newer Astro versions. Also updates associated packages.
+
+### Patch Changes
+
+- [#1754](https://github.com/withstudiocms/studiocms/pull/1754) [`733f638`](https://github.com/withstudiocms/studiocms/commit/733f638fb0adae5f99f69790d70d4eea443afcdb) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Updates tsdown configs to prepare for 0.23.0 upgrade/migration
+
+- Updated dependencies [[`733f638`](https://github.com/withstudiocms/studiocms/commit/733f638fb0adae5f99f69790d70d4eea443afcdb), [`68d2808`](https://github.com/withstudiocms/studiocms/commit/68d2808255ca88b138596ef66214313dc4b08521)]:
+  - @withstudiocms/internal_helpers@0.4.0
+
 ## 1.5.0
 
 ### Minor Changes

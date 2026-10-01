@@ -1,5 +1,32 @@
 # studiocms
 
+## 0.6.1
+
+### Patch Changes
+
+- [#1764](https://github.com/withstudiocms/studiocms/pull/1764) [`704c20e`](https://github.com/withstudiocms/studiocms/commit/704c20ebe4a91b0d50ce83f7fa34bfa3625ffcd4) Thanks [@renovate](https://github.com/apps/renovate)! - Update dependency dompurify to ^3.4.16
+
+- [#1750](https://github.com/withstudiocms/studiocms/pull/1750) [`4d88af3`](https://github.com/withstudiocms/studiocms/commit/4d88af342f546cc74b814fcafffd7ca322c4dc1d) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Removes old deprecated and unused code
+
+- [#1767](https://github.com/withstudiocms/studiocms/pull/1767) [`ff86121`](https://github.com/withstudiocms/studiocms/commit/ff86121611c7e159c8cf08c535d86be098a7e6e2) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Update boxen to `9.0.0`
+
+- [#1768](https://github.com/withstudiocms/studiocms/pull/1768) [`e2d66f3`](https://github.com/withstudiocms/studiocms/commit/e2d66f30ed6b91d80f9a0d045595bf39ddc67edc) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Fix: Updates `studiocms add` command to work properly for new oauth plugin setup.
+
+- [#1752](https://github.com/withstudiocms/studiocms/pull/1752) [`c71ef45`](https://github.com/withstudiocms/studiocms/commit/c71ef45443c3e0d57a8e569c2ad51efd3cf2bafc) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Updates README sponsor section
+
+- Updated dependencies [[`733f638`](https://github.com/withstudiocms/studiocms/commit/733f638fb0adae5f99f69790d70d4eea443afcdb), [`68d2808`](https://github.com/withstudiocms/studiocms/commit/68d2808255ca88b138596ef66214313dc4b08521), [`ff86121`](https://github.com/withstudiocms/studiocms/commit/ff86121611c7e159c8cf08c535d86be098a7e6e2)]:
+  - @withstudiocms/kysely@0.3.1
+  - @withstudiocms/sdk@0.4.2
+  - @withstudiocms/api-spec@0.4.1
+  - @withstudiocms/auth-kit@0.2.1
+  - @withstudiocms/cli-kit@0.3.2
+  - @withstudiocms/component-registry@0.2.1
+  - @withstudiocms/config-utils@0.3.1
+  - @withstudiocms/effect@0.5.2
+  - @withstudiocms/internal_helpers@0.4.0
+  - @withstudiocms/template-lang@0.2.1
+  - effectify@0.3.2
+
 ## 0.6.0
 
 ### Minor Changes
