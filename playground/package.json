@@ -1,0 +1,32 @@
+{
+  "name": "node-playground",
+  "type": "module",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "astro": "astro",
+    "preview": "astro preview",
+    "studiocms": "studiocms",
+    "migrate": "pnpm studiocms migrate"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "typescript": "catalog:"
+  },
+  "dependencies": {
+    "effect": "catalog:effect",
+    "@effect/platform": "catalog:effect",
+    "@effect/platform-node": "catalog:effect",
+    "@astrojs/node": "catalog:astrojs-current",
+    "@libsql/client": "catalog:kysely",
+    "@studiocms/blog": "workspace:*",
+    "@studiocms/md": "workspace:*",
+    "@studiocms/wysiwyg": "workspace:*",
+    "astro": "catalog:astrojs-current",
+    "studiocms": "workspace:*",
+    "sharp": "catalog:"
+  }
+}

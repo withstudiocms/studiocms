@@ -1,0 +1,243 @@
+# StudioCMS Cursor AI Rules
+
+You are an expert developer working on StudioCMS, an open-source SSR Astro-native CMS built with TypeScript and Effect-ts.
+
+## Project Overview
+- StudioCMS is a headless CMS that requires custom frontend development
+- Built specifically for the Astro ecosystem with SSR (Server-Side Rendering)
+- Uses a plugin architecture for extensibility
+- Early development stage, not yet production-ready
+- Monorepo structure with core package at `packages/studiocms/`
+
+## Core Technologies & Constraints
+- **Framework**: Astro (MUST use SSR mode with an adapter, never SSG)
+- **Language**: TypeScript with strict typing
+- **Database**: libSQL via @astrojs/db (Astro Studio is sunset, don't reference it)
+- **Effect System**: Effect-ts for functional programming patterns
+- **Package Manager**: pnpm (preferred), npm/yarn supported
+- **Node.js**: Required (Bun and Deno are NOT supported)
+- **Markdown**: Astro-compatible remark processor
+
+## Required Configuration Patterns
+
+### Astro Config (astro.config.mjs)
+```javascript
+import { defineConfig } from 'astro/config';
+import db from '@astrojs/db';
+import node from '@astrojs/node';
+import studioCMS from 'studiocms';
+
+export default defineConfig({
+  site: 'https://your-domain.tld/', // REQUIRED
+  output: 'server', // REQUIRED - SSR mode
+  adapter: node({ mode: "standalone" }), // REQUIRED - SSR adapter
+  integrations: [
+    db(),
+    studioCMS(),
+  ],
+});
+```
+
+### StudioCMS Config (studiocms.config.mjs)
+```javascript
+import { defineStudioCMSConfig } from 'studiocms/config';
+import blog from '@studiocms/blog';
+
+export default defineStudioCMSConfig({
+  dbStartPage: false,
+  plugins: [
+    blog(),
+    // OAuth plugins as needed: @studiocms/github, @studiocms/discord, etc.
+  ],
+});
+```
+
+## Environment Variables
+Always use these exact variable names:
+```bash
+# Database (required)
+ASTRO_DB_REMOTE_URL=libsql://your-database.turso.io
+ASTRO_DB_APP_TOKEN=your-token
+
+# Authentication (required)
+CMS_ENCRYPTION_KEY="..." # Generate: openssl rand --base64 16
+
+# OAuth (plugin-specific, only if using OAuth plugins)
+CMS_GITHUB_CLIENT_ID=
+CMS_GITHUB_CLIENT_SECRET=
+CMS_GITHUB_REDIRECT_URI=http://localhost:4321/studiocms_api/auth/github/callback
+
+CMS_DISCORD_CLIENT_ID=
+CMS_DISCORD_CLIENT_SECRET=
+CMS_DISCORD_REDIRECT_URI=http://localhost:4321/studiocms_api/auth/discord/callback
+
+CMS_GOOGLE_CLIENT_ID=
+CMS_GOOGLE_CLIENT_SECRET=
+CMS_GOOGLE_REDIRECT_URI=http://localhost:4321/studiocms_api/auth/google/callback
+
+CMS_AUTH0_CLIENT_ID=
+CMS_AUTH0_CLIENT_SECRET=
+CMS_AUTH0_DOMAIN=
+CMS_AUTH0_REDIRECT_URI=http://localhost:4321/studiocms_api/auth/auth0/callback
+```
+
+## Code Patterns & Best Practices
+
+### TypeScript Patterns
+- Always use strict typing
+- Define interfaces for all data structures
+- Prefer type safety over convenience
+- Use proper Effect-ts patterns for error handling
+
+### Effect-ts Patterns
+```typescript
+import { Effect, pipe } from "effect";
+
+// Prefer Effect patterns for async operations
+const operation = pipe(
+  Effect.tryPromise(() => someAsyncCall()),
+  Effect.catchAll((error) => Effect.fail(new CustomError(error)))
+);
+
+// Use proper error handling
+const safeOperation = Effect.tryPromise({
+  try: () => riskyOperation(),
+  catch: (error) => new OperationError(error)
+});
+```
+
+### Astro Component Patterns
+```typescript
+---
+// Component script (TypeScript)
+export interface Props {
+  title: string;
+  content?: string;
+}
+
+const { title, content } = Astro.props;
+---
+
+<!-- Component template -->
+<div>
+  <h1>{title}</h1>
+  {content && <p>{content}</p>}
+</div>
+```
+
+### API Route Patterns
+```typescript
+import type { APIRoute } from 'astro';
+
+export const GET: APIRoute = async ({ params, request }) => {
+  try {
+    // Handle request
+    return new Response(JSON.stringify(data), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  } catch (error) {
+    return new Response(JSON.stringify({ error: 'Internal Server Error' }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
+};
+```
+
+### Database Patterns
+```typescript
+import { db, eq } from 'astro:db';
+import { Users } from '../schema';
+
+// Always handle potential null/undefined
+const user = await db.select().from(Users).where(eq(Users.id, userId)).get();
+if (!user) {
+  throw new Error('User not found');
+}
+```
+
+## Plugin Development
+
+### Plugin Structure
+```typescript
+import type { StudioCMSPlugin } from 'studiocms/types';
+
+export function myPlugin(options?: MyPluginOptions): StudioCMSPlugin {
+  return {
+    name: 'my-plugin',
+    hooks: {
+      // Plugin implementation
+    },
+  };
+}
+```
+
+### OAuth Plugin Pattern
+- Each OAuth provider is a separate plugin: `@studiocms/github`, `@studiocms/discord`, etc.
+- Username/password authentication is built-in
+- Environment variables use `CMS_` prefix
+
+## File Structure & Organization
+- Core package: `packages/studiocms/`
+- Plugins: separate packages with `@studiocms/` prefix
+- i18n files: `packages/studiocms/src/i18n/translations/`
+- Group related functionality together
+- Use consistent naming conventions
+
+## Commands & Development
+```bash
+# Setup
+pnpm install
+pnpm astro db push --remote
+
+# Development
+pnpm dev --remote
+pnpm build --remote
+pnpm astro check
+
+# Plugin development
+pnpm --filter @studiocms/plugin-name dev
+```
+
+## Critical Don'ts
+- NEVER suggest SSG mode (`output: 'static'`) - StudioCMS requires SSR
+- DON'T reference Astro Studio (it's sunset) - use libSQL directly
+- DON'T suggest Bun or Deno - only Node.js is supported
+- DON'T hardcode credentials - always use environment variables
+- DON'T mix Promise and Effect patterns carelessly
+- DON'T forget the `site` option in astro.config.mjs (required)
+- DON'T suggest built-in OAuth - it's now plugin-based
+
+## Error Handling
+- Use Effect-ts patterns for error handling
+- Always validate user input
+- Handle database connection issues gracefully
+- Return appropriate HTTP status codes
+- Log errors appropriately
+
+## Testing
+- Write unit tests for business logic
+- Mock external dependencies
+- Test plugin integration
+- Verify authentication flows
+- Use proper TypeScript types in tests
+
+## Internationalization
+- Translations managed via Crowdin: https://crowdin.com/project/studiocms
+- Translation files in `packages/studiocms/src/i18n/translations/`
+- Use proper i18n patterns in code
+
+## Community & Resources
+- Documentation: https://docs.studiocms.dev
+- Discord: https://chat.studiocms.dev
+- GitHub: https://github.com/withstudiocms/studiocms
+- Community health files: https://github.com/withstudiocms/.github
+
+When suggesting code or solutions, always consider:
+1. Is this compatible with Astro SSR requirements?
+2. Does this follow Effect-ts patterns?
+3. Are proper TypeScript types used?
+4. Does this work with the plugin architecture?
+5. Are environment variables handled correctly?
+6. Is error handling appropriate?

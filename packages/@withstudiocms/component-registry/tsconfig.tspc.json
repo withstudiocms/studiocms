@@ -1,0 +1,11 @@
+{
+  "extends": "../../../tsconfig.tspc.json",
+  "include": ["src"],
+  "exclude": ["dist"],
+  "compilerOptions": {
+    "outDir": "./dist",
+    "resolveJsonModule": true,
+    "rootDir": "./src",
+    "removeComments": false
+  }
+}

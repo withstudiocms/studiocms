@@ -1,0 +1,100 @@
+name: CI - Bot Changesets
+
+on:
+  pull_request:
+
+permissions: {}
+
+env:
+  FORCE_COLOR: true
+  # 7 GiB by default on GitHub, setting to 6 GiB
+  # https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners#supported-runners-and-hardware-resources
+  NODE_OPTIONS: --max-old-space-size=6144
+
+jobs:
+  renovate:
+    name: Update Renovate PR
+    if: contains(github.event.pull_request.labels.*.name, 'dependencies')
+    permissions:
+      contents: write
+      pull-requests: write
+    secrets: inherit
+    uses: withstudiocms/automations/.github/workflows/renovate-changeset.yml@f32588d80ce35d57905264f7fa473b0f6e297c0a # main
+
+  renovate-effect:
+    name: Update Renovate Effect PR
+    runs-on: ubuntu-latest
+    if: contains(github.event.pull_request.labels.*.name, 'effect-deps') && !contains(github.event.pull_request.labels.*.name, 'templates')
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Setup Apollo Git Bot
+        id: bot-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          app-id: ${{ secrets.STUDIOCMS_GIT_BOT_APP_ID }}
+          private-key: ${{ secrets.STUDIOCMS_GIT_BOT_PRIVATE_KEY }}
+
+      - name: Checkout Repo
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: true
+          ref: ${{ github.head_ref }}
+          token: ${{ steps.bot-token.outputs.token }}
+
+      - name: Install Tools & Dependencies
+        uses: withstudiocms/automations/.github/actions/install@f32588d80ce35d57905264f7fa473b0f6e297c0a # main
+        
+      - name: Create Effect Changesets
+        run: node .github/scripts/effect-changeset.mjs
+        env:
+          CI_PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}
+    
+      - name: Commit changes
+        uses: stefanzweifel/git-auto-commit-action@4a55954c782fc1ea30b9056cd3e7a2b40ca8887d # v7.2.0
+        with:
+          commit_message: '[ci] changesets'
+          branch: ${{ github.head_ref }}
+          commit_user_name: apollo-git-bot[bot]
+          commit_user_email: 234251158+apollo-git-bot[bot]@users.noreply.github.com
+          commit_author: Apollo Git Bot <234251158+apollo-git-bot[bot]@users.noreply.github.com>
+
+  crowdin:
+    runs-on: ubuntu-latest
+    name: Build Translation Changesets
+    if: contains(github.event.pull_request.labels.*.name, 'translations') && (github.event.pull_request.user.login == 'studiocms-no-reply' || github.event.pull_request.user.login == 'apollo-git-bot[bot]')
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Setup Apollo Git Bot
+        id: bot-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          app-id: ${{ secrets.STUDIOCMS_GIT_BOT_APP_ID }}
+          private-key: ${{ secrets.STUDIOCMS_GIT_BOT_PRIVATE_KEY }}
+
+      - name: Checkout Repo
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: true
+          ref: ${{ github.head_ref }}
+          token: ${{ steps.bot-token.outputs.token }}
+
+      - name: Install Tools & Dependencies
+        uses: withstudiocms/automations/.github/actions/install@f32588d80ce35d57905264f7fa473b0f6e297c0a # main
+
+      - name: Create Translation Changesets
+        run: node .github/scripts/translation-changeset.mjs
+        env:
+          CI_PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}
+    
+      - name: Commit changes
+        uses: stefanzweifel/git-auto-commit-action@4a55954c782fc1ea30b9056cd3e7a2b40ca8887d # v7.2.0
+        with:
+          commit_message: '[ci] changesets'
+          branch: ${{ github.head_ref }}
+          commit_user_name: apollo-git-bot[bot]
+          commit_user_email: 234251158+apollo-git-bot[bot]@users.noreply.github.com
+          commit_author: Apollo Git Bot <234251158+apollo-git-bot[bot]@users.noreply.github.com>
