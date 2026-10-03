@@ -2,9 +2,9 @@ import { SDKCore } from 'studiocms:sdk';
 import { HttpApiBuilder } from '@effect/platform';
 import { StudioCMSSDKApiSpec } from '@withstudiocms/api-spec';
 import { SDKAPIError } from '@withstudiocms/api-spec/sdk';
+import { simpleMdProcessor } from '@withstudiocms/internal_helpers/markdown';
 import { experimental_AstroContainer as AstroContainer } from 'astro/container';
 import { Effect, Layer } from 'effect';
-import { markdownToHtml } from 'satteri';
 // biome-ignore lint/suspicious/noTsIgnore: Typechecker override for Astro component imports
 // @ts-ignore - This is an Astro component, so we ignore TypeScript errors for this import
 import UserListItems from '../../../components/dashboard/user-mgmt/UserListItems.astro';
@@ -84,11 +84,7 @@ export const SDKUtilsHandler = HttpApiBuilder.group(StudioCMSSDKApiSpec, 'utils'
 								markdownContent = 'No content provided';
 							}
 
-							const { html } = markdownToHtml(markdownContent, {
-								features: {
-									gfm: true,
-								},
-							});
+							const html = simpleMdProcessor(markdownContent);
 
 							return { html };
 						},

@@ -4,7 +4,7 @@ import changelog from 'studiocms:changelog';
 import { type UiLanguageKeys, useTranslations } from 'studiocms:i18n';
 import { Modal } from 'studiocms:ui/components/modal';
 import currentVersion from 'studiocms:version';
-import { markdownToHtml } from 'satteri';
+import { simpleMdProcessor } from '@withstudiocms/internal_helpers/markdown';
 import { studioCMSSocials } from '#consts';
 import { dateWithTimeAndZone } from '../../../scripts/dateWithTimeAndZone.js';
 import { timeAgo } from '../../../scripts/timeAgo.js';
@@ -21,11 +21,7 @@ const t = useTranslations(lang, '@studiocms/dashboard:versionCheckModal');
 const latestVersion = Astro.locals.StudioCMS.latestVersion;
 const lastChecked = new Date(Astro.locals.StudioCMS.latestVersion.lastCacheUpdate);
 
-const { html: changelogHtml } = markdownToHtml(changelog, {
-	features: {
-		gfm: true,
-	},
-});
+const changelogHtml = simpleMdProcessor(changelog);
 ---
 
 <Modal id="version-modal" size="lg">
