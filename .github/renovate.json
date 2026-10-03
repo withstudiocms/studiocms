@@ -6,7 +6,8 @@
       "groupName": "Effect Dependencies",
       "matchManagers": ["npm"],
       "matchPackageNames": ["effect", "@effect/**", "!@effect/language-service", "!@effect/vitest"],
-      "labels": ["effect-deps"]
+      "labels": ["effect-deps"],
+      "enabled": false
     },
     {
       "groupName": "studiocms Dependencies",
@@ -78,6 +79,8 @@
     "@changesets/changelog-github",
     "@changesets/cli",
     "@changesets/config",
-    "@changesets/write"
+    "@changesets/write",
+    "@effect/language-service",
+    "@effect/vitest"
   ]
 }
