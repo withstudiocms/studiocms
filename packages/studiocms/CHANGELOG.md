@@ -1,5 +1,20 @@
 # studiocms
 
+## 0.7.0
+
+### Minor Changes
+
+- [#1749](https://github.com/withstudiocms/studiocms/pull/1749) [`a75dafe`](https://github.com/withstudiocms/studiocms/commit/a75dafe4f909494cdba3269e49e1cc8bb44e50b5) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Migrates from Micromark to Satteri for dashboard frontend, and SDK parsing of markdown.
+
+  Note: This does not alter the Markdown renderer associated with pages, as that is handled via StudioCMS's plugin system.
+
+### Patch Changes
+
+- Updated dependencies [[`a75dafe`](https://github.com/withstudiocms/studiocms/commit/a75dafe4f909494cdba3269e49e1cc8bb44e50b5)]:
+  - @withstudiocms/internal_helpers@0.5.0
+  - @withstudiocms/auth-kit@0.2.2
+  - @withstudiocms/component-registry@0.2.2
+
 ## 0.6.1
 
 ### Patch Changes
