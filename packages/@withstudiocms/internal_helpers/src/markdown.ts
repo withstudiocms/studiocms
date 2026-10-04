@@ -1,4 +1,5 @@
 import type { HTMLString } from 'astro/runtime/server/index.js';
+import { markdownToHtml } from 'satteri';
 
 /**
  * The options that can be passed to the `render` method of the markdown processor. This includes an optional `fileURL` property, which can be used to provide the URL of the file being processed, and a `frontmatter` property, which can be used to pass frontmatter data to plugins that need it. The `frontmatter` property is a record with string keys and values of any type, as the shape of frontmatter can vary greatly depending on the user's content.
@@ -36,3 +37,23 @@ export interface MarkdownProcessor {
 		opts?: MarkdownProcessorRenderOptions
 	) => Promise<MarkdownProcessorRenderResult>;
 }
+
+/**
+ * A simple markdown processor that converts markdown content to HTML using the `satteri` library. This processor is designed for use in scenarios where a full-featured markdown
+ * processor is not required, and provides a straightforward way to convert markdown to HTML with support for GitHub Flavored Markdown (GFM) and frontmatter handling.
+ *
+ * @param content - The markdown content to be processed, provided as a string.
+ * @returns The rendered HTML content as a string.
+ *
+ * @remarks This processor is intended for use by StudioCMS SDK and dashboard, and is not meant to be used directly by end-users. It is a simple implementation that leverages
+ * the `satteri` library to convert markdown to HTML, and can be used in scenarios where a full-featured markdown processor is not required.
+ */
+export const simpleMdProcessor = (content: string): string => {
+	const { html } = markdownToHtml(content, {
+		features: {
+			frontmatter: false,
+			gfm: true,
+		},
+	});
+	return html;
+};

@@ -1,7 +1,7 @@
 import fs from 'node:fs';
-import type { List } from 'mdast';
-import { fromMarkdown } from 'mdast-util-from-markdown';
+import type { List, Root } from 'mdast';
 import { toString as ToString } from 'mdast-util-to-string';
+import { markdownToMdast } from 'satteri';
 import { visit } from 'unist-util-visit';
 
 /**
@@ -103,10 +103,11 @@ export function loadChangelog(src: ChangeLogSrc): Changelog {
 		'[@$1](https://github.com/$1)'
 	);
 
-	const ast = fromMarkdown(markdown);
-	// const lines = readFileSync(path, 'utf8')
-	// 	.split(/\r?\n/)
-	// 	.map((line) => line.trimEnd())
+	const ast: Root = markdownToMdast(markdown, {
+		features: {
+			gfm: true,
+		},
+	}) as Root;
 	const changelog: Changelog = {
 		packageName: '',
 		versions: [],
@@ -116,7 +117,7 @@ export function loadChangelog(src: ChangeLogSrc): Changelog {
 	let version: Version | undefined;
 	let semverCategory: SemverCategory | undefined;
 
-	function handleNode(node: ReturnType<typeof fromMarkdown>['children'][number]) {
+	function handleNode(node: Root['children'][number]) {
 		if (node.type === 'heading') {
 			if (node.depth === 1) {
 				if (state !== 'packageName') throw new Error('Unexpected h1');
