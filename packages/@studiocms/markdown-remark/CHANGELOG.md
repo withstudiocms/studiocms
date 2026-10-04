@@ -1,5 +1,12 @@
 # @studiocms/markdown-remark
 
+## 1.6.1
+
+### Patch Changes
+
+- Updated dependencies [[`a75dafe`](https://github.com/withstudiocms/studiocms/commit/a75dafe4f909494cdba3269e49e1cc8bb44e50b5)]:
+  - @withstudiocms/internal_helpers@0.5.0
+
 ## 1.6.0
 
 ### Minor Changes

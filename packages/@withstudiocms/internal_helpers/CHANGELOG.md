@@ -1,5 +1,11 @@
 # @withstudiocms/internal_helpers
 
+## 0.5.0
+
+### Minor Changes
+
+- [#1749](https://github.com/withstudiocms/studiocms/pull/1749) [`a75dafe`](https://github.com/withstudiocms/studiocms/commit/a75dafe4f909494cdba3269e49e1cc8bb44e50b5) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Moves from mdast-util-from-markdown to satteri
+
 ## 0.4.0
 
 ### Minor Changes
