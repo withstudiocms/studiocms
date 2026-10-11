@@ -1,8 +1,12 @@
 import { compile } from '@mdx-js/mdx';
+import * as allure from 'allure-js-commons';
 import { describe, expect, test } from 'vitest';
 import { restrictMdx } from '../../src/lib/restrict-mdx.js';
+import { parentSuiteName, sharedTags } from '../test-utils.js';
 
-describe('restricted MDX compiler input', () => {
+const localSuiteName = 'restrictMdx Plugin Tests';
+
+describe(parentSuiteName, () => {
 	test.each([
 		['ESM imports', "import Component from './component.js'", 'Unsupported MDX syntax: mdxjsEsm'],
 		['text expressions', 'Hello {globalThis.process}', 'Unsupported MDX syntax: mdxTextExpression'],
@@ -25,29 +29,48 @@ describe('restricted MDX compiler input', () => {
 			'Unsafe URL in MDX HTML attribute: href',
 		],
 	])('rejects %s', async (_label, content, expectedError) => {
-		await expect(
-			compile(content, {
-				outputFormat: 'function-body',
-				remarkPlugins: [restrictMdx],
-			})
-		).rejects.toThrow(expectedError);
+		await allure.parentSuite(parentSuiteName);
+		await allure.suite(localSuiteName);
+		await allure.subSuite('MDX Security Tests');
+		await allure.tags(...sharedTags);
+
+		await allure.step(`Compiling MDX content: ${content}`, async (ctx) => {
+			await ctx.parameter('mdxContent', content);
+			await ctx.parameter('expectedError', expectedError);
+			await expect(
+				compile(content, {
+					outputFormat: 'function-body',
+					remarkPlugins: [restrictMdx],
+				})
+			).rejects.toThrow(expectedError);
+		});
 	});
 
-	test('allows safe static HTML elements', async () => {
-		await expect(
-			compile('<div className="box" title="safe">allowed HTML</div>', {
-				outputFormat: 'function-body',
-				remarkPlugins: [restrictMdx],
-			})
-		).resolves.toBeDefined();
-	});
+	[
+		{
+			name: 'allows safe static HTML elements',
+			content: '<div className="box" title="safe">allowed HTML</div>',
+		},
+		{
+			name: 'continues to compile regular Markdown and GFM',
+			content: '# Heading\n\n- [x] safe Markdown',
+		},
+	].forEach(({ name, content }) =>
+		test(name, async () => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('MDX Security Tests');
+			await allure.tags(...sharedTags);
 
-	test('continues to compile regular Markdown and GFM', async () => {
-		await expect(
-			compile('# Heading\n\n- [x] safe Markdown', {
-				outputFormat: 'function-body',
-				remarkPlugins: [restrictMdx],
-			})
-		).resolves.toBeDefined();
-	});
+			await allure.step(`Compiling MDX content: ${content}`, async (ctx) => {
+				await ctx.parameter('mdxContent', content);
+				await expect(
+					compile(content, {
+						outputFormat: 'function-body',
+						remarkPlugins: [restrictMdx],
+					})
+				).resolves.toBeDefined();
+			});
+		})
+	);
 });

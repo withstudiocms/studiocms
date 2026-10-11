@@ -6,6 +6,7 @@ interface AstNode {
 	children?: AstNode[];
 	name?: string | null;
 	attributes?: AstAttribute[];
+	data?: Record<string, unknown>;
 }
 
 interface AstAttribute {
@@ -107,4 +108,38 @@ export const assertSafeMdxTree = (tree: unknown): void => {
 	visit(tree as AstNode);
 };
 
-export const restrictMdx: Plugin = () => (tree) => assertSafeMdxTree(tree);
+const toHastPropertyName = (name: string): string => {
+	if (name === 'class') return 'className';
+	return name.replace(
+		/^(aria|data)-([a-z\d-]+)$/i,
+		(_match, prefix: string, rest: string) =>
+			`${prefix.toLowerCase()}${rest.replace(/-([a-z\d])/gi, (_m, char: string) => char.toUpperCase()).replace(/^./, (char) => char.toUpperCase())}`
+	);
+};
+
+// Validated JSX is rewritten so remark-rehype emits plain elements for rehype-sanitize to process.
+const convertJsxToElements = (node: AstNode): void => {
+	if (node.type === 'mdxJsxFlowElement' || node.type === 'mdxJsxTextElement') {
+		const properties: Record<string, unknown> = {};
+		for (const attribute of node.attributes ?? []) {
+			const name = toHastPropertyName(attribute.name as string);
+			const value = attribute.value == null ? true : attribute.value;
+			properties[name] =
+				name === 'className' && typeof value === 'string'
+					? value.split(/\s+/).filter(Boolean)
+					: value;
+		}
+
+		node.data = { ...node.data, hName: node.name, hProperties: properties };
+		node.type = 'mdxIntrinsicElement';
+	}
+
+	for (const child of node.children ?? []) {
+		convertJsxToElements(child);
+	}
+};
+
+export const restrictMdx: Plugin = () => (tree) => {
+	assertSafeMdxTree(tree);
+	convertJsxToElements(tree as AstNode);
+};
