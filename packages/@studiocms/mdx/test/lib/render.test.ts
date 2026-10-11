@@ -93,20 +93,19 @@ describe(parentSuiteName, () => {
 		expect(result).toBe('<p>Rendered output</p>');
 	});
 
-	test.each([
-		'mdxjsEsm',
-		'mdxFlowExpression',
-		'mdxTextExpression',
-	])('rejects executable MDX syntax: %s', async (nodeType) => {
-		await allure.parentSuite(parentSuiteName);
-		await allure.suite(localSuiteName);
-		await allure.subSuite('MDX Security Tests');
-		await allure.tags(...sharedTags);
+	test.each(['mdxjsEsm', 'mdxFlowExpression', 'mdxTextExpression'])(
+		'rejects executable MDX syntax: %s',
+		async (nodeType) => {
+			await allure.parentSuite(parentSuiteName);
+			await allure.suite(localSuiteName);
+			await allure.subSuite('MDX Security Tests');
+			await allure.tags(...sharedTags);
 
-		expect(() => assertSafeMdxTree({ type: 'root', children: [{ type: nodeType }] })).toThrow(
-			`Unsupported MDX syntax: ${nodeType}`
-		);
-	});
+			expect(() => assertSafeMdxTree({ type: 'root', children: [{ type: nodeType }] })).toThrow(
+				`Unsupported MDX syntax: ${nodeType}`
+			);
+		}
+	);
 
 	test('allows ordinary Markdown syntax', async () => {
 		await allure.parentSuite(parentSuiteName);

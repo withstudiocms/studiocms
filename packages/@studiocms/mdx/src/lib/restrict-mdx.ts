@@ -1,5 +1,5 @@
-import type { Plugin } from 'unified';
 import { defaultSchema } from 'rehype-sanitize';
+import type { Plugin } from 'unified';
 
 interface AstNode {
 	type?: string;
@@ -14,15 +14,12 @@ interface AstAttribute {
 	value?: unknown;
 }
 
-const forbiddenNodeTypes = new Set([
-	'mdxjsEsm',
-	'mdxFlowExpression',
-	'mdxTextExpression',
-]);
+const forbiddenNodeTypes = new Set(['mdxjsEsm', 'mdxFlowExpression', 'mdxTextExpression']);
 const safeHtmlTags = new Set(defaultSchema.tagNames ?? []);
 const safeGlobalAttributes = new Set(['class', 'className', 'id', 'lang', 'dir', 'role', 'title']);
 
 const isSafeUrl = (attributeName: string, value: string): boolean => {
+	// biome-ignore lint/suspicious/noControlCharactersInRegex: yes we know, we want to remove control characters from the URL before checking the scheme
 	const compactValue = value.replace(/[\u0000-\u0020\u007f]/g, '');
 	const scheme = /^([a-z][a-z\d+.-]*):/i.exec(compactValue)?.[1]?.toLowerCase();
 	if (!scheme) return true;
@@ -61,11 +58,13 @@ const validateHtmlElement = (node: AstNode): void => {
 
 		if (Array.isArray(rule) && rule.length > 1) {
 			const value = attribute.value == null ? true : attribute.value;
-			const allowed = rule.slice(1).some((allowedValue) =>
-				allowedValue instanceof RegExp && typeof value === 'string'
-					? allowedValue.test(value)
-					: allowedValue === value
-			);
+			const allowed = rule
+				.slice(1)
+				.some((allowedValue) =>
+					allowedValue instanceof RegExp && typeof value === 'string'
+						? allowedValue.test(value)
+						: allowedValue === value
+				);
 			if (!allowed) {
 				throw new Error(`Unsupported value for MDX HTML attribute: ${name}`);
 			}

@@ -14,8 +14,16 @@ describe('restricted MDX compiler input', () => {
 			'<div data-value={globalThis.process} />',
 			'only static HTML attributes are allowed',
 		],
-		['event handler attributes', '<div onClick="alert(1)" />', 'Unsupported MDX HTML attribute: onClick'],
-		['scriptable URLs', '<a href="javascript:alert(1)">click</a>', 'Unsafe URL in MDX HTML attribute: href'],
+		[
+			'event handler attributes',
+			'<div onClick="alert(1)" />',
+			'Unsupported MDX HTML attribute: onClick',
+		],
+		[
+			'scriptable URLs',
+			'<a href="javascript:alert(1)">click</a>',
+			'Unsafe URL in MDX HTML attribute: href',
+		],
 	])('rejects %s', async (_label, content, expectedError) => {
 		await expect(
 			compile(content, {
