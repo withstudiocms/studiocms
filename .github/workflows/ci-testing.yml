@@ -91,7 +91,7 @@ jobs:
       # Only run on PRs that are from our org (no forks)
       - name: Report Allure results
         if: github.event_name == 'pull_request' && startsWith(github.event.pull_request.head.repo.full_name, 'withstudiocms/')
-        uses: allure-framework/allure-action@27ffdeb073d64e24282b71ea82b7d4f989c9caca # v0.10.3
+        uses: allure-framework/allure-action@1a856297ee7a92306bc462c26783245a98d4dcfb # v0.11.0
         with:
           report-directory: "./allure-report"
           github-token: ${{ secrets.GITHUB_TOKEN }}
