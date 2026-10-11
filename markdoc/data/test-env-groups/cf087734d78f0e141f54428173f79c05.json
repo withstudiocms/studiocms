@@ -1,1 +1,0 @@
-{"id":"cf087734d78f0e141f54428173f79c05","fullName":"root:packages/@withstudiocms/internal_helpers/test/utils.test.ts#@withstudiocms/internal_helpers Tests readJson - throws SyntaxError if file content is invalid JSON","name":"readJson - throws SyntaxError if file content is invalid JSON","status":"passed","testResultsByEnv":{"default":"8ad52116084ea3d6175ba02ee1d008ff"}}

@@ -1,1 +1,0 @@
-{"id":"d2d013000f72ab706190ead98d235732","fullName":"root:packages/studiocms/test/virtuals/scripts/user-quick-tools.test.ts#studiocms Tests isDashboardRoute('/profile', '/dashboard') should return false","name":"isDashboardRoute('/profile', '/dashboard') should return false","status":"passed","testResultsByEnv":{"default":"68dc77e875d265527b340c26b033be2f"}}

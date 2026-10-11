@@ -1,1 +1,0 @@
-{"id":"99b1dfe36a008ef542bf8c62147c87fa","fullName":"root:packages/studiocms/test/virtuals/lib/makeAPIRoute.test.ts#studiocms Tests v1RestRoute('comments') should return '/studiocms_api/rest/v1/comments'","name":"v1RestRoute('comments') should return '/studiocms_api/rest/v1/comments'","status":"passed","testResultsByEnv":{"default":"bc45527d1ab8f0d38725eab3cdff5e7f"}}

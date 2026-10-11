@@ -1,0 +1,1 @@
+{"id":"4f99e65777885ef8fce5de4f273fcc3c.d41d8cd98f00b204e9800998ecf8427e","fullName":"root:packages/effectify/test/webHandler.test.ts#effectify Tests processUrl - should use x-forwarded-proto header when present","name":"processUrl - should use x-forwarded-proto header when present","status":"passed","testResultsByEnv":{"default":"d8df6b2d0e43fcc226960136edd88854"}}

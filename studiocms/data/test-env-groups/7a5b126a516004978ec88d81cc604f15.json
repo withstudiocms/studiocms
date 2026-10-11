@@ -1,1 +1,0 @@
-{"id":"7a5b126a516004978ec88d81cc604f15","fullName":"root:packages/@studiocms/markdown-remark/test/core/frontmatter.test.ts#@studiocms/markdown-remark Tests extractFrontmatter - \\n\\n---\\nfoo: bar\\n---\\n\\ncontent","name":"extractFrontmatter - \\n\\n---\\nfoo: bar\\n---\\n\\ncontent","status":"passed","testResultsByEnv":{"default":"7caeb71bc3909a3922db85467c2b48c9"}}

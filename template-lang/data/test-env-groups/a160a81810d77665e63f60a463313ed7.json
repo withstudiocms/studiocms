@@ -1,1 +1,0 @@
-{"id":"a160a81810d77665e63f60a463313ed7","fullName":"root:packages/effectify/test/schemas.test.ts#effectify Tests FunctionSchema encode: should fail when encoding a non-function value","name":"FunctionSchema encode: should fail when encoding a non-function value","status":"passed","testResultsByEnv":{"default":"0aa54961a79f7ae9e333af54878efb34"}}

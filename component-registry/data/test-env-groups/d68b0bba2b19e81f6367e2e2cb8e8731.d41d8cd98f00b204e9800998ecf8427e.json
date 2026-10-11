@@ -1,0 +1,1 @@
+{"id":"d68b0bba2b19e81f6367e2e2cb8e8731.d41d8cd98f00b204e9800998ecf8427e","fullName":"root:packages/@studiocms/wysiwyg/test/lib/utils.test.ts#@studiocms/wysiwyg Tests firstUpperCase('αβγ') should return 'Αβγ'","name":"firstUpperCase('αβγ') should return 'Αβγ'","status":"passed","testResultsByEnv":{"default":"9530c96978467eb8365551a2c7886550"}}
