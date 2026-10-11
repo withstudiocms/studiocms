@@ -1,5 +1,6 @@
 /// <reference types="./virtual.d.ts" preserve="true" />
 
+import { fileURLToPath } from 'node:url';
 import { addVirtualImports } from '@withstudiocms/internal_helpers/astro-integration';
 import createPathResolver, {
 	toModuleSpecifier,
@@ -55,7 +56,7 @@ const markdownRemark = (
 		name: '@studiocms/markdown-remark',
 		hooks: {
 			'astro:config:setup': (params) => {
-				const { resolve: astroRootResolve } = createPathResolver(params.config.root.pathname);
+				const { resolve: astroRootResolve } = createPathResolver(fileURLToPath(params.config.root));
 
 				// Extract Logger from params for use in this hook
 				const logger = params.logger;

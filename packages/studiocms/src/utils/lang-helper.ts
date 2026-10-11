@@ -1,4 +1,5 @@
-import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { glob } from 'tinyglobby';
 import type { PluginTranslations } from '../schemas/plugins/i18n.js';
 
@@ -18,7 +19,9 @@ export async function loadJsTranslations(path: string, base: string): Promise<Pl
 
 	for (const file of availableTranslationFiles) {
 		const alias = file.replace(/\.js$/, '');
-		const translation = await import(/* @vite-ignore */ `${translationsDir}/${file}`);
+		const translation = await import(
+			/* @vite-ignore */ pathToFileURL(join(translationsDir, file)).href
+		);
 		translations[alias] = translation.default;
 	}
 
