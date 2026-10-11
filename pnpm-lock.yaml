@@ -1343,7 +1343,7 @@ importers:
   templates/headless-libsql:
     dependencies:
       '@astrojs/node':
-        specifier: ^11.1.6
+        specifier: ^11.1.7
         version: 11.1.7(astro@7.3.8(@types/node@22.20.1)(esbuild@0.28.1)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1))
       '@effect/platform':
         specifier: ^0.97.2
@@ -1361,7 +1361,7 @@ importers:
         specifier: ^0.5.0
         version: link:../../packages/@studiocms/md
       astro:
-        specifier: ^7.3.5
+        specifier: ^7.3.8
         version: 7.3.8(@types/node@22.20.1)(esbuild@0.28.1)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1)
       effect:
         specifier: ^3.22.2
