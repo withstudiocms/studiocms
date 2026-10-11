@@ -4,64 +4,56 @@ import { createElement } from 'react';
 import * as runtime from 'react/jsx-runtime';
 import { renderToString } from 'react-dom/server';
 import rehypeHighlight from 'rehype-highlight';
+import rehypeSanitize, { defaultSchema } from 'rehype-sanitize';
 import remarkGfm from 'remark-gfm';
 import type { PluggableList } from 'unified';
+import { restrictMdx } from './restrict-mdx.js';
 import { shared } from './shared.js';
 
 const baseRemarkPlugins = [remarkGfm];
 const baseRehypePlugins = [rehypeHighlight];
+const sanitizeSchema = {
+	...defaultSchema,
+	attributes: {
+		...defaultSchema.attributes,
+		span: [...(defaultSchema.attributes?.span ?? []), ['className', /^hljs-/]],
+	},
+};
 
 const { recmaPlugins, rehypePlugins, remarkPlugins, remarkRehypeOptions } = shared.mdxConfig;
 
-const makeList = (included: PluggableList, userDefinedPlugins?: PluggableList): PluggableList => {
-	const Plugins: PluggableList = [...included];
-
-	if (userDefinedPlugins) {
-		for (const plugin of userDefinedPlugins) {
-			Plugins.push(plugin);
-		}
-	}
-
-	return Plugins;
-};
+const makeList = (...pluginLists: (PluggableList | undefined)[]): PluggableList =>
+	pluginLists.flatMap((plugins) => plugins ?? []);
 
 export async function renderMDX(content: string): Promise<string> {
 	const compiledCode = await compile(content, {
 		outputFormat: 'function-body', // Essential: Outputs MDX as a pure string evaluation block
-		remarkPlugins: makeList(baseRemarkPlugins, remarkPlugins),
-		rehypePlugins: makeList(baseRehypePlugins, rehypePlugins),
+		remarkPlugins: makeList(baseRemarkPlugins, remarkPlugins, [restrictMdx]),
+		rehypePlugins: makeList(baseRehypePlugins, rehypePlugins, [[rehypeSanitize, sanitizeSchema]]),
 		recmaPlugins: recmaPlugins,
 		remarkRehypeOptions: remarkRehypeOptions,
 	});
 
-	const sandbox = {
-		_jsx: runtime.jsx,
-		_jsxs: runtime.jsxs,
-		_Fragment: runtime.Fragment,
-		components: {},
-		globalThis: {},
-		// biome-ignore lint/suspicious/noExplicitAny: this is a valid use case for explicit any
-		exports: {} as Array<any> & { default?: any },
-	};
+	const sandbox = { runtime };
 
 	vm.createContext(sandbox);
 
 	const executionWrapper = `
-		(function(exports, _jsx, _jsxs, _Fragment) {
+		(function(runtime) {
 			${compiledCode.toString()}
-		})(exports, _jsx, _jsxs, _Fragment);
+		})(runtime);
 	`;
 
 	const script = new vm.Script(executionWrapper);
-	script.runInContext(sandbox, {
-		timeout: 1000, // Defends against infinite loops / CPU exhaustion attacks
+	const compiledModule = script.runInContext(sandbox, {
+		timeout: 1000, // Limits function-body evaluation only; React rendering is not covered.
 		breakOnSigint: true,
 	});
 
-	const MDXContent = sandbox.exports.default;
+	const MDXContent = compiledModule?.default;
 
 	if (!MDXContent || typeof MDXContent !== 'function') {
-		throw new Error('Invalid MDX Content payload produced during isolation runtime.');
+		throw new Error('Invalid MDX content: compiler output did not provide a default component.');
 	}
 
 	return renderToString(createElement(MDXContent));
