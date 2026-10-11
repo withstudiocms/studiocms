@@ -1,4 +1,5 @@
-import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { glob } from 'tinyglobby';
 import type { PluginTranslations } from '../schemas/plugins/i18n.js';
 
@@ -18,7 +19,12 @@ export async function loadJsTranslations(path: string, base: string): Promise<Pl
 
 	for (const file of availableTranslationFiles) {
 		const alias = file.replace(/\.js$/, '');
-		const translation = await import(/* @vite-ignore */ `${translationsDir}/${file}`);
+		// import() takes a URL, not a filesystem path. A bare path works on Linux by accident;
+		// on Windows `E:\...` parses as a URL with scheme `e:` and Node rejects it
+		// (ERR_UNSUPPORTED_ESM_URL_SCHEME), which killed `astro dev` at config load.
+		const translation = await import(
+			/* @vite-ignore */ pathToFileURL(join(translationsDir, file)).href
+		);
 		translations[alias] = translation.default;
 	}
 
