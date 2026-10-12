@@ -1,5 +1,6 @@
 /// <reference types="../virtual.d.ts" preserve="true" />
 
+import { fileURLToPath } from 'node:url';
 import { deepmerge, Effect, runEffect, Schema } from '@withstudiocms/effect';
 import { addVirtualImports } from '@withstudiocms/internal_helpers/astro-integration';
 import createPathResolver, {
@@ -170,7 +171,7 @@ export const componentRegistryHandler = async (
 			integrationLogger(logInfo, 'Setting up component registry...');
 
 			const { resolve, resolveModuleSpecifier } = createPathResolver(import.meta.url);
-			const { resolve: astroConfigResolve } = createPathResolver(params.config.root.pathname);
+			const { resolve: astroConfigResolve } = createPathResolver(fileURLToPath(params.config.root));
 
 			// Resolve necessary paths and registry
 			const registry = yield* ComponentRegistry;
