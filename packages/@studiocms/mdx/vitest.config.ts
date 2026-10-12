@@ -14,7 +14,7 @@ const testIntegration: AstroIntegration = {
 				imports: {
 					'studiocms:component-registry/runtime':
 						// Test-only identity renderer: mirrors API shape but skips sanitization on purpose.
-						'export const createRenderer = (result, sanitize, preRenderer) => (content) => content;',
+						'export const createRenderer = (result, sanitize, preRenderer) => (content) => content; export const getRegistryComponents = () => [];',
 				},
 			});
 		},

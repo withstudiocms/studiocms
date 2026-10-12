@@ -19,6 +19,7 @@ const defaultCompiledCode = `
 
 vi.mock('@mdx-js/mdx', () => ({
 	compile: vi.fn(),
+	run: vi.fn(),
 }));
 
 vi.mock('react', () => ({
@@ -57,8 +58,9 @@ const localSuiteName = 'renderMDX Function Tests';
 describe(parentSuiteName, () => {
 	beforeEach(async () => {
 		vi.clearAllMocks();
-		const { compile } = await import('@mdx-js/mdx');
+		const { compile, run } = await import('@mdx-js/mdx');
 		vi.mocked(compile).mockResolvedValue({ toString: () => defaultCompiledCode } as never);
+		vi.mocked(run).mockResolvedValue({ default: vi.fn() } as never);
 	});
 
 	afterEach(() => {
@@ -72,6 +74,7 @@ describe(parentSuiteName, () => {
 		await allure.tags(...sharedTags);
 
 		const { compile } = await import('@mdx-js/mdx');
+		const { run } = await import('@mdx-js/mdx');
 		const { createElement } = await import('react');
 		const { renderToString } = await import('react-dom/server');
 		const content = '# Hello World';
@@ -89,6 +92,13 @@ describe(parentSuiteName, () => {
 			})
 		);
 		expect(createElement).toHaveBeenCalledWith(expect.any(Function));
+		expect(run).toHaveBeenCalledOnce();
+		expect(vi.mocked(run).mock.calls[0]?.[0]).toEqual(
+			expect.objectContaining({ toString: expect.any(Function) })
+		);
+		expect(vi.mocked(run).mock.calls[0]?.[1]).toEqual(
+			expect.objectContaining({ jsx: expect.any(Function), jsxs: expect.any(Function) })
+		);
 		expect(renderToString).toHaveBeenCalled();
 		expect(result).toBe('<p>Rendered output</p>');
 	});
@@ -188,20 +198,17 @@ describe(parentSuiteName, () => {
 		await expect(renderMDX('<UnclosedTag>')).rejects.toBe(error);
 	});
 
-	test('rejects compiled output without a default component', async () => {
+	test('propagates MDX runtime errors', async () => {
 		await allure.parentSuite(parentSuiteName);
 		await allure.suite(localSuiteName);
 		await allure.subSuite('MDX Rendering Tests');
 		await allure.tags(...sharedTags);
 
-		const { compile } = await import('@mdx-js/mdx');
-		vi.mocked(compile).mockResolvedValueOnce({
-			toString: () => 'return { default: undefined };',
-		} as never);
+		const { run } = await import('@mdx-js/mdx');
+		const error = new Error('Invalid MDX runtime output');
+		vi.mocked(run).mockRejectedValueOnce(error);
 
-		await expect(renderMDX('test')).rejects.toThrow(
-			'Invalid MDX content: compiler output did not provide a default component.'
-		);
+		await expect(renderMDX('test')).rejects.toBe(error);
 	});
 
 	test('passes Unicode and special characters unchanged to the compiler', async () => {

@@ -1,3 +1,4 @@
+import { getRegistryComponents } from 'studiocms:component-registry/runtime';
 import { defaultSchema } from 'rehype-sanitize';
 import type { Plugin } from 'unified';
 
@@ -15,8 +16,27 @@ interface AstAttribute {
 	value?: unknown;
 }
 
+const componentTags = getRegistryComponents().map((component) => component.name.toLowerCase());
+
+export const studiocmsSchema: typeof defaultSchema = {
+	...defaultSchema,
+	tagNames: [...(defaultSchema.tagNames ?? []), ...componentTags],
+	protocols: {
+		cite: [...(defaultSchema.protocols?.cite ?? []), 'storage-file'],
+		href: [...(defaultSchema.protocols?.href ?? []), 'storage-file'],
+		longDesc: [...(defaultSchema.protocols?.longDesc ?? []), 'storage-file'],
+		src: [...(defaultSchema.protocols?.src ?? []), 'storage-file'],
+		poster: [...(defaultSchema.protocols?.poster ?? []), 'storage-file'],
+		'data-src': [...(defaultSchema.protocols?.['data-src'] ?? []), 'storage-file'],
+	},
+	attributes: {
+		...defaultSchema.attributes,
+		span: [...(defaultSchema.attributes?.span ?? []), ['className', /^hljs-/]],
+	},
+};
+
 const forbiddenNodeTypes = new Set(['mdxjsEsm', 'mdxFlowExpression', 'mdxTextExpression']);
-const safeHtmlTags = new Set(defaultSchema.tagNames ?? []);
+const safeHtmlTags = new Set(studiocmsSchema.tagNames ?? []);
 const safeGlobalAttributes = new Set(['class', 'className', 'id', 'lang', 'dir', 'role', 'title']);
 
 const isSafeUrl = (attributeName: string, value: string): boolean => {
@@ -25,7 +45,7 @@ const isSafeUrl = (attributeName: string, value: string): boolean => {
 	const scheme = /^([a-z][a-z\d+.-]*):/i.exec(compactValue)?.[1]?.toLowerCase();
 	if (!scheme) return true;
 
-	const allowedSchemes = defaultSchema.protocols?.[attributeName] ?? [];
+	const allowedSchemes = studiocmsSchema.protocols?.[attributeName] ?? [];
 	return allowedSchemes.includes(scheme);
 };
 
@@ -35,8 +55,8 @@ const validateHtmlElement = (node: AstNode): void => {
 	}
 
 	const rules = [
-		...(defaultSchema.attributes?.['*'] ?? []),
-		...(defaultSchema.attributes?.[node.name] ?? []),
+		...(studiocmsSchema.attributes?.['*'] ?? []),
+		...(studiocmsSchema.attributes?.[node.name] ?? []),
 	];
 
 	for (const attribute of node.attributes ?? []) {
