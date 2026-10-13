@@ -40,6 +40,12 @@ Optional list of recma plugins
 
 Optional: options for remarkRehype
 
+## Content safety
+
+The built-in renderer supports Markdown (including GFM) and safe, static intrinsic HTML elements from the sanitizer's allowlist. It rejects MDX JavaScript expressions, ESM imports/exports, custom React components, dynamic/spread attributes, event handlers, and unsafe URLs. Rendered HTML is sanitized after the configured rehype plugins run.
+
+This is an input restriction, not a general JavaScript sandbox or a defense against resource-exhaustion attacks. Configured Remark, Rehype, and Recma plugins are trusted application code and must be reviewed accordingly. If full MDX execution is required, use a custom renderer and only process content from trusted authors.
+
 ## License
 
 [MIT Licensed](./LICENSE).

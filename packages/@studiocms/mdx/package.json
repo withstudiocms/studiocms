@@ -67,6 +67,7 @@
     "react": "catalog:react",
     "react-dom": "catalog:react",
     "rehype-highlight": "^7.0.2",
+    "rehype-sanitize": "^6.0.0",
     "remark-gfm": "^4.0.1",
     "unified": "^11.0.5"
   },

@@ -15,9 +15,3 @@ export const createMockMDXOptions = (
 	remarkRehypeOptions: {},
 	...overrides,
 });
-
-/**
- * Mock MDX content for testing
- */
-export const createMockMDXContent = (content = '# Hello World\n\nThis is a test MDX content.') =>
-	content;
