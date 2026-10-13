@@ -2,6 +2,7 @@ import { SDKCore } from 'studiocms:sdk';
 import routeConfig from 'virtual:studiocms/route-config';
 import { HttpApiBuilder } from '@effect/platform';
 import { StudioCMSDashboardApiSpec } from '@withstudiocms/api-spec';
+import { CurrentUser } from '@withstudiocms/api-spec/astro-context';
 import { DashboardAPIError } from '@withstudiocms/api-spec/dashboard';
 import { Effect } from 'effect';
 import { sharedDBErrors, sharedPageCollectionErrors } from './_shared.js';
@@ -32,30 +33,39 @@ export const SearchHandlers = HttpApiBuilder.group(
 		handlers.handle('searchList', () =>
 			!dashboardAPIEnabled
 				? Effect.fail(new DashboardAPIError({ error: 'Dashboard API is disabled' }))
-				: SDKCore.pipe(
-						Effect.flatMap((sdk) =>
-							Effect.all([
-								sdk.GET.folderList().pipe(
-									Effect.map((f) => f.map(({ id, name }) => ({ id, name, type: 'folder' })))
-								),
-								sdk.GET.pages(true).pipe(
-									Effect.map((res) =>
-										res.map(({ id, title, slug, draft }) => ({
-											id,
-											name: title,
-											slug,
-											isDraft: draft,
-											type: 'page',
-										}))
-									)
-								),
-							])
+				: CurrentUser.pipe(
+						Effect.flatMap((userData) =>
+							!userData.isLoggedIn || !userData.userPermissionLevel.isEditor
+								? Effect.fail(new DashboardAPIError({ error: 'Unauthorized' }))
+								: Effect.void
 						),
-						Effect.map(([folders, pages]) => [...folders, ...pages] as SearchItem[]),
-						Effect.catchTags({
-							...sharedDBErrors,
-							...sharedPageCollectionErrors,
-						})
+						Effect.andThen(
+							SDKCore.pipe(
+								Effect.flatMap((sdk) =>
+									Effect.all([
+										sdk.GET.folderList().pipe(
+											Effect.map((f) => f.map(({ id, name }) => ({ id, name, type: 'folder' })))
+										),
+										sdk.GET.pages(true).pipe(
+											Effect.map((res) =>
+												res.map(({ id, title, slug, draft }) => ({
+													id,
+													name: title,
+													slug,
+													isDraft: draft,
+													type: 'page',
+												}))
+											)
+										),
+									])
+								),
+								Effect.map(([folders, pages]) => [...folders, ...pages] as SearchItem[]),
+								Effect.catchTags({
+									...sharedDBErrors,
+									...sharedPageCollectionErrors,
+								})
+							)
+						)
 					)
 		)
 );
