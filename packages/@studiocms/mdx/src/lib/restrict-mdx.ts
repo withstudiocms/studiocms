@@ -20,7 +20,7 @@ const componentTags = getRegistryComponents().map((component) => component.name.
 
 const componentAttributes: Record<string, string[]> = getRegistryComponents().reduce(
 	(acc, component) => {
-		acc[component.name.toLowerCase()] = component.props.map((prop) => prop.name.toLowerCase());
+		acc[component.name.toLowerCase()] = component.props.map((prop) => prop.name);
 		return acc;
 	},
 	{} as Record<string, string[]>
