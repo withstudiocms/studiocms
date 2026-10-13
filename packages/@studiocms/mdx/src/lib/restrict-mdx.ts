@@ -18,6 +18,14 @@ interface AstAttribute {
 
 const componentTags = getRegistryComponents().map((component) => component.name.toLowerCase());
 
+const componentAttributes: Record<string, string[]> = getRegistryComponents().reduce(
+	(acc, component) => {
+		acc[component.name.toLowerCase()] = component.props.map((prop) => prop.name.toLowerCase());
+		return acc;
+	},
+	{} as Record<string, string[]>
+);
+
 export const studiocmsSchema: typeof defaultSchema = {
 	...defaultSchema,
 	tagNames: [...(defaultSchema.tagNames ?? []), ...componentTags],
@@ -31,6 +39,7 @@ export const studiocmsSchema: typeof defaultSchema = {
 	},
 	attributes: {
 		...defaultSchema.attributes,
+		...componentAttributes,
 		span: [...(defaultSchema.attributes?.span ?? []), ['className', /^hljs-/]],
 	},
 };
