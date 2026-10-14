@@ -1,6 +1,6 @@
 {
   "name": "@withstudiocms/internal_helpers",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Internal helper utilities for StudioCMS",
   "author": {
     "name": "withstudiocms",
@@ -153,7 +153,7 @@
     "mdast-util-to-string": "^4.0.0",
     "unist-util-visit": "^5.1.0",
     "tinyexec": "catalog:",
-		"satteri": "catalog:"
+    "satteri": "catalog:"
   },
   "devDependencies": {
     "@scure/base": "^2.4.0",

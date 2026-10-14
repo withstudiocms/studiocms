@@ -1,5 +1,16 @@
 # @studiocms/markdown-remark
 
+## 1.6.1
+
+### Patch Changes
+
+- [#1788](https://github.com/withstudiocms/studiocms/pull/1788) [`c51920d`](https://github.com/withstudiocms/studiocms/commit/c51920dc59eee9eab7b6ed1bec128a42e44b2bf4) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Fixes path resolvers that would lead to failing to process/load on windows.
+
+- [#1776](https://github.com/withstudiocms/studiocms/pull/1776) [`54ecc78`](https://github.com/withstudiocms/studiocms/commit/54ecc787363e9343165f56c7052b7c86b5b9562e) Thanks [@renovate](https://github.com/apps/renovate)! - Update all non-major dependencies
+
+- Updated dependencies [[`a75dafe`](https://github.com/withstudiocms/studiocms/commit/a75dafe4f909494cdba3269e49e1cc8bb44e50b5)]:
+  - @withstudiocms/internal_helpers@0.5.0
+
 ## 1.6.0
 
 ### Minor Changes

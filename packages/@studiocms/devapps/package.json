@@ -1,6 +1,6 @@
 {
   "name": "@studiocms/devapps",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "Devapps for StudioCMS Astro projects, including a WordPress importer.",
   "author": {
     "name": "withstudiocms",

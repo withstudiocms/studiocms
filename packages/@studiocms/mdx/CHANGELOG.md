@@ -1,5 +1,16 @@
 # @studiocms/mdx
 
+## 0.5.0
+
+### Minor Changes
+
+- [#1789](https://github.com/withstudiocms/studiocms/pull/1789) [`5bf6e11`](https://github.com/withstudiocms/studiocms/commit/5bf6e11a0fd42968a37f19fc0c6ec99e4bb90a01) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Restricts the built-in renderer to Markdown/GFM syntax, rejects executable MDX constructs, and sanitizes rendered HTML. Use a custom renderer for full MDX execution.
+
+### Patch Changes
+
+- Updated dependencies [[`a75dafe`](https://github.com/withstudiocms/studiocms/commit/a75dafe4f909494cdba3269e49e1cc8bb44e50b5)]:
+  - @withstudiocms/internal_helpers@0.5.0
+
 ## 0.4.1
 
 ### Patch Changes
