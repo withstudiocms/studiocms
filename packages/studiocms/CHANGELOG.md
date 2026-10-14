@@ -1,5 +1,27 @@
 # studiocms
 
+## 0.7.0
+
+### Minor Changes
+
+- [#1749](https://github.com/withstudiocms/studiocms/pull/1749) [`a75dafe`](https://github.com/withstudiocms/studiocms/commit/a75dafe4f909494cdba3269e49e1cc8bb44e50b5) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Migrates from Micromark to Satteri for dashboard frontend, and SDK parsing of markdown.
+
+  Note: This does not alter the Markdown renderer associated with pages, as that is handled via StudioCMS's plugin system.
+
+### Patch Changes
+
+- [#1788](https://github.com/withstudiocms/studiocms/pull/1788) [`c51920d`](https://github.com/withstudiocms/studiocms/commit/c51920dc59eee9eab7b6ed1bec128a42e44b2bf4) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Fixes path resolvers that would lead to failing to process/load on windows.
+
+- [#1781](https://github.com/withstudiocms/studiocms/pull/1781) [`e9be357`](https://github.com/withstudiocms/studiocms/commit/e9be3574ceb3a350b964f4ff8013fdd8fb351a3e) Thanks [@renovate](https://github.com/apps/renovate)! - Update studiocms Dependencies
+
+- [#1792](https://github.com/withstudiocms/studiocms/pull/1792) [`2c211b7`](https://github.com/withstudiocms/studiocms/commit/2c211b748f571a501dba6dd429eb978f4a9ec753) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Adds current user check to api search list.
+
+- Updated dependencies [[`a75dafe`](https://github.com/withstudiocms/studiocms/commit/a75dafe4f909494cdba3269e49e1cc8bb44e50b5), [`c51920d`](https://github.com/withstudiocms/studiocms/commit/c51920dc59eee9eab7b6ed1bec128a42e44b2bf4), [`2dc6408`](https://github.com/withstudiocms/studiocms/commit/2dc6408f802ab6615361eb965591168bbea2b943)]:
+  - @withstudiocms/internal_helpers@0.5.0
+  - @withstudiocms/component-registry@0.2.2
+  - @withstudiocms/effect@0.5.3
+  - @withstudiocms/auth-kit@0.2.2
+
 ## 0.6.1
 
 ### Patch Changes

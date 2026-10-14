@@ -1,5 +1,14 @@
 # @studiocms/oauth
 
+## 0.1.2
+
+### Patch Changes
+
+- Updated dependencies [[`a75dafe`](https://github.com/withstudiocms/studiocms/commit/a75dafe4f909494cdba3269e49e1cc8bb44e50b5), [`2dc6408`](https://github.com/withstudiocms/studiocms/commit/2dc6408f802ab6615361eb965591168bbea2b943)]:
+  - @withstudiocms/internal_helpers@0.5.0
+  - @withstudiocms/effect@0.5.3
+  - @withstudiocms/auth-kit@0.2.2
+
 ## 0.1.1
 
 ### Patch Changes
