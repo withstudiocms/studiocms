@@ -1266,7 +1266,7 @@ importers:
   templates/blog-mysql:
     dependencies:
       '@astrojs/node':
-        specifier: ^11.1.7
+        specifier: ^11.1.8
         version: 11.1.9(astro@7.4.1(@types/node@22.20.1)(esbuild@0.28.1)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1))
       '@effect/platform':
         specifier: ^0.97.2
@@ -1281,13 +1281,13 @@ importers:
         specifier: ^0.5.1
         version: link:../../packages/@studiocms/md
       astro:
-        specifier: ^7.3.8
+        specifier: ^7.4.0
         version: 7.4.1(@types/node@22.20.1)(esbuild@0.28.1)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1)
       effect:
         specifier: ^3.22.2
         version: 3.22.2
       mysql2:
-        specifier: ^3.24.5
+        specifier: ^3.24.6
         version: 3.24.6(@types/node@22.20.1)
       sharp:
         specifier: ^0.34.3
