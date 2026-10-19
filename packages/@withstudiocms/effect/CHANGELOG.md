@@ -1,5 +1,11 @@
 # @withstudiocms/effect
 
+## 0.5.3
+
+### Patch Changes
+
+- [#1779](https://github.com/withstudiocms/studiocms/pull/1779) [`2dc6408`](https://github.com/withstudiocms/studiocms/commit/2dc6408f802ab6615361eb965591168bbea2b943) Thanks [@renovate](https://github.com/apps/renovate)! - Update dependency nodemailer to ^10.0.16
+
 ## 0.5.2
 
 ### Patch Changes

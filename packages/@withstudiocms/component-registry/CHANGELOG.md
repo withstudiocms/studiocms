@@ -1,5 +1,15 @@
 # @withstudiocms/component-registry
 
+## 0.2.2
+
+### Patch Changes
+
+- [#1788](https://github.com/withstudiocms/studiocms/pull/1788) [`c51920d`](https://github.com/withstudiocms/studiocms/commit/c51920dc59eee9eab7b6ed1bec128a42e44b2bf4) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Fixes path resolvers that would lead to failing to process/load on windows.
+
+- Updated dependencies [[`a75dafe`](https://github.com/withstudiocms/studiocms/commit/a75dafe4f909494cdba3269e49e1cc8bb44e50b5), [`2dc6408`](https://github.com/withstudiocms/studiocms/commit/2dc6408f802ab6615361eb965591168bbea2b943)]:
+  - @withstudiocms/internal_helpers@0.5.0
+  - @withstudiocms/effect@0.5.3
+
 ## 0.2.1
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @studiocms/html
 
+## 0.4.3
+
+### Patch Changes
+
+- [#1780](https://github.com/withstudiocms/studiocms/pull/1780) [`2f20514`](https://github.com/withstudiocms/studiocms/commit/2f2051491777616a93ad282dece6b5e827ac83e8) Thanks [@renovate](https://github.com/apps/renovate)! - Update dependency katex to ^0.19.0
+
 ## 0.4.2
 
 ### Patch Changes

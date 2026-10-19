@@ -1,5 +1,14 @@
 # @studiocms/devapps
 
+## 0.4.2
+
+### Patch Changes
+
+- [#1772](https://github.com/withstudiocms/studiocms/pull/1772) [`3f66a0c`](https://github.com/withstudiocms/studiocms/commit/3f66a0ce08e62090adc16881114b73a246b0e3d2) Thanks [@renovate](https://github.com/apps/renovate)! - Update @studiocms Integration Dependencies
+
+- Updated dependencies [[`a75dafe`](https://github.com/withstudiocms/studiocms/commit/a75dafe4f909494cdba3269e49e1cc8bb44e50b5)]:
+  - @withstudiocms/internal_helpers@0.5.0
+
 ## 0.4.1
 
 ### Patch Changes
