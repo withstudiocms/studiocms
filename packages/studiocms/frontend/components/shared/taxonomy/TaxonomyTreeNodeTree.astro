@@ -1,0 +1,40 @@
+---
+import type { UiLanguageKeys } from 'studiocms:i18n';
+import type { TaxonomyNode, TaxonomyTreeProps } from './shared.js';
+import TaxonomyTreeLeaf from './TaxonomyTreeLeaf.astro';
+import TaxonomyTreeNode from './TaxonomyTreeNode.astro';
+
+interface Props extends TaxonomyTreeProps {
+	lang: UiLanguageKeys;
+}
+
+const { data, depth = 0, ...props } = Astro.props;
+
+/**
+ * Recursively sorts a tree by name (A to Z).
+ * @param data - The array of taxonomy nodes to sort.
+ * @returns A new array with the sorted structure.
+ */
+function sortTree(data: TaxonomyNode[]): TaxonomyNode[] {
+	return data
+		.map((node) => ({
+			...node,
+			children: sortTree(node.children),
+		}))
+		.sort((a, b) => a.name.localeCompare(b.name));
+}
+
+const sortedData = sortTree(data);
+---
+
+{
+    sortedData.map((node) =>
+        node.children.length === 0 ? (
+            <TaxonomyTreeLeaf node={node} depth={depth} {...props} />
+        ) : (
+            <TaxonomyTreeNode node={node} depth={depth} {...props}>
+                <Astro.self data={node.children} depth={depth + 1} {...props} />
+            </TaxonomyTreeNode>
+        ),
+    )
+}

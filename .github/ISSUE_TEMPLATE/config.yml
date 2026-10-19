@@ -1,0 +1,11 @@
+blank_issues_enabled: true
+contact_links:
+  - name: 🚀 Feature Request
+    url: https://github.com/withstudiocms/roadmap/discussions
+    about: Suggest a new feature or improvement for StudioCMS
+  - name: 💁 Support
+    url: https://chat.studiocms.dev
+    about: "This issue tracker is not for support questions. Join us on Discord for assistance!"
+  - name: 👾 Chat
+    url: https://chat.studiocms.dev
+    about: Our Discord server is active, come join us!
