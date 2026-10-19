@@ -1,1 +1,1 @@
-[{"name":"os_platform","values":["linux"]},{"name":"os_release","values":["6.17.0-1022-azure"]},{"name":"os_version","values":["#22-Ubuntu SMP Mon Jul 27 17:24:03 UTC 2026"]},{"name":"node_version","values":["v22.20.0"]}]
+[{"name":"os_platform","values":["linux"]},{"name":"os_release","values":["7.0.0-1017-azure"]},{"name":"os_version","values":["#17~24.04.1-Ubuntu SMP PREEMPT Thu Sep 24 18:46:57 UTC 2026"]},{"name":"node_version","values":["v22.20.0"]}]
