@@ -9,7 +9,6 @@ import loadPanels from './grapesBlocks/panels/index.js';
 import loadRichTextEditor from './grapesBlocks/rte/index.js';
 import loadSelectors from './grapesBlocks/selectors/index.js';
 import loadTraits from './grapesBlocks/traits/index.js';
-import loadTuiImageEditor from './grapesBlocks/tuiImageEditor/index.js';
 import type { GrapesBlocksOptions, RequiredGrapesBlocksOptions } from './grapesBlocks/types.js';
 
 const grapesBlocks: Plugin<Partial<GrapesBlocksOptions>> = (editor, opts = {}) => {
@@ -27,9 +26,6 @@ const grapesBlocks: Plugin<Partial<GrapesBlocksOptions>> = (editor, opts = {}) =
 
 	// Load the rich text editor plugin
 	loadRichTextEditor(editor, options.rteOpts);
-
-	// Load TUI Image Editor
-	loadTuiImageEditor(editor);
 };
 
 export default grapesBlocks;

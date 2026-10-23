@@ -66,8 +66,7 @@
   "type": "module",
   "dependencies": {
     "deepmerge-ts": "catalog:",
-    "grapesjs": "^0.23.8",
-    "tui-image-editor": "^3.15.3"
+    "grapesjs": "^0.23.8"
   },
   "devDependencies": {
     "@studiocms/ui": "catalog:studiocms",
