@@ -1,5 +1,15 @@
 # @studiocms/wysiwyg
 
+## 0.5.0
+
+### Minor Changes
+
+- [#1808](https://github.com/withstudiocms/studiocms/pull/1808) [`2f7c12b`](https://github.com/withstudiocms/studiocms/commit/2f7c12bce456e9fe7146242e25c8ccc06ce78a12) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Removes TUI-Image-Editor since it has been deprecated
+
+### Patch Changes
+
+- [#1794](https://github.com/withstudiocms/studiocms/pull/1794) [`76f33c1`](https://github.com/withstudiocms/studiocms/commit/76f33c15ac17af5e820a5a76b254e536b975371e) Thanks [@renovate](https://github.com/apps/renovate)! - Update dependency grapesjs to ^0.23.8
+
 ## 0.4.2
 
 ### Patch Changes
