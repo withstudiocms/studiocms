@@ -1,5 +1,11 @@
 # studiocms
 
+## 0.7.1
+
+### Patch Changes
+
+- [#1801](https://github.com/withstudiocms/studiocms/pull/1801) [`965e66a`](https://github.com/withstudiocms/studiocms/commit/965e66aee39ead95c00e178c19fd7a70748cc2b1) Thanks [@renovate](https://github.com/apps/renovate)! - Update studiocms Dependencies
+
 ## 0.7.0
 
 ### Minor Changes

@@ -1,5 +1,11 @@
 # @studiocms/markdown-remark
 
+## 1.6.2
+
+### Patch Changes
+
+- [#1800](https://github.com/withstudiocms/studiocms/pull/1800) [`7833223`](https://github.com/withstudiocms/studiocms/commit/7833223afbddccbe6cae5d06e17ecc86b013933e) Thanks [@renovate](https://github.com/apps/renovate)! - Update all non-major dependencies
+
 ## 1.6.1
 
 ### Patch Changes

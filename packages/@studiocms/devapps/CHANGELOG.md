@@ -1,5 +1,11 @@
 # @studiocms/devapps
 
+## 0.4.3
+
+### Patch Changes
+
+- [#1795](https://github.com/withstudiocms/studiocms/pull/1795) [`4edca0e`](https://github.com/withstudiocms/studiocms/commit/4edca0e85f91d85b78b79689a872be8235707681) Thanks [@renovate](https://github.com/apps/renovate)! - Update dependency sanitize-html to ^2.18.1
+
 ## 0.4.2
 
 ### Patch Changes
