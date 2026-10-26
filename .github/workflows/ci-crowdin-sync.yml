@@ -52,7 +52,7 @@ jobs:
           token: ${{ steps.bot-token.outputs.token }}
 
       - name: Crowdin pull
-        uses: crowdin/github-action@72955432d4aa4f6dd64cf17eeb88dd34d6ba064c # v3.4.0
+        uses: crowdin/github-action@959dc74ac104447731cba99a016f85d0ae719788 # v3.5.0
         id: crowdin-pull
         with:
           upload_sources: false
@@ -87,7 +87,7 @@ jobs:
           persist-credentials: false
 
       - name: Crowdin push
-        uses: crowdin/github-action@72955432d4aa4f6dd64cf17eeb88dd34d6ba064c # v3.4.0
+        uses: crowdin/github-action@959dc74ac104447731cba99a016f85d0ae719788 # v3.5.0
         with:
           upload_sources: true
           download_translations: false
