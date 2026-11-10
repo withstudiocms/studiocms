@@ -339,11 +339,11 @@ importers:
         specifier: catalog:effect
         version: 3.22.2
       katex:
-        specifier: ^0.19.0
-        version: 0.19.0
+        specifier: ^0.19.1
+        version: 0.19.1
       suneditor:
-        specifier: ^3.3.3
-        version: 3.3.3
+        specifier: ^3.4.3
+        version: 3.4.3
     devDependencies:
       '@types/codemirror':
         specifier: 5.60.16
@@ -3608,6 +3608,9 @@ packages:
   '@smithy/core@3.35.2':
     resolution: {integrity: sha512-ejTukBuP/Pg3t9N8Ux+0zKsXeHWm7p6W3HbXFOyltKasSxZwCFmvTut7kBdZSCF3m9y1bXXyVu6p2xuMFcsTyQ==}
     engines: {node: '>=18.0.0'}
+    deprecated: |-
+      Deprecated due to a bug in custom logger data redaction. Upgrade to the latest version. If you used a custom logger with this
+        version, review your logs and rotate any credentials or other secrets. See https://github.com/aws/aws-sdk-js-v3/issues/8393.
 
   '@smithy/credential-provider-imds@4.5.2':
     resolution: {integrity: sha512-A9uSdn72ozbRUSit0eib0TW7nXuNPlaeM0zcGkJ+nE6tFcSDbnmtwoxbTCFBukVQcszDAyvsd7+rTduPTXpygg==}
@@ -5210,8 +5213,8 @@ packages:
   jsonfile@4.0.0:
     resolution: {integrity: sha512-m6F1R3z8jjlf2imQHS2Qez5sjKWQzbuuhuJ/FKYFRZvPE3PuHcSMVZzfsLhGVOkfd20obL5SWEBew5ShlquNxg==}
 
-  katex@0.19.0:
-    resolution: {integrity: sha512-v6Tznz3zJ7u3niRCoDTsumM2+HA2XXcCu+WAacCeHD2z3p9A9Ks987o5FzfTGBN0e8A0vjEgIDvLbICrXpdw/Q==}
+  katex@0.19.1:
+    resolution: {integrity: sha512-jG8uKntjSEcm2EpQOh0XturpPuuC9r3Sq5HLHdsFdWZT27E672SF19QEi+of0/YeOy15lDgRhKvr5614uRrEfA==}
     hasBin: true
 
   kind-of@6.0.3:
@@ -6407,8 +6410,8 @@ packages:
   style-to-object@1.0.14:
     resolution: {integrity: sha512-LIN7rULI0jBscWQYaSswptyderlarFkjQ+t79nzty8tcIAceVomEVlLzH5VP4Cmsv6MtKhs7qaAiwlcp+Mgaxw==}
 
-  suneditor@3.3.3:
-    resolution: {integrity: sha512-p/e8ymutQOVDVfGnVo3kVAltkshQdfIDWoR/akMRGg4s1OUuz3eYQGMwd4HbER/oojXLV6YbRrRSQC6hHKSFvA==}
+  suneditor@3.4.3:
+    resolution: {integrity: sha512-j92HO5IONjqUmFxbu80U0bmgrJ2ALmrpy3JcgXEis97TDAnYRjkXBZcDBkX/gWyhiOoBLlC1kqcUxP2DTIoIFw==}
     engines: {node: '>=14.0.0'}
 
   supports-color@10.2.2:
@@ -10939,7 +10942,7 @@ snapshots:
     optionalDependencies:
       graceful-fs: 4.2.11
 
-  katex@0.19.0:
+  katex@0.19.1:
     dependencies:
       commander: 15.0.0
 
@@ -12543,7 +12546,7 @@ snapshots:
     dependencies:
       inline-style-parser: 0.2.7
 
-  suneditor@3.3.3: {}
+  suneditor@3.4.3: {}
 
   supports-color@10.2.2: {}
 
