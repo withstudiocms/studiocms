@@ -70,7 +70,7 @@ export const availableTranslationFileKeys = Object.keys(translationFiles);
  *   - `count`: The total number of string values found.
  *   - `emptyStrings`: The number of string values that are empty or contain only whitespace.
  */
-function checkStrings(record: unknown): { count: number; emptyStrings: number } {
+export function checkStrings(record: unknown): { count: number; emptyStrings: number } {
 	if (typeof record !== 'object' || record === null) return { count: 0, emptyStrings: 0 };
 	let count = 0;
 	let emptyStrings = 0;
@@ -98,11 +98,27 @@ const MISSING_RATIO_THRESHOLD = 0.1 as const; // 10%
  *   - `emptyStrings`: The number of empty strings in the translation file.
  * @returns `true` if the ratio of empty strings is less than or equal to 10%, otherwise `false`.
  */
-function checkThreshold(opt: { count: number; emptyStrings: number }) {
+export function checkThreshold(opt: { count: number; emptyStrings: number }) {
 	const threshold = MISSING_RATIO_THRESHOLD;
 	if (opt.count === 0) return false;
 	return opt.emptyStrings / opt.count <= threshold;
 }
+
+export const buildAvailableTranslations = (
+	availableKeys: string[],
+	translationFiles: Record<string, StudioCMSTranslationRecord>
+) => {
+	const results: Record<string, StudioCMSTranslationRecord> = {};
+
+	for (const key of availableKeys) {
+		const translation = translationFiles[key];
+		const result = checkStrings(translation);
+		if (!checkThreshold(result)) continue;
+		results[key] = translation;
+	}
+
+	return results;
+};
 
 /**
  * Loads and returns the available server-side UI translations, excluding English ('en').
@@ -112,25 +128,11 @@ function checkThreshold(opt: { count: number; emptyStrings: number }) {
  *
  * @returns {ServerUiTranslations} An object mapping language keys to their translation records.
  */
-export const availableTranslations: ServerUiTranslations = (() => {
-	const results: ServerUiTranslations = {};
-
-	const translationKeys = availableTranslationFileKeys.filter((key) => key !== 'en');
-
-	for (const key of translationKeys) {
-		const translation = translationFiles[key];
-
-		const result = checkStrings(translation);
-
-		if (!checkThreshold(result)) {
-			continue;
-		}
-
-		results[key] = translation;
-	}
-
-	return results;
-})();
+export const availableTranslations: ServerUiTranslations = (() =>
+	buildAvailableTranslations(
+		availableTranslationFileKeys.filter((key) => key !== 'en'),
+		translationFiles
+	))();
 
 /**
  * Restored Available Translations which includes the default

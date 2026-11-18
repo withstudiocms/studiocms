@@ -1,4 +1,7 @@
 import type { APIContext } from 'astro';
+import type { LanguageFlagIdentifier } from '../src/virtuals/i18n/config';
+import { translationFlagKeyOverrides } from '../src/virtuals/i18n/overrides';
+import { buildAvailableTranslations } from '../src/virtuals/i18n/v-files';
 import { StudioCMSRoutes } from '../src/virtuals/lib/routeMap';
 
 export const parentSuiteName = 'studiocms Tests';
@@ -64,3 +67,94 @@ export const MockAstroLocals = (): APIContext['locals'] => {
 		},
 	};
 };
+
+/**
+ * Dynamically imports the base English translations for server-side internationalization.
+ *
+ * @remarks
+ * This constant loads the default English translation JSON file asynchronously at runtime.
+ * It is intended to be used as the base set of translations for the server.
+ *
+ * - These translations are also converted to a client-friendly format.
+ */
+export const baseServerTranslations = (
+	await import('../src/virtuals/i18n/translations/en.json', {
+		with: { type: 'json' },
+	})
+).default;
+
+/**
+ * Represents a translation record for StudioCMS.
+ *
+ * @property displayName - The human-readable name for the translation.
+ * @property translations - The translation data in the form of a ComponentsJSON object.
+ */
+export type StudioCMSTranslationRecord = typeof baseServerTranslations;
+
+/**
+ * A record mapping translation file keys (e.g., 'en', 'fr') to their corresponding translation data.
+ */
+export const translationFiles: Record<string, StudioCMSTranslationRecord> = {
+	// Base translations
+	en: baseServerTranslations,
+
+	// Additional translations can be added here
+	de: (
+		await import('../src/virtuals/i18n/translations/de.json', {
+			with: { type: 'json' },
+		})
+	).default,
+	es: (
+		await import('../src/virtuals/i18n/translations/es.json', {
+			with: { type: 'json' },
+		})
+	).default,
+	fr: (
+		await import('../src/virtuals/i18n/translations/fr.json', {
+			with: { type: 'json' },
+		})
+	).default,
+	// @ts-expect-error There is a type mismatch in the Hindi translation file. (likely out of sync with the base definition)
+	hi: (
+		await import('../src/virtuals/i18n/translations/hi.json', {
+			with: { type: 'json' },
+		})
+	).default,
+	nl: (
+		await import('../src/virtuals/i18n/translations/nl.json', {
+			with: { type: 'json' },
+		})
+	).default,
+	no: (
+		await import('../src/virtuals/i18n/translations/no.json', {
+			with: { type: 'json' },
+		})
+	).default,
+	zh: (
+		await import('../src/virtuals/i18n/translations/zh.json', {
+			with: { type: 'json' },
+		})
+	).default,
+};
+
+/**
+ * An array of translation file keys derived from `availableTranslationFiles`.
+ *
+ * @example
+ * // availableTranslationFileKeys = ['en', 'fr']
+ */
+export const availableTranslationFileKeys = Object.keys(translationFiles);
+
+export const availableTranslations = (() =>
+	buildAvailableTranslations(
+		availableTranslationFileKeys.filter((key) => key !== 'en'),
+		translationFiles
+	))();
+
+export const availableTranslationsKeys = ['en', ...Object.keys(availableTranslations)];
+
+export const currentFlags: Array<{ key: string; flag: LanguageFlagIdentifier }> =
+	availableTranslationsKeys.map((key) => {
+		const flagKey: LanguageFlagIdentifier = translationFlagKeyOverrides[key] || `lang-${key}`;
+		return { key, flag: flagKey };
+	});
