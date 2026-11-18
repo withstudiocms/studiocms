@@ -15,6 +15,7 @@
 
 import type { LanguageFlagIdentifier, ServerUiTranslations } from './config.js';
 import { translationFlagKeyOverrides } from './overrides.js';
+import { buildAvailableTranslations } from './utils.js';
 
 /**
  * Dynamically imports the base English translations for server-side internationalization.
@@ -62,65 +63,6 @@ export const translationFiles: Record<string, StudioCMSTranslationRecord> = {
 export const availableTranslationFileKeys = Object.keys(translationFiles);
 
 /**
- * Recursively checks a record object for string values and counts the total number of strings
- * and the number of empty strings (strings that are empty or contain only whitespace).
- *
- * @param record - The object to check, which may contain nested objects and string values.
- * @returns An object containing:
- *   - `count`: The total number of string values found.
- *   - `emptyStrings`: The number of string values that are empty or contain only whitespace.
- */
-export function checkStrings(record: unknown): { count: number; emptyStrings: number } {
-	if (typeof record !== 'object' || record === null) return { count: 0, emptyStrings: 0 };
-	let count = 0;
-	let emptyStrings = 0;
-	for (const value of Object.values(record as Record<string, unknown>)) {
-		if (typeof value === 'string') {
-			count++;
-			if (value.trim() === '') emptyStrings++;
-		} else if (typeof value === 'object' && value !== null) {
-			const { count: c, emptyStrings: e } = checkStrings(value);
-			count += c;
-			emptyStrings += e;
-		}
-	}
-	return { count, emptyStrings };
-}
-
-const MISSING_RATIO_THRESHOLD = 0.1 as const; // 10%
-
-/**
- * Checks whether the ratio of empty strings to total strings in a translation file
- * is within an acceptable threshold.
- *
- * @param opt - An object containing:
- *   - `count`: The total number of strings in the translation file.
- *   - `emptyStrings`: The number of empty strings in the translation file.
- * @returns `true` if the ratio of empty strings is less than or equal to 10%, otherwise `false`.
- */
-export function checkThreshold(opt: { count: number; emptyStrings: number }) {
-	const threshold = MISSING_RATIO_THRESHOLD;
-	if (opt.count === 0) return false;
-	return opt.emptyStrings / opt.count <= threshold;
-}
-
-export const buildAvailableTranslations = (
-	availableKeys: string[],
-	translationFiles: Record<string, StudioCMSTranslationRecord>
-) => {
-	const results: Record<string, StudioCMSTranslationRecord> = {};
-
-	for (const key of availableKeys) {
-		const translation = translationFiles[key];
-		const result = checkStrings(translation);
-		if (!checkThreshold(result)) continue;
-		results[key] = translation;
-	}
-
-	return results;
-};
-
-/**
  * Loads and returns the available server-side UI translations, excluding English ('en').
  * For each translation file key, reads the corresponding JSON file, checks its string values,
  * and includes it in the results only if it passes the threshold check.
@@ -132,7 +74,9 @@ export const availableTranslations: ServerUiTranslations = (() =>
 	buildAvailableTranslations(
 		availableTranslationFileKeys.filter((key) => key !== 'en'),
 		translationFiles
-	))();
+		// We cast this to ServerUiTranslations because buildAvailableTranslations returns a TranslationRecord,
+		// but we know it will conform to the ServerUiTranslations
+	) as ServerUiTranslations)();
 
 /**
  * Restored Available Translations which includes the default

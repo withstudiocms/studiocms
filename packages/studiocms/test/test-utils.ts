@@ -1,7 +1,7 @@
 import type { APIContext } from 'astro';
 import type { LanguageFlagIdentifier } from '../src/virtuals/i18n/config';
 import { translationFlagKeyOverrides } from '../src/virtuals/i18n/overrides';
-import { buildAvailableTranslations } from '../src/virtuals/i18n/v-files';
+import { buildAvailableTranslations } from '../src/virtuals/i18n/utils';
 import { StudioCMSRoutes } from '../src/virtuals/lib/routeMap';
 
 export const parentSuiteName = 'studiocms Tests';
