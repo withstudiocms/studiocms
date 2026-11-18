@@ -8,6 +8,9 @@
 
 import config from 'studiocms:i18n/config';
 import { availableTranslations, currentFlags } from 'studiocms:i18n/virtual';
+import type { LanguageFlagIdentifier } from './utils';
+
+export type { LanguageFlagIdentifier };
 
 /**
  * The default language for the StudioCMS app.
@@ -100,8 +103,6 @@ export type ServerUiTranslations = Record<UiTranslationKey, StudioCMSTranslation
  * @typeParam ComponentsJSON - The shape of the translation data for each component.
  */
 export type ClientUiTranslations = Record<UiTranslationKey, ComponentsJSON>;
-
-export type LanguageFlagIdentifier = `lang-${string}` | string;
 
 /**
  * Represents an option for selecting a language in the UI.

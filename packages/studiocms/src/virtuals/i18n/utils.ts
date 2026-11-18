@@ -5,6 +5,8 @@ export interface TranslationRecord {
 	};
 }
 
+export type LanguageFlagIdentifier = `lang-${string}` | string;
+
 /**
  * Builds a record of available translations that pass the threshold check.
  *
