@@ -13,20 +13,10 @@
  * `packages/studiocms/src/virtuals/i18n/translations/` on https://github.com/withstudiocms/studiocms
  */
 
+import baseServerTranslations from 'studiocms/translations/en';
 import type { LanguageFlagIdentifier, ServerUiTranslations } from './config.js';
 import { translationFlagKeyOverrides } from './overrides.js';
 import { buildAvailableTranslations } from './utils.js';
-
-/**
- * Dynamically imports the base English translations for server-side internationalization.
- *
- * @remarks
- * This constant loads the default English translation JSON file asynchronously at runtime.
- * It is intended to be used as the base set of translations for the server.
- *
- * - These translations are also converted to a client-friendly format.
- */
-export const baseServerTranslations = (await import('./translations/en.json')).default;
 
 /**
  * Represents a translation record for StudioCMS.
@@ -44,14 +34,11 @@ export const translationFiles: Record<string, StudioCMSTranslationRecord> = {
 	en: baseServerTranslations,
 
 	// Additional translations can be added here
-	de: (await import('./translations/de.json')).default,
-	es: (await import('./translations/es.json')).default,
-	fr: (await import('./translations/fr.json')).default,
-	// @ts-expect-error There is a type mismatch in the Hindi translation file. (likely out of sync with the base definition)
-	hi: (await import('./translations/hi.json')).default,
-	nl: (await import('./translations/nl.json')).default,
-	no: (await import('./translations/no.json')).default,
-	zh: (await import('./translations/zh.json')).default,
+	de: (await import('studiocms/translations/de')) as unknown as StudioCMSTranslationRecord,
+	es: (await import('studiocms/translations/es')) as unknown as StudioCMSTranslationRecord,
+	fr: (await import('studiocms/translations/fr')) as unknown as StudioCMSTranslationRecord,
+	no: (await import('studiocms/translations/no')) as unknown as StudioCMSTranslationRecord,
+	zh: (await import('studiocms/translations/zh')) as unknown as StudioCMSTranslationRecord,
 };
 
 /**

@@ -1,5 +1,6 @@
 import type { APIContext } from 'astro';
 import { translationFlagKeyOverrides } from '../src/virtuals/i18n/overrides';
+import baseServerTranslations from '../src/virtuals/i18n/translations/en.ts';
 import {
 	buildAvailableTranslations,
 	type LanguageFlagIdentifier,
@@ -79,11 +80,7 @@ export const MockAstroLocals = (): APIContext['locals'] => {
  *
  * - These translations are also converted to a client-friendly format.
  */
-export const baseServerTranslations = (
-	await import('../src/virtuals/i18n/translations/en.json', {
-		with: { type: 'json' },
-	})
-).default;
+// export const baseServerTranslations = await import('../src/virtuals/i18n/translations/en.ts');
 
 /**
  * Represents a translation record for StudioCMS.
@@ -101,42 +98,21 @@ export const translationFiles: Record<string, StudioCMSTranslationRecord> = {
 	en: baseServerTranslations,
 
 	// Additional translations can be added here
-	de: (
-		await import('../src/virtuals/i18n/translations/de.json', {
-			with: { type: 'json' },
-		})
-	).default,
-	es: (
-		await import('../src/virtuals/i18n/translations/es.json', {
-			with: { type: 'json' },
-		})
-	).default,
-	fr: (
-		await import('../src/virtuals/i18n/translations/fr.json', {
-			with: { type: 'json' },
-		})
-	).default,
-	// @ts-expect-error There is a type mismatch in the Hindi translation file. (likely out of sync with the base definition)
-	hi: (
-		await import('../src/virtuals/i18n/translations/hi.json', {
-			with: { type: 'json' },
-		})
-	).default,
-	nl: (
-		await import('../src/virtuals/i18n/translations/nl.json', {
-			with: { type: 'json' },
-		})
-	).default,
-	no: (
-		await import('../src/virtuals/i18n/translations/no.json', {
-			with: { type: 'json' },
-		})
-	).default,
-	zh: (
-		await import('../src/virtuals/i18n/translations/zh.json', {
-			with: { type: 'json' },
-		})
-	).default,
+	de: (await import(
+		'../src/virtuals/i18n/translations/de.ts'
+	)) as unknown as StudioCMSTranslationRecord,
+	es: (await import(
+		'../src/virtuals/i18n/translations/es.ts'
+	)) as unknown as StudioCMSTranslationRecord,
+	fr: (await import(
+		'../src/virtuals/i18n/translations/fr.ts'
+	)) as unknown as StudioCMSTranslationRecord,
+	no: (await import(
+		'../src/virtuals/i18n/translations/no.ts'
+	)) as unknown as StudioCMSTranslationRecord,
+	zh: (await import(
+		'../src/virtuals/i18n/translations/zh.ts'
+	)) as unknown as StudioCMSTranslationRecord,
 };
 
 /**

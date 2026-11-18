@@ -229,7 +229,11 @@
 		"./components/*": "./frontend/components/*",
 		"./layouts/*": "./frontend/layouts/*",
 		"./styles/*": "./frontend/styles/*",
-		"./src/middleware/*": "./frontend/middleware/*"
+		"./src/middleware/*": "./frontend/middleware/*",
+		"./translations/*": {
+			"types": "./dist/virtuals/i18n/translations/*.d.ts",
+			"default": "./dist/virtuals/i18n/translations/*.js"
+		}
 	},
 	"type": "module",
 	"dependencies": {
