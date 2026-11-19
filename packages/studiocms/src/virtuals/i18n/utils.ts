@@ -1,11 +1,32 @@
-export interface TranslationRecord {
-	[x: string]: {
-		displayName: string;
-		translations: Record<string, Record<string, string>>;
-	};
+/**
+ * Represents a single translation entry, containing a display name and the actual translations.
+ */
+export interface TranslationRecordEntry {
+	displayName: string;
+	translations: Record<string, Record<string, string>>;
 }
 
+/**
+ * Represents a record of translation entries, where each key corresponds to a translation file key (e.g., 'en', 'fr').
+ */
+export interface TranslationRecord {
+	[x: string]: TranslationRecordEntry;
+}
+
+/**
+ * Represents a language flag identifier, which can be either a string prefixed with 'lang-' or any other string.
+ */
 export type LanguageFlagIdentifier = `lang-${string}` | string;
+
+/**
+ * Imports a translation file dynamically and returns it as a TranslationRecordEntry.
+ *
+ * @param path - The path to the translation file.
+ * @returns A promise that resolves to the imported translation record.
+ */
+export const importTranslation = (path: string): Promise<TranslationRecordEntry> => {
+	return import(/* @vite-ignore */ path) as Promise<TranslationRecordEntry>;
+};
 
 /**
  * Builds a record of available translations that pass the threshold check.

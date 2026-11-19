@@ -16,7 +16,7 @@
 import baseServerTranslations from 'studiocms/translations/en';
 import type { LanguageFlagIdentifier, ServerUiTranslations } from './config.js';
 import { translationFlagKeyOverrides } from './overrides.js';
-import { buildAvailableTranslations } from './utils.js';
+import { buildAvailableTranslations, importTranslation, type TranslationRecord } from './utils.js';
 
 /**
  * Represents a translation record for StudioCMS.
@@ -29,16 +29,16 @@ export type StudioCMSTranslationRecord = typeof baseServerTranslations;
 /**
  * A record mapping translation file keys (e.g., 'en', 'fr') to their corresponding translation data.
  */
-export const translationFiles: Record<string, StudioCMSTranslationRecord> = {
+export const translationFiles: TranslationRecord = {
 	// Base translations
 	en: baseServerTranslations,
 
 	// Additional translations can be added here
-	de: (await import('studiocms/translations/de')) as unknown as StudioCMSTranslationRecord,
-	es: (await import('studiocms/translations/es')) as unknown as StudioCMSTranslationRecord,
-	fr: (await import('studiocms/translations/fr')) as unknown as StudioCMSTranslationRecord,
-	no: (await import('studiocms/translations/no')) as unknown as StudioCMSTranslationRecord,
-	zh: (await import('studiocms/translations/zh')) as unknown as StudioCMSTranslationRecord,
+	de: await importTranslation('studiocms/translations/de'),
+	es: await importTranslation('studiocms/translations/es'),
+	fr: await importTranslation('studiocms/translations/fr'),
+	no: await importTranslation('studiocms/translations/no'),
+	zh: await importTranslation('studiocms/translations/zh'),
 };
 
 /**
