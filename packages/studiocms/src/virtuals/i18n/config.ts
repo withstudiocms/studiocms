@@ -8,22 +8,17 @@
 
 import config from 'studiocms:i18n/config';
 import { availableTranslations, currentFlags } from 'studiocms:i18n/virtual';
+import baseServerTranslations from 'studiocms/translations/en';
+import type { LanguageFlagIdentifier } from './utils';
+
+export type { LanguageFlagIdentifier };
+
+export { baseServerTranslations };
 
 /**
  * The default language for the StudioCMS app.
  */
 export const defaultLang: UiTranslationKey = config.defaultLocale;
-
-/**
- * Dynamically imports the base English translations for server-side internationalization.
- *
- * @remarks
- * This constant loads the default English translation JSON file asynchronously at runtime.
- * It is intended to be used as the base set of translations for the server.
- *
- * - These translations are also converted to a client-friendly format.
- */
-export const baseServerTranslations = (await import('./translations/en.json')).default;
 
 /**
  * Represents a translation record for StudioCMS.
@@ -100,8 +95,6 @@ export type ServerUiTranslations = Record<UiTranslationKey, StudioCMSTranslation
  * @typeParam ComponentsJSON - The shape of the translation data for each component.
  */
 export type ClientUiTranslations = Record<UiTranslationKey, ComponentsJSON>;
-
-export type LanguageFlagIdentifier = `lang-${string}` | string;
 
 /**
  * Represents an option for selecting a language in the UI.
