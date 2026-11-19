@@ -1,10 +1,4 @@
 import type { APIContext } from 'astro';
-import { translationFlagKeyOverrides } from '../src/virtuals/i18n/overrides';
-import baseServerTranslations from '../src/virtuals/i18n/translations/en.ts';
-import {
-	buildAvailableTranslations,
-	type LanguageFlagIdentifier,
-} from '../src/virtuals/i18n/utils';
 import { StudioCMSRoutes } from '../src/virtuals/lib/routeMap';
 
 export const parentSuiteName = 'studiocms Tests';
@@ -70,69 +64,3 @@ export const MockAstroLocals = (): APIContext['locals'] => {
 		},
 	};
 };
-
-/**
- * Dynamically imports the base English translations for server-side internationalization.
- *
- * @remarks
- * This constant loads the default English translation JSON file asynchronously at runtime.
- * It is intended to be used as the base set of translations for the server.
- *
- * - These translations are also converted to a client-friendly format.
- */
-// export const baseServerTranslations = await import('../src/virtuals/i18n/translations/en.ts');
-
-/**
- * Represents a translation record for StudioCMS.
- *
- * @property displayName - The human-readable name for the translation.
- * @property translations - The translation data in the form of a ComponentsJSON object.
- */
-export type StudioCMSTranslationRecord = typeof baseServerTranslations;
-
-/**
- * A record mapping translation file keys (e.g., 'en', 'fr') to their corresponding translation data.
- */
-const translationFiles: Record<string, StudioCMSTranslationRecord> = {
-	// Base translations
-	en: baseServerTranslations,
-
-	// Additional translations can be added here
-	de: (await import(
-		'../src/virtuals/i18n/translations/de.ts'
-	)) as unknown as StudioCMSTranslationRecord,
-	es: (await import(
-		'../src/virtuals/i18n/translations/es.ts'
-	)) as unknown as StudioCMSTranslationRecord,
-	fr: (await import(
-		'../src/virtuals/i18n/translations/fr.ts'
-	)) as unknown as StudioCMSTranslationRecord,
-	no: (await import(
-		'../src/virtuals/i18n/translations/no.ts'
-	)) as unknown as StudioCMSTranslationRecord,
-	zh: (await import(
-		'../src/virtuals/i18n/translations/zh.ts'
-	)) as unknown as StudioCMSTranslationRecord,
-};
-
-/**
- * An array of translation file keys derived from `availableTranslationFiles`.
- *
- * @example
- * // availableTranslationFileKeys = ['en', 'fr']
- */
-export const availableTranslationFileKeys = Object.keys(translationFiles);
-
-export const availableTranslations = (() =>
-	buildAvailableTranslations(
-		availableTranslationFileKeys.filter((key) => key !== 'en'),
-		translationFiles
-	))();
-
-const availableTranslationsKeys = ['en', ...Object.keys(availableTranslations)];
-
-export const currentFlags: Array<{ key: string; flag: LanguageFlagIdentifier }> =
-	availableTranslationsKeys.map((key) => {
-		const flagKey: LanguageFlagIdentifier = translationFlagKeyOverrides[key] || `lang-${key}`;
-		return { key, flag: flagKey };
-	});

@@ -8,12 +8,12 @@ import { defineProject, mergeConfig } from 'vitest/config';
 import { configShared } from '../../vitest.shared.js';
 import { type StudioCMSOptions, StudioCMSOptionsSchema } from './src/schemas/config/index.js';
 import { TestStudioCmsUiInstance } from './src/test-utils.js';
-import { buildVirtualConfig } from './src/virtuals/utils';
 import {
 	availableTranslationFileKeys,
 	availableTranslations,
 	currentFlags,
-} from './test/test-utils.js';
+} from './src/virtuals/i18n/v-files.js';
+import { buildVirtualConfig } from './src/virtuals/utils';
 
 const { resolve, resolveModuleSpecifier } = createPathResolver(import.meta.url);
 
