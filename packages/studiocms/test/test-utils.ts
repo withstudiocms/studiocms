@@ -93,7 +93,7 @@ export type StudioCMSTranslationRecord = typeof baseServerTranslations;
 /**
  * A record mapping translation file keys (e.g., 'en', 'fr') to their corresponding translation data.
  */
-export const translationFiles: Record<string, StudioCMSTranslationRecord> = {
+const translationFiles: Record<string, StudioCMSTranslationRecord> = {
 	// Base translations
 	en: baseServerTranslations,
 
@@ -129,7 +129,7 @@ export const availableTranslations = (() =>
 		translationFiles
 	))();
 
-export const availableTranslationsKeys = ['en', ...Object.keys(availableTranslations)];
+const availableTranslationsKeys = ['en', ...Object.keys(availableTranslations)];
 
 export const currentFlags: Array<{ key: string; flag: LanguageFlagIdentifier }> =
 	availableTranslationsKeys.map((key) => {
