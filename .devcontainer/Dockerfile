@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/devcontainers/typescript-node:dev-22-bookworm@sha256:0fe9bab8bb320e122f2f914c4f4a6bb85bb3d052ef96bf28b683e9fc7bc1e21e
+FROM mcr.microsoft.com/devcontainers/typescript-node:dev-22-bookworm@sha256:0979a2d8e15a9d44b664e671da5c00a92ed24d40a7fd638deeebb90cf1ab7d9f
 
 # Copy welcome message
 COPY welcome-message.txt /usr/local/etc/vscode-dev-containers/first-run-notice.txt
