@@ -108,8 +108,6 @@ export const UsersHandlers = HttpApiBuilder.group(StudioCMSDashboardApiSpec, 'us
 								id,
 								name: user.name,
 								username: user.username,
-								updatedAt: new Date().toISOString(),
-								createdAt: undefined,
 								emailVerified,
 							},
 						});
@@ -297,9 +295,7 @@ export const UsersHandlers = HttpApiBuilder.group(StudioCMSDashboardApiSpec, 'us
 						id,
 						name: existingUser.name,
 						username: existingUser.username,
-						updatedAt: new Date().toISOString(),
 						emailVerified: existingUser.emailVerified,
-						createdAt: undefined,
 						notifications,
 					},
 				});

@@ -131,8 +131,6 @@ export const VerifyEndpointsHandlers = HttpApiBuilder.group(
 									name: existingUser.name,
 									username: existingUser.username,
 									emailVerified: true,
-									updatedAt: new Date().toISOString(),
-									createdAt: undefined,
 								},
 							}),
 							sdk.AUTH.verifyEmail.delete(userId),
