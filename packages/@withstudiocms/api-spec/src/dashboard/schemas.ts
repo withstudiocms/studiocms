@@ -408,7 +408,13 @@ export const EmailNotificationSettingsPayload = Schema.Struct({
  */
 export const BasicUserProfileUpdate = Schema.Struct({
 	mode: Schema.Literal('basic'),
-	data: StudioCMSUsersTable.Update.omit('id'),
+	data: StudioCMSUsersTable.Update.omit(
+		'id',
+		'password',
+		'emailVerified',
+		'createdAt',
+		'updatedAt'
+	),
 }).annotations({
 	title: 'Basic User Profile Update Payload',
 	description:
