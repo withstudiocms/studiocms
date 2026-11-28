@@ -367,8 +367,8 @@ importers:
   packages/@studiocms/markdoc:
     dependencies:
       '@markdoc/markdoc':
-        specifier: ^0.5.10
-        version: 0.5.10(@types/react@19.3.2)(react@19.3.1)
+        specifier: ^0.5.14
+        version: 0.5.14(@types/react@19.3.2)(react@19.3.1)
       '@withstudiocms/internal_helpers':
         specifier: workspace:^
         version: link:../../@withstudiocms/internal_helpers
@@ -2932,15 +2932,13 @@ packages:
     engines: {node: '>=20.19.0'}
     hasBin: true
 
-  '@markdoc/markdoc@0.5.10':
-    resolution: {integrity: sha512-5HwkG2cLG/ivffeJlxGmraJ9erYfsaYz9rjG1KCf46PLy+yhrBQWw26h69GewNUHbyKNW6FrXuDYgbl2kvIYdA==}
+  '@markdoc/markdoc@0.5.14':
+    resolution: {integrity: sha512-3t0YGkTW+ZecVcJgX/5/RLYC6ufpBOW7W/D2OG6M5ctBYbiGQeZ3VCp5dle7T3ptHdKv5QBOg0742OBZOrRUIg==}
     engines: {node: '>=14.7.0'}
     peerDependencies:
       '@types/react': '*'
       react: '*'
     peerDependenciesMeta:
-      '@types/react':
-        optional: true
       react:
         optional: true
 
@@ -3893,17 +3891,8 @@ packages:
   '@types/jquery@4.0.1':
     resolution: {integrity: sha512-9a59A/tycXgYuPABcp6/3spSShn0NT2UOM4EfHvMumjYi4lJWTsK5SZWjhx3yRm9IHGCeWXdV2YfNsrWrft/CA==}
 
-  '@types/linkify-it@3.0.5':
-    resolution: {integrity: sha512-yg6E+u0/+Zjva+buc3EIb+29XEg4wltq7cSmd4Uc2EE/1nUVmxyzpX6gUXD0V8jIrG0r7YeOGVIbYRkxeooCtw==}
-
-  '@types/markdown-it@12.2.3':
-    resolution: {integrity: sha512-GKMHFfv3458yYy+v/N8gjufHO6MSZKCOXpZc5GXIWWy8uldwfmPn98vp81gZ5f9SVw8YYBctgfJ22a2d7AOMeQ==}
-
   '@types/mdast@4.0.4':
     resolution: {integrity: sha512-kGaNbPh1k7AFzgpud/gMdvIm5xuECykRR+JnWKQno9TAXVa6WIVCGTPvYGekIDL4uwCZQSYbUxNBSb1aUo79oA==}
-
-  '@types/mdurl@2.0.0':
-    resolution: {integrity: sha512-RGdgjQUZba5p6QEFAVx2OGb8rQDL/cPRG7GiedRzMcJ1tYnUANBncjbSB1NRGwbvjcPeikRABz2nshyPk1bhWg==}
 
   '@types/mdx@2.0.14':
     resolution: {integrity: sha512-T48PeuJtvLosNTPVhfnIp3i/n3a4g4Bad7YCq5k64D4u7NwDrAotikQ+5+sjtUvBmxCMlbo3dVL+C2dP0rWHzg==}
@@ -8807,11 +8796,10 @@ snapshots:
 
   '@marcbachmann/cel-js@8.0.0': {}
 
-  '@markdoc/markdoc@0.5.10(@types/react@19.3.2)(react@19.3.1)':
-    optionalDependencies:
-      '@types/linkify-it': 3.0.5
-      '@types/markdown-it': 12.2.3
+  '@markdoc/markdoc@0.5.14(@types/react@19.3.2)(react@19.3.1)':
+    dependencies:
       '@types/react': 19.3.2
+    optionalDependencies:
       react: 19.3.1
 
   '@mdx-js/mdx@3.1.1':
@@ -9490,21 +9478,9 @@ snapshots:
 
   '@types/jquery@4.0.1': {}
 
-  '@types/linkify-it@3.0.5':
-    optional: true
-
-  '@types/markdown-it@12.2.3':
-    dependencies:
-      '@types/linkify-it': 3.0.5
-      '@types/mdurl': 2.0.0
-    optional: true
-
   '@types/mdast@4.0.4':
     dependencies:
       '@types/unist': 3.0.3
-
-  '@types/mdurl@2.0.0':
-    optional: true
 
   '@types/mdx@2.0.14': {}
 
