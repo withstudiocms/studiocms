@@ -151,7 +151,7 @@
   "type": "module",
   "dependencies": {
     "mdast-util-to-string": "^4.0.0",
-    "unist-util-visit": "^5.1.0",
+    "unist-util-visit": "^5.2.0",
     "tinyexec": "catalog:",
     "satteri": "catalog:"
   },
