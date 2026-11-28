@@ -1,5 +1,11 @@
 # @withstudiocms/internal_helpers
 
+## 0.5.1
+
+### Patch Changes
+
+- [#1832](https://github.com/withstudiocms/studiocms/pull/1832) [`e816641`](https://github.com/withstudiocms/studiocms/commit/e81664176e62a861664ce37f5246605f282960d8) Thanks [@renovate](https://github.com/apps/renovate)! - Update dependency unist-util-visit to ^5.2.0
+
 ## 0.5.0
 
 ### Minor Changes

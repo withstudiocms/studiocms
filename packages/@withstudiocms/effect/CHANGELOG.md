@@ -1,5 +1,11 @@
 # @withstudiocms/effect
 
+## 0.5.4
+
+### Patch Changes
+
+- [#1829](https://github.com/withstudiocms/studiocms/pull/1829) [`30e4f6a`](https://github.com/withstudiocms/studiocms/commit/30e4f6a70fbfae1fabc60022c1d076adc5ca34af) Thanks [@renovate](https://github.com/apps/renovate)! - Update @withstudiocms Dependencies
+
 ## 0.5.3
 
 ### Patch Changes

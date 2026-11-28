@@ -1,5 +1,11 @@
 # @studiocms/cloudinary-image-service
 
+## 0.4.2
+
+### Patch Changes
+
+- [#1822](https://github.com/withstudiocms/studiocms/pull/1822) [`3194c57`](https://github.com/withstudiocms/studiocms/commit/3194c57a088459792352e92a8ca8c15342c55c3a) Thanks [@renovate](https://github.com/apps/renovate)! - Update dependency @cloudinary/url-gen to ^1.22.1
+
 ## 0.4.1
 
 ### Patch Changes

@@ -1,6 +1,6 @@
 {
 	"name": "@withstudiocms/effect",
-	"version": "0.5.3",
+	"version": "0.5.4",
 	"description": "Effect-TS Utilities for Astro",
 	"license": "MIT",
 	"author": {

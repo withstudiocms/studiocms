@@ -1,5 +1,27 @@
 # studiocms
 
+## 0.7.1
+
+### Patch Changes
+
+- [#1812](https://github.com/withstudiocms/studiocms/pull/1812) [`4c7cf2d`](https://github.com/withstudiocms/studiocms/commit/4c7cf2dbeacac4b16ccb3a42473d7e0fa39d2472) Thanks [@renovate](https://github.com/apps/renovate)! - Update studiocms Dependencies
+
+- [#1809](https://github.com/withstudiocms/studiocms/pull/1809) [`3353aa6`](https://github.com/withstudiocms/studiocms/commit/3353aa654b456426b91a45f25b3ccfbcfc3141bd) Thanks [@renovate](https://github.com/apps/renovate)! - Update all non-major dependencies
+
+- [#1818](https://github.com/withstudiocms/studiocms/pull/1818) [`f2f27dc`](https://github.com/withstudiocms/studiocms/commit/f2f27dc0738591e6abe684a2174e3249e34c9f23) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Refactored internal i18n loading logic to replace dynamic translation loading with static loading.
+
+- [#1801](https://github.com/withstudiocms/studiocms/pull/1801) [`965e66a`](https://github.com/withstudiocms/studiocms/commit/965e66aee39ead95c00e178c19fd7a70748cc2b1) Thanks [@renovate](https://github.com/apps/renovate)! - Update studiocms Dependencies
+
+- [#1823](https://github.com/withstudiocms/studiocms/pull/1823) [`98c7fe4`](https://github.com/withstudiocms/studiocms/commit/98c7fe423bd55f962bab5924f7358c64d848496d) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Update user profile handling to omit sensitive fields and streamline data structure
+
+- [#1819](https://github.com/withstudiocms/studiocms/pull/1819) [`c01aaeb`](https://github.com/withstudiocms/studiocms/commit/c01aaebcf4a6584e9d64c23d31012d94c9240b6e) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Adds auth check to Taxonomy Search API endpoint
+
+- Updated dependencies [[`e816641`](https://github.com/withstudiocms/studiocms/commit/e81664176e62a861664ce37f5246605f282960d8), [`30e4f6a`](https://github.com/withstudiocms/studiocms/commit/30e4f6a70fbfae1fabc60022c1d076adc5ca34af), [`98c7fe4`](https://github.com/withstudiocms/studiocms/commit/98c7fe423bd55f962bab5924f7358c64d848496d)]:
+  - @withstudiocms/internal_helpers@0.5.1
+  - @withstudiocms/effect@0.5.4
+  - @withstudiocms/api-spec@0.4.2
+  - @withstudiocms/sdk@0.4.3
+
 ## 0.7.0
 
 ### Minor Changes

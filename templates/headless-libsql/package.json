@@ -27,10 +27,10 @@
     "@effect/platform-node": "^0.108.2",
     "@libsql/client": "^0.18.0",
     "@studiocms/md": "^0.5.1",
-    "@studiocms/html": "^0.4.3",
+    "@studiocms/html": "^0.4.4",
     "astro": "^7.4.13",
     "effect": "^3.22.2",
     "sharp": "^0.34.3",
-    "studiocms": "^0.7.0"
+    "studiocms": "^0.7.1"
   }
 }
