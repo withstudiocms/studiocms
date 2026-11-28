@@ -123,7 +123,7 @@ export const makeTranslation = <Body extends Translations>(
 			const key = this.getAttribute('key') as keyof BaseTranslation[CurrentTranslations];
 			if (key) {
 				i18n.subscribe((comp) => {
-					this.innerText = comp[key] as string;
+					this.textContent = comp[key] as string;
 				});
 			}
 		}

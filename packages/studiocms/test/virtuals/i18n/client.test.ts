@@ -33,7 +33,7 @@ describe(parentSuiteName, () => {
 			const el = document.createElement('test-translation');
 			el.setAttribute('key', key as string);
 			document.body.appendChild(el);
-			expect(el.innerText).toBe('Translated Text');
+			expect(el.textContent).toBe('Translated Text');
 		});
 	});
 });
