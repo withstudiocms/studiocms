@@ -670,8 +670,8 @@ importers:
         specifier: catalog:effect
         version: 3.22.2
       grapesjs:
-        specifier: ^0.23.8
-        version: 0.23.8
+        specifier: ^0.23.9
+        version: 0.23.9
     devDependencies:
       '@studiocms/ui':
         specifier: catalog:studiocms
@@ -4214,10 +4214,6 @@ packages:
       react-native-b4a:
         optional: true
 
-  backbone-undo@0.2.6:
-    resolution: {integrity: sha512-AsfpNiljLXlk7TcffDUu3EAUq7CxWbyTNwARWrql5XTzN4vh6WzEEBZYaKK4kTTz+iW1tSzqUooaGRIwO83kWA==}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-
   backbone@1.4.1:
     resolution: {integrity: sha512-ADy1ztN074YkWbHi8ojJVFe3vAanO/lrzMGZWUClIP7oDD/Pjy2vrASraUP+2EVCfIiTtCW4FChVow01XneivA==}
 
@@ -4997,8 +4993,8 @@ packages:
   graceful-fs@4.2.11:
     resolution: {integrity: sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ==}
 
-  grapesjs@0.23.8:
-    resolution: {integrity: sha512-4+HvGRnWK0IbFva2FUxu6GXA3/BFGq0vRaeJ8MhhFR5O42wq9T7rKxChYLKgEmplHb2ea9HsfIzJtsEibeYv7w==}
+  grapesjs@0.23.9:
+    resolution: {integrity: sha512-YUJEETGQDSsz8pSyJCj68EPgYKThDZNoNA9+Lu10/XP/7no86gmKdS+F6kEyL49Yf8H1+KARIvH4K+1acXto3Q==}
 
   h3@1.15.11:
     resolution: {integrity: sha512-L3THSe2MPeBwgIZVSH5zLdBBU90TOxarvhK9d04IDY2AmVS8j2Jz2LIWtwsGOU3lu2I5jCN7FNvVfY2+XyF+mg==}
@@ -5083,9 +5079,6 @@ packages:
   html-encoding-sniffer@7.0.0:
     resolution: {integrity: sha512-UikN5yr7xsCDAq87Or5or0PAlD3HJJOKVzM05az588WnpDJ4Ux7a2A53Qi6gofGg2/EtvF/H4hCi/TXfCW4Y6w==}
     engines: {node: ^22.13.0 || >=24.0.0}
-
-  html-entities@1.4.0:
-    resolution: {integrity: sha512-8nxjcBcd8wovbeKx7h3wTji4e6+rhaVuPNpMqwWgnHh+N9ToqsCs6XztWRBPQ+UtzsoMAdKZtUENoVzU/EMtZA==}
 
   html-escaper@2.0.2:
     resolution: {integrity: sha512-H2iMtd0I4Mt5eYiapRdIDjp+XzelXQ0tFE4JS7YFwFevXXMmOp9myNrUvCg0D6ws8iqkRPBfKHgbwig1SmlLfg==}
@@ -6114,9 +6107,6 @@ packages:
 
   promise-limit@2.7.0:
     resolution: {integrity: sha512-7nJ6v5lnJsXwGprnGXga4wx6d1POjvi5Qmf1ivTRxTjH4Z/9Czja/UCMLVmB9N93GeWOU93XaFaEt6jbuoagNw==}
-
-  promise-polyfill@8.3.0:
-    resolution: {integrity: sha512-H5oELycFml5yto/atYqmjyigJoAo3+OXwolYiH7OfQuYlAqhxNvTfiNMbV9hsC6Yp83yE5r2KTVmtrG6R9i6Pg==}
 
   prompts@2.4.2:
     resolution: {integrity: sha512-NxNv/kLguCA7p3jE8oL2aEBsrJWgAakBpgmgK6lpPWV+WuOmY6r2/zbAVnP+T8bQlA0nzHXSJSJW0Hq7ylaD2Q==}
@@ -9922,11 +9912,6 @@ snapshots:
 
   b4a@1.9.0: {}
 
-  backbone-undo@0.2.6:
-    dependencies:
-      backbone: 1.4.1
-      underscore: 1.13.8
-
   backbone@1.4.1:
     dependencies:
       underscore: 1.13.8
@@ -10734,15 +10719,12 @@ snapshots:
 
   graceful-fs@4.2.11: {}
 
-  grapesjs@0.23.8:
+  grapesjs@0.23.9:
     dependencies:
       '@types/backbone': 1.4.15
       backbone: 1.4.1
-      backbone-undo: 0.2.6
       codemirror: 5.63.0
       codemirror-formatting: 1.0.0
-      html-entities: 1.4.0
-      promise-polyfill: 8.3.0
       underscore: 1.13.8
 
   h3@1.15.11:
@@ -10931,8 +10913,6 @@ snapshots:
       '@exodus/bytes': 1.16.0
     transitivePeerDependencies:
       - '@noble/hashes'
-
-  html-entities@1.4.0: {}
 
   html-escaper@2.0.2: {}
 
@@ -12170,8 +12150,6 @@ snapshots:
   process@0.11.10: {}
 
   promise-limit@2.7.0: {}
-
-  promise-polyfill@8.3.0: {}
 
   prompts@2.4.2:
     dependencies:
