@@ -271,15 +271,24 @@ export const TaxonomyHandlers = HttpApiBuilder.group(
 			.handle('taxonomySearch', () =>
 				!dashboardAPIEnabled
 					? Effect.fail(new DashboardAPIError({ error: 'Dashboard API is disabled' }))
-					: SDKCore.pipe(
-							Effect.flatMap((sdk) =>
-								Effect.all([
-									sdk.GET.categories.getAll().pipe(Effect.map(categoriesToTaxonomyNodes)),
-									sdk.GET.tags.getAll().pipe(Effect.map(tagsToTaxonomyNodes)),
-								])
+					: CurrentUser.pipe(
+							Effect.flatMap((userData) =>
+								!userData.isLoggedIn || !userData.userPermissionLevel.isEditor
+									? Effect.fail(new DashboardAPIError({ error: 'Unauthorized' }))
+									: Effect.void
 							),
-							Effect.map(([categories, tags]) => [...categories, ...tags]),
-							Effect.catchTags(sharedDBErrors)
+							Effect.andThen(
+								SDKCore.pipe(
+									Effect.flatMap((sdk) =>
+										Effect.all([
+											sdk.GET.categories.getAll().pipe(Effect.map(categoriesToTaxonomyNodes)),
+											sdk.GET.tags.getAll().pipe(Effect.map(tagsToTaxonomyNodes)),
+										])
+									),
+									Effect.map(([categories, tags]) => [...categories, ...tags]),
+									Effect.catchTags(sharedDBErrors)
+								)
+							)
 						)
 			)
 );
