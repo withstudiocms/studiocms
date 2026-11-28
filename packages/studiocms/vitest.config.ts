@@ -12,7 +12,7 @@ import {
 	availableTranslationFileKeys,
 	availableTranslations,
 	currentFlags,
-} from './src/virtuals/i18n/v-files';
+} from './src/virtuals/i18n/v-files.js';
 import { buildVirtualConfig } from './src/virtuals/utils';
 
 const { resolve, resolveModuleSpecifier } = createPathResolver(import.meta.url);

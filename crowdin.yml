@@ -7,8 +7,8 @@
 "files":
   [
     {
-      "source": "/packages/studiocms/src/virtuals/i18n/translations/en.json",
-      "translation": "/packages/studiocms/src/virtuals/i18n/translations/%two_letters_code%.json",
+      "source": "/packages/studiocms/src/virtuals/i18n/translations/en.ts",
+      "translation": "/packages/studiocms/src/virtuals/i18n/translations/%two_letters_code%.ts",
     },
     {
       "source": "/packages/studiocms/src/handlers/plugin-i18n/en.ts",
