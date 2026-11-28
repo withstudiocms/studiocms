@@ -302,11 +302,11 @@ importers:
         specifier: catalog:effect
         version: 3.22.2
       sanitize-html:
-        specifier: ^2.18.1
-        version: 2.18.1
+        specifier: ^2.18.2
+        version: 2.18.2
       turndown:
-        specifier: ^7.2.4
-        version: 7.2.4
+        specifier: ^7.2.5
+        version: 7.2.5
     devDependencies:
       '@types/sanitize-html':
         specifier: ^2.16.2
@@ -6248,8 +6248,8 @@ packages:
   safer-buffer@2.1.2:
     resolution: {integrity: sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==}
 
-  sanitize-html@2.18.1:
-    resolution: {integrity: sha512-2X5lC8fYla8YaT8g73Nj+HcLWXan5dLyCWLgVvaOmfw7JI78IRsyNtIDytTHdn7hBQbIkCah7Zbmd5jabzeDig==}
+  sanitize-html@2.18.2:
+    resolution: {integrity: sha512-LTQVNHBeKB5qIae9x2J2Fw68ORnES++8vzYaG7DFT8P4GVCJFeHffHnRUzf5Mrxfx+4GweIvMRqkBPHHodaVNg==}
     engines: {node: '>=22.12.0'}
 
   satteri@0.10.5:
@@ -6619,8 +6619,8 @@ packages:
     resolution: {integrity: sha512-1h/Lnq9yajKY2PEbBadPXj3VxsDDu844OnaAo52UVmIzIvwwtBPIuNvkjuzBlTWpfJyUbG3ez0KSBibQkj4ojg==}
     engines: {node: '>=0.6.11 <=0.7.0 || >=0.7.3'}
 
-  turndown@7.2.4:
-    resolution: {integrity: sha512-I8yFsfRzmzK0WV1pNNOA4A7y4RDfFxPRxb3t+e3ui14qSGOxGtiSP6GjeX+Y6CHb7HYaFj7ECUD7VE5kQMZWGQ==}
+  turndown@7.2.5:
+    resolution: {integrity: sha512-EKZvCCFHh8sWttpAMs10U6niZFJ2cpz8LkCPlylxoG4JcHF50J7EHnnBW3AY1qXtUMu7kDjCp7dnggB1sIbqEQ==}
     engines: {node: '>=18', npm: '>=9'}
 
   typanion@3.14.0:
@@ -12337,7 +12337,7 @@ snapshots:
 
   safer-buffer@2.1.2: {}
 
-  sanitize-html@2.18.1:
+  sanitize-html@2.18.2:
     dependencies:
       escape-string-regexp: 4.0.0
       htmlparser2: 12.0.0
@@ -12756,7 +12756,7 @@ snapshots:
 
   tunnel@0.0.6: {}
 
-  turndown@7.2.4:
+  turndown@7.2.5:
     dependencies:
       '@mixmark-io/domino': 2.2.0
 
