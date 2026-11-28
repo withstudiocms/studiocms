@@ -268,8 +268,8 @@ importers:
   packages/@studiocms/cloudinary-image-service:
     dependencies:
       '@cloudinary/url-gen':
-        specifier: ^1.22.0
-        version: 1.22.0
+        specifier: ^1.22.1
+        version: 1.22.1
       effect:
         specifier: catalog:effect
         version: 3.22.2
@@ -1976,8 +1976,8 @@ packages:
   '@cloudinary/transformation-builder-sdk@1.21.2':
     resolution: {integrity: sha512-ehOgKUaP+Nvuf7B0TosmB8iilL0kdiVjzjl8tIK06cjvsNnwSJI3xP9nEJmKkvqNxwwFwvYXT+mxUTqnSv9JOA==}
 
-  '@cloudinary/url-gen@1.22.0':
-    resolution: {integrity: sha512-le8RMlgyC0JN3+FlC/YAlPYfvmJdtw8QGcSKDjCsfhS2CIem0mJl6ayti8bMoZ0P5wDvBewvRB0/dUQvhCzy3g==}
+  '@cloudinary/url-gen@1.22.1':
+    resolution: {integrity: sha512-+sUjlqIV65m4HenPXXVqVwDZfEqf+ZCPYPptpxp28UJLS1S7VrRwaahjEL5qnbv6mAuYtGeOPcyhKi02diiInA==}
 
   '@crowdin/crowdin-api-client@1.60.0':
     resolution: {integrity: sha512-YpNm99XhzjS6vaD6/uwAXYk3OD2cTTbYNOxKS+z7XMydAPpTcst4BadlcVAGEovHxwoqujq6yuEACDm98T0jNQ==}
@@ -7995,9 +7995,9 @@ snapshots:
 
   '@cloudinary/transformation-builder-sdk@1.21.2':
     dependencies:
-      '@cloudinary/url-gen': 1.22.0
+      '@cloudinary/url-gen': 1.22.1
 
-  '@cloudinary/url-gen@1.22.0':
+  '@cloudinary/url-gen@1.22.1':
     dependencies:
       '@cloudinary/transformation-builder-sdk': 1.21.2
 
