@@ -832,7 +832,7 @@ importers:
   packages/@withstudiocms/effect:
     dependencies:
       '@clack/prompts':
-        specifier: ^1.8.1
+        specifier: ^1.9.0
         version: 1.9.0
       '@effect/cli':
         specifier: catalog:effect
@@ -856,11 +856,11 @@ importers:
         specifier: ^4.0.8
         version: 4.0.8
       nodemailer:
-        specifier: ^10.0.16
-        version: 10.0.16
+        specifier: ^10.6.1
+        version: 10.6.1
       socks:
-        specifier: ^2.8.10
-        version: 2.8.10
+        specifier: ^2.8.11
+        version: 2.8.11
     devDependencies:
       '@types/micromatch':
         specifier: ^4.0.10
@@ -5824,8 +5824,8 @@ packages:
     resolution: {integrity: sha512-ObaRrRoR8T68wF6suxHd7R4XQNamij6ZQHrwG7Dx1D2zeHcDNLsIOBcWrIwtDm7AsCXBguaPHgXhcjxDa2szrg==}
     engines: {node: '>=0.12.0'}
 
-  nodemailer@10.0.16:
-    resolution: {integrity: sha512-VL9xKErxN+el77o8eBOuYKUPMyEx7F9hfnDCuiUKJRp9v3wnWMOudYgP/SWbwSHy8rUL4cylobuXtki1LpQS7A==}
+  nodemailer@10.6.1:
+    resolution: {integrity: sha512-d7kfFfS/tR4Aca+SBvRaQ+MXKNv7d2JiRe5TxaRcFT/kYMh4GGPnW9aKksTIEvyEbA7d/7HYWE4YPDEHxzJj/g==}
     engines: {node: '>=20.0.0'}
 
   nopt@1.0.10:
@@ -6435,8 +6435,8 @@ packages:
     resolution: {integrity: sha512-j7WyPdf0CJoutMzMoPLF/bVXHtKZIT9Rb4eGeEbWw8X2t5oirjPgpL+OpaENZrILYaXqYwnVH+qgUwVbl+pUJQ==}
     engines: {node: '>= 18'}
 
-  socks@2.8.10:
-    resolution: {integrity: sha512-e0VyvkVTwVYViNovRkZ9aodhxVlyoMn7eJhVUPxZ+eK9P/7CBkxvvsBOHqFPEH416726W8tLXXXjKwqgTErrCQ==}
+  socks@2.8.11:
+    resolution: {integrity: sha512-2H/uQ7+SNP0hK16RorTak0mWrFoqo4AnAVGSUl2dT07obgWdWt9grml+VDl1LklgUOPWM4Abo0u86Cvp8vFjYw==}
     engines: {node: '>= 10.0.0', npm: '>= 3.0.0'}
 
   source-map-js@1.2.2:
@@ -11878,7 +11878,7 @@ snapshots:
 
   node-stream-zip@1.16.0: {}
 
-  nodemailer@10.0.16: {}
+  nodemailer@10.6.1: {}
 
   nopt@1.0.10:
     dependencies:
@@ -12682,7 +12682,7 @@ snapshots:
 
   smol-toml@1.9.1: {}
 
-  socks@2.8.10:
+  socks@2.8.11:
     dependencies:
       ip-address: 10.4.0
       smart-buffer: 4.2.0
