@@ -58,8 +58,8 @@
   "dependencies": {
     "@withstudiocms/internal_helpers": "workspace:^",
     "cheerio": "^1.2.0",
-    "turndown": "^7.2.4",
-    "sanitize-html": "^2.18.1"
+    "turndown": "^7.2.5",
+    "sanitize-html": "^2.18.2"
   },
   "devDependencies": {
     "@types/turndown": "^5.0.6",
