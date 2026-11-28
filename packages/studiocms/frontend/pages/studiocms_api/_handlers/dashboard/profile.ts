@@ -106,7 +106,10 @@ export const ProfileHandlers = HttpApiBuilder.group(
 
 							yield* sdk.AUTH.user.update({
 								userId: userData.user!.id,
-								userData: { ...data, id: userData.user!.id },
+								userData: {
+									...userData.user!,
+									...data,
+								},
 							});
 
 							return {
@@ -183,8 +186,6 @@ export const ProfileHandlers = HttpApiBuilder.group(
 										id: userData.user.id,
 										name: userData.user.name,
 										username: userData.user.username,
-										updatedAt: new Date().toISOString(),
-										createdAt: undefined,
 										emailVerified: userData.user.emailVerified,
 										...userUpdate,
 									},
@@ -224,9 +225,7 @@ export const ProfileHandlers = HttpApiBuilder.group(
 													id: userData.user!.id,
 													name: userData.user!.name,
 													username: userData.user!.username,
-													updatedAt: new Date().toISOString(),
 													emailVerified: userData.user!.emailVerified,
-													createdAt: undefined,
 													avatar: newAvatar,
 												},
 											}),

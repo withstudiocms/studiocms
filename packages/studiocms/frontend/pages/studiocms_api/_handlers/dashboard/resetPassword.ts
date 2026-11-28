@@ -105,8 +105,6 @@ export const ResetPasswordHandlers = HttpApiBuilder.group(
 							id: targetUserId,
 							name: userData.name,
 							username: userData.username,
-							updatedAt: new Date().toISOString(),
-							createdAt: undefined,
 							emailVerified: userData.emailVerified,
 							...userUpdate,
 						},

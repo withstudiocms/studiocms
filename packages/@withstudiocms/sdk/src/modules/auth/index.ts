@@ -395,7 +395,7 @@ export const SDKAuthModule = Effect.gen(function* () {
 	const _updateUserData = withCodec({
 		encoder: Schema.Struct({
 			userId: Schema.String,
-			userData: StudioCMSUsersTable.Update,
+			userData: StudioCMSUsersTable.Update.omit('createdAt', 'updatedAt'),
 		}),
 		decoder: StudioCMSUsersTable.Select,
 		callbackFn: (db, { userId, userData }) =>
@@ -403,7 +403,10 @@ export const SDKAuthModule = Effect.gen(function* () {
 				client.transaction().execute(async (trx) => {
 					await trx
 						.updateTable('StudioCMSUsersTable')
-						.set(userData)
+						.set({
+							...userData,
+							updatedAt: new Date().toISOString(),
+						})
 						.where('id', '=', userId)
 						.executeTakeFirstOrThrow();
 

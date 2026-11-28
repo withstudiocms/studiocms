@@ -101,12 +101,6 @@ const t = useTranslations(lang, '@studiocms/dashboard:profile');
             value={data?.user?.avatar}
             name="avatar"
         />
-
-        <input
-            type="hidden"
-            name="email-verified"
-            value={data?.user?.emailVerified ? "true" : "false"}
-        />
     </div>
 </Card>
 
@@ -204,10 +198,6 @@ const t = useTranslations(lang, '@studiocms/dashboard:profile');
                             avatar: (formData.get("avatar") ?? null) as
                                 | string
                                 | null,
-                            emailVerified:
-                                formData.get("email-verified") === "true",
-                            createdAt: undefined,
-                            updatedAt: new Date().toISOString(),
                         },
                     },
                 }),
