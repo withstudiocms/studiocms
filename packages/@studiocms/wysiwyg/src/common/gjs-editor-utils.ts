@@ -140,12 +140,12 @@ export const StudioCMSDbStorageAdapter = (
 				// This provides feedback to the user about the success or failure of the save operation.
 				if (!response.ok) {
 					toast(toastProps);
-					opts.pageContent.innerText = JSON.stringify(projectData);
+					opts.pageContent.textContent = JSON.stringify(projectData);
 					return;
 				}
 
 				// save the fallback projectData in the pageContent
-				opts.pageContent.innerText = JSON.stringify(projectData);
+				opts.pageContent.textContent = JSON.stringify(projectData);
 
 				// Update the save indicator to reflect the saved state
 				updateSaveIndicator(editor);
@@ -154,7 +154,7 @@ export const StudioCMSDbStorageAdapter = (
 				toast(toastProps);
 
 				// If an error occurs, store the fallback projectData in the pageContent
-				opts.pageContent.innerText = JSON.stringify(projectData);
+				opts.pageContent.textContent = JSON.stringify(projectData);
 			}
 		},
 	});
@@ -327,7 +327,7 @@ export function getEditorElmData(
 	};
 
 	// Parse the project data from the page content's inner text
-	const projectData = parse<ProjectData>(pageContent.innerText || JSON.stringify(fallbackPages));
+	const projectData = parse<ProjectData>(pageContent.textContent || JSON.stringify(fallbackPages));
 
 	// Return the options for Astro components and inline storage
 	return {
