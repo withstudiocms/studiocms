@@ -1,5 +1,14 @@
 # @withstudiocms/sdk
 
+## 0.4.3
+
+### Patch Changes
+
+- [#1823](https://github.com/withstudiocms/studiocms/pull/1823) [`98c7fe4`](https://github.com/withstudiocms/studiocms/commit/98c7fe423bd55f962bab5924f7358c64d848496d) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Update user profile handling to omit sensitive fields and streamline data structure
+
+- Updated dependencies [[`30e4f6a`](https://github.com/withstudiocms/studiocms/commit/30e4f6a70fbfae1fabc60022c1d076adc5ca34af)]:
+  - @withstudiocms/effect@0.5.4
+
 ## 0.4.2
 
 ### Patch Changes

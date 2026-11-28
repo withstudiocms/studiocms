@@ -1,5 +1,11 @@
 # @studiocms/html
 
+## 0.4.4
+
+### Patch Changes
+
+- [#1815](https://github.com/withstudiocms/studiocms/pull/1815) [`c56140f`](https://github.com/withstudiocms/studiocms/commit/c56140f566696cd00514c99a82f5f1e90e11413f) Thanks [@renovate](https://github.com/apps/renovate)! - Update @studiocms Plugin Dependencies
+
 ## 0.4.3
 
 ### Patch Changes

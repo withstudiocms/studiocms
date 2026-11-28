@@ -1,5 +1,14 @@
 # @withstudiocms/api-spec
 
+## 0.4.2
+
+### Patch Changes
+
+- [#1823](https://github.com/withstudiocms/studiocms/pull/1823) [`98c7fe4`](https://github.com/withstudiocms/studiocms/commit/98c7fe423bd55f962bab5924f7358c64d848496d) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Update user profile handling to omit sensitive fields and streamline data structure
+
+- Updated dependencies [[`98c7fe4`](https://github.com/withstudiocms/studiocms/commit/98c7fe423bd55f962bab5924f7358c64d848496d)]:
+  - @withstudiocms/sdk@0.4.3
+
 ## 0.4.1
 
 ### Patch Changes

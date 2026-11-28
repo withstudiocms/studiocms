@@ -1,5 +1,17 @@
 # @studiocms/devapps
 
+## 0.4.3
+
+### Patch Changes
+
+- [#1821](https://github.com/withstudiocms/studiocms/pull/1821) [`91364d8`](https://github.com/withstudiocms/studiocms/commit/91364d89b3e3d7d84d6f8ee788814bf7a1a39252) Thanks [@renovate](https://github.com/apps/renovate)! - Update @studiocms Integration Dependencies
+
+- [#1795](https://github.com/withstudiocms/studiocms/pull/1795) [`4edca0e`](https://github.com/withstudiocms/studiocms/commit/4edca0e85f91d85b78b79689a872be8235707681) Thanks [@renovate](https://github.com/apps/renovate)! - Update dependency sanitize-html to ^2.18.1
+
+- Updated dependencies [[`e816641`](https://github.com/withstudiocms/studiocms/commit/e81664176e62a861664ce37f5246605f282960d8), [`98c7fe4`](https://github.com/withstudiocms/studiocms/commit/98c7fe423bd55f962bab5924f7358c64d848496d)]:
+  - @withstudiocms/internal_helpers@0.5.1
+  - @withstudiocms/sdk@0.4.3
+
 ## 0.4.2
 
 ### Patch Changes

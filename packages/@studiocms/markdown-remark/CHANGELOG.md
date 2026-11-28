@@ -1,5 +1,16 @@
 # @studiocms/markdown-remark
 
+## 1.6.2
+
+### Patch Changes
+
+- [#1800](https://github.com/withstudiocms/studiocms/pull/1800) [`7833223`](https://github.com/withstudiocms/studiocms/commit/7833223afbddccbe6cae5d06e17ecc86b013933e) Thanks [@renovate](https://github.com/apps/renovate)! - Update all non-major dependencies
+
+- [#1816](https://github.com/withstudiocms/studiocms/pull/1816) [`9c2607a`](https://github.com/withstudiocms/studiocms/commit/9c2607ad3e17e3eaa93bb595559c981b552147c5) Thanks [@renovate](https://github.com/apps/renovate)! - Update all non-major dependencies
+
+- Updated dependencies [[`e816641`](https://github.com/withstudiocms/studiocms/commit/e81664176e62a861664ce37f5246605f282960d8)]:
+  - @withstudiocms/internal_helpers@0.5.1
+
 ## 1.6.1
 
 ### Patch Changes

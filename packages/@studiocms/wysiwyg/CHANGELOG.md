@@ -1,5 +1,23 @@
 # @studiocms/wysiwyg
 
+## 0.5.0
+
+### Minor Changes
+
+- [#1808](https://github.com/withstudiocms/studiocms/pull/1808) [`2f7c12b`](https://github.com/withstudiocms/studiocms/commit/2f7c12bce456e9fe7146242e25c8ccc06ce78a12) Thanks [@Adammatthiesen](https://github.com/Adammatthiesen)! - Removes TUI-Image-Editor since it has been deprecated
+
+### Patch Changes
+
+- [#1794](https://github.com/withstudiocms/studiocms/pull/1794) [`76f33c1`](https://github.com/withstudiocms/studiocms/commit/76f33c15ac17af5e820a5a76b254e536b975371e) Thanks [@renovate](https://github.com/apps/renovate)! - Update dependency grapesjs to ^0.23.8
+
+- [#1809](https://github.com/withstudiocms/studiocms/pull/1809) [`3353aa6`](https://github.com/withstudiocms/studiocms/commit/3353aa654b456426b91a45f25b3ccfbcfc3141bd) Thanks [@renovate](https://github.com/apps/renovate)! - Update all non-major dependencies
+
+- [#1831](https://github.com/withstudiocms/studiocms/pull/1831) [`0664552`](https://github.com/withstudiocms/studiocms/commit/06645529c85f825eda76404e79bd64cde2b3e5b2) Thanks [@renovate](https://github.com/apps/renovate)! - Update dependency grapesjs to ^0.23.9
+
+- Updated dependencies [[`30e4f6a`](https://github.com/withstudiocms/studiocms/commit/30e4f6a70fbfae1fabc60022c1d076adc5ca34af), [`98c7fe4`](https://github.com/withstudiocms/studiocms/commit/98c7fe423bd55f962bab5924f7358c64d848496d)]:
+  - @withstudiocms/effect@0.5.4
+  - @withstudiocms/sdk@0.4.3
+
 ## 0.4.2
 
 ### Patch Changes
